@@ -1,0 +1,158 @@
+Dependencies for Project 'PplRcd', Target 'Target 1': (DO NOT MODIFY !)
+F (.\main.c)(0x58FCBF8E)(-c --cpu Cortex-M3 -D__RTX -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I.\configs -I.\BSP -IE:\mylib\sdhLib\inc-I E:\PaperlessRecorder\myCode\PplRcd\RTE-I E:\PaperlessRecorder\myCode\PplRcd\RTE\Device\STM32F103RB-I d:\Keil_v5\ARM\PACK\ARM\CMSIS\4.4.0\CMSIS\Include-I d:\Keil_v5\ARM\PACK\ARM\CMSIS\4.4.0\CMSIS\RTOS\RTX\INC-I d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0-I d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\Include-I d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\StdPeriph_Driver\inc-D__UVISION_VERSION="513" -D_RTE_ -DSTM32F10X_MD -DUSE_STDPERIPH_DRIVER -DSTM32F10X_MD -DUSE_STM3210B_EVAL -DHSE_VALUE="12000000"-o .\objects\main.o --omf_browse .\objects\main.crf --depend .\objects\main.d)
+I (osObjects.h)(0x55E7844A)
+I (d:\Keil_v5\ARM\PACK\ARM\CMSIS\4.4.0\CMSIS\RTOS\RTX\INC\cmsis_os.h)(0x55A4B2DA)
+I (D:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x5475F300)
+I (D:\Keil_v5\ARM\ARMCC\include\stddef.h)(0x5475F300)
+I (D:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x5475F300)
+I (d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\StdPeriph_Driver\inc\stm32f10x_usart.h)(0x52F9EB20)
+I (d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\Include\stm32f10x.h)(0x53BA0D60)
+I (d:\Keil_v5\ARM\PACK\ARM\CMSIS\4.4.0\CMSIS\Include\core_cm3.h)(0x55D51904)
+I (d:\Keil_v5\ARM\PACK\ARM\CMSIS\4.4.0\CMSIS\Include\core_cmInstr.h)(0x55D41F08)
+I (d:\Keil_v5\ARM\PACK\ARM\CMSIS\4.4.0\CMSIS\Include\cmsis_armcc.h)(0x55D565BA)
+I (d:\Keil_v5\ARM\PACK\ARM\CMSIS\4.4.0\CMSIS\Include\core_cmFunc.h)(0x55D41F08)
+I (d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\Include\system_stm32f10x.h)(0x4F1E2E3C)
+I (E:\PaperlessRecorder\myCode\PplRcd\RTE\Device\STM32F103RB\stm32f10x_conf.h)(0x52F9EDD0)
+I (E:\PaperlessRecorder\myCode\PplRcd\RTE\RTE_Components.h)(0x58FCB0CF)
+I (d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\StdPeriph_Driver\inc\stm32f10x_gpio.h)(0x52F9EB20)
+I (d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\StdPeriph_Driver\inc\stm32f10x_rcc.h)(0x52F9EB20)
+I (d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\StdPeriph_Driver\inc\misc.h)(0x52F9EB20)
+I (.\configs\hardwareConfig.h)(0x58FCB679)
+I (.\BSP\mySystemClock.h)(0x58FCB26B)
+I (.\BSP\pinmux.h)(0x58FCB275)
+I (E:\mylib\sdhLib\inc\basis\marco.h)(0x58FCBEF2)
+F (.\configs\hardwareConfig.c)(0x58FCBBB1)(-c --cpu Cortex-M3 -D__RTX -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I.\configs -I.\BSP -IE:\mylib\sdhLib\inc-I E:\PaperlessRecorder\myCode\PplRcd\RTE-I E:\PaperlessRecorder\myCode\PplRcd\RTE\Device\STM32F103RB-I d:\Keil_v5\ARM\PACK\ARM\CMSIS\4.4.0\CMSIS\Include-I d:\Keil_v5\ARM\PACK\ARM\CMSIS\4.4.0\CMSIS\RTOS\RTX\INC-I d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0-I d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\Include-I d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\StdPeriph_Driver\inc-D__UVISION_VERSION="513" -D_RTE_ -DSTM32F10X_MD -DUSE_STDPERIPH_DRIVER -DSTM32F10X_MD -DUSE_STM3210B_EVAL -DHSE_VALUE="12000000"-o .\objects\hardwareconfig.o --omf_browse .\objects\hardwareconfig.crf --depend .\objects\hardwareconfig.d)
+I (configs\hardwareConfig.h)(0x58FCB679)
+I (d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\StdPeriph_Driver\inc\stm32f10x_gpio.h)(0x52F9EB20)
+I (d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\Include\stm32f10x.h)(0x53BA0D60)
+I (d:\Keil_v5\ARM\PACK\ARM\CMSIS\4.4.0\CMSIS\Include\core_cm3.h)(0x55D51904)
+I (D:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x5475F300)
+I (d:\Keil_v5\ARM\PACK\ARM\CMSIS\4.4.0\CMSIS\Include\core_cmInstr.h)(0x55D41F08)
+I (d:\Keil_v5\ARM\PACK\ARM\CMSIS\4.4.0\CMSIS\Include\cmsis_armcc.h)(0x55D565BA)
+I (d:\Keil_v5\ARM\PACK\ARM\CMSIS\4.4.0\CMSIS\Include\core_cmFunc.h)(0x55D41F08)
+I (d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\Include\system_stm32f10x.h)(0x4F1E2E3C)
+I (E:\PaperlessRecorder\myCode\PplRcd\RTE\Device\STM32F103RB\stm32f10x_conf.h)(0x52F9EDD0)
+I (E:\PaperlessRecorder\myCode\PplRcd\RTE\RTE_Components.h)(0x58FCB0CF)
+I (d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\StdPeriph_Driver\inc\stm32f10x_rcc.h)(0x52F9EB20)
+I (d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\StdPeriph_Driver\inc\stm32f10x_usart.h)(0x52F9EB20)
+I (d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\StdPeriph_Driver\inc\misc.h)(0x52F9EB20)
+F (.\configs\hardwareConfig.h)(0x58FCB679)()
+F (.\BSP\pinmux.h)(0x58FCB275)()
+F (.\BSP\pinmux.c)(0x58FCB47C)(-c --cpu Cortex-M3 -D__RTX -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I.\configs -I.\BSP -IE:\mylib\sdhLib\inc-I E:\PaperlessRecorder\myCode\PplRcd\RTE-I E:\PaperlessRecorder\myCode\PplRcd\RTE\Device\STM32F103RB-I d:\Keil_v5\ARM\PACK\ARM\CMSIS\4.4.0\CMSIS\Include-I d:\Keil_v5\ARM\PACK\ARM\CMSIS\4.4.0\CMSIS\RTOS\RTX\INC-I d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0-I d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\Include-I d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\StdPeriph_Driver\inc-D__UVISION_VERSION="513" -D_RTE_ -DSTM32F10X_MD -DUSE_STDPERIPH_DRIVER -DSTM32F10X_MD -DUSE_STM3210B_EVAL -DHSE_VALUE="12000000"-o .\objects\pinmux.o --omf_browse .\objects\pinmux.crf --depend .\objects\pinmux.d)
+I (d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\Include\stm32f10x.h)(0x53BA0D60)
+I (d:\Keil_v5\ARM\PACK\ARM\CMSIS\4.4.0\CMSIS\Include\core_cm3.h)(0x55D51904)
+I (D:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x5475F300)
+I (d:\Keil_v5\ARM\PACK\ARM\CMSIS\4.4.0\CMSIS\Include\core_cmInstr.h)(0x55D41F08)
+I (d:\Keil_v5\ARM\PACK\ARM\CMSIS\4.4.0\CMSIS\Include\cmsis_armcc.h)(0x55D565BA)
+I (d:\Keil_v5\ARM\PACK\ARM\CMSIS\4.4.0\CMSIS\Include\core_cmFunc.h)(0x55D41F08)
+I (d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\Include\system_stm32f10x.h)(0x4F1E2E3C)
+I (E:\PaperlessRecorder\myCode\PplRcd\RTE\Device\STM32F103RB\stm32f10x_conf.h)(0x52F9EDD0)
+I (E:\PaperlessRecorder\myCode\PplRcd\RTE\RTE_Components.h)(0x58FCB0CF)
+I (d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\StdPeriph_Driver\inc\stm32f10x_gpio.h)(0x52F9EB20)
+I (d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\StdPeriph_Driver\inc\stm32f10x_rcc.h)(0x52F9EB20)
+I (d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\StdPeriph_Driver\inc\stm32f10x_usart.h)(0x52F9EB20)
+I (d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\StdPeriph_Driver\inc\misc.h)(0x52F9EB20)
+I (BSP\pinmux.h)(0x58FCB275)
+I (.\configs\hardwareConfig.h)(0x58FCB679)
+F (.\BSP\mySystemClock.c)(0x58FCBA74)(-c --cpu Cortex-M3 -D__RTX -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I.\configs -I.\BSP -IE:\mylib\sdhLib\inc-I E:\PaperlessRecorder\myCode\PplRcd\RTE-I E:\PaperlessRecorder\myCode\PplRcd\RTE\Device\STM32F103RB-I d:\Keil_v5\ARM\PACK\ARM\CMSIS\4.4.0\CMSIS\Include-I d:\Keil_v5\ARM\PACK\ARM\CMSIS\4.4.0\CMSIS\RTOS\RTX\INC-I d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0-I d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\Include-I d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\StdPeriph_Driver\inc-D__UVISION_VERSION="513" -D_RTE_ -DSTM32F10X_MD -DUSE_STDPERIPH_DRIVER -DSTM32F10X_MD -DUSE_STM3210B_EVAL -DHSE_VALUE="12000000"-o .\objects\mysystemclock.o --omf_browse .\objects\mysystemclock.crf --depend .\objects\mysystemclock.d)
+I (BSP\mySystemClock.h)(0x58FCB26B)
+I (d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\StdPeriph_Driver\inc\stm32f10x_rcc.h)(0x52F9EB20)
+I (d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\Include\stm32f10x.h)(0x53BA0D60)
+I (d:\Keil_v5\ARM\PACK\ARM\CMSIS\4.4.0\CMSIS\Include\core_cm3.h)(0x55D51904)
+I (D:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x5475F300)
+I (d:\Keil_v5\ARM\PACK\ARM\CMSIS\4.4.0\CMSIS\Include\core_cmInstr.h)(0x55D41F08)
+I (d:\Keil_v5\ARM\PACK\ARM\CMSIS\4.4.0\CMSIS\Include\cmsis_armcc.h)(0x55D565BA)
+I (d:\Keil_v5\ARM\PACK\ARM\CMSIS\4.4.0\CMSIS\Include\core_cmFunc.h)(0x55D41F08)
+I (d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\Include\system_stm32f10x.h)(0x4F1E2E3C)
+I (E:\PaperlessRecorder\myCode\PplRcd\RTE\Device\STM32F103RB\stm32f10x_conf.h)(0x52F9EDD0)
+I (E:\PaperlessRecorder\myCode\PplRcd\RTE\RTE_Components.h)(0x58FCB0CF)
+I (d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\StdPeriph_Driver\inc\stm32f10x_gpio.h)(0x52F9EB20)
+I (d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\StdPeriph_Driver\inc\stm32f10x_usart.h)(0x52F9EB20)
+I (d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\StdPeriph_Driver\inc\misc.h)(0x52F9EB20)
+F (.\BSP\mySystemClock.h)(0x58FCB26B)()
+F (E:\mylib\sdhLib\inc\basis\marco.h)(0x58FCBEF2)()
+F (E:\mylib\sdhLib\inc\basis\sdhDebug.h)(0x58EDCBA4)()
+F (E:\mylib\sdhLib\src\basis\marco.c)(0x58FCBEED)(-c --cpu Cortex-M3 -D__RTX -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I.\configs -I.\BSP -IE:\mylib\sdhLib\inc-I E:\PaperlessRecorder\myCode\PplRcd\RTE-I E:\PaperlessRecorder\myCode\PplRcd\RTE\Device\STM32F103RB-I d:\Keil_v5\ARM\PACK\ARM\CMSIS\4.4.0\CMSIS\Include-I d:\Keil_v5\ARM\PACK\ARM\CMSIS\4.4.0\CMSIS\RTOS\RTX\INC-I d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0-I d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\Include-I d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\StdPeriph_Driver\inc-D__UVISION_VERSION="513" -D_RTE_ -DSTM32F10X_MD -DUSE_STDPERIPH_DRIVER -DSTM32F10X_MD -DUSE_STM3210B_EVAL -DHSE_VALUE="12000000"-o .\objects\marco.o --omf_browse .\objects\marco.crf --depend .\objects\marco.d)
+I (E:\mylib\sdhLib\inc\basis\marco.h)(0x58FCBEF2)
+I (D:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x5475F300)
+I (D:\Keil_v5\ARM\ARMCC\include\stdlib.h)(0x5475F300)
+I (D:\Keil_v5\ARM\ARMCC\include\string.h)(0x5475F300)
+F (RTE\CMSIS\RTX_Conf_CM.c)(0x58FCB9D4)(-c --cpu Cortex-M3 -D__RTX -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I.\configs -I.\BSP -IE:\mylib\sdhLib\inc-I E:\PaperlessRecorder\myCode\PplRcd\RTE-I E:\PaperlessRecorder\myCode\PplRcd\RTE\Device\STM32F103RB-I d:\Keil_v5\ARM\PACK\ARM\CMSIS\4.4.0\CMSIS\Include-I d:\Keil_v5\ARM\PACK\ARM\CMSIS\4.4.0\CMSIS\RTOS\RTX\INC-I d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0-I d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\Include-I d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\StdPeriph_Driver\inc-D__UVISION_VERSION="513" -D_RTE_ -DSTM32F10X_MD -DUSE_STDPERIPH_DRIVER -DSTM32F10X_MD -DUSE_STM3210B_EVAL -DHSE_VALUE="12000000"-o .\objects\rtx_conf_cm.o --omf_browse .\objects\rtx_conf_cm.crf --depend .\objects\rtx_conf_cm.d)
+I (d:\Keil_v5\ARM\PACK\ARM\CMSIS\4.4.0\CMSIS\RTOS\RTX\INC\cmsis_os.h)(0x55A4B2DA)
+I (D:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x5475F300)
+I (D:\Keil_v5\ARM\ARMCC\include\stddef.h)(0x5475F300)
+I (d:\Keil_v5\ARM\PACK\ARM\CMSIS\4.4.0\CMSIS\RTOS\RTX\INC\RTX_CM_lib.h)(0x556D30E4)
+F (d:\Keil_v5\ARM\PACK\ARM\CMSIS\4.4.0\CMSIS\RTOS\RTX\LIB\ARM\RTX_CM3.lib)(0x55DE5C2E)()
+F (RTE\Device\STM32F103RB\RTE_Device.h)(0x58FCBA74)()
+F (RTE\Device\STM32F103RB\startup_stm32f10x_md.s)(0x4F1E2E3C)(--cpu Cortex-M3 --pd "__RTX SETA 1" -g --apcs=interwork --pd "__MICROLIB SETA 1"-I E:\PaperlessRecorder\myCode\PplRcd\RTE-I E:\PaperlessRecorder\myCode\PplRcd\RTE\Device\STM32F103RB-I d:\Keil_v5\ARM\PACK\ARM\CMSIS\4.4.0\CMSIS\Include-I d:\Keil_v5\ARM\PACK\ARM\CMSIS\4.4.0\CMSIS\RTOS\RTX\INC-I d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0-I d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\Include-I d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\StdPeriph_Driver\inc--pd "__UVISION_VERSION SETA 513" --pd "_RTE_ SETA 1" --pd "STM32F10X_MD SETA 1"--list .\listings\startup_stm32f10x_md.lst --xref -o .\objects\startup_stm32f10x_md.o --depend .\objects\startup_stm32f10x_md.d)
+F (RTE\Device\STM32F103RB\system_stm32f10x.c)(0x4F1E2E3C)(-c --cpu Cortex-M3 -D__RTX -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I.\configs -I.\BSP -IE:\mylib\sdhLib\inc-I E:\PaperlessRecorder\myCode\PplRcd\RTE-I E:\PaperlessRecorder\myCode\PplRcd\RTE\Device\STM32F103RB-I d:\Keil_v5\ARM\PACK\ARM\CMSIS\4.4.0\CMSIS\Include-I d:\Keil_v5\ARM\PACK\ARM\CMSIS\4.4.0\CMSIS\RTOS\RTX\INC-I d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0-I d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\Include-I d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\StdPeriph_Driver\inc-D__UVISION_VERSION="513" -D_RTE_ -DSTM32F10X_MD -DUSE_STDPERIPH_DRIVER -DSTM32F10X_MD -DUSE_STM3210B_EVAL -DHSE_VALUE="12000000"-o .\objects\system_stm32f10x.o --omf_browse .\objects\system_stm32f10x.crf --depend .\objects\system_stm32f10x.d)
+I (d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\Include\stm32f10x.h)(0x53BA0D60)
+I (d:\Keil_v5\ARM\PACK\ARM\CMSIS\4.4.0\CMSIS\Include\core_cm3.h)(0x55D51904)
+I (D:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x5475F300)
+I (d:\Keil_v5\ARM\PACK\ARM\CMSIS\4.4.0\CMSIS\Include\core_cmInstr.h)(0x55D41F08)
+I (d:\Keil_v5\ARM\PACK\ARM\CMSIS\4.4.0\CMSIS\Include\cmsis_armcc.h)(0x55D565BA)
+I (d:\Keil_v5\ARM\PACK\ARM\CMSIS\4.4.0\CMSIS\Include\core_cmFunc.h)(0x55D41F08)
+I (d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\Include\system_stm32f10x.h)(0x4F1E2E3C)
+I (E:\PaperlessRecorder\myCode\PplRcd\RTE\Device\STM32F103RB\stm32f10x_conf.h)(0x52F9EDD0)
+I (E:\PaperlessRecorder\myCode\PplRcd\RTE\RTE_Components.h)(0x58FCB0CF)
+I (d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\StdPeriph_Driver\inc\stm32f10x_gpio.h)(0x52F9EB20)
+I (d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\StdPeriph_Driver\inc\stm32f10x_rcc.h)(0x52F9EB20)
+I (d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\StdPeriph_Driver\inc\stm32f10x_usart.h)(0x52F9EB20)
+I (d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\StdPeriph_Driver\inc\misc.h)(0x52F9EB20)
+F (RTE\Device\STM32F103RB\stm32f10x_conf.h)(0x52F9EDD0)()
+F (d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\StdPeriph_Driver\src\misc.c)(0x52F9EB20)(-c --cpu Cortex-M3 -D__RTX -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I.\configs -I.\BSP -IE:\mylib\sdhLib\inc-I E:\PaperlessRecorder\myCode\PplRcd\RTE-I E:\PaperlessRecorder\myCode\PplRcd\RTE\Device\STM32F103RB-I d:\Keil_v5\ARM\PACK\ARM\CMSIS\4.4.0\CMSIS\Include-I d:\Keil_v5\ARM\PACK\ARM\CMSIS\4.4.0\CMSIS\RTOS\RTX\INC-I d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0-I d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\Include-I d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\StdPeriph_Driver\inc-D__UVISION_VERSION="513" -D_RTE_ -DSTM32F10X_MD -DUSE_STDPERIPH_DRIVER -DSTM32F10X_MD -DUSE_STM3210B_EVAL -DHSE_VALUE="12000000"-o .\objects\misc.o --omf_browse .\objects\misc.crf --depend .\objects\misc.d)
+I (d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\StdPeriph_Driver\inc\misc.h)(0x52F9EB20)
+I (d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\Include\stm32f10x.h)(0x53BA0D60)
+I (d:\Keil_v5\ARM\PACK\ARM\CMSIS\4.4.0\CMSIS\Include\core_cm3.h)(0x55D51904)
+I (D:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x5475F300)
+I (d:\Keil_v5\ARM\PACK\ARM\CMSIS\4.4.0\CMSIS\Include\core_cmInstr.h)(0x55D41F08)
+I (d:\Keil_v5\ARM\PACK\ARM\CMSIS\4.4.0\CMSIS\Include\cmsis_armcc.h)(0x55D565BA)
+I (d:\Keil_v5\ARM\PACK\ARM\CMSIS\4.4.0\CMSIS\Include\core_cmFunc.h)(0x55D41F08)
+I (d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\Include\system_stm32f10x.h)(0x4F1E2E3C)
+I (E:\PaperlessRecorder\myCode\PplRcd\RTE\Device\STM32F103RB\stm32f10x_conf.h)(0x52F9EDD0)
+I (E:\PaperlessRecorder\myCode\PplRcd\RTE\RTE_Components.h)(0x58FCB0CF)
+I (d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\StdPeriph_Driver\inc\stm32f10x_gpio.h)(0x52F9EB20)
+I (d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\StdPeriph_Driver\inc\stm32f10x_rcc.h)(0x52F9EB20)
+I (d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\StdPeriph_Driver\inc\stm32f10x_usart.h)(0x52F9EB20)
+F (d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\StdPeriph_Driver\src\stm32f10x_rcc.c)(0x52F9EB20)(-c --cpu Cortex-M3 -D__RTX -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I.\configs -I.\BSP -IE:\mylib\sdhLib\inc-I E:\PaperlessRecorder\myCode\PplRcd\RTE-I E:\PaperlessRecorder\myCode\PplRcd\RTE\Device\STM32F103RB-I d:\Keil_v5\ARM\PACK\ARM\CMSIS\4.4.0\CMSIS\Include-I d:\Keil_v5\ARM\PACK\ARM\CMSIS\4.4.0\CMSIS\RTOS\RTX\INC-I d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0-I d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\Include-I d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\StdPeriph_Driver\inc-D__UVISION_VERSION="513" -D_RTE_ -DSTM32F10X_MD -DUSE_STDPERIPH_DRIVER -DSTM32F10X_MD -DUSE_STM3210B_EVAL -DHSE_VALUE="12000000"-o .\objects\stm32f10x_rcc.o --omf_browse .\objects\stm32f10x_rcc.crf --depend .\objects\stm32f10x_rcc.d)
+I (d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\StdPeriph_Driver\inc\stm32f10x_rcc.h)(0x52F9EB20)
+I (d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\Include\stm32f10x.h)(0x53BA0D60)
+I (d:\Keil_v5\ARM\PACK\ARM\CMSIS\4.4.0\CMSIS\Include\core_cm3.h)(0x55D51904)
+I (D:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x5475F300)
+I (d:\Keil_v5\ARM\PACK\ARM\CMSIS\4.4.0\CMSIS\Include\core_cmInstr.h)(0x55D41F08)
+I (d:\Keil_v5\ARM\PACK\ARM\CMSIS\4.4.0\CMSIS\Include\cmsis_armcc.h)(0x55D565BA)
+I (d:\Keil_v5\ARM\PACK\ARM\CMSIS\4.4.0\CMSIS\Include\core_cmFunc.h)(0x55D41F08)
+I (d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\Include\system_stm32f10x.h)(0x4F1E2E3C)
+I (E:\PaperlessRecorder\myCode\PplRcd\RTE\Device\STM32F103RB\stm32f10x_conf.h)(0x52F9EDD0)
+I (E:\PaperlessRecorder\myCode\PplRcd\RTE\RTE_Components.h)(0x58FCB0CF)
+I (d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\StdPeriph_Driver\inc\stm32f10x_gpio.h)(0x52F9EB20)
+I (d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\StdPeriph_Driver\inc\stm32f10x_usart.h)(0x52F9EB20)
+I (d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\StdPeriph_Driver\inc\misc.h)(0x52F9EB20)
+F (d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\StdPeriph_Driver\src\stm32f10x_usart.c)(0x52F9EB20)(-c --cpu Cortex-M3 -D__RTX -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I.\configs -I.\BSP -IE:\mylib\sdhLib\inc-I E:\PaperlessRecorder\myCode\PplRcd\RTE-I E:\PaperlessRecorder\myCode\PplRcd\RTE\Device\STM32F103RB-I d:\Keil_v5\ARM\PACK\ARM\CMSIS\4.4.0\CMSIS\Include-I d:\Keil_v5\ARM\PACK\ARM\CMSIS\4.4.0\CMSIS\RTOS\RTX\INC-I d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0-I d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\Include-I d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\StdPeriph_Driver\inc-D__UVISION_VERSION="513" -D_RTE_ -DSTM32F10X_MD -DUSE_STDPERIPH_DRIVER -DSTM32F10X_MD -DUSE_STM3210B_EVAL -DHSE_VALUE="12000000"-o .\objects\stm32f10x_usart.o --omf_browse .\objects\stm32f10x_usart.crf --depend .\objects\stm32f10x_usart.d)
+I (d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\StdPeriph_Driver\inc\stm32f10x_usart.h)(0x52F9EB20)
+I (d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\Include\stm32f10x.h)(0x53BA0D60)
+I (d:\Keil_v5\ARM\PACK\ARM\CMSIS\4.4.0\CMSIS\Include\core_cm3.h)(0x55D51904)
+I (D:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x5475F300)
+I (d:\Keil_v5\ARM\PACK\ARM\CMSIS\4.4.0\CMSIS\Include\core_cmInstr.h)(0x55D41F08)
+I (d:\Keil_v5\ARM\PACK\ARM\CMSIS\4.4.0\CMSIS\Include\cmsis_armcc.h)(0x55D565BA)
+I (d:\Keil_v5\ARM\PACK\ARM\CMSIS\4.4.0\CMSIS\Include\core_cmFunc.h)(0x55D41F08)
+I (d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\Include\system_stm32f10x.h)(0x4F1E2E3C)
+I (E:\PaperlessRecorder\myCode\PplRcd\RTE\Device\STM32F103RB\stm32f10x_conf.h)(0x52F9EDD0)
+I (E:\PaperlessRecorder\myCode\PplRcd\RTE\RTE_Components.h)(0x58FCB0CF)
+I (d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\StdPeriph_Driver\inc\stm32f10x_gpio.h)(0x52F9EB20)
+I (d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\StdPeriph_Driver\inc\stm32f10x_rcc.h)(0x52F9EB20)
+I (d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\StdPeriph_Driver\inc\misc.h)(0x52F9EB20)
+F (d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\StdPeriph_Driver\src\stm32f10x_gpio.c)(0x52F9EB20)(-c --cpu Cortex-M3 -D__RTX -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I.\configs -I.\BSP -IE:\mylib\sdhLib\inc-I E:\PaperlessRecorder\myCode\PplRcd\RTE-I E:\PaperlessRecorder\myCode\PplRcd\RTE\Device\STM32F103RB-I d:\Keil_v5\ARM\PACK\ARM\CMSIS\4.4.0\CMSIS\Include-I d:\Keil_v5\ARM\PACK\ARM\CMSIS\4.4.0\CMSIS\RTOS\RTX\INC-I d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0-I d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\Include-I d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\StdPeriph_Driver\inc-D__UVISION_VERSION="513" -D_RTE_ -DSTM32F10X_MD -DUSE_STDPERIPH_DRIVER -DSTM32F10X_MD -DUSE_STM3210B_EVAL -DHSE_VALUE="12000000"-o .\objects\stm32f10x_gpio.o --omf_browse .\objects\stm32f10x_gpio.crf --depend .\objects\stm32f10x_gpio.d)
+I (d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\StdPeriph_Driver\inc\stm32f10x_gpio.h)(0x52F9EB20)
+I (d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\Include\stm32f10x.h)(0x53BA0D60)
+I (d:\Keil_v5\ARM\PACK\ARM\CMSIS\4.4.0\CMSIS\Include\core_cm3.h)(0x55D51904)
+I (D:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x5475F300)
+I (d:\Keil_v5\ARM\PACK\ARM\CMSIS\4.4.0\CMSIS\Include\core_cmInstr.h)(0x55D41F08)
+I (d:\Keil_v5\ARM\PACK\ARM\CMSIS\4.4.0\CMSIS\Include\cmsis_armcc.h)(0x55D565BA)
+I (d:\Keil_v5\ARM\PACK\ARM\CMSIS\4.4.0\CMSIS\Include\core_cmFunc.h)(0x55D41F08)
+I (d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\Include\system_stm32f10x.h)(0x4F1E2E3C)
+I (E:\PaperlessRecorder\myCode\PplRcd\RTE\Device\STM32F103RB\stm32f10x_conf.h)(0x52F9EDD0)
+I (E:\PaperlessRecorder\myCode\PplRcd\RTE\RTE_Components.h)(0x58FCB0CF)
+I (d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\StdPeriph_Driver\inc\stm32f10x_rcc.h)(0x52F9EB20)
+I (d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\StdPeriph_Driver\inc\stm32f10x_usart.h)(0x52F9EB20)
+I (d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\StdPeriph_Driver\inc\misc.h)(0x52F9EB20)

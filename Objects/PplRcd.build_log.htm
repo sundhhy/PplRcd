@@ -1,0 +1,110 @@
+<html>
+<body>
+<pre>
+<h1>µVision Build Log</h1>
+<h2>Tool Versions:</h2>
+IDE-Version: ¦ÌVision V5.13.0.0
+Copyright (C) 2014 ARM Ltd and ARM Germany GmbH. All rights reserved.
+License Information: sundh Administrator, ssss, LIC=NHY8T-R7SVS-59KGZ-J3A9Z-ZZPPP-9LWZP
+ 
+Tool Versions:
+Toolchain:       MDK-ARM Professional  Version: 5.13.0.0
+Toolchain Path:  D:\Keil_v5\ARM\ARMCC\Bin
+C Compiler:      Armcc.exe V5.05 update 1 (build 106)
+Assembler:       Armasm.exe V5.05 update 1 (build 106)
+Linker/Locator:  ArmLink.exe V5.05 update 1 (build 106)
+Library Manager: ArmAr.exe V5.05 update 1 (build 106)
+Hex Converter:   FromElf.exe V5.05 update 1 (build 106)
+CPU DLL:         SARMCM3.DLL V5.13.0.0
+Dialog DLL:      DCM.DLL V1.13.1.0
+Target DLL:      UL2CM3.DLL V1.154.12.0
+Dialog DLL:      TCM.DLL V1.14.4.0
+ 
+<h2>Project:</h2>
+E:\PaperlessRecorder\myCode\PplRcd\PplRcd.uvprojx
+Project File Date:  04/23/2017
+
+<h2>Output:</h2>
+Build target 'Target 1'
+compiling main.c...
+linking...
+Program Size: Code=7804 RO-data=640 RW-data=168 ZI-data=3344  
+".\Objects\PplRcd.axf" - 0 Error(s), 0 Warning(s).
+
+<h2>Software Packages used:</h2>
+
+Package Vendor: ARM
+                http://www.keil.com/pack/ARM.CMSIS.4.4.0.pack
+                ::CMSIS:RTOS:1.0 (API)
+                CMSIS (Cortex Microcontroller Software Interface Standard)
+   * Component: RTOS Version: 1.0
+   * Component: Keil RTX Version: 4.79.0
+   * Component: CORE Version: 4.2.0
+
+Package Vendor: Keil
+                http://www.keil.com/pack/Keil.STM32F1xx_DFP.2.1.0.pack
+                Keil::Device:StdPeriph Drivers:Framework:3.5.1
+                STMicroelectronics STM32F1 Series Device Support, Drivers and Examples
+   * Component: Framework Version: 3.5.1
+   * Component: Startup Version: 1.0.0
+   * Component: USART Version: 3.5.0
+   * Component: GPIO Version: 3.5.0
+   * Component: RCC Version: 3.5.0
+
+<h2>Collection of Component include folders:</h2>
+  E:\PaperlessRecorder\myCode\PplRcd\RTE
+  E:\PaperlessRecorder\myCode\PplRcd\RTE\Device\STM32F103RB
+  d:\Keil_v5\ARM\PACK\ARM\CMSIS\4.4.0\CMSIS\Include
+  d:\Keil_v5\ARM\PACK\ARM\CMSIS\4.4.0\CMSIS\RTOS\RTX\INC
+  d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0
+  d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\Include
+  d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\StdPeriph_Driver\inc
+
+<h2>Collection of Component Files used:</h2>
+
+   * Component: ::CMSIS:RTOS:1.0 (API)
+
+   * Component: ARM::CMSIS:RTOS:Keil RTX:4.79.0
+      Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\MemPool.c
+      Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\MsgQueue.c
+      Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\Mutex.c
+      Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\Semaphore.c
+      Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\Thread.c
+      Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\Timer.c
+      Source file:   CMSIS\RTOS\RTX\SRC\ARM\SVC_Table.s
+      Library file:  CMSIS\RTOS\RTX\LIB\ARM\RTX_CM3.lib
+      Include file:  CMSIS\RTOS\RTX\INC\cmsis_os.h
+      Include file:  CMSIS\RTOS\RTX\UserCodeTemplates\osObjects.h
+      Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\MailQueue.c
+      Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\main.c
+      Source file:   CMSIS\RTOS\RTX\Templates\RTX_Conf_CM.c
+
+   * Component: ARM::CMSIS:CORE:4.2.0
+
+   * Component: Keil::Device:StdPeriph Drivers:Framework:3.5.1
+      Source file:   Device\StdPeriph_Driver\src\misc.c
+      Source file:   Device\StdPeriph_Driver\templates\stm32f10x_conf.h
+      Include file:  Device\StdPeriph_Driver\templates\stm32f10x_it.h
+      Include file:  Device\StdPeriph_Driver\inc\misc.h
+      Source file:   Device\StdPeriph_Driver\templates\stm32f10x_it.c
+
+   * Component: Keil::Device:Startup:1.0.0
+      Source file:   Device\Source\ARM\STM32F1xx_OPT.s
+      Source file:   Device\Source\system_stm32f10x.c
+      Include file:  RTE_Driver\Config\RTE_Device.h
+      Source file:   Device\Source\ARM\startup_stm32f10x_md.s
+
+   * Component: Keil::Device:StdPeriph Drivers:USART:3.5.0
+      Include file:  Device\StdPeriph_Driver\inc\stm32f10x_usart.h
+      Source file:   Device\StdPeriph_Driver\src\stm32f10x_usart.c
+
+   * Component: Keil::Device:StdPeriph Drivers:GPIO:3.5.0
+      Include file:  Device\StdPeriph_Driver\inc\stm32f10x_gpio.h
+      Source file:   Device\StdPeriph_Driver\src\stm32f10x_gpio.c
+
+   * Component: Keil::Device:StdPeriph Drivers:RCC:3.5.0
+      Include file:  Device\StdPeriph_Driver\inc\stm32f10x_rcc.h
+      Source file:   Device\StdPeriph_Driver\src\stm32f10x_rcc.c
+</pre>
+</body>
+</html>
