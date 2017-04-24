@@ -365,7 +365,7 @@
               <MiscControls></MiscControls>
               <Define>USE_STDPERIPH_DRIVER, STM32F10X_MD, USE_STM3210B_EVAL,HSE_VALUE=12000000</Define>
               <Undefine></Undefine>
-              <IncludePath>.\configs;.\BSP;E:\mylib\sdhLib\inc</IncludePath>
+              <IncludePath>.\configs;.\BSP;E:\mylib\sdhLib\inc;.\drive\LCD\nokia_5110</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -476,6 +476,41 @@
           </Files>
         </Group>
         <Group>
+          <GroupName>dev_LcdNokia5110</GroupName>
+          <Files>
+            <File>
+              <FileName>nokia_5110.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\drive\LCD\nokia_5110\nokia_5110.c</FilePath>
+            </File>
+            <File>
+              <FileName>bmp_pixel.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\drive\LCD\nokia_5110\bmp_pixel.h</FilePath>
+            </File>
+            <File>
+              <FileName>english_6x8_pixel.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\drive\LCD\nokia_5110\english_6x8_pixel.h</FilePath>
+            </File>
+            <File>
+              <FileName>move_chinese_string_pixel.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\drive\LCD\nokia_5110\move_chinese_string_pixel.h</FilePath>
+            </File>
+            <File>
+              <FileName>nokia_5110.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\drive\LCD\nokia_5110\nokia_5110.h</FilePath>
+            </File>
+            <File>
+              <FileName>write_chinese_string_pixel.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\drive\LCD\nokia_5110\write_chinese_string_pixel.h</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
           <GroupName>::CMSIS</GroupName>
         </Group>
         <Group>
@@ -508,6 +543,12 @@
         </targetInfos>
       </component>
       <component Cclass="Device" Cgroup="Startup" Cvendor="Keil" Cversion="1.0.0" condition="STM32F1xx CMSIS">
+        <package name="STM32F1xx_DFP" schemaVersion="1.2" url="http://www.keil.com/pack/" vendor="Keil" version="2.1.0"/>
+        <targetInfos>
+          <targetInfo name="Target 1"/>
+        </targetInfos>
+      </component>
+      <component Cclass="Device" Cgroup="StdPeriph Drivers" Csub="Flash" Cvendor="Keil" Cversion="3.5.0" condition="STM32F1xx STDPERIPH">
         <package name="STM32F1xx_DFP" schemaVersion="1.2" url="http://www.keil.com/pack/" vendor="Keil" version="2.1.0"/>
         <targetInfos>
           <targetInfo name="Target 1"/>

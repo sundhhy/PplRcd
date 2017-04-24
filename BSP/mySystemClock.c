@@ -1,6 +1,8 @@
 #include "mySystemClock.h"
 #include "stm32f10x_rcc.h"
 
+
+
 //打开要使用的外设的时钟
 void OpenPrpClock( void)
 {
@@ -17,5 +19,8 @@ void OpenPrpClock( void)
 	
 	
 }
+
+
+
 
 

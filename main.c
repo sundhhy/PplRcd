@@ -5,6 +5,7 @@
 #define osObjectsPublic                     // define objects in main module
 #include "osObjects.h"                      // RTOS object definitions
 #include <stdio.h>
+#include <string.h>
 #include "stm32f10x_usart.h"
 
 #include "hardwareConfig.h"
@@ -12,6 +13,8 @@
 #include "pinmux.h"
 
 #include "basis/marco.h"
+
+#include "nokia_5110.h"
 
 
 //ÏµÍ³°æ±¾ºÅ
@@ -82,6 +85,12 @@ int main (void) {
 	g_childVer = GetCompileMoth() << 8 | GetCompileDay();
 	printf("\r\n ############ http://www.csgsm.com/ ############\r\n ############("__DATE__ " - " __TIME__ ")############");
 	printf("\r\n sytem ver : %x %x \n", g_majorVer, g_childVer);
+	
+	LCD_init();
+    LCD_clear();
+	LCD_write_english_string((LCD_WIDTH_PIXELS - strlen(SIM_LOGO)*6)/2,2,"FFF");
+	
+	
   // create 'thread' functions that start executing,
   // example: tid_name = osThreadCreate (osThread(name), NULL);
 
