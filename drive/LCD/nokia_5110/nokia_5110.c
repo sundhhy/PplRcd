@@ -48,6 +48,11 @@ static void LcdPinmux()
 	
 	GPIO_InitTypeDef GPIO_InitStructure;
 	
+	
+	RCC_APB2PeriphClockCmd( RCC_SCLK | RCC_SDIN | RCC_LCD_DC |
+                           RCC_LCD_CE  | RCC_LCD_RST  , ENABLE);
+	
+	
 	GPIO_InitStructure.GPIO_Pin = GPIO_SCLK;        
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;

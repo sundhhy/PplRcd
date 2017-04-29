@@ -365,7 +365,7 @@
               <MiscControls></MiscControls>
               <Define>USE_STDPERIPH_DRIVER, STM32F10X_MD, USE_STM3210B_EVAL,HSE_VALUE=12000000</Define>
               <Undefine></Undefine>
-              <IncludePath>.\configs;.\BSP;E:\mylib\sdhLib\inc;.\drive\LCD\nokia_5110</IncludePath>
+              <IncludePath>.\configs;.\BSP;E:\mylib\sdhLib\inc;.\drive\LCD\nokia_5110;..\PplRcd;.\drive\uart</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -413,6 +413,11 @@
               <FileType>1</FileType>
               <FilePath>.\main.c</FilePath>
             </File>
+            <File>
+              <FileName>Semaphore.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Semaphore.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -453,6 +458,16 @@
               <FileType>5</FileType>
               <FilePath>.\BSP\mySystemClock.h</FilePath>
             </File>
+            <File>
+              <FileName>intrInit.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\BSP\intrInit.c</FilePath>
+            </File>
+            <File>
+              <FileName>intrInit.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\BSP\intrInit.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -472,6 +487,26 @@
               <FileName>marco.c</FileName>
               <FileType>1</FileType>
               <FilePath>E:\mylib\sdhLib\src\basis\marco.c</FilePath>
+            </File>
+            <File>
+              <FileName>Ping_PongBuf.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>E:\mylib\sdhLib\src\mem\Ping_PongBuf.c</FilePath>
+            </File>
+            <File>
+              <FileName>Ping_PongBuf.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>E:\mylib\sdhLib\inc\mem\Ping_PongBuf.h</FilePath>
+            </File>
+            <File>
+              <FileName>sdhDef.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>E:\mylib\sdhLib\inc\sdhDef.h</FilePath>
+            </File>
+            <File>
+              <FileName>sdhError.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>E:\mylib\sdhLib\inc\basis\sdhError.h</FilePath>
             </File>
           </Files>
         </Group>
@@ -511,6 +546,21 @@
           </Files>
         </Group>
         <Group>
+          <GroupName>drive_uart</GroupName>
+          <Files>
+            <File>
+              <FileName>drive_uart.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\drive\uart\drive_uart.c</FilePath>
+            </File>
+            <File>
+              <FileName>drive_uart.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\drive\uart\drive_uart.h</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
           <GroupName>::CMSIS</GroupName>
         </Group>
         <Group>
@@ -543,6 +593,12 @@
         </targetInfos>
       </component>
       <component Cclass="Device" Cgroup="Startup" Cvendor="Keil" Cversion="1.0.0" condition="STM32F1xx CMSIS">
+        <package name="STM32F1xx_DFP" schemaVersion="1.2" url="http://www.keil.com/pack/" vendor="Keil" version="2.1.0"/>
+        <targetInfos>
+          <targetInfo name="Target 1"/>
+        </targetInfos>
+      </component>
+      <component Cclass="Device" Cgroup="StdPeriph Drivers" Csub="DMA" Cvendor="Keil" Cversion="3.5.0" condition="STM32F1xx STDPERIPH RCC">
         <package name="STM32F1xx_DFP" schemaVersion="1.2" url="http://www.keil.com/pack/" vendor="Keil" version="2.1.0"/>
         <targetInfos>
           <targetInfo name="Target 1"/>

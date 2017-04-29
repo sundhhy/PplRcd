@@ -12,6 +12,7 @@
 
 #define RTE_CMSIS_RTOS                  /* CMSIS-RTOS */
         #define RTE_CMSIS_RTOS_RTX              /* CMSIS-RTOS Keil RTX */
+#define RTE_DEVICE_STDPERIPH_DMA
 #define RTE_DEVICE_STDPERIPH_FLASH
 #define RTE_DEVICE_STDPERIPH_FRAMEWORK
 #define RTE_DEVICE_STDPERIPH_GPIO
