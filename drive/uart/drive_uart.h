@@ -4,6 +4,7 @@
 #include "stm32f10x_usart.h"
 #include "lw_oopc.h"
 #include "mem/Ping_PongBuf.h"
+#include "dev_cmd.h"
 
 
 #define SENDMODE_CPU			0
@@ -15,12 +16,12 @@
 #define UART_RXCACHE_SIZE		512
 #define UART_TXCACHE_SIZE		256
 
-#define S485_UART_CMD_SET_TXBLOCK	1
-#define S485_UART_CMD_CLR_TXBLOCK	2
-#define S485_UART_CMD_SET_RXBLOCK	3
-#define S485_UART_CMD_CLR_RXBLOCK	4
-#define S485UART_SET_TXWAITTIME_MS	5
-#define S485UART_SET_RXWAITTIME_MS	6
+//#define S485_UART_CMD_SET_TXBLOCK	1
+//#define S485_UART_CMD_CLR_TXBLOCK	2
+//#define S485_UART_CMD_SET_RXBLOCK	3
+//#define S485_UART_CMD_CLR_RXBLOCK	4
+//#define S485UART_SET_TXWAITTIME_MS	5
+//#define S485UART_SET_RXWAITTIME_MS	6
 
 #define DRCT_RX				0
 #define DRCT_TX				0

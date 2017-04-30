@@ -16,7 +16,9 @@
 #include "basis/marco.h"
 #include "basis/sdhError.h"
 #include "nokia_5110.h"
-#include "drive_uart.h"
+#include "device.h"
+
+#include "TDD.h"
 
 //系统版本号
 //主板本号自己制定
@@ -70,36 +72,14 @@ int fgetc(FILE *f /*stream*/)
  */
 
 //tdd data
-
+#if TDD_ON == 1
 char	appBuf[ 64];
-driveUart	*g_DtiUart2;
-osSemaphoreId sid_UartTxSem;                             // semaphore id
-osSemaphoreDef (driUartTxSemaphore);                               // semaphore object
-osSemaphoreId sid_UartRxSem;                             // semaphore id
-osSemaphoreDef (driUartRxSemaphore);                               // semaphore object
+#endif
+#if TDD_DEV_UART2 == 1
 
-static int UartWaitTxSem( int ms)
-{
-	
-	return osSemaphoreWait( sid_UartTxSem, ms );
-}
-static int UartWaitRxSem( int ms)
-{
-	
-	return osSemaphoreWait( sid_UartRxSem, ms );
-}
+I_dev_Char *I_uart2;
 
-static void UartPostTxSem()
-{
-	
-	osSemaphoreRelease( sid_UartTxSem );
-}
-static void UartPostRxSem( )
-{
-	
-	osSemaphoreRelease( sid_UartRxSem );
-}
-
+#endif
 
 int main (void) {
 	USART_InitTypeDef USART_InitStructure;
@@ -129,34 +109,16 @@ int main (void) {
 	sprintf( appBuf, "VER : %x %x", g_majorVer, g_childVer);
 	LCD_write_english_string((LCD_WIDTH_PIXELS - strlen(SIM_LOGO) *6)/2,2, appBuf);
 	
+#if TDD_DEV_UART2 == 1	
 	
-	sid_UartTxSem = osSemaphoreCreate (osSemaphore(driUartTxSemaphore), 1);
-	if (!sid_UartTxSem) {
-		sprintf( appBuf, "create uart txSem failed");
-		LCD_clear();
-		LCD_write_english_string((LCD_WIDTH_PIXELS - strlen(SIM_LOGO) *6)/2,2, appBuf);
-	
-	}
-	sid_UartRxSem = osSemaphoreCreate (osSemaphore(driUartRxSemaphore), 1);
-	if (!sid_UartRxSem) {
-		sprintf( appBuf, "create uart rxSem failed");
-		LCD_clear();
-		LCD_write_english_string((LCD_WIDTH_PIXELS - strlen(SIM_LOGO) *6)/2,2, appBuf);
-	
-	}
-	osSemaphoreWait( sid_UartRxSem, 0 );
 	
 	sprintf( appBuf, "uart 2 testing ...");
 	LCD_clear();
 	LCD_write_english_string((LCD_WIDTH_PIXELS - strlen(SIM_LOGO) *6)/2,1, appBuf);
 	
-	g_DtiUart2 = driveUart_new();
-	g_DtiUart2->setWaitSem( g_DtiUart2, DRCT_RX, UartWaitRxSem);
-	g_DtiUart2->setWaitSem( g_DtiUart2, DRCT_TX, UartWaitTxSem);
-	g_DtiUart2->setPostSem( g_DtiUart2, DRCT_RX, UartPostRxSem);
-	g_DtiUart2->setPostSem( g_DtiUart2, DRCT_TX, UartPostTxSem);
-	g_DtiUart2->init( g_DtiUart2, USART2, &g_confUart2);
-	if( g_DtiUart2->test( g_DtiUart2, appBuf, 64) == RET_OK)
+	Dev_open( DEVID_UART2, ( void *)&I_uart2);
+	
+	if( I_uart2->test(appBuf, 64) == RET_OK)
 	{
 		sprintf( appBuf, "succeed!");
 		
@@ -166,10 +128,11 @@ int main (void) {
 		sprintf( appBuf, "failed!");
 	}
 	
-//	LCD_clear();
+	
+	
+	
 	LCD_write_english_string((LCD_WIDTH_PIXELS - strlen(SIM_LOGO) *6)/2,23, appBuf);
-	
-	
+#endif	
   // create 'thread' functions that start executing,
   // example: tid_name = osThreadCreate (osThread(name), NULL);
 

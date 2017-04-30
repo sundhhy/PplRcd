@@ -21,6 +21,7 @@
 .\objects\drive_uart.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
 .\objects\drive_uart.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
 .\objects\drive_uart.o: E:\mylib\sdhLib\inc\mem/Ping_PongBuf.h
+.\objects\drive_uart.o: .\device\dev_cmd.h
 .\objects\drive_uart.o: .\configs\hardwareConfig.h
 .\objects\drive_uart.o: E:\mylib\sdhLib\inc\basis/sdhError.h
 .\objects\drive_uart.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdarg.h

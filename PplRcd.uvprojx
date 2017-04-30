@@ -365,7 +365,7 @@
               <MiscControls></MiscControls>
               <Define>USE_STDPERIPH_DRIVER, STM32F10X_MD, USE_STM3210B_EVAL,HSE_VALUE=12000000</Define>
               <Undefine></Undefine>
-              <IncludePath>.\configs;.\BSP;E:\mylib\sdhLib\inc;.\drive\LCD\nokia_5110;..\PplRcd;.\drive\uart</IncludePath>
+              <IncludePath>.\configs;.\BSP;E:\mylib\sdhLib\inc;.\drive\LCD\nokia_5110;..\PplRcd;.\drive\uart;.\device</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -417,6 +417,11 @@
               <FileName>Semaphore.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\Semaphore.c</FilePath>
+            </File>
+            <File>
+              <FileName>TDD.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\TDD.h</FilePath>
             </File>
           </Files>
         </Group>
@@ -508,6 +513,11 @@
               <FileType>5</FileType>
               <FilePath>E:\mylib\sdhLib\inc\basis\sdhError.h</FilePath>
             </File>
+            <File>
+              <FileName>lw_oopc.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>E:\mylib\sdhLib\inc\lw_oopc.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -546,7 +556,7 @@
           </Files>
         </Group>
         <Group>
-          <GroupName>drive_uart</GroupName>
+          <GroupName>drive</GroupName>
           <Files>
             <File>
               <FileName>drive_uart.c</FileName>
@@ -557,6 +567,66 @@
               <FileName>drive_uart.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\drive\uart\drive_uart.h</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>dri_LCD_UsartGpu</GroupName>
+          <Files>
+            <File>
+              <FileName>drive_LCD_UsartGpu.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\drive\LCD\UsartGpu\drive_LCD_UsartGpu.c</FilePath>
+            </File>
+            <File>
+              <FileName>drive_LCD_UsartGpu.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\drive\LCD\UsartGpu\drive_LCD_UsartGpu.h</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>device</GroupName>
+          <Files>
+            <File>
+              <FileName>device.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\device\device.h</FilePath>
+            </File>
+            <File>
+              <FileName>device.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\device\device.c</FilePath>
+            </File>
+            <File>
+              <FileName>dev_char.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\device\dev_char.c</FilePath>
+            </File>
+            <File>
+              <FileName>dev_char.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\device\dev_char.h</FilePath>
+            </File>
+            <File>
+              <FileName>deviceId.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\device\deviceId.h</FilePath>
+            </File>
+            <File>
+              <FileName>dev_uart2.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\device\dev_uart2\dev_uart2.h</FilePath>
+            </File>
+            <File>
+              <FileName>dev_uart2.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\device\dev_uart2\dev_uart2.c</FilePath>
+            </File>
+            <File>
+              <FileName>dev_cmd.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\device\dev_cmd.h</FilePath>
             </File>
           </Files>
         </Group>
