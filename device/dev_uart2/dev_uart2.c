@@ -79,6 +79,7 @@ int Dev_Uart2_close( void)
 	driUart2->deInit( driUart2);	
 	osSemaphoreDelete( sid_Uart2TxSem);
 	osSemaphoreDelete( sid_Uart2RxSem);
+	lw_oopc_delete( driUart2);
 	return RET_OK; 
 }
 

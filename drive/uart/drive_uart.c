@@ -159,6 +159,7 @@ static int UartWrite( driveUart *self, void *buf, int wrLen)
 		
 		if ( ret > 0) 
 		{
+			while( USART_GetFlagStatus( self->devUart, USART_FLAG_TXE) == RESET){};
 			return ERR_OK;
 		}
 		

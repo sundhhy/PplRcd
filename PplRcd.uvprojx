@@ -365,7 +365,7 @@
               <MiscControls></MiscControls>
               <Define>USE_STDPERIPH_DRIVER, STM32F10X_MD, USE_STM3210B_EVAL,HSE_VALUE=12000000</Define>
               <Undefine></Undefine>
-              <IncludePath>.\configs;.\BSP;E:\mylib\sdhLib\inc;.\drive\LCD\nokia_5110;..\PplRcd;.\drive\uart;.\device</IncludePath>
+              <IncludePath>.\configs;.\BSP;E:\mylib\sdhLib\inc;.\device\dev_LCD\nokia_5110;..\PplRcd;.\drive\uart;.\device;.\Glyph</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -521,37 +521,22 @@
           </Files>
         </Group>
         <Group>
-          <GroupName>dev_LcdNokia5110</GroupName>
+          <GroupName>dev_LCD</GroupName>
           <Files>
             <File>
               <FileName>nokia_5110.c</FileName>
               <FileType>1</FileType>
-              <FilePath>.\drive\LCD\nokia_5110\nokia_5110.c</FilePath>
+              <FilePath>.\device\dev_LCD\nokia_5110\nokia_5110.c</FilePath>
             </File>
             <File>
-              <FileName>bmp_pixel.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\drive\LCD\nokia_5110\bmp_pixel.h</FilePath>
+              <FileName>dev_LcdUsartGpu.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\device\dev_LCD\UsartGpu\dev_LcdUsartGpu.c</FilePath>
             </File>
             <File>
-              <FileName>english_6x8_pixel.h</FileName>
+              <FileName>dev_LcdUsartGpu.h</FileName>
               <FileType>5</FileType>
-              <FilePath>.\drive\LCD\nokia_5110\english_6x8_pixel.h</FilePath>
-            </File>
-            <File>
-              <FileName>move_chinese_string_pixel.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\drive\LCD\nokia_5110\move_chinese_string_pixel.h</FilePath>
-            </File>
-            <File>
-              <FileName>nokia_5110.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\drive\LCD\nokia_5110\nokia_5110.h</FilePath>
-            </File>
-            <File>
-              <FileName>write_chinese_string_pixel.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\drive\LCD\nokia_5110\write_chinese_string_pixel.h</FilePath>
+              <FilePath>.\device\dev_LCD\UsartGpu\dev_LcdUsartGpu.h</FilePath>
             </File>
           </Files>
         </Group>
@@ -567,21 +552,6 @@
               <FileName>drive_uart.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\drive\uart\drive_uart.h</FilePath>
-            </File>
-          </Files>
-        </Group>
-        <Group>
-          <GroupName>dri_LCD_UsartGpu</GroupName>
-          <Files>
-            <File>
-              <FileName>drive_LCD_UsartGpu.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\drive\LCD\UsartGpu\drive_LCD_UsartGpu.c</FilePath>
-            </File>
-            <File>
-              <FileName>drive_LCD_UsartGpu.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\drive\LCD\UsartGpu\drive_LCD_UsartGpu.h</FilePath>
             </File>
           </Files>
         </Group>
@@ -614,6 +584,26 @@
               <FilePath>.\device\deviceId.h</FilePath>
             </File>
             <File>
+              <FileName>dev_cmd.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\device\dev_cmd.h</FilePath>
+            </File>
+            <File>
+              <FileName>dev_lcd.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\device\dev_lcd.c</FilePath>
+            </File>
+            <File>
+              <FileName>dev_lcd.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\device\dev_lcd.h</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>dev_uart</GroupName>
+          <Files>
+            <File>
               <FileName>dev_uart2.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\device\dev_uart2\dev_uart2.h</FilePath>
@@ -623,10 +613,75 @@
               <FileType>1</FileType>
               <FilePath>.\device\dev_uart2\dev_uart2.c</FilePath>
             </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Glyph</GroupName>
+          <Files>
             <File>
-              <FileName>dev_cmd.h</FileName>
+              <FileName>glyph.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Glyph\glyph.c</FilePath>
+            </File>
+            <File>
+              <FileName>testGlyph.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Glyph\testGlyph.c</FilePath>
+            </File>
+            <File>
+              <FileName>glyph.h</FileName>
               <FileType>5</FileType>
-              <FilePath>.\device\dev_cmd.h</FilePath>
+              <FilePath>.\Glyph\glyph.h</FilePath>
+            </File>
+            <File>
+              <FileName>testGlyph.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Glyph\testGlyph.h</FilePath>
+            </File>
+            <File>
+              <FileName>Gh_txt.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Glyph\Gh_txt.c</FilePath>
+            </File>
+            <File>
+              <FileName>Gh_txt.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Glyph\Gh_txt.h</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>MVC</GroupName>
+          <Files>
+            <File>
+              <FileName>Model.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\MVC\Model.c</FilePath>
+            </File>
+            <File>
+              <FileName>Model.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\MVC\Model.h</FilePath>
+            </File>
+            <File>
+              <FileName>Controller.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\MVC\Controller.c</FilePath>
+            </File>
+            <File>
+              <FileName>Controller.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\MVC\Controller.h</FilePath>
+            </File>
+            <File>
+              <FileName>View.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\MVC\View.c</FilePath>
+            </File>
+            <File>
+              <FileName>View.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\MVC\View.h</FilePath>
             </File>
           </Files>
         </Group>

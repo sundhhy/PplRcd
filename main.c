@@ -19,6 +19,7 @@
 #include "device.h"
 
 #include "TDD.h"
+#include "glyph.h"
 
 //系统版本号
 //主板本号自己制定
@@ -26,7 +27,26 @@
 short  g_majorVer = 1;		
 short  g_childVer;
 
+#ifdef  USE_FULL_ASSERT
 
+/**
+  * @brief  Reports the name of the source file and the source line number
+  *         where the assert_param error has occurred.
+  * @param  file: pointer to the source file name
+  * @param  line: assert_param error line source number
+  * @retval None
+  */
+void assert_failed(uint8_t* file, uint32_t line)
+{
+  /* User can add his own implementation to report the file name and line number,
+     ex: printf("Wrong parameters value: file %s on line %d\r\n", file, line) */
+
+  /* Infinite loop */
+  while (1)
+  {
+  }
+}
+#endif
 
 
 #ifdef __GNUC__
@@ -108,6 +128,15 @@ int main (void) {
     LCD_clear();
 	sprintf( appBuf, "VER : %x %x", g_majorVer, g_childVer);
 	LCD_write_english_string((LCD_WIDTH_PIXELS - strlen(SIM_LOGO) *6)/2,2, appBuf);
+	
+	
+	
+#if TDD_LCD == 1
+
+	View_init();
+	View_test();
+
+#endif
 	
 #if TDD_DEV_UART2 == 1	
 	

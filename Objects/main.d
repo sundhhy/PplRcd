@@ -27,7 +27,7 @@
 .\objects\main.o: .\BSP\intrInit.h
 .\objects\main.o: E:\mylib\sdhLib\inc\basis/marco.h
 .\objects\main.o: E:\mylib\sdhLib\inc\basis/sdhError.h
-.\objects\main.o: .\drive\LCD\nokia_5110\nokia_5110.h
+.\objects\main.o: .\device\dev_LCD\nokia_5110\nokia_5110.h
 .\objects\main.o: .\device\device.h
 .\objects\main.o: .\device\deviceId.h
 .\objects\main.o: .\device\dev_cmd.h
@@ -35,4 +35,6 @@
 .\objects\main.o: E:\mylib\sdhLib\inc\lw_oopc.h
 .\objects\main.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
 .\objects\main.o: .\device\dev_uart2/dev_uart2.h
+.\objects\main.o: .\device\dev_lcd.h
 .\objects\main.o: TDD.h
+.\objects\main.o: .\Glyph\glyph.h

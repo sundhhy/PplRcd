@@ -1,0 +1,9 @@
+.\objects\testview.o: views\testView.c
+.\objects\testview.o: views\testView.h
+.\objects\testview.o: .\device\dev_LCD/UsartGpu/dev_LcdUsartGpu.h
+.\objects\testview.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+.\objects\testview.o: E:\mylib\sdhLib\inc\lw_oopc.h
+.\objects\testview.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
+.\objects\testview.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
+.\objects\testview.o: d:\Keil_v5\ARM\PACK\ARM\CMSIS\4.4.0\CMSIS\RTOS\RTX\INC\cmsis_os.h
+.\objects\testview.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
