@@ -17,9 +17,9 @@ int DevChar_open( int major, int minor, void **dev)
 			if( minor == 1)
 			{
 //				pdev = ( I_dev_Char*)*dev;
-				pdev = (I_dev_Char	*)Dev_Uart2_new();
-				pdev->open();
-				*dev = pdev;
+//				pdev = (I_dev_Char	*)Dev_Uart2_new();
+//				pdev->open();
+				*dev = Get_DevUart2();
 			}
 			else
 			{

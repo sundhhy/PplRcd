@@ -6,6 +6,11 @@
 CLASS(GhTxt)
 {
 	EXTENDS( Glyph);
+	char *txt;
+	int   len;
 	
 };
+
+
+GhTxt *Get_GhTxt(void);
 #endif

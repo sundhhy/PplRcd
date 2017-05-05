@@ -133,7 +133,6 @@ int main (void) {
 	
 #if TDD_LCD == 1
 
-	View_init();
 	View_test();
 
 #endif

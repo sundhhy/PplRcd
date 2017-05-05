@@ -14,4 +14,5 @@ CLASS( Dev_Uart2)
 
 int Dev_Uart2_init( void);
 
+Dev_Uart2 *Get_DevUart2(void);
 #endif

@@ -14,7 +14,7 @@ static char	lcdBuf[128];
 I_dev_Char *I_sendDev;
 static int ClearLcd( void);
 static int Dev_UsartdeInit( void);
-static int GpuWrString( char *string, int x, int y, int font, int c);
+static int GpuWrString( char *string,  int len, int x, int y, int font, int c);
 
 I_dev_lcd g_IUsartGpu =
 {
@@ -46,7 +46,7 @@ static int ClearLcd( void)
 	return RET_OK;
 }
 
-static int GpuWrString( char *string, int x, int y, int font, int c)
+static int GpuWrString( char *string, int len, int x, int y, int font, int c)
 {
 	
 	char colour[8];
@@ -85,7 +85,7 @@ static int GpuWrString( char *string, int x, int y, int font, int c)
 //	GpuSend(lcdBuf);
 	
 	sprintf(colour, "',%d);\r\n",c);
-	strcat( lcdBuf,string);
+	strncat( lcdBuf,string, len);
 	strcat( lcdBuf,colour);
 	GpuSend(lcdBuf);
 	osDelay(20);

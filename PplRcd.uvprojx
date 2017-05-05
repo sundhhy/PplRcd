@@ -365,7 +365,7 @@
               <MiscControls></MiscControls>
               <Define>USE_STDPERIPH_DRIVER, STM32F10X_MD, USE_STM3210B_EVAL,HSE_VALUE=12000000</Define>
               <Undefine></Undefine>
-              <IncludePath>.\configs;.\BSP;E:\mylib\sdhLib\inc;.\device\dev_LCD\nokia_5110;..\PplRcd;.\drive\uart;.\device;.\Glyph</IncludePath>
+              <IncludePath>.\configs;.\BSP;E:\mylib\sdhLib\inc;.\device\dev_LCD\nokia_5110;..\PplRcd;.\drive\uart;.\device;.\Glyph;.\Expression</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -517,6 +517,26 @@
               <FileName>lw_oopc.h</FileName>
               <FileType>5</FileType>
               <FilePath>E:\mylib\sdhLib\inc\lw_oopc.h</FilePath>
+            </File>
+            <File>
+              <FileName>except.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>E:\mylib\sdhLib\src\basis\except.c</FilePath>
+            </File>
+            <File>
+              <FileName>mem.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>E:\mylib\sdhLib\src\mem\mem.c</FilePath>
+            </File>
+            <File>
+              <FileName>list.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>E:\mylib\sdhLib\src\arithmetic\list.c</FilePath>
+            </File>
+            <File>
+              <FileName>assert.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>E:\mylib\sdhLib\src\basis\assert.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -682,6 +702,51 @@
               <FileName>View.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\MVC\View.h</FilePath>
+            </File>
+            <File>
+              <FileName>testView.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\MVC\testView.c</FilePath>
+            </File>
+            <File>
+              <FileName>testView.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\MVC\testView.h</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>expression</GroupName>
+          <Files>
+            <File>
+              <FileName>expression.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Expression\expression.c</FilePath>
+            </File>
+            <File>
+              <FileName>NonTerminalExp .c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Expression\NonTerminalExp .c</FilePath>
+            </File>
+            <File>
+              <FileName>expression.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Expression\expression.h</FilePath>
+            </File>
+            <File>
+              <FileName>NonTerminalExp.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Expression\NonTerminalExp.h</FilePath>
+            </File>
+            <File>
+              <FileName>TxtExpr.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Expression\TxtExpr.h</FilePath>
+            </File>
+            <File>
+              <FileName>TxtExpr.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Expression\TxtExpr.c</FilePath>
             </File>
           </Files>
         </Group>

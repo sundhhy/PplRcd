@@ -17,14 +17,25 @@ static void Uart2PostRxSem(void);
 static void Uart2LedRxHdl(void );
 static void Uart2LedTxHdl(void );
 static driveUart	*driUart2;
-
+static Dev_Uart2 *devUart2;
 osSemaphoreId sid_Uart2RxSem;                             // semaphore id
 osSemaphoreDef(driUart2RxSemaphore);                               // semaphore object
 osSemaphoreId sid_Uart2TxSem;                             // semaphore id
 osSemaphoreDef(driUart2TxSemaphore);                               // semaphore object
 
 
-
+Dev_Uart2 *Get_DevUart2(void)
+{
+	I_dev_Char *devChar;
+	if( driUart2 == NULL)
+	{
+		devUart2 = Dev_Uart2_new();
+		devChar = ( I_dev_Char *)devUart2;
+		devChar->open();
+		
+	}
+	return devUart2;
+}
 
 int Dev_Uart2_open( void)
 {
@@ -80,6 +91,7 @@ int Dev_Uart2_close( void)
 	osSemaphoreDelete( sid_Uart2TxSem);
 	osSemaphoreDelete( sid_Uart2RxSem);
 	lw_oopc_delete( driUart2);
+	driUart2 = NULL;
 	return RET_OK; 
 }
 

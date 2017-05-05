@@ -3,6 +3,9 @@
 #include "stdint.h"
 #include "lw_oopc.h"
 #include "glyph.h"
+#include "arithmetic/list.h"
+#include "View.h"
+#include "expression.h"
 
 ABS_CLASS( View)
 {
@@ -10,8 +13,9 @@ ABS_CLASS( View)
 	void*		myController;
 	
 	
-	int		(*draw)( View *self, void *arg);
-}
+	int		(*show)( View *self, void *arg);
+	
+};
 
 
 #endif
