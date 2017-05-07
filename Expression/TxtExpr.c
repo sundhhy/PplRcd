@@ -34,13 +34,12 @@ static int TxtInterpret( Expr *self, void *context)
 	while( *pp != '>')
 		pp ++;
 	pp ++;
-	mytxt->txt = pp;
 	while( pp[len] != '<')
 	{
 			len ++;
 	}
-	mytxt->len = len;
 	
+	myGp->insert( myGp, pp, len);
 	
 	if( strcmp( self->variable, "h1") == 0)
 	{
@@ -54,7 +53,8 @@ static int TxtInterpret( Expr *self, void *context)
 	{
 		myGp->setFont( myGp, FONT_24);
 	}
-	myGp->draw( myGp, 0, 0);
+	myGp->draw( myGp, 0, 0,3);
+//	myGp->flush( myGp, 0, 0);
 	return RET_OK;
 }
 

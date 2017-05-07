@@ -12,4 +12,10 @@
 .\objects\txtexpr.o: .\device\dev_lcd.h
 .\objects\txtexpr.o: .\Glyph\Gh_txt.h
 .\objects\txtexpr.o: .\Glyph\Glyph.h
+.\objects\txtexpr.o: .\device\device.h
+.\objects\txtexpr.o: .\device\deviceId.h
+.\objects\txtexpr.o: .\device\dev_cmd.h
+.\objects\txtexpr.o: .\device\dev_char.h
+.\objects\txtexpr.o: .\device\dev_uart2/dev_uart2.h
+.\objects\txtexpr.o: E:\mylib\sdhLib\inc\arithmetic/cycQueue.h
 .\objects\txtexpr.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h

@@ -2,7 +2,10 @@
 #define __GLYPH_H_
 #include "lw_oopc.h"
 #include <stdint.h>
-#include "dev_lcd.h"
+#include "device.h"
+
+#define LCD_DEVID		DEVID_USARTGPULCD
+
 ABS_CLASS( Glyph)
 {
 	
@@ -13,7 +16,10 @@ ABS_CLASS( Glyph)
 	int (*setFont)( Glyph *self, int font);
 	int (*setClu)( Glyph *self, int c);
 	//abs func
-	abstract void (*draw)( Glyph *self, int x, int y);
+	abstract void (*insert)( Glyph *self, void *context, int len);
+	abstract void (*draw)( Glyph *self, int x, int y, int len);
+	abstract void (*flush)( Glyph *self, int x, int y);
+	
 	
 };
 void View_test(void);
