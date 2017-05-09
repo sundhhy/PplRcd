@@ -53,7 +53,8 @@ static int TxtInterpret( Expr *self, void *context)
 	{
 		myGp->setFont( myGp, FONT_24);
 	}
-	myGp->draw( myGp, 0, 0,3);
+	self->ction->insert( self->ction, myGp);
+//	myGp->draw( myGp, 0, 0,3);
 //	myGp->flush( myGp, 0, 0);
 	return RET_OK;
 }

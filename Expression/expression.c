@@ -17,10 +17,15 @@ static void SetVar( Expr *self, char *variable)
 		
 	strcpy( self->variable, variable);
 }
+static void SetCtion( Expr *self, Composition *ct)
+{
+	self->ction = ct;
+	
+}
 
 ABS_CTOR( Expr)
 FUNCTION_SETTING( setVar, SetVar);
-
+FUNCTION_SETTING( setCtion, SetCtion);
 
 END_ABS_CTOR
 

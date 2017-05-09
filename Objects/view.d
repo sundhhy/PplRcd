@@ -15,3 +15,4 @@
 .\objects\view.o: E:\mylib\sdhLib\inc\arithmetic/list.h
 .\objects\view.o: MVC\View.h
 .\objects\view.o: .\Expression\expression.h
+.\objects\view.o: .\Views\Composition.h

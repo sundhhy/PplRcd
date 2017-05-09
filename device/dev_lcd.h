@@ -31,8 +31,7 @@ typedef struct{
 	int ( *close)( void);
 	int ( *Clear)( void);
 	int ( *wrString)( char *string,  int len, int x, int y, int font, int c);
-	
-	
+	int ( *getStrSize)( int font, uint16_t *width, uint16_t *heigh);
 }I_dev_lcd;
 
 int DevLCD_open( int major, int minor, void **dev);

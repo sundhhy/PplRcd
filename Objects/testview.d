@@ -16,4 +16,6 @@
 .\objects\testview.o: E:\mylib\sdhLib\inc\arithmetic/list.h
 .\objects\testview.o: MVC\View.h
 .\objects\testview.o: .\Expression\expression.h
+.\objects\testview.o: .\Views\Composition.h
 .\objects\testview.o: .\Expression\TxtExpr.h
+.\objects\testview.o: .\Views\Compositor.h

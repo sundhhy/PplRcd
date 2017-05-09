@@ -4,4 +4,13 @@
 .\objects\expression.o: E:\mylib\sdhLib\inc\lw_oopc.h
 .\objects\expression.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
 .\objects\expression.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
+.\objects\expression.o: .\Views\Composition.h
+.\objects\expression.o: .\Glyph\Glyph.h
+.\objects\expression.o: .\device\device.h
+.\objects\expression.o: .\device\deviceId.h
+.\objects\expression.o: .\device\dev_cmd.h
+.\objects\expression.o: .\device\dev_char.h
+.\objects\expression.o: .\device\dev_uart2/dev_uart2.h
+.\objects\expression.o: E:\mylib\sdhLib\inc\basis/sdhError.h
+.\objects\expression.o: .\device\dev_lcd.h
 .\objects\expression.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h

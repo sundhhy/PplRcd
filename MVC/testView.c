@@ -1,9 +1,11 @@
 #include "testView.h"
 #include "TxtExpr.h"
+#include "Composition.h"
+#include "Compositor.h"
 
  
 static const char testContext[] = \
-" <body> <h3>疯狂Java讲义</h3> </body>";
+" <body> <h2>白日Java千里</h2> </body>";
 
 
 
@@ -11,8 +13,14 @@ void View_test(void)
 {
 //	TestViewShow();
 	char *pp;
+	
+	Composition *ct = Get_Composition();
+	Compositor *ctor = (Compositor *)Get_SimpCtor();
 	Expr *myexp = (Expr* )GetTxtExpr();
-	myexp->setVar( myexp, "h3");		//跟据Context中的变量来设置
+	ct->setCtor( ct, ctor);
+	ct->clean( ct);
+	myexp->setCtion( myexp, ct);
+	myexp->setVar( myexp, "h2");		//跟据Context中的变量来设置
 	myexp->interpret( myexp, (void *)testContext);
 	
 }

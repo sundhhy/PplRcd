@@ -5,3 +5,12 @@
 .\objects\resolver.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
 .\objects\resolver.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
 .\objects\resolver.o: Expression\expression.h
+.\objects\resolver.o: .\Views\Composition.h
+.\objects\resolver.o: .\Glyph\Glyph.h
+.\objects\resolver.o: .\device\device.h
+.\objects\resolver.o: .\device\deviceId.h
+.\objects\resolver.o: .\device\dev_cmd.h
+.\objects\resolver.o: .\device\dev_char.h
+.\objects\resolver.o: .\device\dev_uart2/dev_uart2.h
+.\objects\resolver.o: E:\mylib\sdhLib\inc\basis/sdhError.h
+.\objects\resolver.o: .\device\dev_lcd.h
