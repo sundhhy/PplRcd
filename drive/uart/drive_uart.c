@@ -452,7 +452,103 @@ void UartDma_Init( driveUart *self)
 
 }
 
+//中断处理程序根据资源与串口的绑定情况来选择设备
+void DMA1_Channel4_IRQHandler(void)
+{
+	driveUart	*thisDev = devArry[0];
+	CfgUart_t *myCfg = ( CfgUart_t *)thisDev->cfg;
+    if(DMA_GetITStatus(DMA1_FLAG_TC4))
+    {
+			
+			DMA_ClearFlag( myCfg->dma->dma_tx_flag);         // 清除标志
+			DMA_Cmd( myCfg->dma->dma_tx_base, DISABLE);   // 关闭DMA通道
+			if( thisDev->txPost)
+				thisDev->txPost();
+		
+    }
+}
 
+//dma将缓存填满以后,切换接收缓存
+//DMA接收中断
+void DMA1_Channel5_IRQHandler(void)
+{
+	short rxbuflen;
+	char *rxbuf;
+	driveUart	*thisDev = devArry[0];
+	CfgUart_t *myCfg = ( CfgUart_t *)thisDev->cfg;
+	
+	
+    if(DMA_GetITStatus(DMA1_FLAG_TC5))
+    {
+		DMA_Cmd( myCfg->dma->dma_rx_base, DISABLE); 
+        DMA_ClearFlag( myCfg->dma->dma_rx_flag);         // 清除标志
+		thisDev->ctl.recv_size = get_loadbuflen( &thisDev->ctl.pingpong)  - \
+		DMA_GetCurrDataCounter(  myCfg->dma->dma_rx_base); //获得接收到的字节
+		
+		switch_receivebuf( &thisDev->ctl.pingpong, &rxbuf, &rxbuflen);
+		myCfg->dma->dma_rx_base->CMAR = (uint32_t)rxbuf;
+		myCfg->dma->dma_rx_base->CNDTR = rxbuflen;
+		DMA_Cmd(  myCfg->dma->dma_rx_base, ENABLE);
+		if( thisDev->rxLedHdl)
+			thisDev->rxLedHdl();
+		if( thisDev->rxPost)
+			thisDev->rxPost();
+    }
+}
+
+void USART1_IRQHandler(void)
+{
+	uint8_t clear_idle = clear_idle;
+	short rxbuflen;
+	char *rxbuf;
+	driveUart	*thisDev = devArry[0];
+	CfgUart_t *myCfg = ( CfgUart_t *)thisDev->cfg;
+	USART_TypeDef *devUart = ( USART_TypeDef *)thisDev->devUart;
+	if(USART_GetITStatus(USART1, USART_IT_IDLE) != RESET)  // 空闲中断
+	{
+		
+		DMA_Cmd( myCfg->dma->dma_rx_base, DISABLE);       // 关闭DMA
+		DMA_ClearFlag(  myCfg->dma->dma_rx_flag );           // 清除DMA标志
+		thisDev->ctl.recv_size = get_loadbuflen( &thisDev->ctl.pingpong)  - \
+		DMA_GetCurrDataCounter(  myCfg->dma->dma_rx_base); //获得接收到的字节
+//		S485_uart_ctl.recv_size = S485_UART_BUF_LEN - DMA_GetCurrDataCounter(DMA_s485_usart.dma_rx_base); //获得接收到的字节
+		
+		switch_receivebuf( &thisDev->ctl.pingpong, &rxbuf, &rxbuflen);
+		myCfg->dma->dma_rx_base->CMAR = (uint32_t)rxbuf;
+		myCfg->dma->dma_rx_base->CNDTR = rxbuflen;
+		DMA_Cmd(  myCfg->dma->dma_rx_base, ENABLE);
+		
+		clear_idle = devUart->SR;
+		clear_idle = devUart->DR;
+		USART_ReceiveData( USART1 ); // Clear IDLE interrupt flag bit
+		if( thisDev->rxLedHdl)
+			thisDev->rxLedHdl();
+		if( thisDev->rxPost)
+			thisDev->rxPost();
+	}
+#if SER485_SENDMODE == SENDMODE_INTR	
+	if(USART_GetITStatus(USART1, USART_IT_TXE) == SET)  // 发送中断
+	{
+		thisDev->ctl.sendingCount ++;
+			
+	
+		//发送完成后关闭发展中断，避免发送寄存器空了就会产生中断
+		if( thisDev->ctl.sendingCount >= thisDev->ctl.sendingLen)
+		{
+			USART_ITConfig(USART1, USART_IT_TXE, DISABLE);
+			if( thisDev->txPost)
+				thisDev->txPost();
+		}			
+		else
+			USART_SendData(USART1, thisDev->ctl.intrSendingBuf[ thisDev->ctl.sendingCount] );
+		
+		
+		
+	}
+	
+#endif
+
+}
 
 
 //中断处理程序根据资源与串口的绑定情况来选择设备
@@ -551,6 +647,9 @@ void USART2_IRQHandler(void)
 #endif
 
 }
+
+
+
 
 CTOR( driveUart)
 FUNCTION_SETTING( init, UartInit);

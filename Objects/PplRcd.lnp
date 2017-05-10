@@ -19,6 +19,7 @@
 ".\objects\dev_char.o"
 ".\objects\dev_lcd.o"
 ".\objects\dev_uart2.o"
+".\objects\dev_uart1.o"
 ".\objects\glyph.o"
 ".\objects\testglyph.o"
 ".\objects\gh_txt.o"
@@ -40,7 +41,7 @@
 ".\objects\stm32f10x_gpio.o"
 ".\objects\stm32f10x_rcc.o"
 ".\objects\stm32f10x_usart.o"
-".\objects\startup_stm32f10x_md.o"
+".\objects\startup_stm32f10x_hd.o"
 ".\objects\system_stm32f10x.o"
 --library_type=microlib --strict --scatter ".\Objects\PplRcd.sct"
 --summary_stderr --info summarysizes --map --xref --callgraph --symbols

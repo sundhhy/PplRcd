@@ -49,7 +49,11 @@ void NVIC_Configuration(void)
 
 /* Enable the DMA Interrupt */
 
-
+	NVIC_InitStructure.NVIC_IRQChannel = g_confUart1.dma->dma_tx_irq;   // 发送DMA配置
+    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1;     // 优先级配置
+    NVIC_InitStructure.NVIC_IRQChannelSubPriority = 1;
+    NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+    NVIC_Init(&NVIC_InitStructure);
 
 	NVIC_InitStructure.NVIC_IRQChannel = g_confUart2.dma->dma_tx_irq;   // 发送DMA配置
     NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1;     // 优先级配置

@@ -21,6 +21,8 @@
 #include "TDD.h"
 #include "glyph.h"
 
+
+#define LCD_NOKIE		0
 //系统版本号
 //主板本号自己制定
 //系统编译时的月份和日作为子版本
@@ -124,12 +126,13 @@ int main (void) {
 	printf("\r\n ############("__DATE__ " - " __TIME__ ")############");
 	printf("\n sytem ver : %x %x \n", g_majorVer, g_childVer);
 	
+#if LCD_NOKIA == 1
 	LCD_init();
     LCD_clear();
 	sprintf( appBuf, "VER : %x %x", g_majorVer, g_childVer);
 	LCD_write_english_string((LCD_WIDTH_PIXELS - strlen(SIM_LOGO) *6)/2,2, appBuf);
 	
-	
+#endif	
 	
 #if TDD_LCD == 1
 
@@ -139,11 +142,11 @@ int main (void) {
 	
 #if TDD_DEV_UART2 == 1	
 	
-	
+#if LCD_NOKIA == 1
 	sprintf( appBuf, "uart 2 testing ...");
 	LCD_clear();
 	LCD_write_english_string((LCD_WIDTH_PIXELS - strlen(SIM_LOGO) *6)/2,1, appBuf);
-	
+#	endif	
 	Dev_open( DEVID_UART2, ( void *)&I_uart2);
 	
 	if( I_uart2->test(appBuf, 64) == RET_OK)
@@ -158,8 +161,9 @@ int main (void) {
 	
 	
 	
-	
+#if LCD_NOKIA == 1
 	LCD_write_english_string((LCD_WIDTH_PIXELS - strlen(SIM_LOGO) *6)/2,23, appBuf);
+#	endif
 #endif	
   // create 'thread' functions that start executing,
   // example: tid_name = osThreadCreate (osThread(name), NULL);

@@ -13,10 +13,12 @@ void Pin_init(void)
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
     GPIO_Init( GPIO_PORT_UART1TX, &GPIO_InitStructure);
+	GPIO_PinRemapConfig(GPIO_Remap_USART1,ENABLE);
 
     GPIO_InitStructure.GPIO_Pin = GPIO_PIN_UART1RX;                   //rx
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
     GPIO_Init( GPIO_PORT_UART1RX, &GPIO_InitStructure);
+	GPIO_PinRemapConfig(GPIO_Remap_USART1,ENABLE);
 	
 	GPIO_InitStructure.GPIO_Pin = GPIO_PIN_UART2TX;        //tx
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;

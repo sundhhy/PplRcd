@@ -30,7 +30,7 @@ I_dev_lcd g_IUsartGpu =
 int Dev_UsartInit( void)
 {
 	
-	return Dev_open( DEVID_UART2, ( void *)&I_sendDev);
+	return Dev_open( DEVID_UART1, ( void *)&I_sendDev);
 	
 }
 
@@ -119,7 +119,7 @@ static int GpuStrSize( int font, uint16_t	*width, uint16_t	*heigh)
 			y = 32;
 			break;
 		case FONT_48:
-			x = 48;
+			x = 24;
 			y = 48;
 			break;
 		case FONT_64:

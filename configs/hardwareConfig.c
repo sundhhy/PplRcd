@@ -44,11 +44,40 @@ USART_InitTypeDef g_Cfg_Uart2 = {
 };
 
 
+
+
 CfgUart_t g_confUart2 = {
 	1,
 	&g_Cfg_Uart2,
 	&g_DmaUart2
 };
+
+Dma_source g_DmaUart1 = {
+	DMA1_Channel5,
+	DMA1_FLAG_GL5,
+	DMA1_Channel5_IRQn,
+	
+	DMA1_Channel4,
+	DMA1_FLAG_GL4,
+	DMA1_Channel4_IRQn,
+	
+};
+
+USART_InitTypeDef g_Cfg_Uart1 = {
+		115200,
+		USART_WordLength_8b,
+		USART_StopBits_1,
+		USART_Parity_No,
+		USART_Mode_Rx | USART_Mode_Tx,
+		USART_HardwareFlowControl_None,
+};
+
+CfgUart_t g_confUart1 = {
+	0,
+	&g_Cfg_Uart1,
+	&g_DmaUart1
+};
+
 //USART_InitTypeDef Conf_GprsUsart = {
 //		115200,
 //		USART_WordLength_8b,

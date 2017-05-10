@@ -34,9 +34,10 @@ static int Simp_Compose( Composition *ction, Glyph *gh)
 	while( num)
 	{
 		//检查是否会从宽度上超出屏幕
-		while( ( ction->x + num * ction->ghWidth )> ction->lcdWidth)
+		while( 1)
 		{
-			
+			if( ( ction->x + num * ction->ghWidth ) <= ction->lcdWidth )
+				break;
 			if( num > 2)
 				num -= 2;
 			else 

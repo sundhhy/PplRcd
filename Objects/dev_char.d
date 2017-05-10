@@ -7,6 +7,7 @@
 .\objects\dev_char.o: device\deviceId.h
 .\objects\dev_char.o: device\dev_uart2/dev_uart2.h
 .\objects\dev_char.o: E:\mylib\sdhLib\inc\basis/sdhError.h
+.\objects\dev_char.o: device\dev_uart1/dev_uart1.h
 .\objects\dev_char.o: E:\mylib\sdhLib\inc\basis/sdhDebug.h
 .\objects\dev_char.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
 .\objects\dev_char.o: E:\mylib\sdhLib\inc\sdhDef.h

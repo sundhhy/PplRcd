@@ -2,7 +2,7 @@
 #define __HARDWARECONFIG_H__
 #include "stm32f10x_gpio.h"
 #include "stm32f10x_usart.h"
-#define	DEBUG_COM			1
+#define	DEBUG_COM			2
 #if DEBUG_COM == 1
 #define DEBUG_USART	USART1
 #elif DEBUG_COM == 2
@@ -12,13 +12,13 @@
 #endif
 
 //各种外设的引脚配置
-#define RCC_UART1_TX                                    RCC_APB2Periph_GPIOA		 
-#define GPIO_PORT_UART1TX                               GPIOA    					 
-#define GPIO_PIN_UART1TX                                GPIO_Pin_9					 
+#define RCC_UART1_TX                                    RCC_APB2Periph_GPIOB		 
+#define GPIO_PORT_UART1TX                               GPIOB    					 
+#define GPIO_PIN_UART1TX                                GPIO_Pin_6					 
 
-#define RCC_UART1_RX                                    RCC_APB2Periph_GPIOA		 
-#define GPIO_PORT_UART1RX                               GPIOA    					 
-#define GPIO_PIN_UART1RX                                GPIO_Pin_10	
+#define RCC_UART1_RX                                    RCC_APB2Periph_GPIOB		 
+#define GPIO_PORT_UART1RX                               GPIOB    					 
+#define GPIO_PIN_UART1RX                                GPIO_Pin_7	
 
 #define RCC_UART2_TX                                    RCC_APB2Periph_GPIOA		 
 #define GPIO_PORT_UART2TX                               GPIOA    					 
@@ -65,7 +65,7 @@ typedef struct {
 }CfgUart_t;
 
 
-extern CfgUart_t g_confUart2;
+extern CfgUart_t g_confUart2, g_confUart1;
 //typedef struct 
 //{
 //	GPIO_TypeDef	*Port;

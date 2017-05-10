@@ -5,7 +5,7 @@
 
  
 static const char testContext[] = \
-" <body> <h2>°×ÈÕJavaÇ§Àï</h2> </body>";
+" <body> <h2>screen char test!</h2> </body>";
 
 
 
