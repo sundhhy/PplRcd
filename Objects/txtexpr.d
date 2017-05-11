@@ -20,3 +20,4 @@
 .\objects\txtexpr.o: .\Glyph\Gh_txt.h
 .\objects\txtexpr.o: E:\mylib\sdhLib\inc\arithmetic/cycQueue.h
 .\objects\txtexpr.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
+.\objects\txtexpr.o: Expression\Reader.h

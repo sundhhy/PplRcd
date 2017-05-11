@@ -70,6 +70,13 @@ int Ction_AddRow( Composition *self)
 	//将光标指向下一行起始位置
 	self->y += self->ghHeight;
 	self->x = 0;
+	
+	//如果列坐标超过屏幕的高度，撤销并返回错误
+	if( self->y > self->lcdHeight)
+	{
+		self->y -= self->ghHeight;
+		return ERR_FAIL;
+	}
 	return RET_OK;
 }
 

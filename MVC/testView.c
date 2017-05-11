@@ -5,14 +5,16 @@
 
  
 static const char testContext[] = \
-" <body> <h2>screen char test!</h2> </body>";
+" <body> <h2>screen char test!</> <h2>screen char test2!</>\
+<h2>screen char test3!</><h2>screen char test4!</></body>";
 
 
 
 void View_test(void)
 {
 //	TestViewShow();
-	char *pp;
+	void *pp = (void *)testContext;
+	void *pnew;
 	
 	Composition *ct = Get_Composition();
 	Compositor *ctor = (Compositor *)Get_SimpCtor();
@@ -21,8 +23,16 @@ void View_test(void)
 	ct->clean( ct);
 	myexp->setCtion( myexp, ct);
 	myexp->setVar( myexp, "h2");		//跟据Context中的变量来设置
-	myexp->interpret( myexp, (void *)testContext);
+	pnew = myexp->interpret( myexp, pp);
 	
+	myexp->setVar( myexp, "h2");		
+	pnew = myexp->interpret( myexp, pnew);
+	
+	myexp->setVar( myexp, "h2");		
+	pnew = myexp->interpret( myexp, pnew);
+	
+	myexp->setVar( myexp, "h2");		
+	pnew = myexp->interpret( myexp, pnew);
 }
 
 

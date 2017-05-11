@@ -783,6 +783,11 @@
               <FileType>5</FileType>
               <FilePath>.\Expression\Resolver.h</FilePath>
             </File>
+            <File>
+              <FileName>Reader.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Expression\Reader.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

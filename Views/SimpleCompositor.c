@@ -41,21 +41,43 @@ static int Simp_Compose( Composition *ction, Glyph *gh)
 			if( num > 2)
 				num -= 2;
 			else 
-				ction->addRow( ction);
+			{
+				if( ction->addRow( ction) != RET_OK)
+				{
+					//显示分页标识
+					
+					goto exit;
+				}
+					
+				
+				
+			}
 				
 			
 		}
-		gh->draw( gh, ction->x, ction->y, num);
+		
+		
+		gh->draw( gh, ction->x, ction->y, num);	
+		ction->x += num  * ction->ghWidth;
+		
 		num = gh->getNum( gh);
+		
 		//会的话就增加一行
 		if( num)
-			ction->addRow( ction);
+		{
+			if( ction->addRow( ction) != RET_OK)
+			{
+				//显示分页标识
+				
+				goto exit;
+			}
+			
+		}
+			
 	}
 	
-	//检查是否会从列上超出屏幕
 	
-	//会的话就要求分页显示
-	
+	exit:	
 	return RET_OK;
 }
 

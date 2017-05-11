@@ -7,6 +7,8 @@
 
 #include <string.h>
 
+#include "Reader.h"
+
 static TxtExpr *signalTxtExpr;
 
 
@@ -20,7 +22,7 @@ TxtExpr *GetTxtExpr(void)
 }
 
 
-static int TxtInterpret( Expr *self, void *context)
+static void * TxtInterpret( Expr *self, void *context)
 {
 //	TxtExpr *cthis = ( TxtExpr *)self;
 	GhTxt *mytxt = Get_GhTxt();
@@ -28,16 +30,21 @@ static int TxtInterpret( Expr *self, void *context)
 	int len = 0;
 	//todo : 做成一个解析器
 	char	*pp;
-	pp = strstr((const char*)context, self->variable);
-	if( pp == NULL)
-		return ERR_BAD_PARAMETER;
-	while( *pp != '>')
-		pp ++;
-	pp ++;
-	while( pp[len] != '<')
-	{
-			len ++;
-	}
+	void 	*pnewPosition;
+//	pp = strstr((const char*)context, self->variable);
+//	if( pp == NULL)
+//		return ERR_BAD_PARAMETER;
+//	while( *pp != '>')
+//		pp ++;
+//	pp ++;
+//	while( pp[len] != '<')
+//	{
+//			len ++;
+//	}
+	
+	pnewPosition = GetNameVale( context, self->variable, &pp, &len);
+	if( len == 0)
+		return pnewPosition;
 	
 	myGp->insert( myGp, pp, len);
 	
@@ -56,7 +63,7 @@ static int TxtInterpret( Expr *self, void *context)
 	self->ction->insert( self->ction, myGp);
 //	myGp->draw( myGp, 0, 0,3);
 //	myGp->flush( myGp, 0, 0);
-	return RET_OK;
+	return pnewPosition;
 }
 
 CTOR( TxtExpr)

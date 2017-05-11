@@ -9,7 +9,9 @@
 #include "sdhDef.h"
 #include "basis/sdhError.h"
 
-static char	lcdBuf[128];
+#define LCDBUF_MAX		128
+
+static char	lcdBuf[LCDBUF_MAX];
 
 I_dev_Char *I_sendDev;
 static int ClearLcd( void);
@@ -51,7 +53,9 @@ static int ClearLcd( void)
 static int GpuWrString( char *string, int len, int x, int y, int font, int c)
 {
 	
-	char colour[8];
+	char colour[16];
+	short		charMax = LCDBUF_MAX;
+	
 	
 	switch( font)
 	{
@@ -85,8 +89,14 @@ static int GpuWrString( char *string, int len, int x, int y, int font, int c)
 //	sprintf(lcdBuf, "',%d);\r\n",c);
 //	
 //	GpuSend(lcdBuf);
+
 	
 	sprintf(colour, "',%d);\r\n",c);
+	
+	charMax -= strlen( lcdBuf) + strlen( colour);
+	if( len > charMax)
+		len = charMax;
+	
 	strncat( lcdBuf,string, len);
 	strcat( lcdBuf,colour);
 	GpuSend(lcdBuf);
