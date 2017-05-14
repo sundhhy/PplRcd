@@ -21,7 +21,6 @@
 #include "TDD.h"
 #include "glyph.h"
 
-
 #define LCD_NOKIE		0
 //系统版本号
 //主板本号自己制定
@@ -125,6 +124,7 @@ int main (void) {
 	g_childVer = GetCompileMoth() << 8 | GetCompileDay();
 	printf("\r\n ############("__DATE__ " - " __TIME__ ")############");
 	printf("\n sytem ver : %x %x \n", g_majorVer, g_childVer);
+	
 	
 #if LCD_NOKIA == 1
 	LCD_init();

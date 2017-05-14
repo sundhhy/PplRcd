@@ -171,9 +171,25 @@
         <Bp>
           <Number>0</Number>
           <Type>0</Type>
-          <LineNumber>39</LineNumber>
+          <LineNumber>48</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>134225134</Address>
+          <Address>134229746</Address>
+          <ByteObject>0</ByteObject>
+          <HtxType>0</HtxType>
+          <ManyObjects>0</ManyObjects>
+          <SizeOfObject>0</SizeOfObject>
+          <BreakByAccess>0</BreakByAccess>
+          <BreakIfRCount>1</BreakIfRCount>
+          <Filename>.\MVC\testView.c</Filename>
+          <ExecCommand></ExecCommand>
+          <Expression></Expression>
+        </Bp>
+        <Bp>
+          <Number>1</Number>
+          <Type>0</Type>
+          <LineNumber>120</LineNumber>
+          <EnabledFlag>1</EnabledFlag>
+          <Address>134229242</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
@@ -182,7 +198,7 @@
           <BreakIfRCount>1</BreakIfRCount>
           <Filename>.\Views\SimpleCompositor.c</Filename>
           <ExecCommand></ExecCommand>
-          <Expression>\\PplRcd\Views/SimpleCompositor.c\39</Expression>
+          <Expression>\\PplRcd\Views/SimpleCompositor.c\120</Expression>
         </Bp>
       </Breakpoint>
       <WatchWindow2>
@@ -228,6 +244,11 @@
         </Ww>
         <Ww>
           <count>8</count>
+          <WinNumber>2</WinNumber>
+          <ItemText>lcdBuf</ItemText>
+        </Ww>
+        <Ww>
+          <count>9</count>
           <WinNumber>2</WinNumber>
           <ItemText>devArry</ItemText>
         </Ww>
@@ -321,7 +342,7 @@
 
   <Group>
     <GroupName>config</GroupName>
-    <tvExp>1</tvExp>
+    <tvExp>0</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>
@@ -441,7 +462,7 @@
 
   <Group>
     <GroupName>myLib</GroupName>
-    <tvExp>0</tvExp>
+    <tvExp>1</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>
@@ -691,7 +712,7 @@
 
   <Group>
     <GroupName>drive</GroupName>
-    <tvExp>1</tvExp>
+    <tvExp>0</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>
@@ -897,7 +918,7 @@
 
   <Group>
     <GroupName>Glyph</GroupName>
-    <tvExp>0</tvExp>
+    <tvExp>1</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>
@@ -1185,34 +1206,34 @@
       <Focus>0</Focus>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>.\Expression\Resolver.c</PathWithFileName>
-      <FilenameWithoutPath>Resolver.c</FilenameWithoutPath>
+      <PathWithFileName>.\Expression\Reader.c</PathWithFileName>
+      <FilenameWithoutPath>Reader.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
     <File>
       <GroupNumber>11</GroupNumber>
       <FileNumber>65</FileNumber>
-      <FileType>5</FileType>
+      <FileType>1</FileType>
       <tvExp>0</tvExp>
       <Focus>0</Focus>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>.\Expression\Resolver.h</PathWithFileName>
-      <FilenameWithoutPath>Resolver.h</FilenameWithoutPath>
+      <PathWithFileName>.\Expression\ExpFactory.c</PathWithFileName>
+      <FilenameWithoutPath>ExpFactory.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
     <File>
       <GroupNumber>11</GroupNumber>
       <FileNumber>66</FileNumber>
-      <FileType>1</FileType>
+      <FileType>5</FileType>
       <tvExp>0</tvExp>
       <Focus>0</Focus>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>.\Expression\Reader.c</PathWithFileName>
-      <FilenameWithoutPath>Reader.c</FilenameWithoutPath>
+      <PathWithFileName>.\Expression\ExpFactory.h</PathWithFileName>
+      <FilenameWithoutPath>ExpFactory.h</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>

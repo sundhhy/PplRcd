@@ -362,10 +362,10 @@
             <uC99>0</uC99>
             <useXO>0</useXO>
             <VariousControls>
-              <MiscControls></MiscControls>
+              <MiscControls>--diag_suppress=1295;--diag_suppress=1</MiscControls>
               <Define>USE_STDPERIPH_DRIVER, STM32F10X_HD, USE_STM3210B_EVAL,HSE_VALUE=8000000</Define>
               <Undefine></Undefine>
-              <IncludePath>.\configs;.\BSP;E:\mylib\sdhLib\inc;.\device\dev_LCD\nokia_5110;..\PplRcd;.\drive\uart;.\device;.\Glyph;.\Expression;.\Views</IncludePath>
+              <IncludePath>.\configs;.\BSP;E:\mylib\sdhLib\inc;.\device\dev_LCD\nokia_5110;..\PplRcd;.\drive\uart;.\device;.\Glyph;.\Expression;.\Views;.\REEC</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -774,19 +774,19 @@
               <FilePath>.\Expression\TxtExpr.c</FilePath>
             </File>
             <File>
-              <FileName>Resolver.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Expression\Resolver.c</FilePath>
-            </File>
-            <File>
-              <FileName>Resolver.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Expression\Resolver.h</FilePath>
-            </File>
-            <File>
               <FileName>Reader.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\Expression\Reader.c</FilePath>
+            </File>
+            <File>
+              <FileName>ExpFactory.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Expression\ExpFactory.c</FilePath>
+            </File>
+            <File>
+              <FileName>ExpFactory.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Expression\ExpFactory.h</FilePath>
             </File>
           </Files>
         </Group>

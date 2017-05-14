@@ -16,9 +16,10 @@ GhTxt *Get_GhTxt(void)
 		signalGhTxt = GhTxt_new();
 		gh = ( Glyph *)signalGhTxt;
 		signalGhTxt->buf = malloc( GHTXTBUFLEN);
+		signalGhTxt->cq_buf = malloc( GHTXTBUFLEN);
 		gh->setFont( gh, DEF_FONT);
 		gh->setClu( gh, DEF_COLOUR);
-		CQ_Init( &signalGhTxt->cq, signalGhTxt->buf, GHTXTBUFLEN);
+		CQ_Init( &signalGhTxt->cq, signalGhTxt->cq_buf, GHTXTBUFLEN);
 		
 	}
 	return signalGhTxt;
@@ -51,8 +52,19 @@ static void GhTxt_Draw( Glyph *self, int x, int y, int len)
 	I_dev_lcd *lcd;
 	
 	GhTxt *cthis = ( GhTxt *)self;
-	char *p;
-	int txtLen = CQ_GetPtr( &cthis->cq, &p, len);
+	char *p = cthis->buf;
+	int txtLen = 0;
+	
+	//避免把汉字拆分开显示
+//	if( ( len > 1) && ( len & 1) )
+//	{
+//		
+//		len --;
+//	}
+	txtLen = CQ_Read( &cthis->cq, p, len);
+//	txtLen = CQ_GetPtr( &cthis->cq, &p, len);
+	if( txtLen == 0)
+		return;
 	
 	Dev_open( LCD_DEVID, (void *)&lcd);
 	
@@ -75,7 +87,15 @@ static void GhTxt_Flush( Glyph *self, int x, int y)
 //	lcd->wrString( "text", 4, x, y, self->font, self->colour);
 	
 }
-
+static int GhTxt_GetSize(Glyph *self, int font, uint16_t *x, uint16_t *y)
+{
+	I_dev_lcd *lcd;
+	
+	Dev_open( LCD_DEVID, (void *)&lcd);
+	
+	return lcd->getStrSize( font, x, y);
+	
+}
 static int GhTxt_GetWidth(Glyph *self)
 {
 	GhTxt *cthis = ( GhTxt *)self;
@@ -125,6 +145,9 @@ FUNCTION_SETTING( Glyph.clean, GhTxt_Clean);
 FUNCTION_SETTING( Glyph.insert, GhTxt_Insert);
 FUNCTION_SETTING( Glyph.draw, GhTxt_Draw);
 FUNCTION_SETTING( Glyph.flush, GhTxt_Flush);
+
+
+FUNCTION_SETTING( Glyph.getSize, GhTxt_GetSize);
 
 FUNCTION_SETTING( Glyph.getWidth, GhTxt_GetWidth);
 FUNCTION_SETTING( Glyph.getHeight, GhTxt_GetHeight);

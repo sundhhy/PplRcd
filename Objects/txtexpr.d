@@ -6,6 +6,7 @@
 .\objects\txtexpr.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
 .\objects\txtexpr.o: Expression\expression.h
 .\objects\txtexpr.o: .\Views\Composition.h
+.\objects\txtexpr.o: E:\mylib\sdhLib\inc\arithmetic/list.h
 .\objects\txtexpr.o: .\Glyph\Glyph.h
 .\objects\txtexpr.o: .\device\device.h
 .\objects\txtexpr.o: .\device\deviceId.h

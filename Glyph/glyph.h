@@ -16,6 +16,10 @@ ABS_CLASS( Glyph)
 	int (*setFont)( Glyph *self, int font);
 	int (*setClu)( Glyph *self, int c);
 	//abs func
+	//
+	abstract int ( *getSize)(Glyph *self, int font, uint16_t *size_x, uint16_t *size_y);
+	
+	//---------------------------------------
 	abstract int (*clean)( Glyph *self);
 	abstract void (*insert)( Glyph *self, void *context, int len);
 	abstract void (*draw)( Glyph *self, int x, int y, int len);

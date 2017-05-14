@@ -1,6 +1,7 @@
 .\objects\simplecompositor.o: Views\SimpleCompositor.c
 .\objects\simplecompositor.o: Views\Compositor.h
 .\objects\simplecompositor.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+.\objects\simplecompositor.o: E:\mylib\sdhLib\inc\arithmetic/list.h
 .\objects\simplecompositor.o: .\Glyph\Glyph.h
 .\objects\simplecompositor.o: E:\mylib\sdhLib\inc\lw_oopc.h
 .\objects\simplecompositor.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h

@@ -31,38 +31,80 @@ static void * TxtInterpret( Expr *self, void *context)
 	//todo : 做成一个解析器
 	char	*pp;
 	void 	*pnewPosition;
-//	pp = strstr((const char*)context, self->variable);
-//	if( pp == NULL)
-//		return ERR_BAD_PARAMETER;
-//	while( *pp != '>')
-//		pp ++;
-//	pp ++;
-//	while( pp[len] != '<')
-//	{
-//			len ++;
-//	}
+	
+	ViewData_t	*vd;
+
 	
 	pnewPosition = GetNameVale( context, self->variable, &pp, &len);
 	if( len == 0)
-		return pnewPosition;
+		goto exit;
 	
-	myGp->insert( myGp, pp, len);
+	vd = self->ction->allocVD( self->ction);
 	
-	if( strcmp( self->variable, "h1") == 0)
+	if( vd == NULL)
+		goto exit;
+	
+	if( strcasecmp( self->variable, "h1") == 0)
 	{
-		myGp->setFont( myGp, FONT_64);
+		vd->font = FONT_64;
 	}
-	else if( strcmp( self->variable, "h2") == 0)
+	else if( strcasecmp( self->variable, "h2") == 0)
 	{
-		myGp->setFont( myGp, FONT_48);
+		vd->font = FONT_48;
 	}
-	else if( strcmp( self->variable, "h3") == 0)
+	else if( strcasecmp( self->variable, "h3") == 0)
 	{
-		myGp->setFont( myGp, FONT_24);
+		vd->font = FONT_32;
 	}
-	self->ction->insert( self->ction, myGp);
-//	myGp->draw( myGp, 0, 0,3);
-//	myGp->flush( myGp, 0, 0);
+	else if( strcasecmp( self->variable, "h4") == 0)
+	{
+		vd->font = FONT_24;
+	}
+	else if( strcasecmp( self->variable, "h5") == 0)
+	{
+		vd->font = FONT_12;
+	}
+	else
+	{
+		vd->font = DEF_FONT;
+	}
+	vd->data = pp;
+	vd->len = len;
+	vd->gh = myGp;
+	myGp->getSize( myGp, vd->font, &vd->size_x, &vd->size_y);
+	self->ction->insertVD( self->ction, vd);
+	
+//	myGp->insert( myGp, pp, len);
+	
+//	if( strcasecmp( self->variable, "h1") == 0)
+//	{
+//		myGp->setFont( myGp, FONT_64);
+//	}
+//	else if( strcasecmp( self->variable, "h2") == 0)
+//	{
+//		myGp->setFont( myGp, FONT_48);
+//	}
+//	else if( strcasecmp( self->variable, "h3") == 0)
+//	{
+//		myGp->setFont( myGp, FONT_32);
+//	}
+//	else if( strcasecmp( self->variable, "h4") == 0)
+//	{
+//		myGp->setFont( myGp, FONT_24);
+//	}
+//	else if( strcasecmp( self->variable, "h5") == 0)
+//	{
+//		myGp->setFont( myGp, FONT_12);
+//	}
+//	else
+//	{
+//		myGp->setFont( myGp, DEF_FONT);
+//	}
+//	self->ction->insert( self->ction, myGp);
+
+	
+	exit:
+	
 	return pnewPosition;
 }
 

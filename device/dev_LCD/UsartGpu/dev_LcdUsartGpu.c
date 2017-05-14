@@ -113,19 +113,19 @@ static int GpuStrSize( int font, uint16_t	*width, uint16_t	*heigh)
 	switch( font)
 	{
 		case FONT_12:
-			x = 12;
-			y = 12;
+			x = 6;
+			y = 8;
 			break;
 		case FONT_16:
-			x = 16;
+			x = 8;
 			y = 16;
 			break;
 		case FONT_24:
-			x = 24;
+			x = 12;
 			y = 24;
 			break;
 		case FONT_32:
-			x = 32;
+			x = 16;
 			y = 32;
 			break;
 		case FONT_48:
@@ -133,12 +133,12 @@ static int GpuStrSize( int font, uint16_t	*width, uint16_t	*heigh)
 			y = 48;
 			break;
 		case FONT_64:
-			x = 64;
+			x = 32;
 			y = 64;
 			break;
 		default:
-			x = 64;
-			y = 64;
+			x = 6;
+			y = 8;
 			break;
 	}
 	

@@ -7,6 +7,10 @@
 #include "basis/sdhDebug.h"
 #include "basis/sdhError.h"
 
+#include "mem/CiiMem.h"
+
+static void Ction_FreeVD( void **vd, void *c1);
+
 Composition *signalComposition;
 
 Composition *Get_Composition(void)
@@ -33,7 +37,10 @@ static int Ction_Clean( Composition *self)
 	I_dev_lcd *lcd;
 	
 	Dev_open( LCD_DEVID, (void *)&lcd);
-//	List_free( &self->Lgh);
+	
+	//回收版面中的显示数据
+	List_map( self->t_vd, Ction_FreeVD, NULL);
+	List_free( &self->t_vd);
 	
 	self->x = 0;
 	self->y = 0;
@@ -42,6 +49,57 @@ static int Ction_Clean( Composition *self)
 	
 	return RET_OK;
 }
+
+
+//将版面中的数据全部显示出来
+//为每个要显示的数据分配界面区域
+
+
+static int Ction_flush( Composition *self)
+{
+//	GhTxt *mytxt = Get_GhTxt();
+//	Glyph	*myGp = (Glyph *)mytxt;
+	Compositor *thisCtor = ( Compositor *)self->ctor;
+	self->t_vd = List_reverse( self->t_vd);
+	
+	self->lcdArea.LcdSizeX = 320;
+	self->lcdArea.LcdSizeY = 240;
+	
+	self->lcdArea.cursorX = 0;
+	self->lcdArea.cursorX = 0;
+
+	
+	thisCtor->vdLayout( self, self->t_vd);
+
+	
+	return RET_OK;
+}
+
+ViewData_t	* Ction_AllocVD( Composition *self)
+{
+	ViewData_t *vd =(ViewData_t *) CALLOC( 1, sizeof( ViewData_t));
+	return vd;
+	
+}
+
+int Ction_InsertVD( Composition *self, ViewData_t *vd)
+{
+	self->t_vd = List_push( self->t_vd, vd);
+
+	return RET_OK;
+}
+
+
+
+
+
+
+
+
+
+
+
+
 
 static int Ction_Insert( Composition *self, Glyph *gh)
 {
@@ -80,6 +138,14 @@ int Ction_AddRow( Composition *self)
 	return RET_OK;
 }
 
+static void Ction_FreeVD( void **vd, void *c1)
+{
+	FREE( *vd);
+	
+	
+	
+}
+
 CTOR( Composition)
 
 
@@ -88,6 +154,10 @@ FUNCTION_SETTING( setCtor, SetCtor);
 FUNCTION_SETTING( clean, Ction_Clean);
 FUNCTION_SETTING( insert, Ction_Insert);
 FUNCTION_SETTING( addRow, Ction_AddRow);
+
+FUNCTION_SETTING( allocVD, Ction_AllocVD);
+FUNCTION_SETTING( insertVD, Ction_InsertVD);
+FUNCTION_SETTING( flush, Ction_flush);
 
 
 END_CTOR
