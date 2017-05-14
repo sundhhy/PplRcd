@@ -110,6 +110,7 @@ static void VDShow(void **ppvd, void *cl)
 	char	numRow = 0;
 	
 	//把全部要显示的数据转转到gh的缓存中
+	pvd->gh->setClu( pvd->gh, pvd->colour);
 	pvd->gh->setFont( pvd->gh, pvd->font);
 	pvd->gh->insert( pvd->gh, pvd->data, pvd->len);
 	
@@ -152,6 +153,11 @@ static void VDShow(void **ppvd, void *cl)
 	//检查是否需要分页显示
 	if( pvd->more)
 	{
+		pvd->done = 0;
+	}
+	else
+	{
+		pvd->done = 1;
 		
 	}
 	

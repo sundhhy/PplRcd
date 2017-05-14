@@ -32,8 +32,12 @@ static void * TxtInterpret( Expr *self, void *context)
 	char	*pp;
 	void 	*pnewPosition;
 	
+	char	att[16];
+	
 	ViewData_t	*vd;
 
+	GetAttribute( context, att, 16);
+	
 	
 	pnewPosition = GetNameVale( context, self->variable, &pp, &len);
 	if( len == 0)
@@ -44,30 +48,9 @@ static void * TxtInterpret( Expr *self, void *context)
 	if( vd == NULL)
 		goto exit;
 	
-	if( strcasecmp( self->variable, "h1") == 0)
-	{
-		vd->font = FONT_64;
-	}
-	else if( strcasecmp( self->variable, "h2") == 0)
-	{
-		vd->font = FONT_48;
-	}
-	else if( strcasecmp( self->variable, "h3") == 0)
-	{
-		vd->font = FONT_32;
-	}
-	else if( strcasecmp( self->variable, "h4") == 0)
-	{
-		vd->font = FONT_24;
-	}
-	else if( strcasecmp( self->variable, "h5") == 0)
-	{
-		vd->font = FONT_12;
-	}
-	else
-	{
-		vd->font = DEF_FONT;
-	}
+	vd->colour = self->str2colour( att);
+	vd->font = self->str2font( self->variable);
+
 	vd->data = pp;
 	vd->len = len;
 	vd->gh = myGp;

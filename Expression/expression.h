@@ -15,6 +15,9 @@ ABS_CLASS( Expr)
 	void ( *setVar)( Expr *self, char *variable);
 	void ( *setCtion)( Expr *self, Composition *ct);
 	
+	int	( *str2colour)( char *s);
+	int	( *str2font)( char *s);
+	
 	abstract void* (*interpret)( Expr *self, void *context);
 	
 };

@@ -3,10 +3,10 @@
 #include "Compositor.h"
 #include "Reader.h"
 #include "ExpFactory.h"
- 
+
 static const char testContext[] = \
-"<h5>screen char test1!</> <h4>screen char test2!</>\
-<h3>screen char test3!</><h2>screen char test4!</><h1>screen char test5!</>";
+"<h5 c=red >screen char test1!</> <h4 c=blue>screen char test2!</>\
+<h3 c=yellow>screen char test3!</><h2 c=gren>screen char test4!</><h1>screen char test5!</>";
 
 
 
