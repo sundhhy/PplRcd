@@ -18,6 +18,8 @@
 #define COLOUR_GREN			2
 #define COLOUR_BLUE			3
 #define COLOUR_YELLOW		4
+#define COLOUR_GRAY			8
+#define COLOUR_PURPLE		6	//вои╚
 #define COLOUR_WHITE		18
 #define COLOUR_OTHER(n)		n
 

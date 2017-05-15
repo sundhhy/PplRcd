@@ -5,8 +5,8 @@
 #include "ExpFactory.h"
 
 static const char testContext[] = \
-"<h5 c=red >screen char test1!</> <h4 c=blue>screen char test2!</>\
-<h3 c=yellow>screen char test3!</><h2 c=gren>screen char test4!</><h1>screen char test5!</>";
+"<h1 c=red >12点阵全字库!</> <h2 c=blue>16点阵全字库!</>\
+<h3 c=yellow>白日依山尽!</><h4 c=gren>黄河入海流流流</><h5>2</><h6 c=purple>更上一层楼楼!</>";
 
 
 

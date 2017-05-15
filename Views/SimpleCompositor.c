@@ -27,10 +27,9 @@ static void VDapply(void **ppvd, void *cl)
 	ViewData_t *pvd = *ppvd;
 	area_t	*area = ( area_t *)cl;
 	short 	num = 0;
-	
-
+	short 	yLeft = 0;		//y轴上的空余空间
 	char	row = 0;
-	
+	char	maxRow = 0;		//可分配的行数
 	char	maxinrow = 0;
 	
 	//该行允许显示的数量
@@ -41,10 +40,13 @@ static void VDapply(void **ppvd, void *cl)
 	//分配起始坐标为光标的当前位置
 	pvd->area_x1 = area->cursorX;
 	pvd->area_y1 = area->cursorY;
+	pvd->area_x2 = area->cursorX;
+	pvd->area_y2 = area->cursorY;
+	yLeft = area->LcdSizeY - area->cursorY ;
 	
 	//每行能够显示的数量
 	maxinrow = area->LcdSizeX / pvd->size_x;
-	
+	maxRow = ( area->LcdSizeY -  pvd->area_y1)/ pvd->size_y;
 	//分配结束坐标
 	num = pvd->len;
 	//考虑到中文字符有两个位置，所以一定要分配偶数个位置
@@ -53,19 +55,44 @@ static void VDapply(void **ppvd, void *cl)
 	
 	
 	//计算能够分配的数据
+	
+	//分配1行
 	row = 1;
+	yLeft -= pvd->size_y;
+	if( yLeft < 0)
+		goto exit;
+	
 	allowNum =  ( area->LcdSizeX - pvd->area_x1) / pvd->size_x;
+	//如果分配的字符数大于1个，就不允许出现奇数个字符被显示在一行的情况出现
+	if( pvd->len > 1)
+	{
+		if( allowNum & 1)
+			allowNum --;
+		
+	} 
 	while(1)
 	{	
 		
 		//不够显示的，就多加一行
-		if(  num > allowNum)
+		if(  ( num > allowNum) && ( yLeft >=0))
 		{
 
 			num -= allowNum;
 			//增加一行
 			row ++;
-			allowNum = maxinrow;
+			yLeft -= pvd->size_y;
+			if( yLeft < 0)
+			{
+					//回收这一行
+				row --;
+				num = allowNum;
+				
+			}
+			else
+			{
+			
+				allowNum = maxinrow;
+			}
 			
 		}	
 		else
@@ -74,6 +101,8 @@ static void VDapply(void **ppvd, void *cl)
 			
 			//与起始位置在同一行的话就要从x1处偏移
 			//不同行就不需要了
+			
+			
 			if( row == 1)
 				pvd->area_x2 = pvd->area_x1 + num * pvd->size_x ;
 			else
@@ -88,19 +117,21 @@ static void VDapply(void **ppvd, void *cl)
 	
 	//计算y方向上的结尾
 	pvd->area_y2 = pvd->area_y1 + (row -1 )* pvd->size_y;
-	if( pvd->area_y2 > area->LcdSizeY)
+	
+	exit:
+	if( yLeft < 0)
 	{
-		pvd->area_y2 = area->LcdSizeY;
+		
 		pvd->more	= 1;
 	}
 	
 	
 	//移动光标
-	area->cursorX = pvd->area_x2 + pvd->size_x;
+	area->cursorX = pvd->area_x2 ;
 	area->cursorY = pvd->area_y2;
 	
 }
-
+//在跨行显示的时候，为了防止一个汉字被拆分显示，所以回退一格
 static void VDShow(void **ppvd, void *cl)
 {
 	ViewData_t *pvd = *ppvd;
@@ -119,6 +150,12 @@ static void VDShow(void **ppvd, void *cl)
 	
 	//显示第1行
 	numInrow = ( ction->lcdArea.LcdSizeX - pvd->area_x1) / pvd->size_x;
+	if( numRow > 1)
+	{
+		if( numInrow & 1)
+			numInrow --;
+		
+	}
 	pvd->gh->draw( pvd->gh, pvd->area_x1, pvd->area_y1, numInrow);
 	
 	//换行
@@ -130,8 +167,13 @@ static void VDShow(void **ppvd, void *cl)
 	//显示中间的行
 	numInrow = ( ction->lcdArea.LcdSizeX ) / pvd->size_x;
 	//需要分页显示的时候，最后一行按照中间行来显示
-	while( numRow > 1 || pvd->more)
+	while( numRow > 1 )
 	{
+		
+		if( numInrow & 1)
+			numInrow --;
+			
+		
 		
 		pvd->gh->draw( pvd->gh, pvd->area_x1, pvd->area_y1, numInrow);
 		

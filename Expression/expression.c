@@ -47,6 +47,16 @@ int	ExpStr2colour( char *s)
 		c = COLOUR_YELLOW;
 		
 	}
+	else if( strstr( s, "c=purple") )
+	{
+		c = COLOUR_PURPLE;
+		
+	}
+	else if( strstr( s, "c=gray") )
+	{
+		c = COLOUR_GRAY;
+		
+	}
 	else
 	{
 		c = DEF_COLOUR;
@@ -62,23 +72,27 @@ int	ExpStr2font( char *s)
 	
 	if( strcasecmp( s, "h1") == 0)
 	{
-		f = FONT_64;
+		f = FONT_12;
 	}
 	else if( strcasecmp( s, "h2") == 0)
 	{
-		f = FONT_48;
+		f = FONT_16;
 	}
 	else if( strcasecmp( s, "h3") == 0)
 	{
-		f = FONT_32;
+		f = FONT_24;
 	}
 	else if( strcasecmp( s, "h4") == 0)
 	{
-		f = FONT_24;
+		f = FONT_32;
 	}
 	else if( strcasecmp( s, "h5") == 0)
 	{
-		f = FONT_12;
+		f = FONT_48;
+	}
+	else if( strcasecmp( s, "h6") == 0)
+	{
+		f = FONT_64;
 	}
 	else
 	{

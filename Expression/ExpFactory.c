@@ -26,6 +26,10 @@ Expr *ExpCreate( char *type)
 	{
 		return (Expr *)GetTxtExpr();
 	}
+	if( !strcasecmp( type, "h6"))
+	{
+		return (Expr *)GetTxtExpr();
+	}
 	
 	
 	return NULL;
