@@ -55,12 +55,7 @@ static void GhTxt_Draw( Glyph *self, int x, int y, int len)
 	char *p = cthis->buf;
 	int txtLen = 0;
 	
-	//避免把汉字拆分开显示
-//	if( ( len > 1) && ( len & 1) )
-//	{
-//		
-//		len --;
-//	}
+
 	txtLen = CQ_Read( &cthis->cq, p, len);
 //	txtLen = CQ_GetPtr( &cthis->cq, &p, len);
 	if( txtLen == 0)

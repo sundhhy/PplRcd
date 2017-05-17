@@ -36,8 +36,8 @@ typedef struct {
 	Glyph		*gh;
 	
 	char		more;		//需要分页显示
-	char		done;		//是否显示好了
-	char		non[2];
+	short		done;		//是否显示好了
+	char		none;
 	
 }ViewData_t;
 

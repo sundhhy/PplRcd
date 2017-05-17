@@ -7,7 +7,7 @@
 
 #include "Composition.h"
 
-
+#define IS_CHINESE( c) ( c & 0x80)
 
 
 INTERFACE( Compositor)
