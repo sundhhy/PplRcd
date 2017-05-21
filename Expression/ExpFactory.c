@@ -1,7 +1,7 @@
 #include "ExpFactory.h"
 #include <string.h>
 #include "TxtExpr.h"
-
+#include "NtButton.h"
 
 Expr *ExpCreate( char *type)
 {
@@ -29,6 +29,10 @@ Expr *ExpCreate( char *type)
 	if( !strcasecmp( type, "h6"))
 	{
 		return (Expr *)GetTxtExpr();
+	}
+	if( !strcasecmp( type, "bu"))
+	{
+		return (Expr *)GetNtButton();
 	}
 	
 	

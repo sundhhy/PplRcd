@@ -9,6 +9,14 @@ variable = [ A-Z, a-z]*
 
 */
 
+/*ËõÐ´
+c : colour
+bu : button
+
+
+
+*/
+
 
 static void SetVar( Expr *self, char *variable)
 {
@@ -18,6 +26,12 @@ static void SetVar( Expr *self, char *variable)
 		
 	strcpy( self->variable, variable);
 }
+
+//static void SetFather( Expr *self, Expr *fa)
+//{
+//	
+//	self->father = fa;
+//}
 static void SetCtion( Expr *self, Composition *ct)
 {
 	self->ction = ct;
@@ -106,6 +120,9 @@ int	ExpStr2font( char *s)
 ABS_CTOR( Expr)
 FUNCTION_SETTING( setVar, SetVar);
 FUNCTION_SETTING( setCtion, SetCtion);
+//FUNCTION_SETTING( setFather, SetFather);
+
+
 
 FUNCTION_SETTING( str2colour, ExpStr2colour);
 FUNCTION_SETTING( str2font, ExpStr2font);

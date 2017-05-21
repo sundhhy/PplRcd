@@ -17,6 +17,9 @@ I_dev_Char *I_sendDev;
 static int ClearLcd( void);
 static int Dev_UsartdeInit( void);
 static int GpuWrString( char *string,  int len, int x, int y, int font, int c);
+static int GpuBox( int x1, int y1, int x2, int y2, char type, char c);
+
+
 static int GpuStrSize( int font, uint16_t	*width, uint16_t	*heigh);
 
 I_dev_lcd g_IUsartGpu =
@@ -25,6 +28,7 @@ I_dev_lcd g_IUsartGpu =
 	Dev_UsartdeInit,
 	ClearLcd,
 	GpuWrString,
+	GpuBox,
 	GpuStrSize,
 	
 };
@@ -48,6 +52,25 @@ static int ClearLcd( void)
 	GpuSend("CLS(0);\r\n");
 	osDelay(20);
 	return RET_OK;
+}
+
+//画个方框
+//type 0  空心 1 实心
+static int GpuBox( int x1, int y1, int x2, int y2, char type, char c)
+{
+	if( type)
+	{
+		sprintf( lcdBuf, "BOXF(%d,%d,%d,%d,%d);\r\n", x1, y1, x2, y2,c);
+	}
+	else
+	{
+		sprintf( lcdBuf, "BOX(%d,%d,%d,%d,%d);\r\n", x1, y1, x2, y2,c);
+	}
+	
+	GpuSend(lcdBuf);
+	osDelay(20);
+	return RET_OK;
+	
 }
 
 static int GpuWrString( char *string, int len, int x, int y, int font, int c)
@@ -108,7 +131,6 @@ static int GpuWrString( char *string, int len, int x, int y, int font, int c)
 static int GpuStrSize( int font, uint16_t	*width, uint16_t	*heigh)
 {
 	
-	char colour[8];
 	uint16_t x, y;
 	switch( font)
 	{

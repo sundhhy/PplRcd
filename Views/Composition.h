@@ -5,6 +5,14 @@
 #include "lw_oopc.h"
 #include "Glyph.h"
 
+
+#define SET_CHILDASWHOLE(att)		(	att | 1)	//子元素必须作为一个整体
+#define IS_CHILDASWHOLE(att)		(	att & 1)	//
+#define SET_CHILDFIRST(att)		(	att | 2)	//在分配屏幕空间时，子元素优先，赋予胺素要去配合子元素
+#define IS_CHILDFIRST(att)		(	att & 2)	//
+
+
+
 typedef struct {
 	
 	int16_t		LcdSizeX;
@@ -37,7 +45,7 @@ typedef struct {
 	
 	char		more;		//需要分页显示
 	short		done;		//是否显示好了
-	char		none;
+	uint8_t		childAttr;		//子元素的特性，如是否可以被分到两行显示，尺寸分配是否以子元素优先
 	
 }ViewData_t;
 
@@ -57,7 +65,7 @@ CLASS( Composition)
 	void ( *setCtor)( Composition *self, void *ctor);
 	
 	ViewData_t	*( *allocVD)( Composition *self);
-	int ( *insertVD)( Composition *self, ViewData_t *vd);
+	int ( *insertVD)( Composition *self, ViewData_t *faVd, ViewData_t *vd);
 	
 	int ( *clean)( Composition *self);
 	int ( *flush)( Composition *self);

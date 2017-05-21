@@ -38,10 +38,24 @@ static int SetClu( Glyph *self, int c)
 	
 }
 
+static int setWidth( Glyph *self, uint16_t wd)
+{
+	
+	return RET_OK;
+	
+}
+static int setHeight( Glyph *self, uint16_t he)
+{
+	return RET_OK;
+	
+}
+
 ABS_CTOR( Glyph)
 FUNCTION_SETTING( init, Init);
 FUNCTION_SETTING( setFont, SetFont);
 FUNCTION_SETTING( setClu, SetClu);
+FUNCTION_SETTING( setWidth, setWidth);
+FUNCTION_SETTING( setHeight, setHeight);
 
 END_ABS_CTOR
 

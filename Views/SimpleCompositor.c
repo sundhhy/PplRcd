@@ -21,6 +21,34 @@ SimpCtor *Get_SimpCtor(void)
 	return signalSimpCtor;
 }
 
+static void DealChild(void **ppvd, void *cl)
+{
+	ViewData_t *pvd = *ppvd;
+	ViewData_t *pPvd = pvd->paraent;
+	
+	
+	
+	//为了对称所以父元素的尺寸/2
+//	pvd->area_x1 = pPvd->area_x1 + pPvd->size_x/2;
+//	pvd->area_y1 = pPvd->area_y1 + pPvd->size_y/2;
+	
+	
+	if( SET_CHILDASWHOLE( pPvd->childAttr))
+	{
+		
+		pPvd->size_x += pvd->size_x * pvd->len;
+		
+	}
+	else
+	{
+//		pPvd->size_x += pvd->size_x;
+		
+		
+	}
+	pPvd->size_y += pvd->size_y;
+	
+}
+
 static void VDapply(void **ppvd, void *cl)
 {
 	ViewData_t *pvd = *ppvd;
@@ -31,6 +59,10 @@ static void VDapply(void **ppvd, void *cl)
 	uint16_t	usableX, usableY;
 	uint16_t	needX, needY;
 	
+	List_map( pvd->t_childen, DealChild, NULL);
+
+	
+	
 	//一个字符一个字符来分配
 	
 	
@@ -40,6 +72,7 @@ static void VDapply(void **ppvd, void *cl)
 	pvd->area_y1 = area->cursorY;
 	pvd->area_x2 = area->cursorX;
 	pvd->area_y2 = area->cursorY;
+	
 	
 	//如果一个x轴一个字符也放不下就直接退出
 	if( pvd->size_x > area->LcdSizeX)
@@ -106,121 +139,36 @@ static void VDapply(void **ppvd, void *cl)
 	
 }
 
-//static void VDapply(void **ppvd, void *cl)
-//{
-//	ViewData_t *pvd = *ppvd;
-//	area_t	*area = ( area_t *)cl;
 
+static void ShowChild(void **ppvd, void *cl)
+{
+	ViewData_t *pvd = *ppvd;
+	ViewData_t *pPvd = pvd->paraent;
+//	Composition	*ction = ( Composition *)cl;
+	short		x,y;
 	
-//	short 	num = 0;
-//	short 	yLeft = 0;		//y轴上的空余空间
-//	char	row = 0;
-//	char	maxRow = 0;		//可分配的行数
-//	char	maxinrow = 0;
-//	
-//	
-//	
-//	
-//	
-//	//该行允许显示的数量
-//	char	allowNum = 0;
-//	
-//	
-//	
-//	//分配起始坐标为光标的当前位置
-//	pvd->area_x1 = area->cursorX;
-//	pvd->area_y1 = area->cursorY;
-//	pvd->area_x2 = area->cursorX;
-//	pvd->area_y2 = area->cursorY;
-//	yLeft = area->LcdSizeY - area->cursorY ;
-//	
-//	//每行能够显示的数量
-//	maxinrow = area->LcdSizeX / pvd->size_x;
-//	maxRow = ( area->LcdSizeY -  pvd->area_y1)/ pvd->size_y;
-//	//分配结束坐标
-//	num = pvd->len;
-//	//考虑到中文字符有两个位置，所以一定要分配偶数个位置
-//	if( num & 1)
-//		num ++;
-//	
-//	
-//	//计算能够分配的数据
-//	
-//	//分配1行
-//	row = 1;
-//	yLeft -= pvd->size_y;
-//	if( yLeft < 0)
-//		goto exit;
-//	
-//	allowNum =  ( area->LcdSizeX - pvd->area_x1) / pvd->size_x;
-//	//如果分配的字符数大于1个，就不允许出现奇数个字符被显示在一行的情况出现
-//	if( pvd->len > 1)
-//	{
-//		if( allowNum & 1)
-//			allowNum --;
-//		
-//	} 
-//	while(1)
-//	{	
-//		
-//		//不够显示的，就多加一行
-//		if(  ( num > allowNum) && ( yLeft >=0))
-//		{
+	if( SET_CHILDASWHOLE( pPvd->childAttr))
+	{
 
-//			num -= allowNum;
-//			//增加一行
-//			row ++;
-//			yLeft -= pvd->size_y;
-//			if( yLeft < 0)
-//			{
-//					//回收这一行
-//				row --;
-//				num = allowNum;
-//				
-//			}
-//			else
-//			{
-//			
-//				allowNum = maxinrow;
-//			}
-//			
-//		}	
-//		else
-//		{
-//			//够了的话，就计算x方向的结尾
-//			
-//			//与起始位置在同一行的话就要从x1处偏移
-//			//不同行就不需要了
-//			
-//			
-//			if( row == 1)
-//				pvd->area_x2 = pvd->area_x1 + num * pvd->size_x ;
-//			else
-//				pvd->area_x2 = num * pvd->size_x ;
-//			break;
-//		}
-//		
-//		
-//		
-//	}
-//	
-//	
-//	//计算y方向上的结尾
-//	pvd->area_y2 = pvd->area_y1 + (row -1 )* pvd->size_y;
-//	
-//	exit:
-//	if( yLeft < 0)
-//	{
-//		
-//		pvd->more	= 1;
-//	}
-//	
-//	
-//	//移动光标
-//	area->cursorX = pvd->area_x2 ;
-//	area->cursorY = pvd->area_y2;
+		pvd->area_x1 = pPvd->area_x1 + 2;
+		pvd->area_y1 = pPvd->area_y1 + 2;
+		
+	}
+	else
+	{
+		
+		
+	}
 	
-//}
+	//设置字体和颜色
+	pvd->gh->setClu( pvd->gh, pvd->colour);
+	pvd->gh->setFont( pvd->gh, pvd->font);
+	pvd->gh->insert( pvd->gh, pvd->data, pvd->len);
+	
+	pvd->gh->draw( pvd->gh, pvd->area_x1, pvd->area_y1, pvd->len);
+	
+}
+
 //在跨行显示的时候，为了防止一个汉字被拆分显示，所以回退一格
 static void VDShow(void **ppvd, void *cl)
 {
@@ -243,6 +191,9 @@ static void VDShow(void **ppvd, void *cl)
 	pvd->gh->setClu( pvd->gh, pvd->colour);
 	pvd->gh->setFont( pvd->gh, pvd->font);
 	pvd->gh->insert( pvd->gh, pvd->data, pvd->len);
+	
+	pvd->gh->setWidth( pvd->gh, pvd->size_x);
+	pvd->gh->setHeight( pvd->gh, pvd->size_y);
 
 	displayed = 0;
 	for( y = pvd->area_y1; y <= pvd->area_y2; y += pvd->size_y)
@@ -322,6 +273,8 @@ static void VDShow(void **ppvd, void *cl)
 	pvd->area_y1 = oldy1;
 
 	
+	//显示子图元
+	List_map( pvd->t_childen, ShowChild, cl);
 }
 
 static int Simp_VdLayout( Composition *ction, List_T t_vd)

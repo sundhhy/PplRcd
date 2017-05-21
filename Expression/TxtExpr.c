@@ -22,13 +22,12 @@ TxtExpr *GetTxtExpr(void)
 }
 
 
-static void * TxtInterpret( Expr *self, void *context)
+static void * TxtInterpret( Expr *self, void *faVd, void *context)
 {
 //	TxtExpr *cthis = ( TxtExpr *)self;
 	GhTxt *mytxt = Get_GhTxt();
 	Glyph	*myGp = (Glyph *)mytxt;
 	int len = 0;
-	//todo : 做成一个解析器
 	char	*pp;
 	void 	*pnewPosition;
 	
@@ -55,36 +54,8 @@ static void * TxtInterpret( Expr *self, void *context)
 	vd->len = len;
 	vd->gh = myGp;
 	myGp->getSize( myGp, vd->font, &vd->size_x, &vd->size_y);
-	self->ction->insertVD( self->ction, vd);
 	
-//	myGp->insert( myGp, pp, len);
-	
-//	if( strcasecmp( self->variable, "h1") == 0)
-//	{
-//		myGp->setFont( myGp, FONT_64);
-//	}
-//	else if( strcasecmp( self->variable, "h2") == 0)
-//	{
-//		myGp->setFont( myGp, FONT_48);
-//	}
-//	else if( strcasecmp( self->variable, "h3") == 0)
-//	{
-//		myGp->setFont( myGp, FONT_32);
-//	}
-//	else if( strcasecmp( self->variable, "h4") == 0)
-//	{
-//		myGp->setFont( myGp, FONT_24);
-//	}
-//	else if( strcasecmp( self->variable, "h5") == 0)
-//	{
-//		myGp->setFont( myGp, FONT_12);
-//	}
-//	else
-//	{
-//		myGp->setFont( myGp, DEF_FONT);
-//	}
-//	self->ction->insert( self->ction, myGp);
-
+	self->ction->insertVD( self->ction, faVd, vd);
 	
 	exit:
 	

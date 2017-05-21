@@ -26,6 +26,8 @@ ABS_CLASS( Glyph)
 	abstract void (*flush)( Glyph *self, int x, int y);
 	abstract int ( *getWidth)(Glyph *self);
 	abstract int ( *getHeight)(Glyph *self);
+	abstract int ( *setWidth)(Glyph *self, uint16_t wd);
+	abstract int ( *setHeight)(Glyph *self, uint16_t he);
 	abstract int ( *getNum)(Glyph *self);
 	
 	

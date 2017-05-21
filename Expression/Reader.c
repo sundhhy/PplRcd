@@ -7,21 +7,74 @@
 #define BEGIN_FLAG	'<'
 #define END_FLAG	'>'
 #define ATT_SPLIT_CHAR	' '
+#define TAIL_FLAG	'/'
 
 static char *Eliminate_char( char *str, char c);
+
+
+//返回去掉一个< xxx>之后的首地址
+char *RemoveHead( char *context)
+{
+	char	*pp;
+	char 	*newpp = context;
+	pp = strchr( context, BEGIN_FLAG);
+	if( pp == NULL)
+		goto exit;
+	
+	pp = strchr( context, END_FLAG);
+	if( pp == NULL)
+		goto exit;
+	
+	newpp = pp + 1;
+	
+	exit:
+		return newpp;
+	
+}
+
+//返回去掉一个</XXX>之后的首地址
+char *RemoveTail( char *context)
+{
+	char	*pp = context;
+	char 	*newpp = context;
+	while(1)
+	{
+		pp = strchr( pp, BEGIN_FLAG);
+		if( pp == NULL)
+			goto exit;
+		pp ++;
+		if( *pp == TAIL_FLAG)
+			break;
+	}
+	pp = strchr( pp, END_FLAG);
+	if( pp == NULL)
+		goto exit;
+	
+	newpp = pp + 1;
+	
+	exit:
+		return newpp;
+	
+}
 
 //返回获取的名字的长度
 int GetName( char *context, char *name, int nameLen)
 {
 	char	*pp;
 	int 	idx = 0;
+	
+	
+	
+	
 	pp = strchr( context, BEGIN_FLAG);
 	if( pp == NULL)
 		goto exit;
 	pp++;
 	//去除空格
 	pp = Eliminate_char( pp, ' ');
-	
+
+//	if( *pp == END_TARGET)
+//		goto exit;
 	//留一个空间给结束符
 	nameLen --;
 	

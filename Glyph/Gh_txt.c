@@ -22,6 +22,8 @@ GhTxt *Get_GhTxt(void)
 		CQ_Init( &signalGhTxt->cq, signalGhTxt->cq_buf, GHTXTBUFLEN);
 		
 	}
+	
+
 	return signalGhTxt;
 }
 
@@ -93,7 +95,7 @@ static int GhTxt_GetSize(Glyph *self, int font, uint16_t *x, uint16_t *y)
 }
 static int GhTxt_GetWidth(Glyph *self)
 {
-	GhTxt *cthis = ( GhTxt *)self;
+//	GhTxt *cthis = ( GhTxt *)self;
 	uint16_t	width = 0;
 	I_dev_lcd *lcd;
 	
@@ -106,7 +108,7 @@ static int GhTxt_GetWidth(Glyph *self)
 }
 static int GhTxt_GetHeight(Glyph *self)
 {
-	GhTxt *cthis = ( GhTxt *)self;
+//	GhTxt *cthis = ( GhTxt *)self;
 	uint16_t	height = 0;
 	I_dev_lcd *lcd;
 	

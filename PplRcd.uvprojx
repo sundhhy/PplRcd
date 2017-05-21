@@ -693,6 +693,16 @@
               <FileType>5</FileType>
               <FilePath>.\Glyph\Gh_txt.h</FilePath>
             </File>
+            <File>
+              <FileName>Gh_Rectangle.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Glyph\Gh_Rectangle.h</FilePath>
+            </File>
+            <File>
+              <FileName>Gh_Rectangle.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Glyph\Gh_Rectangle.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -749,19 +759,9 @@
               <FilePath>.\Expression\expression.c</FilePath>
             </File>
             <File>
-              <FileName>NonTerminalExp .c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Expression\NonTerminalExp .c</FilePath>
-            </File>
-            <File>
               <FileName>expression.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\Expression\expression.h</FilePath>
-            </File>
-            <File>
-              <FileName>NonTerminalExp.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Expression\NonTerminalExp.h</FilePath>
             </File>
             <File>
               <FileName>TxtExpr.h</FileName>
@@ -787,6 +787,21 @@
               <FileName>ExpFactory.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\Expression\ExpFactory.h</FilePath>
+            </File>
+            <File>
+              <FileName>NtButton.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Expression\NtButton.c</FilePath>
+            </File>
+            <File>
+              <FileName>NtButton.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Expression\NtButton.h</FilePath>
+            </File>
+            <File>
+              <FileName>Reader.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Expression\Reader.h</FilePath>
             </File>
           </Files>
         </Group>

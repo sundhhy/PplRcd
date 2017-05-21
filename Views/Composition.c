@@ -82,9 +82,17 @@ ViewData_t	* Ction_AllocVD( Composition *self)
 	
 }
 
-int Ction_InsertVD( Composition *self, ViewData_t *vd)
+int Ction_InsertVD( Composition *self, ViewData_t *faVd, ViewData_t *vd)
 {
-	self->t_vd = List_push( self->t_vd, vd);
+	if( faVd)
+	{
+		faVd->t_childen = List_push( faVd->t_childen, vd);
+		vd->paraent = faVd;
+	}
+	else
+	{
+		self->t_vd = List_push( self->t_vd, vd);
+	}
 
 	return RET_OK;
 }
