@@ -12,7 +12,7 @@ void TestViewShow(void)
 {
 	 Dev_open( DEVID_USARTGPULCD, ( void *)&myLcd);
 
-	myLcd->Clear();
+//	myLcd->Clear();
 //	myLcd->wrString( "test", 0, 0, FONT_12, COLOUR_RED);
 //	myLcd->wrString( "test", 0, 12, FONT_16, COLOUR_BLUE);
 //	myLcd->wrString( "test", 0, 28, FONT_24, COLOUR_GREN);

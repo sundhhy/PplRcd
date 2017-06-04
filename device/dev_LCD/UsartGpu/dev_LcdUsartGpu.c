@@ -10,16 +10,17 @@
 #include "basis/sdhError.h"
 
 #define LCDBUF_MAX		128
+#define LCD_DELAY_MS  7
 
 static char	lcdBuf[LCDBUF_MAX];
 
 I_dev_Char *I_sendDev;
-static int ClearLcd( void);
+static int ClearLcd( int c);
 static int Dev_UsartdeInit( void);
-static int GpuWrString( char *string,  int len, int x, int y, int font, int c);
+static int GpuWrString( char *string,  int len, int x, int y, int font, char c);
 static int GpuBox( int x1, int y1, int x2, int y2, char type, char c);
-
-
+static void GpuBKColor( char c);
+int GpuLabel( char *string,  int len, scArea_t *area, int font, char c, char ali);
 static int GpuStrSize( int font, uint16_t	*width, uint16_t	*heigh);
 
 I_dev_lcd g_IUsartGpu =
@@ -28,6 +29,8 @@ I_dev_lcd g_IUsartGpu =
 	Dev_UsartdeInit,
 	ClearLcd,
 	GpuWrString,
+	GpuLabel,
+	GpuBKColor,
 	GpuBox,
 	GpuStrSize,
 	
@@ -47,9 +50,10 @@ static int Dev_UsartdeInit( void)
 	
 }
 
-static int ClearLcd( void)
+static int ClearLcd( int c)
 {
-	GpuSend("CLS(0);\r\n");
+	sprintf( lcdBuf, "CLS(%d);\r\n", c);
+	GpuSend(lcdBuf);
 	osDelay(20);
 	return RET_OK;
 }
@@ -68,12 +72,12 @@ static int GpuBox( int x1, int y1, int x2, int y2, char type, char c)
 	}
 	
 	GpuSend(lcdBuf);
-	osDelay(20);
+	osDelay(LCD_DELAY_MS);
 	return RET_OK;
 	
 }
 
-static int GpuWrString( char *string, int len, int x, int y, int font, int c)
+static int GpuWrString( char *string, int len, int x, int y, int font, char c)
 {
 	
 	char colour[16];
@@ -104,16 +108,7 @@ static int GpuWrString( char *string, int len, int x, int y, int font, int c)
 		default:
 			sprintf( lcdBuf, "DS12(%d,%d,'", x, y);
 			break;
-	}
-	
-//	GpuSend(lcdBuf);
-//	GpuSend(string);
-//	
-//	sprintf(lcdBuf, "',%d);\r\n",c);
-//	
-//	GpuSend(lcdBuf);
-
-	
+	}	
 	sprintf(colour, "',%d);\r\n",c);
 	
 	charMax -= strlen( lcdBuf) + strlen( colour);
@@ -123,9 +118,101 @@ static int GpuWrString( char *string, int len, int x, int y, int font, int c)
 	strncat( lcdBuf,string, len);
 	strcat( lcdBuf,colour);
 	GpuSend(lcdBuf);
-	osDelay(20);
+	osDelay(LCD_DELAY_MS);
 	return RET_OK;
 }
+
+int GpuLabel( char *string,  int len, scArea_t *area, int font, char c, char ali)
+{
+	char m = 0;
+	short		charMax = LCDBUF_MAX;
+	char tail[16];
+	switch( font)
+	{
+		case FONT_12:
+			m = 12;
+			break;
+		case FONT_16:
+			m = 16;
+			break;
+		case FONT_24:
+			m = 24;
+			break;
+		case FONT_32:
+			m = 32;
+			break;
+		case FONT_48:
+			m = 48;
+			break;
+		case FONT_64:
+			m = 64;
+			break;
+		default:
+			m = 12;
+			break;
+		
+	}
+	sprintf( lcdBuf, "LABL(%d,%d,%d,%d,'", m, area->x1, area->y1, area->x2);
+	
+	sprintf(tail, "',%d,%d);\r\n",c,ali);
+	charMax -= strlen( lcdBuf) + strlen( tail);
+	if( len > charMax)
+		len = charMax;
+	strncat( lcdBuf,string, len);
+	strcat( lcdBuf,tail);
+	GpuSend(lcdBuf);
+	osDelay(LCD_DELAY_MS);
+	return RET_OK;
+
+}	
+
+static void GpuBKColor( char c)
+{
+	if( c == 0)
+		return;
+	sprintf( lcdBuf, "SBC(%d);", c);
+	GpuSend(lcdBuf);
+	osDelay(LCD_DELAY_MS);
+	memset( lcdBuf, 0, LCDBUF_MAX);
+
+}
+
+
+//int GpuWrSection( dspArea_t *area, dspContent_t *arg)
+//{
+//	
+//	char colour[16];
+//	short		charMax = LCDBUF_MAX;
+//	
+//	
+//	switch( arg->font)
+//	{
+//		case FONT_12:
+//			sprintf( lcdBuf, "BS12(%d,%d,%d,%d,'", area->x1, area->y1, area->x2, area->rowW);
+//			break;
+//		case FONT_16:
+//			sprintf( lcdBuf, "BS12(%d,%d,%d,%d,'", area->x1, area->y1, area->x2, area->rowW);
+//			break;
+//		case FONT_24:
+//			sprintf( lcdBuf, "BS12(%d,%d,%d,%d,'", area->x1, area->y1, area->x2, area->rowW);
+//			break;
+//		default:
+//			sprintf( lcdBuf, "BS12(%d,%d,%d,%d,'", area->x1, area->y1, area->x2, area->rowW);
+//			break;
+//	}	
+//	sprintf(colour, "',%d);\r\n",arg->colour);
+//	
+//	charMax -= strlen( lcdBuf) + strlen( colour);
+//	if( arg->len > charMax)
+//		arg->len = charMax;
+//	
+//	strncat( lcdBuf,arg->data, arg->len);
+//	strcat( lcdBuf,colour);
+//	GpuSend(lcdBuf);
+//	osDelay(LCD_DELAY_MS);
+//	
+//	return RET_OK;
+//}
 
 
 static int GpuStrSize( int font, uint16_t	*width, uint16_t	*heigh)

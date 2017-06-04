@@ -21,18 +21,28 @@
 #define COLOUR_GRAY			8
 #define COLOUR_PURPLE		6	//紫色
 #define COLOUR_WHITE		18
+#define COLOUR_BLACK		0xff
 #define COLOUR_OTHER(n)		n
 
 #define DEF_COLOUR			COLOUR_WHITE
+#define ERR_COLOUR			0
 
 //字符型设备的接口
 //包括uart设备
 
+typedef struct {
+	int16_t		x1, y1;
+	int16_t		x2, y2;
+}scArea_t;
+
+
 typedef struct{
 	int ( *open)( void);
 	int ( *close)( void);
-	int ( *Clear)( void);
-	int ( *wrString)( char *string,  int len, int x, int y, int font, int c);
+	int ( *Clear)( int c);
+	int ( *wrString)( char *string,  int len, int x, int y, int font, char c);
+	int ( *label)( char *string,  int len, scArea_t *area, int font, char c, char ali);
+	void ( *BKColor)( char c);
 	int ( *Box)( int x1, int y1, int x2, int y2, char type, char c);
 	int ( *getStrSize)( int font, uint16_t *width, uint16_t *heigh);
 }I_dev_lcd;

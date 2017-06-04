@@ -9,9 +9,9 @@
 CLASS(GhTxt)
 {
 	EXTENDS( Glyph);
-	uint8_t 	*buf;
-	char 		*cq_buf;
-	CycQueus_t   cq;
+//	uint8_t 	*buf;
+//	char 		*cq_buf;
+//	CycQueus_t   cq;
 	
 };
 

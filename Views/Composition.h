@@ -11,58 +11,74 @@
 #define SET_CHILDFIRST(att)		(	att | 2)	//在分配屏幕空间时，子元素优先，赋予胺素要去配合子元素
 #define IS_CHILDFIRST(att)		(	att & 2)	//
 
+#define STEP_LAYOUT		0  //布局阶段
+#define STEP_SHOW		1  //显示阶段
 
+
+
+
+//typedef struct {
+//	
+//	int16_t		LcdSizeX;
+//	int16_t		LcdSizeY;
+//	//光标位置
+//	int16_t		cursorX;
+//	int16_t		cursorY;
+
+//}area_t;
 
 typedef struct {
+	void 			*paraent;
+	List_T			t_childen;
 	
-	int16_t		LcdSizeX;
-	int16_t		LcdSizeY;
-	//光标位置
-	int16_t		cursorX;
-	int16_t		cursorY;
-
-}area_t;
-
-typedef struct {
-	void 		*paraent;
-	List_T		t_childen;
-	
-	char		*data;
-	uint16_t 	len;
-	int8_t		font;
-	int8_t		colour;
-	//每个显示元素的尺寸
-	uint16_t		size_x;
-	uint16_t		size_y;
-	
-	//记录显示的数据被所分配的显示区域
-	int16_t		area_x1;
-	int16_t		area_y1;
-	int16_t		area_x2;
-	int16_t		area_y2;
+	dspArea_t		dspArea;
+	dspContent_t	dspCnt;
 	
 	Glyph		*gh;
 	
-	char		more;		//需要分页显示
-	short		done;		//是否显示好了
-	uint8_t		childAttr;		//子元素的特性，如是否可以被分到两行显示，尺寸分配是否以子元素优先
+	
+//	char		*data;
+//	uint16_t 	len;
+//	int8_t		font;
+//	int8_t		colour;
+//	//每个显示元素的尺寸
+//	uint16_t		size_x;
+//	uint16_t		size_y;
+//	
+//	//记录显示的数据被所分配的显示区域
+//	int16_t		area_x1;
+//	int16_t		area_y1;
+//	int16_t		area_x2;
+//	int16_t		area_y2;
+//	
+
+//	
+//	char		more;		//需要分页显示
+//	short		done;		//是否显示好了
+//	uint8_t		childAttr;		//子元素的特性，如是否可以被分到两行显示，尺寸分配是否以子元素优先
 	
 }ViewData_t;
 
 CLASS( Composition)
 {
 	List_T				t_vd;
-	uint16_t			x;
-	uint16_t			y;
 	void				*ctor;
 	
-	uint16_t	lcdWidth, lcdHeight;
-	uint16_t	ghWidth, ghHeight;
+	scInfo_t		mySCI;
 	
-	area_t		lcdArea;
+	
+	
+//	area_t		lcdArea;
+	
+	//行和列的尺寸，一般等于前一个显示元素的宽和高，在加行或者增加空格的时候使用
+	//在显示和布局时的行和列的尺寸存储在不同的参数中
+//	uint8_t	rowSize[2], colSize[2];
+//	char	step;	//当前阶段：布局 0 显示 1	
+//	char	none[3];
 	
 	
 	void ( *setCtor)( Composition *self, void *ctor);
+	void ( *setSCBkc)( Composition *self, char* bkc);
 	
 	ViewData_t	*( *allocVD)( Composition *self);
 	int ( *insertVD)( Composition *self, ViewData_t *faVd, ViewData_t *vd);
@@ -71,7 +87,7 @@ CLASS( Composition)
 	int ( *flush)( Composition *self);
 	
 	
-	int ( *insert)( Composition *self, Glyph *gh);
+//	int ( *insert)( Composition *self, Glyph *gh);
 	int ( *addRow)( Composition *self);
 };
 

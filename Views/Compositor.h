@@ -7,17 +7,15 @@
 
 #include "Composition.h"
 
-#define IS_CHINESE( c) ( c & 0x80)
 
 
 INTERFACE( Compositor)
 {
 
 	//对输入的显示数据进行界面规划
-	int ( *vdLayout)( Composition *ction, List_T t_vd);
-	
-	//todo: 无用
-	int ( *compose)( Composition *ction, Glyph *gh);
+	int ( *vdLayout)( Composition *ction);
+	int ( *show)( Composition *ction);
+
 	
 	
 };

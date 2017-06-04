@@ -5,7 +5,9 @@
 #include "Composition.h"
 
 
-#define VAR_LEN		3
+#define VAR_LEN		15
+
+#define TEMPBUF_LEN		32
 
 ABS_CLASS( Expr)
 {
@@ -16,11 +18,16 @@ ABS_CLASS( Expr)
 //	void ( *setFather)( Expr *self, Expr *fa);
 	void ( *setCtion)( Expr *self, Composition *ct);
 	
-	int	( *str2colour)( char *s);
-	int	( *str2font)( char *s);
+//	int	( *str2colour)( char *s);
+//	int	( *str2font)( char *s);
+//	int	( *getBgc)( char *s);
+//	int	( *getAreaEff)( char *s);
+//	int	( *getCntEff)( char *s);
 	
 	abstract void* (*interpret)( Expr *self, void *father, void *context);
 	
 };
+
+extern char expTempBUf[TEMPBUF_LEN];
 
 #endif

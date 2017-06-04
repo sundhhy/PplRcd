@@ -5,6 +5,8 @@
 
 //< name> val </>
 #define BEGIN_FLAG	'<'
+#define	BEGIN_STR	"<"
+
 #define END_FLAG	'>'
 #define ATT_SPLIT_CHAR	' '
 #define TAIL_FLAG	'/'
@@ -33,10 +35,11 @@ char *RemoveHead( char *context)
 }
 
 //返回去掉一个</XXX>之后的首地址
-char *RemoveTail( char *context)
+char *RemoveTail( char *context, char *tailName, int size)
 {
 	char	*pp = context;
 	char 	*newpp = context;
+	char 	i = 0;
 	while(1)
 	{
 		pp = strchr( pp, BEGIN_FLAG);
@@ -46,11 +49,30 @@ char *RemoveTail( char *context)
 		if( *pp == TAIL_FLAG)
 			break;
 	}
-	pp = strchr( pp, END_FLAG);
-	if( pp == NULL)
-		goto exit;
 	
-	newpp = pp + 1;
+	//去除空格
+	pp = Eliminate_char( pp, ' ');
+	
+	i = 0;
+	while(1)
+	{
+		if( ( *pp == END_FLAG) || ( *pp == '\0'))
+			break;
+		tailName[ i] = *pp++;
+		if( i == (size -1))
+			break;
+			
+	}
+	tailName[ i] = '\0';
+	
+//	pp = strchr( pp, END_FLAG);
+//	if( pp == NULL)
+//		goto exit;
+	
+	if(  *pp == '\0')
+		newpp = pp;
+	else
+		newpp = pp + 1;
 	
 	exit:
 		return newpp;
@@ -177,13 +199,14 @@ void *GetNameVale( char *context, char *name, char **value, int *len)
 		pp ++;
 	pp ++;
 	*value = pp;
-	while( *pp++ != BEGIN_FLAG)
-	{
-			(*len) ++;
-	}
+//	while( *pp++ != BEGIN_FLAG)
+//	{
+//			(*len) ++;
+//	}
+	*len =  strcspn( pp, BEGIN_STR);	
 	
-	while( *pp != END_FLAG)
-		pp ++;
+//	while( *pp != END_FLAG)
+	pp += *len;
 	
 	
 	return pp;

@@ -47,43 +47,43 @@ static int GhRec_Clean( Glyph *self)
 	
 }
 
-static void GhRec_Insert( Glyph *self, void *context, int len)
-{
-	
-	
-}
-static int GhRec_SetWidth( Glyph *self, uint16_t wd)
-{
-	GhRectangle *cthis = ( GhRectangle *)self;
-	cthis->width = wd;
-	return RET_OK;
-	
-}
-static int GhRec_SetHeight( Glyph *self, uint16_t he)
-{
-	GhRectangle *cthis = ( GhRectangle *)self;
-	cthis->height = he;
-	return RET_OK;
-	
-}
+//static void GhRec_Insert( Glyph *self, void *context, int len)
+//{
+//	
+//	
+//}
+//static int GhRec_SetWidth( Glyph *self, uint16_t wd)
+//{
+//	GhRectangle *cthis = ( GhRectangle *)self;
+//	cthis->width = wd;
+//	return RET_OK;
+//	
+//}
+//static int GhRec_SetHeight( Glyph *self, uint16_t he)
+//{
+//	GhRectangle *cthis = ( GhRectangle *)self;
+//	cthis->height = he;
+//	return RET_OK;
+//	
+//}
 
-static void GhRec_Draw( Glyph *self, int x, int y, int len)
-{
-	I_dev_lcd *lcd;
-	short x2, y2;
-	GhRectangle *cthis = ( GhRectangle *)self;
-	
+//static void GhRec_Draw( Glyph *self, int x, int y, int len)
+//{
+//	I_dev_lcd *lcd;
+//	short x2, y2;
+//	GhRectangle *cthis = ( GhRectangle *)self;
+//	
 
-	
-	x2 = x + cthis->width;
-	y2 = y + cthis->height;
+//	
+//	x2 = x + cthis->width;
+//	y2 = y + cthis->height;
 
+//	
+//	Dev_open( LCD_DEVID, (void *)&lcd);
+//	
+//	lcd->Box( x, y, x2, y2, 0, self->colour);
 	
-	Dev_open( LCD_DEVID, (void *)&lcd);
-	
-	lcd->Box( x, y, x2, y2, 1, self->colour);
-	
-}
+//}
 //static void GhTxt_Flush( Glyph *self, int x, int y)
 //{
 //	I_dev_lcd *lcd;
@@ -153,11 +153,11 @@ static void GhRec_Draw( Glyph *self, int x, int y, int len)
 CTOR( GhRectangle)
 SUPER_CTOR( Glyph);
 //FUNCTION_SETTING( Glyph.setFont, SetFont);
-FUNCTION_SETTING( Glyph.setWidth, GhRec_SetWidth);
-FUNCTION_SETTING( Glyph.setHeight, GhRec_SetHeight);
+//FUNCTION_SETTING( Glyph.setWidth, GhRec_SetWidth);
+//FUNCTION_SETTING( Glyph.setHeight, GhRec_SetHeight);
 FUNCTION_SETTING( Glyph.clean, GhRec_Clean);
-FUNCTION_SETTING( Glyph.insert, GhRec_Insert);
-FUNCTION_SETTING( Glyph.draw, GhRec_Draw);
+//FUNCTION_SETTING( Glyph.insert, GhRec_Insert);
+//FUNCTION_SETTING( Glyph.draw, GhRec_Draw);
 //FUNCTION_SETTING( Glyph.flush, GhTxt_Flush);
 
 

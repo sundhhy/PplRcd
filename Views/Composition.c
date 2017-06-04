@@ -1,6 +1,7 @@
 #include "Composition.h"
 #include "Compositor.h"
 #include "device.h"
+#include <string.h>
 
 #include "Gh_txt.h"
 
@@ -20,6 +21,12 @@ Composition *Get_Composition(void)
 	{
 		signalComposition = Composition_new();
 		
+		//todo:暂时写死
+		signalComposition->mySCI.scBoundary.x1 = 0;
+		signalComposition->mySCI.scBoundary.y1 = 0;
+		signalComposition->mySCI.scBoundary.x2 = 320;
+		signalComposition->mySCI.scBoundary.y2 = 240;
+		
 	}
 	
 	return signalComposition;
@@ -29,6 +36,12 @@ static void SetCtor( Composition *self, void *ctor)
 {
 	self->ctor = ctor;
 	
+}
+//设置屏幕背景色
+void SetSCBkc( Composition *self, char* bkc)
+{
+	
+	self->mySCI.scBkc = String2Colour( bkc);
 }
 static int Ction_Clean( Composition *self)
 {
@@ -42,9 +55,14 @@ static int Ction_Clean( Composition *self)
 	List_map( self->t_vd, Ction_FreeVD, NULL);
 	List_free( &self->t_vd);
 	
-	self->x = 0;
-	self->y = 0;
-	lcd->Clear();
+	self->mySCI.cursorX = 0;
+	self->mySCI.cursorY = 0;
+	self->mySCI.colSize = 0;
+	self->mySCI.rowSize = 0;
+	
+
+	
+	lcd->Clear( self->mySCI.scBkc);
 	myGp->clean(myGp);
 	
 	return RET_OK;
@@ -57,20 +75,18 @@ static int Ction_Clean( Composition *self)
 
 static int Ction_flush( Composition *self)
 {
-//	GhTxt *mytxt = Get_GhTxt();
-//	Glyph	*myGp = (Glyph *)mytxt;
+
 	Compositor *thisCtor = ( Compositor *)self->ctor;
 	self->t_vd = List_reverse( self->t_vd);
 	
-	self->lcdArea.LcdSizeX = 320;
-	self->lcdArea.LcdSizeY = 240;
+	self->mySCI.scBoundary.x1 = 0;
+	self->mySCI.scBoundary.y1 = 0;
+	self->mySCI.scBoundary.x2 = 320;
+	self->mySCI.scBoundary.y2 = 240;
 	
-	self->lcdArea.cursorX = 0;
-	self->lcdArea.cursorX = 0;
 
-	
-	thisCtor->vdLayout( self, self->t_vd);
-
+	thisCtor->vdLayout( self);
+	thisCtor->show( self);
 	
 	return RET_OK;
 }
@@ -109,40 +125,36 @@ int Ction_InsertVD( Composition *self, ViewData_t *faVd, ViewData_t *vd)
 
 
 
-static int Ction_Insert( Composition *self, Glyph *gh)
-{
-	
-	
-	Compositor *thisCtor = ( Compositor *)self->ctor;
-	
+//static int Ction_Insert( Composition *self, Glyph *gh)
+//{
+//	
+//	
+//	Compositor *thisCtor = ( Compositor *)self->ctor;
+//	
 
-	
-	
-	self->lcdWidth = 320;
-	self->lcdHeight = 240;
-	
-	
-	thisCtor->compose( self, gh);
-	
-	
-	
-	return RET_OK;
-}
+//	
+//	
+//	self->lcdWidth = 320;
+//	self->lcdHeight = 240;
+//	
+//	
+//	thisCtor->compose( self, gh);
+//	
+//	
+//	
+//	return RET_OK;
+//}
 
 int Ction_AddRow( Composition *self)
 {
-	//检查是否超出屏幕范围
+	//如果再加一行就超过屏幕就返回错误
+//	if( ( self->rowSize[ self->step] + self->lcdArea.cursorY) > self->lcdArea.LcdSizeY)
+//		return ERR_RES_UNAVAILABLE;
+//	//将光标指向下一行起始位置
+//	self->lcdArea.cursorY += self->rowSize[ self->step];
+//	self->lcdArea.cursorX = 0;
 	
-	//将光标指向下一行起始位置
-	self->y += self->ghHeight;
-	self->x = 0;
 	
-	//如果列坐标超过屏幕的高度，撤销并返回错误
-	if( self->y > self->lcdHeight)
-	{
-		self->y -= self->ghHeight;
-		return ERR_FAIL;
-	}
 	return RET_OK;
 }
 
@@ -160,7 +172,7 @@ CTOR( Composition)
 FUNCTION_SETTING( setCtor, SetCtor);
 
 FUNCTION_SETTING( clean, Ction_Clean);
-FUNCTION_SETTING( insert, Ction_Insert);
+FUNCTION_SETTING( setSCBkc, SetSCBkc);
 FUNCTION_SETTING( addRow, Ction_AddRow);
 
 FUNCTION_SETTING( allocVD, Ction_AllocVD);

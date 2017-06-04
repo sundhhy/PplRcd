@@ -4,33 +4,115 @@
 #include <stdint.h>
 #include "device.h"
 
+
+#define IS_CHINESE( c) ( c & 0x80)
+#define IS_BR( c) ( c == '\n')
+#define IS_TAB( c) ( c == '\r')
+
+
+#define	ALIGN_LEFT					0		//左对齐
+#define	ALIGN_MIDDLE				1		//居中对齐
+#define	ALIGN_RIGHT					2		//右对齐对齐
+
+#define ST_TEXT						0
+#define ST_LABLE					1    //子类型
+
 #define LCD_DEVID		DEVID_USARTGPULCD
+
+
+typedef struct {
+	char 		*data;
+	uint16_t	len;
+	uint8_t		colour;
+	char		font;
+
+	//特效
+	uint8_t		effects;
+	uint8_t		bkc;			//背景色
+	
+	uint8_t		subType;
+	uint8_t		none;
+}dspContent_t;
+
+
+
+typedef struct {
+	
+	
+	int16_t		cursorX;
+	int16_t		cursorY;
+	
+	int16_t		rowSize;
+	int8_t		colSize;
+	
+	
+	int8_t		scBkc;
+
+	scArea_t	scBoundary;
+
+}scInfo_t;
+
+
+
+typedef struct {
+	
+	scInfo_t	*curScInfo;
+	
+	scArea_t	*boundary;		//在设置这个值的时候，如果有私有的界限就指向私有界限，否则的话就指向整个屏幕的界限
+	scArea_t	useArea;
+	
+		//单个元素的x y轴尺寸
+	uint16_t		sizeX;
+	uint16_t		sizeY;
+	
+	uint8_t		rowW;			//行间距
+	uint8_t		colW;			//列间距
+	uint8_t		numRow;			//行的总数
+	uint8_t		ali;		//默认左对齐
+}dspArea_t;
+
 
 ABS_CLASS( Glyph)
 {
 	
-	uint16_t	font;
-	uint16_t	colour;
+
 	I_dev_lcd	*myLcd ;
 	int (*init)( Glyph *self, I_dev_lcd *lcd);
 	int (*setFont)( Glyph *self, int font);
 	int (*setClu)( Glyph *self, int c);
+	int (*setBgC)( Glyph *self, int c);
 	//abs func
 	//
 	abstract int ( *getSize)(Glyph *self, int font, uint16_t *size_x, uint16_t *size_y);
 	
 	//---------------------------------------
 	abstract int (*clean)( Glyph *self);
-	abstract void (*insert)( Glyph *self, void *context, int len);
-	abstract void (*draw)( Glyph *self, int x, int y, int len);
+//	abstract void (*insert)( Glyph *self, void *context, int len);
+	
+	abstract void (*draw)( Glyph *self, dspContent_t *cnt, dspArea_t *area);		
+	
+	
 	abstract void (*flush)( Glyph *self, int x, int y);
-	abstract int ( *getWidth)(Glyph *self);
-	abstract int ( *getHeight)(Glyph *self);
-	abstract int ( *setWidth)(Glyph *self, uint16_t wd);
-	abstract int ( *setHeight)(Glyph *self, uint16_t he);
-	abstract int ( *getNum)(Glyph *self);
+//	abstract int ( *getWidth)(Glyph *self);
+//	abstract int ( *getHeight)(Glyph *self);
+//	abstract int ( *setWidth)(Glyph *self, uint16_t wd);
+//	abstract int ( *setHeight)(Glyph *self, uint16_t he);
+//	abstract int ( *getNum)(Glyph *self);
 	
 	
 };
 void View_test(void);
+
+int	String2Bkc( char *s);
+int String2Clr( char *s);
+
+int String2Colour( char *s);
+int	DefaultColour( void *arg);
+
+
+int String2Font( char *s);
+int	String2Align( char *s);
+
+int	String2CntEff( char *s);
+
 #endif

@@ -14,6 +14,7 @@
 .\objects\composition.o: E:\mylib\sdhLib\inc\basis/sdhError.h
 .\objects\composition.o: .\device\dev_lcd.h
 .\objects\composition.o: Views\Compositor.h
+.\objects\composition.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
 .\objects\composition.o: .\Glyph\Gh_txt.h
 .\objects\composition.o: E:\mylib\sdhLib\inc\arithmetic/cycQueue.h
 .\objects\composition.o: E:\mylib\sdhLib\inc\basis/sdhDebug.h

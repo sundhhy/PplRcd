@@ -6,28 +6,43 @@
 
 
 
-#define  TEST_CONTEXT  2
+#define  TEST_CONTEXT  4
 
 
 
 #if TEST_CONTEXT == 1
 static const char testContext[] = \
-"<h1 c=red >12点阵全字库!</> <h2 c=blue>16点阵全字库!</>\
-<h3 c=yellow>2白日依山尽!</><h4 c=gren>黄河入海流流流</><h5>欲2穷千里目</><h6 c=purple>更上一层楼楼!</><h1 c=red >12点阵全字库!</>";
+"<h1 c=red >12点阵全字库!</><h2 c=blue>16点阵全字库!</>\
+<h3 c=yellow>2白日依山尽!</><h4 c=gren>黄河入海流流流</><h3>欲2穷千里目</><h6 c=purple>更上一层楼楼!</><h1 c=red >12点阵全字库!</>";
 #elif TEST_CONTEXT == 2
 static const char testContext[] = \
 "<bu><h2 c=red >确认</></><bu><h2 c=red >返回</></>";
+#elif TEST_CONTEXT == 3
 
+static const char testContext[] = \
+"<h2 c=red >组态</> <br/>\
+<br/>\
+<bu c=blue ><h2 c=red >系统组态</></bu><bu c=blue ><h2 c=red> 显示组态</></bu><br/>\
+<bu c=blue ><h2 c=red >输入组态</></bu><bu c=blue ><h2 c=red> 输出组态</></bu><br/>\
+<bu c=blue ><h2 c=red >记录组态</></bu><bu c=blue ><h2 c=red> 报警组态</></bu><br/>\
+<bu c=blue ><h2 c=red >表报组态</></bu><bu c=blue ><h2 c=red> 打印组态</></bu><br/>\
+<bu c=blue ><h2 c=red >通信组态</></bu><bu c=blue ><h2 c=red> 系统信息</></bu><br/>\
+<br/>\
+<bu c=yellow><h2 c=purple>组态文件</></bu><bu c=yellow><h2 c=purple>退出</></bu><br/>";
+#elif TEST_CONTEXT == 4
+static const char testContext[] = \
+"<title bkc=black  f=24 ali=l>设置</> \
+<input ali=m id=0x01> <text f=24>密码：</> <rct bkc=black x=96 y=30></></input>";
 
 #endif
 
-
-
+//背景色 "none" 或某种颜色
+#define SCREENBKC		"white"
 
 void View_test(void)
 {
 //	TestViewShow();
-	void *pp = (void *)testContext;
+	char *pp = (void *)testContext;
 	char	name[8];
 	int		nameLen;
 	Composition *ct = Get_Composition();
@@ -36,6 +51,7 @@ void View_test(void)
 	
 	//设置排版的排版算法
 	ct->setCtor( ct, ctor);
+	ct->setSCBkc( ct, SCREENBKC);
 	ct->clean( ct);
 	
 

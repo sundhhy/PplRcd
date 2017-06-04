@@ -703,6 +703,16 @@
               <FileType>1</FileType>
               <FilePath>.\Glyph\Gh_Rectangle.c</FilePath>
             </File>
+            <File>
+              <FileName>Gh_None.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Glyph\Gh_None.h</FilePath>
+            </File>
+            <File>
+              <FileName>Gh_None.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Glyph\Gh_None.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -802,6 +812,36 @@
               <FileName>Reader.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\Expression\Reader.h</FilePath>
+            </File>
+            <File>
+              <FileName>BrExpr.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Expression\BrExpr.c</FilePath>
+            </File>
+            <File>
+              <FileName>BrExpr.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Expression\BrExpr.h</FilePath>
+            </File>
+            <File>
+              <FileName>BackgroudExpr.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Expression\BackgroudExpr.c</FilePath>
+            </File>
+            <File>
+              <FileName>BackgroudExpr.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Expression\BackgroudExpr.h</FilePath>
+            </File>
+            <File>
+              <FileName>Input.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Expression\Input.h</FilePath>
+            </File>
+            <File>
+              <FileName>Input.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Expression\Input.c</FilePath>
             </File>
           </Files>
         </Group>

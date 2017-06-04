@@ -18,3 +18,5 @@
 .\objects\expfactory.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
 .\objects\expfactory.o: Expression\TxtExpr.h
 .\objects\expfactory.o: Expression\NtButton.h
+.\objects\expfactory.o: Expression\BrExpr.h
+.\objects\expfactory.o: Expression\Input.h

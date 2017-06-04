@@ -10,12 +10,23 @@ variable = [ A-Z, a-z]*
 */
 
 /*缩写
-c : colour
+clr : colour
+f : font
 bu : button
+UDT缩写
+pa	: 	paragraph段落
+rct :	rectangle 矩形
 
+scr : 	Screen region 屏幕区域
+sel	:	selection 	选中区域
+ali :  aligning 对齐方式
 
-
+pmx/y : permille x/y轴长度占屏幕的x/y轴尺寸的千分比
 */
+
+
+//每种表达式在解析时使用，但是用完就必须恢复为0
+char expTempBUf[TEMPBUF_LEN];
 
 
 static void SetVar( Expr *self, char *variable)
@@ -38,94 +49,28 @@ static void SetCtion( Expr *self, Composition *ct)
 	
 }
 
-int	ExpStr2colour( char *s)
-{
-	int c = 0;
-	if( strstr( s, "c=red"))
-	{
-		c = COLOUR_RED;
-		
-	}
-	else if( strstr( s, "c=gren"))
-	{
-		c = COLOUR_RED;
-		
-	}
-	else if( strstr( s, "c=blue") )
-	{
-		c = COLOUR_BLUE;
-		
-	}
-	else if( strstr( s, "c=yellow") )
-	{
-		c = COLOUR_YELLOW;
-		
-	}
-	else if( strstr( s, "c=purple") )
-	{
-		c = COLOUR_PURPLE;
-		
-	}
-	else if( strstr( s, "c=gray") )
-	{
-		c = COLOUR_GRAY;
-		
-	}
-	else
-	{
-		c = DEF_COLOUR;
-	}
-	
-	return c;
-	
-}
 
-int	ExpStr2font( char *s)
-{
-	int f = 0;
-	
-	if( strcasecmp( s, "h1") == 0)
-	{
-		f = FONT_12;
-	}
-	else if( strcasecmp( s, "h2") == 0)
-	{
-		f = FONT_16;
-	}
-	else if( strcasecmp( s, "h3") == 0)
-	{
-		f = FONT_24;
-	}
-	else if( strcasecmp( s, "h4") == 0)
-	{
-		f = FONT_32;
-	}
-	else if( strcasecmp( s, "h5") == 0)
-	{
-		f = FONT_48;
-	}
-	else if( strcasecmp( s, "h6") == 0)
-	{
-		f = FONT_64;
-	}
-	else
-	{
-		f = DEF_FONT;
-	}
-	
-	return f;
-}
+
+
+
+
+
+
+
+
+
 
 
 ABS_CTOR( Expr)
 FUNCTION_SETTING( setVar, SetVar);
 FUNCTION_SETTING( setCtion, SetCtion);
 //FUNCTION_SETTING( setFather, SetFather);
+//FUNCTION_SETTING( getBgc, ExpGetBackgroudColor);
 
 
 
-FUNCTION_SETTING( str2colour, ExpStr2colour);
-FUNCTION_SETTING( str2font, ExpStr2font);
+//FUNCTION_SETTING( str2colour, ExpStr2colour);
+//FUNCTION_SETTING( str2font, ExpStr2font);
 
 END_ABS_CTOR
 

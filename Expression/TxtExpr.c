@@ -29,13 +29,12 @@ static void * TxtInterpret( Expr *self, void *faVd, void *context)
 	Glyph	*myGp = (Glyph *)mytxt;
 	int len = 0;
 	char	*pp;
-	void 	*pnewPosition;
-	
-	char	att[16];
+	char 	*pnewPosition;
+	char	*att = expTempBUf;
 	
 	ViewData_t	*vd;
 
-	GetAttribute( context, att, 16);
+	GetAttribute( context, att, TEMPBUF_LEN);
 	
 	
 	pnewPosition = GetNameVale( context, self->variable, &pp, &len);
@@ -47,17 +46,46 @@ static void * TxtInterpret( Expr *self, void *faVd, void *context)
 	if( vd == NULL)
 		goto exit;
 	
-	vd->colour = self->str2colour( att);
-	vd->font = self->str2font( self->variable);
-
-	vd->data = pp;
-	vd->len = len;
+	vd->dspCnt.colour = String2Clr( att);
+	if( vd->dspCnt.colour == ERR_COLOUR)
+	{
+		vd->dspCnt.colour = DefaultColour(NULL);
+		
+	}
+	
+	vd->dspCnt.effects = String2CntEff( att);
+	vd->dspCnt.bkc  = String2Bkc( att);
+	vd->dspArea.ali = String2Align( att);
+	
+	
+	vd->dspCnt.font = String2Font( att);
+	vd->dspCnt.data = pp;
+	vd->dspCnt.len = len;
+	
+	//对标题类的特殊处理
+	if( !strcasecmp( self->variable, "title"))
+	{
+		if( vd->dspCnt.bkc == ERR_COLOUR)
+		{
+			
+			vd->dspCnt.bkc = COLOUR_BLUE;
+		}
+		if( vd->dspCnt.font < FONT_16)
+			vd->dspCnt.font = FONT_16;
+		vd->dspCnt.subType = ST_LABLE;
+		
+	}
+	
+	
 	vd->gh = myGp;
-	myGp->getSize( myGp, vd->font, &vd->size_x, &vd->size_y);
+	myGp->getSize( myGp,  vd->dspCnt.font, &vd->dspArea.sizeX, &vd->dspArea.sizeY);
+	
+	
 	
 	self->ction->insertVD( self->ction, faVd, vd);
-	
+	pnewPosition = RemoveTail( pnewPosition, att, 16);
 	exit:
+	memset( expTempBUf, 0, sizeof( expTempBUf));
 	
 	return pnewPosition;
 }
