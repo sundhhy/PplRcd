@@ -69,9 +69,6 @@ static int Ction_Clean( Composition *self)
 }
 
 
-//将版面中的数据全部显示出来
-//为每个要显示的数据分配界面区域
-
 
 static int Ction_flush( Composition *self)
 {
@@ -103,13 +100,14 @@ int Ction_InsertVD( Composition *self, ViewData_t *faVd, ViewData_t *vd)
 	if( faVd)
 	{
 		faVd->t_childen = List_push( faVd->t_childen, vd);
+		faVd->t_childen = List_reverse( faVd->t_childen);
 		vd->paraent = faVd;
 	}
 	else
 	{
 		self->t_vd = List_push( self->t_vd, vd);
 	}
-
+	
 	return RET_OK;
 }
 

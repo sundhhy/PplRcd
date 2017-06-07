@@ -13,7 +13,7 @@
 #include "pinmux.h"
 #include "intrInit.h"
 
-#include "basis/marco.h"
+#include "basis/macros.h"
 #include "basis/sdhError.h"
 #include "nokia_5110.h"
 #include "device.h"

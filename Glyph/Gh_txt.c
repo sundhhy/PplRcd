@@ -152,13 +152,18 @@ static void GhTxt_Draw( Glyph *self, dspContent_t *cnt, dspArea_t *area)
 	I_dev_lcd *lcd;
 	
 	Dev_open( LCD_DEVID, (void *)&lcd);
-	if( cnt->subType == ST_LABLE)
+	lcd->BKColor( cnt->bkc);
+	if( cnt->subType == TEXT_ST_LABLE)
 	{
-		
-		lcd->BKColor( cnt->bkc);
 		lcd->label( cnt->data, cnt->len,&area->useArea, cnt->font,cnt->colour, area->ali);
-		lcd->BKColor( area->curScInfo->scBkc);	//将背景色改回屏幕的背景色，避免影响后面要显示的内容
+		
 	}
+	else
+	{
+		lcd->wrString( cnt->data, cnt->len, area->useArea.x1, area->useArea.y1, cnt->font,cnt->colour);
+		
+	}
+	lcd->BKColor( area->curScInfo->scBkc);	//将背景色改回屏幕的背景色，避免影响后面要显示的内容
 	
 //	I_dev_lcd *lcd;
 //	char		*oldp = cnt->data;

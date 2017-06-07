@@ -16,3 +16,4 @@
 .\objects\dev_lcdusartgpu.o: E:\mylib\sdhLib\inc\basis/sdhDebug.h
 .\objects\dev_lcdusartgpu.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
 .\objects\dev_lcdusartgpu.o: E:\mylib\sdhLib\inc\sdhDef.h
+.\objects\dev_lcdusartgpu.o: ..\PplRcd\sdhlibConf.h

@@ -18,6 +18,7 @@
 .\objects\txtexpr.o: E:\mylib\sdhLib\inc\basis/sdhDebug.h
 .\objects\txtexpr.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
 .\objects\txtexpr.o: E:\mylib\sdhLib\inc\sdhDef.h
+.\objects\txtexpr.o: ..\PplRcd\sdhlibConf.h
 .\objects\txtexpr.o: .\Glyph\Gh_txt.h
 .\objects\txtexpr.o: E:\mylib\sdhLib\inc\arithmetic/cycQueue.h
 .\objects\txtexpr.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h

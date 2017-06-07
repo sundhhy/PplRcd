@@ -25,7 +25,7 @@
 .\objects\main.o: .\BSP\mySystemClock.h
 .\objects\main.o: .\BSP\pinmux.h
 .\objects\main.o: .\BSP\intrInit.h
-.\objects\main.o: E:\mylib\sdhLib\inc\basis/marco.h
+.\objects\main.o: E:\mylib\sdhLib\inc\basis/macros.h
 .\objects\main.o: E:\mylib\sdhLib\inc\basis/sdhError.h
 .\objects\main.o: .\device\dev_LCD\nokia_5110\nokia_5110.h
 .\objects\main.o: .\device\device.h

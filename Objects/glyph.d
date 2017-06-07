@@ -16,3 +16,4 @@
 .\objects\glyph.o: E:\mylib\sdhLib\inc\basis/sdhDebug.h
 .\objects\glyph.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
 .\objects\glyph.o: E:\mylib\sdhLib\inc\sdhDef.h
+.\objects\glyph.o: ..\PplRcd\sdhlibConf.h

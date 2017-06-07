@@ -32,12 +32,14 @@ static const char testContext[] = \
 #elif TEST_CONTEXT == 4
 static const char testContext[] = \
 "<title bkc=black  f=24 ali=l>设置</> \
-<input ali=m id=0x01> <text f=24>密码：</> <rct bkc=black x=96 y=30></></input>";
+<input ali=m cg=2 id=0x01> <text f=24 clr=black >Passwd:</> <rct bkc=black x=96 y=30></></input>";
 
 #endif
 
 //背景色 "none" 或某种颜色
 #define SCREENBKC		"white"
+#define LINESPACING		2
+#define COLUMGRAP		0
 
 void View_test(void)
 {
@@ -50,6 +52,8 @@ void View_test(void)
 	Expr *myexp ;
 	
 	//设置排版的排版算法
+	ct->lineSpacing = LINESPACING;
+	ct->columnGap = COLUMGRAP;
 	ct->setCtor( ct, ctor);
 	ct->setSCBkc( ct, SCREENBKC);
 	ct->clean( ct);

@@ -36,6 +36,17 @@ typedef struct {
 	
 	Glyph		*gh;
 	
+	//这是用在父子元素中，子元素的间距
+	uint8_t			lineSpacing;
+	uint8_t			columnGap;
+		//有些图元的对齐可以自动处理，如LABL
+	//有些则不行，一般组合的图元要自己处理对齐
+	//在分配显示区域时通过这个标志来判断
+	uint8_t			dealAli;
+	uint8_t			none;
+	
+	
+	
 	
 //	char		*data;
 //	uint16_t 	len;
@@ -65,8 +76,11 @@ CLASS( Composition)
 	void				*ctor;
 	
 	scInfo_t		mySCI;
-	
-	
+	//每个图元之间的间距
+	uint8_t			lineSpacing;
+	uint8_t			columnGap;
+	uint8_t			none[2];
+
 	
 //	area_t		lcdArea;
 	

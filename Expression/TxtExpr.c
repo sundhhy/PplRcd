@@ -72,8 +72,12 @@ static void * TxtInterpret( Expr *self, void *faVd, void *context)
 		}
 		if( vd->dspCnt.font < FONT_16)
 			vd->dspCnt.font = FONT_16;
-		vd->dspCnt.subType = ST_LABLE;
+		vd->dspCnt.subType = TEXT_ST_LABLE;
 		
+	}
+	else
+	{
+		vd->dealAli = 1;
 	}
 	
 	

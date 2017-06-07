@@ -479,11 +479,6 @@
           <GroupName>myLib</GroupName>
           <Files>
             <File>
-              <FileName>marco.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>E:\mylib\sdhLib\inc\basis\marco.h</FilePath>
-            </File>
-            <File>
               <FileName>sdhDebug.h</FileName>
               <FileType>5</FileType>
               <FilePath>E:\mylib\sdhLib\inc\basis\sdhDebug.h</FilePath>
@@ -552,6 +547,16 @@
               <FileName>list.h</FileName>
               <FileType>5</FileType>
               <FilePath>E:\mylib\sdhLib\inc\arithmetic\list.h</FilePath>
+            </File>
+            <File>
+              <FileName>assert.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>E:\mylib\sdhLib\inc\basis\assert.h</FilePath>
+            </File>
+            <File>
+              <FileName>sdhlibConf.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\sdhlibConf.h</FilePath>
             </File>
           </Files>
         </Group>
@@ -824,24 +829,24 @@
               <FilePath>.\Expression\BrExpr.h</FilePath>
             </File>
             <File>
-              <FileName>BackgroudExpr.c</FileName>
+              <FileName>NtInput.c</FileName>
               <FileType>1</FileType>
-              <FilePath>.\Expression\BackgroudExpr.c</FilePath>
+              <FilePath>.\Expression\NtInput.c</FilePath>
             </File>
             <File>
-              <FileName>BackgroudExpr.h</FileName>
+              <FileName>NtInput.h</FileName>
               <FileType>5</FileType>
-              <FilePath>.\Expression\BackgroudExpr.h</FilePath>
+              <FilePath>.\Expression\NtInput.h</FilePath>
             </File>
             <File>
-              <FileName>Input.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Expression\Input.h</FilePath>
-            </File>
-            <File>
-              <FileName>Input.c</FileName>
+              <FileName>GeometricsExpr.c</FileName>
               <FileType>1</FileType>
-              <FilePath>.\Expression\Input.c</FilePath>
+              <FilePath>.\Expression\GeometricsExpr.c</FilePath>
+            </File>
+            <File>
+              <FileName>GeometricsExpr.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Expression\GeometricsExpr.h</FilePath>
             </File>
           </Files>
         </Group>

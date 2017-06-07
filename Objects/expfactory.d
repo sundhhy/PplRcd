@@ -19,4 +19,5 @@
 .\objects\expfactory.o: Expression\TxtExpr.h
 .\objects\expfactory.o: Expression\NtButton.h
 .\objects\expfactory.o: Expression\BrExpr.h
-.\objects\expfactory.o: Expression\Input.h
+.\objects\expfactory.o: Expression\NtInput.h
+.\objects\expfactory.o: Expression\GeometricsExpr.h

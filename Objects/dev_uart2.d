@@ -9,6 +9,7 @@
 .\objects\dev_uart2.o: E:\mylib\sdhLib\inc\basis/sdhDebug.h
 .\objects\dev_uart2.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
 .\objects\dev_uart2.o: E:\mylib\sdhLib\inc\sdhDef.h
+.\objects\dev_uart2.o: ..\PplRcd\sdhlibConf.h
 .\objects\dev_uart2.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdarg.h
 .\objects\dev_uart2.o: .\drive\uart\drive_uart.h
 .\objects\dev_uart2.o: d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\StdPeriph_Driver\inc\stm32f10x_usart.h

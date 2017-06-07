@@ -14,8 +14,14 @@
 #define	ALIGN_MIDDLE				1		//居中对齐
 #define	ALIGN_RIGHT					2		//右对齐对齐
 
-#define ST_TEXT						0
-#define ST_LABLE					1    //子类型
+//文本类的子类型
+#define TEXT_ST_TEXT					0
+#define TEXT_ST_LABLE					1    //子类型
+
+//几何类的子类型
+//#define GMTR_ST_RCT					1    //矩形
+//#define GMTR_ST_ROUNDRCT				2    //圆角矩形
+//#define GMTR_ST_ROUND				3    //圆
 
 #define LCD_DEVID		DEVID_USARTGPULCD
 
@@ -65,8 +71,8 @@ typedef struct {
 	uint16_t		sizeX;
 	uint16_t		sizeY;
 	
-	uint8_t		rowW;			//行间距
-	uint8_t		colW;			//列间距
+	uint8_t		cursorX;		//图元自己的光标		
+	uint8_t		cursorY;			
 	uint8_t		numRow;			//行的总数
 	uint8_t		ali;		//默认左对齐
 }dspArea_t;
@@ -114,5 +120,7 @@ int String2Font( char *s);
 int	String2Align( char *s);
 
 int	String2CntEff( char *s);
+
+int GetKeyVal( char *s, char *key, char *val, short size);
 
 #endif

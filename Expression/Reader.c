@@ -18,19 +18,45 @@ static char *Eliminate_char( char *str, char c);
 char *RemoveHead( char *context)
 {
 	char	*pp;
-	char 	*newpp = context;
 	pp = strchr( context, BEGIN_FLAG);
 	if( pp == NULL)
+	{
+		pp = context;
 		goto exit;
+	}
 	
-	pp = strchr( context, END_FLAG);
-	if( pp == NULL)
-		goto exit;
+	while(1)
+	{
+		if( *pp == TAIL_FLAG)
+		{
+			//这不是一个头部，而是结尾
+			pp = context;
+			break;
+			
+		}
+		if( *pp == END_FLAG)
+		{
+			pp ++;
+			break;
+		}
+		if( *pp == '\0')
+		{
+			pp = context;
+			break;
+			
+		}
+		pp ++;
+		
+	}
 	
-	newpp = pp + 1;
+//	pp = strchr( context, END_FLAG);
+//	if( pp == NULL)
+//		goto exit;
+	
+	
 	
 	exit:
-		return newpp;
+		return pp;
 	
 }
 
@@ -56,19 +82,20 @@ char *RemoveTail( char *context, char *tailName, int size)
 	i = 0;
 	while(1)
 	{
-		if( ( *pp == END_FLAG) || ( *pp == '\0'))
+		if( ( pp[ i] == END_FLAG) || ( pp[ i] == '\0'))
 			break;
-		tailName[ i] = *pp++;
-		if( i == (size -1))
-			break;
+		if( tailName && i < (size -1))
+		{
+			tailName[ i] = pp[i];
+		}
+		
+		i++;
 			
 	}
-	tailName[ i] = '\0';
-	
-//	pp = strchr( pp, END_FLAG);
-//	if( pp == NULL)
-//		goto exit;
-	
+	if( tailName)
+		tailName[ size -1] = '\0';
+	pp += i;
+
 	if(  *pp == '\0')
 		newpp = pp;
 	else
@@ -184,6 +211,7 @@ int GetAttribute( char *context, char *att, int attLen)
 	exit:
 	return count;
 }
+
 
 void *GetNameVale( char *context, char *name, char **value, int *len)
 {

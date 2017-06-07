@@ -13,3 +13,4 @@
 .\objects\device.o: E:\mylib\sdhLib\inc\basis/sdhDebug.h
 .\objects\device.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
 .\objects\device.o: E:\mylib\sdhLib\inc\sdhDef.h
+.\objects\device.o: ..\PplRcd\sdhlibConf.h

@@ -5,7 +5,7 @@
 #include "Composition.h"
 
 
-#define VAR_LEN		15
+#define VAR_LEN		32
 
 #define TEMPBUF_LEN		32
 

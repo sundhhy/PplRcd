@@ -2,6 +2,7 @@
 .\objects\mem.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
 .\objects\mem.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
 .\objects\mem.o: E:\mylib\sdhLib\inc\sdhDef.h
+.\objects\mem.o: ..\PplRcd\sdhlibConf.h
 .\objects\mem.o: E:\mylib\sdhLib\inc\basis/assert.h
 .\objects\mem.o: E:\mylib\sdhLib\inc\basis/except.h
 .\objects\mem.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\setjmp.h

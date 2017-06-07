@@ -6,4 +6,5 @@
 .\objects\dev_lcd.o: E:\mylib\sdhLib\inc\basis/sdhDebug.h
 .\objects\dev_lcd.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
 .\objects\dev_lcd.o: E:\mylib\sdhLib\inc\sdhDef.h
+.\objects\dev_lcd.o: ..\PplRcd\sdhlibConf.h
 .\objects\dev_lcd.o: E:\mylib\sdhLib\inc\basis/sdhError.h

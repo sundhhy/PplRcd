@@ -10,9 +10,7 @@ CLASS(GhRectangle)
 {
 	EXTENDS( Glyph);
 	
-	//只好通过font这个成员来设置宽和高了
-	uint16_t	width;
-	uint16_t	height;
+
 	
 	
 };

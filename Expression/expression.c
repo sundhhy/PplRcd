@@ -21,6 +21,9 @@ scr : 	Screen region 屏幕区域
 sel	:	selection 	选中区域
 ali :  aligning 对齐方式
 
+cg	:	columnGap 列间距
+ls	:	lineSpacing	行间距
+
 pmx/y : permille x/y轴长度占屏幕的x/y轴尺寸的千分比
 */
 

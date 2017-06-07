@@ -150,31 +150,22 @@ int String2Colour( char *s)
 	return c;
 }
 
+
 int	String2Bkc( char *s)
 {
 	char *pp ;
 	char colour[8] = {0};
 	char i = 0;
-	pp =  strstr( s, "bkc");
-	if( pp == NULL)
-		return ERR_COLOUR;
-	pp =  strstr( s, "=");
-	if( pp == NULL)
-		return ERR_COLOUR;
-	
-	pp ++;
-	while(1)
+	if( GetKeyVal( s, "bkc", colour, 8))
 	{
-		colour[ i] = pp[i];
-		i ++;
-		if( pp[i] == ' ')
-				break;
-		if( i > 6)
-			break;
+		
+		return String2Colour( colour);
+	}
+	else
+	{
+		return ERR_COLOUR;
 		
 	}
-	colour[ i] = 0;
-	return String2Colour( colour);
 }
 
 int String2Clr( char *s)
@@ -246,6 +237,9 @@ int	String2Align( char *s)
 }
 
 
+
+
+
 int	DefaultColour( void *arg)
 {
 	int c = 0;
@@ -268,3 +262,52 @@ int	String2CntEff( char *s)
 	
 	return eff;
 }
+
+
+//key=val or key = val 否则返回直接返回0
+//以空格结尾
+int GetKeyVal( char *s, char *key, char *val, short size)
+{
+	char *pp ;
+	char i = 0;
+	pp =  strstr( s, key);
+	if( pp == NULL)
+		return 0;
+	
+	pp += strlen( key);
+	//去除空格
+	while(1)
+	{
+		if( *pp == ' ')
+			pp++;
+		else
+			break;
+		
+	}
+	if( *pp != '=')
+		return 0;
+	pp ++;
+	//去除空格
+	while(1)
+	{
+		if( *pp == ' ')
+			pp++;
+		else
+			break;
+		
+	}
+	i = 0;
+	while(1)
+	{
+		val[ i] = pp[i];
+		i ++;
+		if( pp[i] == ' ')
+				break;
+		if( i > ( size - 2))
+			break;
+		
+	}
+	val[ i] = 0;
+	return i;
+}
+
