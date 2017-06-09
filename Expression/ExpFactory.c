@@ -5,6 +5,7 @@
 #include "BrExpr.h"
 #include "NtInput.h"
 #include "GeometricsExpr.h"
+#include "NtGrid.h"
 
 Expr *ExpCreate( char *type)
 {
@@ -28,18 +29,22 @@ Expr *ExpCreate( char *type)
 		return (Expr *)GetTxtExpr();
 	}
 	
-	p = strstr( type, "input");
-	if( p)
-	{
-		return (Expr *)GetNtInput();
-	}
+//	p = strstr( type, "input");
+//	if( p)
+//	{
+//		return (Expr *)GetNtInput();
+//	}
 	
 	p = strstr( type, "rct");
 	if( p)
 	{
 		return (Expr *)GetGmtrExpr();
 	}
-	
+	p = strstr( type, "gr");
+	if( p)
+	{
+		return (Expr *)GetNtGrid();
+	}
 	
 	
 	//不注意大小写

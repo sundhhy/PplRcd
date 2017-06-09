@@ -21,3 +21,4 @@
 .\objects\expfactory.o: Expression\BrExpr.h
 .\objects\expfactory.o: Expression\NtInput.h
 .\objects\expfactory.o: Expression\GeometricsExpr.h
+.\objects\expfactory.o: Expression\NtGrid.h

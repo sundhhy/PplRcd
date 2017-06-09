@@ -24,9 +24,18 @@ ali :  aligning 对齐方式
 cg	:	columnGap 列间距
 ls	:	lineSpacing	行间距
 
+gr	:	grid
+
 pmx/y : permille x/y轴长度占屏幕的x/y轴尺寸的千分比
 */
 
+/*
+
+子图元可以继承父图元的属性，如颜色，背景色，字体
+如果子图元自己指定了属性，则优先使用自己制定的
+如果自己没有指定，就先找父图元的属性；如果父图元没有提供，就使用系统默认的属性
+
+*/
 
 //每种表达式在解析时使用，但是用完就必须恢复为0
 char expTempBUf[TEMPBUF_LEN];

@@ -31,8 +31,10 @@ static void * TxtInterpret( Expr *self, void *faVd, void *context)
 	char	*pp;
 	char 	*pnewPosition;
 	char	*att = expTempBUf;
+
 	
 	ViewData_t	*vd;
+
 
 	GetAttribute( context, att, TEMPBUF_LEN);
 	
@@ -46,19 +48,36 @@ static void * TxtInterpret( Expr *self, void *faVd, void *context)
 	if( vd == NULL)
 		goto exit;
 	
+	
+	
+	
+	//属性优先级:自己的私有属性， 父属性， 系统默认属性
+	
+	
+	
 	vd->dspCnt.colour = String2Clr( att);
+	
+	
+//	vd->dspCnt.effects = String2CntEff( att);
+	vd->dspCnt.bkc  = String2Bkc( att);
+	vd->dspArea.ali = String2Align( att);
+	vd->dspCnt.font = String2Font( att);
+	
+	UsePrntAttIfNeed( ( ViewData_t	*)faVd, vd);
+	
 	if( vd->dspCnt.colour == ERR_COLOUR)
 	{
+		
 		vd->dspCnt.colour = DefaultColour(NULL);
 		
 	}
+	if( vd->dspArea.ali == ALIGN_ERR)
+	{
+		
+		vd->dspArea.ali = ALIGN_DEFAULT;
+		
+	}
 	
-	vd->dspCnt.effects = String2CntEff( att);
-	vd->dspCnt.bkc  = String2Bkc( att);
-	vd->dspArea.ali = String2Align( att);
-	
-	
-	vd->dspCnt.font = String2Font( att);
 	vd->dspCnt.data = pp;
 	vd->dspCnt.len = len;
 	

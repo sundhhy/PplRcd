@@ -8,6 +8,7 @@
 #define FONT_32			4
 #define FONT_48			5
 #define FONT_64			6
+#define FONT_ERR		0xf
 
 #define DEF_FONT		FONT_12
 
@@ -26,6 +27,16 @@
 
 #define DEF_COLOUR			COLOUR_WHITE
 #define ERR_COLOUR			0
+
+
+#define	ALIGN_LEFT					0		//左对齐
+#define	ALIGN_MIDDLE				1		//居中对齐
+#define	ALIGN_RIGHT					2		//右对齐对齐s
+#define ALIGN_ERR					0xff
+#define ALIGN_DEFAULT				ALIGN_LEFT
+
+#define SIZE_ERR					0xffff
+
 
 //字符型设备的接口
 //包括uart设备

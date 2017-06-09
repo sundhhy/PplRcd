@@ -32,7 +32,9 @@ static const char testContext[] = \
 #elif TEST_CONTEXT == 4
 static const char testContext[] = \
 "<title bkc=black  f=24 ali=l>设置</> \
-<input ali=m cg=2 id=0x01> <text f=24 clr=black >Passwd:</> <rct bkc=black x=96 y=30></></input>";
+<gr ali=m cg=2  id=0x01 > <text f=24 clr=black >Passwd:</> <rct bkc=black x=96 y=30></></input> \
+<gr cols=2 cg=2 ls=2 f=24 bkc=black ali=m x=96 y=30 > <bu ><text >系统组态</></bu><bu  ><text > 显示组态</></bu><br/>\
+<bu ><text >输入组态</></bu><bu ><text > 输出组态</></bu><br/> </gr>";
 
 #endif
 

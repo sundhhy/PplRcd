@@ -3,7 +3,7 @@
 <title>Static Call Graph - [.\Objects\PplRcd.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image .\Objects\PplRcd.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5050106: Last Updated: Wed Jun 07 22:42:23 2017
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5050106: Last Updated: Fri Jun 09 22:18:09 2017
 <BR><P>
 <H3>Maximum Stack Usage =        168 bytes + Unknown(Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -94,8 +94,8 @@ Function Pointers
  <LI><a href="#[87]">Layout</a> from simplecompositor.o(i.Layout) referenced from simplecompositor.o(i.Simp_VdLayout)
  <LI><a href="#[83]">LayoutChld</a> from simplecompositor.o(i.LayoutChld) referenced from simplecompositor.o(i.Layout)
  <LI><a href="#[e]">MemManage_Handler</a> from startup_stm32f10x_hd.o(.text) referenced from startup_stm32f10x_hd.o(RESET)
- <LI><a href="#[84]">MtInput_Interpret</a> from ntinput.o(i.MtInput_Interpret) referenced from ntinput.o(i.NtInput_ctor)
  <LI><a href="#[c]">NMI_Handler</a> from startup_stm32f10x_hd.o(.text) referenced from startup_stm32f10x_hd.o(RESET)
+ <LI><a href="#[84]">NtGrid_Interpret</a> from ntgrid.o(i.NtGrid_Interpret) referenced from ntgrid.o(i.NtGrid_ctor)
  <LI><a href="#[16]">PVD_IRQHandler</a> from startup_stm32f10x_hd.o(.text) referenced from startup_stm32f10x_hd.o(RESET)
  <LI><a href="#[13]">PendSV_Handler</a> from hal_cm3.o(.emb_text) referenced from startup_stm32f10x_hd.o(RESET)
  <LI><a href="#[1a]">RCC_IRQHandler</a> from startup_stm32f10x_hd.o(.text) referenced from startup_stm32f10x_hd.o(RESET)
@@ -506,7 +506,7 @@ Global Symbols
 <LI><a href="#[90]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UartWrite
 <LI><a href="#[8d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UartRead
 <LI><a href="#[7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GpuBKColor
-<LI><a href="#[84]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MtInput_Interpret
+<LI><a href="#[84]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;NtGrid_Interpret
 <LI><a href="#[ed]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GetAttribute
 <LI><a href="#[88]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;TxtInterpret
 </UL>
@@ -519,7 +519,7 @@ Global Symbols
 <BR><BR>[Calls]<UL><LI><a href="#[b5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memset
 </UL>
 
-<P><STRONG><a name="[10b]"></a>strcat</STRONG> (Thumb, 24 bytes, Stack size 0 bytes, strcat.o(.text))
+<P><STRONG><a name="[10d]"></a>strcat</STRONG> (Thumb, 24 bytes, Stack size 0 bytes, strcat.o(.text))
 <BR><BR>[Called By]<UL><LI><a href="#[6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GpuLabel
 <LI><a href="#[5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GpuWrString
 </UL>
@@ -528,10 +528,10 @@ Global Symbols
 <BR><BR>[Stack]<UL><LI>Max Depth = 12<LI>Call Chain = strstr
 </UL>
 <BR>[Called By]<UL><LI><a href="#[e8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ExpCreate
-<LI><a href="#[11f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;String2Font
-<LI><a href="#[11a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;String2Colour
+<LI><a href="#[114]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;String2Font
+<LI><a href="#[11d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;String2Colour
 <LI><a href="#[107]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;String2Clr
-<LI><a href="#[10d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;String2Align
+<LI><a href="#[113]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;String2Align
 <LI><a href="#[f4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GetKeyVal
 <LI><a href="#[96]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UartTest
 <LI><a href="#[f7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GetNameVale
@@ -540,7 +540,7 @@ Global Symbols
 <P><STRONG><a name="[ee]"></a>strchr</STRONG> (Thumb, 20 bytes, Stack size 0 bytes, strchr.o(.text))
 <BR><BR>[Called By]<UL><LI><a href="#[f6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GetName
 <LI><a href="#[106]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RemoveHead
-<LI><a href="#[109]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RemoveTail
+<LI><a href="#[10b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RemoveTail
 <LI><a href="#[ed]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GetAttribute
 </UL>
 
@@ -559,14 +559,14 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[f1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GetCompileMoth
 </UL>
 
-<P><STRONG><a name="[10a]"></a>strncat</STRONG> (Thumb, 40 bytes, Stack size 8 bytes, strncat.o(.text))
+<P><STRONG><a name="[10c]"></a>strncat</STRONG> (Thumb, 40 bytes, Stack size 8 bytes, strncat.o(.text))
 <BR><BR>[Stack]<UL><LI>Max Depth = 8<LI>Call Chain = strncat
 </UL>
 <BR>[Called By]<UL><LI><a href="#[6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GpuLabel
 <LI><a href="#[5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GpuWrString
 </UL>
 
-<P><STRONG><a name="[11d]"></a>strcpy</STRONG> (Thumb, 18 bytes, Stack size 0 bytes, strcpy.o(.text))
+<P><STRONG><a name="[120]"></a>strcpy</STRONG> (Thumb, 18 bytes, Stack size 0 bytes, strcpy.o(.text))
 <BR><BR>[Called By]<UL><LI><a href="#[96]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UartTest
 <LI><a href="#[76]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SetVar
 </UL>
@@ -602,8 +602,8 @@ Global Symbols
 <LI><a href="#[bc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_errno_addr
 </UL>
 <BR>[Called By]<UL><LI><a href="#[f0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GetCompileDay
+<LI><a href="#[84]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;NtGrid_Interpret
 <LI><a href="#[81]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GmtrInterpret
-<LI><a href="#[84]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MtInput_Interpret
 </UL>
 
 <P><STRONG><a name="[18b]"></a>setjmp</STRONG> (Thumb, 26 bytes, Stack size 8 bytes, setjmp.o(.text), UNUSED)
@@ -789,8 +789,9 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[12c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UartDma_Init
 </UL>
 
-<P><STRONG><a name="[121]"></a>DefaultColour</STRONG> (Thumb, 10 bytes, Stack size 0 bytes, glyph.o(i.DefaultColour))
-<BR><BR>[Called By]<UL><LI><a href="#[88]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;TxtInterpret
+<P><STRONG><a name="[10a]"></a>DefaultColour</STRONG> (Thumb, 10 bytes, Stack size 0 bytes, glyph.o(i.DefaultColour))
+<BR><BR>[Called By]<UL><LI><a href="#[81]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GmtrInterpret
+<LI><a href="#[88]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;TxtInterpret
 </UL>
 
 <P><STRONG><a name="[d5]"></a>DevChar_open</STRONG> (Thumb, 60 bytes, Stack size 24 bytes, dev_char.o(i.DevChar_open))
@@ -958,38 +959,38 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[ca]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;List_map
 <LI><a href="#[cb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;List_free
 <LI><a href="#[c7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Mem_calloc
-<LI><a href="#[10c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Mem_alloc
+<LI><a href="#[10e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Mem_alloc
 <LI><a href="#[e5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Except_raise
 </UL>
 
 <P><STRONG><a name="[e8]"></a>ExpCreate</STRONG> (Thumb, 96 bytes, Stack size 16 bytes, expfactory.o(i.ExpCreate))
-<BR><BR>[Stack]<UL><LI>Max Depth = 88<LI>Call Chain = ExpCreate &rArr; GetNtInput &rArr; NtInput_new &rArr; malloc &rArr; internal_alloc
+<BR><BR>[Stack]<UL><LI>Max Depth = 88<LI>Call Chain = ExpCreate &rArr; GetNtGrid &rArr; NtGrid_new &rArr; malloc &rArr; internal_alloc
 </UL>
-<BR>[Calls]<UL><LI><a href="#[eb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GetNtInput
-<LI><a href="#[ec]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GetGmtrExpr
+<BR>[Calls]<UL><LI><a href="#[ec]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GetNtGrid
+<LI><a href="#[eb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GetGmtrExpr
 <LI><a href="#[ea]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GetTxtExpr
 <LI><a href="#[e9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strstr
 </UL>
 <BR>[Called By]<UL><LI><a href="#[137]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;View_test
-<LI><a href="#[84]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MtInput_Interpret
+<LI><a href="#[84]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;NtGrid_Interpret
 </UL>
 
 <P><STRONG><a name="[105]"></a>Expr_ctor</STRONG> (Thumb, 10 bytes, Stack size 0 bytes, expression.o(i.Expr_ctor))
-<BR><BR>[Called By]<UL><LI><a href="#[104]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GmtrExpr_ctor
-<LI><a href="#[112]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;NtInput_ctor
-<LI><a href="#[120]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;TxtExpr_ctor
+<BR><BR>[Called By]<UL><LI><a href="#[115]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;NtGrid_ctor
+<LI><a href="#[104]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GmtrExpr_ctor
+<LI><a href="#[122]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;TxtExpr_ctor
 </UL>
 
-<P><STRONG><a name="[118]"></a>GPIO_Init</STRONG> (Thumb, 278 bytes, Stack size 24 bytes, stm32f10x_gpio.o(i.GPIO_Init))
+<P><STRONG><a name="[11b]"></a>GPIO_Init</STRONG> (Thumb, 278 bytes, Stack size 24 bytes, stm32f10x_gpio.o(i.GPIO_Init))
 <BR><BR>[Stack]<UL><LI>Max Depth = 24<LI>Call Chain = GPIO_Init
 </UL>
-<BR>[Called By]<UL><LI><a href="#[117]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Pin_init
+<BR>[Called By]<UL><LI><a href="#[11a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Pin_init
 </UL>
 
-<P><STRONG><a name="[119]"></a>GPIO_PinRemapConfig</STRONG> (Thumb, 138 bytes, Stack size 20 bytes, stm32f10x_gpio.o(i.GPIO_PinRemapConfig))
+<P><STRONG><a name="[11c]"></a>GPIO_PinRemapConfig</STRONG> (Thumb, 138 bytes, Stack size 20 bytes, stm32f10x_gpio.o(i.GPIO_PinRemapConfig))
 <BR><BR>[Stack]<UL><LI>Max Depth = 20<LI>Call Chain = GPIO_PinRemapConfig
 </UL>
-<BR>[Called By]<UL><LI><a href="#[117]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Pin_init
+<BR>[Called By]<UL><LI><a href="#[11a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Pin_init
 </UL>
 
 <P><STRONG><a name="[ed]"></a>GetAttribute</STRONG> (Thumb, 118 bytes, Stack size 32 bytes, reader.o(i.GetAttribute))
@@ -999,8 +1000,8 @@ Global Symbols
 <LI><a href="#[ee]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strchr
 <LI><a href="#[b4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memclr
 </UL>
-<BR>[Called By]<UL><LI><a href="#[81]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GmtrInterpret
-<LI><a href="#[84]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MtInput_Interpret
+<BR>[Called By]<UL><LI><a href="#[84]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;NtGrid_Interpret
+<LI><a href="#[81]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GmtrInterpret
 <LI><a href="#[88]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;TxtInterpret
 </UL>
 
@@ -1020,7 +1021,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
-<P><STRONG><a name="[ec]"></a>GetGmtrExpr</STRONG> (Thumb, 22 bytes, Stack size 8 bytes, geometricsexpr.o(i.GetGmtrExpr))
+<P><STRONG><a name="[eb]"></a>GetGmtrExpr</STRONG> (Thumb, 22 bytes, Stack size 8 bytes, geometricsexpr.o(i.GetGmtrExpr))
 <BR><BR>[Stack]<UL><LI>Max Depth = 72<LI>Call Chain = GetGmtrExpr &rArr; GmtrExpr_new &rArr; malloc &rArr; internal_alloc
 </UL>
 <BR>[Calls]<UL><LI><a href="#[f3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GmtrExpr_new
@@ -1035,8 +1036,8 @@ Global Symbols
 <LI><a href="#[e9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strstr
 </UL>
 <BR>[Called By]<UL><LI><a href="#[108]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;String2Bkc
+<LI><a href="#[84]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;NtGrid_Interpret
 <LI><a href="#[81]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GmtrInterpret
-<LI><a href="#[84]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MtInput_Interpret
 </UL>
 
 <P><STRONG><a name="[f6]"></a>GetName</STRONG> (Thumb, 86 bytes, Stack size 24 bytes, reader.o(i.GetName))
@@ -1046,7 +1047,7 @@ Global Symbols
 <LI><a href="#[ee]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strchr
 </UL>
 <BR>[Called By]<UL><LI><a href="#[137]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;View_test
-<LI><a href="#[84]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MtInput_Interpret
+<LI><a href="#[84]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;NtGrid_Interpret
 </UL>
 
 <P><STRONG><a name="[f7]"></a>GetNameVale</STRONG> (Thumb, 66 bytes, Stack size 24 bytes, reader.o(i.GetNameVale))
@@ -1058,10 +1059,10 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[88]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;TxtInterpret
 </UL>
 
-<P><STRONG><a name="[eb]"></a>GetNtInput</STRONG> (Thumb, 22 bytes, Stack size 8 bytes, ntinput.o(i.GetNtInput))
-<BR><BR>[Stack]<UL><LI>Max Depth = 72<LI>Call Chain = GetNtInput &rArr; NtInput_new &rArr; malloc &rArr; internal_alloc
+<P><STRONG><a name="[ec]"></a>GetNtGrid</STRONG> (Thumb, 22 bytes, Stack size 8 bytes, ntgrid.o(i.GetNtGrid))
+<BR><BR>[Stack]<UL><LI>Max Depth = 72<LI>Call Chain = GetNtGrid &rArr; NtGrid_new &rArr; malloc &rArr; internal_alloc
 </UL>
-<BR>[Calls]<UL><LI><a href="#[f9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;NtInput_new
+<BR>[Calls]<UL><LI><a href="#[f9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;NtGrid_new
 </UL>
 <BR>[Called By]<UL><LI><a href="#[e8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ExpCreate
 </UL>
@@ -1176,7 +1177,7 @@ Global Symbols
 <BR>[Calls]<UL><LI><a href="#[104]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GmtrExpr_ctor
 <LI><a href="#[ba]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;malloc
 </UL>
-<BR>[Called By]<UL><LI><a href="#[ec]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GetGmtrExpr
+<BR>[Called By]<UL><LI><a href="#[eb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GetGmtrExpr
 </UL>
 
 <P><STRONG><a name="[6]"></a>GpuLabel</STRONG> (Thumb, 186 bytes, Stack size 64 bytes, dev_lcdusartgpu.o(i.GpuLabel))
@@ -1185,9 +1186,9 @@ Global Symbols
 <BR>[Calls]<UL><LI><a href="#[c4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osDelay
 <LI><a href="#[c3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GpuSend
 <LI><a href="#[c2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2sprintf
-<LI><a href="#[10a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strncat
+<LI><a href="#[10c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strncat
 <LI><a href="#[f5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strlen
-<LI><a href="#[10b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strcat
+<LI><a href="#[10d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strcat
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> dev_lcdusartgpu.o(.data)
 </UL>
@@ -1228,7 +1229,7 @@ Global Symbols
 <P><STRONG><a name="[cd]"></a>List_push</STRONG> (Thumb, 26 bytes, Stack size 16 bytes, list.o(i.List_push))
 <BR><BR>[Stack]<UL><LI>Max Depth = 96<LI>Call Chain = List_push &rArr; Mem_alloc &rArr; malloc &rArr; internal_alloc
 </UL>
-<BR>[Calls]<UL><LI><a href="#[10c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Mem_alloc
+<BR>[Calls]<UL><LI><a href="#[10e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Mem_alloc
 </UL>
 <BR>[Called By]<UL><LI><a href="#[5a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Ction_InsertVD
 </UL>
@@ -1238,7 +1239,7 @@ Global Symbols
 <LI><a href="#[5b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Ction_flush
 </UL>
 
-<P><STRONG><a name="[10c]"></a>Mem_alloc</STRONG> (Thumb, 66 bytes, Stack size 24 bytes, mem.o(i.Mem_alloc))
+<P><STRONG><a name="[10e]"></a>Mem_alloc</STRONG> (Thumb, 66 bytes, Stack size 24 bytes, mem.o(i.Mem_alloc))
 <BR><BR>[Stack]<UL><LI>Max Depth = 80<LI>Call Chain = Mem_alloc &rArr; malloc &rArr; internal_alloc
 </UL>
 <BR>[Calls]<UL><LI><a href="#[e5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Except_raise
@@ -1265,80 +1266,80 @@ Global Symbols
 <LI><a href="#[5c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Ction_FreeVD
 </UL>
 
-<P><STRONG><a name="[10e]"></a>NVIC_Configuration</STRONG> (Thumb, 162 bytes, Stack size 8 bytes, intrinit.o(i.NVIC_Configuration))
+<P><STRONG><a name="[10f]"></a>NVIC_Configuration</STRONG> (Thumb, 162 bytes, Stack size 8 bytes, intrinit.o(i.NVIC_Configuration))
 <BR><BR>[Stack]<UL><LI>Max Depth = 24<LI>Call Chain = NVIC_Configuration &rArr; NVIC_Init
 </UL>
-<BR>[Calls]<UL><LI><a href="#[10f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;NVIC_SetVectorTable
-<LI><a href="#[110]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;NVIC_PriorityGroupConfig
-<LI><a href="#[111]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;NVIC_Init
+<BR>[Calls]<UL><LI><a href="#[110]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;NVIC_SetVectorTable
+<LI><a href="#[111]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;NVIC_PriorityGroupConfig
+<LI><a href="#[112]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;NVIC_Init
 </UL>
 <BR>[Called By]<UL><LI><a href="#[a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
-<P><STRONG><a name="[111]"></a>NVIC_Init</STRONG> (Thumb, 100 bytes, Stack size 16 bytes, misc.o(i.NVIC_Init))
+<P><STRONG><a name="[112]"></a>NVIC_Init</STRONG> (Thumb, 100 bytes, Stack size 16 bytes, misc.o(i.NVIC_Init))
 <BR><BR>[Stack]<UL><LI>Max Depth = 16<LI>Call Chain = NVIC_Init
 </UL>
-<BR>[Called By]<UL><LI><a href="#[10e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;NVIC_Configuration
+<BR>[Called By]<UL><LI><a href="#[10f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;NVIC_Configuration
 </UL>
 
-<P><STRONG><a name="[110]"></a>NVIC_PriorityGroupConfig</STRONG> (Thumb, 10 bytes, Stack size 0 bytes, misc.o(i.NVIC_PriorityGroupConfig))
-<BR><BR>[Called By]<UL><LI><a href="#[10e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;NVIC_Configuration
+<P><STRONG><a name="[111]"></a>NVIC_PriorityGroupConfig</STRONG> (Thumb, 10 bytes, Stack size 0 bytes, misc.o(i.NVIC_PriorityGroupConfig))
+<BR><BR>[Called By]<UL><LI><a href="#[10f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;NVIC_Configuration
 </UL>
 
-<P><STRONG><a name="[10f]"></a>NVIC_SetVectorTable</STRONG> (Thumb, 12 bytes, Stack size 0 bytes, misc.o(i.NVIC_SetVectorTable))
-<BR><BR>[Called By]<UL><LI><a href="#[10e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;NVIC_Configuration
+<P><STRONG><a name="[110]"></a>NVIC_SetVectorTable</STRONG> (Thumb, 12 bytes, Stack size 0 bytes, misc.o(i.NVIC_SetVectorTable))
+<BR><BR>[Called By]<UL><LI><a href="#[10f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;NVIC_Configuration
 </UL>
 
-<P><STRONG><a name="[112]"></a>NtInput_ctor</STRONG> (Thumb, 16 bytes, Stack size 8 bytes, ntinput.o(i.NtInput_ctor))
-<BR><BR>[Stack]<UL><LI>Max Depth = 8<LI>Call Chain = NtInput_ctor
+<P><STRONG><a name="[115]"></a>NtGrid_ctor</STRONG> (Thumb, 16 bytes, Stack size 8 bytes, ntgrid.o(i.NtGrid_ctor))
+<BR><BR>[Stack]<UL><LI>Max Depth = 8<LI>Call Chain = NtGrid_ctor
 </UL>
 <BR>[Calls]<UL><LI><a href="#[105]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Expr_ctor
 </UL>
-<BR>[Called By]<UL><LI><a href="#[f9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;NtInput_new
+<BR>[Called By]<UL><LI><a href="#[f9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;NtGrid_new
 </UL>
 
-<P><STRONG><a name="[f9]"></a>NtInput_new</STRONG> (Thumb, 26 bytes, Stack size 8 bytes, ntinput.o(i.NtInput_new))
-<BR><BR>[Stack]<UL><LI>Max Depth = 64<LI>Call Chain = NtInput_new &rArr; malloc &rArr; internal_alloc
+<P><STRONG><a name="[f9]"></a>NtGrid_new</STRONG> (Thumb, 26 bytes, Stack size 8 bytes, ntgrid.o(i.NtGrid_new))
+<BR><BR>[Stack]<UL><LI>Max Depth = 64<LI>Call Chain = NtGrid_new &rArr; malloc &rArr; internal_alloc
 </UL>
-<BR>[Calls]<UL><LI><a href="#[112]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;NtInput_ctor
+<BR>[Calls]<UL><LI><a href="#[115]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;NtGrid_ctor
 <LI><a href="#[ba]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;malloc
 </UL>
-<BR>[Called By]<UL><LI><a href="#[eb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GetNtInput
+<BR>[Called By]<UL><LI><a href="#[ec]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GetNtGrid
 </UL>
 
-<P><STRONG><a name="[113]"></a>OpenPrpClock</STRONG> (Thumb, 54 bytes, Stack size 8 bytes, mysystemclock.o(i.OpenPrpClock))
+<P><STRONG><a name="[116]"></a>OpenPrpClock</STRONG> (Thumb, 54 bytes, Stack size 8 bytes, mysystemclock.o(i.OpenPrpClock))
 <BR><BR>[Stack]<UL><LI>Max Depth = 8<LI>Call Chain = OpenPrpClock
 </UL>
-<BR>[Calls]<UL><LI><a href="#[114]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RCC_APB2PeriphClockCmd
-<LI><a href="#[115]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RCC_APB1PeriphClockCmd
-<LI><a href="#[116]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RCC_AHBPeriphClockCmd
+<BR>[Calls]<UL><LI><a href="#[117]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RCC_APB2PeriphClockCmd
+<LI><a href="#[118]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RCC_APB1PeriphClockCmd
+<LI><a href="#[119]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RCC_AHBPeriphClockCmd
 </UL>
 <BR>[Called By]<UL><LI><a href="#[a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
-<P><STRONG><a name="[117]"></a>Pin_init</STRONG> (Thumb, 162 bytes, Stack size 8 bytes, pinmux.o(i.Pin_init))
+<P><STRONG><a name="[11a]"></a>Pin_init</STRONG> (Thumb, 162 bytes, Stack size 8 bytes, pinmux.o(i.Pin_init))
 <BR><BR>[Stack]<UL><LI>Max Depth = 32<LI>Call Chain = Pin_init &rArr; GPIO_Init
 </UL>
-<BR>[Calls]<UL><LI><a href="#[119]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GPIO_PinRemapConfig
-<LI><a href="#[118]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GPIO_Init
+<BR>[Calls]<UL><LI><a href="#[11c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GPIO_PinRemapConfig
+<LI><a href="#[11b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GPIO_Init
 </UL>
 <BR>[Called By]<UL><LI><a href="#[a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
-<P><STRONG><a name="[116]"></a>RCC_AHBPeriphClockCmd</STRONG> (Thumb, 26 bytes, Stack size 0 bytes, stm32f10x_rcc.o(i.RCC_AHBPeriphClockCmd))
-<BR><BR>[Called By]<UL><LI><a href="#[113]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;OpenPrpClock
+<P><STRONG><a name="[119]"></a>RCC_AHBPeriphClockCmd</STRONG> (Thumb, 26 bytes, Stack size 0 bytes, stm32f10x_rcc.o(i.RCC_AHBPeriphClockCmd))
+<BR><BR>[Called By]<UL><LI><a href="#[116]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;OpenPrpClock
 </UL>
 
-<P><STRONG><a name="[115]"></a>RCC_APB1PeriphClockCmd</STRONG> (Thumb, 26 bytes, Stack size 0 bytes, stm32f10x_rcc.o(i.RCC_APB1PeriphClockCmd))
-<BR><BR>[Called By]<UL><LI><a href="#[113]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;OpenPrpClock
+<P><STRONG><a name="[118]"></a>RCC_APB1PeriphClockCmd</STRONG> (Thumb, 26 bytes, Stack size 0 bytes, stm32f10x_rcc.o(i.RCC_APB1PeriphClockCmd))
+<BR><BR>[Called By]<UL><LI><a href="#[116]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;OpenPrpClock
 </UL>
 
 <P><STRONG><a name="[127]"></a>RCC_APB1PeriphResetCmd</STRONG> (Thumb, 26 bytes, Stack size 0 bytes, stm32f10x_rcc.o(i.RCC_APB1PeriphResetCmd))
 <BR><BR>[Called By]<UL><LI><a href="#[125]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART_DeInit
 </UL>
 
-<P><STRONG><a name="[114]"></a>RCC_APB2PeriphClockCmd</STRONG> (Thumb, 26 bytes, Stack size 0 bytes, stm32f10x_rcc.o(i.RCC_APB2PeriphClockCmd))
-<BR><BR>[Called By]<UL><LI><a href="#[113]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;OpenPrpClock
+<P><STRONG><a name="[117]"></a>RCC_APB2PeriphClockCmd</STRONG> (Thumb, 26 bytes, Stack size 0 bytes, stm32f10x_rcc.o(i.RCC_APB2PeriphClockCmd))
+<BR><BR>[Called By]<UL><LI><a href="#[116]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;OpenPrpClock
 </UL>
 
 <P><STRONG><a name="[126]"></a>RCC_APB2PeriphResetCmd</STRONG> (Thumb, 26 bytes, Stack size 0 bytes, stm32f10x_rcc.o(i.RCC_APB2PeriphResetCmd))
@@ -1356,54 +1357,54 @@ Global Symbols
 </UL>
 <BR>[Calls]<UL><LI><a href="#[ee]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strchr
 </UL>
-<BR>[Called By]<UL><LI><a href="#[81]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GmtrInterpret
-<LI><a href="#[84]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MtInput_Interpret
+<BR>[Called By]<UL><LI><a href="#[84]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;NtGrid_Interpret
+<LI><a href="#[81]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GmtrInterpret
 </UL>
 
-<P><STRONG><a name="[109]"></a>RemoveTail</STRONG> (Thumb, 126 bytes, Stack size 32 bytes, reader.o(i.RemoveTail))
+<P><STRONG><a name="[10b]"></a>RemoveTail</STRONG> (Thumb, 126 bytes, Stack size 32 bytes, reader.o(i.RemoveTail))
 <BR><BR>[Stack]<UL><LI>Max Depth = 32<LI>Call Chain = RemoveTail
 </UL>
 <BR>[Calls]<UL><LI><a href="#[ef]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Eliminate_char
 <LI><a href="#[ee]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strchr
 </UL>
-<BR>[Called By]<UL><LI><a href="#[81]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GmtrInterpret
-<LI><a href="#[84]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MtInput_Interpret
+<BR>[Called By]<UL><LI><a href="#[84]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;NtGrid_Interpret
+<LI><a href="#[81]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GmtrInterpret
 <LI><a href="#[88]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;TxtInterpret
 </UL>
 
 <P><STRONG><a name="[57]"></a>SetSCBkc</STRONG> (Thumb, 18 bytes, Stack size 16 bytes, composition.o(i.SetSCBkc))
 <BR><BR>[Stack]<UL><LI>Max Depth = 44<LI>Call Chain = SetSCBkc &rArr; String2Colour &rArr; strstr
 </UL>
-<BR>[Calls]<UL><LI><a href="#[11a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;String2Colour
+<BR>[Calls]<UL><LI><a href="#[11d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;String2Colour
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> composition.o(i.Composition_ctor)
 </UL>
-<P><STRONG><a name="[11e]"></a>SimpCtor_ctor</STRONG> (Thumb, 10 bytes, Stack size 0 bytes, simplecompositor.o(i.SimpCtor_ctor))
+<P><STRONG><a name="[121]"></a>SimpCtor_ctor</STRONG> (Thumb, 10 bytes, Stack size 0 bytes, simplecompositor.o(i.SimpCtor_ctor))
 <BR><BR>[Called By]<UL><LI><a href="#[100]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SimpCtor_new
 </UL>
 
 <P><STRONG><a name="[100]"></a>SimpCtor_new</STRONG> (Thumb, 26 bytes, Stack size 8 bytes, simplecompositor.o(i.SimpCtor_new))
 <BR><BR>[Stack]<UL><LI>Max Depth = 64<LI>Call Chain = SimpCtor_new &rArr; malloc &rArr; internal_alloc
 </UL>
-<BR>[Calls]<UL><LI><a href="#[11e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SimpCtor_ctor
+<BR>[Calls]<UL><LI><a href="#[121]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SimpCtor_ctor
 <LI><a href="#[ba]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;malloc
 </UL>
 <BR>[Called By]<UL><LI><a href="#[ff]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Get_SimpCtor
 </UL>
 
-<P><STRONG><a name="[10d]"></a>String2Align</STRONG> (Thumb, 48 bytes, Stack size 16 bytes, glyph.o(i.String2Align))
+<P><STRONG><a name="[113]"></a>String2Align</STRONG> (Thumb, 50 bytes, Stack size 16 bytes, glyph.o(i.String2Align))
 <BR><BR>[Stack]<UL><LI>Max Depth = 28<LI>Call Chain = String2Align &rArr; strstr
 </UL>
 <BR>[Calls]<UL><LI><a href="#[e9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strstr
 </UL>
-<BR>[Called By]<UL><LI><a href="#[84]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MtInput_Interpret
+<BR>[Called By]<UL><LI><a href="#[84]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;NtGrid_Interpret
 <LI><a href="#[88]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;TxtInterpret
 </UL>
 
 <P><STRONG><a name="[108]"></a>String2Bkc</STRONG> (Thumb, 38 bytes, Stack size 24 bytes, glyph.o(i.String2Bkc))
 <BR><BR>[Stack]<UL><LI>Max Depth = 68<LI>Call Chain = String2Bkc &rArr; GetKeyVal &rArr; strstr
 </UL>
-<BR>[Calls]<UL><LI><a href="#[11a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;String2Colour
+<BR>[Calls]<UL><LI><a href="#[11d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;String2Colour
 <LI><a href="#[f4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GetKeyVal
 </UL>
 <BR>[Called By]<UL><LI><a href="#[81]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GmtrInterpret
@@ -1413,18 +1414,14 @@ Global Symbols
 <P><STRONG><a name="[107]"></a>String2Clr</STRONG> (Thumb, 30 bytes, Stack size 16 bytes, glyph.o(i.String2Clr))
 <BR><BR>[Stack]<UL><LI>Max Depth = 44<LI>Call Chain = String2Clr &rArr; String2Colour &rArr; strstr
 </UL>
-<BR>[Calls]<UL><LI><a href="#[11a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;String2Colour
+<BR>[Calls]<UL><LI><a href="#[11d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;String2Colour
 <LI><a href="#[e9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strstr
 </UL>
 <BR>[Called By]<UL><LI><a href="#[81]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GmtrInterpret
 <LI><a href="#[88]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;TxtInterpret
 </UL>
 
-<P><STRONG><a name="[122]"></a>String2CntEff</STRONG> (Thumb, 6 bytes, Stack size 0 bytes, glyph.o(i.String2CntEff))
-<BR><BR>[Called By]<UL><LI><a href="#[88]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;TxtInterpret
-</UL>
-
-<P><STRONG><a name="[11a]"></a>String2Colour</STRONG> (Thumb, 122 bytes, Stack size 16 bytes, glyph.o(i.String2Colour))
+<P><STRONG><a name="[11d]"></a>String2Colour</STRONG> (Thumb, 122 bytes, Stack size 16 bytes, glyph.o(i.String2Colour))
 <BR><BR>[Stack]<UL><LI>Max Depth = 28<LI>Call Chain = String2Colour &rArr; strstr
 </UL>
 <BR>[Calls]<UL><LI><a href="#[e9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strstr
@@ -1434,22 +1431,23 @@ Global Symbols
 <LI><a href="#[57]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SetSCBkc
 </UL>
 
-<P><STRONG><a name="[11f]"></a>String2Font</STRONG> (Thumb, 96 bytes, Stack size 16 bytes, glyph.o(i.String2Font))
+<P><STRONG><a name="[114]"></a>String2Font</STRONG> (Thumb, 92 bytes, Stack size 16 bytes, glyph.o(i.String2Font))
 <BR><BR>[Stack]<UL><LI>Max Depth = 28<LI>Call Chain = String2Font &rArr; strstr
 </UL>
 <BR>[Calls]<UL><LI><a href="#[e9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strstr
 </UL>
-<BR>[Called By]<UL><LI><a href="#[88]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;TxtInterpret
+<BR>[Called By]<UL><LI><a href="#[84]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;NtGrid_Interpret
+<LI><a href="#[88]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;TxtInterpret
 </UL>
 
 <P><STRONG><a name="[53]"></a>SystemInit</STRONG> (Thumb, 78 bytes, Stack size 8 bytes, system_stm32f10x.o(i.SystemInit))
 <BR><BR>[Stack]<UL><LI>Max Depth = 28<LI>Call Chain = SystemInit &rArr; SetSysClock &rArr; SetSysClockTo72
 </UL>
-<BR>[Calls]<UL><LI><a href="#[11b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SetSysClock
+<BR>[Calls]<UL><LI><a href="#[11e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SetSysClock
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> startup_stm32f10x_hd.o(.text)
 </UL>
-<P><STRONG><a name="[120]"></a>TxtExpr_ctor</STRONG> (Thumb, 16 bytes, Stack size 8 bytes, txtexpr.o(i.TxtExpr_ctor))
+<P><STRONG><a name="[122]"></a>TxtExpr_ctor</STRONG> (Thumb, 16 bytes, Stack size 8 bytes, txtexpr.o(i.TxtExpr_ctor))
 <BR><BR>[Stack]<UL><LI>Max Depth = 8<LI>Call Chain = TxtExpr_ctor
 </UL>
 <BR>[Calls]<UL><LI><a href="#[105]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Expr_ctor
@@ -1460,7 +1458,7 @@ Global Symbols
 <P><STRONG><a name="[fa]"></a>TxtExpr_new</STRONG> (Thumb, 26 bytes, Stack size 8 bytes, txtexpr.o(i.TxtExpr_new))
 <BR><BR>[Stack]<UL><LI>Max Depth = 64<LI>Call Chain = TxtExpr_new &rArr; malloc &rArr; internal_alloc
 </UL>
-<BR>[Calls]<UL><LI><a href="#[120]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;TxtExpr_ctor
+<BR>[Calls]<UL><LI><a href="#[122]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;TxtExpr_ctor
 <LI><a href="#[ba]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;malloc
 </UL>
 <BR>[Called By]<UL><LI><a href="#[ea]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GetTxtExpr
@@ -1555,8 +1553,13 @@ Global Symbols
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> drive_uart.o(i.driveUart_ctor)
 </UL>
+<P><STRONG><a name="[109]"></a>UsePrntAttIfNeed</STRONG> (Thumb, 80 bytes, Stack size 0 bytes, composition.o(i.UsePrntAttIfNeed))
+<BR><BR>[Called By]<UL><LI><a href="#[81]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GmtrInterpret
+<LI><a href="#[88]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;TxtInterpret
+</UL>
+
 <P><STRONG><a name="[137]"></a>View_test</STRONG> (Thumb, 122 bytes, Stack size 32 bytes, testview.o(i.View_test))
-<BR><BR>[Stack]<UL><LI>Max Depth = 120<LI>Call Chain = View_test &rArr; ExpCreate &rArr; GetNtInput &rArr; NtInput_new &rArr; malloc &rArr; internal_alloc
+<BR><BR>[Stack]<UL><LI>Max Depth = 120<LI>Call Chain = View_test &rArr; ExpCreate &rArr; GetNtGrid &rArr; NtGrid_new &rArr; malloc &rArr; internal_alloc
 </UL>
 <BR>[Calls]<UL><LI><a href="#[ff]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Get_SimpCtor
 <LI><a href="#[fb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Get_Composition
@@ -1608,9 +1611,9 @@ Global Symbols
 </UL>
 
 <P><STRONG><a name="[bc]"></a>__aeabi_errno_addr</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, errno.o(i.__aeabi_errno_addr))
-<BR><BR>[Called By]<UL><LI><a href="#[bb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;atoi
-<LI><a href="#[bf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_strtoul
+<BR><BR>[Called By]<UL><LI><a href="#[bf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_strtoul
 <LI><a href="#[bd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strtol
+<LI><a href="#[bb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;atoi
 </UL>
 
 <P><STRONG><a name="[194]"></a>__rt_errno_addr</STRONG> (Thumb, 0 bytes, Stack size 0 bytes, errno.o(i.__aeabi_errno_addr), UNUSED)
@@ -1631,7 +1634,7 @@ Global Symbols
 </UL>
 <BR>[Calls]<UL><LI><a href="#[13c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;internal_alloc
 </UL>
-<BR>[Called By]<UL><LI><a href="#[10c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Mem_alloc
+<BR>[Called By]<UL><LI><a href="#[10e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Mem_alloc
 <LI><a href="#[fd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GhRectangle_new
 <LI><a href="#[fe]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GhTxt_new
 <LI><a href="#[da]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Dev_Uart1_new
@@ -1639,8 +1642,8 @@ Global Symbols
 <LI><a href="#[de]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;driveUart_new
 <LI><a href="#[100]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SimpCtor_new
 <LI><a href="#[c5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Composition_new
+<LI><a href="#[f9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;NtGrid_new
 <LI><a href="#[f3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GmtrExpr_new
-<LI><a href="#[f9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;NtInput_new
 <LI><a href="#[fa]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;TxtExpr_new
 <LI><a href="#[b9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;calloc
 </UL>
@@ -1774,16 +1777,16 @@ Global Symbols
 </UL>
 
 <P><STRONG><a name="[a]"></a>main</STRONG> (Thumb, 122 bytes, Stack size 24 bytes, main.o(i.main))
-<BR><BR>[Stack]<UL><LI>Max Depth = 144<LI>Call Chain = main &rArr; View_test &rArr; ExpCreate &rArr; GetNtInput &rArr; NtInput_new &rArr; malloc &rArr; internal_alloc
+<BR><BR>[Stack]<UL><LI>Max Depth = 144<LI>Call Chain = main &rArr; View_test &rArr; ExpCreate &rArr; GetNtGrid &rArr; NtGrid_new &rArr; malloc &rArr; internal_alloc
 </UL>
 <BR>[Calls]<UL><LI><a href="#[ab]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osKernelStart
 <LI><a href="#[a9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osKernelInitialize
 <LI><a href="#[137]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;View_test
 <LI><a href="#[128]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART_Init
 <LI><a href="#[12b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART_Cmd
-<LI><a href="#[117]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Pin_init
-<LI><a href="#[113]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;OpenPrpClock
-<LI><a href="#[10e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;NVIC_Configuration
+<LI><a href="#[11a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Pin_init
+<LI><a href="#[116]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;OpenPrpClock
+<LI><a href="#[10f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;NVIC_Configuration
 <LI><a href="#[f1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GetCompileMoth
 <LI><a href="#[f0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GetCompileDay
 <LI><a href="#[149]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2printf
@@ -2471,9 +2474,9 @@ Local Symbols
 <BR>[Calls]<UL><LI><a href="#[c4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osDelay
 <LI><a href="#[c3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GpuSend
 <LI><a href="#[c2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2sprintf
-<LI><a href="#[10a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strncat
+<LI><a href="#[10c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strncat
 <LI><a href="#[f5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strlen
-<LI><a href="#[10b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strcat
+<LI><a href="#[10d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strcat
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> dev_lcdusartgpu.o(.data)
 </UL>
@@ -2550,7 +2553,7 @@ Local Symbols
 <P><STRONG><a name="[96]"></a>UartTest</STRONG> (Thumb, 112 bytes, Stack size 32 bytes, drive_uart.o(i.UartTest))
 <BR><BR>[Stack]<UL><LI>Max Depth = 44<LI>Call Chain = UartTest &rArr; strstr
 </UL>
-<BR>[Calls]<UL><LI><a href="#[11d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strcpy
+<BR>[Calls]<UL><LI><a href="#[120]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strcpy
 <LI><a href="#[f5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strlen
 <LI><a href="#[e9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strstr
 </UL>
@@ -2679,22 +2682,22 @@ Local Symbols
 <P><STRONG><a name="[76]"></a>SetVar</STRONG> (Thumb, 32 bytes, Stack size 16 bytes, expression.o(i.SetVar))
 <BR><BR>[Stack]<UL><LI>Max Depth = 16<LI>Call Chain = SetVar
 </UL>
-<BR>[Calls]<UL><LI><a href="#[11d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strcpy
+<BR>[Calls]<UL><LI><a href="#[120]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strcpy
 <LI><a href="#[f5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strlen
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> expression.o(i.Expr_ctor)
 </UL>
-<P><STRONG><a name="[88]"></a>TxtInterpret</STRONG> (Thumb, 256 bytes, Stack size 48 bytes, txtexpr.o(i.TxtInterpret))
+<P><STRONG><a name="[88]"></a>TxtInterpret</STRONG> (Thumb, 264 bytes, Stack size 48 bytes, txtexpr.o(i.TxtInterpret))
 <BR><BR>[Stack]<UL><LI>Max Depth = 120<LI>Call Chain = TxtInterpret &rArr; Get_GhTxt &rArr; GhTxt_new &rArr; malloc &rArr; internal_alloc
 </UL>
 <BR>[Calls]<UL><LI><a href="#[c8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Get_GhTxt
-<LI><a href="#[11f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;String2Font
-<LI><a href="#[122]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;String2CntEff
+<LI><a href="#[114]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;String2Font
 <LI><a href="#[107]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;String2Clr
 <LI><a href="#[108]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;String2Bkc
-<LI><a href="#[10d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;String2Align
-<LI><a href="#[121]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;DefaultColour
-<LI><a href="#[109]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RemoveTail
+<LI><a href="#[113]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;String2Align
+<LI><a href="#[10a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;DefaultColour
+<LI><a href="#[109]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UsePrntAttIfNeed
+<LI><a href="#[10b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RemoveTail
 <LI><a href="#[f7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GetNameVale
 <LI><a href="#[ed]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GetAttribute
 <LI><a href="#[b7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strcasecmp
@@ -2704,39 +2707,42 @@ Local Symbols
 </UL>
 <P><STRONG><a name="[ef]"></a>Eliminate_char</STRONG> (Thumb, 18 bytes, Stack size 0 bytes, reader.o(i.Eliminate_char))
 <BR><BR>[Called By]<UL><LI><a href="#[f6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GetName
-<LI><a href="#[109]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RemoveTail
+<LI><a href="#[10b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RemoveTail
 <LI><a href="#[ed]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GetAttribute
 </UL>
 
-<P><STRONG><a name="[84]"></a>MtInput_Interpret</STRONG> (Thumb, 228 bytes, Stack size 40 bytes, ntinput.o(i.MtInput_Interpret))
-<BR><BR>[Stack]<UL><LI>Max Depth = 128<LI>Call Chain = MtInput_Interpret &rArr; ExpCreate &rArr; GetNtInput &rArr; NtInput_new &rArr; malloc &rArr; internal_alloc
-</UL>
-<BR>[Calls]<UL><LI><a href="#[f6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GetName
-<LI><a href="#[e8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ExpCreate
-<LI><a href="#[10d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;String2Align
-<LI><a href="#[f4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GetKeyVal
-<LI><a href="#[106]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RemoveHead
-<LI><a href="#[109]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RemoveTail
-<LI><a href="#[ed]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GetAttribute
-<LI><a href="#[bb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;atoi
-<LI><a href="#[b4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memclr
-</UL>
-<BR>[Address Reference Count : 1]<UL><LI> ntinput.o(i.NtInput_ctor)
-</UL>
-<P><STRONG><a name="[81]"></a>GmtrInterpret</STRONG> (Thumb, 190 bytes, Stack size 48 bytes, geometricsexpr.o(i.GmtrInterpret))
+<P><STRONG><a name="[81]"></a>GmtrInterpret</STRONG> (Thumb, 242 bytes, Stack size 48 bytes, geometricsexpr.o(i.GmtrInterpret))
 <BR><BR>[Stack]<UL><LI>Max Depth = 136<LI>Call Chain = GmtrInterpret &rArr; atoi &rArr; strtol &rArr; _strtoul
 </UL>
 <BR>[Calls]<UL><LI><a href="#[fc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Get_GhRectangle
 <LI><a href="#[107]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;String2Clr
 <LI><a href="#[108]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;String2Bkc
 <LI><a href="#[f4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GetKeyVal
+<LI><a href="#[10a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;DefaultColour
 <LI><a href="#[106]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RemoveHead
-<LI><a href="#[109]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RemoveTail
+<LI><a href="#[109]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UsePrntAttIfNeed
+<LI><a href="#[10b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RemoveTail
 <LI><a href="#[ed]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GetAttribute
-<LI><a href="#[bb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;atoi
 <LI><a href="#[b7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strcasecmp
+<LI><a href="#[bb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;atoi
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> geometricsexpr.o(i.GmtrExpr_ctor)
+</UL>
+<P><STRONG><a name="[84]"></a>NtGrid_Interpret</STRONG> (Thumb, 324 bytes, Stack size 40 bytes, ntgrid.o(i.NtGrid_Interpret))
+<BR><BR>[Stack]<UL><LI>Max Depth = 128<LI>Call Chain = NtGrid_Interpret &rArr; ExpCreate &rArr; GetNtGrid &rArr; NtGrid_new &rArr; malloc &rArr; internal_alloc
+</UL>
+<BR>[Calls]<UL><LI><a href="#[f6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GetName
+<LI><a href="#[e8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ExpCreate
+<LI><a href="#[114]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;String2Font
+<LI><a href="#[113]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;String2Align
+<LI><a href="#[f4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GetKeyVal
+<LI><a href="#[106]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RemoveHead
+<LI><a href="#[10b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RemoveTail
+<LI><a href="#[ed]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GetAttribute
+<LI><a href="#[b4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memclr
+<LI><a href="#[bb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;atoi
+</UL>
+<BR>[Address Reference Count : 1]<UL><LI> ntgrid.o(i.NtGrid_ctor)
 </UL>
 <P><STRONG><a name="[56]"></a>Ction_Clean</STRONG> (Thumb, 68 bytes, Stack size 24 bytes, composition.o(i.Ction_Clean))
 <BR><BR>[Stack]<UL><LI>Max Depth = 152<LI>Call Chain = Ction_Clean &rArr; Dev_open &rArr; DevChar_open &rArr; Get_DevUart2 &rArr; Dev_Uart2_new &rArr; malloc &rArr; internal_alloc
@@ -2804,18 +2810,18 @@ Local Symbols
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> simplecompositor.o(i.Layout)
 </UL>
-<P><STRONG><a name="[11b]"></a>SetSysClock</STRONG> (Thumb, 8 bytes, Stack size 8 bytes, system_stm32f10x.o(i.SetSysClock))
+<P><STRONG><a name="[11e]"></a>SetSysClock</STRONG> (Thumb, 8 bytes, Stack size 8 bytes, system_stm32f10x.o(i.SetSysClock))
 <BR><BR>[Stack]<UL><LI>Max Depth = 20<LI>Call Chain = SetSysClock &rArr; SetSysClockTo72
 </UL>
-<BR>[Calls]<UL><LI><a href="#[11c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SetSysClockTo72
+<BR>[Calls]<UL><LI><a href="#[11f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SetSysClockTo72
 </UL>
 <BR>[Called By]<UL><LI><a href="#[53]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SystemInit
 </UL>
 
-<P><STRONG><a name="[11c]"></a>SetSysClockTo72</STRONG> (Thumb, 214 bytes, Stack size 12 bytes, system_stm32f10x.o(i.SetSysClockTo72))
+<P><STRONG><a name="[11f]"></a>SetSysClockTo72</STRONG> (Thumb, 214 bytes, Stack size 12 bytes, system_stm32f10x.o(i.SetSysClockTo72))
 <BR><BR>[Stack]<UL><LI>Max Depth = 12<LI>Call Chain = SetSysClockTo72
 </UL>
-<BR>[Called By]<UL><LI><a href="#[11b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SetSysClock
+<BR>[Called By]<UL><LI><a href="#[11e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SetSysClock
 </UL>
 
 <P><STRONG><a name="[145]"></a>rt_id2obj</STRONG> (Thumb, 8 bytes, Stack size 0 bytes, rt_cmsis.o(i.rt_id2obj))

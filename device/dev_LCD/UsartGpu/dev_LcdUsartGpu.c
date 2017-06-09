@@ -10,7 +10,7 @@
 #include "basis/sdhError.h"
 
 #define LCDBUF_MAX		128
-#define LCD_DELAY_MS  7
+#define LCD_DELAY_MS  20
 
 static char	lcdBuf[LCDBUF_MAX];
 
@@ -168,7 +168,7 @@ int GpuLabel( char *string,  int len, scArea_t *area, int font, char c, char ali
 
 static void GpuBKColor( char c)
 {
-	if( c == 0)
+	if( c == ERR_COLOUR)
 		return;
 	sprintf( lcdBuf, "SBC(%d);", c);
 	GpuSend(lcdBuf);

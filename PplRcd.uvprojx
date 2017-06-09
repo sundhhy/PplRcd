@@ -848,6 +848,16 @@
               <FileType>5</FileType>
               <FilePath>.\Expression\GeometricsExpr.h</FilePath>
             </File>
+            <File>
+              <FileName>NtGrid.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Expression\NtGrid.c</FilePath>
+            </File>
+            <File>
+              <FileName>NtGrid.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Expression\NtGrid.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

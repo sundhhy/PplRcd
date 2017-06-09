@@ -182,7 +182,7 @@ int String2Clr( char *s)
 
 int String2Font( char *s)
 {
-	int f = 0;
+	int f = FONT_ERR;
 	
 	if( strstr( s, "f=12") )
 	{
@@ -208,17 +208,14 @@ int String2Font( char *s)
 	{
 		f = FONT_64;
 	}
-	else
-	{
-		f = DEF_FONT;
-	}
+	
 	
 	return f;
 }
 
 int	String2Align( char *s)
 {
-	int ali = ALIGN_LEFT;
+	int ali = ALIGN_ERR;
 	
 	if( strstr( s, "ali=l") )
 	{

@@ -37,6 +37,7 @@
 ".\objects\brexpr.o"
 ".\objects\ntinput.o"
 ".\objects\geometricsexpr.o"
+".\objects\ntgrid.o"
 ".\objects\composition.o"
 ".\objects\simplecompositor.o"
 ".\objects\rtx_conf_cm.o"

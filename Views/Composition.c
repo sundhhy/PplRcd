@@ -180,3 +180,69 @@ FUNCTION_SETTING( flush, Ction_flush);
 
 END_CTOR
 
+
+void UsePrntAttIfNeed( ViewData_t *prnt, ViewData_t *vd)
+{
+	
+	if( prnt == NULL)
+		return;
+	
+	//
+	if( vd->dspCnt.colour == ERR_COLOUR)
+	{
+		vd->dspCnt.colour = prnt->dspCnt.colour;
+		
+	}
+	if( vd->dspCnt.bkc == ERR_COLOUR)
+	{
+		vd->dspCnt.bkc = prnt->dspCnt.bkc;
+		
+	}
+	if( vd->dspCnt.font == FONT_ERR)
+	{
+		vd->dspCnt.font = prnt->dspCnt.font;
+		
+	}
+	
+	
+	if( vd->dspArea.ali == ALIGN_ERR)
+	{
+		
+		vd->dspArea.ali = prnt->dspArea.ali;
+	}
+	if( vd->dspArea.sizeX == SIZE_ERR || vd->dspArea.sizeY == SIZE_ERR)
+	{
+		
+		vd->dspArea.sizeX = prnt->dspArea.sizeX;
+		vd->dspArea.sizeY = prnt->dspArea.sizeY;
+	}
+	
+	
+}
+
+
+
+//dspContent_t* GetVdParaent_cnt( ViewData_t *vd)
+//{
+//	if( vd->paraent)
+//	{
+//		
+//		return &( (ViewData_t *)vd->paraent)->dspCnt;
+//	}
+//	
+//	return NULL;
+
+//}	
+
+//dspArea_t* GetVdParaent_area( ViewData_t *vd)
+//{
+//	if( vd->paraent)
+//	{
+//		
+//		return &( (ViewData_t *)vd->paraent)->dspArea;
+//	}
+//	
+//	return NULL;
+
+//}	
+

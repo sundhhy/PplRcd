@@ -43,7 +43,9 @@ typedef struct {
 	//有些则不行，一般组合的图元要自己处理对齐
 	//在分配显示区域时通过这个标志来判断
 	uint8_t			dealAli;
-	uint8_t			none;
+	
+	//每行的列数，为0表示不做要求,一列只能显示一个子vd
+	uint8_t			cols;
 	
 	
 	
@@ -107,5 +109,9 @@ CLASS( Composition)
 
 
 Composition *Get_Composition(void);
+
+void UsePrntAttIfNeed( ViewData_t *prnt, ViewData_t *vd);
+//dspArea_t* GetVdParaent_area( ViewData_t *vd);
+//dspContent_t* GetVdParaent_cnt( ViewData_t *vd);
 
 #endif

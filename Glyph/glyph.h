@@ -10,9 +10,6 @@
 #define IS_TAB( c) ( c == '\r')
 
 
-#define	ALIGN_LEFT					0		//左对齐
-#define	ALIGN_MIDDLE				1		//居中对齐
-#define	ALIGN_RIGHT					2		//右对齐对齐
 
 //文本类的子类型
 #define TEXT_ST_TEXT					0
