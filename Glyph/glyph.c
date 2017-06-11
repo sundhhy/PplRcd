@@ -265,12 +265,20 @@ int	String2CntEff( char *s)
 //以空格结尾
 int GetKeyVal( char *s, char *key, char *val, short size)
 {
-	char *pp ;
+	char *pp = s;
 	char i = 0;
-	pp =  strstr( s, key);
-	if( pp == NULL)
-		return 0;
 	
+	while(1)
+	{
+		pp =  strstr( pp, key);
+		if( pp == NULL)
+			return 0;
+		//防止出现截断的情况，如要查找ls=2, 却找到cols=2去了
+		if( pp[-1] == ' ')
+			break;
+		else
+			pp ++;
+	}
 	pp += strlen( key);
 	//去除空格
 	while(1)

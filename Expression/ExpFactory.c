@@ -74,10 +74,10 @@ Expr *ExpCreate( char *type)
 //	{
 //		return (Expr *)GetTxtExpr();
 //	}
-//	if( !strcasecmp( type, "bu"))
-//	{
-//		return (Expr *)GetNtButton();
-//	}
+	if( !strcasecmp( type, "bu"))
+	{
+		return (Expr *)GetNtButton();
+	}
 //	
 //	p = strstr( type, "br");
 //	if( p)

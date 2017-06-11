@@ -100,7 +100,7 @@ int Ction_InsertVD( Composition *self, ViewData_t *faVd, ViewData_t *vd)
 	if( faVd)
 	{
 		faVd->t_childen = List_push( faVd->t_childen, vd);
-		faVd->t_childen = List_reverse( faVd->t_childen);
+		
 		vd->paraent = faVd;
 	}
 	else

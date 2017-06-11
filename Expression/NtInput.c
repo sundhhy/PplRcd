@@ -1,4 +1,4 @@
-#include "NtButton.h"
+#include "NtInput.h"
 
 #include "ExpFactory.h"
 #include <string.h>
@@ -6,76 +6,62 @@
 
 #include "Reader.h"
 
+#include "Gh_txt.h"
+
 static const char buData[] = "bu";
 
-static NtButton *signalNtButton;
+static NtInput *signalNtInput;
 
 
-NtButton *GetNtButton(void)
+NtInput *GetNtInput(void)
 {
-	if( signalNtButton == NULL)
+	if( signalNtInput == NULL)
 	{
-		signalNtButton = NtButton_new();
+		signalNtInput = NtInput_new();
 	}
-	return signalNtButton;
+	return signalNtInput;
 }
 
 
 
-static void * BuInterpret( Expr *self, void *fa, void *context)
+static void * MtInput_Interpret( Expr *self, void *fa, void *context)
 {
-	NtButton *cthis = ( NtButton *)self;
-	GhRectangle *myRec = Get_GhRectangle();
-	Glyph	*myGp = (Glyph *)myRec;
+	NtInput *cthis = ( NtInput *)self;
 	char	*pp;
 	char 	*pnewPosition = context;
 	char	*att = expTempBUf;
 	Expr 	*myexp ;
+	
 	char 	tmpbuf[4] = {0};
+	
 	short	nameLen;
 	
 	ViewData_t	*vd;
 
 	GetAttribute( context, att, TEMPBUF_LEN);
 	
+	
+	
+	
 	vd = self->ction->allocVD( self->ction);	
 	vd->dspArea.ali = String2Align( att);
 	vd->dspCnt.font = String2Font( att);
-	if( GetKeyVal( att, "x", tmpbuf, 4))
+	if( GetKeyVal( att, "cg", tmpbuf, 4))
 	{
-		vd->dspArea.sizeX = atoi( tmpbuf);
+		vd->columnGap = atoi( tmpbuf);
 		
 	}
-	else
+	if( GetKeyVal( att, "ls", tmpbuf, 4))
 	{
-		
-		vd->dspArea.sizeX = SIZE_ERR;
-	}
-	if( GetKeyVal( att, "y", tmpbuf, 4))
-	{
-		vd->dspArea.sizeY = atoi( tmpbuf);
-		
-	}
-	else
-	{
-		vd->dspArea.sizeY = SIZE_ERR;
+		vd->lineSpacing = atoi( tmpbuf);
 		
 	}
 	
 	
-	UsePrntAttIfNeed( ( ViewData_t	*)fa, vd);
 	
-	
-	//自己的尺寸已经被设置了，就不要使用子图元来设置了
-	if( vd->dspArea.sizeX != SIZE_ERR && vd->dspArea.sizeY != SIZE_ERR)
-	{
-		vd->donotUseChldSize = 1;
-		
-	}
+	pnewPosition = RemoveHead( pnewPosition);
 
-	pnewPosition = RemoveHead( context);
-	
-	
+	//一个input应该有:text和rct两个子图元
 	while(1)
 	{
 		
@@ -96,23 +82,28 @@ static void * BuInterpret( Expr *self, void *fa, void *context)
 		
 	}
 	
-	vd->gh = myGp;
-	vd->dspCnt.len = 1;
-	self->ction->insertVD( self->ction, fa, vd);
-		
 	
+	
+	vd->dspArea.sizeX = 0;
+	vd->dspArea.sizeY = 0;
+	vd->dspCnt.len = 1;
+	
+	
+	vd->gh = NULL;
+	self->ction->insertVD( self->ction, NULL, vd);
+		
 	memset( expTempBUf, 0, sizeof( expTempBUf));
 	pnewPosition = RemoveTail( pnewPosition, NULL, 0);
 	exit:
 	
 	
 	return pnewPosition;
+	
 }
 
-CTOR( NtButton)
+CTOR( NtInput)
 SUPER_CTOR( Expr);
-FUNCTION_SETTING( Expr.interpret, BuInterpret);
-
+FUNCTION_SETTING( Expr.interpret, MtInput_Interpret);
 END_CTOR
 
 

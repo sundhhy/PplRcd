@@ -81,6 +81,9 @@ static void * TxtInterpret( Expr *self, void *faVd, void *context)
 	vd->dspCnt.data = pp;
 	vd->dspCnt.len = len;
 	
+	vd->gh = myGp;
+	myGp->getSize( myGp,  vd->dspCnt.font, &vd->dspArea.sizeX, &vd->dspArea.sizeY);
+	
 	//对标题类的特殊处理
 	if( !strcasecmp( self->variable, "title"))
 	{
@@ -92,6 +95,7 @@ static void * TxtInterpret( Expr *self, void *faVd, void *context)
 		if( vd->dspCnt.font < FONT_16)
 			vd->dspCnt.font = FONT_16;
 		vd->dspCnt.subType = TEXT_ST_LABLE;
+		vd->dspArea.sizeX = SIZE_BOUNDARY;
 		
 	}
 	else
@@ -100,8 +104,7 @@ static void * TxtInterpret( Expr *self, void *faVd, void *context)
 	}
 	
 	
-	vd->gh = myGp;
-	myGp->getSize( myGp,  vd->dspCnt.font, &vd->dspArea.sizeX, &vd->dspArea.sizeY);
+	
 	
 	
 	

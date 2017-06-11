@@ -36,6 +36,7 @@
 #define ALIGN_DEFAULT				ALIGN_LEFT
 
 #define SIZE_ERR					0xffff
+#define SIZE_BOUNDARY					0xfffe
 
 
 //字符型设备的接口

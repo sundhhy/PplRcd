@@ -11,6 +11,12 @@ SimpCtor *signalSimpCtor;
 
 
 static void DspViewData(void **ppvd, void *cl);
+
+//主要是对组合图元的尺寸去确定
+static void CalVdSize(void **ppvd, void *cl);
+static void SumChldSize(void **ppvd, void *cl);
+static void AdjustChildSeq(void **ppvd, void *cl);
+
 static void Layout(void **ppvd, void *cl);
 
 SimpCtor *Get_SimpCtor(void)
@@ -32,6 +38,12 @@ SimpCtor *Get_SimpCtor(void)
 
 static int Simp_VdLayout( Composition *ction)
 {
+	//这步是因为使用的链表在插入新元素的时候都是从头部插入
+	//所以在这里要调整下
+	List_map( ction->t_vd, AdjustChildSeq, ction);
+	
+	List_map( ction->t_vd, CalVdSize, ction);
+	
 	//数据中单个元素在x轴和y轴上的尺寸
 	List_map( ction->t_vd, Layout, ction);
 	
@@ -49,6 +61,61 @@ static int Simp_Show( Composition *ction)
 	
 	return RET_OK;
 }
+static void AdjustChildSeq(void **ppvd, void *cl)
+{
+	ViewData_t *pvd = *ppvd;
+	pvd->t_childen = List_reverse( pvd->t_childen);
+}
+
+static void CalVdSize(void **ppvd, void *cl)
+{
+	ViewData_t *pvd = *ppvd;
+	ViewData_t *pPvd = pvd->paraent;
+	Composition	*pction = ( Composition *)cl;
+	short	numChild = 0;
+	short	i = 0;
+	
+	
+	
+	//先让子图元去计算自己的尺寸
+	List_map( pvd->t_childen, CalVdSize, cl);
+	
+
+	
+	
+	
+	
+	//如果需要用子图元来确定尺寸就用子图元来决定
+	if( pvd->t_childen)
+	{
+		if( pvd->donotUseChldSize == 0)
+		{
+//			pvd->dspArea.sizeX = 0;
+//			pvd->dspArea.sizeY = 0;
+//			pvd->colcount = 0;
+//			pvd->tmpSize = 0;
+			List_map( pvd->t_childen, SumChldSize, cl);
+//			pvd->dspArea.sizeY += pvd->lineSpacing;
+			return;
+		}
+		
+	}
+	
+	//计算自己的尺寸
+	//先不考虑分行的情况
+//	if( pPvd->dspArea.boundary == NULL)
+//	{
+//		pPvd->dspArea.boundary = &pction->mySCI.scBoundary;
+//	}
+//	pvd->dspArea.sizeY = ( ( pvd->dspArea.sizeX- 1)/pvd->dspArea.sizeX + 1) * pvd->dspArea.sizeY;
+	pvd->dspArea.sizeY = pvd->dspArea.sizeY;
+	
+	if( pvd->dspArea.sizeX == SIZE_BOUNDARY)
+		pvd->dspArea.sizeX = pction->mySCI.scBoundary.x2;
+	else
+		pvd->dspArea.sizeX = pvd->dspArea.sizeX * pvd->dspCnt.len;
+	
+}
 
 static void SumChldSize(void **ppvd, void *cl)
 {
@@ -58,42 +125,171 @@ static void SumChldSize(void **ppvd, void *cl)
 	
 	
 	
-	pPvd->dspArea.sizeX += pvd->dspArea.sizeX *  pvd->dspCnt.len;
-	if( pPvd->dspArea.sizeY < pvd->dspArea.sizeY)
-		pPvd->dspArea.sizeY = pvd->dspArea.sizeY;
 	
-	//
-	pPvd->dspArea.sizeX += pPvd->columnGap;
-//	pPvd->dspArea.sizeY += pPvd->lineSpacing;
+	
+	//父图元对一行中的列数没有指明的情况下就认为一行只显示一列
+	//否则就要在父图元下面自己划分行
+	if( pPvd->cols)
+	{
+		
+		pPvd->colcount ++;
+		if( ( pPvd->colcount % pPvd->cols) == 0)
+		{
+			pPvd->dspArea.sizeY += pvd->dspArea.sizeY;
+			pPvd->dspArea.sizeY += pPvd->lineSpacing;
+			
+			pPvd->tmpSize += pvd->dspArea.sizeX;
+			
+			if( pPvd->dspArea.sizeX < pPvd->tmpSize)
+				pPvd->dspArea.sizeX = pPvd->tmpSize;
+			
+			pPvd->tmpSize = 0;
+			
+		}
+		else
+		{
+			pPvd->tmpSize += pvd->dspArea.sizeX  + pPvd->columnGap;
+//			sizex += pvd->dspArea.sizeX;
+			
+		}
+		
+	}
+	else
+	{
+		pPvd->dspArea.sizeX += pvd->dspArea.sizeX ;
+		if( pPvd->dspArea.sizeY < pvd->dspArea.sizeY)
+			pPvd->dspArea.sizeY = pvd->dspArea.sizeY;
+		pPvd->dspArea.sizeX += pPvd->columnGap;
+
+//		pPvd->dspArea.sizeY += pPvd->lineSpacing;
+		
+	}
 	
 }
 
-//认为所有的子图元都是能在一行内显示id
+//
 static void LayoutChld(void **ppvd, void *cl)
 {
 	ViewData_t *pvd = *ppvd;
 	ViewData_t *pPvd = pvd->paraent;
-	short	totalX = 0;
+	scArea_t	*bnd = pPvd->dspArea.boundary;
+	short		boundaryX = 0;
+	short		totalX = 0;
 	
-	totalX = pvd->dspArea.sizeX * pvd->dspCnt.len;
+	//先设置一个非法值
+	pvd->dspArea.useArea.x1 = 0;
+	pvd->dspArea.useArea.y1 = 0;
+	pvd->dspArea.useArea.x2 = 0;
+	pvd->dspArea.useArea.y2 = 0;
 	
-	pvd->dspArea.useArea.x1 = pPvd->dspArea.cursorX ;
-	pvd->dspArea.useArea.x2 = pPvd->dspArea.cursorX + totalX;
+	
+	boundaryX = bnd->x2 - bnd->x1;
+	if( pPvd->cols)
+	{
+		pPvd->colcount ++;
+		boundaryX = boundaryX/( pPvd->cols );
+	}
+	
+	totalX = pvd->dspArea.sizeX;
+	
+	//对需要处理对齐的，要根据显示的整体尺寸来确定起始位置
+	if( pvd->dealAli  || pvd->dspArea.ali == ALIGN_MIDDLE)
+	{
+		pvd->dspArea.useArea.x1 = pPvd->dspArea.cursorX + ( ( boundaryX - totalX) >> 1);
+	}
+	else if( pvd->dealAli || pvd->dspArea.ali == ALIGN_RIGHT)
+	{
+		pvd->dspArea.useArea.x1 = pPvd->dspArea.cursorX + boundaryX - totalX;
+		
+	}
+	else if( pvd->dealAli == 0 || pvd->dspArea.ali == ALIGN_LEFT)
+	{
+	
+		//将分配的区域x1,y1,x2,y2都初始化为光标的位置
+		pvd->dspArea.useArea.x1 = pPvd->dspArea.cursorX;
+		
+		
+	}
+//	pvd->dspArea.numRow = 1;
 	pvd->dspArea.useArea.y1 = pPvd->dspArea.cursorY;
+	pvd->dspArea.useArea.x2 = pvd->dspArea.useArea.x1 + pvd->dspArea.sizeX;
 	pvd->dspArea.useArea.y2 = pPvd->dspArea.cursorY + pvd->dspArea.sizeY;
 	
-	pPvd->dspArea.cursorX += totalX + pPvd->columnGap;
+	//移动光标
+	if( pPvd->cols == 0)
+	{
+		//到下一行
+		pPvd->dspArea.cursorX = bnd->x1;
+		pPvd->dspArea.cursorY += pvd->dspArea.sizeY;
+		
+	}
+	else
+	{
+		if( ( pPvd->colcount % pPvd->cols) == 0)
+		{
+			pPvd->dspArea.cursorY += pvd->dspArea.sizeY + pPvd->lineSpacing;
+			pPvd->dspArea.cursorX = bnd->x1;
+		}
+		else
+		{
+			pPvd->dspArea.cursorX += boundaryX + pPvd->columnGap;
+			
+		}
+	}
+	
+	//准备为子图元分配空间
+	//把自己的分配的空间作为边界
+	pvd->colcount = 0;
+	pvd->dspArea.cursorX = pvd->dspArea.useArea.x1;
+	pvd->dspArea.cursorY = pvd->dspArea.useArea.y1;
+	pvd->dspArea.boundary = &pvd->dspArea.useArea;
+	List_map( pvd->t_childen, LayoutChld, cl);
+	
+	
+//	totalX = pvd->dspArea.sizeX * pvd->dspCnt.len;
+//	//图元的显示区域
+//	pvd->dspArea.useArea.x1 = pPvd->dspArea.cursorX ;
+//	pvd->dspArea.useArea.x2 = pPvd->dspArea.cursorX + totalX;
+//	pvd->dspArea.useArea.y1 = pPvd->dspArea.cursorY;
+//	pvd->dspArea.useArea.y2 = pPvd->dspArea.cursorY + pvd->dspArea.sizeY;
+//	
+//	
+//	//维护光标
+//	pPvd->dspArea.cursorX += totalX + pPvd->columnGap;
+
+//	if( pPvd->cols )
+//	{
+//		pPvd->colcount ++;
+//		if( pPvd->colcount == pPvd->cols)
+//		{
+//			pPvd->dspArea.cursorY += pPvd->dspArea.sizeY + pPvd->lineSpacing;
+//			pPvd->colcount = 0;
+//		}
+//		
+//	}
+	
+	
 }
+
+
+
+//static void PlaceVd(void **ppvd, void *cl)
+
 
 //这个算法对任何不能在一行内显示的图元都不处理
 static void Layout(void **ppvd, void *cl)
 {
 	ViewData_t *pvd;
+//	ViewData_t *pPvd = pvd->paraent;
 	Composition	*pction = ( Composition *)cl;
-//	char 	numGpInRow = 0;
-//	char 	numRow = 1;
-	short	totalX = 0;
+	scArea_t	*bnd = NULL;
 	short	boundaryX = 0;
+	short	totalX;
+	
+
+	
+	//安置图元
+	
  
 	pvd = *ppvd;
 	//先设置一个非法值
@@ -102,19 +298,21 @@ static void Layout(void **ppvd, void *cl)
 	pvd->dspArea.useArea.x2 = 0;
 	pvd->dspArea.useArea.y2 = 0;
 	
-	if( pvd->dspArea.boundary == NULL)
+//	if(  pPvd == NULL)
 	{
-		pvd->dspArea.boundary = &pction->mySCI.scBoundary;
+		bnd = &pction->mySCI.scBoundary;
+//		pvd->dspArea.boundary = &pction->mySCI.scBoundary;
 	}
 	
-	List_map( pvd->t_childen, SumChldSize, cl);
+	
+
 	
 	
-	boundaryX = pvd->dspArea.boundary->x2 - pvd->dspArea.boundary->x1;
-	if( pvd->dspArea.sizeY > ( pvd->dspArea.boundary->y2 - pvd->dspArea.boundary->y1) )
+	boundaryX = bnd->x2 - bnd->x1;
+	if( pvd->dspArea.sizeY > ( bnd->y2 - bnd->y1) )
 		return;
 	//计算总共需要的行宽, 先不考虑多行
-	totalX = pvd->dspArea.sizeX * pvd->dspCnt.len;
+	totalX = pvd->dspArea.sizeX ;
 	if( totalX > boundaryX)
 	{
 		return;
@@ -149,13 +347,21 @@ static void Layout(void **ppvd, void *cl)
 		
 		
 	}
-	pvd->dspArea.numRow = 1;
+//	pvd->dspArea.numRow = 1;
 	pvd->dspArea.useArea.y1 = pction->mySCI.cursorY;
-	pvd->dspArea.useArea.x2 = pvd->dspArea.boundary->x2;;
-	pvd->dspArea.useArea.y2 = pction->mySCI.cursorY ;
+	pvd->dspArea.useArea.x2 = pvd->dspArea.useArea.x1 + pvd->dspArea.sizeX;
+	pvd->dspArea.useArea.y2 = pction->mySCI.cursorY + pvd->dspArea.curScInfo->rowSize;
 	
+	
+	
+	
+	
+	//准备为子图元分配空间
+	//把自己的分配的空间作为边界
+	pvd->colcount = 0;
 	pvd->dspArea.cursorX = pvd->dspArea.useArea.x1;
 	pvd->dspArea.cursorY = pvd->dspArea.useArea.y1 ;
+	pvd->dspArea.boundary = &pvd->dspArea.useArea;
 	List_map( pvd->t_childen, LayoutChld, cl);
 	
 
@@ -163,20 +369,101 @@ static void Layout(void **ppvd, void *cl)
 	pction->mySCI.cursorX = 0;
 	pction->mySCI.cursorY += pvd->dspArea.curScInfo->rowSize;
 	
-//	//每行能显示的数量
-//	numGpInRow = ( pvd->dspArea.boundary->x2 - pvd->dspArea.boundary->x1) / pvd->dspArea.sizeX;
-//	
-//	numRow += pvd->dspCnt.len / numGpInRow;
-//	pvd->dspArea.numRow = numRow;
-//	pvd->dspArea.useArea.x2 = pvd->dspArea.boundary->x2;
-//	pvd->dspArea.useArea.y2 += ( numRow - 1) * pvd->dspArea.curScInfo->rowSize;
-//	
-//	//移动光标
-//	pction->mySCI.cursorY += pvd->dspArea.useArea.y2;
+	
+
 	
 	//补充行间距 列间距
 	pction->mySCI.cursorY += pction->lineSpacing;
 	pction->mySCI.cursorX += pction->columnGap;
+	
+	
+	
+	
+	
+//	ViewData_t *pvd;
+//	Composition	*pction = ( Composition *)cl;
+//	short	totalX = 0;
+//	short	boundaryX = 0;
+// 
+//	pvd = *ppvd;
+//	//先设置一个非法值
+//	pvd->dspArea.useArea.x1 = 0;
+//	pvd->dspArea.useArea.y1 = 0;
+//	pvd->dspArea.useArea.x2 = 0;
+//	pvd->dspArea.useArea.y2 = 0;
+//	
+//	if( pvd->dspArea.boundary == NULL)
+//	{
+//		pvd->dspArea.boundary = &pction->mySCI.scBoundary;
+//	}
+//	
+//	
+//	//如果父图元没有指定尺寸，就用子图元的尺寸来决定父图元的尺寸
+//	if( pvd->donotUseChldSize)
+//	{
+//		pvd->colcount = 0;
+//		List_map( pvd->t_childen, SumChldSize, cl);
+//	}
+//	
+//	
+//	boundaryX = pvd->dspArea.boundary->x2 - pvd->dspArea.boundary->x1;
+//	if( pvd->dspArea.sizeY > ( pvd->dspArea.boundary->y2 - pvd->dspArea.boundary->y1) )
+//		return;
+//	//计算总共需要的行宽, 先不考虑多行
+//	totalX = pvd->dspArea.sizeX * pvd->dspCnt.len;
+//	if( totalX > boundaryX)
+//	{
+//		return;
+//		
+//	}
+//	
+//	
+//	pvd->dspArea.curScInfo = &pction->mySCI;
+//	//设置行和列
+//	if( pvd->dspArea.curScInfo->rowSize < pvd->dspArea.sizeY)
+//		pvd->dspArea.curScInfo->rowSize = pvd->dspArea.sizeY;
+//	if( pvd->dspArea.curScInfo->colSize < pvd->dspArea.sizeX)
+//		pvd->dspArea.curScInfo->colSize = pvd->dspArea.sizeX;
+//	
+//	
+//	
+//	//对需要处理对齐的，要根据显示的整体尺寸来确定起始位置
+//	if( pvd->dealAli  || pvd->dspArea.ali == ALIGN_MIDDLE)
+//	{
+//		pvd->dspArea.useArea.x1 = pction->mySCI.cursorX + ( ( boundaryX - totalX) >> 1);
+//	}
+//	else if( pvd->dealAli || pvd->dspArea.ali == ALIGN_RIGHT)
+//	{
+//		pvd->dspArea.useArea.x1 = pction->mySCI.cursorX + boundaryX - totalX;
+//		
+//	}
+//	else if( pvd->dealAli == 0 || pvd->dspArea.ali == ALIGN_LEFT)
+//	{
+//	
+//		//将分配的区域x1,y1,x2,y2都初始化为光标的位置
+//		pvd->dspArea.useArea.x1 = pction->mySCI.cursorX;
+//		
+//		
+//	}
+//	pvd->dspArea.numRow = 1;
+//	pvd->dspArea.useArea.y1 = pction->mySCI.cursorY;
+//	pvd->dspArea.useArea.x2 = pvd->dspArea.boundary->x2;;
+//	pvd->dspArea.useArea.y2 = pction->mySCI.cursorY ;
+//	
+//	pvd->dspArea.cursorX = pvd->dspArea.useArea.x1;
+//	pvd->dspArea.cursorY = pvd->dspArea.useArea.y1 ;
+//	
+//	pvd->colcount = 0;
+//	List_map( pvd->t_childen, LayoutChld, cl);
+//	
+
+//	//光标跳到下一行
+//	pction->mySCI.cursorX = 0;
+//	pction->mySCI.cursorY += pvd->dspArea.curScInfo->rowSize;
+//	
+//	//补充行间距 列间距
+//	pction->mySCI.cursorY += pction->lineSpacing;
+//	pction->mySCI.cursorX += pction->columnGap;
 	
 }
 

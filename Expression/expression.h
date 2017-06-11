@@ -7,7 +7,7 @@
 
 #define VAR_LEN		32
 
-#define TEMPBUF_LEN		32
+#define TEMPBUF_LEN		64
 
 ABS_CLASS( Expr)
 {

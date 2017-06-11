@@ -46,29 +46,13 @@ typedef struct {
 	
 	//每行的列数，为0表示不做要求,一列只能显示一个子vd
 	uint8_t			cols;
+	//一行的子vd数计数器
+	uint8_t			colcount;
+	char			donotUseChldSize;	//不需要通过子图元来确定自己的尺寸
+	uint16_t		tmpSize;
 	
 	
-	
-	
-//	char		*data;
-//	uint16_t 	len;
-//	int8_t		font;
-//	int8_t		colour;
-//	//每个显示元素的尺寸
-//	uint16_t		size_x;
-//	uint16_t		size_y;
-//	
-//	//记录显示的数据被所分配的显示区域
-//	int16_t		area_x1;
-//	int16_t		area_y1;
-//	int16_t		area_x2;
-//	int16_t		area_y2;
-//	
 
-//	
-//	char		more;		//需要分页显示
-//	short		done;		//是否显示好了
-//	uint8_t		childAttr;		//子元素的特性，如是否可以被分到两行显示，尺寸分配是否以子元素优先
 	
 }ViewData_t;
 
@@ -78,6 +62,8 @@ CLASS( Composition)
 	void				*ctor;
 	
 	scInfo_t		mySCI;
+	
+//	scArea_t		availableArea;
 	//每个图元之间的间距
 	uint8_t			lineSpacing;
 	uint8_t			columnGap;

@@ -30,17 +30,24 @@ static const char testContext[] = \
 <br/>\
 <bu c=yellow><h2 c=purple>组态文件</></bu><bu c=yellow><h2 c=purple>退出</></bu><br/>";
 #elif TEST_CONTEXT == 4
+//static const char testContext[] = \
+//"<title bkc=black  f=24 ali=l>设置</> \
+//<gr ali=m cg=2  id=0x01 > <text f=24 clr=black >Passwd:</> <rct bkc=black x=96 y=30></></gr> \
+//<gr cols=2 cg=2 ls=2 f=24 bkc=black ali=m x=96 y=30 > <bu ><text >System</></bu><bu  ><text > View</></bu>\
+//<bu ><text >Input</></bu><bu ><text > Output</></bu></gr>";
+
 static const char testContext[] = \
 "<title bkc=black  f=24 ali=l>设置</> \
-<gr ali=m cg=2  id=0x01 > <text f=24 clr=black >Passwd:</> <rct bkc=black x=96 y=30></></input> \
-<gr cols=2 cg=2 ls=2 f=24 bkc=black ali=m x=96 y=30 > <bu ><text >系统组态</></bu><bu  ><text > 显示组态</></bu><br/>\
-<bu ><text >输入组态</></bu><bu ><text > 输出组态</></bu><br/> </gr>";
+<gr cols=2 ali=m cg=2  id=0x01 > <text f=24 clr=black >Passwd:</> <rct bkc=black x=126 y=30></></gr> \
+<gr cols=2 cg=2 ls=2 f=24 bkc=black ali=m x=126 y=30 > <bu ><text >Test1</></bu><bu  ><text > Test2</></bu>\
+<bu ><text >Test3</></bu><bu ><text > Test4</></bu> \
+<bu ><text >Test5</></bu><bu ><text > Test6</></bu></gr> ";
 
 #endif
 
 //背景色 "none" 或某种颜色
 #define SCREENBKC		"white"
-#define LINESPACING		2
+#define LINESPACING		4
 #define COLUMGRAP		0
 
 void View_test(void)
