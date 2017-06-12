@@ -70,8 +70,9 @@ typedef struct {
 	
 	uint8_t		cursorX;		//图元自己的光标		
 	uint8_t		cursorY;			
-	uint8_t		numRow;			//行的总数
+//	uint8_t		numRow;			//行的总数
 	uint8_t		ali;		//默认左对齐
+	uint8_t		aliy;
 }dspArea_t;
 
 

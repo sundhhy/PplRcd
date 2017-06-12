@@ -31,7 +31,7 @@ static void * TxtInterpret( Expr *self, void *faVd, void *context)
 	char	*pp;
 	char 	*pnewPosition;
 	char	*att = expTempBUf;
-
+	char 	tmpbuf[4] = {0};
 	
 	ViewData_t	*vd;
 
@@ -60,7 +60,14 @@ static void * TxtInterpret( Expr *self, void *faVd, void *context)
 	
 //	vd->dspCnt.effects = String2CntEff( att);
 	vd->dspCnt.bkc  = String2Bkc( att);
-	vd->dspArea.ali = String2Align( att);
+	
+	GetKeyVal( att, "xali", tmpbuf, 4);
+	vd->dspArea.ali = String2Align( tmpbuf);
+	GetKeyVal( att, "yali", tmpbuf, 4);
+	vd->dspArea.aliy = String2Align( tmpbuf);
+	
+	
+//	vd->dspArea.ali = String2Align( att);
 	vd->dspCnt.font = String2Font( att);
 	
 	UsePrntAttIfNeed( ( ViewData_t	*)faVd, vd);
@@ -87,6 +94,7 @@ static void * TxtInterpret( Expr *self, void *faVd, void *context)
 	//对标题类的特殊处理
 	if( !strcasecmp( self->variable, "title"))
 	{
+		vd->notDealAli = 1;
 		if( vd->dspCnt.bkc == ERR_COLOUR)
 		{
 			
@@ -97,10 +105,6 @@ static void * TxtInterpret( Expr *self, void *faVd, void *context)
 		vd->dspCnt.subType = TEXT_ST_LABLE;
 		vd->dspArea.sizeX = SIZE_BOUNDARY;
 		
-	}
-	else
-	{
-		vd->dealAli = 1;
 	}
 	
 	

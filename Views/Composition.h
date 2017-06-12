@@ -42,7 +42,7 @@ typedef struct {
 		//有些图元的对齐可以自动处理，如LABL
 	//有些则不行，一般组合的图元要自己处理对齐
 	//在分配显示区域时通过这个标志来判断
-	uint8_t			dealAli;
+	uint8_t			notDealAli;
 	
 	//每行的列数，为0表示不做要求,一列只能显示一个子vd
 	uint8_t			cols;

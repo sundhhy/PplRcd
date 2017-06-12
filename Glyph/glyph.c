@@ -217,15 +217,15 @@ int	String2Align( char *s)
 {
 	int ali = ALIGN_ERR;
 	
-	if( strstr( s, "ali=l") )
+	if( strstr( s, "l") )
 	{
 		ali = ALIGN_LEFT;
 	}
-	else if( strstr( s, "ali=m") )
+	else if( strstr( s, "m") )
 	{
 		ali = ALIGN_MIDDLE;
 	}
-	else if( strstr( s, "ali=r") )
+	else if( strstr( s, "r") )
 	{
 		ali = ALIGN_RIGHT;
 	}
@@ -268,13 +268,15 @@ int GetKeyVal( char *s, char *key, char *val, short size)
 	char *pp = s;
 	char i = 0;
 	
+	memset( val, 0, size);
 	while(1)
 	{
 		pp =  strstr( pp, key);
 		if( pp == NULL)
 			return 0;
 		//防止出现截断的情况，如要查找ls=2, 却找到cols=2去了
-		if( pp[-1] == ' ')
+		//或者出现x=2 时找到xail=2去了
+		if( pp[-1] == ' ' && pp[strlen( key)] == '=')
 			break;
 		else
 			pp ++;
@@ -312,7 +314,7 @@ int GetKeyVal( char *s, char *key, char *val, short size)
 			break;
 		
 	}
-	val[ i] = 0;
+//	val[ i] = 0;
 	return i;
 }
 

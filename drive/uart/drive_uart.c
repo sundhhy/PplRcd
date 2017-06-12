@@ -464,7 +464,7 @@ void DMA1_Channel4_IRQHandler(void)
 			DMA_Cmd( myCfg->dma->dma_tx_base, DISABLE);   // 关闭DMA通道
 			if( thisDev->txPost)
 				thisDev->txPost();
-		
+		while( USART_GetFlagStatus( thisDev->devUart, USART_FLAG_TXE) == RESET){};
     }
 }
 
@@ -563,7 +563,7 @@ void DMA1_Channel7_IRQHandler(void)
 			DMA_Cmd( myCfg->dma->dma_tx_base, DISABLE);   // 关闭DMA通道
 			if( thisDev->txPost)
 				thisDev->txPost();
-		
+		while( USART_GetFlagStatus( thisDev->devUart, USART_FLAG_TXE) == RESET){};
     }
 }
 

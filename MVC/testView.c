@@ -37,11 +37,15 @@ static const char testContext[] = \
 //<bu ><text >Input</></bu><bu ><text > Output</></bu></gr>";
 
 static const char testContext[] = \
-"<title bkc=black  f=24 ali=l>设置</> \
-<gr cols=2 ali=m cg=2  id=0x01 > <text f=24 clr=black >Passwd:</> <rct bkc=black x=126 y=30></></gr> \
-<gr cols=2 cg=2 ls=2 f=24 bkc=black ali=m x=126 y=30 > <bu ><text >Test1</></bu><bu  ><text > Test2</></bu>\
-<bu ><text >Test3</></bu><bu ><text > Test4</></bu> \
-<bu ><text >Test5</></bu><bu ><text > Test6</></bu></gr> ";
+"<title bkc=black clr=blue f=24 xali=l>设置</> \
+<gr cols=2 xali=m   id=0x01 > <text f=16  yali=m clr=blue >密码:</> <rct bkc=black x=126 y=30></></gr> \
+<gr cols=2 cg=2 ls=2 f=16 bkc=black clr=blue xali=m x=126 y=30 >\
+<bu ><text yali=m >系统设置</></bu><bu  ><text yali=m > 通道设置</></bu>\
+<bu ><text yali=m >报警设置</></bu><bu ><text yali=m > 算法设置</></bu> \
+<bu ><text yali=m >显示设置</></bu><bu ><text yali=m > 数据备份</></bu>\
+<bu ><text yali=m >数据打印</></bu><bu ><text yali=m > 退出</></bu>\
+</gr> \
+<text f=16 bkc=white clr=red xali=m>重要数据，非专业人生请退出</> ";
 
 #endif
 

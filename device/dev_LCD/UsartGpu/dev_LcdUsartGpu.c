@@ -172,7 +172,9 @@ static void GpuBKColor( char c)
 		return;
 	sprintf( lcdBuf, "SBC(%d);", c);
 	GpuSend(lcdBuf);
-	osDelay(LCD_DELAY_MS);
+//	osDelay(LCD_DELAY_MS);
+	osDelay(1);
+
 	memset( lcdBuf, 0, LCDBUF_MAX);
 
 }

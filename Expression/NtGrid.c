@@ -43,8 +43,11 @@ static void * NtGrid_Interpret( Expr *self, void *fa, void *context)
 	
 	
 	
-	vd = self->ction->allocVD( self->ction);	
-	vd->dspArea.ali = String2Align( att);
+	vd = self->ction->allocVD( self->ction);
+//	vd->dspArea.ali = String2Align( att);
+	GetKeyVal( att, "xali", tmpbuf, 4);
+	vd->dspArea.ali = String2Align( tmpbuf);
+	
 	vd->dspCnt.font = String2Font( att);
 	vd->dspCnt.colour = String2Clr( att);
 	
