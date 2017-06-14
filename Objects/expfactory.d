@@ -12,8 +12,6 @@
 .\objects\expfactory.o: .\device\deviceId.h
 .\objects\expfactory.o: .\device\dev_cmd.h
 .\objects\expfactory.o: .\device\dev_char.h
-.\objects\expfactory.o: .\device\dev_uart2/dev_uart2.h
-.\objects\expfactory.o: E:\mylib\sdhLib\inc\basis/sdhError.h
 .\objects\expfactory.o: .\device\dev_lcd.h
 .\objects\expfactory.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
 .\objects\expfactory.o: Expression\TxtExpr.h

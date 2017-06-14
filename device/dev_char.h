@@ -7,12 +7,12 @@
 
 INTERFACE( I_dev_Char)
 {
-	int ( *open)( void);
-	int ( *close)( void);
-	int ( *read)( void *buf, int rdLen);
-	int ( *write)( void *buf, int wrLen);
-	int ( *ioctol)( int cmd, ...);
-	int ( *test)( void *testBuf, int len);
+	int ( *open)( I_dev_Char *self, void *conf);
+	int ( *close)( I_dev_Char *self);
+	int ( *read)( I_dev_Char *self, void *buf, int rdLen);
+	int ( *write)( I_dev_Char *self, void *buf, int wrLen);
+	int ( *ioctol)( I_dev_Char *self, int cmd, ...);
+	int ( *test)( I_dev_Char *self, void *testBuf, int len);
 	
 };
 

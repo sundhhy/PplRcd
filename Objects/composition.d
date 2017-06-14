@@ -10,8 +10,6 @@
 .\objects\composition.o: .\device\deviceId.h
 .\objects\composition.o: .\device\dev_cmd.h
 .\objects\composition.o: .\device\dev_char.h
-.\objects\composition.o: .\device\dev_uart2/dev_uart2.h
-.\objects\composition.o: E:\mylib\sdhLib\inc\basis/sdhError.h
 .\objects\composition.o: .\device\dev_lcd.h
 .\objects\composition.o: Views\Compositor.h
 .\objects\composition.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
@@ -19,6 +17,7 @@
 .\objects\composition.o: E:\mylib\sdhLib\inc\arithmetic/cycQueue.h
 .\objects\composition.o: E:\mylib\sdhLib\inc\basis/sdhDebug.h
 .\objects\composition.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
+.\objects\composition.o: E:\mylib\sdhLib\inc\basis/sdhError.h
 .\objects\composition.o: E:\mylib\sdhLib\inc\mem/CiiMem.h
 .\objects\composition.o: E:\mylib\sdhLib\inc\basis/except.h
 .\objects\composition.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\setjmp.h

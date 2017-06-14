@@ -66,13 +66,13 @@ typedef struct {
 
 
 extern CfgUart_t g_confUart2, g_confUart1;
-//typedef struct 
-//{
-//	GPIO_TypeDef	*Port;
-//	uint16_t		pin;
-//}gpio_pins;
+typedef struct 
+{
+	GPIO_TypeDef	*Port;
+	uint16_t		pin;
+}gpio_pins;
 
-
+extern gpio_pins Dir_485_pin1 , Dir_485_pin2;
 //extern gpio_pins pin_DugUartTx;
 //extern gpio_pins pin_DugUartRx;
 

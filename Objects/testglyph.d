@@ -12,5 +12,3 @@
 .\objects\testglyph.o: .\device\dev_char.h
 .\objects\testglyph.o: E:\mylib\sdhLib\inc\lw_oopc.h
 .\objects\testglyph.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
-.\objects\testglyph.o: .\device\dev_uart2/dev_uart2.h
-.\objects\testglyph.o: E:\mylib\sdhLib\inc\basis/sdhError.h

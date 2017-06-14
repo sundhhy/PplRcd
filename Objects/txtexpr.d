@@ -12,11 +12,10 @@
 .\objects\txtexpr.o: .\device\deviceId.h
 .\objects\txtexpr.o: .\device\dev_cmd.h
 .\objects\txtexpr.o: .\device\dev_char.h
-.\objects\txtexpr.o: .\device\dev_uart2/dev_uart2.h
-.\objects\txtexpr.o: E:\mylib\sdhLib\inc\basis/sdhError.h
 .\objects\txtexpr.o: .\device\dev_lcd.h
 .\objects\txtexpr.o: E:\mylib\sdhLib\inc\basis/sdhDebug.h
 .\objects\txtexpr.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
+.\objects\txtexpr.o: E:\mylib\sdhLib\inc\basis/sdhError.h
 .\objects\txtexpr.o: E:\mylib\sdhLib\inc\sdhDef.h
 .\objects\txtexpr.o: ..\PplRcd\sdhlibConf.h
 .\objects\txtexpr.o: .\Glyph\Gh_txt.h

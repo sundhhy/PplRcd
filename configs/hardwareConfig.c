@@ -13,7 +13,7 @@
 */
 //注意：SIM800A开发板的：HSE_VALUE=12000000 在配置部分增加宏来实现配置的
 #include "hardwareConfig.h"
-
+#include "sdhDef.h"
 //*dma_rx_base;
 //dma_rx_flag;
 //dma_rx_irq;
@@ -62,6 +62,10 @@ Dma_source g_DmaUart1 = {
 	DMA1_Channel4_IRQn,
 	
 };
+
+//串口的方向控制引脚，如果不需要的话就设置成0
+gpio_pins Dir_485_pin1 = {0,0};
+gpio_pins Dir_485_pin2 = {0,0};
 
 USART_InitTypeDef g_Cfg_Uart1 = {
 		115200,

@@ -10,8 +10,6 @@
 .\objects\testview.o: .\device\deviceId.h
 .\objects\testview.o: .\device\dev_cmd.h
 .\objects\testview.o: .\device\dev_char.h
-.\objects\testview.o: .\device\dev_uart2/dev_uart2.h
-.\objects\testview.o: E:\mylib\sdhLib\inc\basis/sdhError.h
 .\objects\testview.o: .\device\dev_lcd.h
 .\objects\testview.o: E:\mylib\sdhLib\inc\arithmetic/list.h
 .\objects\testview.o: MVC\View.h

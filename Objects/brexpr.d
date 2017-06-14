@@ -12,11 +12,10 @@
 .\objects\brexpr.o: .\device\deviceId.h
 .\objects\brexpr.o: .\device\dev_cmd.h
 .\objects\brexpr.o: .\device\dev_char.h
-.\objects\brexpr.o: .\device\dev_uart2/dev_uart2.h
-.\objects\brexpr.o: E:\mylib\sdhLib\inc\basis/sdhError.h
 .\objects\brexpr.o: .\device\dev_lcd.h
 .\objects\brexpr.o: E:\mylib\sdhLib\inc\basis/sdhDebug.h
 .\objects\brexpr.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
+.\objects\brexpr.o: E:\mylib\sdhLib\inc\basis/sdhError.h
 .\objects\brexpr.o: E:\mylib\sdhLib\inc\sdhDef.h
 .\objects\brexpr.o: ..\PplRcd\sdhlibConf.h
 .\objects\brexpr.o: .\Glyph\Gh_none.h

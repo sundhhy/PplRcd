@@ -12,8 +12,6 @@
 .\objects\ntinput.o: .\device\deviceId.h
 .\objects\ntinput.o: .\device\dev_cmd.h
 .\objects\ntinput.o: .\device\dev_char.h
-.\objects\ntinput.o: .\device\dev_uart2/dev_uart2.h
-.\objects\ntinput.o: E:\mylib\sdhLib\inc\basis/sdhError.h
 .\objects\ntinput.o: .\device\dev_lcd.h
 .\objects\ntinput.o: Expression\ExpFactory.h
 .\objects\ntinput.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h

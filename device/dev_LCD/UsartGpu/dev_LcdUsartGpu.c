@@ -45,7 +45,7 @@ int Dev_UsartInit( void)
 
 static int Dev_UsartdeInit( void)
 {
-	return   I_sendDev->close( );
+	return   I_sendDev->close( I_sendDev);
 	
 	
 }
@@ -172,8 +172,7 @@ static void GpuBKColor( char c)
 		return;
 	sprintf( lcdBuf, "SBC(%d);", c);
 	GpuSend(lcdBuf);
-//	osDelay(LCD_DELAY_MS);
-	osDelay(1);
+//	osDelay(1);
 
 	memset( lcdBuf, 0, LCDBUF_MAX);
 
@@ -265,7 +264,7 @@ void GpuSend(char * buf)
 {
 	int 	len = strlen( buf);
 	int ret = 0;
-	ret = I_sendDev->write( buf, len);
+	ret = I_sendDev->write( I_sendDev, buf, len);
 	
 	if( ret )
 		osDelay(20);

@@ -12,8 +12,6 @@
 .\objects\ntgrid.o: .\device\deviceId.h
 .\objects\ntgrid.o: .\device\dev_cmd.h
 .\objects\ntgrid.o: .\device\dev_char.h
-.\objects\ntgrid.o: .\device\dev_uart2/dev_uart2.h
-.\objects\ntgrid.o: E:\mylib\sdhLib\inc\basis/sdhError.h
 .\objects\ntgrid.o: .\device\dev_lcd.h
 .\objects\ntgrid.o: Expression\ExpFactory.h
 .\objects\ntgrid.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h

@@ -1,12 +1,16 @@
-#ifndef __DEVCMF_H_
-#define __DEVCMF_H_
+#ifndef _INC_dev_cmd_H_
+#define _INC_dev_cmd_H_
 
-#define S485_UART_CMD_SET_TXBLOCK	1
-#define S485_UART_CMD_CLR_TXBLOCK	2
-#define S485_UART_CMD_SET_RXBLOCK	3
-#define S485_UART_CMD_CLR_RXBLOCK	4
-#define S485UART_SET_TXWAITTIME_MS	5
-#define S485UART_SET_RXWAITTIME_MS	6
+#define DEVCMD_DISABLE_TXBLOCK						1
+#define DEVCMD_ENABLE_TXBLOCK							2
+#define DEVCMD_DISABLE_RXBLOCK						3
+#define DEVCMD_ENABLE_RXBLOCK							4
+#define DEVCMD_SET_TXWAITTIME_MS				5
+#define DEVCMD_SET_RXWAITTIME_MS				6
+#define	DEVCMD_SET_RXIRQHDL							9
+#define	DEVCMD_SET_TXIRQHDL							10
 
+#define	DEVCMD_GET_RXBUFPTR							11
+#define	DEVCMD_FREE_RXBUFPTR							12
 
 #endif

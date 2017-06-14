@@ -12,11 +12,10 @@
 .\objects\geometricsexpr.o: .\device\deviceId.h
 .\objects\geometricsexpr.o: .\device\dev_cmd.h
 .\objects\geometricsexpr.o: .\device\dev_char.h
-.\objects\geometricsexpr.o: .\device\dev_uart2/dev_uart2.h
-.\objects\geometricsexpr.o: E:\mylib\sdhLib\inc\basis/sdhError.h
 .\objects\geometricsexpr.o: .\device\dev_lcd.h
 .\objects\geometricsexpr.o: E:\mylib\sdhLib\inc\basis/sdhDebug.h
 .\objects\geometricsexpr.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
+.\objects\geometricsexpr.o: E:\mylib\sdhLib\inc\basis/sdhError.h
 .\objects\geometricsexpr.o: E:\mylib\sdhLib\inc\sdhDef.h
 .\objects\geometricsexpr.o: ..\PplRcd\sdhlibConf.h
 .\objects\geometricsexpr.o: .\Glyph\Gh_txt.h

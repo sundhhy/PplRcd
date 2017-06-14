@@ -9,7 +9,5 @@
 .\objects\gh_txt.o: .\device\deviceId.h
 .\objects\gh_txt.o: .\device\dev_cmd.h
 .\objects\gh_txt.o: .\device\dev_char.h
-.\objects\gh_txt.o: .\device\dev_uart2/dev_uart2.h
-.\objects\gh_txt.o: E:\mylib\sdhLib\inc\basis/sdhError.h
 .\objects\gh_txt.o: .\device\dev_lcd.h
 .\objects\gh_txt.o: E:\mylib\sdhLib\inc\arithmetic/cycQueue.h

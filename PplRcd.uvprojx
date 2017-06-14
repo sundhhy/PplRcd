@@ -365,7 +365,7 @@
               <MiscControls>--diag_suppress=1295;--diag_suppress=1</MiscControls>
               <Define>USE_STDPERIPH_DRIVER, STM32F10X_HD, USE_STM3210B_EVAL,HSE_VALUE=8000000</Define>
               <Undefine></Undefine>
-              <IncludePath>.\configs;.\BSP;E:\mylib\sdhLib\inc;.\device\dev_LCD\nokia_5110;..\PplRcd;.\drive\uart;.\device;.\Glyph;.\Expression;.\Views;.\REEC</IncludePath>
+              <IncludePath>.\configs;.\BSP;E:\mylib\sdhLib\inc;.\device\dev_LCD\nokia_5110;..\PplRcd;.\drive;.\device;.\Glyph;.\Expression;.\Views;.\REEC</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -422,6 +422,11 @@
               <FileName>TDD.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\TDD.h</FilePath>
+            </File>
+            <File>
+              <FileName>sdhlibConf.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\sdhlibConf.h</FilePath>
             </File>
           </Files>
         </Group>
@@ -558,6 +563,21 @@
               <FileType>5</FileType>
               <FilePath>.\sdhlibConf.h</FilePath>
             </File>
+            <File>
+              <FileName>os_depend.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>E:\mylib\sdhLib\inc\os\os_depend.h</FilePath>
+            </File>
+            <File>
+              <FileName>rtx_depend.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>E:\mylib\sdhLib\inc\os\rtx\rtx_depend.h</FilePath>
+            </File>
+            <File>
+              <FileName>rtx_depend.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>E:\mylib\sdhLib\src\os\RTX\rtx_depend.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -609,16 +629,6 @@
               <FilePath>.\device\device.c</FilePath>
             </File>
             <File>
-              <FileName>dev_char.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\device\dev_char.c</FilePath>
-            </File>
-            <File>
-              <FileName>dev_char.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\device\dev_char.h</FilePath>
-            </File>
-            <File>
               <FileName>deviceId.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\device\deviceId.h</FilePath>
@@ -641,27 +651,27 @@
           </Files>
         </Group>
         <Group>
-          <GroupName>dev_uart</GroupName>
+          <GroupName>dev_char</GroupName>
           <Files>
             <File>
-              <FileName>dev_uart2.h</FileName>
+              <FileName>dev_char.h</FileName>
               <FileType>5</FileType>
-              <FilePath>.\device\dev_uart2\dev_uart2.h</FilePath>
+              <FilePath>.\device\dev_char.h</FilePath>
             </File>
             <File>
-              <FileName>dev_uart2.c</FileName>
+              <FileName>dev_char.c</FileName>
               <FileType>1</FileType>
-              <FilePath>.\device\dev_uart2\dev_uart2.c</FilePath>
+              <FilePath>.\device\dev_char.c</FilePath>
             </File>
             <File>
-              <FileName>dev_uart1.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\device\dev_uart1\dev_uart1.c</FilePath>
-            </File>
-            <File>
-              <FileName>dev_uart1.h</FileName>
+              <FileName>dev_uart.h</FileName>
               <FileType>5</FileType>
-              <FilePath>.\device\dev_uart1\dev_uart1.h</FilePath>
+              <FilePath>.\device\dev_uart\dev_uart.h</FilePath>
+            </File>
+            <File>
+              <FileName>dev_uart.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\device\dev_uart\dev_uart.c</FilePath>
             </File>
           </Files>
         </Group>

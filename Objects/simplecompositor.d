@@ -10,9 +10,8 @@
 .\objects\simplecompositor.o: .\device\deviceId.h
 .\objects\simplecompositor.o: .\device\dev_cmd.h
 .\objects\simplecompositor.o: .\device\dev_char.h
-.\objects\simplecompositor.o: .\device\dev_uart2/dev_uart2.h
-.\objects\simplecompositor.o: E:\mylib\sdhLib\inc\basis/sdhError.h
 .\objects\simplecompositor.o: .\device\dev_lcd.h
 .\objects\simplecompositor.o: Views\Composition.h
 .\objects\simplecompositor.o: E:\mylib\sdhLib\inc\basis/sdhDebug.h
 .\objects\simplecompositor.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
+.\objects\simplecompositor.o: E:\mylib\sdhLib\inc\basis/sdhError.h

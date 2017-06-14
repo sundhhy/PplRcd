@@ -12,8 +12,6 @@
 .\objects\ntbutton.o: .\device\deviceId.h
 .\objects\ntbutton.o: .\device\dev_cmd.h
 .\objects\ntbutton.o: .\device\dev_char.h
-.\objects\ntbutton.o: .\device\dev_uart2/dev_uart2.h
-.\objects\ntbutton.o: E:\mylib\sdhLib\inc\basis/sdhError.h
 .\objects\ntbutton.o: .\device\dev_lcd.h
 .\objects\ntbutton.o: Expression\ExpFactory.h
 .\objects\ntbutton.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h

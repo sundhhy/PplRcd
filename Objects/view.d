@@ -9,8 +9,6 @@
 .\objects\view.o: .\device\deviceId.h
 .\objects\view.o: .\device\dev_cmd.h
 .\objects\view.o: .\device\dev_char.h
-.\objects\view.o: .\device\dev_uart2/dev_uart2.h
-.\objects\view.o: E:\mylib\sdhLib\inc\basis/sdhError.h
 .\objects\view.o: .\device\dev_lcd.h
 .\objects\view.o: E:\mylib\sdhLib\inc\arithmetic/list.h
 .\objects\view.o: MVC\View.h

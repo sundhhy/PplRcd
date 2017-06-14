@@ -7,7 +7,6 @@
 #include "dev_cmd.h"
 
 #include "dev_char.h"
-#include "dev_uart2/dev_uart2.h"
 #include "dev_lcd.h"
 
 typedef uint32_t devId_t;

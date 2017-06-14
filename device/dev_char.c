@@ -1,9 +1,9 @@
 #include "dev_char.h"
 #include "deviceId.h"
 
-#include "dev_uart2/dev_uart2.h"
-#include "dev_uart1/dev_uart1.h"
-
+//#include "dev_uart2/dev_uart2.h"
+//#include "dev_uart1/dev_uart1.h"
+#include "dev_uart/dev_uart.h"
 #include "basis/sdhDebug.h"
 #include "sdhDef.h"
 #include "basis/sdhError.h"
@@ -15,21 +15,8 @@ int DevChar_open( int major, int minor, void **dev)
 	switch( major)
 	{
 		case DEVMAJOR_UART:
-			if( minor == 0)
-			{
-//				pdev = ( I_dev_Char*)*dev;
-//				pdev = (I_dev_Char	*)Dev_Uart2_new();
-//				pdev->open();
-				*dev = Get_DevUart1();
-			}
-			else if( minor == 1)
-			{
-//				pdev = ( I_dev_Char*)*dev;
-//				pdev = (I_dev_Char	*)Dev_Uart2_new();
-//				pdev->open();
-				*dev = Get_DevUart2();
-			}
-			else 
+			*dev = Get_DevUart( minor);
+			if( dev == NULL)
 			{
 				
 				ret = ERR_BAD_PARAMETER;

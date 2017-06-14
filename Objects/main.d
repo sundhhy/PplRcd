@@ -34,7 +34,6 @@
 .\objects\main.o: .\device\dev_char.h
 .\objects\main.o: E:\mylib\sdhLib\inc\lw_oopc.h
 .\objects\main.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
-.\objects\main.o: .\device\dev_uart2/dev_uart2.h
 .\objects\main.o: .\device\dev_lcd.h
 .\objects\main.o: TDD.h
 .\objects\main.o: .\Glyph\glyph.h

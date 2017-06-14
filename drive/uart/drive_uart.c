@@ -12,8 +12,8 @@
 * 	A001:sundh,16-09-20,初始化功能
 */
 #include "stdint.h"
-#include "drive_uart.h"
-#include "hardwareConfig.h"
+#include "uart/drive_uart.h"
+
 #include "basis/sdhError.h"
 #include <stdarg.h>
 #include <string.h>
@@ -38,14 +38,14 @@ static int UartInit( driveUart *self, void *device, void *cfg)
 	CfgUart_t *myCfg = ( CfgUart_t *)cfg;
 	devArry[ myCfg->uartNum] = self;
 	self->cfg = cfg;
-	self->devUart = device;
+	self->devUartBase = device;
 	self->rxCache = calloc( 1, UART_RXCACHE_SIZE);
 #if ( SER485_SENDMODE == SENDMODE_INTR ) || ( SER485_SENDMODE == SENDMODE_DMA)
 	self->txCache = calloc( 1, UART_TXCACHE_SIZE);
 #endif
 	
 	init_pingponfbuf( &self->ctl.pingpong, self->rxCache, UART_RXCACHE_SIZE, TURE);
-	USART_Cmd( self->devUart, DISABLE);
+	USART_Cmd( self->devUartBase, DISABLE);
 	USART_DeInit( device);
 	
 	
@@ -53,7 +53,7 @@ static int UartInit( driveUart *self, void *device, void *cfg)
 	UartDma_Init( self);
 
 	
-	
+	USART_ClearFlag( device,USART_IT_IDLE );
 	
 	USART_ITConfig( device, USART_IT_RXNE, ENABLE);
 	USART_ITConfig( device, USART_IT_IDLE, ENABLE);
@@ -83,8 +83,8 @@ static int UartDeInit( driveUart *self)
 	free( self->txCache);
 #endif
 	
-	USART_Cmd( self->devUart, DISABLE);
-	USART_DeInit( self->devUart);
+	USART_Cmd( self->devUartBase, DISABLE);
+	USART_DeInit( self->devUartBase);
 	
 
 	
@@ -117,8 +117,14 @@ static int UartWrite( driveUart *self, void *buf, int wrLen)
 #else
 	int count = 0;
 #endif
-	if( buf == NULL)
+	if( buf == NULL || wrLen == 0)
 		return ERR_BAD_PARAMETER;
+	if( self->status == UARTSTATUS_TXBUSY)
+		return ERR_BUSY;
+	
+	
+	self->ioctol( self, DRICMD_SET_DIR_TX);
+	
 	
 #if ( SER485_SENDMODE == SENDMODE_INTR ) || ( SER485_SENDMODE == SENDMODE_DMA)
 	if( wrLen  < UART_TXCACHE_SIZE)
@@ -133,18 +139,21 @@ static int UartWrite( driveUart *self, void *buf, int wrLen)
 		sendbuf = buf;
 		
 	}
-#	if SER485_SENDMODE == SENDMODE_DMA		
+	
+	
+#	if SER485_SENDMODE == SENDMODE_DMA	
+	
 	myCfg->dma->dma_tx_base->CMAR = (uint32_t)sendbuf;
 	myCfg->dma->dma_tx_base->CNDTR = (uint16_t)wrLen; 
 	DMA_Cmd( myCfg->dma->dma_tx_base, ENABLE);        //开始DMA发送
+//	USART_ITConfig( self->devUartBase, USART_IT_TXE, ENABLE);
 #	elif SER485_SENDMODE == SENDMODE_INTR		
 	
 	self->ctl.intrSendingBuf = sendbuf;
 	self->ctl.sendingCount = 1;
 	self->ctl.sendingLen = size;
-	
-	USART_SendData( self->devUart, sendbuf[0]);
-	USART_ITConfig( self->devUart, USART_IT_TXE, ENABLE);
+	USART_SendData( self->devUartBase, sendbuf[0]);
+	USART_ITConfig( self->devUartBase, USART_IT_TXE, ENABLE);
 
 #	endif
 //	osDelay(1);
@@ -153,16 +162,15 @@ static int UartWrite( driveUart *self, void *buf, int wrLen)
 		if( self->txWait)
 		{
 			
-			ret = self->txWait( self->ctl.tx_waittime_ms);
+			ret = self->txWait( self, self->ctl.tx_waittime_ms);
 		}
 		
 		
 		if ( ret > 0) 
 		{
-			while( USART_GetFlagStatus( self->devUart, USART_FLAG_TXE) == RESET){};
+
 			return ERR_OK;
 		}
-		
 		
 		return ERR_DEV_TIMEOUT;
 		
@@ -173,8 +181,8 @@ static int UartWrite( driveUart *self, void *buf, int wrLen)
 #if SER485_SENDMODE == SENDMODE_CPU		
 	while( count < size)
 	{
-		USART_SendData( self->devUart, data[count]);
-		while( USART_GetFlagStatus( self->devUart, USART_FLAG_TXE) == RESET){};
+		USART_SendData( self->devUartBase, data[count]);
+		while( USART_GetFlagStatus( self->devUartBase, USART_FLAG_TXE) == RESET){};
 		count ++;
 	}
 
@@ -205,7 +213,7 @@ static int UartRead( driveUart *self, void *buf, int rdLen)
 	if( self->rxWait)
 	{
 		
-		ret = self->rxWait( self->ctl.rx_waittime_ms);
+		ret = self->rxWait( self, self->ctl.rx_waittime_ms);
 	}
 	
 	if( ret > 0)
@@ -238,7 +246,7 @@ static int UartTakeUpPlayloadBuf( driveUart *self, void **data)
 	if( self->rxWait)
 	{
 		
-		ret = self->rxWait( self->ctl.rx_waittime_ms);
+		ret = self->rxWait( self, self->ctl.rx_waittime_ms);
 	}
 	
 	if( ret > 0)
@@ -276,30 +284,46 @@ static void UartIoctol( driveUart *self, int cmd, ...)
 	
 	switch(cmd)
 	{
-		case S485_UART_CMD_SET_TXBLOCK:
-			self->ctl.tx_block = 1;
-			break;
-		case S485_UART_CMD_CLR_TXBLOCK:
+		case DRICMD_DISABLE_TXBLOCK:
 			self->ctl.tx_block = 0;
 			break;
-		case S485_UART_CMD_SET_RXBLOCK:
-			self->ctl.rx_block = 1;
+		case DRICMD_ENABLE_TXBLOCK:
+			self->ctl.tx_block = 1;
 			break;
-		case S485_UART_CMD_CLR_RXBLOCK:
+		case DRICMD_DISABLE_RXBLOCK:
 			self->ctl.rx_block = 0;
 			self->ctl.rx_waittime_ms = 0;
 			break;
-		case S485UART_SET_TXWAITTIME_MS:
+		case DRICMD_ENABLE_RXBLOCK:
+			self->ctl.rx_block = 1;
+			
+			break;
+		case DRICMD_SET_TXWAITTIME_MS:
 			int_data = va_arg(arg_ptr, int);
 			va_end(arg_ptr); 
 			self->ctl.tx_waittime_ms = int_data;
 			break;
-		case S485UART_SET_RXWAITTIME_MS:
+		case DRICMD_SET_RXWAITTIME_MS:
 			int_data = va_arg(arg_ptr, int);
 			va_end(arg_ptr); 
 			self->ctl.rx_waittime_ms = int_data;
 			break;
-		
+		case DRICMD_SET_DIR_RX:
+			if( self->dirPin->Port)
+			{
+				GPIO_ResetBits( self->dirPin->Port, self->dirPin->pin);
+				
+			}
+			break;
+		case DRICMD_SET_DIR_TX:
+			if( self->dirPin->Port)
+			{
+				GPIO_SetBits( self->dirPin->Port, self->dirPin->pin);
+				
+			}
+			break;
+			
+
 		
 		
 		default: break;
@@ -313,24 +337,43 @@ static void UartIoctol( driveUart *self, int cmd, ...)
 static int UartTest( driveUart *self, void *buf, int size)
 {
 	char *pp = NULL;
-    int len;
-	
+	char	*pdata = NULL;
+  int len;
 	
 	strcpy( buf, "Serial 485 test\n" );
-	self->ioctol( self, S485UART_SET_TXWAITTIME_MS, 10);
-	self->ioctol( self, S485UART_SET_RXWAITTIME_MS, 10);
+	self->ioctol( self, DRICMD_SET_TXWAITTIME_MS, 10);
+	self->ioctol( self, DRICMD_SET_RXWAITTIME_MS, 10);
+	
 	
 	self->write( self, buf, strlen(buf));
-	
 	while(1)
 	{
+		
+	
 		len = self->read( self, buf, size);
 		pp = strstr((const char*)buf,"OK");
 		if(pp)
 			return ERR_OK;
 		
 		if( len > 0)
+		{
 			self->write( self, buf, len);
+		}
+		
+//		len = self->takeUpPlayloadBuf( self, ( void *)&pdata);
+//		pp = strstr((const char*)pdata,"OK");
+//		if(pp)
+//			return ERR_OK;
+//		
+//		if( len > 0)
+//		{
+//			self->write( self, pdata, len);
+//		}
+//		
+//		self->giveBackPlayloadBuf( self, ( void *)pdata);
+		
+		
+		
 	}
 	
 }
@@ -350,15 +393,17 @@ static void UartSetLedHdl( driveUart *self, int rxOrTx, ledHdl hdl)
 	
 }
 
-static void UartSetIdp( driveUart *self, int rxOrTx, uartIdp idp)
+static void UartSetIdp( driveUart *self, int rxOrTx, uartIdp idp, void *arg)
 {
 	if( rxOrTx == DRCT_RX)
 	{
 		self->rxIdp = idp;
+		self->argRxIdp = arg;
 	}
 	else if( rxOrTx == DRCT_TX)
 	{
 		self->txIdp = idp;
+		self->argTxIdp = arg;
 	} 
 	
 	
@@ -393,7 +438,7 @@ static void UartSetPostSem( driveUart *self, int rxOrTx, postSem post)
 void UartDma_Init( driveUart *self)
 {
 	CfgUart_t *myCfg = ( CfgUart_t *)self->cfg;
-	USART_TypeDef *devUart = ( USART_TypeDef *)self->devUart;
+	USART_TypeDef *devUartBase = ( USART_TypeDef *)self->devUartBase;
 	
 	DMA_InitTypeDef DMA_InitStructure;	
 	short rxbuflen;
@@ -406,7 +451,7 @@ void UartDma_Init( driveUart *self)
 
     DMA_Cmd( myCfg->dma->dma_tx_base, DISABLE);                           // 关闭DMA
     DMA_DeInit( myCfg->dma->dma_tx_base);                                 // 恢复初始值
-    DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t)(&devUart->DR);// 外设地址
+    DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t)(&devUartBase->DR);// 外设地址
     DMA_InitStructure.DMA_MemoryBaseAddr = (uint32_t)self->txCache;        
     DMA_InitStructure.DMA_DIR = DMA_DIR_PeripheralDST;                      // 从内存到外设
     DMA_InitStructure.DMA_BufferSize = UART_TXCACHE_SIZE;                    
@@ -431,7 +476,7 @@ void UartDma_Init( driveUart *self)
 	switch_receivebuf( &self->ctl.pingpong, &rxbuf, &rxbuflen);
     DMA_Cmd( myCfg->dma->dma_rx_base, DISABLE);                           
     DMA_DeInit( myCfg->dma->dma_rx_base);                                 
-    DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t)(&devUart->DR);
+    DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t)(&devUartBase->DR);
     DMA_InitStructure.DMA_MemoryBaseAddr = (uint32_t)rxbuf;         
     DMA_InitStructure.DMA_DIR = DMA_DIR_PeripheralSRC;                     
     DMA_InitStructure.DMA_BufferSize = rxbuflen;                     
@@ -452,101 +497,147 @@ void UartDma_Init( driveUart *self)
 
 }
 
-//中断处理程序根据资源与串口的绑定情况来选择设备
-void DMA1_Channel4_IRQHandler(void)
-{
-	driveUart	*thisDev = devArry[0];
-	CfgUart_t *myCfg = ( CfgUart_t *)thisDev->cfg;
-    if(DMA_GetITStatus(DMA1_FLAG_TC4))
-    {
-			
-			DMA_ClearFlag( myCfg->dma->dma_tx_flag);         // 清除标志
-			DMA_Cmd( myCfg->dma->dma_tx_base, DISABLE);   // 关闭DMA通道
-			if( thisDev->txPost)
-				thisDev->txPost();
-		while( USART_GetFlagStatus( thisDev->devUart, USART_FLAG_TXE) == RESET){};
-    }
-}
-
-//dma将缓存填满以后,切换接收缓存
-//DMA接收中断
-void DMA1_Channel5_IRQHandler(void)
+void Usart_irq( driveUart *thisDev)
 {
 	short rxbuflen;
 	char *rxbuf;
-	driveUart	*thisDev = devArry[0];
-	CfgUart_t *myCfg = ( CfgUart_t *)thisDev->cfg;
-	
-	
-    if(DMA_GetITStatus(DMA1_FLAG_TC5))
-    {
-		DMA_Cmd( myCfg->dma->dma_rx_base, DISABLE); 
-        DMA_ClearFlag( myCfg->dma->dma_rx_flag);         // 清除标志
-		thisDev->ctl.recv_size = get_loadbuflen( &thisDev->ctl.pingpong)  - \
-		DMA_GetCurrDataCounter(  myCfg->dma->dma_rx_base); //获得接收到的字节
-		
-		switch_receivebuf( &thisDev->ctl.pingpong, &rxbuf, &rxbuflen);
-		myCfg->dma->dma_rx_base->CMAR = (uint32_t)rxbuf;
-		myCfg->dma->dma_rx_base->CNDTR = rxbuflen;
-		DMA_Cmd(  myCfg->dma->dma_rx_base, ENABLE);
-		if( thisDev->rxLedHdl)
-			thisDev->rxLedHdl();
-		if( thisDev->rxPost)
-			thisDev->rxPost();
-    }
-}
-
-void USART1_IRQHandler(void)
-{
 	uint8_t clear_idle = clear_idle;
-	short rxbuflen;
-	char *rxbuf;
-	driveUart	*thisDev = devArry[0];
+	USART_TypeDef *devUartBase = ( USART_TypeDef *)thisDev->devUartBase;
+	//这个500是在115200的波特率，CPU时钟是48M的情况下通过逐次逼近测得的
+//	int i = 500;
+	
 	CfgUart_t *myCfg = ( CfgUart_t *)thisDev->cfg;
-	USART_TypeDef *devUart = ( USART_TypeDef *)thisDev->devUart;
-	if(USART_GetITStatus(USART1, USART_IT_IDLE) != RESET)  // 空闲中断
+	if(USART_GetITStatus( thisDev->devUartBase, USART_IT_IDLE) != RESET)  // 空闲中断
 	{
 		
 		DMA_Cmd( myCfg->dma->dma_rx_base, DISABLE);       // 关闭DMA
 		DMA_ClearFlag(  myCfg->dma->dma_rx_flag );           // 清除DMA标志
 		thisDev->ctl.recv_size = get_loadbuflen( &thisDev->ctl.pingpong)  - \
 		DMA_GetCurrDataCounter(  myCfg->dma->dma_rx_base); //获得接收到的字节
-//		S485_uart_ctl.recv_size = S485_UART_BUF_LEN - DMA_GetCurrDataCounter(DMA_s485_usart.dma_rx_base); //获得接收到的字节
 		
 		switch_receivebuf( &thisDev->ctl.pingpong, &rxbuf, &rxbuflen);
 		myCfg->dma->dma_rx_base->CMAR = (uint32_t)rxbuf;
 		myCfg->dma->dma_rx_base->CNDTR = rxbuflen;
 		DMA_Cmd(  myCfg->dma->dma_rx_base, ENABLE);
 		
-		clear_idle = devUart->SR;
-		clear_idle = devUart->DR;
-		USART_ReceiveData( USART1 ); // Clear IDLE interrupt flag bit
+	
+		clear_idle = devUartBase->SR;
+		clear_idle = devUartBase->DR;
+		USART_ReceiveData( devUartBase); // Clear IDLE interrupt flag bit
+
+
 		if( thisDev->rxLedHdl)
-			thisDev->rxLedHdl();
+			thisDev->rxLedHdl(thisDev);
 		if( thisDev->rxPost)
-			thisDev->rxPost();
+			thisDev->rxPost(thisDev);
+		if( thisDev->rxIdp)
+			thisDev->rxIdp( thisDev->argRxIdp);
+		
 	}
-#if SER485_SENDMODE == SENDMODE_INTR	
-	if(USART_GetITStatus(USART1, USART_IT_TXE) == SET)  // 发送中断
+	if(USART_GetITStatus( thisDev->devUartBase, USART_IT_RXNE) == SET) 
 	{
+		//清除RXNE标志，防止在接收的数据长度超过dma的接收长度之后，没有任何应用去接收数据而造成串口永远处于中断状态
+		USART_ReceiveData( thisDev->devUartBase);
+	}
+	//这个中断在DMA发送完成中断中开启
+	if(USART_GetITStatus( thisDev->devUartBase, USART_IT_TC) == SET) 
+	{
+		USART_ClearFlag( thisDev->devUartBase,USART_IT_TC );
+		USART_ITConfig( thisDev->devUartBase, USART_IT_TC, DISABLE);
+		
+		if( thisDev->txPost)
+			thisDev->txPost(thisDev);
+		if( thisDev->txIdp)
+			thisDev->txIdp( thisDev->argTxIdp);
+		
+		thisDev->ioctol( thisDev, DRICMD_SET_DIR_RX);
+		thisDev->status = UARTSTATUS_IDLE;
+		
+	}
+	
+#if SER485_SENDMODE == SENDMODE_INTR	
+	if(USART_GetITStatus( thisDev->devUartBase, USART_IT_TXE) == SET)  // 发送中断
+	{
+		
+
 		thisDev->ctl.sendingCount ++;
 			
 	
 		//发送完成后关闭发展中断，避免发送寄存器空了就会产生中断
 		if( thisDev->ctl.sendingCount >= thisDev->ctl.sendingLen)
 		{
-			USART_ITConfig(USART1, USART_IT_TXE, DISABLE);
+			USART_ITConfig( thisDev->devUartBase, USART_IT_TXE, DISABLE);
 			if( thisDev->txPost)
-				thisDev->txPost();
+				thisDev->txPost(thisDev);
 		}			
 		else
-			USART_SendData(USART1, thisDev->ctl.intrSendingBuf[ thisDev->ctl.sendingCount] );
+			USART_SendData( thisDev->devUartBase, thisDev->ctl.intrSendingBuf[ thisDev->ctl.sendingCount] );
 		
-		
+	
 		
 	}
+#endif	
 	
-#endif
+
+	
+}
+
+void USART1_IRQHandler(void)
+{
+	
+	driveUart	*thisDev = devArry[0];
+	
+	Usart_irq( thisDev);
+}
+
+
+//中断处理程序根据资源与串口的绑定情况来选择设备
+void DMA1_Channel4_IRQHandler(void)
+{
+	driveUart	*thisDev = devArry[0];
+	CfgUart_t *myCfg = ( CfgUart_t *)thisDev->cfg;
+//	int i = 1000;
+	if(DMA_GetITStatus(DMA1_FLAG_TC4))		//2是发送中断
+	{
+		
+		DMA_ClearFlag( myCfg->dma->dma_tx_flag);         // 清除标志
+		DMA_Cmd( myCfg->dma->dma_tx_base, DISABLE);   // 关闭DMA通道
+		
+		//等到硬件中所有的寄存器都移入串口
+//		while(!USART_GetFlagStatus( thisDev->devUartBase, USART_FLAG_TXE));
+		
+		//还有数据未完成发送
+//		if( USART_GetFlagStatus( thisDev->devUartBase, USART_FLAG_TXE))
+//		{
+			USART_ClearFlag( thisDev->devUartBase,USART_IT_TC );
+			USART_ITConfig( thisDev->devUartBase, USART_IT_TC, ENABLE);
+//		}
+//		else
+//		{
+//			
+//			thisDev->ioctol( thisDev, DRICMD_SET_DIR_RX);
+//		}
+		
+//		if( thisDev->txPost)
+//			thisDev->txPost(thisDev);
+//		if( thisDev->txIdp)
+//			thisDev->txIdp( thisDev->argTxIdp);
+//		thisDev->status = UARTSTATUS_IDLE;
+//		while(i)
+//			i --;
+//		thisDev->ioctol( thisDev, DRICMD_SET_DIR_RX);
+		
+	
+	}
+}
+
+
+void USART2_IRQHandler(void)
+{
+	
+	driveUart	*thisDev = devArry[1];
+	Usart_irq( thisDev);
+
 
 }
 
@@ -556,99 +647,26 @@ void DMA1_Channel7_IRQHandler(void)
 {
 	driveUart	*thisDev = devArry[1];
 	CfgUart_t *myCfg = ( CfgUart_t *)thisDev->cfg;
-    if(DMA_GetITStatus(DMA1_FLAG_TC7))
-    {
-			
-			DMA_ClearFlag( myCfg->dma->dma_tx_flag);         // 清除标志
-			DMA_Cmd( myCfg->dma->dma_tx_base, DISABLE);   // 关闭DMA通道
-			if( thisDev->txPost)
-				thisDev->txPost();
-		while( USART_GetFlagStatus( thisDev->devUart, USART_FLAG_TXE) == RESET){};
-    }
-}
-
-//dma将缓存填满以后,切换接收缓存
-void DMA1_Channel6_IRQHandler(void)
-{
-	short rxbuflen;
-	char *rxbuf;
-	driveUart	*thisDev = devArry[1];
-	CfgUart_t *myCfg = ( CfgUart_t *)thisDev->cfg;
-	
-	
-    if(DMA_GetITStatus(DMA1_FLAG_TC6))
-    {
-		DMA_Cmd( myCfg->dma->dma_rx_base, DISABLE); 
-        DMA_ClearFlag( myCfg->dma->dma_rx_flag);         // 清除标志
-		thisDev->ctl.recv_size = get_loadbuflen( &thisDev->ctl.pingpong)  - \
-		DMA_GetCurrDataCounter(  myCfg->dma->dma_rx_base); //获得接收到的字节
-		
-		switch_receivebuf( &thisDev->ctl.pingpong, &rxbuf, &rxbuflen);
-		myCfg->dma->dma_rx_base->CMAR = (uint32_t)rxbuf;
-		myCfg->dma->dma_rx_base->CNDTR = rxbuflen;
-		DMA_Cmd(  myCfg->dma->dma_rx_base, ENABLE);
-		if( thisDev->rxLedHdl)
-			thisDev->rxLedHdl();
-		if( thisDev->rxPost)
-			thisDev->rxPost();
-    }
-}
-
-void USART2_IRQHandler(void)
-{
-	uint8_t clear_idle = clear_idle;
-	short rxbuflen;
-	char *rxbuf;
-	driveUart	*thisDev = devArry[1];
-	CfgUart_t *myCfg = ( CfgUart_t *)thisDev->cfg;
-	USART_TypeDef *devUart = ( USART_TypeDef *)thisDev->devUart;
-	if(USART_GetITStatus(USART2, USART_IT_IDLE) != RESET)  // 空闲中断
+	if(DMA_GetITStatus(DMA1_FLAG_TC7))
 	{
+
+		DMA_ClearFlag( myCfg->dma->dma_tx_flag);         // 清除标志
+		DMA_Cmd( myCfg->dma->dma_tx_base, DISABLE);   // 关闭DMA通道
 		
-		DMA_Cmd( myCfg->dma->dma_rx_base, DISABLE);       // 关闭DMA
-		DMA_ClearFlag(  myCfg->dma->dma_rx_flag );           // 清除DMA标志
-		thisDev->ctl.recv_size = get_loadbuflen( &thisDev->ctl.pingpong)  - \
-		DMA_GetCurrDataCounter(  myCfg->dma->dma_rx_base); //获得接收到的字节
-//		S485_uart_ctl.recv_size = S485_UART_BUF_LEN - DMA_GetCurrDataCounter(DMA_s485_usart.dma_rx_base); //获得接收到的字节
+		USART_ClearFlag( thisDev->devUartBase,USART_IT_TC );
+		USART_ITConfig( thisDev->devUartBase, USART_IT_TC, ENABLE);
 		
-		switch_receivebuf( &thisDev->ctl.pingpong, &rxbuf, &rxbuflen);
-		myCfg->dma->dma_rx_base->CMAR = (uint32_t)rxbuf;
-		myCfg->dma->dma_rx_base->CNDTR = rxbuflen;
-		DMA_Cmd(  myCfg->dma->dma_rx_base, ENABLE);
-		
-		clear_idle = devUart->SR;
-		clear_idle = devUart->DR;
-		USART_ReceiveData( USART2 ); // Clear IDLE interrupt flag bit
-		if( thisDev->rxLedHdl)
-			thisDev->rxLedHdl();
-		if( thisDev->rxPost)
-			thisDev->rxPost();
-	}
-#if SER485_SENDMODE == SENDMODE_INTR	
-	if(USART_GetITStatus(USART2, USART_IT_TXE) == SET)  // 发送中断
-	{
-		thisDev->ctl.sendingCount ++;
-			
-	
-		//发送完成后关闭发展中断，避免发送寄存器空了就会产生中断
-		if( thisDev->ctl.sendingCount >= thisDev->ctl.sendingLen)
-		{
-			USART_ITConfig(USART2, USART_IT_TXE, DISABLE);
-			if( thisDev->txPost)
-				thisDev->txPost();
-		}			
-		else
-			USART_SendData(USART2, thisDev->ctl.intrSendingBuf[ thisDev->ctl.sendingCount] );
-		
-		
+//		while( USART_GetFlagStatus( thisDev->devUartBase, USART_FLAG_TXE) == RESET){};
+//		if( thisDev->txPost)
+//			thisDev->txPost(thisDev);
+
+//		if( thisDev->txIdp)
+//			thisDev->txIdp( thisDev->argTxIdp);
+//		thisDev->status = UARTSTATUS_IDLE;
+//		thisDev->ioctol( thisDev, DRICMD_SET_DIR_RX);
 		
 	}
-	
-#endif
-
 }
-
-
 
 
 CTOR( driveUart)
