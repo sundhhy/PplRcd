@@ -28,12 +28,12 @@ GmtrExpr *GetGmtrExpr(void)
 
 static void * GmtrInterpret( Expr *self, void *faVd, void *context)
 {
-	GmtrExpr 		*cthis = ( GmtrExpr *)self;
+//	GmtrExpr 		*cthis = ( GmtrExpr *)self;
 	GhRectangle 	*gpGmtr = NULL;
 	Glyph			*myGp = NULL;
 	char			*att = expTempBUf;
 	char 			tmpbuf[4] = {0};
-	char			*pp;
+//	char			*pp;
 	char 			*pnewPosition = context;	
 	ViewData_t		*vd;
 

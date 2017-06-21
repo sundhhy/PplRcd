@@ -6,6 +6,12 @@
 .\objects\expfactory.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
 .\objects\expfactory.o: Expression\expression.h
 .\objects\expfactory.o: .\Views\Composition.h
+.\objects\expfactory.o: E:\mylib\sdhLib\inc\sdhDef.h
+.\objects\expfactory.o: ..\PplRcd\sdhlibConf.h
+.\objects\expfactory.o: E:\mylib\sdhLib\inc\basis/sdhDebug.h
+.\objects\expfactory.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
+.\objects\expfactory.o: E:\mylib\sdhLib\inc\basis/sdhError.h
+.\objects\expfactory.o: E:\mylib\sdhLib\inc\basis/macros.h
 .\objects\expfactory.o: E:\mylib\sdhLib\inc\arithmetic/list.h
 .\objects\expfactory.o: .\Glyph\Glyph.h
 .\objects\expfactory.o: .\device\device.h
@@ -20,3 +26,4 @@
 .\objects\expfactory.o: Expression\NtInput.h
 .\objects\expfactory.o: Expression\GeometricsExpr.h
 .\objects\expfactory.o: Expression\NtGrid.h
+.\objects\expfactory.o: Expression\Dyn_TimeExpr.h

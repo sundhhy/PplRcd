@@ -13,3 +13,4 @@
 .\objects\device.o: E:\mylib\sdhLib\inc\sdhDef.h
 .\objects\device.o: ..\PplRcd\sdhlibConf.h
 .\objects\device.o: E:\mylib\sdhLib\inc\basis/sdhError.h
+.\objects\device.o: E:\mylib\sdhLib\inc\basis/macros.h

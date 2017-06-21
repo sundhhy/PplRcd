@@ -6,7 +6,7 @@
 
 #include "Reader.h"
 
-static const char buData[] = "bu";
+//static const char buData[] = "bu";
 
 static NtButton *signalNtButton;
 
@@ -24,10 +24,10 @@ NtButton *GetNtButton(void)
 
 static void * BuInterpret( Expr *self, void *fa, void *context)
 {
-	NtButton *cthis = ( NtButton *)self;
+//	NtButton *cthis = ( NtButton *)self;
 	GhRectangle *myRec = Get_GhRectangle();
 	Glyph	*myGp = (Glyph *)myRec;
-	char	*pp;
+//	char	*pp;
 	char 	*pnewPosition = context;
 	char	*att = expTempBUf;
 	Expr 	*myexp ;
@@ -105,7 +105,7 @@ static void * BuInterpret( Expr *self, void *fa, void *context)
 	
 	memset( expTempBUf, 0, sizeof( expTempBUf));
 	pnewPosition = RemoveTail( pnewPosition, NULL, 0);
-	exit:
+//	exit:
 	
 	
 	return pnewPosition;

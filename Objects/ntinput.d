@@ -6,6 +6,12 @@
 .\objects\ntinput.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
 .\objects\ntinput.o: Expression\expression.h
 .\objects\ntinput.o: .\Views\Composition.h
+.\objects\ntinput.o: E:\mylib\sdhLib\inc\sdhDef.h
+.\objects\ntinput.o: ..\PplRcd\sdhlibConf.h
+.\objects\ntinput.o: E:\mylib\sdhLib\inc\basis/sdhDebug.h
+.\objects\ntinput.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
+.\objects\ntinput.o: E:\mylib\sdhLib\inc\basis/sdhError.h
+.\objects\ntinput.o: E:\mylib\sdhLib\inc\basis/macros.h
 .\objects\ntinput.o: E:\mylib\sdhLib\inc\arithmetic/list.h
 .\objects\ntinput.o: .\Glyph\Glyph.h
 .\objects\ntinput.o: .\device\device.h

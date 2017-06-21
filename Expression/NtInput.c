@@ -8,7 +8,7 @@
 
 #include "Gh_txt.h"
 
-static const char buData[] = "bu";
+//static const char buData[] = "bu";
 
 static NtInput *signalNtInput;
 
@@ -26,8 +26,8 @@ NtInput *GetNtInput(void)
 
 static void * MtInput_Interpret( Expr *self, void *fa, void *context)
 {
-	NtInput *cthis = ( NtInput *)self;
-	char	*pp;
+//	NtInput *cthis = ( NtInput *)self;
+//	char	*pp;
 	char 	*pnewPosition = context;
 	char	*att = expTempBUf;
 	Expr 	*myexp ;
@@ -97,7 +97,7 @@ static void * MtInput_Interpret( Expr *self, void *fa, void *context)
 		
 	memset( expTempBUf, 0, sizeof( expTempBUf));
 	pnewPosition = RemoveTail( pnewPosition, NULL, 0);
-	exit:
+//	exit:
 	
 	
 	return pnewPosition;

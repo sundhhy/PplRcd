@@ -6,7 +6,7 @@
 
 CLASS( TxtExpr)
 {
-	IMPLEMENTS( Expr);
+	EXTENDS( Expr);
 	
 };
 

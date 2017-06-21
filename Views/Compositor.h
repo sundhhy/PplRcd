@@ -27,4 +27,6 @@ CLASS( SimpCtor)
 
 SimpCtor *Get_SimpCtor(void);
 
+void LayoutDynData(void **ppvd, void *cl);
+
 #endif

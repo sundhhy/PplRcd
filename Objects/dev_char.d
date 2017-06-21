@@ -31,3 +31,4 @@
 .\objects\dev_char.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
 .\objects\dev_char.o: E:\mylib\sdhLib\inc\sdhDef.h
 .\objects\dev_char.o: ..\PplRcd\sdhlibConf.h
+.\objects\dev_char.o: E:\mylib\sdhLib\inc\basis/macros.h

@@ -10,6 +10,7 @@ variable = [ A-Z, a-z]*
 */
 
 /*缩写
+警告！ name=val 的等号前后不允许有空格！！！！
 clr : colour
 f : font
 bu : button
@@ -25,6 +26,9 @@ cg	:	columnGap 列间距
 ls	:	lineSpacing	行间距
 
 gr	:	grid
+
+bndx1/y1/x2/y2 : bonduary x1/y1/x2/y2
+spr: separator分隔符
 
 pmx/y : permille x/y轴长度占屏幕的x/y轴尺寸的千分比
 */

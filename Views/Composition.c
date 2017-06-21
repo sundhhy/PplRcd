@@ -112,38 +112,56 @@ int Ction_InsertVD( Composition *self, ViewData_t *faVd, ViewData_t *vd)
 }
 
 
+int Ction_InsertDynVD( Composition *self, ViewData_t *faVd, ViewData_t *vd)
+{
+	if( faVd)
+	{
+		faVd->t_childen = List_push( faVd->t_childen, vd);
+		
+		vd->paraent = faVd;
+	}
+	else
+	{
+		self->t_dynVd = List_push( self->t_dynVd, vd);
+	}
+	
+	return RET_OK;
+}
 
 
 
+static void UpdateDynCnt(void **ppvd, void *cl)
+{
+	ViewData_t *pvd = *ppvd;
+//	Composition	*pction = ( Composition *)cl;
+	
+	if( pvd->pdyndHdl)
+	{
+		
+		pvd->dspCnt.len = pvd->pdyndHdl->func( pvd->pdyndHdl->pDyndata, 0, (void *)&pvd->dspCnt.data);
+		LayoutDynData( ppvd, cl);
+		
+	}
+		
+}
+
+static void ShowDynData(void **ppvd, void *cl)
+{
+	ViewData_t *pvd;
+	
+	if( ppvd == NULL)
+		return ;
+	
+	pvd = *ppvd;
+	
+	if( pvd->gh)
+		pvd->gh->draw( pvd->gh, &pvd->dspCnt, &pvd->dspArea);
+	
+	
+}
 
 
-
-
-
-
-
-
-//static int Ction_Insert( Composition *self, Glyph *gh)
-//{
-//	
-//	
-//	Compositor *thisCtor = ( Compositor *)self->ctor;
-//	
-
-//	
-//	
-//	self->lcdWidth = 320;
-//	self->lcdHeight = 240;
-//	
-//	
-//	thisCtor->compose( self, gh);
-//	
-//	
-//	
-//	return RET_OK;
-//}
-
-int Ction_AddRow( Composition *self)
+int Ction_DynSHow( Composition *self)
 {
 	//如果再加一行就超过屏幕就返回错误
 //	if( ( self->rowSize[ self->step] + self->lcdArea.cursorY) > self->lcdArea.LcdSizeY)
@@ -151,7 +169,8 @@ int Ction_AddRow( Composition *self)
 //	//将光标指向下一行起始位置
 //	self->lcdArea.cursorY += self->rowSize[ self->step];
 //	self->lcdArea.cursorX = 0;
-	
+	List_map( self->t_dynVd, UpdateDynCnt, self);
+	List_map( self->t_dynVd, ShowDynData, self);
 	
 	return RET_OK;
 }
@@ -171,10 +190,12 @@ FUNCTION_SETTING( setCtor, SetCtor);
 
 FUNCTION_SETTING( clean, Ction_Clean);
 FUNCTION_SETTING( setSCBkc, SetSCBkc);
-FUNCTION_SETTING( addRow, Ction_AddRow);
+FUNCTION_SETTING( dynShow, Ction_DynSHow);
 
 FUNCTION_SETTING( allocVD, Ction_AllocVD);
 FUNCTION_SETTING( insertVD, Ction_InsertVD);
+FUNCTION_SETTING( insertDynVD, Ction_InsertDynVD);
+
 FUNCTION_SETTING( flush, Ction_flush);
 
 

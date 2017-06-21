@@ -65,11 +65,11 @@ static int Clean( Glyph *self)
 	
 }
 
-static void Insert( Glyph *self, void *context, int len)
-{
-	
-	
-}
+//static void Insert( Glyph *self, void *context, int len)
+//{
+//	
+//	
+//}
 
 
 static void Draw( Glyph *self, dspContent_t *cnt, dspArea_t *area)
@@ -153,9 +153,9 @@ int String2Colour( char *s)
 
 int	String2Bkc( char *s)
 {
-	char *pp ;
+//	char *pp ;
 	char colour[8] = {0};
-	char i = 0;
+//	char i = 0;
 	if( GetKeyVal( s, "bkc", colour, 8))
 	{
 		

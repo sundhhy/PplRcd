@@ -9,7 +9,7 @@ static GhTxt *signalGhTxt;
 
 GhTxt *Get_GhTxt(void)
 {
-	Glyph *gh;
+//	Glyph *gh;
 	
 	if( signalGhTxt == NULL)
 	{
@@ -75,77 +75,77 @@ GhTxt *Get_GhTxt(void)
 
 //在跨行显示的时候，为了防止一个汉字被拆分显示，所以回退一格
 //计算这一行能显示的数量
-static uint8_t CalNumDisplayInthisRow(dspContent_t *cnt, dspArea_t *area, uint8_t rouNum)
-{
-	uint8_t 	numInrow = 0;
-	short 	displayed = 0;
-	short 	xend = 0 ;
-	short	xstart	= 0, ableNum;
-	char	c;
+//static uint8_t CalNumDisplayInthisRow(dspContent_t *cnt, dspArea_t *area, uint8_t rouNum)
+//{
+//	uint8_t 	numInrow = 0;
+//	short 	displayed = 0;
+//	short 	xend = 0 ;
+//	short	xstart	= 0, ableNum;
+//	char	c;
 
-	//在第一行，x轴起始位置是分配区域的x轴起始位置
-	//在新的一行的时候，就是
-//	if( rouNum == 0)
-//		xstart = area->x1;
-//	else
-//		xstart = area->curScInfo->xLimit;
-//	//在最后一行，x轴的结束位置是分配区域的结束位置
-//	if( rouNum == ( area->numRow - 1))
-//		xend = area->x2;
-//	else
-//		xend = area->curScInfo->yLimit;
-	
-	ableNum = ( xend - xstart) / area->sizeX;
-	
-	//计算这一行能显示几个字符
-	numInrow  = 0;
-	displayed = 0;
-	while(1)
-	{
-		c = cnt->data[ displayed];
-		
-		if( IS_CHINESE( c))
-		{
-			if( ableNum > 1)
-			{
-				numInrow += 2;
-				displayed += 2;
-				ableNum -= 2;
-			}
-		}
-		else
-		{
-			if( ableNum >  0)
-			{
-				numInrow ++;
-				displayed ++;
-				ableNum -= 1;
-			}	
-			
-		}
-		//如果显示够了就退出
-		if( displayed >= cnt->len)
-			break;
-		//如果本行已经没有空间了，就显示本行
-		if( ableNum == 0)
-			break;
-		//如果本行还能显示一个字符，看看下一个是不是能放进去了
-		if( ableNum == 1)
-		{		
-			c = cnt->data[ displayed];
-			if( !IS_CHINESE( c))
-			{
-				displayed ++;
-				numInrow ++;
-			}
-			break;
-		}
-			
-	}
-		
-	return numInrow;
+//	//在第一行，x轴起始位置是分配区域的x轴起始位置
+//	//在新的一行的时候，就是
+////	if( rouNum == 0)
+////		xstart = area->x1;
+////	else
+////		xstart = area->curScInfo->xLimit;
+////	//在最后一行，x轴的结束位置是分配区域的结束位置
+////	if( rouNum == ( area->numRow - 1))
+////		xend = area->x2;
+////	else
+////		xend = area->curScInfo->yLimit;
+//	
+//	ableNum = ( xend - xstart) / area->sizeX;
+//	
+//	//计算这一行能显示几个字符
+//	numInrow  = 0;
+//	displayed = 0;
+//	while(1)
+//	{
+//		c = cnt->data[ displayed];
+//		
+//		if( IS_CHINESE( c))
+//		{
+//			if( ableNum > 1)
+//			{
+//				numInrow += 2;
+//				displayed += 2;
+//				ableNum -= 2;
+//			}
+//		}
+//		else
+//		{
+//			if( ableNum >  0)
+//			{
+//				numInrow ++;
+//				displayed ++;
+//				ableNum -= 1;
+//			}	
+//			
+//		}
+//		//如果显示够了就退出
+//		if( displayed >= cnt->len)
+//			break;
+//		//如果本行已经没有空间了，就显示本行
+//		if( ableNum == 0)
+//			break;
+//		//如果本行还能显示一个字符，看看下一个是不是能放进去了
+//		if( ableNum == 1)
+//		{		
+//			c = cnt->data[ displayed];
+//			if( !IS_CHINESE( c))
+//			{
+//				displayed ++;
+//				numInrow ++;
+//			}
+//			break;
+//		}
+//			
+//	}
+//		
+//	return numInrow;
 
-}
+//}
 
 static void GhTxt_Draw( Glyph *self, dspContent_t *cnt, dspArea_t *area)
 {
@@ -242,19 +242,19 @@ static int GhTxt_GetSize(Glyph *self, int font, uint16_t *x, uint16_t *y)
 	return lcd->getStrSize( font, x, y);
 	
 }
-static int GhTxt_GetWidth(Glyph *self)
-{
-//	GhTxt *cthis = ( GhTxt *)self;
-	uint16_t	width = 0;
-	I_dev_lcd *lcd;
-	
-	Dev_open( LCD_DEVID, (void *)&lcd);
-	
-//	lcd->getStrSize( self->font, &width, NULL);
-	
-	return width;
-	
-}
+//static int GhTxt_GetWidth(Glyph *self)
+//{
+////	GhTxt *cthis = ( GhTxt *)self;
+//	uint16_t	width = 0;
+//	I_dev_lcd *lcd;
+//	
+//	Dev_open( LCD_DEVID, (void *)&lcd);
+//	
+////	lcd->getStrSize( self->font, &width, NULL);
+//	
+//	return width;
+//	
+//}
 //static int GhTxt_GetHeight(Glyph *self)
 //{
 //	GhTxt *cthis = ( GhTxt *)self;

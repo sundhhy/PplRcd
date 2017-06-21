@@ -34,7 +34,7 @@ typedef struct {
 	uint8_t		bkc;			//±³¾°É«
 	
 	uint8_t		subType;
-	uint8_t		none;
+	uint8_t		id;
 }dspContent_t;
 
 

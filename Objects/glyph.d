@@ -16,3 +16,4 @@
 .\objects\glyph.o: E:\mylib\sdhLib\inc\sdhDef.h
 .\objects\glyph.o: ..\PplRcd\sdhlibConf.h
 .\objects\glyph.o: E:\mylib\sdhLib\inc\basis/sdhError.h
+.\objects\glyph.o: E:\mylib\sdhLib\inc\basis/macros.h

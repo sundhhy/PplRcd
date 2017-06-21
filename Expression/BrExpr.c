@@ -9,7 +9,7 @@
 #include "Reader.h"
 
 static BrExpr *signalBrExpr;
-static const char brData[] = "\n";
+//static const char brData[] = "\n";
 
 
 BrExpr *GetBrExpr(void)

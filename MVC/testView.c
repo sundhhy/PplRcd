@@ -1,11 +1,17 @@
+
 #include "testView.h"
 #include "Composition.h"
 #include "Compositor.h"
 #include "Reader.h"
 #include "ExpFactory.h"
+#include "Model.h"
+//============================================================================//
+//            G L O B A L   D E F I N I T I O N S                             //
+//============================================================================//
 
-
-
+//------------------------------------------------------------------------------
+// const defines
+//------------------------------------------------------------------------------
 #define  TEST_CONTEXT  4
 
 
@@ -36,7 +42,7 @@ static const char testContext[] = \
 //<gr cols=2 cg=2 ls=2 f=24 bkc=black ali=m x=96 y=30 > <bu ><text >System</></bu><bu  ><text > View</></bu>\
 //<bu ><text >Input</></bu><bu ><text > Output</></bu></gr>";
 
-static const char testContext[] = \
+static   char* const testContext[2] = {	\
 "<title bkc=black clr=blue f=24 xali=l>设置</> \
 <gr cols=2 xali=m   id=0x01 > <text f=16  yali=m clr=blue >密码:</> <rct bkc=black x=126 y=30></></gr> \
 <gr cols=2 cg=2 ls=2 f=16 bkc=black clr=blue xali=m x=126 y=30 >\
@@ -45,21 +51,65 @@ static const char testContext[] = \
 <bu ><text yali=m >显示设置</></bu><bu ><text yali=m > 数据备份</></bu>\
 <bu ><text yali=m >数据打印</></bu><bu ><text yali=m > 退出</></bu>\
 </gr> \
-<text f=16 bkc=white clr=red xali=m>重要数据，非专业人生请退出</> ";
+<text f=16 bkc=white clr=red xali=m>重要数据，非专业人生请退出</> ", \
+//动态画面部分
+"<time bndx1=180 bndx2=320 bndy1=0  bndy2=24 f=24 xali=m bkc=black clr=blue id=0 spr=/> </time>" \
+
+
+};
 
 #endif
+
+//通过id绑定的指针
+static  void * const dynId_ptr[2] = { &g_SysTime, NULL};
 
 //背景色 "none" 或某种颜色
 #define SCREENBKC		"white"
 #define LINESPACING		4
 #define COLUMGRAP		0
+//------------------------------------------------------------------------------
+// module global vars
+//------------------------------------------------------------------------------
+
+
+//------------------------------------------------------------------------------
+// global function prototypes
+//------------------------------------------------------------------------------
+
+//============================================================================//
+//            P R I V A T E   D E F I N I T I O N S                           //
+//============================================================================//
+
+//------------------------------------------------------------------------------
+// const defines
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+// local types
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+// local vars
+//------------------------------------------------------------------------------
+
+
+//------------------------------------------------------------------------------
+// local function prototypes
+//------------------------------------------------------------------------------
+/* Cycle/Sync Callback functions */
+
+
+//============================================================================//
+//            P U B L I C   F U N C T I O N S                                 //
+//============================================================================//
 
 void View_test(void)
 {
 //	TestViewShow();
-	char *pp = (void *)testContext;
+	char *pp = (void *)testContext[0];
 	char	name[8];
-	int		nameLen;
+	short		nameLen;
+	short		i = 0;
 	Composition *ct = Get_Composition();
 	Compositor *ctor = (Compositor *)Get_SimpCtor();
 	Expr *myexp ;
@@ -71,30 +121,84 @@ void View_test(void)
 	ct->setSCBkc( ct, SCREENBKC);
 	ct->clean( ct);
 	
-
+	ct->dynPtr = (void *)dynId_ptr;
 	
-	while(1)
+	//静态部分排版
+	i = 0;
+	while( i < 2)
 	{
-		nameLen = 8;
-		nameLen = GetName( pp, name, nameLen);
-		if( nameLen == 0)
-			break;
-		
-		myexp = ExpCreate( name);
-		if( myexp == NULL)
-			break;
-		
-			//设置排版
-		myexp->setCtion( myexp, ct);
-		myexp->setVar( myexp, name);		//跟据Context中的变量来设置
-		pp = myexp->interpret( myexp, NULL, pp);
+		pp = (char *)testContext[i ++];
+		while(1)
+		{
+			nameLen = 8;
+			nameLen = GetName( pp, name, nameLen);
+			if( nameLen == 0)
+				break;
+			
+			myexp = ExpCreate( name);
+			if( myexp == NULL)
+				break;
+			
+				//设置排版
+			myexp->setCtion( myexp, ct);
+			myexp->setVar( myexp, name);		//跟据Context中的变量来设置
+			pp = myexp->interpret( myexp, NULL, pp);
+			
+		}
 		
 	}
+	
+	
+	
 		
 	ct->flush( ct);
 	
 
 }
+
+
+//=========================================================================//
+//                                                                         //
+//          P R I V A T E   D E F I N I T I O N S                          //
+//                                                                         //
+//=========================================================================//
+/// \name Private Functions
+/// \{
+
+static int TestView_init( View *self, void *arg)
+{
+	
+	View_test();
+	
+	return RET_OK;
+}
+
+static int		TestView_show( View *self, void *arg)
+{
+	Model *m = ( Model *)( self->myModel);
+	Composition *ct = Get_Composition();
+	
+	m->getMdlData( m, 0, &g_SysTime);
+	
+	ct->dynShow( ct);
+	return RET_OK;
+}
+
+CTOR( TestView)
+SUPER_CTOR( View);
+FUNCTION_SETTING( View.init, TestView_init);
+FUNCTION_SETTING( View.show, TestView_show);
+END_CTOR
+
+
+
+
+
+
+
+
+
+
 
 
 

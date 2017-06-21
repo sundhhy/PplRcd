@@ -1,6 +1,12 @@
 .\objects\composition.o: Views\Composition.c
 .\objects\composition.o: Views\Composition.h
 .\objects\composition.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+.\objects\composition.o: E:\mylib\sdhLib\inc\sdhDef.h
+.\objects\composition.o: ..\PplRcd\sdhlibConf.h
+.\objects\composition.o: E:\mylib\sdhLib\inc\basis/sdhDebug.h
+.\objects\composition.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
+.\objects\composition.o: E:\mylib\sdhLib\inc\basis/sdhError.h
+.\objects\composition.o: E:\mylib\sdhLib\inc\basis/macros.h
 .\objects\composition.o: E:\mylib\sdhLib\inc\arithmetic/list.h
 .\objects\composition.o: E:\mylib\sdhLib\inc\lw_oopc.h
 .\objects\composition.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
@@ -15,9 +21,6 @@
 .\objects\composition.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
 .\objects\composition.o: .\Glyph\Gh_txt.h
 .\objects\composition.o: E:\mylib\sdhLib\inc\arithmetic/cycQueue.h
-.\objects\composition.o: E:\mylib\sdhLib\inc\basis/sdhDebug.h
-.\objects\composition.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
-.\objects\composition.o: E:\mylib\sdhLib\inc\basis/sdhError.h
 .\objects\composition.o: E:\mylib\sdhLib\inc\mem/CiiMem.h
 .\objects\composition.o: E:\mylib\sdhLib\inc\basis/except.h
 .\objects\composition.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\setjmp.h

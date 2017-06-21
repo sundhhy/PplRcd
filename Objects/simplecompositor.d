@@ -12,6 +12,9 @@
 .\objects\simplecompositor.o: .\device\dev_char.h
 .\objects\simplecompositor.o: .\device\dev_lcd.h
 .\objects\simplecompositor.o: Views\Composition.h
+.\objects\simplecompositor.o: E:\mylib\sdhLib\inc\sdhDef.h
+.\objects\simplecompositor.o: ..\PplRcd\sdhlibConf.h
 .\objects\simplecompositor.o: E:\mylib\sdhLib\inc\basis/sdhDebug.h
 .\objects\simplecompositor.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
 .\objects\simplecompositor.o: E:\mylib\sdhLib\inc\basis/sdhError.h
+.\objects\simplecompositor.o: E:\mylib\sdhLib\inc\basis/macros.h

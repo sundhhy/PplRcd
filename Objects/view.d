@@ -12,5 +12,12 @@
 .\objects\view.o: .\device\dev_lcd.h
 .\objects\view.o: E:\mylib\sdhLib\inc\arithmetic/list.h
 .\objects\view.o: MVC\View.h
+.\objects\view.o: E:\mylib\sdhLib\inc\sdhDef.h
+.\objects\view.o: ..\PplRcd\sdhlibConf.h
+.\objects\view.o: E:\mylib\sdhLib\inc\basis/sdhDebug.h
+.\objects\view.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
+.\objects\view.o: E:\mylib\sdhLib\inc\basis/sdhError.h
+.\objects\view.o: E:\mylib\sdhLib\inc\basis/macros.h
 .\objects\view.o: .\Expression\expression.h
 .\objects\view.o: .\Views\Composition.h
+.\objects\view.o: ..\PplRcd\utils/time.h

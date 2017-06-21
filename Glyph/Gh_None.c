@@ -7,7 +7,7 @@ static GhNone *signalGhNone;
 
 GhNone *Get_GhNone(void)
 {
-	Glyph *gh;
+//	Glyph *gh;
 	
 	if( signalGhNone == NULL)
 	{

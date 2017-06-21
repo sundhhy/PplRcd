@@ -276,7 +276,7 @@ int UartGiveBackPlayloadBuf( driveUart *self, void *data)
 **
 ** @return
 **/
-static void UartIoctol( driveUart *self, int cmd, ...)
+static int  UartIoctol( driveUart *self, int cmd, ...)
 {
 	int int_data;
 	va_list arg_ptr; 
@@ -329,6 +329,8 @@ static void UartIoctol( driveUart *self, int cmd, ...)
 		default: break;
 		
 	}
+	
+	return RET_OK;
 }
 
 
@@ -337,7 +339,7 @@ static void UartIoctol( driveUart *self, int cmd, ...)
 static int UartTest( driveUart *self, void *buf, int size)
 {
 	char *pp = NULL;
-	char	*pdata = NULL;
+//	char	*pdata = NULL;
   int len;
 	
 	strcpy( buf, "Serial 485 test\n" );

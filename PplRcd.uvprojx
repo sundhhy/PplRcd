@@ -365,7 +365,7 @@
               <MiscControls>--diag_suppress=1295;--diag_suppress=1</MiscControls>
               <Define>USE_STDPERIPH_DRIVER, STM32F10X_HD, USE_STM3210B_EVAL,HSE_VALUE=8000000</Define>
               <Undefine></Undefine>
-              <IncludePath>.\configs;.\BSP;E:\mylib\sdhLib\inc;.\device\dev_LCD\nokia_5110;..\PplRcd;.\drive;.\device;.\Glyph;.\Expression;.\Views;.\REEC</IncludePath>
+              <IncludePath>.\configs;.\BSP;E:\mylib\sdhLib\inc;.\device\dev_LCD\nokia_5110;..\PplRcd;.\drive;.\device;.\Glyph;.\Expression;.\Views;.\REEC;.\MVC;.\Views;..\PplRcd</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -406,7 +406,7 @@
       </TargetOption>
       <Groups>
         <Group>
-          <GroupName>Source Group 1</GroupName>
+          <GroupName>app</GroupName>
           <Files>
             <File>
               <FileName>main.c</FileName>
@@ -773,6 +773,36 @@
               <FileType>5</FileType>
               <FilePath>.\MVC\testView.h</FilePath>
             </File>
+            <File>
+              <FileName>ModelTime.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\MVC\ModelTime.h</FilePath>
+            </File>
+            <File>
+              <FileName>ModelTime.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\MVC\ModelTime.c</FilePath>
+            </File>
+            <File>
+              <FileName>ModelFactory.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\MVC\ModelFactory.c</FilePath>
+            </File>
+            <File>
+              <FileName>ModelFactory.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\MVC\ModelFactory.h</FilePath>
+            </File>
+            <File>
+              <FileName>ViewFactory.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\MVC\ViewFactory.h</FilePath>
+            </File>
+            <File>
+              <FileName>ViewFactory.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\MVC\ViewFactory.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -868,6 +898,16 @@
               <FileType>5</FileType>
               <FilePath>.\Expression\NtGrid.h</FilePath>
             </File>
+            <File>
+              <FileName>Dyn_TimeExpr.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Expression\Dyn_TimeExpr.h</FilePath>
+            </File>
+            <File>
+              <FileName>Dyn_TimeExpr.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Expression\Dyn_TimeExpr.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -892,6 +932,36 @@
               <FileName>SimpleCompositor.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\Views\SimpleCompositor.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>utils</GroupName>
+          <Files>
+            <File>
+              <FileName>rtc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\utils\rtc.c</FilePath>
+            </File>
+            <File>
+              <FileName>rtc.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\utils\rtc.h</FilePath>
+            </File>
+            <File>
+              <FileName>time.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\utils\time.h</FilePath>
+            </File>
+            <File>
+              <FileName>rtc_pcf8563.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\utils\rtc_pcf8563.h</FilePath>
+            </File>
+            <File>
+              <FileName>rtc_pcf8563.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\utils\rtc_pcf8563.c</FilePath>
             </File>
           </Files>
         </Group>

@@ -172,6 +172,16 @@
         <Ww>
           <count>0</count>
           <WinNumber>1</WinNumber>
+          <ItemText>rtcTm</ItemText>
+        </Ww>
+        <Ww>
+          <count>1</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>g_SysTime</ItemText>
+        </Ww>
+        <Ww>
+          <count>2</count>
+          <WinNumber>1</WinNumber>
           <ItemText>expTempBUf</ItemText>
         </Ww>
       </WatchWindow1>
@@ -179,12 +189,12 @@
         <Ww>
           <count>0</count>
           <WinNumber>2</WinNumber>
-          <ItemText>lcdBuf</ItemText>
+          <ItemText>timeStr</ItemText>
         </Ww>
         <Ww>
           <count>1</count>
           <WinNumber>2</WinNumber>
-          <ItemText>lcdBuf</ItemText>
+          <ItemText>timeStr</ItemText>
         </Ww>
         <Ww>
           <count>2</count>
@@ -194,7 +204,7 @@
         <Ww>
           <count>3</count>
           <WinNumber>2</WinNumber>
-          <ItemText>lcdBuf</ItemText>
+          <ItemText>expTempBUf</ItemText>
         </Ww>
         <Ww>
           <count>4</count>
@@ -204,17 +214,17 @@
         <Ww>
           <count>5</count>
           <WinNumber>2</WinNumber>
-          <ItemText>testContext</ItemText>
+          <ItemText>lcdBuf</ItemText>
         </Ww>
         <Ww>
           <count>6</count>
           <WinNumber>2</WinNumber>
-          <ItemText>brData</ItemText>
+          <ItemText>lcdBuf</ItemText>
         </Ww>
         <Ww>
           <count>7</count>
           <WinNumber>2</WinNumber>
-          <ItemText>testContext</ItemText>
+          <ItemText>lcdBuf</ItemText>
         </Ww>
         <Ww>
           <count>8</count>
@@ -224,17 +234,17 @@
         <Ww>
           <count>9</count>
           <WinNumber>2</WinNumber>
-          <ItemText>lcdBuf</ItemText>
+          <ItemText>testContext</ItemText>
         </Ww>
         <Ww>
           <count>10</count>
           <WinNumber>2</WinNumber>
-          <ItemText>lcdBuf</ItemText>
+          <ItemText>brData</ItemText>
         </Ww>
         <Ww>
           <count>11</count>
           <WinNumber>2</WinNumber>
-          <ItemText>lcdBuf</ItemText>
+          <ItemText>testContext</ItemText>
         </Ww>
         <Ww>
           <count>12</count>
@@ -278,6 +288,26 @@
         </Ww>
         <Ww>
           <count>20</count>
+          <WinNumber>2</WinNumber>
+          <ItemText>lcdBuf</ItemText>
+        </Ww>
+        <Ww>
+          <count>21</count>
+          <WinNumber>2</WinNumber>
+          <ItemText>lcdBuf</ItemText>
+        </Ww>
+        <Ww>
+          <count>22</count>
+          <WinNumber>2</WinNumber>
+          <ItemText>lcdBuf</ItemText>
+        </Ww>
+        <Ww>
+          <count>23</count>
+          <WinNumber>2</WinNumber>
+          <ItemText>lcdBuf</ItemText>
+        </Ww>
+        <Ww>
+          <count>24</count>
           <WinNumber>2</WinNumber>
           <ItemText>devArry</ItemText>
         </Ww>
@@ -323,7 +353,7 @@
   </Target>
 
   <Group>
-    <GroupName>Source Group 1</GroupName>
+    <GroupName>app</GroupName>
     <tvExp>1</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
@@ -384,7 +414,7 @@
 
   <Group>
     <GroupName>config</GroupName>
-    <tvExp>1</tvExp>
+    <tvExp>0</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>
@@ -418,7 +448,7 @@
 
   <Group>
     <GroupName>BSP</GroupName>
-    <tvExp>1</tvExp>
+    <tvExp>0</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>
@@ -504,7 +534,7 @@
 
   <Group>
     <GroupName>myLib</GroupName>
-    <tvExp>1</tvExp>
+    <tvExp>0</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>
@@ -759,7 +789,7 @@
 
   <Group>
     <GroupName>dev_LCD</GroupName>
-    <tvExp>1</tvExp>
+    <tvExp>0</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>
@@ -806,7 +836,7 @@
 
   <Group>
     <GroupName>drive</GroupName>
-    <tvExp>1</tvExp>
+    <tvExp>0</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>
@@ -840,7 +870,7 @@
 
   <Group>
     <GroupName>device</GroupName>
-    <tvExp>1</tvExp>
+    <tvExp>0</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>
@@ -926,7 +956,7 @@
 
   <Group>
     <GroupName>dev_char</GroupName>
-    <tvExp>1</tvExp>
+    <tvExp>0</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>
@@ -986,7 +1016,7 @@
 
   <Group>
     <GroupName>Glyph</GroupName>
-    <tvExp>0</tvExp>
+    <tvExp>1</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>
@@ -1232,6 +1262,84 @@
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
+    <File>
+      <GroupNumber>10</GroupNumber>
+      <FileNumber>65</FileNumber>
+      <FileType>5</FileType>
+      <tvExp>0</tvExp>
+      <Focus>0</Focus>
+      <tvExpOptDlg>0</tvExpOptDlg>
+      <bDave2>0</bDave2>
+      <PathWithFileName>.\MVC\ModelTime.h</PathWithFileName>
+      <FilenameWithoutPath>ModelTime.h</FilenameWithoutPath>
+      <RteFlg>0</RteFlg>
+      <bShared>0</bShared>
+    </File>
+    <File>
+      <GroupNumber>10</GroupNumber>
+      <FileNumber>66</FileNumber>
+      <FileType>1</FileType>
+      <tvExp>0</tvExp>
+      <Focus>0</Focus>
+      <tvExpOptDlg>0</tvExpOptDlg>
+      <bDave2>0</bDave2>
+      <PathWithFileName>.\MVC\ModelTime.c</PathWithFileName>
+      <FilenameWithoutPath>ModelTime.c</FilenameWithoutPath>
+      <RteFlg>0</RteFlg>
+      <bShared>0</bShared>
+    </File>
+    <File>
+      <GroupNumber>10</GroupNumber>
+      <FileNumber>67</FileNumber>
+      <FileType>1</FileType>
+      <tvExp>0</tvExp>
+      <Focus>0</Focus>
+      <tvExpOptDlg>0</tvExpOptDlg>
+      <bDave2>0</bDave2>
+      <PathWithFileName>.\MVC\ModelFactory.c</PathWithFileName>
+      <FilenameWithoutPath>ModelFactory.c</FilenameWithoutPath>
+      <RteFlg>0</RteFlg>
+      <bShared>0</bShared>
+    </File>
+    <File>
+      <GroupNumber>10</GroupNumber>
+      <FileNumber>68</FileNumber>
+      <FileType>5</FileType>
+      <tvExp>0</tvExp>
+      <Focus>0</Focus>
+      <tvExpOptDlg>0</tvExpOptDlg>
+      <bDave2>0</bDave2>
+      <PathWithFileName>.\MVC\ModelFactory.h</PathWithFileName>
+      <FilenameWithoutPath>ModelFactory.h</FilenameWithoutPath>
+      <RteFlg>0</RteFlg>
+      <bShared>0</bShared>
+    </File>
+    <File>
+      <GroupNumber>10</GroupNumber>
+      <FileNumber>69</FileNumber>
+      <FileType>5</FileType>
+      <tvExp>0</tvExp>
+      <Focus>0</Focus>
+      <tvExpOptDlg>0</tvExpOptDlg>
+      <bDave2>0</bDave2>
+      <PathWithFileName>.\MVC\ViewFactory.h</PathWithFileName>
+      <FilenameWithoutPath>ViewFactory.h</FilenameWithoutPath>
+      <RteFlg>0</RteFlg>
+      <bShared>0</bShared>
+    </File>
+    <File>
+      <GroupNumber>10</GroupNumber>
+      <FileNumber>70</FileNumber>
+      <FileType>1</FileType>
+      <tvExp>0</tvExp>
+      <Focus>0</Focus>
+      <tvExpOptDlg>0</tvExpOptDlg>
+      <bDave2>0</bDave2>
+      <PathWithFileName>.\MVC\ViewFactory.c</PathWithFileName>
+      <FilenameWithoutPath>ViewFactory.c</FilenameWithoutPath>
+      <RteFlg>0</RteFlg>
+      <bShared>0</bShared>
+    </File>
   </Group>
 
   <Group>
@@ -1242,7 +1350,7 @@
     <RteFlg>0</RteFlg>
     <File>
       <GroupNumber>11</GroupNumber>
-      <FileNumber>65</FileNumber>
+      <FileNumber>71</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <Focus>0</Focus>
@@ -1255,7 +1363,7 @@
     </File>
     <File>
       <GroupNumber>11</GroupNumber>
-      <FileNumber>66</FileNumber>
+      <FileNumber>72</FileNumber>
       <FileType>5</FileType>
       <tvExp>0</tvExp>
       <Focus>0</Focus>
@@ -1268,7 +1376,7 @@
     </File>
     <File>
       <GroupNumber>11</GroupNumber>
-      <FileNumber>67</FileNumber>
+      <FileNumber>73</FileNumber>
       <FileType>5</FileType>
       <tvExp>0</tvExp>
       <Focus>0</Focus>
@@ -1281,7 +1389,7 @@
     </File>
     <File>
       <GroupNumber>11</GroupNumber>
-      <FileNumber>68</FileNumber>
+      <FileNumber>74</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <Focus>0</Focus>
@@ -1294,7 +1402,7 @@
     </File>
     <File>
       <GroupNumber>11</GroupNumber>
-      <FileNumber>69</FileNumber>
+      <FileNumber>75</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <Focus>0</Focus>
@@ -1307,7 +1415,7 @@
     </File>
     <File>
       <GroupNumber>11</GroupNumber>
-      <FileNumber>70</FileNumber>
+      <FileNumber>76</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <Focus>0</Focus>
@@ -1320,7 +1428,7 @@
     </File>
     <File>
       <GroupNumber>11</GroupNumber>
-      <FileNumber>71</FileNumber>
+      <FileNumber>77</FileNumber>
       <FileType>5</FileType>
       <tvExp>0</tvExp>
       <Focus>0</Focus>
@@ -1333,7 +1441,7 @@
     </File>
     <File>
       <GroupNumber>11</GroupNumber>
-      <FileNumber>72</FileNumber>
+      <FileNumber>78</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <Focus>0</Focus>
@@ -1346,7 +1454,7 @@
     </File>
     <File>
       <GroupNumber>11</GroupNumber>
-      <FileNumber>73</FileNumber>
+      <FileNumber>79</FileNumber>
       <FileType>5</FileType>
       <tvExp>0</tvExp>
       <Focus>0</Focus>
@@ -1359,7 +1467,7 @@
     </File>
     <File>
       <GroupNumber>11</GroupNumber>
-      <FileNumber>74</FileNumber>
+      <FileNumber>80</FileNumber>
       <FileType>5</FileType>
       <tvExp>0</tvExp>
       <Focus>0</Focus>
@@ -1372,7 +1480,7 @@
     </File>
     <File>
       <GroupNumber>11</GroupNumber>
-      <FileNumber>75</FileNumber>
+      <FileNumber>81</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <Focus>0</Focus>
@@ -1385,7 +1493,7 @@
     </File>
     <File>
       <GroupNumber>11</GroupNumber>
-      <FileNumber>76</FileNumber>
+      <FileNumber>82</FileNumber>
       <FileType>5</FileType>
       <tvExp>0</tvExp>
       <Focus>0</Focus>
@@ -1398,7 +1506,7 @@
     </File>
     <File>
       <GroupNumber>11</GroupNumber>
-      <FileNumber>77</FileNumber>
+      <FileNumber>83</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <Focus>0</Focus>
@@ -1411,7 +1519,7 @@
     </File>
     <File>
       <GroupNumber>11</GroupNumber>
-      <FileNumber>78</FileNumber>
+      <FileNumber>84</FileNumber>
       <FileType>5</FileType>
       <tvExp>0</tvExp>
       <Focus>0</Focus>
@@ -1424,7 +1532,7 @@
     </File>
     <File>
       <GroupNumber>11</GroupNumber>
-      <FileNumber>79</FileNumber>
+      <FileNumber>85</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <Focus>0</Focus>
@@ -1437,7 +1545,7 @@
     </File>
     <File>
       <GroupNumber>11</GroupNumber>
-      <FileNumber>80</FileNumber>
+      <FileNumber>86</FileNumber>
       <FileType>5</FileType>
       <tvExp>0</tvExp>
       <Focus>0</Focus>
@@ -1450,7 +1558,7 @@
     </File>
     <File>
       <GroupNumber>11</GroupNumber>
-      <FileNumber>81</FileNumber>
+      <FileNumber>87</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <Focus>0</Focus>
@@ -1463,7 +1571,7 @@
     </File>
     <File>
       <GroupNumber>11</GroupNumber>
-      <FileNumber>82</FileNumber>
+      <FileNumber>88</FileNumber>
       <FileType>5</FileType>
       <tvExp>0</tvExp>
       <Focus>0</Focus>
@@ -1471,6 +1579,32 @@
       <bDave2>0</bDave2>
       <PathWithFileName>.\Expression\NtGrid.h</PathWithFileName>
       <FilenameWithoutPath>NtGrid.h</FilenameWithoutPath>
+      <RteFlg>0</RteFlg>
+      <bShared>0</bShared>
+    </File>
+    <File>
+      <GroupNumber>11</GroupNumber>
+      <FileNumber>89</FileNumber>
+      <FileType>5</FileType>
+      <tvExp>0</tvExp>
+      <Focus>0</Focus>
+      <tvExpOptDlg>0</tvExpOptDlg>
+      <bDave2>0</bDave2>
+      <PathWithFileName>.\Expression\Dyn_TimeExpr.h</PathWithFileName>
+      <FilenameWithoutPath>Dyn_TimeExpr.h</FilenameWithoutPath>
+      <RteFlg>0</RteFlg>
+      <bShared>0</bShared>
+    </File>
+    <File>
+      <GroupNumber>11</GroupNumber>
+      <FileNumber>90</FileNumber>
+      <FileType>1</FileType>
+      <tvExp>0</tvExp>
+      <Focus>0</Focus>
+      <tvExpOptDlg>0</tvExpOptDlg>
+      <bDave2>0</bDave2>
+      <PathWithFileName>.\Expression\Dyn_TimeExpr.c</PathWithFileName>
+      <FilenameWithoutPath>Dyn_TimeExpr.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -1484,7 +1618,7 @@
     <RteFlg>0</RteFlg>
     <File>
       <GroupNumber>12</GroupNumber>
-      <FileNumber>83</FileNumber>
+      <FileNumber>91</FileNumber>
       <FileType>5</FileType>
       <tvExp>0</tvExp>
       <Focus>0</Focus>
@@ -1497,7 +1631,7 @@
     </File>
     <File>
       <GroupNumber>12</GroupNumber>
-      <FileNumber>84</FileNumber>
+      <FileNumber>92</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <Focus>0</Focus>
@@ -1510,7 +1644,7 @@
     </File>
     <File>
       <GroupNumber>12</GroupNumber>
-      <FileNumber>85</FileNumber>
+      <FileNumber>93</FileNumber>
       <FileType>5</FileType>
       <tvExp>0</tvExp>
       <Focus>0</Focus>
@@ -1523,7 +1657,7 @@
     </File>
     <File>
       <GroupNumber>12</GroupNumber>
-      <FileNumber>86</FileNumber>
+      <FileNumber>94</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <Focus>0</Focus>
@@ -1531,6 +1665,79 @@
       <bDave2>0</bDave2>
       <PathWithFileName>.\Views\SimpleCompositor.c</PathWithFileName>
       <FilenameWithoutPath>SimpleCompositor.c</FilenameWithoutPath>
+      <RteFlg>0</RteFlg>
+      <bShared>0</bShared>
+    </File>
+  </Group>
+
+  <Group>
+    <GroupName>utils</GroupName>
+    <tvExp>1</tvExp>
+    <tvExpOptDlg>0</tvExpOptDlg>
+    <cbSel>0</cbSel>
+    <RteFlg>0</RteFlg>
+    <File>
+      <GroupNumber>13</GroupNumber>
+      <FileNumber>95</FileNumber>
+      <FileType>1</FileType>
+      <tvExp>0</tvExp>
+      <Focus>0</Focus>
+      <tvExpOptDlg>0</tvExpOptDlg>
+      <bDave2>0</bDave2>
+      <PathWithFileName>.\utils\rtc.c</PathWithFileName>
+      <FilenameWithoutPath>rtc.c</FilenameWithoutPath>
+      <RteFlg>0</RteFlg>
+      <bShared>0</bShared>
+    </File>
+    <File>
+      <GroupNumber>13</GroupNumber>
+      <FileNumber>96</FileNumber>
+      <FileType>5</FileType>
+      <tvExp>0</tvExp>
+      <Focus>0</Focus>
+      <tvExpOptDlg>0</tvExpOptDlg>
+      <bDave2>0</bDave2>
+      <PathWithFileName>.\utils\rtc.h</PathWithFileName>
+      <FilenameWithoutPath>rtc.h</FilenameWithoutPath>
+      <RteFlg>0</RteFlg>
+      <bShared>0</bShared>
+    </File>
+    <File>
+      <GroupNumber>13</GroupNumber>
+      <FileNumber>97</FileNumber>
+      <FileType>5</FileType>
+      <tvExp>0</tvExp>
+      <Focus>0</Focus>
+      <tvExpOptDlg>0</tvExpOptDlg>
+      <bDave2>0</bDave2>
+      <PathWithFileName>.\utils\time.h</PathWithFileName>
+      <FilenameWithoutPath>time.h</FilenameWithoutPath>
+      <RteFlg>0</RteFlg>
+      <bShared>0</bShared>
+    </File>
+    <File>
+      <GroupNumber>13</GroupNumber>
+      <FileNumber>98</FileNumber>
+      <FileType>5</FileType>
+      <tvExp>0</tvExp>
+      <Focus>0</Focus>
+      <tvExpOptDlg>0</tvExpOptDlg>
+      <bDave2>0</bDave2>
+      <PathWithFileName>.\utils\rtc_pcf8563.h</PathWithFileName>
+      <FilenameWithoutPath>rtc_pcf8563.h</FilenameWithoutPath>
+      <RteFlg>0</RteFlg>
+      <bShared>0</bShared>
+    </File>
+    <File>
+      <GroupNumber>13</GroupNumber>
+      <FileNumber>99</FileNumber>
+      <FileType>1</FileType>
+      <tvExp>0</tvExp>
+      <Focus>0</Focus>
+      <tvExpOptDlg>0</tvExpOptDlg>
+      <bDave2>0</bDave2>
+      <PathWithFileName>.\utils\rtc_pcf8563.c</PathWithFileName>
+      <FilenameWithoutPath>rtc_pcf8563.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -1546,7 +1753,7 @@
 
   <Group>
     <GroupName>::Device</GroupName>
-    <tvExp>1</tvExp>
+    <tvExp>0</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
     <RteFlg>1</RteFlg>

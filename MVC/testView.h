@@ -3,7 +3,7 @@
 #include "View.h"
 
 
-CLASS( TestViewe)
+CLASS( TestView)
 {
 	EXTENDS( View);
 	

@@ -6,4 +6,5 @@
 .\objects\cycqueue.o: E:\mylib\sdhLib\inc\basis/sdhError.h
 .\objects\cycqueue.o: E:\mylib\sdhLib\inc\sdhDef.h
 .\objects\cycqueue.o: ..\PplRcd\sdhlibConf.h
+.\objects\cycqueue.o: E:\mylib\sdhLib\inc\basis/macros.h
 .\objects\cycqueue.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h

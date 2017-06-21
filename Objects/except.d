@@ -3,6 +3,10 @@
 .\objects\except.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
 .\objects\except.o: E:\mylib\sdhLib\inc\sdhDef.h
 .\objects\except.o: ..\PplRcd\sdhlibConf.h
+.\objects\except.o: E:\mylib\sdhLib\inc\basis/sdhDebug.h
+.\objects\except.o: E:\mylib\sdhLib\inc\basis/sdhError.h
+.\objects\except.o: E:\mylib\sdhLib\inc\basis/macros.h
+.\objects\except.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
 .\objects\except.o: E:\mylib\sdhLib\inc\basis/assert.h
 .\objects\except.o: E:\mylib\sdhLib\inc\basis/except.h
 .\objects\except.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\setjmp.h

@@ -70,10 +70,10 @@ static void AdjustChildSeq(void **ppvd, void *cl)
 static void CalVdSize(void **ppvd, void *cl)
 {
 	ViewData_t *pvd = *ppvd;
-	ViewData_t *pPvd = pvd->paraent;
+//	ViewData_t *pPvd = pvd->paraent;
 	Composition	*pction = ( Composition *)cl;
-	short	numChild = 0;
-	short	i = 0;
+//	short	numChild = 0;
+//	short	i = 0;
 	
 	
 	
@@ -164,6 +164,67 @@ static void SumChldSize(void **ppvd, void *cl)
 //		pPvd->dspArea.sizeY += pPvd->lineSpacing;
 		
 	}
+	
+}
+
+
+void LayoutDynData(void **ppvd, void *cl)
+{
+	ViewData_t *pvd = *ppvd;
+	scArea_t	*bnd = pvd->dspArea.boundary;
+	short		boundaryX = 0;
+	short		totalX = 0;
+	
+	//先设置一个非法值
+	pvd->dspArea.useArea.x1 = 0;
+	pvd->dspArea.useArea.y1 = 0;
+	pvd->dspArea.useArea.x2 = 0;
+	pvd->dspArea.useArea.y2 = 0;
+	
+	
+	boundaryX = bnd->x2 - bnd->x1;
+
+	
+	totalX = pvd->dspArea.sizeX * pvd->dspCnt.len;
+	
+	//对需要处理对齐的，要根据显示的整体尺寸来确定起始位置
+	
+	if( pvd->notDealAli  || pvd->dspArea.ali == ALIGN_LEFT)
+	{
+	
+		//将分配的区域x1,y1,x2,y2都初始化为光标的位置
+		pvd->dspArea.useArea.x1 = bnd->x1;
+		
+	}
+	else if(  pvd->dspArea.ali == ALIGN_MIDDLE)
+	{
+		pvd->dspArea.useArea.x1 = bnd->x1 + ( ( boundaryX - totalX) >> 1);	
+	}
+	else if(  pvd->dspArea.ali == ALIGN_RIGHT)
+	{
+		pvd->dspArea.useArea.x1 = bnd->x1 + boundaryX - totalX;
+		
+	}
+//	pvd->dspArea.numRow = 1;
+	if( pvd->dspArea.aliy == ALIGN_MIDDLE)
+	{
+		pvd->dspArea.useArea.y1 = bnd->y1 + ( ( bnd->y2 - bnd->y1 - pvd->dspArea.sizeY) >> 1);
+	}
+	else
+	{
+		pvd->dspArea.useArea.y1 = bnd->y1;
+	}
+	
+	pvd->dspArea.useArea.x2 = pvd->dspArea.useArea.x1 + pvd->dspArea.sizeX;
+	pvd->dspArea.useArea.y2 = pvd->dspArea.useArea.y1 + pvd->dspArea.sizeY;
+	
+	
+	
+	
+	
+	
+
+	
 	
 }
 
@@ -376,7 +437,7 @@ static void Layout(void **ppvd, void *cl)
 static void DspViewData(void **ppvd, void *cl)
 {
 	ViewData_t *pvd;
-	Composition	*pction = ( Composition *)cl;
+//	Composition	*pction = ( Composition *)cl;
 	
 	if( ppvd == NULL)
 		return ;

@@ -39,8 +39,8 @@ GhRectangle *Get_GhRectangle(void)
 static void GhRec_Draw( Glyph *self, dspContent_t *cnt, dspArea_t *area)
 {
 	I_dev_lcd *lcd;
-	short x2, y2;
-	GhRectangle *cthis = ( GhRectangle *)self;
+//	short x2, y2;
+//	GhRectangle *cthis = ( GhRectangle *)self;
 	
 	Dev_open( LCD_DEVID, (void *)&lcd);
 	if( cnt->bkc == ERR_COLOUR)

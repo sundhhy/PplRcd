@@ -8,3 +8,4 @@
 .\objects\dev_lcd.o: E:\mylib\sdhLib\inc\sdhDef.h
 .\objects\dev_lcd.o: ..\PplRcd\sdhlibConf.h
 .\objects\dev_lcd.o: E:\mylib\sdhLib\inc\basis/sdhError.h
+.\objects\dev_lcd.o: E:\mylib\sdhLib\inc\basis/macros.h

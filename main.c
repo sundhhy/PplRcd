@@ -20,6 +20,11 @@
 
 #include "TDD.h"
 #include "glyph.h"
+#include "ModelFactory.h"
+#include "ViewFactory.h"
+
+#include "utils/time.h"
+
 
 #define LCD_NOKIE		0
 //ÏµÍ³°æ±¾ºÅ
@@ -95,7 +100,14 @@ int fgetc(FILE *f /*stream*/)
 //tdd data
 #if TDD_ON == 1
 char	appBuf[ 64];
+
 #endif
+#if TDD_MVC == 1
+struct  tm	rtcTm;
+Model *mTime;
+View	*vTest;
+#endif
+
 #if TDD_DEV_UART2 == 1
 
 I_dev_Char *I_uart2;
@@ -124,32 +136,45 @@ int main (void) {
 	g_childVer = GetCompileMoth() << 8 | GetCompileDay();
 	printf("\r\n ############("__DATE__ " - " __TIME__ ")############");
 	printf("\n sytem ver : %x %x \n", g_majorVer, g_childVer);
+
+#if TDD_ON == 0
+
+//app code
+#else
 	
-	
-#if LCD_NOKIA == 1
+#	if LCD_NOKIA == 1
 	LCD_init();
     LCD_clear();
 	sprintf( appBuf, "VER : %x %x", g_majorVer, g_childVer);
 	LCD_write_english_string((LCD_WIDTH_PIXELS - strlen(SIM_LOGO) *6)/2,2, appBuf);
+#	endif
+
+#	if TDD_MVC == 1
 	
-#endif	
+	mTime = ModelCreate("time");
+	vTest = ViewCreate("test");
 	
-#if TDD_LCD == 1
+	mTime->init( mTime, NULL);
+	mTime->getMdlData( mTime, 0, &rtcTm);
+	
+	vTest->init( vTest, NULL);
+	vTest->myModel = mTime;
+	
+	
+#	elif TDD_LCD == 1
 
 	View_test();
 
-#endif
+#	elif TDD_DEV_UART2 == 1	
 	
-#if TDD_DEV_UART2 == 1	
-	
-#if LCD_NOKIA == 1
+#	if LCD_NOKIA == 1
 	sprintf( appBuf, "uart 2 testing ...");
 	LCD_clear();
 	LCD_write_english_string((LCD_WIDTH_PIXELS - strlen(SIM_LOGO) *6)/2,1, appBuf);
 #	endif	
 	Dev_open( DEVID_UART2, ( void *)&I_uart2);
 	
-	if( I_uart2->test(appBuf, 64) == RET_OK)
+	if( I_uart2->test(I_uart2, appBuf, 64) == RET_OK)
 	{
 		sprintf( appBuf, "succeed!");
 		
@@ -161,12 +186,32 @@ int main (void) {
 	
 	
 	
-#if LCD_NOKIA == 1
+#		if LCD_NOKIA == 1
 	LCD_write_english_string((LCD_WIDTH_PIXELS - strlen(SIM_LOGO) *6)/2,23, appBuf);
-#	endif
-#endif	
+#		endif
+	
+#	endif	//TDD_DEV_UART2
+	
+#endif		//TDD_ON == 0
   // create 'thread' functions that start executing,
   // example: tid_name = osThreadCreate (osThread(name), NULL);
 
   osKernelStart ();                         // start thread execution 
+
+#if TDD_ON == 0
+	
+#else
+	
+#	if TDD_MVC == 1
+	while(1)
+	{
+		osDelay(1000);
+		vTest->show( vTest, NULL);
+		
+	}	
+
+#	endif	
+	
+#endif
+	
 }

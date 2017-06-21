@@ -1,6 +1,6 @@
 #include "TxtExpr.h"
-#include "basis/sdhDebug.h"
-#include "basis/sdhError.h"
+//#include "basis/sdhDebug.h"
+//#include "basis/sdhError.h"
 #include "sdhDef.h"
 #include "dev_lcd.h"
 #include "Gh_txt.h"

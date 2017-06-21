@@ -28,6 +28,9 @@
 .\objects\drive_uart.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
 .\objects\drive_uart.o: E:\mylib\sdhLib\inc\sdhDef.h
 .\objects\drive_uart.o: ..\PplRcd\sdhlibConf.h
+.\objects\drive_uart.o: E:\mylib\sdhLib\inc\basis/sdhDebug.h
+.\objects\drive_uart.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
+.\objects\drive_uart.o: E:\mylib\sdhLib\inc\basis/macros.h
 .\objects\drive_uart.o: E:\mylib\sdhLib\inc\mem/CiiMem.h
 .\objects\drive_uart.o: E:\mylib\sdhLib\inc\basis/except.h
 .\objects\drive_uart.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\setjmp.h

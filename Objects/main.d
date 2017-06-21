@@ -37,3 +37,13 @@
 .\objects\main.o: .\device\dev_lcd.h
 .\objects\main.o: TDD.h
 .\objects\main.o: .\Glyph\glyph.h
+.\objects\main.o: .\MVC\ModelFactory.h
+.\objects\main.o: .\MVC\Model.h
+.\objects\main.o: E:\mylib\sdhLib\inc\arithmetic/list.h
+.\objects\main.o: .\MVC\ViewFactory.h
+.\objects\main.o: .\MVC\view.h
+.\objects\main.o: .\MVC\View.h
+.\objects\main.o: E:\mylib\sdhLib\inc\sdhDef.h
+.\objects\main.o: ..\PplRcd\sdhlibConf.h
+.\objects\main.o: E:\mylib\sdhLib\inc\basis/sdhDebug.h
+.\objects\main.o: utils/time.h

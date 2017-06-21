@@ -6,6 +6,12 @@
 .\objects\ntbutton.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
 .\objects\ntbutton.o: Expression\expression.h
 .\objects\ntbutton.o: .\Views\Composition.h
+.\objects\ntbutton.o: E:\mylib\sdhLib\inc\sdhDef.h
+.\objects\ntbutton.o: ..\PplRcd\sdhlibConf.h
+.\objects\ntbutton.o: E:\mylib\sdhLib\inc\basis/sdhDebug.h
+.\objects\ntbutton.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
+.\objects\ntbutton.o: E:\mylib\sdhLib\inc\basis/sdhError.h
+.\objects\ntbutton.o: E:\mylib\sdhLib\inc\basis/macros.h
 .\objects\ntbutton.o: E:\mylib\sdhLib\inc\arithmetic/list.h
 .\objects\ntbutton.o: .\Glyph\Glyph.h
 .\objects\ntbutton.o: .\device\device.h

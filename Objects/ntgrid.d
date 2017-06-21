@@ -6,6 +6,12 @@
 .\objects\ntgrid.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
 .\objects\ntgrid.o: Expression\expression.h
 .\objects\ntgrid.o: .\Views\Composition.h
+.\objects\ntgrid.o: E:\mylib\sdhLib\inc\sdhDef.h
+.\objects\ntgrid.o: ..\PplRcd\sdhlibConf.h
+.\objects\ntgrid.o: E:\mylib\sdhLib\inc\basis/sdhDebug.h
+.\objects\ntgrid.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
+.\objects\ntgrid.o: E:\mylib\sdhLib\inc\basis/sdhError.h
+.\objects\ntgrid.o: E:\mylib\sdhLib\inc\basis/macros.h
 .\objects\ntgrid.o: E:\mylib\sdhLib\inc\arithmetic/list.h
 .\objects\ntgrid.o: .\Glyph\Glyph.h
 .\objects\ntgrid.o: .\device\device.h

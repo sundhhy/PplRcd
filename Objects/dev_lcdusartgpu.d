@@ -16,3 +16,4 @@
 .\objects\dev_lcdusartgpu.o: E:\mylib\sdhLib\inc\sdhDef.h
 .\objects\dev_lcdusartgpu.o: ..\PplRcd\sdhlibConf.h
 .\objects\dev_lcdusartgpu.o: E:\mylib\sdhLib\inc\basis/sdhError.h
+.\objects\dev_lcdusartgpu.o: E:\mylib\sdhLib\inc\basis/macros.h
