@@ -36,6 +36,30 @@
 #define GPIO_PORT_UART3RX                               GPIOB    					 
 #define GPIO_PIN_UART3RX                                GPIO_Pin_11
 
+//*********keyboard	********************************
+#define RCC_KEY_RIGHT                                    RCC_APB2Periph_GPIOD		 
+#define GPIO_PORT_KEY_RIGHT                              GPIOD    					 
+#define GPIO_PIN_KEY_RIGHT                               GPIO_Pin_0
+
+#define RCC_KEY_LEFT                                  RCC_APB2Periph_GPIOD		 
+#define GPIO_PORT_KEY_LEFT                             GPIOD    					 
+#define GPIO_PIN_KEY_LEFT                               GPIO_Pin_1
+
+#define RCC_KEY_UP                                    RCC_APB2Periph_GPIOD	
+#define GPIO_PORT_KEY_UP                              GPIOD    					 
+#define GPIO_PIN_KEY_UP                               GPIO_Pin_2
+
+#define RCC_KEY_DOWN                                    RCC_APB2Periph_GPIOD		 
+#define GPIO_PORT_KEY_DOWN                              GPIOD    					 
+#define GPIO_PIN_KEY_DOWN                              GPIO_Pin_3
+
+#define RCC_KEY_ENTER                                    RCC_APB2Periph_GPIOD		 
+#define GPIO_PORT_KEY_ENTER                             GPIOD    					 
+#define GPIO_PIN_KEY_ENTER                               GPIO_Pin_4
+
+#define RCC_KEY_ESC                                    RCC_APB2Periph_GPIOD		 
+#define GPIO_PORT_KEY_ESC                             GPIOD    					 
+#define GPIO_PIN_KEY_ESC                              GPIO_Pin_5
 
 
 /////stm32的外设的DMA请求与DMA通道的对应关系是固定的，不是随便配置的。参考STM32的参考手册
@@ -66,67 +90,33 @@ typedef struct {
 
 
 extern CfgUart_t g_confUart2, g_confUart1;
+
+#define GPIO_DIR_IN			0
+#define GPIO_DIR_OUT		1
+
+#define GPIO_IRQ_RISING		1
+#define GPIO_IRQ_FAILING	2
+#define GPIO_IRQ_BOTHEDGE	3
+
+
 typedef struct 
 {
 	GPIO_TypeDef	*Port;
-	uint16_t		pin;
+	uint8_t			pin;
+	uint8_t			direction;
+
+	uint8_t			extiLine;
+	uint8_t			irqType;			
 }gpio_pins;
 
 extern gpio_pins Dir_485_pin1 , Dir_485_pin2;
-//extern gpio_pins pin_DugUartTx;
-//extern gpio_pins pin_DugUartRx;
 
-//#define	GPRS_COM			3			///< gprs模块使用的串口号	
-//#define	SERAIL_485_COM		2
-//#define W25Q_SPI			SPI1
-//#define ADC_BASE			ADC1
-
-//#if GPRS_COM == 3
-//#define GPRS_USART	USART3
-//#elif GPRS_COM == 1
-//#define GPRS_USART	USART1
-//#endif
-
-
-
-//#if SERAIL_485_COM == 2
-//#define SER485_USART	USART2
-//#endif
-
-
-
-
-
-
-
-
-
-//extern gpio_pins	Gprs_powerkey;
-
-//extern gpio_pins	W25Q_csPin;
-//extern SPI_instance W25Q_Spi ;
-//extern gpio_pins 	ADC_pins;
-//extern gpio_pins	PinLED_run;
-//extern gpio_pins	PinLED_com;
-
-
-//extern int32_t ADC_chn;
-
-//extern USART_InitTypeDef USART_InitStructure;
-//extern USART_InitTypeDef Conf_GprsUsart;
-//extern USART_InitTypeDef Conf_S485Usart_default;
-
-//extern Dma_source DMA_gprs_usart;
-//extern Dma_source DMA_s485_usart;
-//extern Dma_source DMA_adc;
-
-
-//extern gpio_pins ADC_pins_4051A1;
-//extern gpio_pins ADC_pins_4051B1;
-//extern gpio_pins ADC_pins_4051C1;
-//extern gpio_pins ADC_pins_control0;
-//extern gpio_pins ADC_pins_control1;
-//extern gpio_pins ADC_pins_control2;
+extern gpio_pins pin_keyRight;
+extern gpio_pins pin_keyLeft;
+extern gpio_pins pin_keyUp;
+extern gpio_pins pin_keyDown;
+extern gpio_pins pin_keyEnter;
+extern gpio_pins pin_keyEsc;
 
 
 #endif

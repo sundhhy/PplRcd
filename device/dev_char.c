@@ -21,6 +21,10 @@ int DevChar_open( int major, int minor, void **dev)
 				ret = ERR_BAD_PARAMETER;
 			}
 			break;
+		case DEVMAJOR_GPIO:
+			
+		
+			break;
 		default:
 			ret = ERR_BAD_PARAMETER;
 			break;

@@ -14,6 +14,7 @@
 //注意：SIM800A开发板的：HSE_VALUE=12000000 在配置部分增加宏来实现配置的
 #include "hardwareConfig.h"
 #include "sdhDef.h"
+#include "stm32f10x_exti.h"
 //*dma_rx_base;
 //dma_rx_flag;
 //dma_rx_irq;
@@ -82,122 +83,61 @@ CfgUart_t g_confUart1 = {
 	&g_DmaUart1
 };
 
-//USART_InitTypeDef Conf_GprsUsart = {
-//		115200,
-//		USART_WordLength_8b,
-//		USART_StopBits_1,
-//		USART_Parity_No,
-//		USART_Mode_Rx | USART_Mode_Tx,
-//		USART_HardwareFlowControl_None,
-//		
-//	
-//};
-
-//USART_InitTypeDef Conf_S485Usart_default = {
-//		115200,
-//		USART_WordLength_8b,
-//		USART_StopBits_1,
-//		USART_Parity_No,
-//		USART_Mode_Rx | USART_Mode_Tx,
-//		USART_HardwareFlowControl_None,
-//		
-//	
-//};
-
-///** gprs uart DMA通道配置
-// *
-// */
-//Dma_source DMA_gprs_usart = {
-//	DMA1_Channel2,
-//	DMA1_FLAG_GL2,
-//	DMA1_Channel2_IRQn,
-//	
-//	DMA1_Channel3,
-//	DMA1_FLAG_GL3,
-//	DMA1_Channel3_IRQn,
-//	
-//};
-
-
-///** 485 uart DMA通道配置
-// *
-// */
-//Dma_source DMA_s485_usart = {
-//	DMA1_Channel7,
-//	DMA1_FLAG_GL7,
-//	DMA1_Channel7_IRQn,
-//	
-//	DMA1_Channel6,
-//	DMA1_FLAG_GL6,
-//	DMA1_Channel6_IRQn,
-//	
-//};
-
-//SPI_instance W25Q_Spi = {
-//	W25Q_SPI,
-//	((void *)0),
-//	SPI1_IRQn,
-//	
-//	
-//};
-
-///** ADC DMA通道配置
-// *
-// */
-//Dma_source DMA_adc ={
-//	
-//	((void *)0),
-//	-1,
-//	-1,
-//	
-//	DMA1_Channel1,
-//	DMA1_FLAG_GL1,
-//	DMA1_Channel1_IRQn,
-//	
-//};
-
-//gpio_pins ADC_pins_4051A1 = {
-//	GPIOB,
-//	GPIO_Pin_5
-//	
-//};
-
-//gpio_pins ADC_pins_4051B1 = {
-//	GPIOB,
-//	GPIO_Pin_6
-//	
-//};
-
-//gpio_pins ADC_pins_4051C1 = {
-//	GPIOB,
-//	GPIO_Pin_7
-//	
-//};
-
-//gpio_pins ADC_pins_control0 = {
-//	GPIOC,
-//	GPIO_Pin_1
-//	
-//};
-
-//gpio_pins ADC_pins_control1 = {
-//	GPIOC,
-//	GPIO_Pin_2
-//	
-//};
-
-//gpio_pins ADC_pins_control2 = {
-//	GPIOC,
-//	GPIO_Pin_3
-//	
-//};
 
 
 
-//int32_t ADC_chn = ADC_Channel_1;		//ADC的通道和ADC的引脚是有对应关系的，PA_1对应的通道是ADC1
+gpio_pins pin_keyRight = {
+	GPIO_PORT_KEY_RIGHT,
+	GPIO_PIN_KEY_RIGHT,
+	0,
+	0,
+	GPIO_IRQ_BOTHEDGE
+};
 
+gpio_pins pin_keyLeft = {
+	GPIO_PORT_KEY_LEFT,
+	GPIO_PIN_KEY_LEFT,
+	0,
+	1,
+	GPIO_IRQ_BOTHEDGE
+	
+};
 
+gpio_pins pin_keyUp = {
+	GPIO_PORT_KEY_UP,
+	GPIO_PIN_KEY_UP,
+	0,
+	2,
+	GPIO_IRQ_BOTHEDGE
+	
+};
 
+gpio_pins pin_keyDown = {
+	GPIO_PORT_KEY_DOWN,
+	GPIO_PIN_KEY_DOWN,
+	0,
+	3,
+	GPIO_IRQ_BOTHEDGE
+	
+};
+
+gpio_pins pin_keyEnter = {
+	GPIO_PORT_KEY_ENTER,
+	GPIO_PIN_KEY_ENTER,
+	0,
+	4,
+	GPIO_IRQ_BOTHEDGE
+	
+};
+
+gpio_pins pin_keyEsc = {
+	GPIO_PORT_KEY_ESC,
+	GPIO_PIN_KEY_ESC,
+	0,
+	5,
+	GPIO_IRQ_BOTHEDGE
+	
+};
 
 
 

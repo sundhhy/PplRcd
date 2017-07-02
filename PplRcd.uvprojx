@@ -613,6 +613,16 @@
               <FileType>5</FileType>
               <FilePath>.\drive\uart\drive_uart.h</FilePath>
             </File>
+            <File>
+              <FileName>drive_gpio.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\drive\GPIO\drive_gpio.c</FilePath>
+            </File>
+            <File>
+              <FileName>drive_gpio.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\drive\GPIO\drive_gpio.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -672,6 +682,16 @@
               <FileName>dev_uart.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\device\dev_uart\dev_uart.c</FilePath>
+            </File>
+            <File>
+              <FileName>device_gpio.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\device\dev_gpio\device_gpio.h</FilePath>
+            </File>
+            <File>
+              <FileName>device_gpio.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\device\dev_gpio\device_gpio.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -1004,6 +1024,12 @@
         </targetInfos>
       </component>
       <component Cclass="Device" Cgroup="StdPeriph Drivers" Csub="DMA" Cvendor="Keil" Cversion="3.5.0" condition="STM32F1xx STDPERIPH RCC">
+        <package name="STM32F1xx_DFP" schemaVersion="1.2" url="http://www.keil.com/pack/" vendor="Keil" version="2.1.0"/>
+        <targetInfos>
+          <targetInfo name="Target 1"/>
+        </targetInfos>
+      </component>
+      <component Cclass="Device" Cgroup="StdPeriph Drivers" Csub="EXTI" Cvendor="Keil" Cversion="3.5.0" condition="STM32F1xx STDPERIPH">
         <package name="STM32F1xx_DFP" schemaVersion="1.2" url="http://www.keil.com/pack/" vendor="Keil" version="2.1.0"/>
         <targetInfos>
           <targetInfo name="Target 1"/>

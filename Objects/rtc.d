@@ -1,0 +1,13 @@
+.\objects\rtc.o: utils\rtc.c
+.\objects\rtc.o: utils\rtc.h
+.\objects\rtc.o: E:\mylib\sdhLib\inc\lw_oopc.h
+.\objects\rtc.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
+.\objects\rtc.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
+.\objects\rtc.o: E:\mylib\sdhLib\inc\basis/macros.h
+.\objects\rtc.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+.\objects\rtc.o: ..\PplRcd\utils/time.h
+.\objects\rtc.o: E:\mylib\sdhLib\inc\sdhDef.h
+.\objects\rtc.o: ..\PplRcd\sdhlibConf.h
+.\objects\rtc.o: E:\mylib\sdhLib\inc\basis/sdhDebug.h
+.\objects\rtc.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
+.\objects\rtc.o: E:\mylib\sdhLib\inc\basis/sdhError.h
