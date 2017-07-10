@@ -5,6 +5,7 @@
 //字符型设备的接口
 //包括uart设备
 
+
 INTERFACE( I_dev_Char)
 {
 	int ( *open)( I_dev_Char *self, void *conf);

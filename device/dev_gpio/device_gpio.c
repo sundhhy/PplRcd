@@ -79,6 +79,7 @@ devGpio *Get_DevGpio(int minor)
 	if( p_dev->dri->init( p_dev->dri, (void *)arr_Gpiobase[ minor], (void *)arr_Gpiocfg[ minor]) != RET_OK)
 		goto destoryQuit1;
 	
+	return p_dev;
 destoryQuit1:
 	lw_oopc_free( p_dev->dri);	
 destoryQuit0:
@@ -124,7 +125,7 @@ static int DevGpioClose( I_dev_Char *self)
 
 static int DevGpioRead( I_dev_Char *self, void *buf, int rdLen)
 {
-	int val;
+	char val;
 	devGpio *cthis = ( devGpio *)self;
 	
 	if( cthis->dri->read( cthis->dri, &val) == RET_OK)

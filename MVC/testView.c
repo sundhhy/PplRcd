@@ -51,9 +51,9 @@ static   char* const testContext[2] = {	\
 <bu ><text yali=m >显示设置</></bu><bu ><text yali=m > 数据备份</></bu>\
 <bu ><text yali=m >数据打印</></bu><bu ><text yali=m > 退出</></bu>\
 </gr> \
-<text f=16 bkc=white clr=red xali=m>重要数据，非专业人生请退出</> ", \
+<text f=16 bkc=white clr=red xali=m>重要数据，非专业人士请退出</> ", \
 //动态画面部分
-"<time bndx1=180 bndx2=320 bndy1=0  bndy2=24 f=24 xali=m bkc=black clr=blue id=0 spr=/> </time>" \
+"<time bndx1=180 bndx2=320 bndy1=0  bndy2=24 f=24 xali=m bkc=black clr=yellow id=0 spr=/> </time>" \
 
 
 };

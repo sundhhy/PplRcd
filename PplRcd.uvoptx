@@ -168,38 +168,21 @@
         </SetRegEntry>
       </TargetDriverDllRegistry>
       <Breakpoint/>
-      <WatchWindow1>
-        <Ww>
-          <count>0</count>
-          <WinNumber>1</WinNumber>
-          <ItemText>rtcTm</ItemText>
-        </Ww>
-        <Ww>
-          <count>1</count>
-          <WinNumber>1</WinNumber>
-          <ItemText>g_SysTime</ItemText>
-        </Ww>
-        <Ww>
-          <count>2</count>
-          <WinNumber>1</WinNumber>
-          <ItemText>expTempBUf</ItemText>
-        </Ww>
-      </WatchWindow1>
       <WatchWindow2>
         <Ww>
           <count>0</count>
           <WinNumber>2</WinNumber>
-          <ItemText>timeStr</ItemText>
+          <ItemText>arr_driGpio</ItemText>
         </Ww>
         <Ww>
           <count>1</count>
           <WinNumber>2</WinNumber>
-          <ItemText>timeStr</ItemText>
+          <ItemText>rtcTm</ItemText>
         </Ww>
         <Ww>
           <count>2</count>
           <WinNumber>2</WinNumber>
-          <ItemText>lcdBuf</ItemText>
+          <ItemText>g_SysTime</ItemText>
         </Ww>
         <Ww>
           <count>3</count>
@@ -209,12 +192,12 @@
         <Ww>
           <count>4</count>
           <WinNumber>2</WinNumber>
-          <ItemText>lcdBuf</ItemText>
+          <ItemText>timeStr</ItemText>
         </Ww>
         <Ww>
           <count>5</count>
           <WinNumber>2</WinNumber>
-          <ItemText>lcdBuf</ItemText>
+          <ItemText>timeStr</ItemText>
         </Ww>
         <Ww>
           <count>6</count>
@@ -224,7 +207,7 @@
         <Ww>
           <count>7</count>
           <WinNumber>2</WinNumber>
-          <ItemText>lcdBuf</ItemText>
+          <ItemText>expTempBUf</ItemText>
         </Ww>
         <Ww>
           <count>8</count>
@@ -234,17 +217,17 @@
         <Ww>
           <count>9</count>
           <WinNumber>2</WinNumber>
-          <ItemText>testContext</ItemText>
+          <ItemText>lcdBuf</ItemText>
         </Ww>
         <Ww>
           <count>10</count>
           <WinNumber>2</WinNumber>
-          <ItemText>brData</ItemText>
+          <ItemText>lcdBuf</ItemText>
         </Ww>
         <Ww>
           <count>11</count>
           <WinNumber>2</WinNumber>
-          <ItemText>testContext</ItemText>
+          <ItemText>lcdBuf</ItemText>
         </Ww>
         <Ww>
           <count>12</count>
@@ -254,17 +237,17 @@
         <Ww>
           <count>13</count>
           <WinNumber>2</WinNumber>
-          <ItemText>lcdBuf</ItemText>
+          <ItemText>testContext</ItemText>
         </Ww>
         <Ww>
           <count>14</count>
           <WinNumber>2</WinNumber>
-          <ItemText>lcdBuf</ItemText>
+          <ItemText>brData</ItemText>
         </Ww>
         <Ww>
           <count>15</count>
           <WinNumber>2</WinNumber>
-          <ItemText>lcdBuf</ItemText>
+          <ItemText>testContext</ItemText>
         </Ww>
         <Ww>
           <count>16</count>
@@ -308,6 +291,26 @@
         </Ww>
         <Ww>
           <count>24</count>
+          <WinNumber>2</WinNumber>
+          <ItemText>lcdBuf</ItemText>
+        </Ww>
+        <Ww>
+          <count>25</count>
+          <WinNumber>2</WinNumber>
+          <ItemText>lcdBuf</ItemText>
+        </Ww>
+        <Ww>
+          <count>26</count>
+          <WinNumber>2</WinNumber>
+          <ItemText>lcdBuf</ItemText>
+        </Ww>
+        <Ww>
+          <count>27</count>
+          <WinNumber>2</WinNumber>
+          <ItemText>lcdBuf</ItemText>
+        </Ww>
+        <Ww>
+          <count>28</count>
           <WinNumber>2</WinNumber>
           <ItemText>devArry</ItemText>
         </Ww>
@@ -448,7 +451,7 @@
 
   <Group>
     <GroupName>BSP</GroupName>
-    <tvExp>0</tvExp>
+    <tvExp>1</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>
@@ -1206,7 +1209,7 @@
 
   <Group>
     <GroupName>MVC</GroupName>
-    <tvExp>0</tvExp>
+    <tvExp>1</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>
@@ -1724,7 +1727,7 @@
 
   <Group>
     <GroupName>utils</GroupName>
-    <tvExp>1</tvExp>
+    <tvExp>0</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>

@@ -40,26 +40,38 @@
 #define RCC_KEY_RIGHT                                    RCC_APB2Periph_GPIOD		 
 #define GPIO_PORT_KEY_RIGHT                              GPIOD    					 
 #define GPIO_PIN_KEY_RIGHT                               GPIO_Pin_0
+#define GPIO_PORTSOURCE_RIGHT                              GPIO_PortSourceGPIOD    					 
+#define GPIO_PINSOURCE_RIGHT                               GPIO_PinSource0
 
 #define RCC_KEY_LEFT                                  RCC_APB2Periph_GPIOD		 
 #define GPIO_PORT_KEY_LEFT                             GPIOD    					 
 #define GPIO_PIN_KEY_LEFT                               GPIO_Pin_1
+#define GPIO_PORTSOURCE_LEFT                               GPIO_PortSourceGPIOD    					 
+#define GPIO_PINSOURCE_LEFT                                GPIO_PinSource1
 
 #define RCC_KEY_UP                                    RCC_APB2Periph_GPIOD	
 #define GPIO_PORT_KEY_UP                              GPIOD    					 
 #define GPIO_PIN_KEY_UP                               GPIO_Pin_2
+#define GPIO_PORTSOURCE_UP                              GPIO_PortSourceGPIOD    					 
+#define GPIO_PINSOURCE_UP                               GPIO_PinSource2
 
 #define RCC_KEY_DOWN                                    RCC_APB2Periph_GPIOD		 
 #define GPIO_PORT_KEY_DOWN                              GPIOD    					 
 #define GPIO_PIN_KEY_DOWN                              GPIO_Pin_3
+#define GPIO_PORTSOURCE_DOWN                              GPIO_PortSourceGPIOD    					 
+#define GPIO_PINSOURCE_DOWN                               GPIO_PinSource3
 
 #define RCC_KEY_ENTER                                    RCC_APB2Periph_GPIOD		 
 #define GPIO_PORT_KEY_ENTER                             GPIOD    					 
 #define GPIO_PIN_KEY_ENTER                               GPIO_Pin_4
+#define GPIO_PORTSOURCE_ENTER                              GPIO_PortSourceGPIOD    					 
+#define GPIO_PINSOURCE_ENTER                              GPIO_PinSource4
 
 #define RCC_KEY_ESC                                    RCC_APB2Periph_GPIOD		 
 #define GPIO_PORT_KEY_ESC                             GPIOD    					 
 #define GPIO_PIN_KEY_ESC                              GPIO_Pin_5
+#define GPIO_PORTSOURCE_ESC                              GPIO_PortSourceGPIOD    					 
+#define GPIO_PINSOURCE_ESC                               GPIO_PinSource5
 
 
 /////stm32的外设的DMA请求与DMA通道的对应关系是固定的，不是随便配置的。参考STM32的参考手册
@@ -105,8 +117,13 @@ typedef struct
 	uint8_t			pin;
 	uint8_t			direction;
 
+	//etti
 	uint8_t			extiLine;
-	uint8_t			irqType;			
+	uint8_t			irqType;	
+	uint8_t			portSource;
+	uint8_t			pinSource;
+	
+	uint8_t			none[2];
 }gpio_pins;
 
 extern gpio_pins Dir_485_pin1 , Dir_485_pin2;

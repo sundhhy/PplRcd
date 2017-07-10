@@ -3,6 +3,7 @@
 
 
 #include "dev_uart/dev_uart.h"
+#include "dev_gpio/device_gpio.h"
 #include "basis/sdhDebug.h"
 #include "sdhDef.h"
 #include "basis/sdhError.h"
@@ -22,7 +23,12 @@ int DevChar_open( int major, int minor, void **dev)
 			}
 			break;
 		case DEVMAJOR_GPIO:
-			
+			*dev = Get_DevGpio( minor);
+			if( dev == NULL)
+			{
+				
+				ret = ERR_BAD_PARAMETER;
+			}
 		
 			break;
 		default:

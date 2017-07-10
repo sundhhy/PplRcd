@@ -13,9 +13,10 @@
 //------------------------------------------------------------------------------
 // const defines
 //------------------------------------------------------------------------------
-#define GITP_RISINGEDGE		1			//…œ…˝—ÿ
-#define GITP_FAILINGEDGE	2			//…œ…˝—ÿ
-#define GITP_MAX			2			//
+#define GITP_RISINGEDGE		0			
+#define GITP_FAILINGEDGE	1			
+#define GITP_MAX			2			
+
 //------------------------------------------------------------------------------
 // typedef
 //------------------------------------------------------------------------------
@@ -36,9 +37,9 @@ CLASS( driveGpio)
 	
 	int ( *init)( driveGpio *self, void *p_base, void *cfg);
 	int ( *deInit)( driveGpio *self);
-	int ( *read)( driveGpio *self,int *p_n_val);
-	int ( *write)( driveGpio *self, int n_val);
-	int ( *ioctol)( driveGpio *self, int cmd, ...);
+	int ( *read)( driveGpio *self,char *p_n_val);
+	int ( *write)( driveGpio *self, char n_val);
+//	int ( *ioctol)( driveGpio *self, int cmd, ...);
 	
 	void (*setIrqHdl)( driveGpio *self, irqHdl hdl);
 	void (*setEncode)( driveGpio *self, int e);

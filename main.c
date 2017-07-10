@@ -101,18 +101,36 @@ int fgetc(FILE *f /*stream*/)
 #if TDD_ON == 1
 char	appBuf[ 64];
 
-#endif
-#if TDD_MVC == 1
+
+#	if TDD_GPIO == 1
+
+#define GITP_RISINGEDGE		0			
+#define GITP_FAILINGEDGE	1	
+I_dev_Char *p_devGpio[5];
+uint8_t 	keyval;
+uint8_t		u8_tmp;
+static  void GpioIrqHdl( void *self, int type, int encode);
+#	endif
+
+#	if TDD_MVC == 1
 struct  tm	rtcTm;
 Model *mTime;
 View	*vTest;
-#endif
+#	endif
 
-#if TDD_DEV_UART2 == 1
+#	if TDD_DEV_UART2 == 1
 
 I_dev_Char *I_uart2;
 
+#	endif
+
 #endif
+
+
+
+
+
+
 
 int main (void) {
 	USART_InitTypeDef USART_InitStructure;
@@ -141,6 +159,21 @@ int main (void) {
 
 //app code
 #else
+
+#	if TDD_GPIO == 1
+	
+	for( u8_tmp = 0; u8_tmp < 5; u8_tmp ++)
+	{
+		Dev_open( DEVID_GPIO_D0 + u8_tmp, ( void *)&p_devGpio[u8_tmp]);
+		p_devGpio[u8_tmp]->ioctol( p_devGpio[u8_tmp], DEVCMD_SET_IRQHDL, GpioIrqHdl);
+		p_devGpio[u8_tmp]->ioctol( p_devGpio[u8_tmp], DEVGPIOCMD_SET_ENCODE, u8_tmp);
+	}
+	while(1)
+	{
+		
+		printf("\n key val: 0x%x\n", keyval);
+	}
+#	endif
 	
 #	if LCD_NOKIA == 1
 	LCD_init();
@@ -192,6 +225,16 @@ int main (void) {
 	
 #	endif	//TDD_DEV_UART2
 	
+#	if TDD_MVC == 1
+	while(1)
+	{
+		osDelay(1000);
+		vTest->show( vTest, NULL);
+		
+	}	
+
+#	endif
+	
 #endif		//TDD_ON == 0
   // create 'thread' functions that start executing,
   // example: tid_name = osThreadCreate (osThread(name), NULL);
@@ -202,16 +245,20 @@ int main (void) {
 	
 #else
 	
-#	if TDD_MVC == 1
-	while(1)
-	{
-		osDelay(1000);
-		vTest->show( vTest, NULL);
-		
-	}	
-
-#	endif	
+	
 	
 #endif
 	
 }
+
+#if TDD_GPIO == 1
+static  void GpioIrqHdl( void *self, int type, int encode)
+{
+	if( type == GITP_FAILINGEDGE)
+		keyval |= ( 1 << encode);
+	else if( type == GITP_RISINGEDGE)
+		keyval &= ~( 1 << encode);
+	
+}
+#endif
+

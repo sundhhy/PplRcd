@@ -37,7 +37,12 @@
 // local types
 //------------------------------------------------------------------------------
 //用在中断程序中，找到对应的驱动
-static driveGpio	*arr_gpio[ EXTI_MAX];
+const uint32_t arr_extiLine[ EXTI_MAX] = { EXTI_Line0, EXTI_Line1, EXTI_Line2, \
+	EXTI_Line3, EXTI_Line4, EXTI_Line5, EXTI_Line6,EXTI_Line7, EXTI_Line8,\
+	EXTI_Line9, EXTI_Line10, EXTI_Line11, EXTI_Line12, EXTI_Line13, EXTI_Line14, EXTI_Line15};
+
+static driveGpio	*arr_driGpio[ EXTI_MAX];
+
 //------------------------------------------------------------------------------
 // local vars
 //------------------------------------------------------------------------------
@@ -48,10 +53,122 @@ static driveGpio	*arr_gpio[ EXTI_MAX];
 //------------------------------------------------------------------------------
 /* Cycle/Sync Callback functions */
 
+static int GpioInit( driveGpio *self, void *p_base, void *cfg);
+static int GpioDeInit( driveGpio *self);
+static int GpioWrite( driveGpio *self, char ch_val);
+static int GpioRead( driveGpio *self,char *p_ch_val);
+static int GpioTest( driveGpio *self, void *buf, int size);
+static void GpioSetIrqHdl( driveGpio *self, irqHdl hdl);
+static void GpioSetEncode( driveGpio *self, int e);
 
+static void ExtiIrq( driveGpio *p_gpio);
 //============================================================================//
 //            P U B L I C   F U N C T I O N S                                 //
 //============================================================================//
+
+
+CTOR( driveGpio)
+FUNCTION_SETTING( init, GpioInit);
+FUNCTION_SETTING( deInit, GpioDeInit);
+FUNCTION_SETTING( read, GpioRead);
+FUNCTION_SETTING( write, GpioWrite);
+FUNCTION_SETTING( setIrqHdl, GpioSetIrqHdl);
+FUNCTION_SETTING( setEncode, GpioSetEncode);
+
+FUNCTION_SETTING( test, GpioTest);
+END_CTOR
+
+
+void EXTI0_IRQHandler(void)
+{
+	ExtiIrq( arr_driGpio[0]);
+	EXTI_ClearITPendingBit(EXTI_Line0);
+}
+void EXTI1_IRQHandler(void)
+{
+    ExtiIrq( arr_driGpio[1]);   
+	EXTI_ClearITPendingBit(EXTI_Line1);
+}
+void EXTI2_IRQHandler(void)
+{
+	ExtiIrq( arr_driGpio[2]);
+	EXTI_ClearITPendingBit(EXTI_Line2);
+}
+
+void EXTI3_IRQHandler(void)
+{
+	ExtiIrq( arr_driGpio[3]);
+	EXTI_ClearITPendingBit(EXTI_Line3);
+}
+
+void EXTI4_IRQHandler(void)
+{
+	ExtiIrq( arr_driGpio[4]);
+	EXTI_ClearITPendingBit(EXTI_Line4);
+}
+
+void EXTI9_5_IRQHandler(void)
+{
+	if( EXTI_GetITStatus( EXTI_Line5))
+	{
+		ExtiIrq( arr_driGpio[5]);
+       EXTI_ClearITPendingBit(EXTI_Line5);
+	}
+	if( EXTI_GetITStatus( EXTI_Line6))
+	{
+		ExtiIrq( arr_driGpio[6]);
+       EXTI_ClearITPendingBit(EXTI_Line6);
+	}
+	if( EXTI_GetITStatus( EXTI_Line7))
+	{
+		ExtiIrq( arr_driGpio[7]);
+       EXTI_ClearITPendingBit(EXTI_Line7);
+	}
+	if( EXTI_GetITStatus( EXTI_Line8))
+	{
+		ExtiIrq( arr_driGpio[8]);
+       EXTI_ClearITPendingBit(EXTI_Line8);
+	}
+	if( EXTI_GetITStatus( EXTI_Line9))
+	{
+		ExtiIrq( arr_driGpio[9]);
+       EXTI_ClearITPendingBit(EXTI_Line9);
+	}
+}
+
+void EXTI15_10_IRQHandler(void)
+{
+   if( EXTI_GetITStatus( EXTI_Line10))
+	{
+		ExtiIrq( arr_driGpio[10]);
+       EXTI_ClearITPendingBit(EXTI_Line10);
+	}
+	if( EXTI_GetITStatus( EXTI_Line11))
+	{
+		ExtiIrq( arr_driGpio[11]);
+       EXTI_ClearITPendingBit(EXTI_Line11);
+	}
+	if( EXTI_GetITStatus( EXTI_Line12))
+	{
+		ExtiIrq( arr_driGpio[12]);
+       EXTI_ClearITPendingBit(EXTI_Line12);
+	}
+	if( EXTI_GetITStatus( EXTI_Line13))
+	{
+		ExtiIrq( arr_driGpio[13]);
+       EXTI_ClearITPendingBit(EXTI_Line13);
+	}
+	if( EXTI_GetITStatus( EXTI_Line14))
+	{
+		ExtiIrq( arr_driGpio[14]);
+       EXTI_ClearITPendingBit(EXTI_Line14);
+	}
+	if( EXTI_GetITStatus( EXTI_Line15))
+	{
+		ExtiIrq( arr_driGpio[15]);
+       EXTI_ClearITPendingBit(EXTI_Line15);
+	}
+}
 
 //=========================================================================//
 //                                                                         //
@@ -70,7 +187,7 @@ static int GpioInit( driveGpio *self, void *p_base, void *cfg)
 {
 	gpio_pins	*p_gpio = ( gpio_pins *)cfg;
 	EXTI_InitTypeDef		st_exti;
-	arr_gpio[ p_gpio->extiLine] = self;
+	arr_driGpio[ p_gpio->extiLine] = self;
 	self->p_cfg = cfg;
 	self->p_gpioBase = p_base;
 	
@@ -81,7 +198,7 @@ static int GpioInit( driveGpio *self, void *p_base, void *cfg)
 	EXTI_StructInit( &st_exti);
 	
 	
-	st_exti.EXTI_Line = p_gpio->extiLine;
+	st_exti.EXTI_Line = arr_extiLine[ p_gpio->extiLine];
 	st_exti.EXTI_LineCmd = ENABLE;
 	
 	switch( p_gpio->irqType)
@@ -98,8 +215,8 @@ static int GpioInit( driveGpio *self, void *p_base, void *cfg)
 			break;
 		
 	}
-	
-	
+	GPIO_EXTILineConfig( p_gpio->portSource, p_gpio->pinSource);
+	EXTI_ClearITPendingBit( arr_extiLine[ p_gpio->extiLine]);
 	EXTI_Init( &st_exti);
 
 	
@@ -125,7 +242,7 @@ static int GpioDeInit( driveGpio *self)
 ** @param size 
 ** @return
 **/
-static int GpioWrite( driveGpio *self, int n_val)
+static int GpioWrite( driveGpio *self, char ch_val)
 {
 //	gpio_pins	*p_gpio = ( gpio_pins *)self->p_cfg;
 
@@ -141,32 +258,16 @@ static int GpioWrite( driveGpio *self, int n_val)
 ** @param size 
 ** @return
 **/
-static int GpioRead( driveGpio *self,int *p_n_val)
+static int GpioRead( driveGpio *self,char *p_ch_val)
 {
 	gpio_pins	*p_gpio = ( gpio_pins *)self->p_cfg;
-
+	*p_ch_val = GPIO_ReadInputDataBit( p_gpio->Port,p_gpio->pin);
 	return ERR_OK;
 }
 
 
 
-/*!
-**
-**
-** @param size
-**
-** @return
-**/
-static int  GpioIoctol( driveGpio *self, int cmd, ...)
-{
-//	int int_data;
-//	va_list arg_ptr; 
-//	va_start(arg_ptr, cmd); 
-	
-	
-	
-	return RET_OK;
-}
+
 
 
 
@@ -192,18 +293,36 @@ static void GpioSetEncode( driveGpio *self, int e)
 	
 }
 
+static void ExtiIrq( driveGpio *p_gpio)
+{
+	char type;
+	char pin;
+	if( p_gpio == NULL)
+		return;
+	
+	if( p_gpio->func_hdl)
+	{
+		if( p_gpio->read( p_gpio, &pin) != RET_OK)
+			return;
+		//当前电平的状态来判断是上升沿还是下降沿产生的中断
+		if( pin == 1)
+			p_gpio->func_hdl( p_gpio, GITP_RISINGEDGE, p_gpio->encode[0]);
+		
+		if( pin == 0)
+			p_gpio->func_hdl( p_gpio, GITP_FAILINGEDGE, p_gpio->encode[0]);
+	}
+	
+}
 
 
 
-CTOR( driveGpio)
-FUNCTION_SETTING( init, GpioInit);
-FUNCTION_SETTING( deInit, GpioDeInit);
-FUNCTION_SETTING( read, GpioRead);
-FUNCTION_SETTING( write, GpioWrite);
-FUNCTION_SETTING( ioctol, GpioIoctol);
-FUNCTION_SETTING( setIrqHdl, GpioSetIrqHdl);
-FUNCTION_SETTING( setEncode, GpioSetEncode);
 
-FUNCTION_SETTING( test, GpioTest);
-END_CTOR
+
+
+
+
+
+
+
+
 

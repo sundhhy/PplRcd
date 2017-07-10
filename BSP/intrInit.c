@@ -67,8 +67,43 @@ void NVIC_Configuration(void)
 //    NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
 //    NVIC_Init(&NVIC_InitStructure);
 
+	/******** key exxi 	****************/
+	NVIC_InitStructure.NVIC_IRQChannel = EXTI0_IRQn;     
+	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0; 
+	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 2;       
+	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;                                   //????
+	NVIC_Init(&NVIC_InitStructure);
+	
+	NVIC_InitStructure.NVIC_IRQChannel = EXTI1_IRQn;     
+	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0; 
+	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 2;       
+	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;                                   //????
+	NVIC_Init(&NVIC_InitStructure);
+	
+	NVIC_InitStructure.NVIC_IRQChannel = EXTI2_IRQn;     
+	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0; 
+	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 2;       
+	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;                                   //????
+	NVIC_Init(&NVIC_InitStructure);
+	
+	NVIC_InitStructure.NVIC_IRQChannel = EXTI3_IRQn;     
+	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0; 
+	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 2;       
+	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;                                   //????
+	NVIC_Init(&NVIC_InitStructure);
+	
+	NVIC_InitStructure.NVIC_IRQChannel = EXTI4_IRQn;     
+	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0; 
+	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 2;       
+	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;                                   //????
+	NVIC_Init(&NVIC_InitStructure);
 	
 	
+	NVIC_InitStructure.NVIC_IRQChannel = EXTI9_5_IRQn;     
+	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0; 
+	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 2;       
+	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;                                   //????
+	NVIC_Init(&NVIC_InitStructure);
 
 }
 
