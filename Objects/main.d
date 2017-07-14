@@ -48,3 +48,6 @@
 .\objects\main.o: ..\PplRcd\sdhlibConf.h
 .\objects\main.o: E:\mylib\sdhLib\inc\basis/sdhDebug.h
 .\objects\main.o: utils/time.h
+.\objects\main.o: utils/keyboard.h
+.\objects\main.o: E:\mylib\sdhLib\inc\os/os_depend.h
+.\objects\main.o: E:\mylib\sdhLib\inc\os/rtx/rtx_depend.h

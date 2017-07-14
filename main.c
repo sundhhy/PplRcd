@@ -24,7 +24,9 @@
 #include "ViewFactory.h"
 
 #include "utils/time.h"
+#include "utils/keyboard.h"
 
+#include "os/os_depend.h"
 
 #define LCD_NOKIE		0
 //ÏµÍ³°æ±¾ºÅ
@@ -102,6 +104,12 @@ int fgetc(FILE *f /*stream*/)
 char	appBuf[ 64];
 
 
+#	if TDD_KEYBOARD == 1
+static int KeyEvent( uint8_t keyEven, char numKey, uint8_t arrKeyCode[]);
+
+KbTestOb *p_kbTestOb;
+#	endif
+
 #	if TDD_GPIO == 1
 
 #define GITP_RISINGEDGE		0			
@@ -133,8 +141,8 @@ I_dev_Char *I_uart2;
 
 
 int main (void) {
-	USART_InitTypeDef USART_InitStructure;
-	
+//	USART_InitTypeDef USART_InitStructure;
+	Keyboard	*p_kb;
   osKernelInitialize ();                    // initialize CMSIS-RTOS
 
   // initialize peripherals here
@@ -142,23 +150,38 @@ int main (void) {
 	Pin_init();
 	NVIC_Configuration();
 	
+	p_kb = GetKeyInsance();
+	p_kb->init( p_kb, NULL);
 	
-	USART_InitStructure.USART_BaudRate = 115200;
-	USART_InitStructure.USART_WordLength = USART_WordLength_8b;
-	USART_InitStructure.USART_StopBits = USART_StopBits_1;
-	USART_InitStructure.USART_Parity = USART_Parity_No;
-	USART_InitStructure.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
-	USART_InitStructure.USART_Mode = USART_Mode_Rx | USART_Mode_Tx;
-	USART_Init( DEBUG_USART, &USART_InitStructure);
-	USART_Cmd( DEBUG_USART, ENABLE);
-	g_childVer = GetCompileMoth() << 8 | GetCompileDay();
-	printf("\r\n ############("__DATE__ " - " __TIME__ ")############");
-	printf("\n sytem ver : %x %x \n", g_majorVer, g_childVer);
+//	USART_InitStructure.USART_BaudRate = 115200;
+//	USART_InitStructure.USART_WordLength = USART_WordLength_8b;
+//	USART_InitStructure.USART_StopBits = USART_StopBits_1;
+//	USART_InitStructure.USART_Parity = USART_Parity_No;
+//	USART_InitStructure.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
+//	USART_InitStructure.USART_Mode = USART_Mode_Rx | USART_Mode_Tx;
+//	USART_Init( DEBUG_USART, &USART_InitStructure);
+//	USART_Cmd( DEBUG_USART, ENABLE);
+//	g_childVer = GetCompileMoth() << 8 | GetCompileDay();
+//	printf("\r\n ############("__DATE__ " - " __TIME__ ")############");
+//	printf("\n sytem ver : %x %x \n", g_majorVer, g_childVer);
 
 #if TDD_ON == 0
 
 //app code
 #else
+
+#	if TDD_KEYBOARD == 1
+	p_kbTestOb = KbTestOb_new();
+	p_kbTestOb->setKeyHdl( p_kbTestOb, KeyEvent);
+	
+	while(1)
+	{
+		
+		p_kb->run( p_kb);
+		delay_ms( 200);
+	}
+
+#endif
 
 #	if TDD_GPIO == 1
 	
@@ -250,6 +273,14 @@ int main (void) {
 #endif
 	
 }
+
+#	if TDD_KEYBOARD == 1
+static int KeyEvent( uint8_t keyEven, char numKey, uint8_t arrKeyCode[])
+{
+	
+	
+}
+#endif
 
 #if TDD_GPIO == 1
 static  void GpioIrqHdl( void *self, int type, int encode)
