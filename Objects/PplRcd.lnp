@@ -49,6 +49,7 @@
 ".\objects\rtc.o"
 ".\objects\rtc_pcf8563.o"
 ".\objects\keyboard.o"
+".\objects\times.o"
 ".\objects\rtx_conf_cm.o"
 "d:\Keil_v5\ARM\PACK\ARM\CMSIS\4.4.0\CMSIS\RTOS\RTX\LIB\ARM\RTX_CM3.lib"
 ".\objects\startup_stm32f10x_hd.o"
@@ -59,6 +60,7 @@
 ".\objects\stm32f10x_flash.o"
 ".\objects\stm32f10x_gpio.o"
 ".\objects\stm32f10x_rcc.o"
+".\objects\stm32f10x_tim.o"
 ".\objects\stm32f10x_usart.o"
 --library_type=microlib --strict --scatter ".\Objects\PplRcd.sct"
 --summary_stderr --info summarysizes --map --xref --callgraph --symbols

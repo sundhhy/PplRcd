@@ -13,6 +13,7 @@
 //------------------------------------------------------------------------------
 #define NUM_KEYS			6
 #define MAX_OBS			4
+#define NUM_KEFIFO			8	//必须是2的幂
 
 //顺序与硬件上的引脚连接保持一致
 #define	KEYCODE_RIGHT	0x01
@@ -29,20 +30,40 @@
 #define	KEYGPIOID_ENTER	DEVID_GPIO_D4
 #define	KEYGPIOID_ESC	DEVID_GPIO_D5
 
-#define KEYEVENT_HIT		0x10
-#define KEYEVENT_RLS		0x80			//释放
-#define KEYEVENT_DHIT		0x30			//双击
-#define KEYEVENT_LPUSH		0x40			//长按
+//原始事件
+#define KEY_PUSH			0x01
+#define KEY_RLS				0x02			//释放
+#define KEY_UNKONW			0x03
 
+//由原始事件运算后得出的事件
+#define KEYEVENT_HIT		0x10
+#define KEYEVENT_DHIT		0x20			//双击
+#define KEYEVENT_LPUSH		0x30			//长按
+#define KEYEVENT_UP			0x80
+#define KEYEVENT_ERR		0x40
+
+#define IS_KEYUP( eventcode) ( eventcode & KEYEVENT_UP)
 //------------------------------------------------------------------------------
 // typedef
 //------------------------------------------------------------------------------
-typedef int (*keyHdl)(  uint8_t keyEven, char numKey, uint8_t arrKeyCode[]);
+
+//发送给用户程序
+typedef struct {
+	uint8_t		keyCode;
+	uint8_t		eventCode;
+	uint8_t		none[2];
+
+	
+	
+}keyMsg_t;
+
+typedef int (*keyHdl)(  char num, keyMsg_t arr_msg[]);
+
 
 INTERFACE( keyObservice)
 {
 	
-	int (*update)( keyObservice *self, uint8_t keyEven, char numKey, uint8_t arrKeyCode[]);
+	int (*update)( keyObservice *self,  uint8_t num, keyMsg_t arr_msg[]);
 	
 };
 
@@ -54,16 +75,49 @@ typedef struct {
 	char		none[2];
 }keyObM_t;
 
+typedef struct {
+	
+	uint64_t	timestamp;
+	uint8_t		event;	
+	uint8_t		key;
+	uint8_t		none[2];
+	
+}keyevent_t;
+
+typedef struct {
+	uint8_t		keyCode;
+	uint8_t		eventCode;
+	uint16_t	pushtime_ms;		//
+	uint64_t	timestamp;
+
+	
+	
+}keyStatus_t;
+
+
+
+
+typedef struct {
+	
+	keyevent_t arr_ke[ NUM_KEFIFO];
+	uint8_t		write, read;
+	uint8_t		size;		//size 必须是2的幂
+	uint8_t		none;
+}KEFifo_t;
+
 CLASS( Keyboard)
 {
 	keyObM_t 	arr_p_obm[MAX_OBS] ;
 	I_dev_Char	*arr_p_devGpio[ NUM_KEYS];
+	keyStatus_t		arr_ks[ NUM_KEYS];
+	KEFifo_t		kef;
 	int (*init)( Keyboard *self, IN void *arg);
 	int (*addOb)( Keyboard *self, keyObservice *ob);
 	int	(*delOb)( Keyboard *self, char id);
 	void (*run)( Keyboard *self);
+	//privice
+	void	(*notify)( Keyboard *self, uint8_t num, keyMsg_t arr_msg[]);
 	
-	void	(*notify)( Keyboard *self);
 	
 	
 	
@@ -83,4 +137,6 @@ CLASS( KbTestOb)
 // function prototypes
 //------------------------------------------------------------------------------
 Keyboard *GetKeyInsance( void);
+void Keycode2Str( uint8_t keycode, int buflen, char *buf);
+void Keyevnet2Str( uint8_t eventCode, int buflen, char *buf);
 #endif

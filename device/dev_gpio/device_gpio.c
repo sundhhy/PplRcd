@@ -146,6 +146,7 @@ static int DevGpioIoctol( I_dev_Char *self ,int cmd, ...)
 {
 	devGpio *cthis = ( devGpio *)self;
 	irqHdl		hdl;
+	void		*arg;
 	int int_data;
 	va_list arg_ptr; 
 	va_start(arg_ptr, cmd); 
@@ -154,8 +155,10 @@ static int DevGpioIoctol( I_dev_Char *self ,int cmd, ...)
 	{
 		case DEVCMD_SET_IRQHDL:
 			hdl =  va_arg(arg_ptr, irqHdl);
+			arg =  va_arg(arg_ptr, void *);
 			va_end(arg_ptr); 
 			cthis->dri->func_hdl = hdl;
+			cthis->dri->hdl_arg = arg;
 			break;
 		case DEVGPIOCMD_SET_ENCODE:
 			int_data = va_arg(arg_ptr, int);

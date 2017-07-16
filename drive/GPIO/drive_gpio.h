@@ -22,7 +22,7 @@
 //------------------------------------------------------------------------------
 
 //在串口中断中处理数据，用于需要快速处理的操作
-typedef void (*irqHdl)( void *self, int type, int encode);
+typedef void (*irqHdl)( void *arg, int type, int encode);
 
 
 //------------------------------------------------------------------------------
@@ -34,6 +34,7 @@ CLASS( driveGpio)
 	void		*p_gpioBase;
 	void		*p_cfg;
 	irqHdl		func_hdl;
+	void		*hdl_arg;
 	
 	int ( *init)( driveGpio *self, void *p_base, void *cfg);
 	int ( *deInit)( driveGpio *self);

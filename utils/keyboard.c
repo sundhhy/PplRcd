@@ -1,5 +1,12 @@
+#include <string.h>
 #include "keyboard.h"
+
 #include "sdhDef.h"
+#include "GPIO/drive_gpio.h"
+#include "os/os_depend.h"
+
+#include "time.h"
+
 //============================================================================//
 //            G L O B A L   D E F I N I T I O N S                             //
 //============================================================================//
@@ -7,6 +14,16 @@
 //------------------------------------------------------------------------------
 // const defines
 //------------------------------------------------------------------------------
+#define KEYCODE_STR_RIGHT		"key_right"
+#define KEYCODE_STR_LEFT		"key_left"
+#define KEYCODE_STR_UP			"key_up"
+#define KEYCODE_STR_DOWN		"key_down"
+#define KEYCODE_STR_ENTER		"key_ENTER"
+#define KEYCODE_STR_ESC			"key_ESC"
+
+#define KEYEVENT_STR_HIT		"hit"
+#define KEYEVENT_STR_DHIT		"double hit"
+#define KEYEVENT_STR_LPUSH		"long push"
 
 //------------------------------------------------------------------------------
 // module global vars
@@ -24,11 +41,17 @@
 //------------------------------------------------------------------------------
 // const defines
 //------------------------------------------------------------------------------
+#define  DOUBLEHIT_TIME_MS		300
+#define  LONGPUSH_TIME_MS		2000
+#define  REPORT_TIME_MS			900
+
 const uint32_t	arr_keyGpioID[ NUM_KEYS] = { KEYGPIOID_RIGHT, KEYGPIOID_LEFT, \
 	KEYGPIOID_UP, KEYGPIOID_DOWN, KEYGPIOID_ENTER, KEYGPIOID_ESC};
 
 const uint8_t	arr_keyCode[ NUM_KEYS] = { KEYCODE_RIGHT, KEYCODE_LEFT, \
 	KEYCODE_UP, KEYCODE_DOWN, KEYCODE_ENTER, KEYCODE_ESC};
+
+static keyMsg_t arr_keyMsg[ NUM_KEYS];
 //------------------------------------------------------------------------------
 // local types
 //------------------------------------------------------------------------------
@@ -47,10 +70,21 @@ static int Keyboard_init( Keyboard *self, IN void *arg);
 static int Key_addOb( Keyboard *self, keyObservice *ob);
 static int Key_DelOb( Keyboard *self, char obId);
 static void	Key_Run( Keyboard *self);
-static void	Key_notify( Keyboard *self);
+static void	Key_notify( Keyboard *self, uint8_t num, keyMsg_t arr_msg[]);
 	
-static int Key_TestUpdate( keyObservice *self, uint8_t keyEven, char numKey, uint8_t arrKeyCode[]);
+static int Key_TestUpdate( keyObservice *self,  uint8_t num, keyMsg_t arr_msg[]);
 static void KeyTest_setKeyHdl( KbTestOb *self, keyHdl hdl);
+
+static  void GpioIrqHdl( void *arg, int type, int encode);
+
+static keyStatus_t *findPks( keyStatus_t arrKs[], uint8_t keycode);
+static void KeyPush( keyStatus_t *p_ks, keyevent_t *p_ke);
+static void KeyRls( keyStatus_t *p_ks, keyevent_t *p_ke);
+static int PopKE( KEFifo_t *p_kef, keyevent_t *p_ke);
+static int PushKE( KEFifo_t *p_kef, keyevent_t *p_ke);
+static void KEFifo_Init ( KEFifo_t *p_kef, int size);
+static int	KEFifo_len( KEFifo_t *p_kef);
+
 //============================================================================//
 //            P U B L I C   F U N C T I O N S                                 //
 //============================================================================//
@@ -62,6 +96,65 @@ Keyboard *GetKeyInsance( void)
 		signalKey = Keyboard_new();
 	
 	return signalKey;
+	
+}
+
+void Keycode2Str( uint8_t keycode, int buflen, char *buf)
+{
+	switch( keycode)
+	{
+		case KEYCODE_RIGHT:
+			strncpy( buf, KEYCODE_STR_RIGHT, buflen);
+			break;	
+		case KEYCODE_LEFT:
+			strncpy( buf, KEYCODE_STR_LEFT, buflen);
+			break;
+		case KEYCODE_UP:
+			strncpy( buf, KEYCODE_STR_UP, buflen);
+			break;
+		
+		case KEYCODE_DOWN:
+			strncpy( buf, KEYCODE_STR_DOWN, buflen);
+			break;
+		
+		case KEYCODE_ENTER:
+			strncpy( buf, KEYCODE_STR_ENTER, buflen);
+			break;
+		case KEYCODE_ESC:
+			strncpy( buf, KEYCODE_STR_ESC, buflen);
+			break;
+		default:
+			strncpy( buf, "key ukown", buflen);
+			break;
+		
+	}
+	
+}
+
+void Keyevnet2Str( uint8_t eventCode, int buflen, char *buf)
+{
+	eventCode &= ~KEYEVENT_UP;
+	switch( eventCode)
+	{
+		case KEYEVENT_HIT:
+			strncpy( buf, KEYEVENT_STR_HIT, buflen);
+			break;	
+		case KEYEVENT_DHIT:
+			strncpy( buf, KEYEVENT_STR_DHIT, buflen);
+			break;
+		case KEYEVENT_LPUSH:
+			strncpy( buf, KEYEVENT_STR_LPUSH, buflen);
+			break;
+		
+		
+		default:
+			if( IS_KEYUP( eventCode))
+				strncpy( buf, "up", buflen);
+			else
+				sprintf( buf, "errcode[%02x]", eventCode);
+			break;
+		
+	}
 	
 }
 
@@ -101,11 +194,18 @@ static int Keyboard_init( Keyboard *self, IN void *arg)
 		if( Dev_open( arr_keyGpioID[ i], ( void *)&self->arr_p_devGpio[ i]))
 			goto err;
 		
+		self->arr_p_devGpio[ i]->ioctol( self->arr_p_devGpio[ i], DEVCMD_SET_IRQHDL, GpioIrqHdl, (void *)self);
+		self->arr_p_devGpio[ i]->ioctol( self->arr_p_devGpio[ i], DEVGPIOCMD_SET_ENCODE, arr_keyCode[i]);
+		
+		memset( self->arr_ks + i, 0, sizeof( keyStatus_t));
+		self->arr_ks[i].keyCode = arr_keyCode[i];
+		
 	}
 	for( i = 0; i < MAX_OBS; i++)
 	{
 		self->arr_p_obm[i].flag = 0;
 	}
+	KEFifo_Init( &self->kef, NUM_KEFIFO);
 	first = 0;
 	return RET_OK;
 	
@@ -150,27 +250,205 @@ static int Key_DelOb( Keyboard *self, char obId)
 
 static void	Key_Run( Keyboard *self)
 {
+	keyStatus_t *p_ks;
+	keyevent_t ke;
+	uint64_t now_ms = 0;
+	short		i	= 0;
+	char reportflag = 0, j =0;
+	if( PopKE( &self->kef, &ke) != RET_OK)
+		goto noevent;
 	
+	p_ks = findPks( self->arr_ks, ke.key);
+	if( p_ks == NULL)
+		return;
 	
+	if( ke.event == KEY_PUSH)
+	{
+		KeyPush(p_ks, &ke);
+		
+	}
+	else if( ke.event == KEY_RLS)
+	{
+		KeyRls(p_ks, &ke);
+		
+	}
+	
+	noevent:
+	//对每个按键状态进行处理
+	j = 0;
+	reportflag = 0;
+	for( i = 0; i < NUM_KEYS; i++)
+	{
+		if(   self->arr_ks[i].eventCode  == 0)
+			continue;
+		//将至今超过500的按键动作通知
+		now_ms = get_time_ms();
+		//每个按键都要暂存500ms后才能进行处理，主要是为了双击和组合按键的考虑
+		if( ( ( now_ms - self->arr_ks[i].timestamp) > REPORT_TIME_MS) || (reportflag > 0))
+		{
+			reportflag = 1;
+			//识别出长按的按键
+			//按下超过3s认为是长按，并且强制认为改按键是长按，而不管它之前的动作是啥
+			if( (IS_KEYUP( self->arr_ks[i].eventCode) == 0) &&\
+				( now_ms - self->arr_ks[i].timestamp) > LONGPUSH_TIME_MS)
+			{
+				self->arr_ks[i].eventCode = KEYEVENT_LPUSH;
+
+			}
+			
+			//按键被抬起或者按键被认为是长按的时候，将该按键上报
+			if( IS_KEYUP( self->arr_ks[i].eventCode) || (self->arr_ks[i].eventCode == KEYEVENT_LPUSH))
+			{
+//				if( self->arr_ks[i].eventCode & (~KEYEVENT_UP))
+				{
+					arr_keyMsg[j].eventCode = self->arr_ks[i].eventCode;
+					arr_keyMsg[j].keyCode = self->arr_ks[i].keyCode;
+					
+					j ++;
+				}
+//				else
+//				{
+//					self->arr_ks[i].eventCode = 0;
+//					
+//				}
+			}
+			
+			//按键被抬起以后就清除掉他的事件代码
+			if( IS_KEYUP( self->arr_ks[i].eventCode))
+			{
+				self->arr_ks[i].eventCode = 0;
+				self->arr_ks[i].timestamp = 0;
+			}
+			
+			
+
+		}
+		
+		 
+
+	}
+	
+	self->notify( self, j, arr_keyMsg);
 }
 
-static void	Key_notify( Keyboard *self)
+static void	Key_notify( Keyboard *self, uint8_t num, keyMsg_t arr_msg[])
 {
 	int i;
-	
+	if( num == 0)
+		return;
 	for( i = 0; i < MAX_OBS; i++)
 	{
 		if( self->arr_p_obm[i].p_ob)
-			break;
+		{
+			
+			self->arr_p_obm[i].p_ob->update( self->arr_p_obm[i].p_ob, num, arr_msg);
+		}
 	}
 	
 }
 
-static int Key_TestUpdate( keyObservice *self, uint8_t keyEven, char numKey, uint8_t arrKeyCode[])
+static keyStatus_t *findPks( keyStatus_t arrKs[], uint8_t keycode)
+{
+	if( keycode >= ( NUM_KEYS + 1))
+		return NULL;
+	return &arrKs[ keycode - 1];
+}
+
+static void KeyPush( keyStatus_t *p_ks,keyevent_t *p_ke)
+{
+	int diffms = 0;
+	//该按键目前没有其他事件的记录，说明此次是Hit操作
+	
+	if( ( p_ks->eventCode & (~KEYEVENT_UP)) == KEYEVENT_HIT)
+	{
+		//如果已经有和Hit事件，说明这事双击事件
+		
+		//双击的时间间隔要小于200ms才有效
+		//否则就认为是新的单击事件
+		diffms = p_ke->timestamp - p_ks->timestamp ;
+//		p_ks->pushtime_ms += cal_timediff_ms( &p_ks->timestamp);
+		if( diffms < DOUBLEHIT_TIME_MS)
+		{
+			p_ks->eventCode = KEYEVENT_DHIT;
+			
+		}
+		else
+		{
+			p_ks->eventCode = KEYEVENT_HIT;
+			p_ks->timestamp = p_ke->timestamp;
+		}
+		
+		
+		
+	}
+	else if( p_ks->eventCode == 0)
+	{
+		p_ks->eventCode = KEYEVENT_HIT;
+//		p_ks->pushtime_ms = 0;
+		p_ks->timestamp = p_ke->timestamp;
+		
+	}
+	
+	
+}
+static void KeyRls( keyStatus_t *p_ks, keyevent_t *p_ke)
+{
+	
+	p_ks->eventCode |= KEYEVENT_UP;
+//	p_ks->pushtime_ms += cal_timediff_ms( &p_ks->timestamp);
+}
+
+//fifo的 操作都假设fifo的长度是2的幂
+
+static void KEFifo_Init ( KEFifo_t *p_kef, int size)
+{
+	p_kef->size = size;
+	p_kef->read = 0;
+	p_kef->write = 0;
+}
+
+static int	KEFifo_len( KEFifo_t *p_kef)
+{
+	return ( ( p_kef->write - p_kef->read) & ( p_kef->size - 1));
+	
+}
+
+static int PushKE( KEFifo_t *p_kef, keyevent_t *p_ke)
+{
+	if( KEFifo_len( p_kef) == ( p_kef->size - 1))	return ERR_MEM_UNAVAILABLE;
+	
+	p_kef->arr_ke[ p_kef->write].key = p_ke->key;
+	p_kef->arr_ke[ p_kef->write].event = p_ke->event;
+	p_kef->arr_ke[ p_kef->write].timestamp = p_ke->timestamp;	
+		
+	p_kef->write = ( p_kef->write + 1) & ( p_kef->size - 1);  
+		
+	
+	return RET_OK;
+
+}	
+static int PopKE( KEFifo_t *p_kef, keyevent_t *p_ke)
+{
+	;
+	if( KEFifo_len( p_kef) == 0)
+		return ERR_MEM_UNAVAILABLE;
+	
+	p_ke->event = p_kef->arr_ke[ p_kef->read].event ;
+	p_ke->key = p_kef->arr_ke[ p_kef->read].key ;
+	p_ke->timestamp = p_kef->arr_ke[ p_kef->read].timestamp;	
+	p_kef->read = ( p_kef->read + 1) & ( p_kef->size - 1);  
+		
+	
+	return RET_OK;
+}
+
+// keytestob
+
+static int Key_TestUpdate( keyObservice *self,  uint8_t num, keyMsg_t arr_msg[])
 {
 	KbTestOb *cthis = SUB_PTR(self, keyObservice, KbTestOb);
 	if( cthis->hdl)
-		cthis->hdl( keyEven, numKey, arrKeyCode);
+		cthis->hdl( num, arr_msg);
 	
 	return RET_OK;
 }
@@ -180,28 +458,27 @@ static void KeyTest_setKeyHdl( KbTestOb *self, keyHdl hdl)
 	
 	self->hdl = hdl;
 }
-
-//int	UtlRtc_set( UtlRtc *self, IN struct  tm *tm)
-//{
-//	return RET_OK;
-//	
-//}
-
-
-//int	UtlRtc_readReg( UtlRtc *self, IN uint8_t	reg, OUT uint8_t val[], uint8_t num)
-//{
-//	
-//	return RET_OK;
-//}
-//	
-
-//int	UtlRtc_writeReg( UtlRtc *self, IN uint8_t	reg, IN uint8_t val[], uint8_t num)
-//{
-//	
-//	return RET_OK;
-//}
-
-
-
-
-
+static  void GpioIrqHdl( void *arg, int type, int encode)
+{
+	Keyboard *p_kb = ( Keyboard *)arg;
+	keyevent_t ke;
+	
+	ke.timestamp = get_time_ms();
+	if( type == GITP_FAILINGEDGE)
+	{
+		ke.event = KEY_PUSH;
+	}
+	else if( type == GITP_RISINGEDGE)
+	{
+		ke.event = KEY_RLS;
+	}
+	else
+	{
+		return;
+	}
+	
+	ke.key = encode & 0xff;
+	
+	PushKE( &p_kb->kef, &ke);
+	
+}

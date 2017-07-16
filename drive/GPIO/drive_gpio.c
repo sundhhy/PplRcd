@@ -306,10 +306,10 @@ static void ExtiIrq( driveGpio *p_gpio)
 			return;
 		//当前电平的状态来判断是上升沿还是下降沿产生的中断
 		if( pin == 1)
-			p_gpio->func_hdl( p_gpio, GITP_RISINGEDGE, p_gpio->encode[0]);
+			p_gpio->func_hdl( p_gpio->hdl_arg, GITP_RISINGEDGE, p_gpio->encode[0]);
 		
 		if( pin == 0)
-			p_gpio->func_hdl( p_gpio, GITP_FAILINGEDGE, p_gpio->encode[0]);
+			p_gpio->func_hdl( p_gpio->hdl_arg, GITP_FAILINGEDGE, p_gpio->encode[0]);
 	}
 	
 }
