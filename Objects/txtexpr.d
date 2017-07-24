@@ -19,6 +19,13 @@
 .\objects\txtexpr.o: .\device\dev_cmd.h
 .\objects\txtexpr.o: .\device\dev_char.h
 .\objects\txtexpr.o: .\device\dev_lcd.h
+.\objects\txtexpr.o: E:\mylib\sdhLib\inc\basis/assert.h
+.\objects\txtexpr.o: E:\mylib\sdhLib\inc\basis/except.h
+.\objects\txtexpr.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\setjmp.h
+.\objects\txtexpr.o: .\sheet\sheet.h
+.\objects\txtexpr.o: .\MVC\ModelFactory.h
+.\objects\txtexpr.o: .\MVC\Model.h
+.\objects\txtexpr.o: E:\mylib\sdhLib\inc\basis/assert.h
 .\objects\txtexpr.o: .\Glyph\Gh_txt.h
 .\objects\txtexpr.o: E:\mylib\sdhLib\inc\arithmetic/cycQueue.h
 .\objects\txtexpr.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h

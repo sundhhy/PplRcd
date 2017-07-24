@@ -22,6 +22,7 @@ static int GpuBox( int x1, int y1, int x2, int y2, char type, char c);
 static void GpuBKColor( char c);
 int GpuLabel( char *string,  int len, scArea_t *area, int font, char c, char ali);
 static int GpuStrSize( int font, uint16_t	*width, uint16_t	*heigh);
+static void GetScrnSize( uint16_t *xsize, uint16_t *ysize);
 
 I_dev_lcd g_IUsartGpu =
 {
@@ -33,6 +34,7 @@ I_dev_lcd g_IUsartGpu =
 	GpuBKColor,
 	GpuBox,
 	GpuStrSize,
+	GetScrnSize,
 	
 };
 
@@ -56,6 +58,12 @@ static int ClearLcd( int c)
 	GpuSend(lcdBuf);
 	osDelay(20);
 	return RET_OK;
+}
+
+static void GetScrnSize( uint16_t *xsize, uint16_t *ysize)
+{
+	*xsize = 320;
+	*ysize = 240;
 }
 
 //»­¸ö·½¿ò

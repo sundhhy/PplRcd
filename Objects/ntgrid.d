@@ -19,6 +19,13 @@
 .\objects\ntgrid.o: .\device\dev_cmd.h
 .\objects\ntgrid.o: .\device\dev_char.h
 .\objects\ntgrid.o: .\device\dev_lcd.h
+.\objects\ntgrid.o: E:\mylib\sdhLib\inc\basis/assert.h
+.\objects\ntgrid.o: E:\mylib\sdhLib\inc\basis/except.h
+.\objects\ntgrid.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\setjmp.h
+.\objects\ntgrid.o: .\sheet\sheet.h
+.\objects\ntgrid.o: .\MVC\ModelFactory.h
+.\objects\ntgrid.o: .\MVC\Model.h
+.\objects\ntgrid.o: E:\mylib\sdhLib\inc\basis/assert.h
 .\objects\ntgrid.o: Expression\ExpFactory.h
 .\objects\ntgrid.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
 .\objects\ntgrid.o: .\Glyph\Gh_Rectangle.h

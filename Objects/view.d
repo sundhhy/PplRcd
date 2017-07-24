@@ -20,6 +20,13 @@
 .\objects\view.o: E:\mylib\sdhLib\inc\basis/macros.h
 .\objects\view.o: .\Expression\expression.h
 .\objects\view.o: .\Views\Composition.h
+.\objects\view.o: E:\mylib\sdhLib\inc\basis/assert.h
+.\objects\view.o: E:\mylib\sdhLib\inc\basis/except.h
+.\objects\view.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\setjmp.h
+.\objects\view.o: .\sheet\sheet.h
+.\objects\view.o: .\MVC\ModelFactory.h
+.\objects\view.o: .\MVC\Model.h
+.\objects\view.o: E:\mylib\sdhLib\inc\basis/assert.h
 .\objects\view.o: ..\PplRcd\utils/time.h
 .\objects\view.o: E:\PaperlessRecorder\myCode\PplRcd\RTE\Device\STM32F103VC\stm32f10x_conf.h
 .\objects\view.o: E:\PaperlessRecorder\myCode\PplRcd\RTE\RTE_Components.h

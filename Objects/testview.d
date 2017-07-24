@@ -24,4 +24,10 @@
 .\objects\testview.o: .\Expression\Reader.h
 .\objects\testview.o: .\Expression\ExpFactory.h
 .\objects\testview.o: .\Expression\expression.h
-.\objects\testview.o: MVC\Model.h
+.\objects\testview.o: E:\mylib\sdhLib\inc\basis/assert.h
+.\objects\testview.o: E:\mylib\sdhLib\inc\basis/except.h
+.\objects\testview.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\setjmp.h
+.\objects\testview.o: .\sheet\sheet.h
+.\objects\testview.o: .\MVC\ModelFactory.h
+.\objects\testview.o: .\MVC\Model.h
+.\objects\testview.o: E:\mylib\sdhLib\inc\basis/assert.h

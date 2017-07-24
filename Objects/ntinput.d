@@ -19,6 +19,13 @@
 .\objects\ntinput.o: .\device\dev_cmd.h
 .\objects\ntinput.o: .\device\dev_char.h
 .\objects\ntinput.o: .\device\dev_lcd.h
+.\objects\ntinput.o: E:\mylib\sdhLib\inc\basis/assert.h
+.\objects\ntinput.o: E:\mylib\sdhLib\inc\basis/except.h
+.\objects\ntinput.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\setjmp.h
+.\objects\ntinput.o: .\sheet\sheet.h
+.\objects\ntinput.o: .\MVC\ModelFactory.h
+.\objects\ntinput.o: .\MVC\Model.h
+.\objects\ntinput.o: E:\mylib\sdhLib\inc\basis/assert.h
 .\objects\ntinput.o: Expression\ExpFactory.h
 .\objects\ntinput.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
 .\objects\ntinput.o: .\Glyph\Gh_Rectangle.h

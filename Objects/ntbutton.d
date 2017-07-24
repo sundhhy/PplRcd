@@ -19,6 +19,13 @@
 .\objects\ntbutton.o: .\device\dev_cmd.h
 .\objects\ntbutton.o: .\device\dev_char.h
 .\objects\ntbutton.o: .\device\dev_lcd.h
+.\objects\ntbutton.o: E:\mylib\sdhLib\inc\basis/assert.h
+.\objects\ntbutton.o: E:\mylib\sdhLib\inc\basis/except.h
+.\objects\ntbutton.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\setjmp.h
+.\objects\ntbutton.o: .\sheet\sheet.h
+.\objects\ntbutton.o: .\MVC\ModelFactory.h
+.\objects\ntbutton.o: .\MVC\Model.h
+.\objects\ntbutton.o: E:\mylib\sdhLib\inc\basis/assert.h
 .\objects\ntbutton.o: Expression\ExpFactory.h
 .\objects\ntbutton.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
 .\objects\ntbutton.o: .\Glyph\Gh_Rectangle.h

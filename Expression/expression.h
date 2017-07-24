@@ -4,6 +4,14 @@
 #include "lw_oopc.h"
 #include "Composition.h"
 
+#include "sdhDef.h"
+#ifdef NO_ASSERT
+#include "basis/assert.h"
+#else
+#include "assert.h"
+#endif
+#include "sheet.h"
+
 
 #define VAR_LEN		32
 
@@ -25,9 +33,11 @@ ABS_CLASS( Expr)
 //	int	( *getCntEff)( char *s);
 	
 	abstract void* (*interpret)( Expr *self, void *father, void *context);
+	abstract void* (*inptSht)( Expr *self, void *context, sheet *p_sht);
 	
 };
 
 extern char expTempBUf[TEMPBUF_LEN];
+extern const Except_T Exp_Failed;
 
 #endif

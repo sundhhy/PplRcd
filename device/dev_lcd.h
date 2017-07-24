@@ -57,6 +57,7 @@ typedef struct{
 	void ( *BKColor)( char c);
 	int ( *Box)( int x1, int y1, int x2, int y2, char type, char c);
 	int ( *getStrSize)( int font, uint16_t *width, uint16_t *heigh);
+	void ( *getScrnSize)( uint16_t *xsize, uint16_t *ysize);
 }I_dev_lcd;
 
 int DevLCD_open( int major, int minor, void **dev);

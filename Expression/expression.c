@@ -1,5 +1,6 @@
 #include "expression.h"
 #include <string.h>
+
 /*
 expression :: = 
 
@@ -8,6 +9,10 @@ variable = [ A-Z, a-z]*
 
 
 */
+
+
+const Except_T Exp_Failed = { "Exp Failed" };
+
 
 /*缩写
 警告！ name=val 的等号前后不允许有空格！！！！
@@ -26,6 +31,7 @@ cg	:	columnGap 列间距
 ls	:	lineSpacing	行间距
 
 gr	:	grid
+bxSz/bySz : 图像在x/y轴上的长度
 
 bndx1/y1/x2/y2 : bonduary x1/y1/x2/y2
 spr: separator分隔符
