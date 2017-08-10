@@ -1,10 +1,52 @@
 #include "Gh_Rectangle.h"
 #include "device.h"
 
+//============================================================================//
+//            G L O B A L   D E F I N I T I O N S                             //
+//============================================================================//
 
+//------------------------------------------------------------------------------
+// const defines
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+// module global vars
+//------------------------------------------------------------------------------
+
+
+//------------------------------------------------------------------------------
+// global function prototypes
+//------------------------------------------------------------------------------
+
+//============================================================================//
+//            P R I V A T E   D E F I N I T I O N S                           //
+//============================================================================//
+
+//------------------------------------------------------------------------------
+// const defines
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+// local types
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+// local vars
+//------------------------------------------------------------------------------
 
 static GhRectangle *signalGhRectangle;
 
+//------------------------------------------------------------------------------
+// local function prototypes
+//------------------------------------------------------------------------------
+static void GhRec_vDraw( Glyph *self, dspContent_t *cnt, vArea_t *area);
+
+
+static void GhRec_Draw( Glyph *self, dspContent_t *cnt, dspArea_t *area);
+
+//============================================================================//
+//            P U B L I C   F U N C T I O N S                                 //
+//============================================================================//
 
 GhRectangle *Get_GhRectangle(void)
 {
@@ -23,6 +65,22 @@ GhRectangle *Get_GhRectangle(void)
 	return signalGhRectangle;
 }
 
+CTOR( GhRectangle)
+SUPER_CTOR( Glyph);
+FUNCTION_SETTING( Glyph.draw, GhRec_Draw);
+FUNCTION_SETTING( Glyph.vdraw, GhRec_vDraw);
+
+
+END_CTOR
+
+
+//=========================================================================//
+//                                                                         //
+//          P R I V A T E   D E F I N I T I O N S                          //
+//                                                                         //
+//=========================================================================//
+/// \name Private Functions
+/// \{
 
 
 
@@ -30,6 +88,33 @@ GhRectangle *Get_GhRectangle(void)
 
 
 
+
+
+
+
+
+
+static void GhRec_vDraw( Glyph *self, dspContent_t *cnt, vArea_t *area)
+{
+	I_dev_lcd *lcd;
+	uint8_t	c = cnt->colour;
+	Dev_open( LCD_DEVID, (void *)&lcd);
+	
+	if( cnt->effects == EFF_FOUSE)
+		c = ColorInvert( c);
+	
+	if( cnt->bkc == ERR_COLOUR)
+	{
+		lcd->Box( area->x0, area->y0, area->x1, area->y1, 0, c);
+	}
+	else
+	{
+		lcd->Box( area->x0, area->y0, area->x1, area->y1, 1, c);
+		
+	}
+
+
+}
 
 
 
@@ -64,16 +149,4 @@ static void GhRec_Draw( Glyph *self, dspContent_t *cnt, dspArea_t *area)
 
 
 
-CTOR( GhRectangle)
-SUPER_CTOR( Glyph);
-FUNCTION_SETTING( Glyph.draw, GhRec_Draw);
-//FUNCTION_SETTING( Glyph.flush, GhTxt_Flush);
 
-
-//FUNCTION_SETTING( Glyph.getSize, GhTxt_GetSize);
-
-//FUNCTION_SETTING( Glyph.getWidth, GhTxt_GetWidth);
-//FUNCTION_SETTING( Glyph.getHeight, GhTxt_GetHeight);
-//FUNCTION_SETTING( Glyph.getNum, GhTxt_GetNum);
-
-END_CTOR

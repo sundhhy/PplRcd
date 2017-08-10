@@ -18,6 +18,7 @@
 .\objects\expression.o: .\device\dev_cmd.h
 .\objects\expression.o: .\device\dev_char.h
 .\objects\expression.o: .\device\dev_lcd.h
+.\objects\expression.o: Expression\Reader.h
 .\objects\expression.o: E:\mylib\sdhLib\inc\basis/assert.h
 .\objects\expression.o: E:\mylib\sdhLib\inc\basis/except.h
 .\objects\expression.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\setjmp.h

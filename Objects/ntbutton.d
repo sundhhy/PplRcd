@@ -19,6 +19,7 @@
 .\objects\ntbutton.o: .\device\dev_cmd.h
 .\objects\ntbutton.o: .\device\dev_char.h
 .\objects\ntbutton.o: .\device\dev_lcd.h
+.\objects\ntbutton.o: Expression\Reader.h
 .\objects\ntbutton.o: E:\mylib\sdhLib\inc\basis/assert.h
 .\objects\ntbutton.o: E:\mylib\sdhLib\inc\basis/except.h
 .\objects\ntbutton.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\setjmp.h
@@ -30,4 +31,3 @@
 .\objects\ntbutton.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
 .\objects\ntbutton.o: .\Glyph\Gh_Rectangle.h
 .\objects\ntbutton.o: E:\mylib\sdhLib\inc\arithmetic/cycQueue.h
-.\objects\ntbutton.o: Expression\Reader.h

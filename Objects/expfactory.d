@@ -19,6 +19,7 @@
 .\objects\expfactory.o: .\device\dev_cmd.h
 .\objects\expfactory.o: .\device\dev_char.h
 .\objects\expfactory.o: .\device\dev_lcd.h
+.\objects\expfactory.o: Expression\Reader.h
 .\objects\expfactory.o: E:\mylib\sdhLib\inc\basis/assert.h
 .\objects\expfactory.o: E:\mylib\sdhLib\inc\basis/except.h
 .\objects\expfactory.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\setjmp.h
@@ -34,3 +35,5 @@
 .\objects\expfactory.o: Expression\GeometricsExpr.h
 .\objects\expfactory.o: Expression\NtGrid.h
 .\objects\expfactory.o: Expression\Dyn_TimeExpr.h
+.\objects\expfactory.o: Expression\PicExpr.h
+.\objects\expfactory.o: Expression\PicExpr.h

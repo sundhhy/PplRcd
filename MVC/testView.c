@@ -123,7 +123,6 @@ void View_test(void)
 	
 	ct->dynPtr = (void *)dynId_ptr;
 	
-	//æ≤Ã¨≤ø∑÷≈≈∞Ê
 	i = 0;
 	while( i < 2)
 	{

@@ -1,0 +1,111 @@
+#ifndef _INC_sheet_H_
+#define _INC_sheet_H_
+
+//------------------------------------------------------------------------------
+// includes
+//------------------------------------------------------------------------------
+#include <stdint.h>
+#include "glyph.h"
+#include "ModelFactory.h"
+
+//------------------------------------------------------------------------------
+// check for correct compilation options
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+// const defines
+//------------------------------------------------------------------------------
+#define MAX_SHEETS 64
+#define MAX_SUBSHEETS 2
+ //------------------------------------------------------------------------------
+// typedef
+//------------------------------------------------------------------------------
+struct SHTCTL;
+struct SHEET;
+
+typedef struct {
+	uint8_t		numSubRow;
+	uint8_t		numSubCol;
+	uint8_t		subColGrap;
+	uint8_t		subRowGrap;
+}subShtAtt_t;
+
+typedef struct {
+	uint16_t		vxsize;
+	uint16_t		vysize;
+	
+}video_t;
+
+INTERFACE( shtCmd)
+{
+	
+	void (*shtExcute)( shtCmd *self, struct SHEET *p_sht, void *arg);
+};
+
+
+
+CLASS( shtDefCmd)
+{
+	IMPLEMENTS( shtCmd);
+};
+
+/* sheet.c   */
+typedef struct SHEET {
+	int ( *update)( void *p_sht);	//注意：必须放在第一个位置
+	
+	subShtAtt_t		subAtt;
+	struct SHEET	**pp_sub;
+	
+	//图像的尺寸
+    uint16_t 	bxsize;
+	uint16_t 	bysize;
+
+	
+	//在整个图层系统中的高度,要连续分配，否则不能正确处理
+	int16_t		height;
+	uint8_t		flags;	
+	uint8_t		col_inv;
+		
+	dspContent_t	cnt;
+	vArea_t			area;
+	Glyph			*p_gp;
+	Model			*p_mdl;
+	
+	//键盘相关
+	shtCmd		*p_enterCmd;
+	
+	
+//    struct SHTCTL *p_shtctl;
+}sheet;
+
+typedef struct SHTCTL {
+	video_t		v;
+	int16_t		top;
+    struct SHEET *arr_p_sheets[ MAX_SHEETS];
+    struct SHEET  arr_sheets[ MAX_SHEETS];
+}shtctl;
+
+
+//------------------------------------------------------------------------------
+// global variable declarations
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+// function prototypes
+//------------------------------------------------------------------------------
+
+shtctl *GetShtctl(void);
+
+struct SHTCTL* Shtctl_init(   uint16_t vxsize, uint16_t vysize);
+struct SHEET *Sheet_alloc( struct SHTCTL *p_ctl);
+void Sheet_setbuf( struct SHEET *p_sht, uint8_t *buf, int bxsize, int bysize, int col_inv);
+void Sheet_updown( struct SHEET *p_sht, int height);
+void Sheet_append( struct SHEET *p_sht);
+int ShtUpdate( void *p_sht);
+// void sheet_refresh( struct SHTCTL *p_ctl);
+void Sheet_refresh( struct SHEET *p_sht);
+void Sheet_slide(  struct SHEET *p_sht);
+void Sheet_free( struct SHEET *p_sht);
+
+shtDefCmd *Get_shtDefCmd(void);
+#endif

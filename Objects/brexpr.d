@@ -19,6 +19,7 @@
 .\objects\brexpr.o: .\device\dev_cmd.h
 .\objects\brexpr.o: .\device\dev_char.h
 .\objects\brexpr.o: .\device\dev_lcd.h
+.\objects\brexpr.o: Expression\Reader.h
 .\objects\brexpr.o: E:\mylib\sdhLib\inc\basis/assert.h
 .\objects\brexpr.o: E:\mylib\sdhLib\inc\basis/except.h
 .\objects\brexpr.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\setjmp.h
@@ -28,4 +29,3 @@
 .\objects\brexpr.o: E:\mylib\sdhLib\inc\basis/assert.h
 .\objects\brexpr.o: .\Glyph\Gh_none.h
 .\objects\brexpr.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
-.\objects\brexpr.o: Expression\Reader.h

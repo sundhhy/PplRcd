@@ -7,7 +7,6 @@
 
 #include <string.h>
 
-#include "Reader.h"
 
 static TxtExpr *signalTxtExpr;
 
@@ -130,82 +129,32 @@ static void * TxtInptSht( Expr *self, void *context, sheet *p_sht)
 	char	*pp;
 	char 	*pnewPosition;
 	char	*att = expTempBUf;
-	char 	tmpbuf[4] = {0};
-	int 	bx_by_correct = 1;
-
+	int		ret = 0;
 
 	GetAttribute( context, att, TEMPBUF_LEN);
 	
 	len = 8;
+	pp = context;
 	len = GetName( pp, name, len);
 	
 	pnewPosition = GetNameVale( context, name, &pp, &len);
 	if( len == 0)
 		goto exit;
 	
-	
-	
-	
-	
-	
-	//属性优先级:自己的私有属性， 父属性， 系统默认属性
-	
-	
-	
-	p_sht->cnt.colour = String2Clr( att);
-	p_sht->cnt.bkc  = String2Bkc( att);
-	p_sht->cnt.font = String2Font( att);
-	p_sht->cnt.data = pp;
-	p_sht->cnt.len = len;
-	
-	GetKeyVal( att, "xali", tmpbuf, 4);
-	p_sht->alix = String2Align( tmpbuf);
-	GetKeyVal( att, "yali", tmpbuf, 4);
-	p_sht->aliy = String2Align( tmpbuf);
-	
-	if( GetKeyVal( att, "vx0", tmpbuf, 4))
-	{
-		p_sht->area.x0 = atoi( tmpbuf);
-	}
-	if( GetKeyVal( att, "vy0", tmpbuf, 4))
-	{
-		p_sht->area.y0 = atoi( tmpbuf);
-	}
-	
-	if( GetKeyVal( att, "bxSz", tmpbuf, 4))
-	{
-		p_sht->bxsize = atoi( tmpbuf);
-	}
-	else
-	{
-		bx_by_correct = 0;
-	}
-	if( GetKeyVal( att, "bySz", tmpbuf, 4))
-	{
-		p_sht->bysize = atoi( tmpbuf);
-	}
-	else
-	{
-		bx_by_correct = 0;
-	}
-	
-	if( bx_by_correct == 0)
+	Set_shtContextAtt( att, p_sht);
+	ret =  Set_shtAreaAtt( att,  p_sht);
+	if( ret & SET_ATT_BSIZEFAIL)
 	{
 		myGp->getSize( myGp,  p_sht->cnt.font, &p_sht->bxsize, &p_sht->bysize);
+		p_sht->bxsize = p_sht->bxsize * len;
 	}
 	
-	
+	p_sht->cnt.data = pp;
+	p_sht->cnt.len = len;
 	p_sht->p_gp = myGp;
 	
-	
-	
-	
-	
-	
-	
-	
 	//对标题类的特殊处理
-	if( !strcasecmp( self->variable, "title"))
+	if( !strcasecmp( name, "title"))
 	{
 		if( p_sht->cnt.bkc == ERR_COLOUR)
 		{

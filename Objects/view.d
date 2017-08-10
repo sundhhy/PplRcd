@@ -20,6 +20,7 @@
 .\objects\view.o: E:\mylib\sdhLib\inc\basis/macros.h
 .\objects\view.o: .\Expression\expression.h
 .\objects\view.o: .\Views\Composition.h
+.\objects\view.o: .\Expression\Reader.h
 .\objects\view.o: E:\mylib\sdhLib\inc\basis/assert.h
 .\objects\view.o: E:\mylib\sdhLib\inc\basis/except.h
 .\objects\view.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\setjmp.h

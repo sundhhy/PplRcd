@@ -10,11 +10,50 @@
 #include "Reader.h"
 #include "Gh_Rectangle.h"
 
+//============================================================================//
+//            G L O B A L   D E F I N I T I O N S                             //
+//============================================================================//
 
-//几何图形:矩形 
+//------------------------------------------------------------------------------
+// const defines
+//------------------------------------------------------------------------------
 
+//------------------------------------------------------------------------------
+// module global vars
+//------------------------------------------------------------------------------
+
+
+//------------------------------------------------------------------------------
+// global function prototypes
+//------------------------------------------------------------------------------
+
+//============================================================================//
+//            P R I V A T E   D E F I N I T I O N S                           //
+//============================================================================//
+
+//------------------------------------------------------------------------------
+// const defines
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+// local types
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+// local vars
+//------------------------------------------------------------------------------
 static GmtrExpr *signaExpr;
 
+
+//------------------------------------------------------------------------------
+// local function prototypes
+//------------------------------------------------------------------------------
+
+static void * GeoInptSht( Expr *self, void *context, sheet *p_sht);
+static void * GmtrInterpret( Expr *self, void *faVd, void *context);
+//============================================================================//
+//            P U B L I C   F U N C T I O N S                                 //
+//============================================================================//
 
 GmtrExpr *GetGmtrExpr(void)
 {
@@ -24,6 +63,67 @@ GmtrExpr *GetGmtrExpr(void)
 	}
 	return signaExpr;
 }
+
+CTOR( GmtrExpr)
+SUPER_CTOR( Expr);
+FUNCTION_SETTING( Expr.interpret, GmtrInterpret);
+FUNCTION_SETTING( Expr.inptSht, GeoInptSht);
+
+END_CTOR
+//=========================================================================//
+//                                                                         //
+//          P R I V A T E   D E F I N I T I O N S                          //
+//                                                                         //
+//=========================================================================//
+/// \name Private Functions
+/// \{
+
+//几何图形:矩形 
+
+static void * GeoInptSht( Expr *self, void *context, sheet *p_sht)
+{
+	GhRectangle 	*gpGmtr = NULL;
+	Glyph			*myGp = NULL;
+	char	name[8];
+	int 	len = 0;
+	char	*pp;
+	char	*att = expTempBUf;
+
+	GetAttribute( context, att, TEMPBUF_LEN);
+	
+	len = 8;
+	pp = context;
+	len = GetName( pp, name, len);
+	
+	
+	
+	Set_shtContextAtt( att, p_sht);
+	Set_shtAreaAtt( att,  p_sht);
+	
+	
+	if( !strcasecmp( name, "input"))
+	{
+		gpGmtr = Get_GhRectangle();
+		
+		
+	}
+	else
+	{
+		
+		gpGmtr = Get_GhRectangle();
+	}
+	
+	myGp = (Glyph *)gpGmtr;
+	p_sht->p_gp = myGp;
+	
+	
+	memset( expTempBUf, 0, sizeof( expTempBUf));
+	
+	return pp;
+}
+
+
+
 
 
 static void * GmtrInterpret( Expr *self, void *faVd, void *context)
@@ -110,11 +210,7 @@ static void * GmtrInterpret( Expr *self, void *faVd, void *context)
 	return pnewPosition;
 }
 
-CTOR( GmtrExpr)
-SUPER_CTOR( Expr);
-FUNCTION_SETTING( Expr.interpret, GmtrInterpret);
 
-END_CTOR
 
 
 

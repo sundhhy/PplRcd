@@ -748,21 +748,21 @@
               <FileType>1</FileType>
               <FilePath>.\Glyph\Gh_None.c</FilePath>
             </File>
+            <File>
+              <FileName>Gh_Pic.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Glyph\Gh_Pic.c</FilePath>
+            </File>
+            <File>
+              <FileName>Gh_Pic.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Glyph\Gh_Pic.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
           <GroupName>MVC</GroupName>
           <Files>
-            <File>
-              <FileName>Controller.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\MVC\Controller.c</FilePath>
-            </File>
-            <File>
-              <FileName>Controller.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\MVC\Controller.h</FilePath>
-            </File>
             <File>
               <FileName>View.c</FileName>
               <FileType>1</FileType>
@@ -897,6 +897,16 @@
               <FileName>Dyn_TimeExpr.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\Expression\Dyn_TimeExpr.c</FilePath>
+            </File>
+            <File>
+              <FileName>PicExpr.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Expression\PicExpr.c</FilePath>
+            </File>
+            <File>
+              <FileName>PicExpr.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Expression\PicExpr.h</FilePath>
             </File>
           </Files>
         </Group>
@@ -1038,6 +1048,26 @@
               <FileType>5</FileType>
               <FilePath>.\HMI\mainHMI.h</FilePath>
             </File>
+            <File>
+              <FileName>format.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\HMI\format.c</FilePath>
+            </File>
+            <File>
+              <FileName>format.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\HMI\format.h</FilePath>
+            </File>
+            <File>
+              <FileName>keyboardHMI.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\HMI\keyboardHMI.c</FilePath>
+            </File>
+            <File>
+              <FileName>keyboardHMI.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\HMI\keyboardHMI.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -1072,6 +1102,41 @@
               <FileName>ModelFactory.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\MVC\ModelFactory.h</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>control</GroupName>
+          <Files>
+            <File>
+              <FileName>Controller.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Control\Controller.c</FilePath>
+            </File>
+            <File>
+              <FileName>Controller.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Control\Controller.h</FilePath>
+            </File>
+            <File>
+              <FileName>CtlKey.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Control\CtlKey.c</FilePath>
+            </File>
+            <File>
+              <FileName>CtlKey.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Control\CtlKey.h</FilePath>
+            </File>
+            <File>
+              <FileName>CtlTimer.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Control\CtlTimer.c</FilePath>
+            </File>
+            <File>
+              <FileName>CtlTimer.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Control\CtlTimer.h</FilePath>
             </File>
           </Files>
         </Group>
