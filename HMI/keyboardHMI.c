@@ -35,7 +35,7 @@
 #define KEYBBUFLEN		16
 
 
-const char KeyboardCode[] = { "<pic vx0=0 vy0=0 > 2</oic>" };
+const char KeyboardCode[] = { "<pic vx0=0 vy0=0 >15</>" };
 //------------------------------------------------------------------------------
 // local types
 //------------------------------------------------------------------------------
@@ -51,7 +51,10 @@ static int	Init_kbmHmi( HMI *self, void *arg);
 
 static void KeyboardEnterCmdHdl( shtCmd *self, struct SHEET *p_sht, void *arg);
 static void	KeyboardShow( HMI *self );
+static void KBHide( HMI *self );
 static void KBInitSheet( HMI *self );
+
+static void	KeyboardHitHandle( HMI *self, char *s);
 //============================================================================//
 //            P U B L I C   F U N C T I O N S                                 //
 //============================================================================//
@@ -73,6 +76,8 @@ SUPER_CTOR( HMI);
 FUNCTION_SETTING( HMI.init, Init_kbmHmi);
 FUNCTION_SETTING( HMI.show, KeyboardShow);
 FUNCTION_SETTING( HMI.initSheet, KBInitSheet);
+FUNCTION_SETTING( HMI.hide, KBHide);
+FUNCTION_SETTING( HMI.hitHandle, KeyboardHitHandle);
 
 
 FUNCTION_SETTING( shtCmd.shtExcute, KeyboardEnterCmdHdl);
@@ -112,6 +117,12 @@ static void KBInitSheet( HMI *self )
 	
 }
 
+static void KBHide( HMI *self )
+{
+	keyboardHMI		*cthis = SUB_PTR( self, HMI, keyboardHMI);
+	Sheet_updown( cthis->p_shtkybrd, -1);
+}
+
 static void	KeyboardShow( HMI *self )
 {
 	keyboardHMI		*cthis = SUB_PTR( self, HMI, keyboardHMI);
@@ -122,6 +133,19 @@ static void	KeyboardShow( HMI *self )
 	Sheet_refresh( cthis->p_shtkybrd);
 }
 
+static void	KeyboardHitHandle( HMI *self, char *s)
+{
+	keyboardHMI		*cthis = SUB_PTR( self, HMI, keyboardHMI);
+	shtCmd		*p_cmd;
+	uint8_t		fouseRow = cthis->fouseRow;
+	uint8_t		fouseCol = cthis->fouseCol;
+	char			chgFouse = 0;
+	
+	if( !strcmp( s, HMIKEY_ESC))
+	{
+		self->switchBack(self);
+	}
+}
 
 static void KeyboardEnterCmdHdl( shtCmd *self, struct SHEET *p_sht, void *arg)
 {

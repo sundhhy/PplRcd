@@ -204,10 +204,10 @@ void Sheet_updown( struct SHEET *p_sht, int height)
                     p_ctl->arr_p_sheets[h] = p_ctl->arr_p_sheets[ h + 1];
                     p_ctl->arr_p_sheets[h]->height = h;
                 }
-                p_ctl->top --;
+               
                 
             }
-            
+             p_ctl->top --;
 //            sheet_refreshmap( p_ctl, p_sht->vx0, p_sht->vy0, p_sht->vx0 + p_sht->bvxsize,  p_sht->vy0 + p_sht->bvysize, 0);
 //            Sheet_refreshsub( p_ctl, p_sht->vx0, p_sht->vy0, p_sht->vx0 + p_sht->bvxsize,  p_sht->vy0 + p_sht->bvysize, 0, old - 1);
             

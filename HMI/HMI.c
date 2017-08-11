@@ -100,11 +100,12 @@ static void	SwitchHMI( HMI *self, HMI *p_hmi)
 
 static void	SwitchBack( HMI *self)
 {
+	HMI *nowHmi = g_p_lastHmi;
 	g_p_lastHmi = g_p_curHmi;
-	g_p_curHmi = self;
-	
-	self->initSheet( self);
-	self->show( self);
+	g_p_curHmi = nowHmi;
+	self->hide( self);
+	nowHmi->initSheet( nowHmi);
+	nowHmi->show( nowHmi);
 	
 }
 

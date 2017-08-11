@@ -26,6 +26,9 @@ CLASS( keyboardHMI)
 	IMPLEMENTS( shtCmd);
 	Model			*p_mdlRtc;
 	sheet			*p_shtkybrd;
+	uint8_t		fouseRow;
+	uint8_t		fouseCol;
+	uint8_t		none[2];
 	
 	
 };

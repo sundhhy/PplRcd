@@ -67,6 +67,7 @@ static int	Init_mainHmi( HMI *self, void *arg);
 static void	MainHmiShow( HMI *self);
 static void	MainHitHandle( HMI *self, char *s);
 static void MainHmiHide( HMI *self );
+static void MaininitSheet( HMI *self );
 //============================================================================//
 //            P U B L I C   F U N C T I O N S                                 //
 //============================================================================//
@@ -75,6 +76,7 @@ CTOR( mainHmi)
 SUPER_CTOR( HMI);
 FUNCTION_SETTING( HMI.init, Init_mainHmi);
 FUNCTION_SETTING( HMI.hide, MainHmiHide);
+FUNCTION_SETTING( HMI.initSheet, MaininitSheet);
 
 FUNCTION_SETTING( HMI.show, MainHmiShow);
 FUNCTION_SETTING( HMI.hitHandle, MainHitHandle);
@@ -152,12 +154,12 @@ static int	Init_mainHmi( HMI *self, void *arg)
 	p_exp = ExpCreate( "input");
 	p_exp->inptSht( p_exp, (void *)p_txtCnt, *pp_sht) ;
 	
-		
-	Sheet_updown( *pp_shtLabel, 0);
-	Sheet_updown( g_p_shtTime, 1);
-	Sheet_updown( p_sheets[1][0], 2);
-	Sheet_updown( p_sheets[2][0], 3);
-	Sheet_updown( p_sheets[3][0], 4);
+	self->initSheet( self);
+//	Sheet_updown( *pp_shtLabel, 0);
+//	Sheet_updown( g_p_shtTime, 1);
+//	Sheet_updown( p_sheets[1][0], 2);
+//	Sheet_updown( p_sheets[2][0], 3);
+//	Sheet_updown( p_sheets[3][0], 4);
 	//½øÐÐÅÅ°æ
 
 	FormatSheet( &mainHmiAtt, &p_shtctl->v,cthis->pp_shts);
@@ -182,13 +184,23 @@ static int	Init_mainHmi( HMI *self, void *arg)
 
 static void MainHmiHide( HMI *self )
 {
-	Sheet_updown(  p_sheets[1][0], -1);
+	Sheet_updown(  p_sheets[0][0], -1);
 	Sheet_updown( g_p_shtTime, -1);
 	Sheet_updown( p_sheets[1][0], -1);
 	Sheet_updown( p_sheets[2][0], -1);
 	Sheet_updown( p_sheets[3][0], -1);
 	
 }	
+
+static void MaininitSheet( HMI *self )
+{
+	Sheet_updown(  p_sheets[0][0], 0);
+	Sheet_updown( g_p_shtTime, 1);
+	Sheet_updown( p_sheets[1][0], 2);
+	Sheet_updown( p_sheets[2][0], 3);
+	Sheet_updown( p_sheets[3][0], 4);
+	
+}
 
 
 static void	MainHmiShow( HMI *self )

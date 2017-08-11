@@ -22,18 +22,25 @@ Dialog DLL:      TCM.DLL V1.14.4.0
  
 <h2>Project:</h2>
 E:\PaperlessRecorder\myCode\PplRcd\PplRcd.uvprojx
-Project File Date:  08/05/2017
+Project File Date:  08/10/2017
 
 <h2>Output:</h2>
 Build target 'Target 1'
-compiling mainHMI.c...
 compiling keyboardHMI.c...
+HMI\keyboardHMI.c(139): warning:  #177-D: variable "p_cmd" was declared but never referenced
+        shtCmd          *p_cmd;
+HMI\keyboardHMI.c(140): warning:  #177-D: variable "fouseRow" was declared but never referenced
+        uint8_t         fouseRow = cthis->fouseRow;
+HMI\keyboardHMI.c(141): warning:  #177-D: variable "fouseCol" was declared but never referenced
+        uint8_t         fouseCol = cthis->fouseCol;
+HMI\keyboardHMI.c(142): warning:  #177-D: variable "chgFouse" was declared but never referenced
+        char                    chgFouse = 0;
 HMI\keyboardHMI.c(46): warning:  #177-D: variable "keybrdbuf" was declared but never referenced
   static char keybrdbuf[KEYBBUFLEN];
-HMI\keyboardHMI.c: 1 warning, 0 errors
+HMI\keyboardHMI.c: 5 warnings, 0 errors
 linking...
-Program Size: Code=30400 RO-data=1284 RW-data=616 ZI-data=25016  
-".\Objects\PplRcd.axf" - 0 Error(s), 1 Warning(s).
+Program Size: Code=30528 RO-data=1280 RW-data=616 ZI-data=25016  
+".\Objects\PplRcd.axf" - 0 Error(s), 5 Warning(s).
 
 <h2>Software Packages used:</h2>
 
@@ -42,22 +49,22 @@ Package Vendor: ARM
                 ::CMSIS:RTOS:1.0 (API)
                 CMSIS (Cortex Microcontroller Software Interface Standard)
    * Component: RTOS Version: 1.0
-   * Component: Keil RTX Version: 4.79.0
    * Component: CORE Version: 4.2.0
+   * Component: Keil RTX Version: 4.79.0
 
 Package Vendor: Keil
                 http://www.keil.com/pack/Keil.STM32F1xx_DFP.2.1.0.pack
-                Keil::Device:StdPeriph Drivers:Framework:3.5.1
+                Keil::Device:StdPeriph Drivers:Flash:3.5.0
                 STMicroelectronics STM32F1 Series Device Support, Drivers and Examples
-   * Component: Framework Version: 3.5.1
-   * Component: Startup Version: 1.0.0
-   * Component: GPIO Version: 3.5.0
-   * Component: TIM Version: 3.5.0
-   * Component: RCC Version: 3.5.0
-   * Component: USART Version: 3.5.0
-   * Component: DMA Version: 3.5.0
    * Component: Flash Version: 3.5.0
+   * Component: Startup Version: 1.0.0
    * Component: EXTI Version: 3.5.0
+   * Component: RCC Version: 3.5.0
+   * Component: TIM Version: 3.5.0
+   * Component: USART Version: 3.5.0
+   * Component: Framework Version: 3.5.1
+   * Component: GPIO Version: 3.5.0
+   * Component: DMA Version: 3.5.0
 
 <h2>Collection of Component include folders:</h2>
   E:\PaperlessRecorder\myCode\PplRcd\RTE
@@ -72,29 +79,26 @@ Package Vendor: Keil
 
    * Component: ::CMSIS:RTOS:1.0 (API)
 
-   * Component: ARM::CMSIS:RTOS:Keil RTX:4.79.0
-      Include file:  CMSIS\RTOS\RTX\INC\cmsis_os.h
-      Source file:   CMSIS\RTOS\RTX\Templates\RTX_Conf_CM.c
-      Include file:  CMSIS\RTOS\RTX\UserCodeTemplates\osObjects.h
-      Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\main.c
-      Library file:  CMSIS\RTOS\RTX\LIB\ARM\RTX_CM3.lib
-      Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\MemPool.c
-      Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\Timer.c
-      Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\Semaphore.c
-      Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\Mutex.c
-      Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\MsgQueue.c
-      Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\Thread.c
-      Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\MailQueue.c
-      Source file:   CMSIS\RTOS\RTX\SRC\ARM\SVC_Table.s
-
    * Component: ARM::CMSIS:CORE:4.2.0
 
-   * Component: Keil::Device:StdPeriph Drivers:Framework:3.5.1
-      Source file:   Device\StdPeriph_Driver\templates\stm32f10x_it.c
-      Include file:  Device\StdPeriph_Driver\inc\misc.h
-      Include file:  Device\StdPeriph_Driver\templates\stm32f10x_it.h
-      Source file:   Device\StdPeriph_Driver\templates\stm32f10x_conf.h
-      Source file:   Device\StdPeriph_Driver\src\misc.c
+   * Component: ARM::CMSIS:RTOS:Keil RTX:4.79.0
+      Include file:  CMSIS\RTOS\RTX\INC\cmsis_os.h
+      Include file:  CMSIS\RTOS\RTX\UserCodeTemplates\osObjects.h
+      Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\main.c
+      Source file:   CMSIS\RTOS\RTX\Templates\RTX_Conf_CM.c
+      Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\Timer.c
+      Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\MemPool.c
+      Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\MsgQueue.c
+      Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\Thread.c
+      Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\Mutex.c
+      Source file:   CMSIS\RTOS\RTX\SRC\ARM\SVC_Table.s
+      Library file:  CMSIS\RTOS\RTX\LIB\ARM\RTX_CM3.lib
+      Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\MailQueue.c
+      Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\Semaphore.c
+
+   * Component: Keil::Device:StdPeriph Drivers:Flash:3.5.0
+      Include file:  Device\StdPeriph_Driver\inc\stm32f10x_flash.h
+      Source file:   Device\StdPeriph_Driver\src\stm32f10x_flash.c
 
    * Component: Keil::Device:Startup:1.0.0
       Source file:   Device\Source\ARM\STM32F1xx_OPT.s
@@ -102,33 +106,36 @@ Package Vendor: Keil
       Source file:   Device\Source\system_stm32f10x.c
       Include file:  RTE_Driver\Config\RTE_Device.h
 
-   * Component: Keil::Device:StdPeriph Drivers:GPIO:3.5.0
-      Include file:  Device\StdPeriph_Driver\inc\stm32f10x_gpio.h
-      Source file:   Device\StdPeriph_Driver\src\stm32f10x_gpio.c
-
-   * Component: Keil::Device:StdPeriph Drivers:TIM:3.5.0
-      Source file:   Device\StdPeriph_Driver\src\stm32f10x_tim.c
-      Include file:  Device\StdPeriph_Driver\inc\stm32f10x_tim.h
+   * Component: Keil::Device:StdPeriph Drivers:EXTI:3.5.0
+      Include file:  Device\StdPeriph_Driver\inc\stm32f10x_exti.h
+      Source file:   Device\StdPeriph_Driver\src\stm32f10x_exti.c
 
    * Component: Keil::Device:StdPeriph Drivers:RCC:3.5.0
       Include file:  Device\StdPeriph_Driver\inc\stm32f10x_rcc.h
       Source file:   Device\StdPeriph_Driver\src\stm32f10x_rcc.c
 
+   * Component: Keil::Device:StdPeriph Drivers:TIM:3.5.0
+      Source file:   Device\StdPeriph_Driver\src\stm32f10x_tim.c
+      Include file:  Device\StdPeriph_Driver\inc\stm32f10x_tim.h
+
    * Component: Keil::Device:StdPeriph Drivers:USART:3.5.0
-      Source file:   Device\StdPeriph_Driver\src\stm32f10x_usart.c
       Include file:  Device\StdPeriph_Driver\inc\stm32f10x_usart.h
+      Source file:   Device\StdPeriph_Driver\src\stm32f10x_usart.c
+
+   * Component: Keil::Device:StdPeriph Drivers:Framework:3.5.1
+      Include file:  Device\StdPeriph_Driver\inc\misc.h
+      Source file:   Device\StdPeriph_Driver\templates\stm32f10x_it.c
+      Source file:   Device\StdPeriph_Driver\src\misc.c
+      Source file:   Device\StdPeriph_Driver\templates\stm32f10x_conf.h
+      Include file:  Device\StdPeriph_Driver\templates\stm32f10x_it.h
+
+   * Component: Keil::Device:StdPeriph Drivers:GPIO:3.5.0
+      Source file:   Device\StdPeriph_Driver\src\stm32f10x_gpio.c
+      Include file:  Device\StdPeriph_Driver\inc\stm32f10x_gpio.h
 
    * Component: Keil::Device:StdPeriph Drivers:DMA:3.5.0
       Include file:  Device\StdPeriph_Driver\inc\stm32f10x_dma.h
       Source file:   Device\StdPeriph_Driver\src\stm32f10x_dma.c
-
-   * Component: Keil::Device:StdPeriph Drivers:Flash:3.5.0
-      Include file:  Device\StdPeriph_Driver\inc\stm32f10x_flash.h
-      Source file:   Device\StdPeriph_Driver\src\stm32f10x_flash.c
-
-   * Component: Keil::Device:StdPeriph Drivers:EXTI:3.5.0
-      Source file:   Device\StdPeriph_Driver\src\stm32f10x_exti.c
-      Include file:  Device\StdPeriph_Driver\inc\stm32f10x_exti.h
 </pre>
 </body>
 </html>
