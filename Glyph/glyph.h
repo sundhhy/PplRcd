@@ -11,7 +11,7 @@
 #define TEXT_ST_TEXT					0
 #define TEXT_ST_LABLE					1    //子类型
 
-#define EFF_FOUSE				1  //被选选中
+#define EFF_FOCUS				1  //被选选中
 
 //几何类的子类型
 //#define GMTR_ST_RCT					1    //矩形

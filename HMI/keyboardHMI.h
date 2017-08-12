@@ -25,10 +25,15 @@ CLASS( keyboardHMI)
 	EXTENDS( HMI);
 	IMPLEMENTS( shtCmd);
 	Model			*p_mdlRtc;
-	sheet			*p_shtkybrd;
+	sheet			*p_shtVkey[4];
+	sheet			*p_shtvKeyCursor;		//虚拟按键上，被选中的按键的光标
+	
+	sheet			*p_shtInput;				//输入框，由外部传入
+	sheet			*p_shtEdit;					//输入框上的文本
+	uint8_t		curVkey;
 	uint8_t		fouseRow;
 	uint8_t		fouseCol;
-	uint8_t		none[2];
+	uint8_t		none;
 	
 	
 };

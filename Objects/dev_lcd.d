@@ -3,9 +3,3 @@
 .\objects\dev_lcd.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
 .\objects\dev_lcd.o: device\deviceId.h
 .\objects\dev_lcd.o: device\dev_LCD/UsartGpu/dev_LcdUsartGpu.h
-.\objects\dev_lcd.o: E:\mylib\sdhLib\inc\basis/sdhDebug.h
-.\objects\dev_lcd.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
-.\objects\dev_lcd.o: E:\mylib\sdhLib\inc\sdhDef.h
-.\objects\dev_lcd.o: ..\PplRcd\sdhlibConf.h
-.\objects\dev_lcd.o: E:\mylib\sdhLib\inc\basis/sdhError.h
-.\objects\dev_lcd.o: E:\mylib\sdhLib\inc\basis/macros.h

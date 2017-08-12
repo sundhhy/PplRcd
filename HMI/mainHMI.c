@@ -171,9 +171,9 @@ static int	Init_mainHmi( HMI *self, void *arg)
 	p_sheets[2][0]->p_enterCmd = &keyHmi->shtCmd;
 	p_sheets[3][0]->p_enterCmd = &keyHmi->shtCmd;
 	
-	p_sheets[1][0]->cnt.effects = EFF_FOUSE;
-	cthis->fouseCol = 0;
-	cthis->fouseRow = 1;
+	p_sheets[1][0]->cnt.effects = EFF_FOCUS;
+	cthis->focusCol = 0;
+	cthis->focusRow = 1;
 	
 	return RET_OK;
 	
@@ -217,26 +217,26 @@ static void	MainHitHandle( HMI *self, char *s)
 {
 	mainHmi		*cthis = SUB_PTR( self, HMI, mainHmi);
 	shtCmd		*p_cmd;
-	uint8_t		fouseRow = cthis->fouseRow;
-	uint8_t		fouseCol = cthis->fouseCol;
+	uint8_t		focusRow = cthis->focusRow;
+	uint8_t		focusCol = cthis->focusCol;
 	char			chgFouse = 0;
 	
 
 	if( !strcmp( s, HMIKEY_UP) )
 	{
-		if( cthis->fouseRow > 1)
-			cthis->fouseRow --;
+		if( cthis->focusRow > 1)
+			cthis->focusRow --;
 		else
 		{
-			cthis->fouseRow = 3;
+			cthis->focusRow = 3;
 		}
 		chgFouse = 1;
 	}
 	else if( !strcmp( s, HMIKEY_DOWN) )
 	{
-		cthis->fouseRow ++;
-		if( cthis->fouseRow >3)
-			cthis->fouseRow = 1;
+		cthis->focusRow ++;
+		if( cthis->focusRow >3)
+			cthis->focusRow = 1;
 		chgFouse = 1;
 	}
 	else if( !strcmp( s, HMIKEY_LEFT))
@@ -252,18 +252,18 @@ static void	MainHitHandle( HMI *self, char *s)
 	{
 		
 		//清除旧的焦点
-		p_sheets[ fouseRow][ fouseCol]->cnt.effects = 0;
-		Sheet_slide( p_sheets[ fouseRow][ fouseCol]);
+		p_sheets[ focusRow][ fouseCol]->cnt.effects = 0;
+		Sheet_slide( p_sheets[ focusRow][ fouseCol]);
 		
 		//显示新的焦点
-		p_sheets[ cthis->fouseRow][ cthis->fouseCol]->cnt.effects = EFF_FOUSE;
-		Sheet_slide( p_sheets[ cthis->fouseRow][ cthis->fouseCol]);
+		p_sheets[ cthis->focusRow][ cthis->fouseCol]->cnt.effects = EFF_FOCUS;
+		Sheet_slide( p_sheets[ cthis->focusRow][ cthis->fouseCol]);
 	}
 	
 	if( !strcmp( s, HMIKEY_ENTER))
 	{
-		p_cmd = p_sheets[ cthis->fouseRow][ cthis->fouseCol]->p_enterCmd;
-		p_cmd->shtExcute( p_cmd, p_sheets[ cthis->fouseRow][ cthis->fouseCol], self);
+		p_cmd = p_sheets[ cthis->focusRow][ cthis->fouseCol]->p_enterCmd;
+		p_cmd->shtExcute( p_cmd, p_sheets[ cthis->focusRow][ cthis->fouseCol], self);
 	}
 	if( !strcmp( s, HMIKEY_ESC))
 	{

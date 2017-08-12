@@ -21,8 +21,8 @@ CLASS( mainHmi)
 {
 	EXTENDS( HMI);
 	sheet  			**pp_shts;
-	uint8_t		fouseRow;
-	uint8_t		fouseCol;
+	uint8_t		focusRow;
+	uint8_t		focusCol;
 	uint8_t		none[2];
 	
 };

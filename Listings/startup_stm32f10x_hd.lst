@@ -551,16 +551,16 @@ ARM Macro Assembler    Page 9
   356 0000001C                 END
               00000000 
               00000000 
-Command Line: --debug --xref --cpu=Cortex-M3 --apcs=interwork --depend=.\object
-s\startup_stm32f10x_hd.d -o.\objects\startup_stm32f10x_hd.o -IE:\PaperlessRecor
-der\myCode\PplRcd\RTE -IE:\PaperlessRecorder\myCode\PplRcd\RTE\Device\STM32F103
-VC -Id:\Keil_v5\ARM\PACK\ARM\CMSIS\4.4.0\CMSIS\Include -Id:\Keil_v5\ARM\PACK\AR
-M\CMSIS\4.4.0\CMSIS\RTOS\RTX\INC -Id:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0
- -Id:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\Include -Id:\Keil_v5\ARM
-\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\StdPeriph_Driver\inc --predefine="__RTX S
-ETA 1" --predefine="__MICROLIB SETA 1" --predefine="__UVISION_VERSION SETA 513"
- --predefine="_RTE_ SETA 1" --predefine="STM32F10X_HD SETA 1" --list=.\listings
-\startup_stm32f10x_hd.lst RTE\Device\STM32F103VC\startup_stm32f10x_hd.s
+Command Line: --debug --xref --diag_suppress=9931 --cpu=Cortex-M3 --apcs=interw
+ork --depend=.\objects\startup_stm32f10x_hd.d -o.\objects\startup_stm32f10x_hd.
+o -IE:\TDD\PHN\PplRcd\RTE -IE:\TDD\PHN\PplRcd\RTE\Device\STM32F103VC -Id:\Keil_
+v5\ARM\PACK\ARM\CMSIS\4.5.0\CMSIS\Include -Id:\Keil_v5\ARM\PACK\ARM\CMSIS\4.5.0
+\CMSIS\RTOS\RTX\INC -Id:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\Inclu
+de -Id:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\StdPeriph_Driver\inc -
+Id:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0 --predefine="__RTX SETA 1" --pred
+efine="__MICROLIB SETA 1" --predefine="__UVISION_VERSION SETA 517" --predefine=
+"_RTE_ SETA 1" --predefine="STM32F10X_HD SETA 1" --list=.\listings\startup_stm3
+2f10x_hd.lst RTE\Device\STM32F103VC\startup_stm32f10x_hd.s
 
 
 
