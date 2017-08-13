@@ -19,22 +19,85 @@
 #include "device.h"
 
 #include "TDD.h"
-#include "glyph.h"
-#include "Gh_txt.h"
 #include "ModelFactory.h"
-#include "ViewFactory.h"
+#include "HMI/HMIFactory.h"
 
+#include "control/CtlKey.h"
 #include "utils/time.h"
 #include "utils/keyboard.h"
 
 #include "os/os_depend.h"
+#if TDD_KEYBOARD == 1
 
-#define LCD_NOKIE		0
+#include "Gh_txt.h"
+#include "glyph.h"
+
+#endif
+
+//@Deprecated
+#include "ViewFactory.h"
+
+//============================================================================//
+//            G L O B A L   D E F I N I T I O N S                             //
+//============================================================================//
+
+//------------------------------------------------------------------------------
+// const defines
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+// module global vars
+//------------------------------------------------------------------------------
 //系统版本号
 //主板本号自己制定
 //系统编译时的月份和日作为子版本
 short  g_majorVer = 1;		
 short  g_childVer;
+
+//------------------------------------------------------------------------------
+// global function prototypes
+//------------------------------------------------------------------------------
+
+//============================================================================//
+//            P R I V A T E   D E F I N I T I O N S                           //
+//============================================================================//
+
+//------------------------------------------------------------------------------
+// const defines
+//------------------------------------------------------------------------------
+#define LCD_NOKIE		0
+
+//------------------------------------------------------------------------------
+// local types
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+// local vars
+//------------------------------------------------------------------------------
+void ThrdKeyRun (void const *argument);                             // thread function
+osThreadId tid_Thread_key;                                          // thread id
+osThreadDef (ThrdKeyRun, osPriorityNormal, 1, 0);                   // thread object
+
+//------------------------------------------------------------------------------
+// local function prototypes
+//------------------------------------------------------------------------------
+
+
+
+//============================================================================//
+//            P U B L I C   F U N C T I O N S                                 //
+//============================================================================//
+
+//=========================================================================//
+//                                                                         //
+//          P R I V A T E   D E F I N I T I O N S                          //
+//                                                                         //
+//=========================================================================//
+/// \name Private Functions
+/// \{
+
+
+
 
 
 
@@ -90,6 +153,11 @@ I_dev_Char *I_uart2;
 int main (void) {
 //	USART_InitTypeDef USART_InitStructure;
 	Keyboard	*p_kb;
+	Controller	*p_ctlkey;
+
+	Model 		*mTime;
+	HMI 		*p_mainHmi;
+	
 	osKernelInitialize ();                    // initialize CMSIS-RTOS
 
   // initialize peripherals here
@@ -100,27 +168,28 @@ int main (void) {
 	InitTimer( TIM2, 1000);
 	clean_time_flags();
 	
+	mTime = ModelCreate("time");
+	mTime->init( mTime, NULL);
+	
 	p_kb = GetKeyInsance();
 	p_kb->init( p_kb, NULL);
-	
-//	USART_InitStructure.USART_BaudRate = 115200;
-//	USART_InitStructure.USART_WordLength = USART_WordLength_8b;
-//	USART_InitStructure.USART_StopBits = USART_StopBits_1;
-//	USART_InitStructure.USART_Parity = USART_Parity_No;
-//	USART_InitStructure.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
-//	USART_InitStructure.USART_Mode = USART_Mode_Rx | USART_Mode_Tx;
-//	USART_Init( DEBUG_USART, &USART_InitStructure);
-//	USART_Cmd( DEBUG_USART, ENABLE);
-//	g_childVer = GetCompileMoth() << 8 | GetCompileDay();
-//	printf("\r\n ############("__DATE__ " - " __TIME__ ")############");
-//	printf("\n sytem ver : %x %x \n", g_majorVer, g_childVer);
+	tid_Thread_key = osThreadCreate (osThread(ThrdKeyRun), p_kb);
+	p_ctlkey = SUPER_PTR( Get_CtlKey(), Controller);
+	p_ctlkey->init( p_ctlkey, p_kb);
 
+	if (!tid_Thread_key) return(-1);
+	
+	p_mainHmi = CreateHMI( HMI_MAIN);
+	p_mainHmi->init( p_mainHmi, NULL);
+	
 #if TDD_ON == 0
 
 //app code
 #else
+#	if TDD_SHEET == 1
+	p_mainHmi->show( p_mainHmi);
 
-#	if TDD_KEYBOARD == 1
+#	elif TDD_KEYBOARD == 1
 	mytxt = ( Glyph *)Get_GhTxt();
 	Dev_open( LCD_DEVID, (void *)&lcd);
 	lcd->Clear( COLOUR_BLACK);
@@ -221,6 +290,14 @@ int main (void) {
 	
 #endif
 	
+}
+
+void ThrdKeyRun (void const *argument) {
+	Keyboard	*p_kb = ( Keyboard	*)argument ;
+	while (1) {    
+		p_kb->run( p_kb);	
+		osThreadYield ();                                           // suspend thread
+	}
 }
 
 #	if TDD_KEYBOARD == 1

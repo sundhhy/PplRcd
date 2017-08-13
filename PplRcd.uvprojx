@@ -365,7 +365,7 @@
               <MiscControls>--diag_suppress=1295;--diag_suppress=1</MiscControls>
               <Define>USE_STDPERIPH_DRIVER, STM32F10X_HD, USE_STM3210B_EVAL,HSE_VALUE=8000000</Define>
               <Undefine></Undefine>
-              <IncludePath>.\configs;.\BSP;E:\mylib\sdhLib\inc;.\device\dev_LCD\nokia_5110;..\PplRcd;.\drive;.\device;.\Glyph;.\Expression;.\Views;.\REEC;.\MVC;.\Views;..\PplRcd</IncludePath>
+              <IncludePath>.\configs;.\BSP;E:\mylib\sdhLib\inc;.\device\dev_LCD\nokia_5110;..\PplRcd;.\drive;.\device;.\Glyph;.\Expression;.\Views;.\REEC;.\MVC;.\Views;..\PplRcd;.\model;.\sheet</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -748,31 +748,21 @@
               <FileType>1</FileType>
               <FilePath>.\Glyph\Gh_None.c</FilePath>
             </File>
+            <File>
+              <FileName>Gh_Pic.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Glyph\Gh_Pic.c</FilePath>
+            </File>
+            <File>
+              <FileName>Gh_Pic.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Glyph\Gh_Pic.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
           <GroupName>MVC</GroupName>
           <Files>
-            <File>
-              <FileName>Model.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\MVC\Model.c</FilePath>
-            </File>
-            <File>
-              <FileName>Model.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\MVC\Model.h</FilePath>
-            </File>
-            <File>
-              <FileName>Controller.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\MVC\Controller.c</FilePath>
-            </File>
-            <File>
-              <FileName>Controller.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\MVC\Controller.h</FilePath>
-            </File>
             <File>
               <FileName>View.c</FileName>
               <FileType>1</FileType>
@@ -792,26 +782,6 @@
               <FileName>testView.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\MVC\testView.h</FilePath>
-            </File>
-            <File>
-              <FileName>ModelTime.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\MVC\ModelTime.h</FilePath>
-            </File>
-            <File>
-              <FileName>ModelTime.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\MVC\ModelTime.c</FilePath>
-            </File>
-            <File>
-              <FileName>ModelFactory.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\MVC\ModelFactory.c</FilePath>
-            </File>
-            <File>
-              <FileName>ModelFactory.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\MVC\ModelFactory.h</FilePath>
             </File>
             <File>
               <FileName>ViewFactory.h</FileName>
@@ -928,6 +898,16 @@
               <FileType>1</FileType>
               <FilePath>.\Expression\Dyn_TimeExpr.c</FilePath>
             </File>
+            <File>
+              <FileName>PicExpr.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Expression\PicExpr.c</FilePath>
+            </File>
+            <File>
+              <FileName>PicExpr.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Expression\PicExpr.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -997,6 +977,166 @@
               <FileName>times.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\utils\times.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>sheet</GroupName>
+          <Files>
+            <File>
+              <FileName>sheet.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\sheet\sheet.c</FilePath>
+            </File>
+            <File>
+              <FileName>sheetMemento.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\sheet\sheetMemento.c</FilePath>
+            </File>
+            <File>
+              <FileName>sheet.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\sheet\sheet.h</FilePath>
+            </File>
+            <File>
+              <FileName>sheetMemento.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\sheet\sheetMemento.h</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>HMI</GroupName>
+          <Files>
+            <File>
+              <FileName>commHMI.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\HMI\commHMI.c</FilePath>
+            </File>
+            <File>
+              <FileName>commHMI.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\HMI\commHMI.h</FilePath>
+            </File>
+            <File>
+              <FileName>HMIFactory.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\HMI\HMIFactory.c</FilePath>
+            </File>
+            <File>
+              <FileName>HMIFactory.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\HMI\HMIFactory.h</FilePath>
+            </File>
+            <File>
+              <FileName>HMI.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\HMI\HMI.c</FilePath>
+            </File>
+            <File>
+              <FileName>HMI.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\HMI\HMI.h</FilePath>
+            </File>
+            <File>
+              <FileName>mainHMI.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\HMI\mainHMI.c</FilePath>
+            </File>
+            <File>
+              <FileName>mainHMI.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\HMI\mainHMI.h</FilePath>
+            </File>
+            <File>
+              <FileName>format.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\HMI\format.c</FilePath>
+            </File>
+            <File>
+              <FileName>format.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\HMI\format.h</FilePath>
+            </File>
+            <File>
+              <FileName>keyboardHMI.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\HMI\keyboardHMI.c</FilePath>
+            </File>
+            <File>
+              <FileName>keyboardHMI.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\HMI\keyboardHMI.h</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>model</GroupName>
+          <Files>
+            <File>
+              <FileName>ModelTime.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\MVC\ModelTime.h</FilePath>
+            </File>
+            <File>
+              <FileName>ModelTime.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\MVC\ModelTime.c</FilePath>
+            </File>
+            <File>
+              <FileName>Model.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\MVC\Model.h</FilePath>
+            </File>
+            <File>
+              <FileName>Model.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\MVC\Model.c</FilePath>
+            </File>
+            <File>
+              <FileName>ModelFactory.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\MVC\ModelFactory.c</FilePath>
+            </File>
+            <File>
+              <FileName>ModelFactory.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\MVC\ModelFactory.h</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>control</GroupName>
+          <Files>
+            <File>
+              <FileName>Controller.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Control\Controller.c</FilePath>
+            </File>
+            <File>
+              <FileName>Controller.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Control\Controller.h</FilePath>
+            </File>
+            <File>
+              <FileName>CtlKey.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Control\CtlKey.c</FilePath>
+            </File>
+            <File>
+              <FileName>CtlKey.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Control\CtlKey.h</FilePath>
+            </File>
+            <File>
+              <FileName>CtlTimer.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Control\CtlTimer.c</FilePath>
+            </File>
+            <File>
+              <FileName>CtlTimer.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Control\CtlTimer.h</FilePath>
             </File>
           </Files>
         </Group>
@@ -1090,8 +1230,8 @@
     <files>
       <file attr="config" category="source" name="CMSIS\RTOS\RTX\Templates\RTX_Conf_CM.c" version="4.70.1">
         <instance index="0">RTE\CMSIS\RTX_Conf_CM.c</instance>
-        <component Cclass="CMSIS" Cgroup="RTOS" Csub="Keil RTX" Cvendor="ARM" Cversion="4.79.0" condition="Cortex-M Device Startup"/>
-        <package name="CMSIS" schemaVersion="1.3" url="http://www.keil.com/pack/" vendor="ARM" version="4.4.0"/>
+        <component Cclass="CMSIS" Cgroup="RTOS" Csub="Keil RTX" Cvendor="ARM" Cversion="4.80.0" condition="Cortex-M Device Startup"/>
+        <package name="CMSIS" schemaVersion="1.3" url="http://www.keil.com/pack/" vendor="ARM" version="4.5.0"/>
         <targetInfos>
           <targetInfo name="Target 1"/>
         </targetInfos>

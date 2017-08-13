@@ -7,5 +7,13 @@
 .\objects\modelfactory.o: MVC\Model.h
 .\objects\modelfactory.o: E:\mylib\sdhLib\inc\arithmetic/list.h
 .\objects\modelfactory.o: E:\mylib\sdhLib\inc\basis/macros.h
+.\objects\modelfactory.o: E:\mylib\sdhLib\inc\sdhDef.h
+.\objects\modelfactory.o: ..\PplRcd\sdhlibConf.h
+.\objects\modelfactory.o: E:\mylib\sdhLib\inc\basis/sdhDebug.h
+.\objects\modelfactory.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
+.\objects\modelfactory.o: E:\mylib\sdhLib\inc\basis/sdhError.h
+.\objects\modelfactory.o: E:\mylib\sdhLib\inc\basis/assert.h
+.\objects\modelfactory.o: E:\mylib\sdhLib\inc\basis/except.h
+.\objects\modelfactory.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\setjmp.h
 .\objects\modelfactory.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
 .\objects\modelfactory.o: MVC\ModelTime.h

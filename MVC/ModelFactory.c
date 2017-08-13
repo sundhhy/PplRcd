@@ -16,7 +16,7 @@ Model *ModelCreate( char *type)
 		return aMdl[0];
 	}
 	
-	
+	Except_raise(&model_Failed, __FILE__, __LINE__);
 	return NULL;
 	
 }

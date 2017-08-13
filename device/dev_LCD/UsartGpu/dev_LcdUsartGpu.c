@@ -8,13 +8,46 @@
 #include "basis/sdhDebug.h"
 #include "sdhDef.h"
 #include "basis/sdhError.h"
+//============================================================================//
+//            G L O B A L   D E F I N I T I O N S                             //
+//============================================================================//
 
+//------------------------------------------------------------------------------
+// const defines
+//------------------------------------------------------------------------------
 #define LCDBUF_MAX		128
 #define LCD_DELAY_MS  20
+//------------------------------------------------------------------------------
+// module global vars
+//------------------------------------------------------------------------------
+I_dev_Char *I_sendDev;
 
+
+//------------------------------------------------------------------------------
+// global function prototypes
+//------------------------------------------------------------------------------
+
+//============================================================================//
+//            P R I V A T E   D E F I N I T I O N S                           //
+//============================================================================//
+
+//------------------------------------------------------------------------------
+// const defines
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+// local types
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+// local vars
+//------------------------------------------------------------------------------
 static char	lcdBuf[LCDBUF_MAX];
 
-I_dev_Char *I_sendDev;
+
+//------------------------------------------------------------------------------
+// local function prototypes
+//------------------------------------------------------------------------------
 static int ClearLcd( int c);
 static int Dev_UsartdeInit( void);
 static int GpuWrString( char *string,  int len, int x, int y, int font, char c);
@@ -22,6 +55,12 @@ static int GpuBox( int x1, int y1, int x2, int y2, char type, char c);
 static void GpuBKColor( char c);
 int GpuLabel( char *string,  int len, scArea_t *area, int font, char c, char ali);
 static int GpuStrSize( int font, uint16_t	*width, uint16_t	*heigh);
+static void GetScrnSize( uint16_t *xsize, uint16_t *ysize);
+static void GpuPic( int x1, int y1, char num);
+static void GpuCutPicture( short x1, short y1, char num, short px1, short py1, char w, char h);
+//============================================================================//
+//            P U B L I C   F U N C T I O N S                                 //
+//============================================================================//
 
 I_dev_lcd g_IUsartGpu =
 {
@@ -33,8 +72,39 @@ I_dev_lcd g_IUsartGpu =
 	GpuBKColor,
 	GpuBox,
 	GpuStrSize,
+	GetScrnSize,
+	GpuPic,
+	GpuCutPicture,
 	
 };
+//=========================================================================//
+//                                                                         //
+//          P R I V A T E   D E F I N I T I O N S                          //
+//                                                                         //
+//=========================================================================//
+/// \name Private Functions
+/// \{
+
+static void GpuCutPicture( short x1, short y1, char num, short px1, short py1, char w, char h)
+{
+	sprintf( lcdBuf, "CPIC(%d,%d,%d,%d,%d,%d,%d);\r\n", x1, y1, num, px1, py1, w, h );
+	GpuSend(lcdBuf);
+	osDelay(20);
+	
+}
+
+static void GpuPic( int x1, int y1, char num)
+{
+	
+	sprintf( lcdBuf, "PIC(%d,%d,%d);\r\n", x1, y1, num);
+	GpuSend(lcdBuf);
+	osDelay(20);
+}
+
+
+
+
+
 
 int Dev_UsartInit( void)
 {
@@ -56,6 +126,12 @@ static int ClearLcd( int c)
 	GpuSend(lcdBuf);
 	osDelay(20);
 	return RET_OK;
+}
+
+static void GetScrnSize( uint16_t *xsize, uint16_t *ysize)
+{
+	*xsize = 320;
+	*ysize = 240;
 }
 
 //»­¸ö·½¿ò

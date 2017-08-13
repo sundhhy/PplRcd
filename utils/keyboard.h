@@ -13,7 +13,7 @@
 //------------------------------------------------------------------------------
 #define NUM_KEYS			6
 #define MAX_OBS			4
-#define NUM_KEFIFO			8	//必须是2的幂
+#define NUM_KEFIFO			16	//必须是2的幂
 
 //顺序与硬件上的引脚连接保持一致
 #define	KEYCODE_RIGHT	0x01
@@ -33,6 +33,8 @@
 //原始事件
 #define KEY_PUSH			0x01
 #define KEY_RLS				0x02			//释放
+#define KEY_ERR				0x05			//按键事件接收时出现了错误，是由于入队列失败产生的
+
 #define KEY_UNKONW			0x03
 
 //由原始事件运算后得出的事件

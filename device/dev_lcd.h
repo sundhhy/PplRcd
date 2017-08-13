@@ -2,6 +2,11 @@
 #define __DEV_LCD_H_
 #include <stdint.h>
 
+#define IS_CHINESE( c) ( c & 0x80)
+#define IS_BR( c) ( c == '\n')
+#define IS_TAB( c) ( c == '\r')
+
+
 #define FONT_12			1
 #define FONT_16			2
 #define FONT_24			3
@@ -28,10 +33,11 @@
 #define DEF_COLOUR			COLOUR_WHITE
 #define ERR_COLOUR			0
 
-
+//对齐的值要保持线性，不要乱改
 #define	ALIGN_LEFT					0		//左对齐
 #define	ALIGN_MIDDLE				1		//居中对齐
 #define	ALIGN_RIGHT					2		//右对齐对齐s
+#define	ALIGN_MAX					3		//右对齐对齐s
 #define ALIGN_ERR					0xff
 #define ALIGN_DEFAULT				ALIGN_LEFT
 
@@ -57,6 +63,9 @@ typedef struct{
 	void ( *BKColor)( char c);
 	int ( *Box)( int x1, int y1, int x2, int y2, char type, char c);
 	int ( *getStrSize)( int font, uint16_t *width, uint16_t *heigh);
+	void ( *getScrnSize)( uint16_t *xsize, uint16_t *ysize);
+	void ( *picture)( int x1, int y1, char num);
+	void ( *cutPicture)( short x1, short y1, char num, short px1, short py1, char w, char h);
 }I_dev_lcd;
 
 int DevLCD_open( int major, int minor, void **dev);

@@ -43,7 +43,7 @@
 //------------------------------------------------------------------------------
 #define  DOUBLEHIT_TIME_MS		300
 #define  LONGPUSH_TIME_MS		2000
-#define  REPORT_TIME_MS			900
+#define  REPORT_TIME_MS			500
 
 const uint32_t	arr_keyGpioID[ NUM_KEYS] = { KEYGPIOID_RIGHT, KEYGPIOID_LEFT, \
 	KEYGPIOID_UP, KEYGPIOID_DOWN, KEYGPIOID_ENTER, KEYGPIOID_ESC};
@@ -80,11 +80,13 @@ static  void GpioIrqHdl( void *arg, int type, int encode);
 static keyStatus_t *findPks( keyStatus_t arrKs[], uint8_t keycode);
 static void KeyPush( keyStatus_t *p_ks, keyevent_t *p_ke);
 static void KeyRls( keyStatus_t *p_ks, keyevent_t *p_ke);
+static void KeyErr( Keyboard *self);
+
+static void KEFifo_Reset ( KEFifo_t *p_kef);
 static int PopKE( KEFifo_t *p_kef, keyevent_t *p_ke);
 static int PushKE( KEFifo_t *p_kef, keyevent_t *p_ke);
 static void KEFifo_Init ( KEFifo_t *p_kef, int size);
 static int	KEFifo_len( KEFifo_t *p_kef);
-
 //============================================================================//
 //            P U B L I C   F U N C T I O N S                                 //
 //============================================================================//
@@ -213,6 +215,7 @@ err:
 	return ERR_DEV_UNAVAILABLE;
 }
 //返回observice的编号
+//todo: 这个机制不是很好
 static int Key_addOb( Keyboard *self, keyObservice *ob)
 {
 	int i;
@@ -254,7 +257,7 @@ static void	Key_Run( Keyboard *self)
 	keyevent_t ke;
 	uint64_t now_ms = 0;
 	short		i	= 0;
-	char reportflag = 0, j =0;
+	char reportflag = 0, numEvent =0;
 	if( PopKE( &self->kef, &ke) != RET_OK)
 		goto noevent;
 	
@@ -272,10 +275,16 @@ static void	Key_Run( Keyboard *self)
 		KeyRls(p_ks, &ke);
 		
 	}
+	else if( ke.event == KEY_ERR)
+	{
+		//发生了错误的按键，把所有的按键事件全部丢弃
+		KeyErr(self);
+		
+	}
 	
 	noevent:
 	//对每个按键状态进行处理
-	j = 0;
+	numEvent = 0;
 	reportflag = 0;
 	for( i = 0; i < NUM_KEYS; i++)
 	{
@@ -299,18 +308,20 @@ static void	Key_Run( Keyboard *self)
 			//按键被抬起或者按键被认为是长按的时候，将该按键上报
 			if( IS_KEYUP( self->arr_ks[i].eventCode) || (self->arr_ks[i].eventCode == KEYEVENT_LPUSH))
 			{
-//				if( self->arr_ks[i].eventCode & (~KEYEVENT_UP))
+				//如果只有抬起事件，就不处理
+				if( self->arr_ks[i].eventCode & (~KEYEVENT_UP))
 				{
-					arr_keyMsg[j].eventCode = self->arr_ks[i].eventCode;
-					arr_keyMsg[j].keyCode = self->arr_ks[i].keyCode;
+					arr_keyMsg[numEvent].eventCode = self->arr_ks[i].eventCode;
+					arr_keyMsg[numEvent].keyCode = self->arr_ks[i].keyCode;
 					
-					j ++;
+					numEvent ++;
 				}
-//				else
-//				{
-//					self->arr_ks[i].eventCode = 0;
-//					
-//				}
+				else
+				{
+					//只有抬起，说明已经被处理过了，就请除掉
+					self->arr_ks[i].eventCode = 0;
+					
+				}
 			}
 			
 			//按键被抬起以后就清除掉他的事件代码
@@ -328,7 +339,7 @@ static void	Key_Run( Keyboard *self)
 
 	}
 	
-	self->notify( self, j, arr_keyMsg);
+	self->notify( self, numEvent, arr_keyMsg);
 }
 
 static void	Key_notify( Keyboard *self, uint8_t num, keyMsg_t arr_msg[])
@@ -398,11 +409,39 @@ static void KeyRls( keyStatus_t *p_ks, keyevent_t *p_ke)
 //	p_ks->pushtime_ms += cal_timediff_ms( &p_ks->timestamp);
 }
 
+static void KeyErr( Keyboard *self)
+{
+	int i ;
+	KEFifo_Reset( &self->kef);
+	
+	for( i = 0; i < NUM_KEYS; i++)
+	{
+		self->arr_ks[i].eventCode  = 0;
+		self->arr_ks[i].timestamp = 0;	
+	}
+	
+}
+
 //fifo的 操作都假设fifo的长度是2的幂
 
 static void KEFifo_Init ( KEFifo_t *p_kef, int size)
 {
 	p_kef->size = size;
+	p_kef->read = 0;
+	p_kef->write = 0;
+}
+
+static void KEFifo_Reset ( KEFifo_t *p_kef)
+{
+	int i;
+	
+	for( i = 0; i < p_kef->size; i ++)
+	{
+		p_kef->arr_ke[i].key = 0;
+		p_kef->arr_ke[i].event = 0;
+		p_kef->arr_ke[i].timestamp = 0;	
+		
+	}
 	p_kef->read = 0;
 	p_kef->write = 0;
 }
@@ -415,7 +454,8 @@ static int	KEFifo_len( KEFifo_t *p_kef)
 
 static int PushKE( KEFifo_t *p_kef, keyevent_t *p_ke)
 {
-	if( KEFifo_len( p_kef) == ( p_kef->size - 1))	return ERR_MEM_UNAVAILABLE;
+	if( KEFifo_len( p_kef) == ( p_kef->size - 1))	
+		return ERR_MEM_UNAVAILABLE;
 	
 	p_kef->arr_ke[ p_kef->write].key = p_ke->key;
 	p_kef->arr_ke[ p_kef->write].event = p_ke->event;
@@ -429,7 +469,7 @@ static int PushKE( KEFifo_t *p_kef, keyevent_t *p_ke)
 }	
 static int PopKE( KEFifo_t *p_kef, keyevent_t *p_ke)
 {
-	;
+	
 	if( KEFifo_len( p_kef) == 0)
 		return ERR_MEM_UNAVAILABLE;
 	
@@ -462,6 +502,7 @@ static  void GpioIrqHdl( void *arg, int type, int encode)
 {
 	Keyboard *p_kb = ( Keyboard *)arg;
 	keyevent_t ke;
+	keyevent_t trashKe;		//事件入队列失败时，用来存放将丢弃的事件
 	
 	ke.timestamp = get_time_ms();
 	if( type == GITP_FAILINGEDGE)
@@ -479,6 +520,15 @@ static  void GpioIrqHdl( void *arg, int type, int encode)
 	
 	ke.key = encode & 0xff;
 	
-	PushKE( &p_kb->kef, &ke);
+	
+	if( PushKE( &p_kb->kef, &ke) != RET_OK)
+	{
+		//如队列不成功的时候，要把失败上报
+		//取出一个事件丢弃掉，再把错误事件上报
+		PopKE( &p_kb->kef, &trashKe) ;
+		
+		ke.event =  KEY_ERR;
+		PushKE( &p_kb->kef, &ke);
+	}
 	
 }

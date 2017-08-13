@@ -7,6 +7,14 @@
 .\objects\modeltime.o: E:\mylib\sdhLib\inc\lw_oopc.h
 .\objects\modeltime.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
 .\objects\modeltime.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
+.\objects\modeltime.o: E:\mylib\sdhLib\inc\sdhDef.h
+.\objects\modeltime.o: ..\PplRcd\sdhlibConf.h
+.\objects\modeltime.o: E:\mylib\sdhLib\inc\basis/sdhDebug.h
+.\objects\modeltime.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
+.\objects\modeltime.o: E:\mylib\sdhLib\inc\basis/sdhError.h
+.\objects\modeltime.o: E:\mylib\sdhLib\inc\basis/assert.h
+.\objects\modeltime.o: E:\mylib\sdhLib\inc\basis/except.h
+.\objects\modeltime.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\setjmp.h
 .\objects\modeltime.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
 .\objects\modeltime.o: ..\PplRcd\utils/rtc_pcf8563.h
 .\objects\modeltime.o: ..\PplRcd\utils/time.h
@@ -29,10 +37,3 @@
 .\objects\modeltime.o: d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\StdPeriph_Driver\inc\misc.h
 .\objects\modeltime.o: ..\PplRcd\utils/rtc.h
 .\objects\modeltime.o: E:\mylib\sdhLib\inc\mem/CiiMem.h
-.\objects\modeltime.o: E:\mylib\sdhLib\inc\basis/except.h
-.\objects\modeltime.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\setjmp.h
-.\objects\modeltime.o: E:\mylib\sdhLib\inc\sdhDef.h
-.\objects\modeltime.o: ..\PplRcd\sdhlibConf.h
-.\objects\modeltime.o: E:\mylib\sdhLib\inc\basis/sdhDebug.h
-.\objects\modeltime.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
-.\objects\modeltime.o: E:\mylib\sdhLib\inc\basis/sdhError.h

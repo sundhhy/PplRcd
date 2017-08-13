@@ -11,4 +11,7 @@
 .\objects\model.o: E:\mylib\sdhLib\inc\basis/sdhDebug.h
 .\objects\model.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
 .\objects\model.o: E:\mylib\sdhLib\inc\basis/sdhError.h
+.\objects\model.o: E:\mylib\sdhLib\inc\basis/assert.h
+.\objects\model.o: E:\mylib\sdhLib\inc\basis/except.h
+.\objects\model.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\setjmp.h
 .\objects\model.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h

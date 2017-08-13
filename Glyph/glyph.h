@@ -5,15 +5,13 @@
 #include "device.h"
 
 
-#define IS_CHINESE( c) ( c & 0x80)
-#define IS_BR( c) ( c == '\n')
-#define IS_TAB( c) ( c == '\r')
-
 
 
 //文本类的子类型
 #define TEXT_ST_TEXT					0
 #define TEXT_ST_LABLE					1    //子类型
+
+#define EFF_FOCUS				1  //被选选中
 
 //几何类的子类型
 //#define GMTR_ST_RCT					1    //矩形
@@ -37,8 +35,23 @@ typedef struct {
 	uint8_t		id;
 }dspContent_t;
 
+typedef struct {
+	int16_t		x0, y0;
+	int16_t		x1, y1;
+	int8_t		alix;
+	int8_t		aliy;
+	
+	//在切割图片的时候，用来表示屏幕上的坐标与图形上的坐标的偏移
+	
+	int8_t		offset_x;
+	int8_t		offset_y;
+	//privice
+	
+}vArea_t;
 
 
+
+/*                   @Deprecated   */
 typedef struct {
 	
 	
@@ -75,21 +88,31 @@ typedef struct {
 	uint8_t		aliy;
 }dspArea_t;
 
+/**************************************************************/
 
 ABS_CLASS( Glyph)
 {
 	
 
 	I_dev_lcd	*myLcd ;
+	
+	
+	
+	abstract int ( *getSize)(Glyph *self, int font, uint16_t *size_x, uint16_t *size_y);
+	abstract void (*vdraw)( Glyph *self, dspContent_t *cnt, vArea_t *area);
+	
+	
+	/*          170805         @Deprecated   */
+	
 	int (*init)( Glyph *self, I_dev_lcd *lcd);
 	int (*setFont)( Glyph *self, int font);
 	int (*setClu)( Glyph *self, int c);
 	int (*setBgC)( Glyph *self, int c);
 	//abs func
 	//
-	abstract int ( *getSize)(Glyph *self, int font, uint16_t *size_x, uint16_t *size_y);
 	
-	//---------------------------------------
+	
+		
 	abstract int (*clean)( Glyph *self);
 //	abstract void (*insert)( Glyph *self, void *context, int len);
 	
@@ -106,7 +129,7 @@ ABS_CLASS( Glyph)
 	
 };
 void View_test(void);
-
+uint8_t ColorInvert( uint8_t clr);
 int	String2Bkc( char *s);
 int String2Clr( char *s);
 

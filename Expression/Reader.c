@@ -212,7 +212,7 @@ int GetAttribute( char *context, char *att, int attLen)
 	return count;
 }
 
-
+//< name ... > vale </>
 void *GetNameVale( char *context, char *name, char **value, int *len)
 {
 	

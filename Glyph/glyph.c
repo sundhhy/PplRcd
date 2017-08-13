@@ -39,6 +39,8 @@ static int SetClu( Glyph *self, int c)
 	
 }
 
+
+
 static int SetBgC( Glyph *self, int c)
 {
 //	self->disArg.bgC = c;
@@ -78,6 +80,11 @@ static void Draw( Glyph *self, dspContent_t *cnt, dspArea_t *area)
 	
 }
 
+static void vDraw( Glyph *self, dspContent_t *cnt, vArea_t *area)
+{
+	
+}
+
 //static int DrawArea( Glyph *self, short x1, short y1, short x2, short y2,  int len)
 //{
 //	return -1;
@@ -97,8 +104,20 @@ FUNCTION_SETTING( setBgC, SetBgC);
 FUNCTION_SETTING( clean, Clean);
 //FUNCTION_SETTING( insert, Insert);
 FUNCTION_SETTING( draw, Draw);
+FUNCTION_SETTING( vdraw, vDraw);
 
 END_ABS_CTOR
+
+uint8_t ColorInvert( uint8_t clr)
+{
+	
+	if( clr == COLOUR_BLUE)
+		return COLOUR_GREN;
+	if( clr == COLOUR_WHITE)
+		return COLOUR_BLACK;
+	
+	return COLOUR_WHITE;
+}
 
 int String2Colour( char *s)
 {

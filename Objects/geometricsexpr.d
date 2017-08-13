@@ -19,8 +19,15 @@
 .\objects\geometricsexpr.o: .\device\dev_cmd.h
 .\objects\geometricsexpr.o: .\device\dev_char.h
 .\objects\geometricsexpr.o: .\device\dev_lcd.h
+.\objects\geometricsexpr.o: Expression\Reader.h
+.\objects\geometricsexpr.o: E:\mylib\sdhLib\inc\basis/assert.h
+.\objects\geometricsexpr.o: E:\mylib\sdhLib\inc\basis/except.h
+.\objects\geometricsexpr.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\setjmp.h
+.\objects\geometricsexpr.o: .\sheet\sheet.h
+.\objects\geometricsexpr.o: .\MVC\ModelFactory.h
+.\objects\geometricsexpr.o: .\MVC\Model.h
+.\objects\geometricsexpr.o: E:\mylib\sdhLib\inc\basis/assert.h
 .\objects\geometricsexpr.o: .\Glyph\Gh_txt.h
 .\objects\geometricsexpr.o: E:\mylib\sdhLib\inc\arithmetic/cycQueue.h
 .\objects\geometricsexpr.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
-.\objects\geometricsexpr.o: Expression\Reader.h
 .\objects\geometricsexpr.o: .\Glyph\Gh_Rectangle.h
