@@ -79,7 +79,7 @@ static void * PicInptSht( Expr *self, void *context, sheet *p_sht)
 	char	*pp;
 	char 	*pnewPosition;
 	char	*att = expTempBUf;
-	int		ret = 0;
+//	int		ret = 0;
 
 	GetAttribute( context, att, TEMPBUF_LEN);
 	
@@ -87,11 +87,20 @@ static void * PicInptSht( Expr *self, void *context, sheet *p_sht)
 	pp = context;
 	len = GetName( pp, name, len);
 	
+	pp = strstr( name, "cpic");
+	if( pp) {
+		p_sht->cnt.subType = SUBTYPE_CPIC;
+	} else {
+		p_sht->cnt.subType = SUBTYPE_NONE;
+	}
+	
 	pnewPosition = GetNameVale( context, name, &pp, &len);
 	if( len == 0)
 		goto exit;
 	
 	Set_shtAreaAtt( att,  p_sht);
+	
+	
 	
 	p_sht->cnt.data = pp;
 	p_sht->cnt.len = len;

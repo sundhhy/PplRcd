@@ -54,6 +54,8 @@ ABS_CLASS( HMI)
 	//œ‘ ææ≤Ã¨ª≠√Ê
 	int		( *init)( HMI *self, void *arg);
 	void		(*show)( HMI *self);
+	
+	// initSheet hide 
 	void		(*hide)( HMI *self);
 	void		(*initSheet)( HMI *self);
 	void		(*switchHMI)( HMI *self, HMI *p_hmi);

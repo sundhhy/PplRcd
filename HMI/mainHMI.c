@@ -182,24 +182,28 @@ static int	Init_mainHmi( HMI *self, void *arg)
 //	return RET_OK;
 }
 
+
 static void MainHmiHide( HMI *self )
 {
-	Sheet_updown(  p_sheets[0][0], -1);
-	Sheet_updown( g_p_shtTime, -1);
-	Sheet_updown( p_sheets[1][0], -1);
-	Sheet_updown( p_sheets[2][0], -1);
+
+	
 	Sheet_updown( p_sheets[3][0], -1);
+	Sheet_updown( p_sheets[2][0], -1);
+	Sheet_updown( p_sheets[1][0], -1);
+	Sheet_updown( g_p_shtTime, -1);
+	Sheet_updown(  p_sheets[0][0], -1);
 	
 }	
 
 static void MaininitSheet( HMI *self )
 {
+	
+	
 	Sheet_updown(  p_sheets[0][0], 0);
 	Sheet_updown( g_p_shtTime, 1);
 	Sheet_updown( p_sheets[1][0], 2);
 	Sheet_updown( p_sheets[2][0], 3);
 	Sheet_updown( p_sheets[3][0], 4);
-	
 }
 
 
@@ -252,18 +256,18 @@ static void	MainHitHandle( HMI *self, char *s)
 	{
 		
 		//清除旧的焦点
-		p_sheets[ focusRow][ fouseCol]->cnt.effects = 0;
-		Sheet_slide( p_sheets[ focusRow][ fouseCol]);
+		p_sheets[ focusRow][ focusCol]->cnt.effects = 0;
+		Sheet_slide( p_sheets[ focusRow][ focusCol]);
 		
 		//显示新的焦点
-		p_sheets[ cthis->focusRow][ cthis->fouseCol]->cnt.effects = EFF_FOCUS;
-		Sheet_slide( p_sheets[ cthis->focusRow][ cthis->fouseCol]);
+		p_sheets[ cthis->focusRow][ cthis->focusCol]->cnt.effects = EFF_FOCUS;
+		Sheet_slide( p_sheets[ cthis->focusRow][ cthis->focusCol]);
 	}
 	
 	if( !strcmp( s, HMIKEY_ENTER))
 	{
-		p_cmd = p_sheets[ cthis->focusRow][ cthis->fouseCol]->p_enterCmd;
-		p_cmd->shtExcute( p_cmd, p_sheets[ cthis->focusRow][ cthis->fouseCol], self);
+		p_cmd = p_sheets[ cthis->focusRow][ cthis->focusCol]->p_enterCmd;
+		p_cmd->shtExcute( p_cmd, p_sheets[ cthis->focusRow][ cthis->focusCol], self);
 	}
 	if( !strcmp( s, HMIKEY_ESC))
 	{

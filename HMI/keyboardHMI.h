@@ -15,7 +15,7 @@
 //------------------------------------------------------------------------------
 // const defines
 //------------------------------------------------------------------------------
-
+#define NUM_VIRKEY		2
  //------------------------------------------------------------------------------
 // typedef
 //------------------------------------------------------------------------------
@@ -25,8 +25,8 @@ CLASS( keyboardHMI)
 	EXTENDS( HMI);
 	IMPLEMENTS( shtCmd);
 	Model			*p_mdlRtc;
-	sheet			*p_shtVkey[4];
-	sheet			*p_shtvKeyCursor;		//虚拟按键上，被选中的按键的光标
+	sheet			*p_shtVkey[NUM_VIRKEY];
+	sheet			*p_shtvKeyCursor[NUM_VIRKEY];		//虚拟按键上，被选中的按键的光标
 	
 	sheet			*p_shtInput;				//输入框，由外部传入
 	sheet			*p_shtEdit;					//输入框上的文本

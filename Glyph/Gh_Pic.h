@@ -5,6 +5,8 @@
 #include <stdint.h>
 #include "arithmetic/cycQueue.h"
 
+#define SUBTYPE_NONE		0
+#define SUBTYPE_CPIC		1
 
 CLASS(GhPic)
 {

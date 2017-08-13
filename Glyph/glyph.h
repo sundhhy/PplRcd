@@ -41,8 +41,10 @@ typedef struct {
 	int8_t		alix;
 	int8_t		aliy;
 	
-	int8_t		none[2];
+	//在切割图片的时候，用来表示屏幕上的坐标与图形上的坐标的偏移
 	
+	int8_t		offset_x;
+	int8_t		offset_y;
 	//privice
 	
 }vArea_t;

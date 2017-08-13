@@ -57,6 +57,7 @@ int GpuLabel( char *string,  int len, scArea_t *area, int font, char c, char ali
 static int GpuStrSize( int font, uint16_t	*width, uint16_t	*heigh);
 static void GetScrnSize( uint16_t *xsize, uint16_t *ysize);
 static void GpuPic( int x1, int y1, char num);
+static void GpuCutPicture( short x1, short y1, char num, short px1, short py1, char w, char h);
 //============================================================================//
 //            P U B L I C   F U N C T I O N S                                 //
 //============================================================================//
@@ -73,6 +74,7 @@ I_dev_lcd g_IUsartGpu =
 	GpuStrSize,
 	GetScrnSize,
 	GpuPic,
+	GpuCutPicture,
 	
 };
 //=========================================================================//
@@ -83,6 +85,13 @@ I_dev_lcd g_IUsartGpu =
 /// \name Private Functions
 /// \{
 
+static void GpuCutPicture( short x1, short y1, char num, short px1, short py1, char w, char h)
+{
+	sprintf( lcdBuf, "CPIC(%d,%d,%d,%d,%d,%d,%d);\r\n", x1, y1, num, px1, py1, w, h );
+	GpuSend(lcdBuf);
+	osDelay(20);
+	
+}
 
 static void GpuPic( int x1, int y1, char num)
 {
