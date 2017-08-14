@@ -89,6 +89,7 @@ static void * InputInptSht( Expr *self, void *context, sheet *p_sht)
 	char 	tmpbuf[4] = {0};
 
 	GetAttribute( context, att, TEMPBUF_LEN);
+	Set_shtContextAtt( att, p_sht);
 	Set_shtAreaAtt( att,  p_sht);
 	
 	if( GetKeyVal( att, "cg", tmpbuf, 4))

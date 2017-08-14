@@ -29,7 +29,7 @@ CLASS( keyboardHMI)
 	sheet			*p_shtvKeyCursor[NUM_VIRKEY];		//虚拟按键上，被选中的按键的光标
 	
 	sheet			*p_shtInput;				//输入框，由外部传入
-	sheet			*p_shtEdit;					//输入框上的文本
+	
 	uint8_t		curVkey;
 	uint8_t		fouseRow;
 	uint8_t		fouseCol;

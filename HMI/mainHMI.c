@@ -38,11 +38,11 @@
 static ro_char p_title[] = { "<title bkc=purple clr=blue f=24 xali=l>ÉèÖÃ</> " };
 
 
-static ro_char p_input1[] = { "<input cg=2 xali=l > <text f=16  yali=m clr=blue >test1</>\
+static ro_char p_input1[] = { "<input cg=2 xali=l f=24> <text f=16  yali=m clr=blue >test1</>\
 <box clr=blue bx=126 by=30></></gr>" };
-static ro_char p_input2[] = { "<input cg=2 xali=l > <text f=16  yali=m clr=blue >test2</>\
+static ro_char p_input2[] = { "<input cg=2 xali=l f=24> <text f=16  yali=m clr=blue >test2</>\
 <box clr=blue bx=126 by=30></></gr>" };
-static ro_char p_input3[] = { "<input cg=2 xali=l > <text f=16  yali=m clr=blue >ÃÜÂë:</>\
+static ro_char p_input3[] = { "<input cg=2 xali=l f=24> <text f=16  yali=m clr=blue >ÃÜÂë:</>\
 <box clr=blue bx=126 by=30></></gr>" };
 
 //button 3 * 3
