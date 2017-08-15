@@ -134,10 +134,10 @@ static int KeyUpdate( keyObservice *self,  uint8_t num, keyMsg_t arr_msg[])
 				g_p_curHmi->hitHandle( g_p_curHmi, p);
 				break;	
 			case KEYEVENT_DHIT:
-				
+				g_p_curHmi->dhitHandle( g_p_curHmi, p);
 				break;
 			case KEYEVENT_LPUSH:
-				
+				g_p_curHmi->longpushHandle( g_p_curHmi, p);
 				break;
 		}
 		

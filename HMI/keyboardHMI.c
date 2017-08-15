@@ -42,6 +42,11 @@
 #define DIRE_RIGHT				3
 
 #define KEY_NONE				0
+
+#define INPUTMETHOD_UPP			0
+#define INPUTMETHOD_LOWER			1
+#define INPUTMETHOD_DIGIT			2
+
 const char KEY_123			=		-1;
 const char KEY_backspace	=		-2;
 const char KEY_GO			=		-3;
@@ -56,12 +61,22 @@ const char virKey_digitFocus_Code[] = { "<cpic vx0=0 vy0=0 >19</>" };
 
 const char edit_TxtCode[] = { "<text clr=white > </>" };
 const char edit_CursorCode[] = { "<box bkc=black ></>" };
-
+const char edit_NotifyCode[] = { "<text clr=blue f=16 vx0=280 vy0=0 > </>" };
+const char	notify_uppcase[] = "大写";
+const char	notify_lowercase[] = "小写";
+const char	notify_emptycase[] = "     ";
 
 const 	char	uppKeyVal[4][10] = { \
 	{ 'Q','W','E','R','T','Y','U','I','O','P'},\
 	{ 'A','S','D','F','G','H','J','K','L',KEY_NONE},\
 	{ KEY_123,'Z','X','C','V','B','N','M',KEY_backspace,KEY_NONE},\
+	{ ' ', KEY_GO} \
+};
+
+const 	char	lowerKeyVal[4][10] = { \
+	{ 'q','w','e','r','t','y','u','i','o','p'},\
+	{ 'a','s','d','f','g','h','j','k','l',KEY_NONE},\
+	{ KEY_123,'z','x','c','v','b','n','m',KEY_backspace,KEY_NONE},\
 	{ ' ', KEY_GO} \
 };
 
@@ -73,7 +88,7 @@ const 	char	digitKeyVal[4][10] = { \
 };
 typedef const char (*keyvalptr)[10];
 
-keyvalptr  arr_p_keyval[2]= { uppKeyVal, digitKeyVal};
+keyvalptr  arr_p_keyval[NUM_VIRKEY]= { uppKeyVal, lowerKeyVal, digitKeyVal};
 //------------------------------------------------------------------------------
 // local types
 //------------------------------------------------------------------------------
@@ -105,14 +120,16 @@ typedef struct {
 }virKeyOp_t;
 	
 typedef struct {
-	sheet			*p_shtInputBox;					//输入框的方框
+	sheet			*p_shtNotify;					//提示框如当前是 大写还是小写状态
 	sheet			*p_shtTxt;					//输入框上的文本
 	sheet			*p_shtCursor;					//输入框上的光标
+	keyvalptr		p_arr_keyval;
 	char 			keybrdbuf[KEYBBUFLEN];
 	uint8_t			bufidx;
 	uint8_t			maxidx;
 	uint8_t			vsizex;
-	uint8_t			cleansize;		//输入框的空余空间
+//	uint8_t			cleansize;		//输入框的空余空间
+	uint8_t			inputMethod;
 }edit_t;
 	
 	
@@ -131,25 +148,27 @@ static void Upp_CalculateUp(virKeyInfo_t *p_vkey);
 static void Upp_CalculateDown(virKeyInfo_t *p_vkey);
 static void Upp_CalculateLeft(virKeyInfo_t *p_vkey);
 static void Upp_CalculateRight(virKeyInfo_t *p_vkey);
-static void SwitchVirKey( sheet	**arr_p_shtVkey, sheet	**arr_p_shtFocus, uint8_t *p_curvk);
+static void SwitchVirKey( sheet	**arr_p_shtVkey, sheet	**arr_p_shtFocus, uint8_t iptMth);
 virKeyOp_t uppVKO = { \
 	VK_Uppercase_init, \
 	{ Upp_CalculateUp, Upp_CalculateDown, Upp_CalculateLeft, Upp_CalculateRight} \
 };
 
+//virKeyOp_t lowerVKO = { \
+//	VK_Uppercase_init, \
+//	{ Upp_CalculateUp, Upp_CalculateDown, Upp_CalculateLeft, Upp_CalculateRight} \
+//};
+
+//virKeyOp_t digitVKO = { \
+//	VK_Uppercase_init, \
+//	{ Upp_CalculateUp, Upp_CalculateDown, Upp_CalculateLeft, Upp_CalculateRight} \
+//};
 
 
-virKeyOp_t digitVKO = { \
-	VK_Uppercase_init, \
-	{ Upp_CalculateUp, Upp_CalculateDown, Upp_CalculateLeft, Upp_CalculateRight} \
-};
 
-
-
-virKeyOp_t *p_vko[NUM_VIRKEY] = { &uppVKO,  &digitVKO};
+virKeyOp_t *p_vko[NUM_VIRKEY] = { &uppVKO, &uppVKO, &uppVKO};
 static sheet	*p_keyboardPic;
 static sheet	*p_keyboardFocusPic;
-static const char		(*p_keyval)[10];
 //------------------------------------------------------------------------------
 // local function prototypes
 //------------------------------------------------------------------------------
@@ -161,6 +180,9 @@ static void KBHide( HMI *self );
 static void KBInitSheet( HMI *self );
 
 static void	KeyboardHitHandle( HMI *self, char *s);
+static void	KeyboardLngpshHandle( HMI *self,  char *s_key);
+static void	KeyboardDouHitHandle( HMI *self,  char *s_key);
+
 
 //----- vir key -------------
 static void FocusKey_move( virKeyOp_t *p_keyop, virKeyBlock_t *p_vkb, int direction);
@@ -169,7 +191,7 @@ static void CleanFocus( char vkeytype, virKeyInfo_t *p_focus);
 
 //----- edit ---------------------------------------
 void Edit_init( edit_t *p_ed, sheet	*p_shtInput);
-void Edit_push( edit_t *p_ed, char val);
+void Edit_push( edit_t *p_ed, virKeyInfo_t *p_kinfo);
 void Edit_pop( edit_t *p_ed);
 //============================================================================//
 //            P U B L I C   F U N C T I O N S                                 //
@@ -194,6 +216,8 @@ FUNCTION_SETTING( HMI.show, KeyboardShow);
 FUNCTION_SETTING( HMI.initSheet, KBInitSheet);
 FUNCTION_SETTING( HMI.hide, KBHide);
 FUNCTION_SETTING( HMI.hitHandle, KeyboardHitHandle);
+FUNCTION_SETTING( HMI.longpushHandle, KeyboardLngpshHandle);
+FUNCTION_SETTING( HMI.dhitHandle, KeyboardDouHitHandle);
 
 
 FUNCTION_SETTING( shtCmd.shtExcute, KeyboardEnterCmdHdl);
@@ -213,21 +237,29 @@ static int	Init_kbmHmi( HMI *self, void *arg)
 	p_shtctl = GetShtctl();
 	
 	
-	cthis->p_shtVkey[0] = Sheet_alloc( p_shtctl);
+	cthis->p_shtVkey[INPUTMETHOD_UPP] = Sheet_alloc( p_shtctl);
 	p_exp = ExpCreate( "pic");
-	p_exp->inptSht( p_exp, (void *)virKey_uppercase_Code, cthis->p_shtVkey[0]) ;
+	p_exp->inptSht( p_exp, (void *)virKey_uppercase_Code, cthis->p_shtVkey[INPUTMETHOD_UPP]) ;
 	
-	cthis->p_shtvKeyCursor[0] = Sheet_alloc( p_shtctl);
+	cthis->p_shtvKeyCursor[INPUTMETHOD_UPP] = Sheet_alloc( p_shtctl);
 	p_exp = ExpCreate( "pic");
-	p_exp->inptSht( p_exp, (void *)virKey_uppercaseFocus_Code, cthis->p_shtvKeyCursor[0]) ;
+	p_exp->inptSht( p_exp, (void *)virKey_uppercaseFocus_Code, cthis->p_shtvKeyCursor[INPUTMETHOD_UPP]) ;
 	
-	cthis->p_shtVkey[1] = Sheet_alloc( p_shtctl);
+	cthis->p_shtVkey[INPUTMETHOD_LOWER] = Sheet_alloc( p_shtctl);
 	p_exp = ExpCreate( "pic");
-	p_exp->inptSht( p_exp, (void *)virKey_digit_Code, cthis->p_shtVkey[1]) ;
+	p_exp->inptSht( p_exp, (void *)virKey_uppercase_Code, cthis->p_shtVkey[INPUTMETHOD_LOWER]) ;
 	
-	cthis->p_shtvKeyCursor[1] = Sheet_alloc( p_shtctl);
+	cthis->p_shtvKeyCursor[INPUTMETHOD_LOWER] = Sheet_alloc( p_shtctl);
 	p_exp = ExpCreate( "pic");
-	p_exp->inptSht( p_exp, (void *)virKey_digitFocus_Code, cthis->p_shtvKeyCursor[1]) ;
+	p_exp->inptSht( p_exp, (void *)virKey_uppercaseFocus_Code, cthis->p_shtvKeyCursor[INPUTMETHOD_LOWER]) ;
+	
+	cthis->p_shtVkey[INPUTMETHOD_DIGIT] = Sheet_alloc( p_shtctl);
+	p_exp = ExpCreate( "pic");
+	p_exp->inptSht( p_exp, (void *)virKey_digit_Code, cthis->p_shtVkey[INPUTMETHOD_DIGIT]) ;
+	
+	cthis->p_shtvKeyCursor[INPUTMETHOD_DIGIT] = Sheet_alloc( p_shtctl);
+	p_exp = ExpCreate( "pic");
+	p_exp->inptSht( p_exp, (void *)virKey_digitFocus_Code, cthis->p_shtvKeyCursor[INPUTMETHOD_DIGIT]) ;
 	
 	keyEdit.p_shtTxt = Sheet_alloc( p_shtctl);
 	p_exp = ExpCreate( "text");
@@ -236,9 +268,14 @@ static int	Init_kbmHmi( HMI *self, void *arg)
 	keyEdit.p_shtCursor = Sheet_alloc( p_shtctl);
 	p_exp = ExpCreate( "box");
 	p_exp->inptSht( p_exp, (void *)edit_CursorCode, keyEdit.p_shtCursor) ;
+	
+	keyEdit.p_shtNotify = Sheet_alloc( p_shtctl);
+	p_exp = ExpCreate( "text");
+	p_exp->inptSht( p_exp, (void *)edit_NotifyCode, keyEdit.p_shtNotify) ;
+	
 
 	
-	cthis->curVkey = 0;
+	keyEdit.inputMethod = INPUTMETHOD_UPP;
 
 	cthis->p_shtInput = NULL;
 	
@@ -250,7 +287,7 @@ static void KBInitSheet( HMI *self )
 	keyboardHMI		*cthis = SUB_PTR( self, HMI, keyboardHMI);
 	
 		
-//	Sheet_updown( cthis->p_shtVkey[ cthis->curVkey], 0);
+//	Sheet_updown( cthis->p_shtVkey[ keyEdit.inputMethod], 0);
 	
 	if( cthis->p_shtInput != NULL) {
 		//保存旧的设置
@@ -273,6 +310,7 @@ static void KBInitSheet( HMI *self )
 		FormatSheetSub( cthis->p_shtInput);
 		Sheet_updown( cthis->p_shtInput, 0);
 		Edit_init( &keyEdit, cthis->p_shtInput);
+		Sheet_updown( keyEdit.p_shtNotify, 1);
 	}
 	
 }
@@ -291,10 +329,10 @@ static void KBHide( HMI *self )
 				
 		FormatSheetSub( cthis->p_shtInput);
 		Sheet_updown( cthis->p_shtInput, -1);
-		
+		Sheet_updown( keyEdit.p_shtNotify, -1);
 		cthis->p_shtInput = NULL;
 	}
-//	Sheet_updown( cthis->p_shtVkey[  cthis->curVkey], -1);
+//	Sheet_updown( cthis->p_shtVkey[  keyEdit.inputMethod], -1);
 }
 
 static void	KeyboardShow( HMI *self )
@@ -309,13 +347,12 @@ static void	KeyboardShow( HMI *self )
 		Sheet_refresh( cthis->p_shtInput);
 	
 
-	cthis->curVkey = 1;		//切换到0 要先这么做
-	SwitchVirKey( cthis->p_shtVkey, cthis->p_shtvKeyCursor, &cthis->curVkey);
+	SwitchVirKey( cthis->p_shtVkey, cthis->p_shtvKeyCursor, INPUTMETHOD_LOWER);
 	
-	p_op = p_vko[ cthis->curVkey];
+	p_op = p_vko[ keyEdit.inputMethod];
 	p_op->vkey_init( &actKeyBlk); 
 
-	CleanFocus( cthis->curVkey, &actKeyBlk.vkenCenter);		
+	CleanFocus( keyEdit.inputMethod, &actKeyBlk.vkenCenter);		
 	DrawFocus( 0, &actKeyBlk.vkenCenter);
 	
 	
@@ -340,6 +377,36 @@ static void DrawFocus( char vkeytype, virKeyInfo_t *p_focus)
 	p_keyboardFocusPic->p_gp->vdraw( p_keyboardFocusPic->p_gp, &p_keyboardFocusPic->cnt, &p_keyboardFocusPic->area);
 	
 }
+static void	KeyboardLngpshHandle( HMI *self,  char *s_key)
+{
+	keyboardHMI		*cthis = SUB_PTR( self, HMI, keyboardHMI);
+	if( !strcmp( s_key, HMIKEY_ENTER)) {
+		//大小写切换
+		if( keyEdit.inputMethod == INPUTMETHOD_LOWER) {
+			
+			SwitchVirKey( cthis->p_shtVkey, cthis->p_shtvKeyCursor, INPUTMETHOD_UPP);
+		} else if( keyEdit.inputMethod == INPUTMETHOD_UPP) {
+			
+			SwitchVirKey( cthis->p_shtVkey, cthis->p_shtvKeyCursor, INPUTMETHOD_LOWER);
+		}
+	}
+	
+}
+static void	KeyboardDouHitHandle( HMI *self,  char *s_key)
+{
+	keyboardHMI		*cthis = SUB_PTR( self, HMI, keyboardHMI);
+	if( !strcmp( s_key, HMIKEY_ENTER)) {
+		//大小写切换
+		if( keyEdit.inputMethod == INPUTMETHOD_LOWER) {
+			
+			SwitchVirKey( cthis->p_shtVkey, cthis->p_shtvKeyCursor, INPUTMETHOD_UPP);
+		} else if( keyEdit.inputMethod == INPUTMETHOD_UPP) {
+			
+			SwitchVirKey( cthis->p_shtVkey, cthis->p_shtvKeyCursor, INPUTMETHOD_LOWER);
+		}
+	}
+	
+}
 static void	KeyboardHitHandle( HMI *self, char *s)
 {
 	keyboardHMI		*cthis = SUB_PTR( self, HMI, keyboardHMI);
@@ -351,32 +418,32 @@ static void	KeyboardHitHandle( HMI *self, char *s)
 	{
 		//清除原来的选中效果
 		
-		CleanFocus( cthis->curVkey, &actKeyBlk.vkenCenter);
+		CleanFocus( keyEdit.inputMethod, &actKeyBlk.vkenCenter);
 		
 		//计算新的选中位置
-		FocusKey_move( p_vko[ cthis->curVkey], &actKeyBlk, DIRE_UP);
+		FocusKey_move( p_vko[ keyEdit.inputMethod], &actKeyBlk, DIRE_UP);
 		
 		//绘制新的选中效果
-		DrawFocus( cthis->curVkey, &actKeyBlk.vkenCenter);
+		DrawFocus( keyEdit.inputMethod, &actKeyBlk.vkenCenter);
 		
 	}
 	else if( !strcmp( s, HMIKEY_DOWN) )
 	{
-		CleanFocus( cthis->curVkey, &actKeyBlk.vkenCenter);
-		FocusKey_move( p_vko[ cthis->curVkey], &actKeyBlk, DIRE_DOWN);
-		DrawFocus( cthis->curVkey, &actKeyBlk.vkenCenter);
+		CleanFocus( keyEdit.inputMethod, &actKeyBlk.vkenCenter);
+		FocusKey_move( p_vko[ keyEdit.inputMethod], &actKeyBlk, DIRE_DOWN);
+		DrawFocus( keyEdit.inputMethod, &actKeyBlk.vkenCenter);
 	}
 	else if( !strcmp( s, HMIKEY_LEFT))
 	{
-		CleanFocus( cthis->curVkey, &actKeyBlk.vkenCenter);
-		FocusKey_move( p_vko[ cthis->curVkey], &actKeyBlk, DIRE_LEFT);
-		DrawFocus( cthis->curVkey, &actKeyBlk.vkenCenter);
+		CleanFocus( keyEdit.inputMethod, &actKeyBlk.vkenCenter);
+		FocusKey_move( p_vko[ keyEdit.inputMethod], &actKeyBlk, DIRE_LEFT);
+		DrawFocus( keyEdit.inputMethod, &actKeyBlk.vkenCenter);
 	}
 	else if( !strcmp( s, HMIKEY_RIGHT))
 	{
-		CleanFocus( cthis->curVkey, &actKeyBlk.vkenCenter);
-		FocusKey_move( p_vko[ cthis->curVkey], &actKeyBlk, DIRE_RIGHT);
-		DrawFocus( cthis->curVkey, &actKeyBlk.vkenCenter);
+		CleanFocus( keyEdit.inputMethod, &actKeyBlk.vkenCenter);
+		FocusKey_move( p_vko[ keyEdit.inputMethod], &actKeyBlk, DIRE_RIGHT);
+		DrawFocus( keyEdit.inputMethod, &actKeyBlk.vkenCenter);
 	}
 	
 	if( !strcmp( s, HMIKEY_ESC))
@@ -385,20 +452,28 @@ static void	KeyboardHitHandle( HMI *self, char *s)
 	}
 	if( !strcmp( s, HMIKEY_ENTER))
 	{
-		if( actKeyBlk.vkenCenter.val == KEY_123 || actKeyBlk.vkenCenter.val == KEY_Return) {
-			SwitchVirKey( cthis->p_shtVkey, cthis->p_shtvKeyCursor, &cthis->curVkey);
+		if( actKeyBlk.vkenCenter.val == KEY_123 ) {
+			SwitchVirKey( cthis->p_shtVkey, cthis->p_shtvKeyCursor, INPUTMETHOD_DIGIT);
 			
-			p_op = p_vko[ cthis->curVkey];
+			p_op = p_vko[ keyEdit.inputMethod];
 			p_op->vkey_init( &actKeyBlk);  
 
-			CleanFocus( cthis->curVkey, &actKeyBlk.vkenCenter);			
+			CleanFocus( keyEdit.inputMethod, &actKeyBlk.vkenCenter);			
+			DrawFocus( 0, &actKeyBlk.vkenCenter);
+		} else if( actKeyBlk.vkenCenter.val == KEY_Return) {
+			SwitchVirKey( cthis->p_shtVkey, cthis->p_shtvKeyCursor, INPUTMETHOD_LOWER);
+			
+			p_op = p_vko[ keyEdit.inputMethod];
+			p_op->vkey_init( &actKeyBlk);  
+
+			CleanFocus( keyEdit.inputMethod, &actKeyBlk.vkenCenter);			
 			DrawFocus( 0, &actKeyBlk.vkenCenter);
 		} else if( actKeyBlk.vkenCenter.val == KEY_GO) {
 			
 		} else if( actKeyBlk.vkenCenter.val == KEY_backspace) {
 			Edit_pop (&keyEdit);
 		} else {
-			Edit_push( &keyEdit, actKeyBlk.vkenCenter.val);
+			Edit_push( &keyEdit, &actKeyBlk.vkenCenter);
 		}
 	}
 	
@@ -441,18 +516,25 @@ static void VKeyClean( virKeyInfo_t *p_vkey)
 	p_vkey->colnum = 0;
 }
 
-static void SwitchVirKey( sheet	**arr_p_shtVkey, sheet	**arr_p_shtFocus, uint8_t *p_curvk)
+static void SwitchVirKey( sheet	**arr_p_shtVkey, sheet	**arr_p_shtFocus, uint8_t iptMth)
 {
-	uint8_t nextvk;
-	if( *p_curvk == 0) {
-		nextvk = 1;
-	} else {
-		nextvk = 0;
+	
+	p_keyboardPic = arr_p_shtVkey[ iptMth];
+	p_keyboardFocusPic  = arr_p_shtFocus[ iptMth];
+	keyEdit.inputMethod = iptMth;
+	keyEdit.p_arr_keyval = arr_p_keyval[ iptMth];
+	if( keyEdit.inputMethod == INPUTMETHOD_UPP) {
+		keyEdit.p_shtNotify->cnt.data = (char *)notify_uppcase;
+		keyEdit.p_shtNotify->cnt.len = sizeof( notify_uppcase);
+	} else if( keyEdit.inputMethod == INPUTMETHOD_LOWER) {
+		keyEdit.p_shtNotify->cnt.data = (char *)notify_lowercase;
+		keyEdit.p_shtNotify->cnt.len = sizeof( notify_lowercase);
+	} else  {
+		keyEdit.p_shtNotify->cnt.data = (char *)notify_emptycase;
+		keyEdit.p_shtNotify->cnt.len = sizeof( notify_emptycase);
 	}
-	p_keyboardPic = arr_p_shtVkey[ nextvk];
-	p_keyboardFocusPic  = arr_p_shtFocus[ nextvk];
-	p_keyval = arr_p_keyval[ nextvk];
-	*p_curvk = nextvk;
+	
+	keyEdit.p_shtNotify->p_gp->vdraw( keyEdit.p_shtNotify->p_gp, &keyEdit.p_shtNotify->cnt, &keyEdit.p_shtNotify->area);
 		
 }
 
@@ -491,7 +573,7 @@ static void FocusKey_move( virKeyOp_t *p_keyop, virKeyBlock_t *p_vkb, int direct
 
 static char GetVKeyVal( uint8_t row, uint8_t col)
 {
-	return p_keyval[row][col];
+	return keyEdit.p_arr_keyval[row][col];
 	
 }
 
@@ -565,7 +647,7 @@ static void Upp_CalculateUp( virKeyInfo_t *p_vkey)
 	
 	
 	//判断该位置有无按键，如果没有，就找到这一行离这个位置最近的按键
-	while( uppKeyVal[ p_vkey->rownum][ p_vkey->colnum] == KEY_NONE) {
+	while( GetVKeyVal( p_vkey->rownum, p_vkey->colnum) == KEY_NONE) {
 		
 		if( p_vkey->colnum)
 			p_vkey->colnum --;
@@ -685,7 +767,8 @@ static void VK_Uppercase_init( virKeyBlock_t *p_vkb)
 	Upp_CalculateLeft( &p_vkb->vkenCenter);
 	Upp_CalculateRight( &p_vkb->vkenCenter);
 	
-	//
+	//显示大小写
+	
 	
 }
 
@@ -693,24 +776,24 @@ static void VK_Uppercase_init( virKeyBlock_t *p_vkb)
 #define SAVE_SPACE		2
 void Edit_init( edit_t *p_ed, sheet	*p_shtInput)
 {
-	p_ed->p_shtInputBox = p_shtInput->pp_sub[1];
+	sheet	*p_InputBox = p_shtInput->pp_sub[1];
 	
 	
 	
-	p_ed->p_shtCursor->area.x0 = p_ed->p_shtInputBox->area.x0 + 1;
-	p_ed->p_shtCursor->area.y0 = p_ed->p_shtInputBox->area.y0 + 1;
-	p_ed->p_shtCursor->area.x1 = p_ed->p_shtInputBox->area.x1 - 1;
-	p_ed->p_shtCursor->area.y1 = p_ed->p_shtInputBox->area.y1 - 1;
+	p_ed->p_shtCursor->area.x0 = p_InputBox->area.x0 + 1;
+	p_ed->p_shtCursor->area.y0 = p_InputBox->area.y0 + 1;
+	p_ed->p_shtCursor->area.x1 = p_InputBox->area.x1 - 1;
+	p_ed->p_shtCursor->area.y1 = p_InputBox->area.y1 - 1;
 	
-	p_ed->vsizex = p_ed->p_shtInputBox->area.x1 - p_ed->p_shtInputBox->area.x0;
-	p_ed->cleansize = p_ed->vsizex;
+	p_ed->vsizex = p_InputBox->area.x1 - p_InputBox->area.x0;
+//	p_ed->cleansize = p_ed->vsizex;
 	
 	p_ed->p_shtTxt->cnt.font = p_shtInput->cnt.font;
 	p_ed->p_shtTxt->p_gp->getSize( p_ed->p_shtTxt->p_gp,  p_ed->p_shtTxt->cnt.font, \
 		&p_ed->p_shtTxt->bxsize, &p_ed->p_shtTxt->bysize);
 	
-	p_ed->p_shtTxt->area.x0 = p_ed->p_shtInputBox->area.x0 + SAVE_SPACE;
-	p_ed->p_shtTxt->area.y0 = p_ed->p_shtInputBox->area.y1 - p_ed->p_shtTxt->bysize - SAVE_SPACE;
+	p_ed->p_shtTxt->area.x0 = p_InputBox->area.x0 + SAVE_SPACE;
+	p_ed->p_shtTxt->area.y0 = p_InputBox->area.y1 - p_ed->p_shtTxt->bysize - SAVE_SPACE;
 	
 	p_ed->p_shtTxt->cnt.data = 	p_ed->keybrdbuf;
 	p_ed->p_shtTxt->cnt.len = 	0;
@@ -725,11 +808,15 @@ void Edit_init( edit_t *p_ed, sheet	*p_shtInput)
 	memset( p_ed->keybrdbuf, 0, sizeof( p_ed->keybrdbuf));
 	
 	
+	
+	
 }
 
 //增加一个显示
-void Edit_push( edit_t *p_ed, char val)
+void Edit_push( edit_t *p_ed, virKeyInfo_t *p_kinfo)
 {
+	char val;
+	val = GetVKeyVal( p_kinfo->rownum, p_kinfo->colnum);
 	if( p_ed->bufidx >= p_ed->maxidx)
 		return;
 	p_ed->keybrdbuf[p_ed->bufidx] = val;
