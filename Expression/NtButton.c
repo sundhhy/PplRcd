@@ -81,90 +81,48 @@ END_CTOR
 
 static void * BuInptSht( Expr *self, void *context, sheet *p_sht)
 {
-//	GhRectangle *myRec = Get_GhRectangle();
-//	Glyph	*myGp = (Glyph *)myRec;
-//	char 	*pnewPosition = context;
-//	char	*att = expTempBUf;
-//	Expr 	*myexp ;
-//	char 	tmpbuf[4] = {0};
-//	short	nameLen;
-//	
-//	ViewData_t	*vd;
 
-//	GetAttribute( context, att, TEMPBUF_LEN);
-//	
-//	vd = self->ction->allocVD( self->ction);
-//	GetKeyVal( att, "xali", tmpbuf, 4);
-//	vd->dspArea.ali = String2Align( tmpbuf);
-//	vd->dspCnt.font = String2Font( att);
-//	if( GetKeyVal( att, "x", tmpbuf, 4))
-//	{
-//		vd->dspArea.sizeX = atoi( tmpbuf);
-//		
-//	}
-//	else
-//	{
-//		
-//		vd->dspArea.sizeX = SIZE_ERR;
-//	}
-//	if( GetKeyVal( att, "y", tmpbuf, 4))
-//	{
-//		vd->dspArea.sizeY = atoi( tmpbuf);
-//		
-//	}
-//	else
-//	{
-//		vd->dspArea.sizeY = SIZE_ERR;
-//		
-//	}
-//	
-//	
-//	UsePrntAttIfNeed( ( ViewData_t	*)fa, vd);
-//	
-//	
-//	//自己的尺寸已经被设置了，就不要使用子图元来设置了
-//	if( vd->dspArea.sizeX != SIZE_ERR && vd->dspArea.sizeY != SIZE_ERR)
-//	{
-//		vd->donotUseChldSize = 1;
-//		
-//	}
+	Glyph	*myGp = (Glyph *)Get_GhRectangle();
+	shtctl 	*p_shtctl = GetShtctl();	
+	char 	*pnewPosition = context;
+	char	*att = expTempBUf;
+	Expr 	*p_exp ;
+	int 	ret = 0;
+	char 	tmpbuf[4] = {0};
 
-//	pnewPosition = RemoveHead( context);
-//	
-//	
-//	while(1)
-//	{
-//		
-//		
-//		
-//		memset( expTempBUf, 0, sizeof( expTempBUf));
-//		nameLen = GetName( pnewPosition, att, TEMPBUF_LEN);
-//		if( nameLen == 0)
-//			break;
-//		myexp = ExpCreate( att);
-//		if( myexp == NULL)
-//			break;
-//			
-//		myexp->setCtion( myexp, self->ction);
-//		myexp->setVar( myexp, att);		//跟据Context中的变量来设置
-//		pnewPosition = myexp->interpret( myexp, vd, pnewPosition);
-//		
-//		
-//	}
-//	
-//	vd->gh = myGp;
-//	vd->dspCnt.len = 1;
-//	self->ction->insertVD( self->ction, fa, vd);
-//		
-//	
-//	memset( expTempBUf, 0, sizeof( expTempBUf));
-//	pnewPosition = RemoveTail( pnewPosition, NULL, 0);
-////	exit:
+	GetAttribute( context, att, TEMPBUF_LEN);
+	Set_shtContextAtt( att, p_sht);
+	ret = Set_shtAreaAtt( att,  p_sht);
 	
 	
-//	return pnewPosition;
+	
+	//一个buton应该有:text
+	p_sht->pp_sub = malloc( sizeof( sheet *));
+	p_sht->subAtt.numSubRow = 1;
+	p_sht->subAtt.numSubCol = 1;
+	
+	p_sht->pp_sub[0] = Sheet_alloc( p_shtctl);
+	pnewPosition = RemoveHead( pnewPosition);
+	p_exp = ExpCreate( "text");
+	pnewPosition = p_exp->inptSht( p_exp, (void *)pnewPosition, p_sht->pp_sub[0]) ;
+	
+	
+	if( ret & SET_ATT_BSIZEFAIL) {
+		//按钮未指定自己的尺寸
+		//将子图层的尺寸汇总作为自己的尺寸
+		p_sht->bxsize = p_sht->pp_sub[0]->bxsize +  p_sht->subAtt.subColGrap;
+		p_sht->bysize = p_sht->pp_sub[0]->bysize + p_sht->subAtt.subRowGrap;
+		
+		
+		
+	}
+	
 
-return NULL;
+	p_sht->p_gp = myGp;	
+	memset( expTempBUf, 0, sizeof( expTempBUf));
+	pnewPosition = RemoveTail( pnewPosition, NULL, 0);
+	return pnewPosition;
+
 }
 
 

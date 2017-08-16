@@ -23,7 +23,7 @@ rct :	rectangle 矩形
 
 scr : 	Screen region 屏幕区域
 sel	:	selection 	选中区域
-ali :  aligning 对齐方式
+x/yali :  aligning 对齐方式
 
 cg	:	columnGap 列间距
 ls	:	lineSpacing	行间距
@@ -141,6 +141,25 @@ int Set_shtAreaAtt( char *p_att, sheet *p_sht)
 	if( GetKeyVal( p_att, "vy0", tmpbuf, 4))
 	{
 		p_sht->area.y0 = atoi( tmpbuf);
+	}
+	
+	if( GetKeyVal( p_att, "cg", tmpbuf, 4))
+	{
+		p_sht->subAtt.subColGrap = atoi( tmpbuf);
+		
+	}
+	else
+	{
+		p_sht->subAtt.subColGrap = 0;
+	}
+	if( GetKeyVal( p_att, "rg", tmpbuf, 4))
+	{
+		p_sht->subAtt.subRowGrap  = atoi( tmpbuf);
+		
+	}
+	else
+	{
+		p_sht->subAtt.subRowGrap = 0;
 	}
 	
 	if( GetKeyVal( p_att, "bx", tmpbuf, 4))

@@ -86,30 +86,30 @@ static void * InputInptSht( Expr *self, void *context, sheet *p_sht)
 	char 	*pnewPosition = context;
 	char	*att = expTempBUf;
 	Expr 	*p_exp ;
-	char 	tmpbuf[4] = {0};
+//	char 	tmpbuf[4] = {0};
 
 	GetAttribute( context, att, TEMPBUF_LEN);
 	Set_shtContextAtt( att, p_sht);
 	Set_shtAreaAtt( att,  p_sht);
 	
-	if( GetKeyVal( att, "cg", tmpbuf, 4))
-	{
-		p_sht->subAtt.subColGrap = atoi( tmpbuf);
-		
-	}
-	else
-	{
-		p_sht->subAtt.subColGrap = 0;
-	}
-	if( GetKeyVal( att, "rg", tmpbuf, 4))
-	{
-		p_sht->subAtt.subRowGrap  = atoi( tmpbuf);
-		
-	}
-	else
-	{
-		p_sht->subAtt.subRowGrap = 0;
-	}
+//	if( GetKeyVal( att, "cg", tmpbuf, 4))
+//	{
+//		p_sht->subAtt.subColGrap = atoi( tmpbuf);
+//		
+//	}
+//	else
+//	{
+//		p_sht->subAtt.subColGrap = 0;
+//	}
+//	if( GetKeyVal( att, "rg", tmpbuf, 4))
+//	{
+//		p_sht->subAtt.subRowGrap  = atoi( tmpbuf);
+//		
+//	}
+//	else
+//	{
+//		p_sht->subAtt.subRowGrap = 0;
+//	}
 	
 	//一个input应该有:text和rct两个子图元
 	p_sht->pp_sub = malloc( 2 * sizeof( sheet *));

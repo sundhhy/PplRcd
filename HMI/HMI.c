@@ -46,6 +46,9 @@ static HMI *g_p_lastHmi;
 static void	HmiShow( HMI *self);
 static void	SwitchHMI( HMI *self, HMI *p_hmi);
 static void	SwitchBack( HMI *self);
+static void HitHandle( HMI *self, char *s_key);
+static void LngpshHandle( HMI *self, char *s_key);
+static void DHitHandle( HMI *self, char *s_key);
 //============================================================================//
 //            P U B L I C   F U N C T I O N S                                 //
 //============================================================================//
@@ -70,7 +73,9 @@ ABS_CTOR( HMI)
 FUNCTION_SETTING( show, HmiShow);
 FUNCTION_SETTING( switchHMI, SwitchHMI);
 FUNCTION_SETTING( switchBack, SwitchBack);
-
+FUNCTION_SETTING( hitHandle, HitHandle);
+FUNCTION_SETTING( longpushHandle, LngpshHandle);
+FUNCTION_SETTING( dhitHandle, DHitHandle);
 END_ABS_CTOR
 //=========================================================================//
 //                                                                         //
@@ -110,7 +115,20 @@ static void	SwitchBack( HMI *self)
 }
 
 
+static void HitHandle( HMI *self, char *s_key)
+{
+	
+}
 
+static void LngpshHandle( HMI *self, char *s_key)
+{
+	
+}
+
+static void DHitHandle( HMI *self, char *s_key)
+{
+	
+}
 
 
 

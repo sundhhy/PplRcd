@@ -68,30 +68,6 @@ Expr *ExpCreate( char *type)
 		return (Expr *)GetTimeExpr();
 	}
 	
-//	if( !strcasecmp( type, "h"))
-//	{
-//		return (Expr *)GetTxtExpr();
-//	}
-//	if( !strcasecmp( type, "h2"))
-//	{
-//		return (Expr *)GetTxtExpr();
-//	}
-//	if( !strcasecmp( type, "h3"))
-//	{
-//		return (Expr *)GetTxtExpr();
-//	}
-//	if( !strcasecmp( type, "h4"))
-//	{
-//		return (Expr *)GetTxtExpr();
-//	}
-//	if( !strcasecmp( type, "h5"))
-//	{
-//		return (Expr *)GetTxtExpr();
-//	}
-//	if( !strcasecmp( type, "h6"))
-//	{
-//		return (Expr *)GetTxtExpr();
-//	}
 	if( !strcasecmp( type, "bu"))
 	{
 		return (Expr *)GetNtButton();

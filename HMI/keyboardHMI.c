@@ -61,10 +61,10 @@ const char virKey_digitFocus_Code[] = { "<cpic vx0=0 vy0=0 >19</>" };
 
 const char edit_TxtCode[] = { "<text clr=white > </>" };
 const char edit_CursorCode[] = { "<box bkc=black ></>" };
-const char edit_NotifyCode[] = { "<text clr=blue f=16 vx0=280 vy0=0 > </>" };
+const char edit_NotifyCode[] = { "<bu clr=blue  vx0=280 vy0=0 cg=4 rg=4 ><text f=16 xali=r yali=r clr=red>小写</></>" };
 const char	notify_uppcase[] = "大写";
 const char	notify_lowercase[] = "小写";
-const char	notify_emptycase[] = "     ";
+const char	notify_emptycase[] = "数字";
 
 const 	char	uppKeyVal[4][10] = { \
 	{ 'Q','W','E','R','T','Y','U','I','O','P'},\
@@ -270,10 +270,14 @@ static int	Init_kbmHmi( HMI *self, void *arg)
 	p_exp->inptSht( p_exp, (void *)edit_CursorCode, keyEdit.p_shtCursor) ;
 	
 	keyEdit.p_shtNotify = Sheet_alloc( p_shtctl);
-	p_exp = ExpCreate( "text");
+	p_exp = ExpCreate( "bu");
 	p_exp->inptSht( p_exp, (void *)edit_NotifyCode, keyEdit.p_shtNotify) ;
 	
 
+	keyEdit.p_shtNotify->area.x1 = keyEdit.p_shtNotify->area.x0 + keyEdit.p_shtNotify->bxsize;
+	keyEdit.p_shtNotify->area.y1 = keyEdit.p_shtNotify->area.y0 + keyEdit.p_shtNotify->bysize;
+	
+	FormatSheetSub( keyEdit.p_shtNotify);
 	
 	keyEdit.inputMethod = INPUTMETHOD_UPP;
 
@@ -518,24 +522,27 @@ static void VKeyClean( virKeyInfo_t *p_vkey)
 
 static void SwitchVirKey( sheet	**arr_p_shtVkey, sheet	**arr_p_shtFocus, uint8_t iptMth)
 {
+	sheet	*p_notifyText;
 	
 	p_keyboardPic = arr_p_shtVkey[ iptMth];
 	p_keyboardFocusPic  = arr_p_shtFocus[ iptMth];
 	keyEdit.inputMethod = iptMth;
 	keyEdit.p_arr_keyval = arr_p_keyval[ iptMth];
+	
+	p_notifyText = keyEdit.p_shtNotify->pp_sub[0];
 	if( keyEdit.inputMethod == INPUTMETHOD_UPP) {
-		keyEdit.p_shtNotify->cnt.data = (char *)notify_uppcase;
-		keyEdit.p_shtNotify->cnt.len = sizeof( notify_uppcase);
+		p_notifyText->cnt.data = (char *)notify_uppcase;
+		p_notifyText->cnt.len = sizeof( notify_uppcase);
 	} else if( keyEdit.inputMethod == INPUTMETHOD_LOWER) {
-		keyEdit.p_shtNotify->cnt.data = (char *)notify_lowercase;
-		keyEdit.p_shtNotify->cnt.len = sizeof( notify_lowercase);
+		p_notifyText->cnt.data = (char *)notify_lowercase;
+		p_notifyText->cnt.len = sizeof( notify_lowercase);
 	} else  {
-		keyEdit.p_shtNotify->cnt.data = (char *)notify_emptycase;
-		keyEdit.p_shtNotify->cnt.len = sizeof( notify_emptycase);
+		p_notifyText->cnt.data = (char *)notify_emptycase;
+		p_notifyText->cnt.len = sizeof( notify_emptycase);
 	}
 	
-	keyEdit.p_shtNotify->p_gp->vdraw( keyEdit.p_shtNotify->p_gp, &keyEdit.p_shtNotify->cnt, &keyEdit.p_shtNotify->area);
-		
+//	keyEdit.p_shtNotify->p_gp->vdraw( keyEdit.p_shtNotify->p_gp, &keyEdit.p_shtNotify->cnt, &keyEdit.p_shtNotify->area);
+	Sheet_refresh( keyEdit.p_shtNotify);	
 }
 
 static void FocusKey_move( virKeyOp_t *p_keyop, virKeyBlock_t *p_vkb, int direction)
