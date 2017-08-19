@@ -109,7 +109,8 @@ static void GhRec_vDraw( Glyph *self, dspContent_t *cnt, vArea_t *area)
 	}
 	else
 	{
-		lcd->Box( area->x0, area->y0, area->x1, area->y1, 1, c);
+		lcd->Box( area->x0, area->y0, area->x1, area->y1, 0, c);
+		lcd->Box( area->x0 + 2, area->y0 + 2, area->x1 - 2, area->y1 - 2, 1, cnt->bkc);
 		
 	}
 

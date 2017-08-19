@@ -28,6 +28,6 @@
 .\objects\geometricsexpr.o: .\MVC\Model.h
 .\objects\geometricsexpr.o: E:\mylib\sdhLib\inc\basis/assert.h
 .\objects\geometricsexpr.o: .\Glyph\Gh_txt.h
-.\objects\geometricsexpr.o: E:\mylib\sdhLib\inc\arithmetic/cycQueue.h
 .\objects\geometricsexpr.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
 .\objects\geometricsexpr.o: .\Glyph\Gh_Rectangle.h
+.\objects\geometricsexpr.o: E:\mylib\sdhLib\inc\arithmetic/cycQueue.h

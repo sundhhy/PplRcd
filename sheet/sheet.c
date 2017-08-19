@@ -163,9 +163,13 @@ void Sheet_append( struct SHEET *p_sht)
 
 void Sheet_updown( struct SHEET *p_sht, int height)
 {
-    int h, old = p_sht->height;
+    int h, old;
     struct SHTCTL *p_ctl = GetShtctl();
-    
+	
+    if( p_sht == NULL)
+		return;
+	
+	old = p_sht->height;
     if( height > p_ctl->top + 1)
     {
         height = p_ctl->top + 1;

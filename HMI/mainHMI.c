@@ -14,7 +14,8 @@
 //------------------------------------------------------------------------------
 // const defines
 //------------------------------------------------------------------------------
-
+#define CHN_ROW			2
+#define CHN_COL			3
 //------------------------------------------------------------------------------
 // module global vars
 //------------------------------------------------------------------------------
@@ -35,21 +36,22 @@
 //------------------------------------------------------------------------------
 // const defines
 //------------------------------------------------------------------------------
-static ro_char p_title[] = { "<title bkc=purple clr=blue f=24 xali=l>…Ë÷√</> " };
+static ro_char p_title[] = { "<title bkc=blue clr=white f=24 xali=l>◊‹√≤ª≠√Ê</> " };
 
+static ro_char chn_info[] = {"<bu xali=m yali=m bkc=gren clr=white><text xali=m yali=m f=16 bkc=gren clr=white> 01 m3/h</></bu>"};
 
-static ro_char p_input1[] = { "<input cg=2 xali=l f=24> <text f=16  yali=m clr=blue >test1</>\
-<box clr=blue bx=126 by=30></></gr>" };
-static ro_char p_input2[] = { "<input cg=2 xali=l f=24> <text f=16  yali=m clr=blue >test2</>\
-<box clr=blue bx=126 by=30></></gr>" };
-static ro_char p_input3[] = { "<input cg=2 xali=l f=24> <text f=16  yali=m clr=blue >√‹¬Î:</>\
-<box clr=blue bx=126 by=30></></gr>" };
+//static ro_char p_input1[] = { "<input cg=2 xali=l f=24> <text f=16  yali=m clr=blue >test1</>\
+//<box clr=blue bx=126 by=30></></gr>" };
+//static ro_char p_input2[] = { "<input cg=2 xali=l f=24> <text f=16  yali=m clr=blue >test2</>\
+//<box clr=blue bx=126 by=30></></gr>" };
+//static ro_char p_input3[] = { "<input cg=2 xali=l f=24> <text f=16  yali=m clr=blue >√‹¬Î:</>\
+//<box clr=blue bx=126 by=30></></gr>" };
 
 //button 3 * 3
 //static ro_char p_button[] = { "<bu cols=2 cg=2 ls=2 f=16 bkc=black clr=blue xali=m x=126 y=30 ></> " };
 
-const hmiAtt_t	mainHmiAtt = { 10,1, COLOUR_BLACK, 4, 2};
-static sheet *p_sheets[4][2] =  {NULL};
+const hmiAtt_t	mainHmiAtt = { 2,2, COLOUR_BLACK, CHN_ROW + 2, CHN_COL};
+static sheet *p_sheets[ CHN_ROW + 2][CHN_COL] =  {NULL};
 
 //------------------------------------------------------------------------------
 // local types
@@ -98,10 +100,8 @@ static int	Init_mainHmi( HMI *self, void *arg)
 	Expr 			*p_exp ;
 	shtctl 			*p_shtctl = NULL;
 	struct SHEET 	**pp_sht;
-	struct SHEET 	**pp_shtLabel;
-	struct SHEET 	**pp_inpname;
 
-	
+	short i,j;
 	
 	p_cmm = CreateHMI( HMI_CMM);
 	p_cmm->init( p_cmm, NULL);
@@ -116,64 +116,75 @@ static int	Init_mainHmi( HMI *self, void *arg)
 	cthis->pp_shts = &p_sheets[0][0];
 	
 	//title
-	pp_shtLabel = &p_sheets[0][0];
-	*pp_shtLabel = Sheet_alloc( p_shtctl);
+	p_sheets[0][0] = Sheet_alloc( p_shtctl);
 	p_txtCnt = p_title;
 	p_exp = ExpCreate( "title");
-	p_exp->inptSht( p_exp, (void *)p_txtCnt, *pp_shtLabel) ;
+	p_exp->inptSht( p_exp, (void *)p_txtCnt, p_sheets[0][0]) ;
 	
 	
 	
 	//timer
-	g_p_shtTime->cnt.bkc = (*pp_shtLabel)->cnt.bkc;
-	
-	
+	g_p_shtTime->cnt.bkc = p_sheets[0][0]->cnt.bkc;
+	g_p_shtTime->cnt.bkc = ERR_COLOUR;
+	p_exp = ExpCreate( "bu");
+	for( i = 1; i < CHN_ROW + 1; i++) {
+		for( j = 0; j < CHN_COL; j ++) {
+			p_sheets[i][j] = Sheet_alloc( p_shtctl);
+			p_exp->inptSht( p_exp, (void *)chn_info, p_sheets[i][j]) ;
+		}
+		
+	}
 	//input
-	pp_inpname = &p_sheets[1][0];
-	*pp_inpname = Sheet_alloc( p_shtctl);
-	p_txtCnt = p_input1;
-	p_exp = ExpCreate( "input");
-	p_exp->inptSht( p_exp, (void *)p_txtCnt, *pp_inpname) ;
-	( *pp_inpname)->cnt.bkc = mainHmiAtt.bkc;
-	
-	
-	
-	//input
-	p_sheets[2][0] = Sheet_alloc( p_shtctl);
-	p_txtCnt = p_input2;
-	p_exp = ExpCreate( "input");
-	p_exp->inptSht( p_exp, (void *)p_txtCnt, p_sheets[2][0]) ;
-	p_sheets[2][0]->cnt.bkc = mainHmiAtt.bkc;
-	
-	
-	
-	
-	pp_sht = &p_sheets[3][0];
-	*pp_sht = Sheet_alloc( p_shtctl);
-	p_txtCnt = p_input3;
-	p_exp = ExpCreate( "input");
-	p_exp->inptSht( p_exp, (void *)p_txtCnt, *pp_sht) ;
+//	pp_inpname = &p_sheets[1][0];
+//	*pp_inpname = Sheet_alloc( p_shtctl);
+//	p_txtCnt = p_input1;
+//	p_exp = ExpCreate( "input");
+//	p_exp->inptSht( p_exp, (void *)p_txtCnt, *pp_inpname) ;
+//	( *pp_inpname)->cnt.bkc = mainHmiAtt.bkc;
+//	
+//	
+//	
+//	//input
+//	p_sheets[2][0] = Sheet_alloc( p_shtctl);
+//	p_txtCnt = p_input2;
+//	p_exp = ExpCreate( "input");
+//	p_exp->inptSht( p_exp, (void *)p_txtCnt, p_sheets[2][0]) ;
+//	p_sheets[2][0]->cnt.bkc = mainHmiAtt.bkc;
+//	
+//	
+//	
+//	
+//	pp_sht = &p_sheets[3][0];
+//	*pp_sht = Sheet_alloc( p_shtctl);
+//	p_txtCnt = p_input3;
+//	p_exp = ExpCreate( "input");
+//	p_exp->inptSht( p_exp, (void *)p_txtCnt, *pp_sht) ;
 	
 	self->initSheet( self);
-//	Sheet_updown( *pp_shtLabel, 0);
-//	Sheet_updown( g_p_shtTime, 1);
-//	Sheet_updown( p_sheets[1][0], 2);
-//	Sheet_updown( p_sheets[2][0], 3);
-//	Sheet_updown( p_sheets[3][0], 4);
 	//Ω¯––≈≈∞Ê
-
 	FormatSheet( &mainHmiAtt, &p_shtctl->v,cthis->pp_shts);
-	FormatSheetSub( p_sheets[1][0]);
-	FormatSheetSub( p_sheets[2][0]);
-	FormatSheetSub( p_sheets[3][0]);
+//	FormatSheetSub( p_sheets[1][0]);
+//	FormatSheetSub( p_sheets[2][0]);
+//	FormatSheetSub( p_sheets[3][0]);
 	
-	p_sheets[1][0]->p_enterCmd = &keyHmi->shtCmd;
-	p_sheets[2][0]->p_enterCmd = &keyHmi->shtCmd;
-	p_sheets[3][0]->p_enterCmd = &keyHmi->shtCmd;
+//	p_sheets[1][0]->p_enterCmd = &keyHmi->shtCmd;
+//	p_sheets[2][0]->p_enterCmd = &keyHmi->shtCmd;
+//	p_sheets[3][0]->p_enterCmd = &keyHmi->shtCmd;
 	
-	p_sheets[1][0]->cnt.effects = EFF_FOCUS;
-	cthis->focusCol = 0;
-	cthis->focusRow = 1;
+//	p_sheets[1][0]->cnt.effects = EFF_FOCUS;
+
+
+
+//	cthis->focusCol = 0;
+//	cthis->focusRow = 1;
+
+
+	for( i = 1; i < CHN_ROW + 1; i++) {
+		for( j = 0; j < CHN_COL; j ++) {
+			FormatSheetSub( p_sheets[i][j]);
+		}
+		
+	}
 	
 	return RET_OK;
 	
@@ -185,25 +196,39 @@ static int	Init_mainHmi( HMI *self, void *arg)
 
 static void MainHmiHide( HMI *self )
 {
-
+	int i, j;
 	
-	Sheet_updown( p_sheets[3][0], -1);
-	Sheet_updown( p_sheets[2][0], -1);
-	Sheet_updown( p_sheets[1][0], -1);
-	Sheet_updown( g_p_shtTime, -1);
+	
+	for( i = CHN_ROW + 1; i > 0; i--) {
+		for( j = CHN_COL; j >= 0; j --) {
+			if( p_sheets[i][j])
+				Sheet_updown( p_sheets[i][j], -1);
+		}
+		
+	}
 	Sheet_updown(  p_sheets[0][0], -1);
+	Sheet_updown( g_p_shtTime, -1);
+	
 	
 }	
 
 static void MaininitSheet( HMI *self )
 {
+	int i, j, h;;
+	
+	h = 0;
+	Sheet_updown(  p_sheets[0][0], h++);
+	Sheet_updown( g_p_shtTime, h++);
+	
+	for( i = 1; i < CHN_ROW + 1; i++) {
+		for( j = 0; j < CHN_COL; j ++) {
+			if( p_sheets[i][j])
+				Sheet_updown( p_sheets[i][j], h++);
+		}
+		
+	}
 	
 	
-	Sheet_updown(  p_sheets[0][0], 0);
-	Sheet_updown( g_p_shtTime, 1);
-	Sheet_updown( p_sheets[1][0], 2);
-	Sheet_updown( p_sheets[2][0], 3);
-	Sheet_updown( p_sheets[3][0], 4);
 }
 
 

@@ -110,9 +110,10 @@ static void * BuInptSht( Expr *self, void *context, sheet *p_sht)
 	if( ret & SET_ATT_BSIZEFAIL) {
 		//按钮未指定自己的尺寸
 		//将子图层的尺寸汇总作为自己的尺寸
-		p_sht->bxsize = p_sht->pp_sub[0]->bxsize +  p_sht->subAtt.subColGrap;
-		p_sht->bysize = p_sht->pp_sub[0]->bysize + p_sht->subAtt.subRowGrap;
-		
+		p_sht->bxsize = p_sht->pp_sub[0]->bxsize +  p_sht->subAtt.subColGrap + 6;
+		p_sht->bysize = p_sht->pp_sub[0]->bysize + p_sht->subAtt.subRowGrap + 6 ;
+		p_sht->area.offset_x = 3;
+		p_sht->area.offset_y = 3;
 		
 		
 	}

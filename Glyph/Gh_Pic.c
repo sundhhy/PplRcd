@@ -53,12 +53,6 @@ GhPic *Get_GhPic(void)
 	if( signalGhPic == NULL)
 	{
 		signalGhPic = GhPic_new();
-//		gh = ( Glyph *)signalGhTxt;
-//		signalGhTxt->buf = malloc( GHTXTBUFLEN);
-//		signalGhTxt->cq_buf = malloc( GHTXTBUFLEN);
-//		gh->setFont( gh, DEF_FONT);
-//		gh->setClu( gh, DEF_COLOUR);
-//		CQ_Init( &signalGhTxt->cq, signalGhTxt->cq_buf, GHTXTBUFLEN);
 		
 	}
 	
@@ -80,13 +74,6 @@ END_CTOR
 //=========================================================================//
 /// \name Private Functions
 /// \{
-
-
-
-
-
-
-
 
 static void GhPic_vDraw( Glyph *self, dspContent_t *cnt, vArea_t *area)
 {

@@ -28,5 +28,4 @@
 .\objects\txtexpr.o: .\MVC\Model.h
 .\objects\txtexpr.o: E:\mylib\sdhLib\inc\basis/assert.h
 .\objects\txtexpr.o: .\Glyph\Gh_txt.h
-.\objects\txtexpr.o: E:\mylib\sdhLib\inc\arithmetic/cycQueue.h
 .\objects\txtexpr.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h

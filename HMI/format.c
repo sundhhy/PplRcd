@@ -47,7 +47,7 @@
 //static const formatX func_dealX[ALIGN_MAX] = { DealXAlignLeft, DealXAlignMid, DealXAlignRight};
 //static const formaty func_dealY[ALIGN_MAX] = { DealYAlignLeft, DealYAlignMid, DealYAlignRight};
 
-static int CoordinateCalculation( int curCrdn, uint16_t freesize, uint16_t needsize, char align);
+static int CoordinateCalculation( int curCrdn, uint16_t freesize, uint16_t needsize, char total, char align, uint8_t *tail_idle);
 //------------------------------------------------------------------------------
 // local function prototypes
 //------------------------------------------------------------------------------
@@ -61,7 +61,8 @@ int FormatSheet( const hmiAtt_t *p_hmiAtt, video_t *p_v, sheet **pp_shts)
 	sheet *p_shtCol;
 	
 	uint8_t i = 0, j = 0;
-	short		grap = 0;
+	uint8_t	count_sht = 0;
+	uint8_t	empty;
 	uint8_t colSize[NUMROW_MAX] = {0};		
 	
 	short sumXsize;
@@ -87,7 +88,7 @@ int FormatSheet( const hmiAtt_t *p_hmiAtt, video_t *p_v, sheet **pp_shts)
 		
 		
 		sumXsize = 0;
-		
+		count_sht = 0;
 
 		//计算一行的图形的总长度，然后根据总长度来计算每个图层的坐标
 		for( j = 0; j < p_hmiAtt->numCol; j++)
@@ -105,6 +106,7 @@ int FormatSheet( const hmiAtt_t *p_hmiAtt, video_t *p_v, sheet **pp_shts)
 				colSize[i] = p_shtCol->bysize; 
 			
 			sumXsize += p_shtCol->bxsize;
+			count_sht ++;
 			
 			//多个图层之间才需要插入空隙
 			if( j)
@@ -123,7 +125,7 @@ int FormatSheet( const hmiAtt_t *p_hmiAtt, video_t *p_v, sheet **pp_shts)
 		//根据总长来进行格式化
 		freeXsize = p_v->vxsize;
 		crdn = 0;
-		grap = 1;
+		
 		for( j = 0; j < p_hmiAtt->numCol; j++)
 		{
 			p_shtCol = pp_shtRow0[j];
@@ -133,17 +135,19 @@ int FormatSheet( const hmiAtt_t *p_hmiAtt, video_t *p_v, sheet **pp_shts)
 			{
 				break;
 			}
-			crdn = CoordinateCalculation( crdn, freeXsize, sumXsize, p_shtCol->area.alix);
+			crdn = CoordinateCalculation( crdn, freeXsize, sumXsize, count_sht, p_shtCol->area.alix, &empty);
 			if( crdn < 0)
 				break; 
 			p_shtCol->area.x0 = crdn;
 			p_shtCol->area.x1 = crdn + p_shtCol->bxsize;
 			
+			count_sht --;
+			sumXsize = sumXsize - p_shtCol->bxsize -  p_hmiAtt->colGrap;
 			
-			sumXsize = sumXsize - p_shtCol->bxsize - grap * p_hmiAtt->colGrap;
-			freeXsize  = freeXsize - p_shtCol->bxsize - grap * p_hmiAtt->colGrap;
-			crdn +=  p_shtCol->bxsize + grap * p_hmiAtt->colGrap;
-			grap = 1;
+			crdn +=  p_shtCol->bxsize +  p_hmiAtt->colGrap + empty;
+			freeXsize  = p_v->vxsize - crdn;
+			
+			
 			
 			
 				
@@ -156,8 +160,9 @@ int FormatSheet( const hmiAtt_t *p_hmiAtt, video_t *p_v, sheet **pp_shts)
 	//计算vy
 	freeYsize = p_v->vysize;
 	crdn = 0;
-	grap = 1;
+	
 	crdny = 0;
+	count_sht = p_hmiAtt->numRow;
 	for( i = 0; i < p_hmiAtt->numRow; i++)
 	{
 		pp_shtRow0 = pp_shts + i * p_hmiAtt->numCol;
@@ -172,7 +177,7 @@ int FormatSheet( const hmiAtt_t *p_hmiAtt, video_t *p_v, sheet **pp_shts)
 			{
 				break;
 			}
-			crdn = CoordinateCalculation( crdny, freeYsize, p_shtCol->bysize, p_shtCol->area.aliy);
+			crdn = CoordinateCalculation( crdny, freeYsize, p_shtCol->bysize, count_sht, p_shtCol->area.aliy,  &empty);
 			if( crdn < 0)
 				continue; 
 			p_shtCol->area.y0 = crdn;
@@ -181,10 +186,12 @@ int FormatSheet( const hmiAtt_t *p_hmiAtt, video_t *p_v, sheet **pp_shts)
 		}
 		
 		//去掉这一行
-		sumYsize = sumYsize - colSize[i] - grap * p_hmiAtt->rowGrap;
-		freeYsize  = freeYsize - colSize[i] - grap * p_hmiAtt->rowGrap;
-		crdny += colSize[i] + grap * p_hmiAtt->rowGrap;
-		grap = 1;
+		sumYsize = sumYsize - colSize[i] -  p_hmiAtt->rowGrap;
+		count_sht --;
+		
+		crdny += colSize[i] +  p_hmiAtt->rowGrap + empty;
+		freeYsize  = p_v->vysize  - crdn;
+		
 		
 		
 		
@@ -205,8 +212,8 @@ void FormatSheetSub( sheet *p_sht)
 	hmiAtt_t att;
 	short i = 0, j = 0;
 
-	v.vxsize = p_sht->area.x1 - p_sht->area.x0;
-	v.vysize = p_sht->area.y1 - p_sht->area.y0;
+	v.vxsize = p_sht->area.x1 - p_sht->area.x0 - p_sht->area.offset_x * 2;
+	v.vysize = p_sht->area.y1 - p_sht->area.y0 - p_sht->area.offset_y * 2;
 	
 	att.numCol = p_sht->subAtt.numSubCol;
 	att.numRow = p_sht->subAtt.numSubRow;
@@ -224,9 +231,9 @@ void FormatSheetSub( sheet *p_sht)
 			p_shtCol = pp_shtRow0[j];
 			if( p_shtCol == NULL)
 				continue;
-			p_shtCol->area.x0 += p_sht->area.x0;
-			p_shtCol->area.x1 += p_sht->area.x0;
-			p_shtCol->area.y0 += p_sht->area.y0;
+			p_shtCol->area.x0 += p_sht->area.x0 + p_sht->area.offset_x;
+			p_shtCol->area.x1 += p_sht->area.x0 ;
+			p_shtCol->area.y0 += p_sht->area.y0 + p_sht->area.offset_y;
 			p_shtCol->area.y1 += p_sht->area.y0;
 		}
 		
@@ -240,24 +247,31 @@ void FormatSheetSub( sheet *p_sht)
 //                                                                         //
 //=========================================================================//
 
-static int CoordinateCalculation( int curCrdn, uint16_t freesize, uint16_t needsize, char align)
+static int CoordinateCalculation( int curCrdn, uint16_t freesize, uint16_t needsize, char total, char align, uint8_t *tail_idle)
 {
 	uint16_t offset = 0;
+	short	idle = freesize - needsize;
 	if( freesize < needsize)
 		return -1;
+	if( total)
+		idle = idle / total;
+	*tail_idle = 0;
 	
 	if( align == ALIGN_MIDDLE)
 	{
-		offset = ( freesize - needsize) >> 1;
+		offset = ( idle) >> 1;
+		*tail_idle = offset;
 	}
 	else if( align == ALIGN_RIGHT)
 	{
-		offset =  freesize - needsize;
+		offset =  idle;
 	}
 	else
 	{
 		offset = 0;
 	}
+	
+	
 	
 	return ( curCrdn + offset);
 	

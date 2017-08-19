@@ -104,7 +104,7 @@ static void * TimeInterpret( Expr *self, void *faVd, void *context)
 	vd->dspArea.aliy = String2Align( tmpbuf);
 	vd->dspCnt.font = String2Font( att);
 	
-	UsePrntAttIfNeed( ( ViewData_t	*)faVd, vd);
+//	UsePrntAttIfNeed( ( ViewData_t	*)faVd, vd);
 	
 	if( vd->dspCnt.colour == ERR_COLOUR)
 	{

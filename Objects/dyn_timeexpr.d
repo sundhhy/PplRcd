@@ -28,7 +28,6 @@
 .\objects\dyn_timeexpr.o: .\MVC\Model.h
 .\objects\dyn_timeexpr.o: E:\mylib\sdhLib\inc\basis/assert.h
 .\objects\dyn_timeexpr.o: .\Glyph\Gh_txt.h
-.\objects\dyn_timeexpr.o: E:\mylib\sdhLib\inc\arithmetic/cycQueue.h
 .\objects\dyn_timeexpr.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
 .\objects\dyn_timeexpr.o: E:\mylib\sdhLib\inc\mem/CiiMem.h
 .\objects\dyn_timeexpr.o: ..\PplRcd\utils/time.h

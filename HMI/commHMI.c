@@ -35,7 +35,7 @@ hmiAtt_t	CmmHmiAtt = { 10,1, COLOUR_BLACK, 4, 2};
 #define TIME_BUF_LEN		16
 
 
-const char timeCode[] = { "<time vx0=180 vy0=0 bx=60  by=24 f=24 xali=m bkc=black clr=yellow spr=/> </time>" };
+const char timeCode[] = { "<time vx0=240 vy0=0 bx=60  by=24 f=24 xali=m bkc=black clr=yellow spr=/> </time>" };
 //------------------------------------------------------------------------------
 // local types
 //------------------------------------------------------------------------------

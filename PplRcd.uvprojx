@@ -761,41 +761,6 @@
           </Files>
         </Group>
         <Group>
-          <GroupName>MVC</GroupName>
-          <Files>
-            <File>
-              <FileName>View.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\MVC\View.c</FilePath>
-            </File>
-            <File>
-              <FileName>View.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\MVC\View.h</FilePath>
-            </File>
-            <File>
-              <FileName>testView.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\MVC\testView.c</FilePath>
-            </File>
-            <File>
-              <FileName>testView.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\MVC\testView.h</FilePath>
-            </File>
-            <File>
-              <FileName>ViewFactory.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\MVC\ViewFactory.h</FilePath>
-            </File>
-            <File>
-              <FileName>ViewFactory.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\MVC\ViewFactory.c</FilePath>
-            </File>
-          </Files>
-        </Group>
-        <Group>
           <GroupName>expression</GroupName>
           <Files>
             <File>
@@ -907,31 +872,6 @@
               <FileName>PicExpr.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\Expression\PicExpr.h</FilePath>
-            </File>
-          </Files>
-        </Group>
-        <Group>
-          <GroupName>views</GroupName>
-          <Files>
-            <File>
-              <FileName>Composition.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Views\Composition.h</FilePath>
-            </File>
-            <File>
-              <FileName>Composition.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Views\Composition.c</FilePath>
-            </File>
-            <File>
-              <FileName>Compositor.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Views\Compositor.h</FilePath>
-            </File>
-            <File>
-              <FileName>SimpleCompositor.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Views\SimpleCompositor.c</FilePath>
             </File>
           </Files>
         </Group>

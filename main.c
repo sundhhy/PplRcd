@@ -415,3 +415,12 @@ int fgetc(FILE *f /*stream*/)
 	return USART_ReceiveData( DEBUG_USART);
 }
 
+
+void HardFault_Handler()
+{
+	while(1) {
+	;
+	}
+	
+}
+

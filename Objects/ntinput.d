@@ -31,4 +31,3 @@
 .\objects\ntinput.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
 .\objects\ntinput.o: .\Glyph\Gh_None.h
 .\objects\ntinput.o: .\Glyph\Gh_txt.h
-.\objects\ntinput.o: E:\mylib\sdhLib\inc\arithmetic/cycQueue.h
