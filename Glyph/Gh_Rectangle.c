@@ -100,7 +100,7 @@ static void GhRec_vDraw( Glyph *self, dspContent_t *cnt, vArea_t *area)
 	uint8_t	c = cnt->colour;
 	Dev_open( LCD_DEVID, (void *)&lcd);
 	
-	if( cnt->effects == EFF_FOCUS)
+	if( GP_CKECK_EFF( cnt->effects , EFF_FOCUS))
 		c = ColorInvert( c);
 	
 	if( cnt->bkc == ERR_COLOUR)

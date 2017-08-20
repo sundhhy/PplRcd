@@ -101,6 +101,13 @@ END_CTOR
 static void GhTxt_vDraw( Glyph *self, dspContent_t *cnt, vArea_t *area)
 {
 	I_dev_lcd *lcd;
+	uint8_t	c = cnt->colour;
+	if( GP_CKECK_EFF( cnt->effects , EFF_HIDE))
+		return;
+	
+	if( GP_CKECK_EFF( cnt->effects , EFF_FOCUS))
+		c = ColorInvert( c);
+	
 	Dev_open( LCD_DEVID, (void *)&lcd);
 //	if( cnt->bkc != ERR_COLOUR  )
 //		lcd->Box( area->x0, area->y0, area->x1, area->y1, 1, cnt->bkc);

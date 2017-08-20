@@ -3,6 +3,7 @@
 #include "sdhDef.h"
 #include "ExpFactory.h"
 #include "format.h"
+#include "chnInfoPic.h"
 
 
 //提供 按键，事件，消息，窗口，报警，时间，复选框的图层
@@ -38,7 +39,6 @@
 //------------------------------------------------------------------------------
 static ro_char p_title[] = { "<title bkc=blue clr=white f=24 xali=l>总貌画面</> " };
 
-static ro_char chn_info[] = {"<bu xali=m yali=m bkc=gren clr=white><text xali=m yali=m f=16 bkc=gren clr=white> 01 m3/h</></bu>"};
 
 //static ro_char p_input1[] = { "<input cg=2 xali=l f=24> <text f=16  yali=m clr=blue >test1</>\
 //<box clr=blue bx=126 by=30></></gr>" };
@@ -50,7 +50,7 @@ static ro_char chn_info[] = {"<bu xali=m yali=m bkc=gren clr=white><text xali=m 
 //button 3 * 3
 //static ro_char p_button[] = { "<bu cols=2 cg=2 ls=2 f=16 bkc=black clr=blue xali=m x=126 y=30 ></> " };
 
-const hmiAtt_t	mainHmiAtt = { 2,2, COLOUR_BLACK, CHN_ROW + 2, CHN_COL};
+const hmiAtt_t	mainHmiAtt = { 1,0, COLOUR_GRAY, CHN_ROW + 2, CHN_COL};
 static sheet *p_sheets[ CHN_ROW + 2][CHN_COL] =  {NULL};
 
 //------------------------------------------------------------------------------
@@ -70,6 +70,8 @@ static void	MainHmiShow( HMI *self);
 static void	MainHitHandle( HMI *self, char *s);
 static void MainHmiHide( HMI *self );
 static void MaininitSheet( HMI *self );
+
+static void BuildChnInfoPic( sheet *arr_p_sheets[ CHN_ROW + 2][CHN_COL], char total);
 //============================================================================//
 //            P U B L I C   F U N C T I O N S                                 //
 //============================================================================//
@@ -126,14 +128,11 @@ static int	Init_mainHmi( HMI *self, void *arg)
 	//timer
 	g_p_shtTime->cnt.bkc = p_sheets[0][0]->cnt.bkc;
 	g_p_shtTime->cnt.bkc = ERR_COLOUR;
-	p_exp = ExpCreate( "bu");
-	for( i = 1; i < CHN_ROW + 1; i++) {
-		for( j = 0; j < CHN_COL; j ++) {
-			p_sheets[i][j] = Sheet_alloc( p_shtctl);
-			p_exp->inptSht( p_exp, (void *)chn_info, p_sheets[i][j]) ;
-		}
-		
-	}
+	
+
+	//chn info
+	BuildChnInfoPic( p_sheets, 6);
+	
 	//input
 //	pp_inpname = &p_sheets[1][0];
 //	*pp_inpname = Sheet_alloc( p_shtctl);
@@ -193,12 +192,31 @@ static int	Init_mainHmi( HMI *self, void *arg)
 //	return RET_OK;
 }
 
-
+static void BuildChnInfoPic( sheet *arr_p_sheets[ CHN_ROW + 2][CHN_COL], char total)
+{
+	char count, i, j, numCol;
+	char arr_col[8] = { 1, 2, 2, 2, 3, 3, 3, 4};
+	
+	numCol = arr_col[ total - 1];
+	
+	
+	count = 0;
+	for( i = 1; i < 2 + 1; i++) {
+		for( j = 0; j < numCol; j ++) {
+			
+			arr_p_sheets[i][j] = CIF_build_pic( count++, total);
+		}
+		
+	}
+	
+}
 static void MainHmiHide( HMI *self )
 {
 	int i, j;
-	
-	
+	Sheet_updown( g_p_ico_trend, -1);
+	Sheet_updown( g_p_ico_digital, -1);
+	Sheet_updown( g_p_ico_bar, -1);
+	Sheet_updown( g_p_ico_memu, -1);
 	for( i = CHN_ROW + 1; i > 0; i--) {
 		for( j = CHN_COL; j >= 0; j --) {
 			if( p_sheets[i][j])
@@ -227,6 +245,10 @@ static void MaininitSheet( HMI *self )
 		}
 		
 	}
+	Sheet_updown( g_p_ico_memu, h++);
+	Sheet_updown( g_p_ico_bar, h++);
+	Sheet_updown( g_p_ico_digital, h++);
+	Sheet_updown( g_p_ico_trend, h++);
 	
 	
 }
@@ -281,11 +303,12 @@ static void	MainHitHandle( HMI *self, char *s)
 	{
 		
 		//清除旧的焦点
-		p_sheets[ focusRow][ focusCol]->cnt.effects = 0;
+		p_sheets[ focusRow][ focusCol]->cnt.effects = GP_CLR_EFF( p_sheets[ focusRow][ focusCol]->cnt.effects, EFF_FOCUS);
 		Sheet_slide( p_sheets[ focusRow][ focusCol]);
 		
 		//显示新的焦点
-		p_sheets[ cthis->focusRow][ cthis->focusCol]->cnt.effects = EFF_FOCUS;
+		p_sheets[ cthis->focusRow][ cthis->focusCol]->cnt.effects = \
+			GP_SET_EFF( p_sheets[ cthis->focusRow][ cthis->focusCol]->cnt.effects, EFF_FOCUS);
 		Sheet_slide( p_sheets[ cthis->focusRow][ cthis->focusCol]);
 	}
 	

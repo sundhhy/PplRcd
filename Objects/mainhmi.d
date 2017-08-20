@@ -36,3 +36,4 @@
 .\objects\mainhmi.o: E:\mylib\sdhLib\inc\basis/assert.h
 .\objects\mainhmi.o: HMI\format.h
 .\objects\mainhmi.o: E:\mylib\sdhLib\inc\basis/assert.h
+.\objects\mainhmi.o: HMI\chnInfoPic.h

@@ -1008,6 +1008,16 @@
               <FileType>5</FileType>
               <FilePath>.\HMI\keyboardHMI.h</FilePath>
             </File>
+            <File>
+              <FileName>chnInfoPic.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\HMI\chnInfoPic.c</FilePath>
+            </File>
+            <File>
+              <FileName>chnInfoPic.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\HMI\chnInfoPic.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

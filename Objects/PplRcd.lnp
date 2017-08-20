@@ -51,6 +51,7 @@
 ".\objects\mainhmi.o"
 ".\objects\format.o"
 ".\objects\keyboardhmi.o"
+".\objects\chninfopic.o"
 ".\objects\modeltime.o"
 ".\objects\model.o"
 ".\objects\modelfactory.o"

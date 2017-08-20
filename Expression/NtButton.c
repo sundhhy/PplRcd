@@ -88,6 +88,8 @@ static void * BuInptSht( Expr *self, void *context, sheet *p_sht)
 	char	*att = expTempBUf;
 	Expr 	*p_exp ;
 	int 	ret = 0;
+	char	name[7];
+	char	nameLen = 7;
 	char 	tmpbuf[4] = {0};
 
 	GetAttribute( context, att, TEMPBUF_LEN);
@@ -101,9 +103,24 @@ static void * BuInptSht( Expr *self, void *context, sheet *p_sht)
 	p_sht->subAtt.numSubRow = 1;
 	p_sht->subAtt.numSubCol = 1;
 	
+	
+	
+	
 	p_sht->pp_sub[0] = Sheet_alloc( p_shtctl);
 	pnewPosition = RemoveHead( pnewPosition);
-	p_exp = ExpCreate( "text");
+	
+	
+	memset( expTempBUf, 0, sizeof( expTempBUf));
+	nameLen = GetName( pnewPosition, att, TEMPBUF_LEN);
+	if( nameLen == 0) {
+		return pnewPosition;
+	}
+	p_exp = ExpCreate( att);
+	if( p_exp == NULL){
+		return pnewPosition;
+	}
+			
+//	p_exp = ExpCreate( "text");
 	pnewPosition = p_exp->inptSht( p_exp, (void *)pnewPosition, p_sht->pp_sub[0]) ;
 	
 	

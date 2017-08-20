@@ -32,7 +32,7 @@ CLASS( cmmHmi)
 //------------------------------------------------------------------------------
 // global variable declarations
 //------------------------------------------------------------------------------
-extern	sheet			*g_p_shtTime;
+extern	sheet	*g_p_shtTime, *g_p_ico_memu, *g_p_ico_bar, *g_p_ico_digital, *g_p_ico_trend;
 extern hmiAtt_t	CmmHmiAtt;
 //------------------------------------------------------------------------------
 // function prototypes

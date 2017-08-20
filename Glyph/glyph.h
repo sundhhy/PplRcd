@@ -12,6 +12,12 @@
 #define TEXT_ST_LABLE					1    //子类型
 
 #define EFF_FOCUS				1  //被选选中
+#define EFF_HIDE				2  //被选选中
+
+#define GP_CKECK_EFF( eff, t)  ( eff & t)
+#define GP_SET_EFF( eff, t)  ( eff | t)
+#define GP_CLR_EFF( eff, t)  ( eff & ~t)
+
 
 //几何类的子类型
 //#define GMTR_ST_RCT					1    //矩形

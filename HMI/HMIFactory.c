@@ -63,7 +63,9 @@ HMI *CreateHMI( int hmiType)
 		case HMI_KYBRD:
 			
 			p_hmi = SUPER_PTR(  GetkeyboardHMI(), HMI);
-			break; 
+			break;
+
+
 		default:
 			break;
 	}

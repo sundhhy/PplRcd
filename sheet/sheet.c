@@ -343,7 +343,8 @@ static void Sheet_refreshsub( struct SHEET *p_sht)
 			p_shtCol = pp_shtRow0[j];
 			if( p_shtCol == NULL)
 				continue;
-			p_shtCol->cnt.effects = p_sht->cnt.effects;
+			if( GP_CKECK_EFF( p_sht->cnt.effects , EFF_FOCUS)) 
+				p_shtCol->cnt.effects = GP_SET_EFF( p_shtCol->cnt.effects, EFF_FOCUS);
 			p_shtCol->p_gp->vdraw( p_shtCol->p_gp, &p_shtCol->cnt, &p_shtCol->area);
 			
 		}

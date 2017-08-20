@@ -2,6 +2,7 @@
 #include <string.h>
 #include "ExpFactory.h"
 #include "utils/time.h"
+#include "format.h"
 
 
 
@@ -19,8 +20,12 @@
 // module global vars
 //------------------------------------------------------------------------------
 sheet			*g_p_shtTime;
+sheet			*g_p_ico_memu;
+sheet			*g_p_ico_bar;
+sheet			*g_p_ico_digital;
+sheet			*g_p_ico_trend;
 
-hmiAtt_t	CmmHmiAtt = { 10,1, COLOUR_BLACK, 4, 2};
+hmiAtt_t CmmHmiAtt = { 10,1, COLOUR_BLACK, 4, 2};
 //------------------------------------------------------------------------------
 // global function prototypes
 //------------------------------------------------------------------------------
@@ -36,6 +41,15 @@ hmiAtt_t	CmmHmiAtt = { 10,1, COLOUR_BLACK, 4, 2};
 
 
 const char timeCode[] = { "<time vx0=240 vy0=0 bx=60  by=24 f=24 xali=m bkc=black clr=yellow spr=/> </time>" };
+
+const char ico_memu[] = { "<bu vx0=2 vy0=200 bx=48 by=36 bkc=black clr=black><pic xali=m yali=m bx=32  by=32 >1</></bu>" };
+//进入棒图图标
+const char ico_bar[] = { "<bu vx0=52 vy0=200 bx=48 by=36 bkc=black clr=black><pic xali=m yali=m bx=32  by=32 >2</></bu>" };
+//进入数显画面图标
+const char ico_digital[] = { "<bu vx0=102 vy0=200 bx=48 by=36 bkc=black clr=black><pic xali=m yali=m bx=32  by=32 >3</></bu>" };
+//进入趋势画面图标
+const char ico_trend[] = { "<bu vx0=152 vy0=200 bx=48 by=36 bkc=black clr=black><pic xali=m yali=m bx=32  by=32 >4</></bu>" };
+
 //------------------------------------------------------------------------------
 // local types
 //------------------------------------------------------------------------------
@@ -88,7 +102,7 @@ static int	Init_cmmHmi( HMI *self, void *arg)
 	
 	g_p_shtTime = Sheet_alloc( p_shtctl);
 	
-	
+	//timer
 	p_exp = ExpCreate( "text");
 	p_exp->inptSht( p_exp, (void *)timeCode, g_p_shtTime) ;
 	
@@ -100,6 +114,34 @@ static int	Init_cmmHmi( HMI *self, void *arg)
 	g_p_shtTime->cnt.data = s_timer;
 	g_p_shtTime->cnt.len = strlen( s_timer);
 	
+	//图标初始化
+	p_exp = ExpCreate( "bu");
+
+	
+	//ico memu
+	g_p_ico_memu  = Sheet_alloc( p_shtctl);
+	p_exp->inptSht( p_exp, (void *)ico_memu, g_p_ico_memu) ;
+	g_p_ico_memu->area.x1 = g_p_ico_memu->area.x0 + g_p_ico_memu->bxsize;
+	g_p_ico_memu->area.y1 = g_p_ico_memu->area.y0 + g_p_ico_memu->bysize;
+	FormatSheetSub( g_p_ico_memu);
+	
+	g_p_ico_bar  = Sheet_alloc( p_shtctl);
+	p_exp->inptSht( p_exp, (void *)ico_bar, g_p_ico_bar) ;
+	g_p_ico_bar->area.x1 = g_p_ico_bar->area.x0 + g_p_ico_bar->bxsize;
+	g_p_ico_bar->area.y1 = g_p_ico_bar->area.y0 + g_p_ico_bar->bysize;
+	FormatSheetSub( g_p_ico_bar);
+	
+	g_p_ico_digital  = Sheet_alloc( p_shtctl);
+	p_exp->inptSht( p_exp, (void *)ico_digital, g_p_ico_digital) ;
+	g_p_ico_digital->area.x1 = g_p_ico_digital->area.x0 + g_p_ico_bar->bxsize;
+	g_p_ico_digital->area.y1 = g_p_ico_digital->area.y0 + g_p_ico_bar->bysize;
+	FormatSheetSub( g_p_ico_digital);
+	
+	g_p_ico_trend  = Sheet_alloc( p_shtctl);
+	p_exp->inptSht( p_exp, (void *)ico_trend, g_p_ico_trend) ;
+	g_p_ico_trend->area.x1 = g_p_ico_trend->area.x0 + g_p_ico_trend->bxsize;
+	g_p_ico_trend->area.y1 = g_p_ico_trend->area.y0 + g_p_ico_trend->bysize;
+	FormatSheetSub( g_p_ico_trend);
 	
 	return RET_OK;
 }

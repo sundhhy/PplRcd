@@ -1,16 +1,11 @@
-#ifndef _INC_HMIfactory_H_
-#define _INC_HMIfactory_H_
+#ifndef _INC_chnInfoPic_H_
+#define _INC_chnInfoPic_H_
+#include "HMI.h"
 
 //------------------------------------------------------------------------------
 // includes
 //------------------------------------------------------------------------------
 #include <stdint.h>
-#include "commHMI.h"
-#include "mainHMI.h"
-#include "keyboardHMI.h"
-
-
-
 //------------------------------------------------------------------------------
 // check for correct compilation options
 //------------------------------------------------------------------------------
@@ -18,19 +13,31 @@
 //------------------------------------------------------------------------------
 // const defines
 //------------------------------------------------------------------------------
-#define HMI_MAIN		1
-#define HMI_CMM			2
-#define HMI_KYBRD		3
+
+
  //------------------------------------------------------------------------------
 // typedef
 //------------------------------------------------------------------------------
+CLASS( chnInfoHmi)
+{
+	EXTENDS( HMI);
+	sheet  			**pp_shts;
+	
+	video_t		v;
+	uint8_t		focusRow;
+	uint8_t		focusCol;
+	uint8_t		offset_x;
+	uint8_t		offset_y;
+	
+};
 //------------------------------------------------------------------------------
 // global variable declarations
-
-
+//------------------------------------------------------------------------------
+sheet	*CIF_build_pic( char num, char total);
+void ChnInfo_Set_numChn( HMI *p_hmi, char	numchn);
+void ChnInfo_Set_view(HMI *p_hmi, video_t *p_v, uint16_t offset_x, uint16_t offset_y);
 //------------------------------------------------------------------------------
 // function prototypes
 //------------------------------------------------------------------------------
-HMI *CreateHMI( int type);
 
 #endif

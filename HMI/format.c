@@ -190,7 +190,7 @@ int FormatSheet( const hmiAtt_t *p_hmiAtt, video_t *p_v, sheet **pp_shts)
 		count_sht --;
 		
 		crdny += colSize[i] +  p_hmiAtt->rowGrap + empty;
-		freeYsize  = p_v->vysize  - crdn;
+		freeYsize  = p_v->vysize  - crdny;
 		
 		
 		
@@ -212,6 +212,9 @@ void FormatSheetSub( sheet *p_sht)
 	hmiAtt_t att;
 	short i = 0, j = 0;
 
+	if( p_sht == NULL)
+		return;
+	
 	v.vxsize = p_sht->area.x1 - p_sht->area.x0 - p_sht->area.offset_x * 2;
 	v.vysize = p_sht->area.y1 - p_sht->area.y0 - p_sht->area.offset_y * 2;
 	
@@ -232,9 +235,9 @@ void FormatSheetSub( sheet *p_sht)
 			if( p_shtCol == NULL)
 				continue;
 			p_shtCol->area.x0 += p_sht->area.x0 + p_sht->area.offset_x;
-			p_shtCol->area.x1 += p_sht->area.x0 ;
+			p_shtCol->area.x1 += p_sht->area.x0 + p_sht->area.offset_x;
 			p_shtCol->area.y0 += p_sht->area.y0 + p_sht->area.offset_y;
-			p_shtCol->area.y1 += p_sht->area.y0;
+			p_shtCol->area.y1 += p_sht->area.y0 + p_sht->area.offset_y;
 		}
 		
 	}
