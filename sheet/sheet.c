@@ -296,6 +296,17 @@ void Sheet_free( struct SHEET *p_sht)
     return;
     
 }
+
+//void Sheet_copy_area( struct SHEET *p_dstsht, struct SHEET *p_srcsht)
+//{
+//	
+//	p_dstsht->area.x0 = p_srcsht->area.x0;
+//	p_dstsht->area.x1 = p_srcsht->area.x1;
+//	p_dstsht->area.x0 = p_srcsht->area.x0;
+//	p_dstsht->area.x0 = p_srcsht->area.x0;
+
+//	
+//}
 shtDefCmd *Get_shtDefCmd(void)
 {
 	if( signal_cmd == NULL)
@@ -345,6 +356,8 @@ static void Sheet_refreshsub( struct SHEET *p_sht)
 				continue;
 			if( GP_CKECK_EFF( p_sht->cnt.effects , EFF_FOCUS)) 
 				p_shtCol->cnt.effects = GP_SET_EFF( p_shtCol->cnt.effects, EFF_FOCUS);
+			else 
+				p_shtCol->cnt.effects = GP_CLR_EFF( p_shtCol->cnt.effects, EFF_FOCUS);
 			p_shtCol->p_gp->vdraw( p_shtCol->p_gp, &p_shtCol->cnt, &p_shtCol->area);
 			
 		}

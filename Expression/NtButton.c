@@ -133,6 +133,10 @@ static void * BuInptSht( Expr *self, void *context, sheet *p_sht)
 		p_sht->area.offset_y = 3;
 		
 		
+	} else {
+		p_sht->area.offset_x = 1;
+		p_sht->area.offset_y = 1;
+		
 	}
 	
 

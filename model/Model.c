@@ -104,6 +104,21 @@ void Mdl_notify (Model *self)
 	List_map( self->tObs, DoUpdate, NULL);
 }
 
+void Mdl_unit_to_string( char unit, char *buf, int len)
+{
+	switch( unit)
+	{
+		case 0:
+			strncpy( buf, "m3/h", len);
+			break;
+		default:
+			strncpy( buf, "m3/h", len);
+			break;
+		
+	}
+	
+}
+
 //=========================================================================//
 //                                                                         //
 //          P R I V A T E   D E F I N I T I O N S                          //
@@ -123,3 +138,5 @@ FUNCTION_SETTING( delTmMdl, Mdl_delTmMdl);
 FUNCTION_SETTING( notify, Mdl_notify);
 
 END_ABS_CTOR
+
+

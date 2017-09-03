@@ -22,10 +22,11 @@
 .\objects\keyboardhmi.o: .\device\dev_cmd.h
 .\objects\keyboardhmi.o: .\device\dev_char.h
 .\objects\keyboardhmi.o: .\device\dev_lcd.h
-.\objects\keyboardhmi.o: .\MVC\ModelFactory.h
-.\objects\keyboardhmi.o: .\MVC\Model.h
+.\objects\keyboardhmi.o: .\model\ModelFactory.h
+.\objects\keyboardhmi.o: .\model\Model.h
 .\objects\keyboardhmi.o: E:\mylib\sdhLib\inc\arithmetic/list.h
 .\objects\keyboardhmi.o: E:\mylib\sdhLib\inc\basis/assert.h
+.\objects\keyboardhmi.o: .\model\ModelTest.h
 .\objects\keyboardhmi.o: HMI\commHMI.h
 .\objects\keyboardhmi.o: .\Expression\ExpFactory.h
 .\objects\keyboardhmi.o: .\Expression\expression.h

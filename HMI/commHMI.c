@@ -1,6 +1,8 @@
 #include "commHMI.h"
 #include <string.h>
 #include "ExpFactory.h"
+#include "HMIFactory.h"
+
 #include "utils/time.h"
 #include "format.h"
 
@@ -42,13 +44,13 @@ hmiAtt_t CmmHmiAtt = { 10,1, COLOUR_BLACK, 4, 2};
 
 const char timeCode[] = { "<time vx0=240 vy0=0 bx=60  by=24 f=24 xali=m bkc=black clr=yellow spr=/> </time>" };
 
-const char ico_memu[] = { "<bu vx0=2 vy0=200 bx=48 by=36 bkc=black clr=black><pic xali=m yali=m bx=32  by=32 >1</></bu>" };
+const char ico_memu[] = { "<bu vx0=10 vy0=206 bx=33 by=33 bkc=black clr=black><pic  bx=32  by=32 >1</></bu>" };
 //进入棒图图标
-const char ico_bar[] = { "<bu vx0=52 vy0=200 bx=48 by=36 bkc=black clr=black><pic xali=m yali=m bx=32  by=32 >2</></bu>" };
+const char ico_bar[] = { "<bu vx0=50 vy0=206 bx=33 by=33 bkc=black clr=black><pic  bx=32  by=32 >2</></bu>" };
 //进入数显画面图标
-const char ico_digital[] = { "<bu vx0=102 vy0=200 bx=48 by=36 bkc=black clr=black><pic xali=m yali=m bx=32  by=32 >3</></bu>" };
+const char ico_digital[] = { "<bu vx0=90 vy0=206 bx=33 by=33bkc=black clr=black><pic  bx=32  by=32 >3</></bu>" };
 //进入趋势画面图标
-const char ico_trend[] = { "<bu vx0=152 vy0=200 bx=48 by=36 bkc=black clr=black><pic xali=m yali=m bx=32  by=32 >4</></bu>" };
+const char ico_trend[] = { "<bu vx0=130 vy0=206 bx=33 by=33 bkc=black clr=black><pic  bx=32  by=32 >4</></bu>" };
 
 //------------------------------------------------------------------------------
 // local types
@@ -94,12 +96,15 @@ END_CTOR
 static int	Init_cmmHmi( HMI *self, void *arg)
 {
 //	cmmHmi	*cthis = SUB_PTR( self, HMI, cmmHmi);
+	HMI 		*p_hmi;
+	menuHMI		*menuHmi ;
+	barGhHMI	*barHmi ;
 	shtctl *p_shtctl = NULL;
 	Expr *p_exp ;
 	
+	
+	//初始化共用图层
 	p_shtctl = GetShtctl();
-	
-	
 	g_p_shtTime = Sheet_alloc( p_shtctl);
 	
 	//timer
@@ -118,18 +123,20 @@ static int	Init_cmmHmi( HMI *self, void *arg)
 	p_exp = ExpCreate( "bu");
 
 	
-	//ico memu
+	//初始化公用图标
 	g_p_ico_memu  = Sheet_alloc( p_shtctl);
 	p_exp->inptSht( p_exp, (void *)ico_memu, g_p_ico_memu) ;
 	g_p_ico_memu->area.x1 = g_p_ico_memu->area.x0 + g_p_ico_memu->bxsize;
 	g_p_ico_memu->area.y1 = g_p_ico_memu->area.y0 + g_p_ico_memu->bysize;
 	FormatSheetSub( g_p_ico_memu);
 	
+	
 	g_p_ico_bar  = Sheet_alloc( p_shtctl);
 	p_exp->inptSht( p_exp, (void *)ico_bar, g_p_ico_bar) ;
 	g_p_ico_bar->area.x1 = g_p_ico_bar->area.x0 + g_p_ico_bar->bxsize;
 	g_p_ico_bar->area.y1 = g_p_ico_bar->area.y0 + g_p_ico_bar->bysize;
 	FormatSheetSub( g_p_ico_bar);
+	
 	
 	g_p_ico_digital  = Sheet_alloc( p_shtctl);
 	p_exp->inptSht( p_exp, (void *)ico_digital, g_p_ico_digital) ;
@@ -142,6 +149,21 @@ static int	Init_cmmHmi( HMI *self, void *arg)
 	g_p_ico_trend->area.x1 = g_p_ico_trend->area.x0 + g_p_ico_trend->bxsize;
 	g_p_ico_trend->area.y1 = g_p_ico_trend->area.y0 + g_p_ico_trend->bysize;
 	FormatSheetSub( g_p_ico_trend);
+	
+	
+	//创建与公用图标相关的界面
+	p_hmi = CreateHMI( HMI_MENU);
+	p_hmi->init( p_hmi, NULL);
+	menuHmi = SUB_PTR( p_hmi, HMI, menuHMI);
+	
+	p_hmi = CreateHMI( HMI_BAR);
+	p_hmi->init( p_hmi, NULL);
+	barHmi = SUB_PTR( p_hmi, HMI, barGhHMI);
+	
+	
+	//将图标动作与相关界面处理绑定
+	g_p_ico_memu->p_enterCmd = &menuHmi->shtCmd;
+	g_p_ico_bar->p_enterCmd = &barHmi->shtCmd;
 	
 	return RET_OK;
 }

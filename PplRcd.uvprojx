@@ -1018,40 +1018,70 @@
               <FileType>5</FileType>
               <FilePath>.\HMI\chnInfoPic.h</FilePath>
             </File>
+            <File>
+              <FileName>menuHMI.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\HMI\menuHMI.c</FilePath>
+            </File>
+            <File>
+              <FileName>menuHMI.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\HMI\menuHMI.h</FilePath>
+            </File>
+            <File>
+              <FileName>barGraphHmi.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\HMI\barGraphHmi.c</FilePath>
+            </File>
+            <File>
+              <FileName>barGraphHmi.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\HMI\barGraphHmi.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
           <GroupName>model</GroupName>
           <Files>
             <File>
-              <FileName>ModelTime.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\MVC\ModelTime.h</FilePath>
-            </File>
-            <File>
-              <FileName>ModelTime.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\MVC\ModelTime.c</FilePath>
-            </File>
-            <File>
-              <FileName>Model.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\MVC\Model.h</FilePath>
-            </File>
-            <File>
               <FileName>Model.c</FileName>
               <FileType>1</FileType>
-              <FilePath>.\MVC\Model.c</FilePath>
+              <FilePath>.\model\Model.c</FilePath>
             </File>
             <File>
               <FileName>ModelFactory.c</FileName>
               <FileType>1</FileType>
-              <FilePath>.\MVC\ModelFactory.c</FilePath>
+              <FilePath>.\model\ModelFactory.c</FilePath>
+            </File>
+            <File>
+              <FileName>ModelTime.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\model\ModelTime.c</FilePath>
+            </File>
+            <File>
+              <FileName>Model.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\model\Model.h</FilePath>
             </File>
             <File>
               <FileName>ModelFactory.h</FileName>
               <FileType>5</FileType>
-              <FilePath>.\MVC\ModelFactory.h</FilePath>
+              <FilePath>.\model\ModelFactory.h</FilePath>
+            </File>
+            <File>
+              <FileName>ModelTime.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\model\ModelTime.h</FilePath>
+            </File>
+            <File>
+              <FileName>ModelTest.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\model\ModelTest.h</FilePath>
+            </File>
+            <File>
+              <FileName>ModelTest.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\model\ModelTest.c</FilePath>
             </File>
           </Files>
         </Group>

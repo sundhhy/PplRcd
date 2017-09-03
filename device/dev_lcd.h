@@ -7,12 +7,12 @@
 #define IS_TAB( c) ( c == '\r')
 
 
-#define FONT_12			1
-#define FONT_16			2
-#define FONT_24			3
-#define FONT_32			4
-#define FONT_48			5
-#define FONT_64			6
+#define FONT_12			12
+#define FONT_16			16
+#define FONT_24			24
+#define FONT_32			32
+#define FONT_48			48
+#define FONT_64			64
 #define FONT_ERR		0xf
 
 #define DEF_FONT		FONT_12
@@ -24,6 +24,7 @@
 #define COLOUR_GREN			2
 #define COLOUR_BLUE			3
 #define COLOUR_YELLOW		4
+#define COLOUR_BABYBLUE		5		//Ç³À¶É«
 #define COLOUR_GRAY			8
 #define COLOUR_PURPLE		6	//×ÏÉ«
 #define COLOUR_WHITE		18
@@ -58,7 +59,7 @@ typedef struct{
 	int ( *open)( void);
 	int ( *close)( void);
 	int ( *Clear)( int c);
-	int ( *wrString)( char *string,  int len, int x, int y, int font, char c);
+	int ( *wrString)( char m, char *string,  int len, int x, int y, int font, char c);
 	int ( *label)( char *string,  int len, scArea_t *area, int font, char c, char ali);
 	void ( *BKColor)( char c);
 	int ( *Box)( int x1, int y1, int x2, int y2, char type, char c);
@@ -66,6 +67,7 @@ typedef struct{
 	void ( *getScrnSize)( uint16_t *xsize, uint16_t *ysize);
 	void ( *picture)( int x1, int y1, char num);
 	void ( *cutPicture)( short x1, short y1, char num, short px1, short py1, char w, char h);
+	void ( *bkPicture)( char m, short x1, short y1, char num);
 }I_dev_lcd;
 
 int DevLCD_open( int major, int minor, void **dev);

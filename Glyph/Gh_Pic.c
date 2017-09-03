@@ -86,7 +86,10 @@ static void GhPic_vDraw( Glyph *self, dspContent_t *cnt, vArea_t *area)
 	if( cnt->subType == SUBTYPE_CPIC) {
 		lcd->cutPicture( area->x0 + area->offset_x, area->y0 + area->offset_y, num, \
 		area->x0, area->y0, ( area->x1 - area->x0), ( area->y1 - area->y0));
-	} else {
+	} else if( cnt->subType == SUBTYPE_BPIC) {
+		lcd->bkPicture( cnt->bkc, area->x0, area->y0, num);
+	}
+	else {
 		
 		lcd->picture( area->x0, area->y0, num);
 	}

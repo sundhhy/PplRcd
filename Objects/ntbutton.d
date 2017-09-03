@@ -24,9 +24,10 @@
 .\objects\ntbutton.o: E:\mylib\sdhLib\inc\basis/except.h
 .\objects\ntbutton.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\setjmp.h
 .\objects\ntbutton.o: .\sheet\sheet.h
-.\objects\ntbutton.o: .\MVC\ModelFactory.h
-.\objects\ntbutton.o: .\MVC\Model.h
+.\objects\ntbutton.o: .\model\ModelFactory.h
+.\objects\ntbutton.o: .\model\Model.h
 .\objects\ntbutton.o: E:\mylib\sdhLib\inc\basis/assert.h
+.\objects\ntbutton.o: .\model\ModelTest.h
 .\objects\ntbutton.o: Expression\ExpFactory.h
 .\objects\ntbutton.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
 .\objects\ntbutton.o: .\Glyph\Gh_Rectangle.h

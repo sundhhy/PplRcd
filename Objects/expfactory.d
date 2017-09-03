@@ -24,9 +24,10 @@
 .\objects\expfactory.o: E:\mylib\sdhLib\inc\basis/except.h
 .\objects\expfactory.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\setjmp.h
 .\objects\expfactory.o: .\sheet\sheet.h
-.\objects\expfactory.o: .\MVC\ModelFactory.h
-.\objects\expfactory.o: .\MVC\Model.h
+.\objects\expfactory.o: .\model\ModelFactory.h
+.\objects\expfactory.o: .\model\Model.h
 .\objects\expfactory.o: E:\mylib\sdhLib\inc\basis/assert.h
+.\objects\expfactory.o: .\model\ModelTest.h
 .\objects\expfactory.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
 .\objects\expfactory.o: Expression\TxtExpr.h
 .\objects\expfactory.o: Expression\NtButton.h

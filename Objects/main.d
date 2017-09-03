@@ -38,8 +38,8 @@
 .\objects\main.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
 .\objects\main.o: .\device\dev_lcd.h
 .\objects\main.o: TDD.h
-.\objects\main.o: .\MVC\ModelFactory.h
-.\objects\main.o: .\MVC\Model.h
+.\objects\main.o: .\model\ModelFactory.h
+.\objects\main.o: .\model\Model.h
 .\objects\main.o: E:\mylib\sdhLib\inc\arithmetic/list.h
 .\objects\main.o: E:\mylib\sdhLib\inc\sdhDef.h
 .\objects\main.o: ..\PplRcd\sdhlibConf.h
@@ -47,6 +47,7 @@
 .\objects\main.o: E:\mylib\sdhLib\inc\basis/assert.h
 .\objects\main.o: E:\mylib\sdhLib\inc\basis/except.h
 .\objects\main.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\setjmp.h
+.\objects\main.o: .\model\ModelTest.h
 .\objects\main.o: HMI/HMIFactory.h
 .\objects\main.o: HMI/commHMI.h
 .\objects\main.o: HMI/HMI.h
@@ -55,6 +56,8 @@
 .\objects\main.o: .\Glyph\glyph.h
 .\objects\main.o: HMI/mainHMI.h
 .\objects\main.o: HMI/keyboardHMI.h
+.\objects\main.o: HMI/menuHMI.h
+.\objects\main.o: HMI/barGraphHMI.h
 .\objects\main.o: control/CtlKey.h
 .\objects\main.o: control/Controller.h
 .\objects\main.o: ..\PplRcd\utils/keyboard.h

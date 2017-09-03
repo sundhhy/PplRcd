@@ -22,8 +22,9 @@
 .\objects\format.o: .\device\dev_cmd.h
 .\objects\format.o: .\device\dev_char.h
 .\objects\format.o: .\device\dev_lcd.h
-.\objects\format.o: .\MVC\ModelFactory.h
-.\objects\format.o: .\MVC\Model.h
+.\objects\format.o: .\model\ModelFactory.h
+.\objects\format.o: .\model\Model.h
 .\objects\format.o: E:\mylib\sdhLib\inc\arithmetic/list.h
 .\objects\format.o: E:\mylib\sdhLib\inc\basis/assert.h
+.\objects\format.o: .\model\ModelTest.h
 .\objects\format.o: E:\mylib\sdhLib\inc\basis/assert.h

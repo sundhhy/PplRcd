@@ -101,26 +101,37 @@ END_CTOR
 static void GhTxt_vDraw( Glyph *self, dspContent_t *cnt, vArea_t *area)
 {
 	I_dev_lcd *lcd;
+	char	m = -1;
 	uint8_t	c = cnt->colour;
+	uint8_t	bkc = cnt->bkc;
+	
 	if( GP_CKECK_EFF( cnt->effects , EFF_HIDE))
 		return;
 	
-	if( GP_CKECK_EFF( cnt->effects , EFF_FOCUS))
+	if( GP_CKECK_EFF( cnt->effects , EFF_FOCUS)) {
 		c = ColorInvert( c);
+		bkc  = ColorInvert( c);
+	}
+	
+	if( GP_CKECK_EFF( cnt->effects , EFF_BKPIC)) {
+		m = bkc;
+		
+	}
 	
 	Dev_open( LCD_DEVID, (void *)&lcd);
 //	if( cnt->bkc != ERR_COLOUR  )
 //		lcd->Box( area->x0, area->y0, area->x1, area->y1, 1, cnt->bkc);
-		lcd->BKColor( cnt->bkc);
+		lcd->BKColor( bkc);
 	
 	if( cnt->subType == TEXT_ST_LABLE)
 	{
-		lcd->label( cnt->data, cnt->len,( scArea_t *)area, cnt->font,cnt->colour, area->alix);
+		lcd->label( cnt->data, cnt->len,( scArea_t *)area, cnt->font,c, area->alix);
 		
 	}
 	else
 	{
-		lcd->wrString( cnt->data, cnt->len, area->x0, area->y0, cnt->font,cnt->colour);
+		
+		lcd->wrString( m, cnt->data, cnt->len, area->x0, area->y0, cnt->font,c);
 		
 	}
 //	if( cnt->bkc != ERR_COLOUR && cnt->bkc != area->curScInfo->scBkc )

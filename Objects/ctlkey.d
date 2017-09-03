@@ -42,7 +42,8 @@
 .\objects\ctlkey.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\setjmp.h
 .\objects\ctlkey.o: .\sheet\sheet.h
 .\objects\ctlkey.o: .\Glyph\glyph.h
-.\objects\ctlkey.o: .\MVC\ModelFactory.h
-.\objects\ctlkey.o: .\MVC\Model.h
+.\objects\ctlkey.o: .\model\ModelFactory.h
+.\objects\ctlkey.o: .\model\Model.h
 .\objects\ctlkey.o: E:\mylib\sdhLib\inc\arithmetic/list.h
 .\objects\ctlkey.o: E:\mylib\sdhLib\inc\basis/assert.h
+.\objects\ctlkey.o: .\model\ModelTest.h

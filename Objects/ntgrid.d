@@ -24,9 +24,10 @@
 .\objects\ntgrid.o: E:\mylib\sdhLib\inc\basis/except.h
 .\objects\ntgrid.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\setjmp.h
 .\objects\ntgrid.o: .\sheet\sheet.h
-.\objects\ntgrid.o: .\MVC\ModelFactory.h
-.\objects\ntgrid.o: .\MVC\Model.h
+.\objects\ntgrid.o: .\model\ModelFactory.h
+.\objects\ntgrid.o: .\model\Model.h
 .\objects\ntgrid.o: E:\mylib\sdhLib\inc\basis/assert.h
+.\objects\ntgrid.o: .\model\ModelTest.h
 .\objects\ntgrid.o: Expression\ExpFactory.h
 .\objects\ntgrid.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
 .\objects\ntgrid.o: .\Glyph\Gh_Rectangle.h

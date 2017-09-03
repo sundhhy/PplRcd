@@ -24,9 +24,10 @@
 .\objects\dyn_timeexpr.o: E:\mylib\sdhLib\inc\basis/except.h
 .\objects\dyn_timeexpr.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\setjmp.h
 .\objects\dyn_timeexpr.o: .\sheet\sheet.h
-.\objects\dyn_timeexpr.o: .\MVC\ModelFactory.h
-.\objects\dyn_timeexpr.o: .\MVC\Model.h
+.\objects\dyn_timeexpr.o: .\model\ModelFactory.h
+.\objects\dyn_timeexpr.o: .\model\Model.h
 .\objects\dyn_timeexpr.o: E:\mylib\sdhLib\inc\basis/assert.h
+.\objects\dyn_timeexpr.o: .\model\ModelTest.h
 .\objects\dyn_timeexpr.o: .\Glyph\Gh_txt.h
 .\objects\dyn_timeexpr.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
 .\objects\dyn_timeexpr.o: E:\mylib\sdhLib\inc\mem/CiiMem.h

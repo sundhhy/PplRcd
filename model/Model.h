@@ -36,7 +36,8 @@ ABS_CLASS( Model)
 	void	*dataSource;
 	Model	*teamMdl;
 	short	crDt_len;
-	char	none[2];
+	char	uint;
+	char	none;
 	
 	abstract int (*init)( Model *self, IN void *arg);
 	
@@ -51,6 +52,8 @@ ABS_CLASS( Model)
 	
 	void (*notify)( Model *self);
 	
+	char *(*to_string)( Model *self,IN int aux, void *arg);		//数值转换成字符串
+	int  (*to_percentage)( Model *self, void *arg);		//数值转换成百分比
 };
 
 //------------------------------------------------------------------------------
@@ -72,7 +75,7 @@ extern const Except_T model_Failed;
 
 
 
-
+void Mdl_unit_to_string( char unit, char *buf, int len);
 
 
 

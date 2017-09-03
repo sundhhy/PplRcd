@@ -21,6 +21,7 @@
 // module global vars
 //------------------------------------------------------------------------------
 
+HMI *g_p_mainHmi;
 
 //------------------------------------------------------------------------------
 // global function prototypes
@@ -53,6 +54,7 @@ static ro_char p_title[] = { "<title bkc=blue clr=white f=24 xali=l>总貌画面</> 
 const hmiAtt_t	mainHmiAtt = { 1,0, COLOUR_GRAY, CHN_ROW + 2, CHN_COL};
 static sheet *p_sheets[ CHN_ROW + 2][CHN_COL] =  {NULL};
 
+static sheet *arr_p_focus[ 4] =  {NULL};
 //------------------------------------------------------------------------------
 // local types
 //------------------------------------------------------------------------------
@@ -60,8 +62,7 @@ static sheet *p_sheets[ CHN_ROW + 2][CHN_COL] =  {NULL};
 //------------------------------------------------------------------------------
 // local vars
 //------------------------------------------------------------------------------
-
-
+static mainHmi *signal_mainHmi;
 //------------------------------------------------------------------------------
 // local function prototypes
 //------------------------------------------------------------------------------
@@ -72,9 +73,23 @@ static void MainHmiHide( HMI *self );
 static void MaininitSheet( HMI *self );
 
 static void BuildChnInfoPic( sheet *arr_p_sheets[ CHN_ROW + 2][CHN_COL], char total);
+
+static void MainHmi_InitFouse( HMI *self );
+static void MainHmi_ClearFocuse( HMI *self, uint8_t fouse_row, uint8_t fouse_col);
+static void MainHmi_ShowFocuse( HMI *self, uint8_t fouse_row, uint8_t fouse_col);
 //============================================================================//
 //            P U B L I C   F U N C T I O N S                                 //
 //============================================================================//
+mainHmi *Get_mainHmi(void) 
+{
+	if( signal_mainHmi == NULL)
+	{
+		signal_mainHmi = mainHmi_new();
+		g_p_mainHmi = SUPER_PTR( signal_mainHmi, HMI);
+	}
+	
+	return signal_mainHmi;
+}
 
 CTOR( mainHmi)
 SUPER_CTOR( HMI);
@@ -84,6 +99,10 @@ FUNCTION_SETTING( HMI.initSheet, MaininitSheet);
 
 FUNCTION_SETTING( HMI.show, MainHmiShow);
 FUNCTION_SETTING( HMI.hitHandle, MainHitHandle);
+
+FUNCTION_SETTING( HMI.init_focus, MainHmi_InitFouse);
+FUNCTION_SETTING( HMI.clear_focus, MainHmi_ClearFocuse);
+FUNCTION_SETTING( HMI.show_focus, MainHmi_ShowFocuse);
 
 END_CTOR
 //=========================================================================//
@@ -174,8 +193,7 @@ static int	Init_mainHmi( HMI *self, void *arg)
 
 
 
-//	cthis->focusCol = 0;
-//	cthis->focusRow = 1;
+
 
 
 	for( i = 1; i < CHN_ROW + 1; i++) {
@@ -184,6 +202,9 @@ static int	Init_mainHmi( HMI *self, void *arg)
 		}
 		
 	}
+	
+	//初始化焦点
+	self->init_focus(self);
 	
 	return RET_OK;
 	
@@ -212,6 +233,7 @@ static void BuildChnInfoPic( sheet *arr_p_sheets[ CHN_ROW + 2][CHN_COL], char to
 }
 static void MainHmiHide( HMI *self )
 {
+	mainHmi		*cthis = SUB_PTR( self, HMI, mainHmi);
 	int i, j;
 	Sheet_updown( g_p_ico_trend, -1);
 	Sheet_updown( g_p_ico_digital, -1);
@@ -227,11 +249,13 @@ static void MainHmiHide( HMI *self )
 	Sheet_updown(  p_sheets[0][0], -1);
 	Sheet_updown( g_p_shtTime, -1);
 	
+	self->clear_focus( self, cthis->focusRow, cthis->focusCol);
 	
 }	
 
 static void MaininitSheet( HMI *self )
 {
+	
 	int i, j, h;;
 	
 	h = 0;
@@ -262,6 +286,7 @@ static void	MainHmiShow( HMI *self )
 	Dev_open( LCD_DEVID, (void *)&p_lcd);
 	p_lcd->Clear( mainHmiAtt.bkc);
 	Sheet_refresh( *cthis->pp_shts);
+	self->show_focus( self, cthis->focusRow, cthis->focusCol);
 }
 
 static void	MainHitHandle( HMI *self, char *s)
@@ -275,47 +300,57 @@ static void	MainHitHandle( HMI *self, char *s)
 
 	if( !strcmp( s, HMIKEY_UP) )
 	{
-		if( cthis->focusRow > 1)
-			cthis->focusRow --;
-		else
-		{
-			cthis->focusRow = 3;
-		}
-		chgFouse = 1;
+
 	}
 	else if( !strcmp( s, HMIKEY_DOWN) )
 	{
-		cthis->focusRow ++;
-		if( cthis->focusRow >3)
-			cthis->focusRow = 1;
-		chgFouse = 1;
+		
 	}
 	else if( !strcmp( s, HMIKEY_LEFT))
 	{
-		
+		if( cthis->focusCol > 0)
+			cthis->focusCol --;
+		else
+		{
+			cthis->focusCol = 3;
+		}
+		chgFouse = 1;
 	}
 	else if( !strcmp( s, HMIKEY_RIGHT))
 	{
-		
+		cthis->focusCol ++;
+		if( cthis->focusCol > 3)
+			cthis->focusCol = 0;
+		chgFouse = 1;
 	}
 	
 	if( chgFouse)
 	{
 		
 		//清除旧的焦点
-		p_sheets[ focusRow][ focusCol]->cnt.effects = GP_CLR_EFF( p_sheets[ focusRow][ focusCol]->cnt.effects, EFF_FOCUS);
-		Sheet_slide( p_sheets[ focusRow][ focusCol]);
+////		p_sheets[ focusRow][ focusCol]->cnt.effects = GP_CLR_EFF( p_sheets[ focusRow][ focusCol]->cnt.effects, EFF_FOCUS);
+////		Sheet_slide( p_sheets[ focusRow][ focusCol]);
+//		arr_p_focus[ focusCol]->cnt.effects = GP_CLR_EFF( arr_p_focus[ focusCol]->cnt.effects, EFF_FOCUS);
+//		Sheet_slide( arr_p_focus[ focusCol]);
+//		
+//		//显示新的焦点
+////		p_sheets[ cthis->focusRow][ cthis->focusCol]->cnt.effects = \
+////			GP_SET_EFF( p_sheets[ cthis->focusRow][ cthis->focusCol]->cnt.effects, EFF_FOCUS);
+////		Sheet_slide( p_sheets[ cthis->focusRow][ cthis->focusCol]);
+//		
+//		arr_p_focus[ cthis->focusCol]->cnt.effects = GP_SET_EFF( arr_p_focus[ cthis->focusCol]->cnt.effects, EFF_FOCUS);
+//		Sheet_slide( arr_p_focus[ cthis->focusCol]);
 		
-		//显示新的焦点
-		p_sheets[ cthis->focusRow][ cthis->focusCol]->cnt.effects = \
-			GP_SET_EFF( p_sheets[ cthis->focusRow][ cthis->focusCol]->cnt.effects, EFF_FOCUS);
-		Sheet_slide( p_sheets[ cthis->focusRow][ cthis->focusCol]);
+		
+		self->clear_focus(self, focusRow, focusCol);
+		self->show_focus(self, cthis->focusRow, cthis->focusCol);
+		
 	}
 	
 	if( !strcmp( s, HMIKEY_ENTER))
 	{
-		p_cmd = p_sheets[ cthis->focusRow][ cthis->focusCol]->p_enterCmd;
-		p_cmd->shtExcute( p_cmd, p_sheets[ cthis->focusRow][ cthis->focusCol], self);
+		p_cmd = arr_p_focus[ cthis->focusCol]->p_enterCmd;
+		p_cmd->shtExcute( p_cmd, arr_p_focus[ cthis->focusCol], self);
 	}
 	if( !strcmp( s, HMIKEY_ESC))
 	{
@@ -324,6 +359,39 @@ static void	MainHitHandle( HMI *self, char *s)
 	
 }
 
+
+//焦点操作
+static void MainHmi_InitFouse( HMI *self )
+{
+	mainHmi		*cthis = SUB_PTR( self, HMI, mainHmi);
+	
+	arr_p_focus[0] = g_p_ico_memu;
+	arr_p_focus[1] = g_p_ico_bar;
+	arr_p_focus[2] = g_p_ico_digital;
+	arr_p_focus[3] = g_p_ico_trend;
+	
+	cthis->focusCol = 0;
+	g_p_ico_memu->cnt.effects = GP_SET_EFF( g_p_ico_memu->cnt.effects, EFF_FOCUS);
+	
+}
+
+
+static void MainHmi_ClearFocuse( HMI *self, uint8_t fouse_row, uint8_t fouse_col)
+{
+	mainHmi		*cthis = SUB_PTR( self, HMI, mainHmi);
+	sheet  			*p_fouse = arr_p_focus[ fouse_col];
+	
+	p_fouse->cnt.effects = GP_CLR_EFF( p_fouse->cnt.effects, EFF_FOCUS);
+	Sheet_slide( p_fouse);
+}
+static void MainHmi_ShowFocuse( HMI *self, uint8_t fouse_row, uint8_t fouse_col)
+{
+	mainHmi		*cthis = SUB_PTR( self, HMI, mainHmi);
+	sheet  			*p_fouse = arr_p_focus[ fouse_col];
+	
+	p_fouse->cnt.effects = GP_SET_EFF( p_fouse->cnt.effects, EFF_FOCUS);
+	Sheet_slide( p_fouse);
+}
 
 
 

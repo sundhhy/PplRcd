@@ -52,11 +52,11 @@ const char KEY_backspace	=		-2;
 const char KEY_GO			=		-3;
 const char KEY_Return		=		-4;
 
-const char virKey_uppercase_Code[] = { "<pic vx0=0 vy0=40 >16</>" };
-const char virKey_uppercaseFocus_Code[] = { "<cpic vx0=0 vy0=0 >17</>" };
+const char virKey_uppercase_Code[] = { "<pic vx0=0 vy0=40 >15</>" };
+const char virKey_uppercaseFocus_Code[] = { "<cpic vx0=0 vy0=0 >16</>" };
 
-const char virKey_digit_Code[] = { "<pic vx0=0 vy0=40 >18</>" };
-const char virKey_digitFocus_Code[] = { "<cpic vx0=0 vy0=0 >19</>" };
+const char virKey_digit_Code[] = { "<pic vx0=0 vy0=40 >17</>" };
+const char virKey_digitFocus_Code[] = { "<cpic vx0=0 vy0=0 >18</>" };
 
 
 const char edit_TxtCode[] = { "<text clr=white > </>" };

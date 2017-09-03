@@ -169,6 +169,18 @@ int String2Colour( char *s)
 	return c;
 }
 
+int	String2CntEff( char *s)
+{
+	char s_eff[8] = {0};
+	int eff = 0xff;
+	
+	if( GetKeyVal( s, "m", s_eff, 8)) {
+		eff = atoi( s);
+	}
+	
+	
+	return eff;
+}
 
 int	String2Bkc( char *s)
 {
@@ -270,14 +282,7 @@ int	DefaultColour( void *arg)
 	
 }
 
-int	String2CntEff( char *s)
-{
-	int eff = 0;
-	
-	
-	
-	return eff;
-}
+
 
 
 //key=val or key = val 否则返回直接返回0

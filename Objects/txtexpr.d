@@ -24,8 +24,9 @@
 .\objects\txtexpr.o: E:\mylib\sdhLib\inc\basis/except.h
 .\objects\txtexpr.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\setjmp.h
 .\objects\txtexpr.o: .\sheet\sheet.h
-.\objects\txtexpr.o: .\MVC\ModelFactory.h
-.\objects\txtexpr.o: .\MVC\Model.h
+.\objects\txtexpr.o: .\model\ModelFactory.h
+.\objects\txtexpr.o: .\model\Model.h
 .\objects\txtexpr.o: E:\mylib\sdhLib\inc\basis/assert.h
+.\objects\txtexpr.o: .\model\ModelTest.h
 .\objects\txtexpr.o: .\Glyph\Gh_txt.h
 .\objects\txtexpr.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h

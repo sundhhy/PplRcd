@@ -8,6 +8,8 @@
 #include "commHMI.h"
 #include "mainHMI.h"
 #include "keyboardHMI.h"
+#include "menuHMI.h"
+#include "barGraphHMI.h"
 
 
 
@@ -21,6 +23,8 @@
 #define HMI_MAIN		1
 #define HMI_CMM			2
 #define HMI_KYBRD		3
+#define HMI_MENU		4
+#define HMI_BAR			5
  //------------------------------------------------------------------------------
 // typedef
 //------------------------------------------------------------------------------

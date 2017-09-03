@@ -1,10 +1,10 @@
-.\objects\modelfactory.o: MVC\ModelFactory.c
-.\objects\modelfactory.o: MVC\ModelFactory.h
+.\objects\modelfactory.o: model\ModelFactory.c
+.\objects\modelfactory.o: model\ModelFactory.h
 .\objects\modelfactory.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
 .\objects\modelfactory.o: E:\mylib\sdhLib\inc\lw_oopc.h
 .\objects\modelfactory.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
 .\objects\modelfactory.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
-.\objects\modelfactory.o: MVC\Model.h
+.\objects\modelfactory.o: model\Model.h
 .\objects\modelfactory.o: E:\mylib\sdhLib\inc\arithmetic/list.h
 .\objects\modelfactory.o: E:\mylib\sdhLib\inc\basis/macros.h
 .\objects\modelfactory.o: E:\mylib\sdhLib\inc\sdhDef.h
@@ -15,5 +15,6 @@
 .\objects\modelfactory.o: E:\mylib\sdhLib\inc\basis/assert.h
 .\objects\modelfactory.o: E:\mylib\sdhLib\inc\basis/except.h
 .\objects\modelfactory.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\setjmp.h
+.\objects\modelfactory.o: model\ModelTest.h
 .\objects\modelfactory.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
-.\objects\modelfactory.o: MVC\ModelTime.h
+.\objects\modelfactory.o: model\ModelTime.h

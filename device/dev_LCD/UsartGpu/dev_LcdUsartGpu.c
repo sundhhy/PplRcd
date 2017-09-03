@@ -50,7 +50,7 @@ static char	lcdBuf[LCDBUF_MAX];
 //------------------------------------------------------------------------------
 static int ClearLcd( int c);
 static int Dev_UsartdeInit( void);
-static int GpuWrString( char *string,  int len, int x, int y, int font, char c);
+static int GpuWrString( char m, char *string,  int len, int x, int y, int font, char c);
 static int GpuBox( int x1, int y1, int x2, int y2, char type, char c);
 static void GpuBKColor( char c);
 int GpuLabel( char *string,  int len, scArea_t *area, int font, char c, char ali);
@@ -58,6 +58,7 @@ static int GpuStrSize( int font, uint16_t	*width, uint16_t	*heigh);
 static void GetScrnSize( uint16_t *xsize, uint16_t *ysize);
 static void GpuPic( int x1, int y1, char num);
 static void GpuCutPicture( short x1, short y1, char num, short px1, short py1, char w, char h);
+static void GpuBPic( char m, int x1, int y1, char num);
 //============================================================================//
 //            P U B L I C   F U N C T I O N S                                 //
 //============================================================================//
@@ -75,6 +76,7 @@ I_dev_lcd g_IUsartGpu =
 	GetScrnSize,
 	GpuPic,
 	GpuCutPicture,
+	GpuBPic,
 	
 };
 //=========================================================================//
@@ -98,10 +100,16 @@ static void GpuPic( int x1, int y1, char num)
 	
 	sprintf( lcdBuf, "PIC(%d,%d,%d);\r\n", x1, y1, num);
 	GpuSend(lcdBuf);
-	osDelay(20);
+	osDelay(40);
 }
 
-
+static void GpuBPic( char m, int x1, int y1, char num)
+{
+	
+	sprintf( lcdBuf, "BPIC(%d,%d,%d,%d);\r\n",m,  x1, y1, num);
+	GpuSend(lcdBuf);
+	osDelay(160);
+}
 
 
 
@@ -153,38 +161,50 @@ static int GpuBox( int x1, int y1, int x2, int y2, char type, char c)
 	
 }
 
-static int GpuWrString( char *string, int len, int x, int y, int font, char c)
+static int GpuWrString( char m ,char *string, int len, int x, int y, int font, char c)
 {
 	
-	char colour[16];
+	char 		colour[16];
 	short		charMax = LCDBUF_MAX;
+	short 		f = font;
 	
-	
-	switch( font)
-	{
-		case FONT_12:
-			sprintf( lcdBuf, "DS12(%d,%d,'", x, y);
-			
-			break;
-		case FONT_16:
-			sprintf( lcdBuf, "DS16(%d,%d,'", x, y);
-			break;
-		case FONT_24:
-			sprintf( lcdBuf, "DS24(%d,%d,'", x, y);
-			break;
-		case FONT_32:
-			sprintf( lcdBuf, "DS32(%d,%d,'", x, y);
-			break;
-		case FONT_48:
-			sprintf( lcdBuf, "DS48(%d,%d,'", x, y);
-			break;
-		case FONT_64:
-			sprintf( lcdBuf, "DS64(%d,%d,'", x, y);
-			break;
-		default:
-			sprintf( lcdBuf, "DS12(%d,%d,'", x, y);
-			break;
-	}	
+	if( CHECK_FONT(f) == 0) {
+		f = FONT_12;
+	}
+		
+	if( m >= 0) {
+		
+		sprintf( lcdBuf, "PS%d(%d,%d,%d,'",f, m, x, y);
+		
+	} else {
+		
+		sprintf( lcdBuf, "DS%d(%d,%d,'",f, x, y);
+	}
+//	switch( font)
+//	{
+//		case FONT_12:
+//			sprintf( lcdBuf, "DS12(%d,%d,'", x, y);
+//			
+//			break;
+//		case FONT_16:
+//			sprintf( lcdBuf, "DS16(%d,%d,'", x, y);
+//			break;
+//		case FONT_24:
+//			sprintf( lcdBuf, "DS24(%d,%d,'", x, y);
+//			break;
+//		case FONT_32:
+//			sprintf( lcdBuf, "DS32(%d,%d,'", x, y);
+//			break;
+//		case FONT_48:
+//			sprintf( lcdBuf, "DS48(%d,%d,'", x, y);
+//			break;
+//		case FONT_64:
+//			sprintf( lcdBuf, "DS64(%d,%d,'", x, y);
+//			break;
+//		default:
+//			sprintf( lcdBuf, "DS12(%d,%d,'", x, y);
+//			break;
+//	}	
 	sprintf(colour, "',%d);\r\n",c);
 	
 	charMax -= strlen( lcdBuf) + strlen( colour);

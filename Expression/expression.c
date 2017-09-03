@@ -27,10 +27,11 @@ x/yali :  aligning 对齐方式
 
 cg	:	columnGap 列间距
 ls	:	lineSpacing	行间距
+bx/by : 图像在x/y轴上的长度
+vx0,vy0:	在屏幕上的起始坐标
+m		: 背景图片编号
 
 gr	:	grid
-bx/by : 图像在x/y轴上的长度
-
 bndx1/y1/x2/y2 : bonduary x1/y1/x2/y2
 spr: separator分隔符
 
@@ -111,12 +112,20 @@ static void SetCtion( Expr *self, Composition *ct);
 //============================================================================//
 //            P U B L I C   F U N C T I O N S                                 //
 //============================================================================//
-
+//特效的优先级高
 int Set_shtContextAtt( char *p_att, sheet *p_sht)
 {
 	
+	
 	p_sht->cnt.colour = String2Clr( p_att);
-	p_sht->cnt.bkc  = String2Bkc( p_att);
+	
+	p_sht->cnt.bkc  = String2CntEff( p_att);
+	if( p_sht->cnt.bkc == 0xff) {
+		p_sht->cnt.bkc  = String2Bkc( p_att);
+	} else {
+		p_sht->cnt.effects = GP_SET_EFF( p_sht->cnt.effects, EFF_BKPIC) ;
+	}
+	
 	p_sht->cnt.font = String2Font( p_att);
 	
 	return SET_ATT_OK;

@@ -23,7 +23,8 @@
 .\objects\expression.o: E:\mylib\sdhLib\inc\basis/except.h
 .\objects\expression.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\setjmp.h
 .\objects\expression.o: .\sheet\sheet.h
-.\objects\expression.o: .\MVC\ModelFactory.h
-.\objects\expression.o: .\MVC\Model.h
+.\objects\expression.o: .\model\ModelFactory.h
+.\objects\expression.o: .\model\Model.h
 .\objects\expression.o: E:\mylib\sdhLib\inc\basis/assert.h
+.\objects\expression.o: .\model\ModelTest.h
 .\objects\expression.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h

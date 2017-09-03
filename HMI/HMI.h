@@ -64,6 +64,10 @@ ABS_CLASS( HMI)
 	void		(*dhitHandle)( HMI *self, char *s_key);
 	void		(*longpushHandle)( HMI *self,  char *s_key);
 	void		(*conposeKeyHandle)( HMI *self, char *s_key1, char *s_key2);
+	
+	void		(*init_focus)(HMI *self);
+	void		(*clear_focus)(HMI *self, uint8_t fouse_row, uint8_t fouse_col);
+	void		(*show_focus)( HMI *self, uint8_t fouse_row, uint8_t fouse_col);
 };
 
 typedef   const char  ro_char;

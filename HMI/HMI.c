@@ -95,6 +95,8 @@ static void	HmiShow( HMI *self)
 
 static void	SwitchHMI( HMI *self, HMI *p_hmi)
 {
+	if( p_hmi == NULL)
+		return;
 	g_p_lastHmi = g_p_curHmi;
 	g_p_curHmi = p_hmi;
 	self->hide(self);

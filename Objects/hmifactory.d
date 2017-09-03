@@ -23,9 +23,12 @@
 .\objects\hmifactory.o: .\device\dev_cmd.h
 .\objects\hmifactory.o: .\device\dev_char.h
 .\objects\hmifactory.o: .\device\dev_lcd.h
-.\objects\hmifactory.o: .\MVC\ModelFactory.h
-.\objects\hmifactory.o: .\MVC\Model.h
+.\objects\hmifactory.o: .\model\ModelFactory.h
+.\objects\hmifactory.o: .\model\Model.h
 .\objects\hmifactory.o: E:\mylib\sdhLib\inc\arithmetic/list.h
 .\objects\hmifactory.o: E:\mylib\sdhLib\inc\basis/assert.h
+.\objects\hmifactory.o: .\model\ModelTest.h
 .\objects\hmifactory.o: HMI\mainHMI.h
 .\objects\hmifactory.o: HMI\keyboardHMI.h
+.\objects\hmifactory.o: HMI\menuHMI.h
+.\objects\hmifactory.o: HMI\barGraphHMI.h

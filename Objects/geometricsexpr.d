@@ -24,9 +24,10 @@
 .\objects\geometricsexpr.o: E:\mylib\sdhLib\inc\basis/except.h
 .\objects\geometricsexpr.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\setjmp.h
 .\objects\geometricsexpr.o: .\sheet\sheet.h
-.\objects\geometricsexpr.o: .\MVC\ModelFactory.h
-.\objects\geometricsexpr.o: .\MVC\Model.h
+.\objects\geometricsexpr.o: .\model\ModelFactory.h
+.\objects\geometricsexpr.o: .\model\Model.h
 .\objects\geometricsexpr.o: E:\mylib\sdhLib\inc\basis/assert.h
+.\objects\geometricsexpr.o: .\model\ModelTest.h
 .\objects\geometricsexpr.o: .\Glyph\Gh_txt.h
 .\objects\geometricsexpr.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
 .\objects\geometricsexpr.o: .\Glyph\Gh_Rectangle.h

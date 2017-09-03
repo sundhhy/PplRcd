@@ -10,8 +10,8 @@
 .\objects\sheet.o: .\device\dev_cmd.h
 .\objects\sheet.o: .\device\dev_char.h
 .\objects\sheet.o: .\device\dev_lcd.h
-.\objects\sheet.o: .\MVC\ModelFactory.h
-.\objects\sheet.o: .\MVC\Model.h
+.\objects\sheet.o: .\model\ModelFactory.h
+.\objects\sheet.o: .\model\Model.h
 .\objects\sheet.o: E:\mylib\sdhLib\inc\arithmetic/list.h
 .\objects\sheet.o: E:\mylib\sdhLib\inc\basis/macros.h
 .\objects\sheet.o: E:\mylib\sdhLib\inc\sdhDef.h
@@ -22,5 +22,6 @@
 .\objects\sheet.o: E:\mylib\sdhLib\inc\basis/assert.h
 .\objects\sheet.o: E:\mylib\sdhLib\inc\basis/except.h
 .\objects\sheet.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\setjmp.h
+.\objects\sheet.o: .\model\ModelTest.h
 .\objects\sheet.o: E:\mylib\sdhLib\inc\mem/CiiMem.h
 .\objects\sheet.o: E:\mylib\sdhLib\inc\basis/assert.h

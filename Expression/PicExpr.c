@@ -87,19 +87,24 @@ static void * PicInptSht( Expr *self, void *context, sheet *p_sht)
 	pp = context;
 	len = GetName( pp, name, len);
 	
+	
+	p_sht->cnt.subType = SUBTYPE_NONE;
+	
 	pp = strstr( name, "cpic");
 	if( pp) {
 		p_sht->cnt.subType = SUBTYPE_CPIC;
-	} else {
-		p_sht->cnt.subType = SUBTYPE_NONE;
-	}
+	} 
+	pp = strstr( name, "bpic");
+	if( pp) {
+		p_sht->cnt.subType = SUBTYPE_BPIC;
+	} 
 	
 	pnewPosition = GetNameVale( context, name, &pp, &len);
 	if( len == 0)
 		goto exit;
 	
 	Set_shtAreaAtt( att,  p_sht);
-	
+	Set_shtContextAtt( att,  p_sht);
 	
 	
 	p_sht->cnt.data = pp;

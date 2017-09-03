@@ -35,7 +35,6 @@
 //------------------------------------------------------------------------------
 // local vars
 //------------------------------------------------------------------------------
-static mainHmi 			*p_mainHmi;
 
 //------------------------------------------------------------------------------
 // local function prototypes
@@ -50,11 +49,7 @@ HMI *CreateHMI( int hmiType)
 	switch( hmiType)
 	{
 		case HMI_MAIN:
-			if( p_mainHmi == NULL)
-			{
-				p_mainHmi = mainHmi_new();
-			}
-			p_hmi = SUPER_PTR( p_mainHmi, HMI);
+			p_hmi = SUPER_PTR( Get_mainHmi(), HMI);
 			break; 
 		case HMI_CMM:
 			
@@ -64,7 +59,13 @@ HMI *CreateHMI( int hmiType)
 			
 			p_hmi = SUPER_PTR(  GetkeyboardHMI(), HMI);
 			break;
-
+		case HMI_MENU:
+			
+			p_hmi = SUPER_PTR(  GetmenuHMI(), HMI);
+			break;
+		case HMI_BAR:
+			p_hmi = SUPER_PTR(  Get_barGhHMI(), HMI);
+			break;
 
 		default:
 			break;

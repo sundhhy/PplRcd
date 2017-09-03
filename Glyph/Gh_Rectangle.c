@@ -98,19 +98,27 @@ static void GhRec_vDraw( Glyph *self, dspContent_t *cnt, vArea_t *area)
 {
 	I_dev_lcd *lcd;
 	uint8_t	c = cnt->colour;
+	uint8_t	bkc = cnt->bkc;
 	Dev_open( LCD_DEVID, (void *)&lcd);
 	
 	if( GP_CKECK_EFF( cnt->effects , EFF_FOCUS))
+	{
 		c = ColorInvert( c);
+		bkc  = ColorInvert( c);
+	}
 	
 	if( cnt->bkc == ERR_COLOUR)
 	{
 		lcd->Box( area->x0, area->y0, area->x1, area->y1, 0, c);
 	}
+	else if( cnt->bkc == cnt->colour)
+	{
+		lcd->Box( area->x0, area->y0, area->x1, area->y1, 1, c);
+	}
 	else
 	{
 		lcd->Box( area->x0, area->y0, area->x1, area->y1, 0, c);
-		lcd->Box( area->x0 + 2, area->y0 + 2, area->x1 - 2, area->y1 - 2, 1, cnt->bkc);
+		lcd->Box( area->x0 + 2, area->y0 + 2, area->x1 - 2, area->y1 - 2, 1, bkc);
 		
 	}
 

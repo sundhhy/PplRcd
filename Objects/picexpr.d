@@ -25,9 +25,10 @@
 .\objects\picexpr.o: E:\mylib\sdhLib\inc\basis/except.h
 .\objects\picexpr.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\setjmp.h
 .\objects\picexpr.o: .\sheet\sheet.h
-.\objects\picexpr.o: .\MVC\ModelFactory.h
-.\objects\picexpr.o: .\MVC\Model.h
+.\objects\picexpr.o: .\model\ModelFactory.h
+.\objects\picexpr.o: .\model\Model.h
 .\objects\picexpr.o: E:\mylib\sdhLib\inc\basis/assert.h
+.\objects\picexpr.o: .\model\ModelTest.h
 .\objects\picexpr.o: .\Glyph\Gh_Pic.h
 .\objects\picexpr.o: E:\mylib\sdhLib\inc\arithmetic/cycQueue.h
 .\objects\picexpr.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h

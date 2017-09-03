@@ -12,7 +12,8 @@
 #define TEXT_ST_LABLE					1    //子类型
 
 #define EFF_FOCUS				1  //被选选中
-#define EFF_HIDE				2  //被选选中
+#define EFF_HIDE				2  //隐藏
+#define EFF_BKPIC				4  //具有背景图片的属性,这种情况下，bkc作为背景图片的编号
 
 #define GP_CKECK_EFF( eff, t)  ( eff & t)
 #define GP_SET_EFF( eff, t)  ( eff | t)
