@@ -57,8 +57,8 @@ GhRectangle *Get_GhRectangle(void)
 		signalGhRectangle = GhRectangle_new();
 		gh = ( Glyph *)signalGhRectangle;
 
-		gh->setFont( gh, DEF_FONT);
-		gh->setClu( gh, DEF_COLOUR);
+//		gh->setFont( gh, DEF_FONT);
+//		gh->setClu( gh, DEF_COLOUR);
 		
 		
 	}
@@ -67,7 +67,7 @@ GhRectangle *Get_GhRectangle(void)
 
 CTOR( GhRectangle)
 SUPER_CTOR( Glyph);
-FUNCTION_SETTING( Glyph.draw, GhRec_Draw);
+//FUNCTION_SETTING( Glyph.draw, GhRec_Draw);
 FUNCTION_SETTING( Glyph.vdraw, GhRec_vDraw);
 
 

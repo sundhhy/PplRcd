@@ -31,7 +31,7 @@
 //------------------------------------------------------------------------------
 
 
-
+HMI *g_p_HMI_menu;
 
 
 //============================================================================//
@@ -51,7 +51,7 @@
 const char win_pic1_Code[] = { "<pic vx0=0 vy0=0 >19</>" };
 const char win_pic2_Code[] = { "<cpic vx0=0 vy0=0 >20</>" };
 
-static HMI **arr_pp_targetHmi[NUM_BTNROW][NUM_BTNCOL] = { { &g_p_mainHmi, &g_p_barGhHmi}};
+static HMI **arr_pp_targetHmi[NUM_BTNROW][NUM_BTNCOL] = { { &g_p_mainHmi, &g_p_barGhHmi}, {&g_p_dataHmi, NULL}};
 
 //static const hmiAtt_t	menuHmiAtt = { 4,4, COLOUR_GRAY, NUM_BTNROW, NUM_BTNCOL};
 //static sheet *arr_p_menu_show[ NUM_BTNROW][NUM_BTNCOL] =  {NULL};
@@ -87,7 +87,7 @@ menuHMI *GetmenuHMI(void)
 	if( singal_menu == NULL)
 	{
 		singal_menu = menuHMI_new();
-		
+		g_p_HMI_menu = SUPER_PTR(singal_menu, HMI);
 	}
 	
 	return singal_menu;
@@ -121,15 +121,8 @@ static int	Init_menuHMI( HMI *self, void *arg)
 	menuHMI			*cthis = SUB_PTR( self, HMI, menuHMI);
 	Expr 			*p_exp ;
 	shtctl 			*p_shtctl = NULL;
-//	video_t			my_v = { 256, 176};
-//	short i,j;
-	
-	
-	
+
 	p_shtctl = GetShtctl();
-	
-	cthis->focusCol = 0;
-	cthis->focusRow = 0;
 	
 	p_exp = ExpCreate( "pic");
 	cthis->p_sht_pic1 = Sheet_alloc( p_shtctl);
@@ -138,52 +131,12 @@ static int	Init_menuHMI( HMI *self, void *arg)
 	cthis->p_sht_pic2 = Sheet_alloc( p_shtctl);
 	p_exp->inptSht( p_exp, (void *)win_pic2_Code, cthis->p_sht_pic2) ;
 	
-//	cthis->pp_shts = &arr_p_menu_show[0][0];
-	
-//	p_exp = ExpCreate( "bu");
-//	for( i = 0; i < NUM_BTNROW; i++) {
-//		for( j = 0; j < NUM_BTNCOL; j ++) {
-//			arr_p_menu_show[i][j] = Sheet_alloc( p_shtctl);
-//			p_exp->inptSht( p_exp, (void *)menu_buttonCode,arr_p_menu_show[i][j]) ;
-//			arr_p_menu_show[i][j]->cnt.data = ( char *)s_buttonText[i][j];
-//		}
-//		
-//	}
-	
-//	p_exp = ExpCreate( "box");
-//	cthis->p_bkg = Sheet_alloc( p_shtctl);
-//	p_exp->inptSht( p_exp, (void *)menu_bkgCode, cthis->p_bkg) ;
-	
-	
-//	FormatSheet( &menuHmiAtt, &p_shtctl->v,cthis->pp_shts);
-\
-	
-//	for( i = 0; i < NUM_BTNROW; i++) {
-//		for( j = 0; j < NUM_BTNCOL; j ++) {
-//			arr_p_menu_show[i][j]->area.x0 += MENU_OFFSET_X;
-//			arr_p_menu_show[i][j]->area.x1 += MENU_OFFSET_X;
-//			arr_p_menu_show[i][j]->area.y0 += MENU_OFFSET_Y;
-//			arr_p_menu_show[i][j]->area.y1 += MENU_OFFSET_Y;
 
-//			FormatSheetSub( arr_p_menu_show[i][j]);
-//			
-//			arr_p_menu_show[i][j]->pp_sub[0]->cnt.data =  (char *)s_buttonText[i][j];
-//		}
-//		
-//	}
-//	
-//	cthis->p_bkg->area.x0 = arr_p_menu_show[0][0]->area.x0 - BKG_BOUND;
-//	cthis->p_bkg->area.y0 = arr_p_menu_show[0][0]->area.y0 - BKG_BOUND;
-//	
-//	cthis->p_bkg->area.x1 = arr_p_menu_show[NUM_BTNROW - 1][ NUM_BTNCOL -1]->area.x1 + BKG_BOUND;
-//	cthis->p_bkg->area.y1 = arr_p_menu_show[NUM_BTNROW - 1][ NUM_BTNCOL -1]->area.y1 + BKG_BOUND;
 	
 	//³õÊ¼»¯½¹µã
-	
-	
-//	cthis->focusCol = 0;
-//	cthis->focusRow = 0;
-//	arr_p_menu_show[0][0]->cnt.effects = GP_SET_EFF( arr_p_menu_show[0][0]->cnt.effects, EFF_FOCUS);;;
+	cthis->focusCol = 0;
+	cthis->focusRow = 0;
+
 	
 	return RET_OK;
 

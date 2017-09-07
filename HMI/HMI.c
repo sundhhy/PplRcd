@@ -49,6 +49,9 @@ static void	SwitchBack( HMI *self);
 static void HitHandle( HMI *self, char *s_key);
 static void LngpshHandle( HMI *self, char *s_key);
 static void DHitHandle( HMI *self, char *s_key);
+void	Init_focus(HMI *self);
+void	Clear_focus(HMI *self, uint8_t fouse_row, uint8_t fouse_col);
+void	Show_focus( HMI *self, uint8_t fouse_row, uint8_t fouse_col);
 //============================================================================//
 //            P U B L I C   F U N C T I O N S                                 //
 //============================================================================//
@@ -76,6 +79,10 @@ FUNCTION_SETTING( switchBack, SwitchBack);
 FUNCTION_SETTING( hitHandle, HitHandle);
 FUNCTION_SETTING( longpushHandle, LngpshHandle);
 FUNCTION_SETTING( dhitHandle, DHitHandle);
+
+FUNCTION_SETTING( init_focus, Init_focus);
+FUNCTION_SETTING( clear_focus, Clear_focus);
+FUNCTION_SETTING( show_focus, Show_focus);
 END_ABS_CTOR
 //=========================================================================//
 //                                                                         //
@@ -97,8 +104,10 @@ static void	SwitchHMI( HMI *self, HMI *p_hmi)
 {
 	if( p_hmi == NULL)
 		return;
-	g_p_lastHmi = g_p_curHmi;
-	g_p_curHmi = p_hmi;
+	if( self != p_hmi) {		//切换到不同的界面上，才更新
+		g_p_lastHmi = g_p_curHmi;
+		g_p_curHmi = p_hmi;
+	}
 	self->hide(self);
 	p_hmi->initSheet( p_hmi);
 	p_hmi->show( p_hmi);
@@ -132,7 +141,9 @@ static void DHitHandle( HMI *self, char *s_key)
 	
 }
 
-
+void	Init_focus(HMI *self) {}
+void	Clear_focus(HMI *self, uint8_t fouse_row, uint8_t fouse_col) {}
+void	Show_focus( HMI *self, uint8_t fouse_row, uint8_t fouse_col) {}
 
 
 

@@ -28,6 +28,7 @@
 #define COLOUR_GRAY			8
 #define COLOUR_PURPLE		6	//вои╚
 #define COLOUR_WHITE		18
+#define COLOUR_DEEPPURPLE	57
 #define COLOUR_BLACK		0xff
 #define COLOUR_OTHER(n)		n
 

@@ -39,7 +39,7 @@ typedef struct {
 	uint8_t		bkc;			//背景色
 	
 	uint8_t		subType;
-	uint8_t		id;
+	uint8_t		mdl_aux;		//模型的功能参数
 }dspContent_t;
 
 typedef struct {
@@ -112,21 +112,21 @@ ABS_CLASS( Glyph)
 	/*          170805         @Deprecated   */
 	
 	int (*init)( Glyph *self, I_dev_lcd *lcd);
-	int (*setFont)( Glyph *self, int font);
-	int (*setClu)( Glyph *self, int c);
-	int (*setBgC)( Glyph *self, int c);
+//	int (*setFont)( Glyph *self, int font);
+//	int (*setClu)( Glyph *self, int c);
+//	int (*setBgC)( Glyph *self, int c);
 	//abs func
 	//
 	
 	
 		
-	abstract int (*clean)( Glyph *self);
+//	abstract int (*clean)( Glyph *self);
 //	abstract void (*insert)( Glyph *self, void *context, int len);
+//	
+//	abstract void (*draw)( Glyph *self, dspContent_t *cnt, dspArea_t *area);		
 	
-	abstract void (*draw)( Glyph *self, dspContent_t *cnt, dspArea_t *area);		
 	
-	
-	abstract void (*flush)( Glyph *self, int x, int y);
+//	abstract void (*flush)( Glyph *self, int x, int y);
 //	abstract int ( *getWidth)(Glyph *self);
 //	abstract int ( *getHeight)(Glyph *self);
 //	abstract int ( *setWidth)(Glyph *self, uint16_t wd);
@@ -150,5 +150,5 @@ int	String2Align( char *s);
 int	String2CntEff( char *s);
 
 int GetKeyVal( char *s, char *key, char *val, short size);
-
+int Set_effects(dspContent_t *p_cnt, int eff, int val) ;
 #endif

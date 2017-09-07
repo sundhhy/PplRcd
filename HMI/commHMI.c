@@ -27,7 +27,13 @@ sheet			*g_p_ico_bar;
 sheet			*g_p_ico_digital;
 sheet			*g_p_ico_trend;
 
+sheet			*g_arr_p_chnUtil[NUM_CHANNEL];
+sheet			*g_arr_p_chnAlarm[NUM_CHANNEL];
+
 hmiAtt_t CmmHmiAtt = { 10,1, COLOUR_BLACK, 4, 2};
+
+const char	arr_clrs[NUM_CHANNEL] = { 43, COLOUR_GREN, COLOUR_BLUE, COLOUR_YELLOW, \
+	COLOUR_BABYBLUE, COLOUR_PURPLE};
 //------------------------------------------------------------------------------
 // global function prototypes
 //------------------------------------------------------------------------------
@@ -52,6 +58,13 @@ const char ico_digital[] = { "<bu vx0=90 vy0=206 bx=33 by=33bkc=black clr=black>
 //进入趋势画面图标
 const char ico_trend[] = { "<bu vx0=130 vy0=206 bx=33 by=33 bkc=black clr=black><pic  bx=32  by=32 >4</></bu>" };
 
+
+//每个通道的单位
+static const char cmmhmi_code_unit[] = { "<text f=16 m=0 mdl=test aux=1>m3/h</>" };
+
+//通道报警:HH HI LI LL
+static const char cmmhmi_code_alarm[] = { "<text f=16 clr=red m=0 mdl=test aux=2> </>" };
+
 //------------------------------------------------------------------------------
 // local types
 //------------------------------------------------------------------------------
@@ -66,6 +79,11 @@ static struct  tm time;
 //------------------------------------------------------------------------------
 static int	Init_cmmHmi( HMI *self, void *arg);
 static void Timer2str( struct  tm *p_tm, char *s, int n);
+
+static void Build_ChnSheets(void);
+static void Build_icoSheets(void);
+static void Build_otherSheets(void);
+
 //============================================================================//
 //            P U B L I C   F U N C T I O N S                                 //
 //============================================================================//
@@ -103,21 +121,66 @@ static int	Init_cmmHmi( HMI *self, void *arg)
 	Expr *p_exp ;
 	
 	
-	//初始化共用图层
-	p_shtctl = GetShtctl();
-	g_p_shtTime = Sheet_alloc( p_shtctl);
+	Build_ChnSheets();
+	Build_icoSheets();
+	Build_otherSheets();
 	
-	//timer
-	p_exp = ExpCreate( "text");
-	p_exp->inptSht( p_exp, (void *)timeCode, g_p_shtTime) ;
+	//创建与公用图标相关的界面
+	p_hmi = CreateHMI( HMI_MENU);
+	p_hmi->init( p_hmi, NULL);
+	menuHmi = SUB_PTR( p_hmi, HMI, menuHMI);
 	
-	g_p_shtTime->p_mdl = ModelCreate("time");
-	g_p_shtTime->p_mdl->attach( g_p_shtTime->p_mdl, (Observer *)g_p_shtTime);
-	g_p_shtTime->p_mdl->getMdlData( g_p_shtTime->p_mdl, 0, &time);
+	p_hmi = CreateHMI( HMI_BAR);
+	p_hmi->init( p_hmi, NULL);
+	barHmi = SUB_PTR( p_hmi, HMI, barGhHMI);
+	
+	//初始化其他界面
+	p_hmi = CreateHMI( HMI_DATA);
+	p_hmi->init( p_hmi, NULL);
+	
+	
+	//将图标动作与相关界面处理绑定
+	g_p_ico_memu->p_enterCmd = &menuHmi->shtCmd;
+	g_p_ico_bar->p_enterCmd = &barHmi->shtCmd;
+	
+	return RET_OK;
+}
 
-	Timer2str( &time, s_timer, TIME_BUF_LEN);
-	g_p_shtTime->cnt.data = s_timer;
-	g_p_shtTime->cnt.len = strlen( s_timer);
+
+
+static void Timer2str( struct  tm *p_tm, char *s, int n)
+{
+	
+	
+	snprintf( s, n, "%02d:%02d:%02d", p_tm->tm_hour, p_tm->tm_min, p_tm->tm_sec);
+	
+}
+
+static void Build_ChnSheets(void)
+{
+	int 		i = 0;
+	shtctl 		*p_shtctl = NULL;
+	Expr 		*p_exp ;
+		
+	p_shtctl = GetShtctl();
+	
+	p_exp = ExpCreate( "text");
+	for(i = 0; i < NUM_CHANNEL; i++) {
+		g_arr_p_chnUtil[i] = Sheet_alloc( p_shtctl);
+		p_exp->inptSht( p_exp, (void *)cmmhmi_code_unit, g_arr_p_chnUtil[i]) ;
+		g_arr_p_chnAlarm[i] = Sheet_alloc( p_shtctl);
+		p_exp->inptSht( p_exp, (void *)cmmhmi_code_alarm, g_arr_p_chnUtil[i]) ;
+		
+	}
+	
+}
+
+static void Build_icoSheets(void)
+{
+	shtctl 		*p_shtctl = NULL;
+	Expr 		*p_exp ;
+		
+	p_shtctl = GetShtctl();
 	
 	//图标初始化
 	p_exp = ExpCreate( "bu");
@@ -150,35 +213,31 @@ static int	Init_cmmHmi( HMI *self, void *arg)
 	g_p_ico_trend->area.y1 = g_p_ico_trend->area.y0 + g_p_ico_trend->bysize;
 	FormatSheetSub( g_p_ico_trend);
 	
-	
-	//创建与公用图标相关的界面
-	p_hmi = CreateHMI( HMI_MENU);
-	p_hmi->init( p_hmi, NULL);
-	menuHmi = SUB_PTR( p_hmi, HMI, menuHMI);
-	
-	p_hmi = CreateHMI( HMI_BAR);
-	p_hmi->init( p_hmi, NULL);
-	barHmi = SUB_PTR( p_hmi, HMI, barGhHMI);
-	
-	
-	//将图标动作与相关界面处理绑定
-	g_p_ico_memu->p_enterCmd = &menuHmi->shtCmd;
-	g_p_ico_bar->p_enterCmd = &barHmi->shtCmd;
-	
-	return RET_OK;
 }
 
-
-
-static void Timer2str( struct  tm *p_tm, char *s, int n)
+static void Build_otherSheets(void)
 {
+	shtctl 		*p_shtctl = NULL;
+	Expr 		*p_exp ;
+		
+	p_shtctl = GetShtctl();
 	
 	
-	snprintf( s, n, "%02d:%02d:%02d", p_tm->tm_hour, p_tm->tm_min, p_tm->tm_sec);
+	
+	//timer
+	g_p_shtTime = Sheet_alloc( p_shtctl);
+	p_exp = ExpCreate( "text");
+	p_exp->inptSht( p_exp, (void *)timeCode, g_p_shtTime) ;
+	
+	g_p_shtTime->p_mdl = ModelCreate("time");
+	g_p_shtTime->p_mdl->attach( g_p_shtTime->p_mdl, (Observer *)g_p_shtTime);
+	g_p_shtTime->p_mdl->getMdlData( g_p_shtTime->p_mdl, 0, &time);
+
+	Timer2str( &time, s_timer, TIME_BUF_LEN);
+	g_p_shtTime->cnt.data = s_timer;
+	g_p_shtTime->cnt.len = strlen( s_timer);
 	
 }
-
-
 
 
 

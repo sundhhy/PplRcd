@@ -58,6 +58,7 @@
 .\objects\main.o: HMI/keyboardHMI.h
 .\objects\main.o: HMI/menuHMI.h
 .\objects\main.o: HMI/barGraphHMI.h
+.\objects\main.o: HMI/dataHMI.h
 .\objects\main.o: control/CtlKey.h
 .\objects\main.o: control/Controller.h
 .\objects\main.o: ..\PplRcd\utils/keyboard.h

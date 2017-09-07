@@ -54,6 +54,7 @@
 ".\objects\chninfopic.o"
 ".\objects\menuhmi.o"
 ".\objects\bargraphhmi.o"
+".\objects\datahmi.o"
 ".\objects\model.o"
 ".\objects\modelfactory.o"
 ".\objects\modeltime.o"

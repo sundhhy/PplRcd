@@ -9,104 +9,66 @@
 #include "sdhDef.h"
 #include "basis/sdhError.h"
 
+//============================================================================//
+//            G L O B A L   D E F I N I T I O N S                             //
+//============================================================================//
+
+//------------------------------------------------------------------------------
+// const defines
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+// module global vars
+//------------------------------------------------------------------------------
 
 
+//------------------------------------------------------------------------------
+// global function prototypes
+//------------------------------------------------------------------------------
+
+//============================================================================//
+//            P R I V A T E   D E F I N I T I O N S                           //
+//============================================================================//
+
+//------------------------------------------------------------------------------
+// const defines
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+// local types
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+// local vars
+//------------------------------------------------------------------------------
 
 
-static int Init( Glyph *self, I_dev_lcd *lcd)
+//------------------------------------------------------------------------------
+// local function prototypes
+//------------------------------------------------------------------------------
+
+static int Init( Glyph *self, I_dev_lcd *lcd);
+static void vDraw( Glyph *self, dspContent_t *cnt, vArea_t *area);
+//============================================================================//
+//            P U B L I C   F U N C T I O N S                                 //
+//============================================================================//
+int Set_effects(dspContent_t *p_cnt, int eff, int val) 
 {
-	
-//	self->myLcd = lcd;
-//	self->font = DEF_FONT;
-//	self->colour = DEF_COLOUR;
-	return RET_OK;
-}
-static int SetFont( Glyph *self, int font)
-{
-	if( CHECK_FONT(  font))
+	int ret = RET_OK;
+	switch( eff) 
 	{
+		case EFF_BKPIC:
+			p_cnt->effects = GP_SET_EFF( p_cnt->effects, EFF_BKPIC);
+			p_cnt->bkc = val;
+			break;
+			
 		
-		return RET_OK;
 	}
-
-	return ERR_BAD_PARAMETER;
+	
+	
+	return ret;
 	
 }
-static int SetClu( Glyph *self, int c)
-{
-
-	return RET_OK;
-	
-}
-
-
-
-static int SetBgC( Glyph *self, int c)
-{
-//	self->disArg.bgC = c;
-	return RET_OK;
-	
-}
-
-//static int setWidth( Glyph *self, uint16_t wd)
-//{
-//	
-//	return RET_OK;
-//	
-//}
-//static int setHeight( Glyph *self, uint16_t he)
-//{
-//	return RET_OK;
-//	
-//}
-
-
-static int Clean( Glyph *self)
-{
-	return RET_OK;;
-	
-}
-
-//static void Insert( Glyph *self, void *context, int len)
-//{
-//	
-//	
-//}
-
-
-static void Draw( Glyph *self, dspContent_t *cnt, dspArea_t *area)
-{
-	
-	
-}
-
-static void vDraw( Glyph *self, dspContent_t *cnt, vArea_t *area)
-{
-	
-}
-
-//static int DrawArea( Glyph *self, short x1, short y1, short x2, short y2,  int len)
-//{
-//	return -1;
-//	
-//}
-
-
-
-
-ABS_CTOR( Glyph)
-FUNCTION_SETTING( init, Init);
-FUNCTION_SETTING( setFont, SetFont);
-FUNCTION_SETTING( setClu, SetClu);
-FUNCTION_SETTING( setBgC, SetBgC);
-//FUNCTION_SETTING( setWidth, setWidth);
-//FUNCTION_SETTING( setHeight, setHeight);
-FUNCTION_SETTING( clean, Clean);
-//FUNCTION_SETTING( insert, Insert);
-FUNCTION_SETTING( draw, Draw);
-FUNCTION_SETTING( vdraw, vDraw);
-
-END_ABS_CTOR
 
 uint8_t ColorInvert( uint8_t clr)
 {
@@ -341,4 +303,113 @@ int GetKeyVal( char *s, char *key, char *val, short size)
 //	val[ i] = 0;
 	return i;
 }
+
+
+ABS_CTOR( Glyph)
+FUNCTION_SETTING( init, Init);
+//FUNCTION_SETTING( setFont, SetFont);
+//FUNCTION_SETTING( setClu, SetClu);
+//FUNCTION_SETTING( setBgC, SetBgC);
+//FUNCTION_SETTING( setWidth, setWidth);
+//FUNCTION_SETTING( setHeight, setHeight);
+//FUNCTION_SETTING( clean, Clean);
+//FUNCTION_SETTING( insert, Insert);
+//FUNCTION_SETTING( draw, Draw);
+FUNCTION_SETTING( vdraw, vDraw);
+
+END_ABS_CTOR
+//=========================================================================//
+//                                                                         //
+//          P R I V A T E   D E F I N I T I O N S                          //
+//                                                                         //
+//=========================================================================//
+/// \name Private Functions
+/// \{
+
+
+
+
+static int Init( Glyph *self, I_dev_lcd *lcd)
+{
+	
+//	self->myLcd = lcd;
+//	self->font = DEF_FONT;
+//	self->colour = DEF_COLOUR;
+	return RET_OK;
+}
+static int SetFont( Glyph *self, int font)
+{
+	if( CHECK_FONT(  font))
+	{
+		
+		return RET_OK;
+	}
+
+	return ERR_BAD_PARAMETER;
+	
+}
+static int SetClu( Glyph *self, int c)
+{
+
+	return RET_OK;
+	
+}
+
+
+
+static int SetBgC( Glyph *self, int c)
+{
+//	self->disArg.bgC = c;
+	return RET_OK;
+	
+}
+
+//static int setWidth( Glyph *self, uint16_t wd)
+//{
+//	
+//	return RET_OK;
+//	
+//}
+//static int setHeight( Glyph *self, uint16_t he)
+//{
+//	return RET_OK;
+//	
+//}
+
+
+//static int Clean( Glyph *self)
+//{
+//	return RET_OK;;
+//	
+//}
+
+//static void Insert( Glyph *self, void *context, int len)
+//{
+//	
+//	
+//}
+
+
+//static void Draw( Glyph *self, dspContent_t *cnt, dspArea_t *area)
+//{
+//	
+//	
+//}
+
+static void vDraw( Glyph *self, dspContent_t *cnt, vArea_t *area)
+{
+	
+}
+
+//static int DrawArea( Glyph *self, short x1, short y1, short x2, short y2,  int len)
+//{
+//	return -1;
+//	
+//}
+
+
+
+
+
+
 

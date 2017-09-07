@@ -1,19 +1,11 @@
-#ifndef _INC_HMIfactory_H_
-#define _INC_HMIfactory_H_
-
+#ifndef _INC_dataHMI_H_
+#define _INC_dataHMI_H_
+#include "HMI.h"
+#include "commHMI.h"
 //------------------------------------------------------------------------------
 // includes
 //------------------------------------------------------------------------------
 #include <stdint.h>
-#include "commHMI.h"
-#include "mainHMI.h"
-#include "keyboardHMI.h"
-#include "menuHMI.h"
-#include "barGraphHMI.h"
-#include "dataHMI.h"
-
-
-
 //------------------------------------------------------------------------------
 // check for correct compilation options
 //------------------------------------------------------------------------------
@@ -21,22 +13,28 @@
 //------------------------------------------------------------------------------
 // const defines
 //------------------------------------------------------------------------------
-#define HMI_MAIN		1
-#define HMI_CMM			2
-#define HMI_KYBRD		3
-#define HMI_MENU		4
-#define HMI_BAR			5
-#define HMI_DATA		6
+#define BARHMI_NUM_BARS			NUM_CHANNEL
  //------------------------------------------------------------------------------
 // typedef
 //------------------------------------------------------------------------------
+CLASS( dataHMI)
+{
+	EXTENDS( HMI);
+	IMPLEMENTS( shtCmd);
+	sheet  		*p_bkg;
+	sheet  		*arr_p_sht_data[BARHMI_NUM_BARS];
+	sheet  		**arr_p_sht_unit;
+	sheet  		**arr_p_sht_alarm;
+	
+	
+};
 //------------------------------------------------------------------------------
 // global variable declarations
-
-
+//------------------------------------------------------------------------------
+extern HMI *g_p_dataHmi;
 //------------------------------------------------------------------------------
 // function prototypes
 //------------------------------------------------------------------------------
-HMI *CreateHMI( int type);
+dataHMI *Get_dataHMI(void);
 
 #endif

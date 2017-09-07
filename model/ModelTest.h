@@ -19,9 +19,11 @@ CLASS( ModelTest)
 {
 		
 	EXTENDS( Model);
+	int		range;
 	int 	i_rand;
 	char 	*str_buf;
 	char 	*unit_buf;
+	char 	*alarm_buf;
 };
 
 //------------------------------------------------------------------------------

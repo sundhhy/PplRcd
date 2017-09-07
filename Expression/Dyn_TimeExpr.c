@@ -150,16 +150,7 @@ static void * TimeInterpret( Expr *self, void *faVd, void *context)
 		goto err;
 	
 	
-	if( GetKeyVal( att, "id", tmpbuf, 4))
-	{
-		vd->dspCnt.id = atoi( tmpbuf);
-		NEW( vd->pdyndHdl);
-		vd->pdyndHdl->pDyndata = self->ction->dynPtr[ vd->dspCnt.id];
-		vd->pdyndHdl->func = Dyn_timeHdl;
-		
-	}
-	else
-		goto err1;
+
 	
 	
 	vd->dspCnt.data = pp;

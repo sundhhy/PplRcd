@@ -53,7 +53,7 @@ static void DoUpdate(void **x, void *cl)
 void Mdl_attach(  Model *self, Observer *s)
 {
 	
-	List_push( self->tObs, s);
+	self->tObs = List_push( self->tObs, s);
 	
 	
 }

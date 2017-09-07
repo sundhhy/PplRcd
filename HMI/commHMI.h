@@ -15,7 +15,7 @@
 //------------------------------------------------------------------------------
 // const defines
 //------------------------------------------------------------------------------
-
+#define NUM_CHANNEL			6
  //------------------------------------------------------------------------------
 // typedef
 //------------------------------------------------------------------------------
@@ -32,8 +32,13 @@ CLASS( cmmHmi)
 //------------------------------------------------------------------------------
 // global variable declarations
 //------------------------------------------------------------------------------
-extern	sheet	*g_p_shtTime, *g_p_ico_memu, *g_p_ico_bar, *g_p_ico_digital, *g_p_ico_trend;
-extern hmiAtt_t	CmmHmiAtt;
+extern	sheet		*g_p_shtTime, *g_p_ico_memu, *g_p_ico_bar, *g_p_ico_digital, *g_p_ico_trend;
+extern	sheet		*g_arr_p_chnUtil[NUM_CHANNEL];
+extern	sheet		*g_arr_p_chnAlarm[NUM_CHANNEL];
+
+extern	const char	arr_clrs[NUM_CHANNEL];
+extern	hmiAtt_t	CmmHmiAtt;
+
 //------------------------------------------------------------------------------
 // function prototypes
 //------------------------------------------------------------------------------

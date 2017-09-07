@@ -1038,6 +1038,16 @@
               <FileType>5</FileType>
               <FilePath>.\HMI\barGraphHmi.h</FilePath>
             </File>
+            <File>
+              <FileName>dataHmi.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\HMI\dataHmi.c</FilePath>
+            </File>
+            <File>
+              <FileName>dataHmi.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\HMI\dataHmi.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

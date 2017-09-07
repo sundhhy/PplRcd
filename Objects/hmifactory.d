@@ -32,3 +32,4 @@
 .\objects\hmifactory.o: HMI\keyboardHMI.h
 .\objects\hmifactory.o: HMI\menuHMI.h
 .\objects\hmifactory.o: HMI\barGraphHMI.h
+.\objects\hmifactory.o: HMI\dataHMI.h

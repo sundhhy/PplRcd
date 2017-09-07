@@ -24,8 +24,6 @@ CLASS( menuHMI)
 	sheet  			*p_sht_pic1;
 	sheet  			*p_sht_pic2;
 
-//	sheet  			*p_bkg;
-//	sheet  			**pp_shts;
 	uint8_t		focusRow;
 	uint8_t		focusCol;
 	uint8_t		none[2];
@@ -34,9 +32,10 @@ CLASS( menuHMI)
 //------------------------------------------------------------------------------
 // global variable declarations
 //------------------------------------------------------------------------------
-menuHMI *GetmenuHMI(void);
+
+extern HMI *g_p_HMI_menu;
 //------------------------------------------------------------------------------
 // function prototypes
 //------------------------------------------------------------------------------
-
+menuHMI *GetmenuHMI(void);
 #endif

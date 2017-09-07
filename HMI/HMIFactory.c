@@ -66,7 +66,9 @@ HMI *CreateHMI( int hmiType)
 		case HMI_BAR:
 			p_hmi = SUPER_PTR(  Get_barGhHMI(), HMI);
 			break;
-
+		case HMI_DATA:
+			p_hmi = SUPER_PTR(  Get_dataHMI(), HMI);
+			break;
 		default:
 			break;
 	}

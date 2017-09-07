@@ -30,6 +30,8 @@ ls	:	lineSpacing	行间距
 bx/by : 图像在x/y轴上的长度
 vx0,vy0:	在屏幕上的起始坐标
 m		: 背景图片编号
+mdl : 要绑定的模型的种类
+aux:	与模型相关的参数
 
 gr	:	grid
 bndx1/y1/x2/y2 : bonduary x1/y1/x2/y2
@@ -116,7 +118,7 @@ static void SetCtion( Expr *self, Composition *ct);
 int Set_shtContextAtt( char *p_att, sheet *p_sht)
 {
 	
-	
+	char tmpbuf[8] = {0};
 	p_sht->cnt.colour = String2Clr( p_att);
 	
 	p_sht->cnt.bkc  = String2CntEff( p_att);
@@ -127,6 +129,28 @@ int Set_shtContextAtt( char *p_att, sheet *p_sht)
 	}
 	
 	p_sht->cnt.font = String2Font( p_att);
+	
+	if( GetKeyVal( p_att, "mdl", tmpbuf, 8))
+	{
+		p_sht->p_mdl = ModelCreate(tmpbuf); 
+		
+		
+	}
+	else {
+		p_sht->p_mdl = NULL;
+		
+	}
+	
+	if( GetKeyVal( p_att, "aux", tmpbuf, 8))
+	{
+		p_sht->cnt.mdl_aux = atoi(tmpbuf); 
+		
+		
+	}
+	else {
+		p_sht->cnt.mdl_aux = 0xff;
+		
+	}
 	
 	return SET_ATT_OK;
 }

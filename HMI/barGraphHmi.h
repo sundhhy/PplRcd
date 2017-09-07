@@ -1,7 +1,7 @@
 #ifndef _INC_barGhHMI_H_
 #define _INC_barGhHMI_H_
 #include "HMI.h"
-
+#include "commHMI.h"
 //------------------------------------------------------------------------------
 // includes
 //------------------------------------------------------------------------------
@@ -13,7 +13,7 @@
 //------------------------------------------------------------------------------
 // const defines
 //------------------------------------------------------------------------------
-#define BARHMI_NUM_BARS			6
+#define BARHMI_NUM_BARS			NUM_CHANNEL
  //------------------------------------------------------------------------------
 // typedef
 //------------------------------------------------------------------------------
@@ -24,7 +24,7 @@ CLASS( barGhHMI)
 	sheet  			*p_bkg;
 	sheet  			*arr_p_barshts[BARHMI_NUM_BARS];
 	sheet  			*arr_p_sht_textPrcn[BARHMI_NUM_BARS];
-	sheet  			*arr_p_sht_unit[BARHMI_NUM_BARS];
+	sheet  			**arr_p_sht_unit;
 	uint8_t		focusRow;
 	uint8_t		focusCol;
 	uint8_t		none[2];

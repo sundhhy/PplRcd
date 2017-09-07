@@ -12,6 +12,7 @@
 #endif
 
 
+#include <string.h>
 
 
 //============================================================================//
@@ -150,7 +151,10 @@ void Sheet_setbuf( struct SHEET *p_sht, uint8_t *buf, int bxsize, int bysize, in
 
 int ShtUpdate( void *p_sht)
 {
-	
+	struct SHEET *p = ( struct SHEET *)p_sht;
+	p->cnt.data = p->p_mdl->to_string( p->p_mdl, 0, NULL);
+	p->cnt.len = strlen( p->cnt.data);
+	Sheet_slide( p_sht);
 	return RET_OK;
 	
 }
@@ -278,7 +282,8 @@ void Sheet_refresh( struct SHEET *p_sht)
 void Sheet_slide( struct SHEET *p_sht)
 {
 	//todo: 增加坐标是否重叠判断，如果重叠要把比他更高的图层也要显示
-
+	if( p_sht->height < 0)
+		return;
 	p_sht->p_gp->vdraw( p_sht->p_gp, &p_sht->cnt, &p_sht->area);
 	Sheet_refreshsub( p_sht);
     return;

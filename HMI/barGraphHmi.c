@@ -43,14 +43,12 @@ HMI *g_p_barGhHmi;
 
 static const char barhmi_code_bkPic[] =  {"<bpic vx0=0 vy0=0 m=0 >21</>" };
 static const char barhmi_code_bar[] = { "<box bx=35 ></>" };
-static const char barhmi_code_textPrcn[] = { "<text f=16 m=0>100</>" };
-static const char barhmi_code_unit[] = { "<text f=16 m=0>m3/h</>" };
+static const char barhmi_code_textPrcn[] = { "<text f=16 m=0 mdl=test>100</>" };
 
 
 
 //static const hmiAtt_t	barHmiAtt = { 4,4, COLOUR_GRAY, BARHMI_NUM_BTNROW, BARHMI_NUM_BTNCOL};
-static const char	arr_clrs[BARHMI_NUM_BARS] = { COLOUR_RED, COLOUR_GREN, COLOUR_BLUE, COLOUR_YELLOW, \
-	COLOUR_BABYBLUE, COLOUR_PURPLE};
+
 
 //------------------------------------------------------------------------------
 // local types
@@ -63,6 +61,7 @@ static const char	arr_clrs[BARHMI_NUM_BARS] = { COLOUR_RED, COLOUR_GREN, COLOUR_
 
 	
 static sheet  *arr_p_sht_select[BARHMI_NUM_BTNCOL];
+static char		prn_buf[BARHMI_NUM_BARS][8];
 //------------------------------------------------------------------------------
 // local function prototypes
 //------------------------------------------------------------------------------
@@ -344,6 +343,9 @@ static void Init_bar( barGhHMI *self)
 	Expr 			*p_exp ;
 	shtctl 			*p_shtctl = NULL;
 	short 			i;
+	
+	self->arr_p_sht_unit = g_arr_p_chnUtil;
+	
 	p_shtctl = GetShtctl();
 
 	for( i = 0; i < BARHMI_NUM_BARS; i++) {
@@ -354,13 +356,12 @@ static void Init_bar( barGhHMI *self)
 		p_exp = ExpCreate("text");
 		self->arr_p_sht_textPrcn[i] = Sheet_alloc( p_shtctl);
 		p_exp->inptSht( p_exp, (void *)barhmi_code_textPrcn, self->arr_p_sht_textPrcn[i]) ;
+		self->arr_p_sht_textPrcn[i]->cnt.data = prn_buf[i];
 		
 		
-		self->arr_p_sht_unit[i] = Sheet_alloc( p_shtctl);
-		p_exp->inptSht( p_exp, (void *)barhmi_code_unit, self->arr_p_sht_unit[i]) ;
 		//todo: 后面要绑定正确的模型，而不是测试模型
-		self->arr_p_sht_textPrcn[i]->p_mdl = ModelCreate("test");
-		self->arr_p_sht_unit[i]->p_mdl = ModelCreate("test");
+//		self->arr_p_sht_textPrcn[i]->p_mdl = ModelCreate("test");
+//		self->arr_p_sht_unit[i]->p_mdl = ModelCreate("test");
 		
 		
 		
@@ -389,16 +390,16 @@ static void Cal_bar( barGhHMI *self)
 	uint16_t unit_vy0 = 42;
 	
 	
-	uint32_t 	i = 0;
+	uint32_t 	i = 0, j= 1000;
 	uint32_t	prcn = 0;
 	uint32_t	height = 0;
 	
-	//todo:实际中，要绑定正确的模型，而不是测试模型
-	self->arr_p_sht_textPrcn[i]->p_mdl->getMdlData( self->arr_p_sht_textPrcn[i]->p_mdl, 0, NULL);		//刷新一下数据
+	
 	for( i = 0; i < BARHMI_NUM_BARS; i++)
 	{
 		
-		prcn = self->arr_p_sht_textPrcn[i]->p_mdl->to_percentage( self->arr_p_sht_textPrcn[i]->p_mdl, NULL);
+		prcn = self->arr_p_sht_textPrcn[i]->p_mdl->getMdlData( self->arr_p_sht_textPrcn[i]->p_mdl, \
+			self->arr_p_sht_textPrcn[i]->cnt.mdl_aux,  &j);
 		height = max_height * prcn / 1000;
 		
 		self->arr_p_barshts[i]->area.x0 = bar_vx0[i];
@@ -406,14 +407,14 @@ static void Cal_bar( barGhHMI *self)
 		self->arr_p_barshts[i]->area.y0 = bar_vy1 - height;
 		self->arr_p_barshts[i]->area.y1 = bar_vy1;
 		
-		self->arr_p_sht_textPrcn[i]->cnt.data = \
-			self->arr_p_sht_textPrcn[i]->p_mdl->to_string( self->arr_p_sht_textPrcn[i]->p_mdl, 0, NULL);
+		 
+		self->arr_p_sht_textPrcn[i]->p_mdl->to_string( self->arr_p_sht_textPrcn[i]->p_mdl, 0, self->arr_p_sht_textPrcn[i]->cnt.data);
 		self->arr_p_sht_textPrcn[i]->cnt.len = strlen( self->arr_p_sht_textPrcn[i]->cnt.data);
 		self->arr_p_sht_textPrcn[i]->area.x0 = bar_vx0[i];
 		self->arr_p_sht_textPrcn[i]->area.y0 = text_vy0;
 		
 		self->arr_p_sht_unit[i]->cnt.data = \
-			self->arr_p_sht_textPrcn[i]->p_mdl->to_string( self->arr_p_sht_textPrcn[i]->p_mdl, 1, NULL);
+			self->arr_p_sht_unit[i]->p_mdl->to_string( self->arr_p_sht_unit[i]->p_mdl, 1, NULL);
 		self->arr_p_sht_unit[i]->cnt.len = strlen( self->arr_p_sht_unit[i]->cnt.data);
 		self->arr_p_sht_unit[i]->area.x0 = bar_vx0[i];
 		self->arr_p_sht_unit[i]->area.y0 = unit_vy0;

@@ -1,6 +1,5 @@
 #include "Gh_txt.h"
 #include "device.h"
-
 //============================================================================//
 //            G L O B A L   D E F I N I T I O N S                             //
 //============================================================================//
@@ -141,30 +140,6 @@ static void GhTxt_vDraw( Glyph *self, dspContent_t *cnt, vArea_t *area)
 }
 
 
-
-//static void GhTxt_Draw( Glyph *self, dspContent_t *cnt, dspArea_t *area)
-//{
-//	I_dev_lcd *lcd;
-//	
-//	Dev_open( LCD_DEVID, (void *)&lcd);
-//	
-//	lcd->BKColor( cnt->bkc);
-//	
-//	if( cnt->subType == TEXT_ST_LABLE)
-//	{
-//		lcd->label( cnt->data, cnt->len,&area->useArea, cnt->font,cnt->colour, area->ali);
-//		
-//	}
-//	else
-//	{
-//		lcd->wrString( cnt->data, cnt->len, area->useArea.x1, area->useArea.y1, cnt->font,cnt->colour);
-//		
-//	}
-//	if( cnt->bkc != ERR_COLOUR && cnt->bkc != area->curScInfo->scBkc )
-//		lcd->BKColor( area->curScInfo->scBkc);	//将背景色改回屏幕的背景色，避免影响后面要显示的内容
-
-
-//}
 
 
 static int GhTxt_GetSize(Glyph *self, int font, uint16_t *x, uint16_t *y)

@@ -156,6 +156,7 @@ int main (void) {
 	Controller	*p_ctlkey;
 
 	Model 		*mTime;
+	Model 		*p_mdl_test;
 	HMI 		*p_mainHmi;
 	
 	osKernelInitialize ();                    // initialize CMSIS-RTOS
@@ -170,6 +171,9 @@ int main (void) {
 	
 	mTime = ModelCreate("time");
 	mTime->init( mTime, NULL);
+	
+	p_mdl_test =  ModelCreate("test");
+	p_mdl_test->init( p_mdl_test, NULL);
 	
 	p_kb = GetKeyInsance();
 	p_kb->init( p_kb, NULL);
@@ -188,7 +192,11 @@ int main (void) {
 #else
 #	if TDD_SHEET == 1
 	p_mainHmi->show( p_mainHmi);
-
+	while(1)
+	{
+		osDelay(1000);
+		p_mdl_test->getMdlData( p_mdl_test, 10000, NULL);
+	}
 #	elif TDD_KEYBOARD == 1
 	mytxt = ( Glyph *)Get_GhTxt();
 	Dev_open( LCD_DEVID, (void *)&lcd);
@@ -306,7 +314,7 @@ static int KeyEvent( char num, keyMsg_t arr_msg[])
 	int i = 0;
 	char buf[32];
 	dspContent_t cnt;
-	dspArea_t area  = {0};
+	vArea_t area  = {0};
 	
 	lcd->Clear( COLOUR_BLACK);
 	cnt.colour = COLOUR_WHITE;
@@ -315,9 +323,9 @@ static int KeyEvent( char num, keyMsg_t arr_msg[])
 	
 	cnt.data = buf;
 	cnt.len = strlen( buf);
-	area.useArea.x1 = 0;
-	area.useArea.y1 += 0;
-	mytxt->draw( mytxt, &cnt, &area);
+	area.x0 = 0;
+	area.y0 += 0;
+	mytxt->vdraw( mytxt, &cnt, &area);
 	for( i = 0; i < num; i++)
 	{
 		memset( buf, 0, sizeof( buf));
@@ -330,9 +338,9 @@ static int KeyEvent( char num, keyMsg_t arr_msg[])
 		
 		cnt.data = appBuf;
 		cnt.len = strlen( appBuf);
-		area.useArea.x1 = 0;
-		area.useArea.y1 += 24;
-		mytxt->draw( mytxt, &cnt, &area);
+		area.x0 = 0;
+		area.y0 += 24;
+		mytxt->vdraw( mytxt, &cnt, &area);
 //		sprintf( appBuf, "%s %s", 
 	}
 	

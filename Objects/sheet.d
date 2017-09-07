@@ -25,3 +25,4 @@
 .\objects\sheet.o: .\model\ModelTest.h
 .\objects\sheet.o: E:\mylib\sdhLib\inc\mem/CiiMem.h
 .\objects\sheet.o: E:\mylib\sdhLib\inc\basis/assert.h
+.\objects\sheet.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
