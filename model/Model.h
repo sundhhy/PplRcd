@@ -22,12 +22,14 @@
 #define AUX_UNIT			1
 #define AUX_ALARM			2
 #define AUX_PERCENTAGE		3	
+
+#define MDLID_TEST			0
 //------------------------------------------------------------------------------
 // typedef
 //------------------------------------------------------------------------------
 INTERFACE( Observer)
 {
-	int ( *update)( Observer *self);
+	int ( *update)( Observer *self, void *p_srcMdl);
 	
 	
 };
@@ -40,7 +42,7 @@ ABS_CLASS( Model)
 	Model	*teamMdl;
 	short	crDt_len;
 	char	uint;
-	char	none;
+	uint8_t	mdl_id;
 	
 	abstract int (*init)( Model *self, IN void *arg);
 	

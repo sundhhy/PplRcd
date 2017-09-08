@@ -79,6 +79,8 @@ static void	DataHmi_HitHandle( HMI *self, char *s);
 //命令
 static void DataHmi_EnterCmdHdl( shtCmd *self, struct SHEET *p_sht, void *arg);
 
+static int DataHmi_MdlUpdata( Observer *self, void *p_srcMdl);
+
 
 static void Bulid_dataSheet( dataHMI *self);
 
@@ -114,7 +116,7 @@ FUNCTION_SETTING( HMI.hitHandle, DataHmi_HitHandle);
 
 
 FUNCTION_SETTING( shtCmd.shtExcute, DataHmi_EnterCmdHdl);
-
+FUNCTION_SETTING( Observer.update, DataHmi_MdlUpdata);
 
 END_CTOR
 //=========================================================================//
@@ -157,6 +159,7 @@ static void DataHmi_InitSheet( HMI *self )
 	for( i = 0; i < BARHMI_NUM_BARS; i++) {
 		Sheet_updown( cthis->arr_p_sht_data[i], h++);
 		Sheet_updown( cthis->arr_p_sht_unit[i], h++);
+		Sheet_updown( cthis->arr_p_sht_alarm[i], h++);
 	}
 	
 	
@@ -171,6 +174,7 @@ static void DataHmi_HideSheet( HMI *self )
 
 	
 	for( i = BARHMI_NUM_BARS - 1; i >= 0; i--) {
+		Sheet_updown( cthis->arr_p_sht_alarm[i], -1);
 		Sheet_updown( cthis->arr_p_sht_unit[i], -1);
 		Sheet_updown( cthis->arr_p_sht_data[i], -1);
 	}
@@ -235,7 +239,7 @@ static void DataHmi_update(dataHMI *self)
 	//到四周边界的空隙
 	uint8_t		space_to_up = 		2;	
 	uint8_t		space_to_bottom = 	2;
-//	uint8_t		space_to_left = 	8;	
+	uint8_t		space_to_left = 	8;	
 	uint8_t		space_to_right = 	8;
 	
 	char 			i = 0, j = 0;
@@ -244,7 +248,7 @@ static void DataHmi_update(dataHMI *self)
 	sheet			*p_sht;
 	
 	//刷新一下数据,产生0 - 10000的随机数, 调试时使用
-	self->arr_p_sht_data[i]->p_mdl->getMdlData( self->arr_p_sht_data[i]->p_mdl, 10000, NULL);		
+//	self->arr_p_sht_data[i]->p_mdl->getMdlData( self->arr_p_sht_data[i]->p_mdl, 10000, NULL);		
 	
 	for( i = 0; i < 3; i++) { 
 		for( j = 0; j < 2; j++) {
@@ -256,8 +260,7 @@ static void DataHmi_update(dataHMI *self)
 			p_sht->cnt.len = strlen( p_sht->cnt.data);
 			p_sht->p_gp->getSize( p_sht->p_gp, p_sht->cnt.font, &sizex, &sizey);
 			sizex = sizex * p_sht->cnt.len;	
-			
-			//计算坐标
+
 			p_sht->area.x0 = right_x +  (j ) * box_sizex - space_to_right - sizex;
 			p_sht->area.y0 = up_y + i * box_sizey + space_to_up;
 			
@@ -270,9 +273,20 @@ static void DataHmi_update(dataHMI *self)
 			p_sht->cnt.len = strlen( p_sht->cnt.data);
 			p_sht->p_gp->getSize( p_sht->p_gp, p_sht->cnt.font, &sizex, &sizey);
 			sizex = sizex * p_sht->cnt.len;	
-			
-			//计算坐标
+
 			p_sht->area.x0 = right_x +  j * box_sizex - space_to_right - sizex;
+			p_sht->area.y0 = up_y + ( i + 1)* box_sizey - space_to_bottom - sizey;
+			
+			//计算报警信息的坐标
+			
+			p_sht = self->arr_p_sht_alarm[i * 2 + j];
+			p_sht->cnt.data = \
+				p_sht->p_mdl->to_string( p_sht->p_mdl, p_sht->cnt.mdl_aux, NULL);
+			p_sht->cnt.len = strlen( p_sht->cnt.data);
+			p_sht->p_gp->getSize( p_sht->p_gp, p_sht->cnt.font, &sizex, &sizey);
+			sizex = sizex * p_sht->cnt.len;	
+			//报警信息靠左显示
+			p_sht->area.x0 = j * box_sizex + space_to_left;
 			p_sht->area.y0 = up_y + ( i + 1)* box_sizey - space_to_bottom - sizey;
 		}
 			
@@ -287,6 +301,7 @@ static void Bulid_dataSheet( dataHMI *self)
 	
 	Expr 			*p_exp ;
 	shtctl 			*p_shtctl = NULL;
+	Model			*p_mdl = NULL;
 	short 			i;
 	
 	self->arr_p_sht_unit = g_arr_p_chnUtil;
@@ -301,16 +316,29 @@ static void Bulid_dataSheet( dataHMI *self)
 		self->arr_p_sht_data[i] = Sheet_alloc( p_shtctl);
 		p_exp->inptSht( p_exp, (void *)datahmi_code_data, self->arr_p_sht_data[i]) ;
 		
-		
-		
-		//todo: 后面要绑定正确的模型，而不是测试模型
-//		self->arr_p_sht_data[i]->p_mdl = ModelCreate("test");
-		self->arr_p_sht_data[i]->p_mdl->attach( self->arr_p_sht_data[i]->p_mdl, ( Observer *)self->arr_p_sht_data[i]);
-		
-		
+//		self->arr_p_sht_data[i]->p_mdl->attach( self->arr_p_sht_data[i]->p_mdl, ( Observer *)self->arr_p_sht_data[i]);		
 		self->arr_p_sht_data[i]->cnt.colour = arr_clrs[i];
 		
 	}
+	
+	//todo: 改成通道
+	p_mdl = ModelCreate("test");
+	p_mdl->attach(p_mdl, &self->Observer);
+	
+}
+
+
+static int DataHmi_MdlUpdata( Observer *self, void *p_srcMdl)
+{
+	dataHMI *cthis = SUB_PTR( self, Observer, dataHMI);
+	Model	*mdl = (Model *)p_srcMdl;
+	
+	
+	DataHmi_update( cthis);
+	
+	Sheet_refresh( cthis->arr_p_sht_data[0]);
+	
+	return RET_OK;
 	
 }
 

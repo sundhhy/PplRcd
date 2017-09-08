@@ -149,7 +149,7 @@ void Sheet_setbuf( struct SHEET *p_sht, uint8_t *buf, int bxsize, int bysize, in
     
 }
 
-int ShtUpdate( void *p_sht)
+int ShtUpdate( void *p_sht, void *p_mdl)
 {
 	struct SHEET *p = ( struct SHEET *)p_sht;
 	p->cnt.data = p->p_mdl->to_string( p->p_mdl, 0, NULL);

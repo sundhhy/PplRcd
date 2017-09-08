@@ -43,7 +43,7 @@ const Except_T model_Failed = { "MDL Failed" };
 static void DoUpdate(void **x, void *cl)
 {
 	Observer *s = ( Observer *)*x;
-	s->update(s);
+	s->update(s, cl);
 	
 }
 
@@ -101,7 +101,7 @@ void Mdl_notify (Model *self)
 	
 	
 	
-	List_map( self->tObs, DoUpdate, NULL);
+	List_map( self->tObs, DoUpdate, self);
 }
 
 void Mdl_unit_to_string( char unit, char *buf, int len)

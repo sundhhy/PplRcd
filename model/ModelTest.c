@@ -88,6 +88,11 @@ static int MdlTest_init( Model *self, IN void *arg)
 	cthis->unit_buf = CALLOC(1,8);
 	cthis->alarm_buf = CALLOC(1,8);
 	cthis->range = 100;
+	self->mdl_id = MDLID_TEST;
+	
+	cthis->i_rand = rand()%cthis->range;
+
+	
 	return RET_OK;
 }
 
@@ -158,12 +163,17 @@ static char* MdlTest_to_string( Model *self, IN int aux, void *arg)
 				strcat(p, "Hi ");
 			}
 			
-			if(cthis->i_rand > li) {
+			if(cthis->i_rand < li) {
 				strcat(p, "Li ");
 			}
 			
-			if(cthis->i_rand > ll) {
+			if(cthis->i_rand < ll) {
 				strcat(p, "LL ");
+			}
+			
+			//把空间填满，来达到清除掉上一次的显示的目的
+			if( strlen( p) < 4) {
+				strcat(p, "   ");
 			}
 			return p;
 		default:
@@ -177,6 +187,9 @@ static char* MdlTest_to_string( Model *self, IN int aux, void *arg)
 static int  MdlTest_to_percentage( Model *self, void *arg)
 {
 	ModelTest		*cthis = SUB_PTR( self, Model, ModelTest);
+	
+	
+	
 	return cthis->i_rand ;
 }
 

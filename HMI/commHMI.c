@@ -169,7 +169,7 @@ static void Build_ChnSheets(void)
 		g_arr_p_chnUtil[i] = Sheet_alloc( p_shtctl);
 		p_exp->inptSht( p_exp, (void *)cmmhmi_code_unit, g_arr_p_chnUtil[i]) ;
 		g_arr_p_chnAlarm[i] = Sheet_alloc( p_shtctl);
-		p_exp->inptSht( p_exp, (void *)cmmhmi_code_alarm, g_arr_p_chnUtil[i]) ;
+		p_exp->inptSht( p_exp, (void *)cmmhmi_code_alarm, g_arr_p_chnAlarm[i]) ;
 		
 	}
 	

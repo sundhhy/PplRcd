@@ -101,7 +101,7 @@ struct SHEET *Sheet_alloc( struct SHTCTL *p_ctl);
 void Sheet_setbuf( struct SHEET *p_sht, uint8_t *buf, int bxsize, int bysize, int col_inv);
 void Sheet_updown( struct SHEET *p_sht, int height);
 void Sheet_append( struct SHEET *p_sht);
-int ShtUpdate( void *p_sht);
+int ShtUpdate( void *p_sht, void *p);
 // void sheet_refresh( struct SHTCTL *p_ctl);
 void Sheet_refresh( struct SHEET *p_sht);
 void Sheet_slide(  struct SHEET *p_sht);
