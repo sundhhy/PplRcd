@@ -33,3 +33,4 @@
 .\objects\hmifactory.o: HMI\menuHMI.h
 .\objects\hmifactory.o: HMI\barGraphHMI.h
 .\objects\hmifactory.o: HMI\dataHMI.h
+.\objects\hmifactory.o: HMI\real_time_trendHmi.h

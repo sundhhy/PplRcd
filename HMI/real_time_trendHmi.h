@@ -1,20 +1,11 @@
-#ifndef _INC_HMIfactory_H_
-#define _INC_HMIfactory_H_
-
+#ifndef _INC_real_time_trendHmi_H_
+#define _INC_real_time_trendHmi_H_
+#include "HMI.h"
+#include "commHMI.h"
 //------------------------------------------------------------------------------
 // includes
 //------------------------------------------------------------------------------
 #include <stdint.h>
-#include "commHMI.h"
-#include "mainHMI.h"
-#include "keyboardHMI.h"
-#include "menuHMI.h"
-#include "barGraphHMI.h"
-#include "dataHMI.h"
-#include "real_time_trendHmi.h"
-
-
-
 //------------------------------------------------------------------------------
 // check for correct compilation options
 //------------------------------------------------------------------------------
@@ -22,23 +13,31 @@
 //------------------------------------------------------------------------------
 // const defines
 //------------------------------------------------------------------------------
-#define HMI_MAIN		1
-#define HMI_CMM			2
-#define HMI_KYBRD		3
-#define HMI_MENU		4
-#define HMI_BAR			5
-#define HMI_DATA		6
-#define HMI_RLT_TREND		7
+#define BARHMI_NUM_BARS			NUM_CHANNEL
  //------------------------------------------------------------------------------
 // typedef
 //------------------------------------------------------------------------------
+CLASS( RLT_trendHMI)
+{
+	EXTENDS( HMI);
+	IMPLEMENTS( shtCmd);
+	IMPLEMENTS( Observer);
+	
+	sheet  		*p_bkg;
+	sheet  		*p_title;
+	sheet  		*p_div;
+	sheet  		*p_point;
+	sheet  		*arr_p_sht_data[BARHMI_NUM_BARS];
+	
+	
+};
 //------------------------------------------------------------------------------
 // global variable declarations
-
-
+//------------------------------------------------------------------------------
+extern HMI *g_p_RLT_trendHmi;
 //------------------------------------------------------------------------------
 // function prototypes
 //------------------------------------------------------------------------------
-HMI *CreateHMI( int type);
+RLT_trendHMI *Get_RLT_trendHMI(void);
 
 #endif

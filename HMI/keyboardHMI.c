@@ -379,7 +379,7 @@ static void DrawFocus( char vkeytype, virKeyInfo_t *p_focus)
 	p_keyboardFocusPic->area.y1 = p_focus->pvy1;
 	
 	p_keyboardFocusPic->p_gp->vdraw( p_keyboardFocusPic->p_gp, &p_keyboardFocusPic->cnt, &p_keyboardFocusPic->area);
-	
+	Flush_LCD();
 }
 static void	KeyboardLngpshHandle( HMI *self,  char *s_key)
 {

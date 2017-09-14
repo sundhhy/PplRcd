@@ -51,7 +51,7 @@ HMI *g_p_HMI_menu;
 const char win_pic1_Code[] = { "<pic vx0=0 vy0=0 >19</>" };
 const char win_pic2_Code[] = { "<cpic vx0=0 vy0=0 >20</>" };
 
-static HMI **arr_pp_targetHmi[NUM_BTNROW][NUM_BTNCOL] = { { &g_p_mainHmi, &g_p_barGhHmi}, {&g_p_dataHmi, NULL}};
+static HMI **arr_pp_targetHmi[NUM_BTNROW][NUM_BTNCOL] = { { &g_p_mainHmi, &g_p_barGhHmi}, {&g_p_dataHmi, &g_p_RLT_trendHmi}};
 
 //static const hmiAtt_t	menuHmiAtt = { 4,4, COLOUR_GRAY, NUM_BTNROW, NUM_BTNCOL};
 //static sheet *arr_p_menu_show[ NUM_BTNROW][NUM_BTNCOL] =  {NULL};
@@ -194,12 +194,14 @@ static void	MenuHmiShow( HMI *self )
 //	Sheet_refresh( cthis->p_bkg);
 	cthis->p_sht_pic1->p_gp->vdraw( cthis->p_sht_pic1->p_gp, &cthis->p_sht_pic1->cnt, &cthis->p_sht_pic1->area);
 	self->show_focus( self, cthis->focusRow, cthis->focusCol);
+	
 }
 
 static void MenuClearFocuse( HMI *self, uint8_t fouse_row, uint8_t fouse_col)
 {
 	menuHMI		*cthis = SUB_PTR( self, HMI, menuHMI);
 	cthis->p_sht_pic1->p_gp->vdraw( cthis->p_sht_pic1->p_gp, &cthis->p_sht_pic1->cnt, &cthis->p_sht_pic1->area);
+	Flush_LCD();
 }
 /*
 	[ bu ] [ bu ]
@@ -235,6 +237,7 @@ static void MenuShowFocuse( HMI *self, uint8_t fouse_row, uint8_t fouse_col)
 	
 	
 	cthis->p_sht_pic2->p_gp->vdraw( cthis->p_sht_pic2->p_gp, &cthis->p_sht_pic2->cnt, &cthis->p_sht_pic2->area);
+	Flush_LCD();
 }
 
 static void	MenuHitHandle( HMI *self, char *s)

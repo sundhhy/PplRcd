@@ -180,6 +180,8 @@ static void BarHmi_HideSheet( HMI *self )
 	
 	int i;
 	
+	self->clear_focus(self, cthis->focusRow, cthis->focusCol);
+	
 	Sheet_updown( g_p_ico_trend, -1);
 	Sheet_updown( g_p_ico_digital, -1);
 	Sheet_updown( g_p_ico_bar, -1);
@@ -191,7 +193,7 @@ static void BarHmi_HideSheet( HMI *self )
 		Sheet_updown( cthis->arr_p_barshts[i], -1);
 	}
 	Sheet_updown( cthis->p_bkg, -1);
-	self->clear_focus(self, cthis->focusRow, cthis->focusCol);
+	
 }	
 
 

@@ -55,6 +55,7 @@
 ".\objects\menuhmi.o"
 ".\objects\bargraphhmi.o"
 ".\objects\datahmi.o"
+".\objects\real_time_trendhmi.o"
 ".\objects\model.o"
 ".\objects\modelfactory.o"
 ".\objects\modeltime.o"

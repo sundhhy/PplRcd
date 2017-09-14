@@ -52,6 +52,14 @@ static void vDraw( Glyph *self, dspContent_t *cnt, vArea_t *area);
 //============================================================================//
 //            P U B L I C   F U N C T I O N S                                 //
 //============================================================================//
+void Flush_LCD(void)
+{
+	I_dev_lcd *lcd;
+	Dev_open( LCD_DEVID, (void *)&lcd);
+	lcd->done();
+	
+}
+
 int Set_effects(dspContent_t *p_cnt, int eff, int val) 
 {
 	int ret = RET_OK;

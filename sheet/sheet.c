@@ -270,6 +270,8 @@ void Sheet_refresh( struct SHEET *p_sht)
 		Sheet_refreshsub( p);
 		
 	}
+	Flush_LCD();
+	
 	
 //    {
 //		
@@ -286,6 +288,7 @@ void Sheet_slide( struct SHEET *p_sht)
 		return;
 	p_sht->p_gp->vdraw( p_sht->p_gp, &p_sht->cnt, &p_sht->area);
 	Sheet_refreshsub( p_sht);
+	Flush_LCD();
     return;
     
 }

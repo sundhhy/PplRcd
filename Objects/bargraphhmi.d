@@ -33,6 +33,7 @@
 .\objects\bargraphhmi.o: HMI\keyboardHMI.h
 .\objects\bargraphhmi.o: HMI\menuHMI.h
 .\objects\bargraphhmi.o: HMI\dataHMI.h
+.\objects\bargraphhmi.o: HMI\real_time_trendHmi.h
 .\objects\bargraphhmi.o: .\Expression\ExpFactory.h
 .\objects\bargraphhmi.o: .\Expression\expression.h
 .\objects\bargraphhmi.o: .\Views\Composition.h

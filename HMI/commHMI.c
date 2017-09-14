@@ -114,9 +114,9 @@ END_CTOR
 static int	Init_cmmHmi( HMI *self, void *arg)
 {
 //	cmmHmi	*cthis = SUB_PTR( self, HMI, cmmHmi);
-	HMI 		*p_hmi;
-	menuHMI		*menuHmi ;
-	barGhHMI	*barHmi ;
+	HMI 			*p_hmi;
+	menuHMI			*menuHmi ;
+	barGhHMI		*barHmi ;
 	shtctl *p_shtctl = NULL;
 	Expr *p_exp ;
 	
@@ -136,6 +136,9 @@ static int	Init_cmmHmi( HMI *self, void *arg)
 	
 	//初始化其他界面
 	p_hmi = CreateHMI( HMI_DATA);
+	p_hmi->init( p_hmi, NULL);
+	
+	p_hmi = CreateHMI( HMI_RLT_TREND);
 	p_hmi->init( p_hmi, NULL);
 	
 	

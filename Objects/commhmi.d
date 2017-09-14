@@ -38,6 +38,7 @@
 .\objects\commhmi.o: HMI\menuHMI.h
 .\objects\commhmi.o: HMI\barGraphHMI.h
 .\objects\commhmi.o: HMI\dataHMI.h
+.\objects\commhmi.o: HMI\real_time_trendHmi.h
 .\objects\commhmi.o: ..\PplRcd\utils/time.h
 .\objects\commhmi.o: E:\PaperlessRecorder\myCode\PplRcd\RTE\Device\STM32F103VC\stm32f10x_conf.h
 .\objects\commhmi.o: E:\PaperlessRecorder\myCode\PplRcd\RTE\RTE_Components.h

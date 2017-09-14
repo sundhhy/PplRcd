@@ -49,25 +49,28 @@ HMI *CreateHMI( int hmiType)
 	switch( hmiType)
 	{
 		case HMI_MAIN:
-			p_hmi = SUPER_PTR( Get_mainHmi(), HMI);
+			p_hmi = SUPER_PTR(Get_mainHmi(), HMI);
 			break; 
 		case HMI_CMM:
 			
-			p_hmi = SUPER_PTR(  GetCmmHMI(), HMI);
+			p_hmi = SUPER_PTR(GetCmmHMI(), HMI);
 			break; 
 		case HMI_KYBRD:
 			
-			p_hmi = SUPER_PTR(  GetkeyboardHMI(), HMI);
+			p_hmi = SUPER_PTR(GetkeyboardHMI(), HMI);
 			break;
 		case HMI_MENU:
 			
-			p_hmi = SUPER_PTR(  GetmenuHMI(), HMI);
+			p_hmi = SUPER_PTR(GetmenuHMI(), HMI);
 			break;
 		case HMI_BAR:
-			p_hmi = SUPER_PTR(  Get_barGhHMI(), HMI);
+			p_hmi = SUPER_PTR(Get_barGhHMI(), HMI);
 			break;
 		case HMI_DATA:
-			p_hmi = SUPER_PTR(  Get_dataHMI(), HMI);
+			p_hmi = SUPER_PTR(Get_dataHMI(), HMI);
+			break;
+		case HMI_RLT_TREND:
+			p_hmi = SUPER_PTR(Get_RLT_trendHMI(), HMI);
 			break;
 		default:
 			break;

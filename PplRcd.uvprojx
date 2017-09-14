@@ -1048,6 +1048,16 @@
               <FileType>5</FileType>
               <FilePath>.\HMI\dataHmi.h</FilePath>
             </File>
+            <File>
+              <FileName>real_time_trendHmi.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\HMI\real_time_trendHmi.c</FilePath>
+            </File>
+            <File>
+              <FileName>real_time_trendHmi.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\HMI\real_time_trendHmi.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
