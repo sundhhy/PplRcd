@@ -54,6 +54,7 @@
 .\objects\main.o: E:\mylib\sdhLib\inc\basis/assert.h
 .\objects\main.o: .\sheet\sheet.h
 .\objects\main.o: .\Glyph\glyph.h
+.\objects\main.o: HMI/focus.h
 .\objects\main.o: HMI/mainHMI.h
 .\objects\main.o: HMI/keyboardHMI.h
 .\objects\main.o: HMI/menuHMI.h

@@ -28,6 +28,7 @@
 .\objects\hmifactory.o: E:\mylib\sdhLib\inc\arithmetic/list.h
 .\objects\hmifactory.o: E:\mylib\sdhLib\inc\basis/assert.h
 .\objects\hmifactory.o: .\model\ModelTest.h
+.\objects\hmifactory.o: HMI\focus.h
 .\objects\hmifactory.o: HMI\mainHMI.h
 .\objects\hmifactory.o: HMI\keyboardHMI.h
 .\objects\hmifactory.o: HMI\menuHMI.h

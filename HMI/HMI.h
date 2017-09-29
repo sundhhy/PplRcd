@@ -6,7 +6,6 @@
 //------------------------------------------------------------------------------
 #include <stdint.h>
 #include <string.h>
-
 #include "lw_oopc.h"
 
 #include "sdhDef.h"
@@ -17,6 +16,8 @@
 #endif
 
 #include "sheet.h"
+#include "focus.h"
+
 
 
 //------------------------------------------------------------------------------
@@ -46,25 +47,33 @@ typedef struct {
 }hmiAtt_t;
 
 
-ABS_CLASS( HMI)
+ABS_CLASS(HMI)
 {
 	HMI*			prev;
 	HMI*			next;
 	
+	focus_user_t	*p_fcuu;
+	
 	//显示静态画面
-	int		( *init)( HMI *self, void *arg);
-	void		(*show)( HMI *self);
+	int		(*init)( HMI *self, void *arg);
+	void	(*show)( HMI *self);
+	
+	
+	//数据相关
+	void	(*dataVisual)(HMI *self, void *arg);		//17-09-20 数据可视化处理
 	
 	// initSheet hide 
 	void		(*hide)( HMI *self);
 	void		(*initSheet)( HMI *self);
 	void		(*switchHMI)( HMI *self, HMI *p_hmi);
 	void		(*switchBack)( HMI *self);
+	
+	//按键动作
 	void		(*hitHandle)( HMI *self, char *s_key);
 	void		(*dhitHandle)( HMI *self, char *s_key);
 	void		(*longpushHandle)( HMI *self,  char *s_key);
 	void		(*conposeKeyHandle)( HMI *self, char *s_key1, char *s_key2);
-	
+	//焦点处理
 	void		(*init_focus)(HMI *self);
 	void		(*clear_focus)(HMI *self, uint8_t fouse_row, uint8_t fouse_col);
 	void		(*show_focus)( HMI *self, uint8_t fouse_row, uint8_t fouse_col);
@@ -80,6 +89,7 @@ extern const Except_T Hmi_Failed;
 //extern  ro_char str_endRow[];
 //extern	ro_char str_endCol[];
 extern HMI *g_p_curHmi;
+extern uint8_t	hmi_buf[6][244];
 //------------------------------------------------------------------------------
 // function prototypes
 //------------------------------------------------------------------------------

@@ -834,14 +834,14 @@
               <FilePath>.\Expression\NtInput.h</FilePath>
             </File>
             <File>
-              <FileName>GeometricsExpr.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Expression\GeometricsExpr.c</FilePath>
-            </File>
-            <File>
               <FileName>GeometricsExpr.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\Expression\GeometricsExpr.h</FilePath>
+            </File>
+            <File>
+              <FileName>GeometricsExpr.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Expression\GeometricsExpr.c</FilePath>
             </File>
             <File>
               <FileName>NtGrid.c</FileName>
@@ -1057,6 +1057,26 @@
               <FileName>real_time_trendHmi.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\HMI\real_time_trendHmi.h</FilePath>
+            </File>
+            <File>
+              <FileName>curve.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\HMI\curve.c</FilePath>
+            </File>
+            <File>
+              <FileName>curve.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\HMI\curve.h</FilePath>
+            </File>
+            <File>
+              <FileName>focus.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\HMI\focus.c</FilePath>
+            </File>
+            <File>
+              <FileName>focus.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\HMI\focus.h</FilePath>
             </File>
           </Files>
         </Group>

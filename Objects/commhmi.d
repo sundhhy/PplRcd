@@ -27,6 +27,7 @@
 .\objects\commhmi.o: E:\mylib\sdhLib\inc\arithmetic/list.h
 .\objects\commhmi.o: E:\mylib\sdhLib\inc\basis/assert.h
 .\objects\commhmi.o: .\model\ModelTest.h
+.\objects\commhmi.o: HMI\focus.h
 .\objects\commhmi.o: .\Expression\ExpFactory.h
 .\objects\commhmi.o: .\Expression\expression.h
 .\objects\commhmi.o: .\Views\Composition.h

@@ -27,6 +27,7 @@
 .\objects\bargraphhmi.o: E:\mylib\sdhLib\inc\arithmetic/list.h
 .\objects\bargraphhmi.o: E:\mylib\sdhLib\inc\basis/assert.h
 .\objects\bargraphhmi.o: .\model\ModelTest.h
+.\objects\bargraphhmi.o: HMI\focus.h
 .\objects\bargraphhmi.o: HMI\commHMI.h
 .\objects\bargraphhmi.o: HMI\HMIFactory.h
 .\objects\bargraphhmi.o: HMI\mainHMI.h

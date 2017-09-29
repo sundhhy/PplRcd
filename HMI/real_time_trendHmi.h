@@ -11,9 +11,9 @@
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
-// const defines
+// const defines NUM_CHANNEL
 //------------------------------------------------------------------------------
-#define BARHMI_NUM_BARS			NUM_CHANNEL
+#define RLTHMI_NUM_BARS			1
  //------------------------------------------------------------------------------
 // typedef
 //------------------------------------------------------------------------------
@@ -23,11 +23,18 @@ CLASS( RLT_trendHMI)
 	IMPLEMENTS( shtCmd);
 	IMPLEMENTS( Observer);
 	
+	
+	
 	sheet  		*p_bkg;
 	sheet  		*p_title;
 	sheet  		*p_div;
-	sheet  		*p_point;
-	sheet  		*arr_p_sht_data[BARHMI_NUM_BARS];
+	sheet  		*arr_p_sht_data[RLTHMI_NUM_BARS];
+	
+	
+	char			flags;
+	char 			none[3];
+	
+	
 	
 	
 };

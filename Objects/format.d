@@ -27,4 +27,5 @@
 .\objects\format.o: E:\mylib\sdhLib\inc\arithmetic/list.h
 .\objects\format.o: E:\mylib\sdhLib\inc\basis/assert.h
 .\objects\format.o: .\model\ModelTest.h
+.\objects\format.o: HMI\focus.h
 .\objects\format.o: E:\mylib\sdhLib\inc\basis/assert.h

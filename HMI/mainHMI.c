@@ -146,7 +146,6 @@ static int	Init_mainHmi( HMI *self, void *arg)
 	
 	//timer
 	g_p_shtTime->cnt.bkc = p_sheets[0][0]->cnt.bkc;
-	g_p_shtTime->cnt.bkc = ERR_COLOUR;
 	
 
 	//chn info
@@ -274,6 +273,9 @@ static void MaininitSheet( HMI *self )
 	Sheet_updown( g_p_ico_digital, h++);
 	Sheet_updown( g_p_ico_trend, h++);
 	
+	
+	g_p_shtTime->cnt.bkc = p_sheets[0][0]->cnt.bkc;
+
 	
 }
 

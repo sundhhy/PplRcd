@@ -46,6 +46,9 @@
 #define SIZE_ERR					0xffff
 #define SIZE_BOUNDARY					0xfffe
 
+#define EMPTY_RECTANGLE				0
+#define FILLED_RECTANGLE			1
+#define LINE						2
 
 //字符型设备的接口
 //包括uart设备

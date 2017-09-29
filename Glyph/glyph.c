@@ -48,6 +48,7 @@
 //------------------------------------------------------------------------------
 
 static int Init( Glyph *self, I_dev_lcd *lcd);
+static void Draw_self( Glyph *self);
 static void vDraw( Glyph *self, dspContent_t *cnt, vArea_t *area);
 //============================================================================//
 //            P U B L I C   F U N C T I O N S                                 //
@@ -57,6 +58,14 @@ void Flush_LCD(void)
 	I_dev_lcd *lcd;
 	Dev_open( LCD_DEVID, (void *)&lcd);
 	lcd->done();
+	
+}
+
+void CLR_LCD(void)
+{
+	I_dev_lcd *lcd;
+	Dev_open( LCD_DEVID, (void *)&lcd);
+	lcd->Clear(0);
 	
 }
 
@@ -145,7 +154,7 @@ int	String2CntEff( char *s)
 	int eff = 0xff;
 	
 	if( GetKeyVal( s, "m", s_eff, 8)) {
-		eff = atoi( s);
+		eff = atoi(s_eff);
 	}
 	
 	
@@ -315,7 +324,7 @@ int GetKeyVal( char *s, char *key, char *val, short size)
 
 ABS_CTOR( Glyph)
 FUNCTION_SETTING( init, Init);
-//FUNCTION_SETTING( setFont, SetFont);
+FUNCTION_SETTING( draw_self, Draw_self);
 //FUNCTION_SETTING( setClu, SetClu);
 //FUNCTION_SETTING( setBgC, SetBgC);
 //FUNCTION_SETTING( setWidth, setWidth);
@@ -407,6 +416,12 @@ static int SetBgC( Glyph *self, int c)
 static void vDraw( Glyph *self, dspContent_t *cnt, vArea_t *area)
 {
 	
+}
+
+static void Draw_self( Glyph *self)
+{
+	
+//	self->vdraw(self, &self->
 }
 
 //static int DrawArea( Glyph *self, short x1, short y1, short x2, short y2,  int len)

@@ -27,6 +27,7 @@
 .\objects\keyboardhmi.o: E:\mylib\sdhLib\inc\arithmetic/list.h
 .\objects\keyboardhmi.o: E:\mylib\sdhLib\inc\basis/assert.h
 .\objects\keyboardhmi.o: .\model\ModelTest.h
+.\objects\keyboardhmi.o: HMI\focus.h
 .\objects\keyboardhmi.o: HMI\commHMI.h
 .\objects\keyboardhmi.o: .\Expression\ExpFactory.h
 .\objects\keyboardhmi.o: .\Expression\expression.h

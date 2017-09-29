@@ -142,7 +142,7 @@ static int	Init_dataHMI( HMI *self, void *arg)
 
 	//³õÊ¼»¯½¹µã
 	self->init_focus(self);
-	
+	cthis->flags = 0;
 	
 	return RET_OK;
 
@@ -172,7 +172,7 @@ static void DataHmi_HideSheet( HMI *self )
 	int i;
 	
 
-	
+	cthis->flags = 0;
 	for( i = BARHMI_NUM_BARS - 1; i >= 0; i--) {
 		Sheet_updown( cthis->arr_p_sht_alarm[i], -1);
 		Sheet_updown( cthis->arr_p_sht_unit[i], -1);
@@ -191,7 +191,7 @@ static void	DataHmi_Show( HMI *self )
 	dataHMI		*cthis = SUB_PTR( self, HMI, dataHMI);
 	g_p_curHmi = self;
 	
-	
+	cthis->flags = 1;
 	DataHmi_update( cthis);
 	Sheet_refresh( cthis->p_bkg);
 	self->show_focus( self, 0, 0);
@@ -333,9 +333,9 @@ static int DataHmi_MdlUpdata( Observer *self, void *p_srcMdl)
 	dataHMI *cthis = SUB_PTR( self, Observer, dataHMI);
 	Model	*mdl = (Model *)p_srcMdl;
 	
-	
+	if(cthis->flags == 0)
+		return RET_OK;
 	DataHmi_update( cthis);
-	
 	Sheet_refresh( cthis->arr_p_sht_data[0]);
 	
 	return RET_OK;

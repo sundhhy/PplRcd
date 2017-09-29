@@ -26,3 +26,4 @@
 .\objects\hmi.o: E:\mylib\sdhLib\inc\arithmetic/list.h
 .\objects\hmi.o: E:\mylib\sdhLib\inc\basis/assert.h
 .\objects\hmi.o: .\model\ModelTest.h
+.\objects\hmi.o: HMI\focus.h

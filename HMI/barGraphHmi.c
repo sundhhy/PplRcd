@@ -165,7 +165,7 @@ static void BarHmi_InitSheet( HMI *self )
 	for( i = 0; i < BARHMI_NUM_BARS; i++) {
 		Sheet_updown( cthis->arr_p_barshts[i], h++);
 		Sheet_updown( cthis->arr_p_sht_textPrcn[i], h++);
-		Sheet_updown( cthis->arr_p_sht_unit[i], h++);
+		Sheet_updown( cthis->pp_bar_unit[i], h++);
 	}
 	
 	Sheet_updown( g_p_ico_memu, h++);
@@ -188,7 +188,7 @@ static void BarHmi_HideSheet( HMI *self )
 	Sheet_updown( g_p_ico_memu, -1);
 	
 	for( i = BARHMI_NUM_BARS - 1; i >= 0; i--) {
-		Sheet_updown( cthis->arr_p_sht_unit[i], -1);
+		Sheet_updown( cthis->pp_bar_unit[i], -1);
 		Sheet_updown( cthis->arr_p_sht_textPrcn[i], -1);
 		Sheet_updown( cthis->arr_p_barshts[i], -1);
 	}
@@ -346,7 +346,7 @@ static void Init_bar( barGhHMI *self)
 	shtctl 			*p_shtctl = NULL;
 	short 			i;
 	
-	self->arr_p_sht_unit = g_arr_p_chnUtil;
+	self->pp_bar_unit = g_arr_p_chnUtil;
 	
 	p_shtctl = GetShtctl();
 
@@ -363,7 +363,7 @@ static void Init_bar( barGhHMI *self)
 		
 		//todo: 后面要绑定正确的模型，而不是测试模型
 //		self->arr_p_sht_textPrcn[i]->p_mdl = ModelCreate("test");
-//		self->arr_p_sht_unit[i]->p_mdl = ModelCreate("test");
+//		self->pp_bar_unit[i]->p_mdl = ModelCreate("test");
 		
 		
 		
@@ -372,7 +372,7 @@ static void Init_bar( barGhHMI *self)
 		
 		self->arr_p_sht_textPrcn[i]->cnt.colour = arr_clrs[i];
 		
-		self->arr_p_sht_unit[i]->cnt.colour = arr_clrs[i];
+		self->pp_bar_unit[i]->cnt.colour = arr_clrs[i];
 		
 	}
 	
@@ -415,11 +415,11 @@ static void Cal_bar( barGhHMI *self)
 		self->arr_p_sht_textPrcn[i]->area.x0 = bar_vx0[i];
 		self->arr_p_sht_textPrcn[i]->area.y0 = text_vy0;
 		
-		self->arr_p_sht_unit[i]->cnt.data = \
-			self->arr_p_sht_unit[i]->p_mdl->to_string( self->arr_p_sht_unit[i]->p_mdl, 1, NULL);
-		self->arr_p_sht_unit[i]->cnt.len = strlen( self->arr_p_sht_unit[i]->cnt.data);
-		self->arr_p_sht_unit[i]->area.x0 = bar_vx0[i];
-		self->arr_p_sht_unit[i]->area.y0 = unit_vy0;
+		self->pp_bar_unit[i]->cnt.data = \
+			self->pp_bar_unit[i]->p_mdl->to_string( self->pp_bar_unit[i]->p_mdl, 1, NULL);
+		self->pp_bar_unit[i]->cnt.len = strlen( self->pp_bar_unit[i]->cnt.data);
+		self->pp_bar_unit[i]->area.x0 = bar_vx0[i];
+		self->pp_bar_unit[i]->area.y0 = unit_vy0;
 		
 		
 	}

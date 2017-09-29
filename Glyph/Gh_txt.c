@@ -112,15 +112,15 @@ static void GhTxt_vDraw( Glyph *self, dspContent_t *cnt, vArea_t *area)
 		bkc  = ColorInvert( c);
 	}
 	
-	if( GP_CKECK_EFF( cnt->effects , EFF_BKPIC)) {
-		m = bkc;
-		
-	}
-	
+
 	Dev_open( LCD_DEVID, (void *)&lcd);
-//	if( cnt->bkc != ERR_COLOUR  )
-//		lcd->Box( area->x0, area->y0, area->x1, area->y1, 1, cnt->bkc);
+
+	if( GP_CKECK_EFF( cnt->effects , EFF_BKPIC)) {
+		m = cnt->bkc;
+		
+	} else {
 		lcd->BKColor( bkc);
+	}
 	
 	if( cnt->subType == TEXT_ST_LABLE)
 	{

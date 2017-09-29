@@ -137,7 +137,10 @@ static char* MdlTest_to_string( Model *self, IN int aux, void *arg)
 			} else {
 				p = cthis->str_buf;
 			}
-			sprintf( p, "%d.%d", cthis->i_rand/10, cthis->i_rand%10);
+			if(cthis->range == 1000)
+				sprintf( p, "%d.%d", cthis->i_rand/10, cthis->i_rand%10);
+			else
+				sprintf( p, "%d", cthis->i_rand);
 			return p;
 		case AUX_UNIT:
 			if( arg) {

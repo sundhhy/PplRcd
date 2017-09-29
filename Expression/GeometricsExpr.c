@@ -100,17 +100,18 @@ static void * GeoInptSht( Expr *self, void *context, sheet *p_sht)
 	Set_shtContextAtt( att, p_sht);
 	Set_shtAreaAtt( att,  p_sht);
 	
-	
-	if( !strcasecmp( name, "input"))
-	{
-		gpGmtr = Get_GhRectangle();
-		
-		
+	gpGmtr = Get_GhRectangle();
+	if( !strcasecmp( name, "line")) {	
+//		gpGmtr = Get_GhRectangle();	
+		p_sht->cnt.subType = GMT_LINE;
 	}
-	else
-	{
+//	else if( !strcasecmp( name, "input")){
+//		gpGmtr = Get_GhRectangle();
+//	}
+	else {
+//		gpGmtr = Get_GhRectangle();
+		p_sht->cnt.subType = GMT_RECT;
 		
-		gpGmtr = Get_GhRectangle();
 	}
 	
 	myGp = (Glyph *)gpGmtr;

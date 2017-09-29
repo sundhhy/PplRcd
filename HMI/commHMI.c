@@ -5,6 +5,7 @@
 
 #include "utils/time.h"
 #include "format.h"
+#include "focus.h"
 
 
 
@@ -48,7 +49,7 @@ const char	arr_clrs[NUM_CHANNEL] = { 43, COLOUR_GREN, COLOUR_BLUE, COLOUR_YELLOW
 #define TIME_BUF_LEN		16
 
 
-const char timeCode[] = { "<time vx0=240 vy0=0 bx=60  by=24 f=24 xali=m bkc=black clr=yellow spr=/> </time>" };
+const char timeCode[] = { "<time vx0=200 vy0=0 bx=60  by=24 f=24 xali=m bkc=black clr=yellow spr=/> </time>" };
 
 const char ico_memu[] = { "<bu vx0=10 vy0=206 bx=33 by=33 bkc=black clr=black><pic  bx=32  by=32 >1</></bu>" };
 //½øÈë°ôÍ¼Í¼±ê
@@ -73,12 +74,10 @@ static const char cmmhmi_code_alarm[] = { "<text f=16 clr=red m=0 mdl=test aux=2
 //------------------------------------------------------------------------------
 static cmmHmi *singalCmmHmi;
 static char s_timer[TIME_BUF_LEN];
-static struct  tm time;
 //------------------------------------------------------------------------------
 // local function prototypes
 //------------------------------------------------------------------------------
 static int	Init_cmmHmi( HMI *self, void *arg);
-static void Timer2str( struct  tm *p_tm, char *s, int n);
 
 static void Build_ChnSheets(void);
 static void Build_icoSheets(void);
@@ -120,6 +119,8 @@ static int	Init_cmmHmi( HMI *self, void *arg)
 	shtctl *p_shtctl = NULL;
 	Expr *p_exp ;
 	
+	Focus_init();
+	
 	
 	Build_ChnSheets();
 	Build_icoSheets();
@@ -151,13 +152,7 @@ static int	Init_cmmHmi( HMI *self, void *arg)
 
 
 
-static void Timer2str( struct  tm *p_tm, char *s, int n)
-{
-	
-	
-	snprintf( s, n, "%02d:%02d:%02d", p_tm->tm_hour, p_tm->tm_min, p_tm->tm_sec);
-	
-}
+
 
 static void Build_ChnSheets(void)
 {
@@ -234,11 +229,8 @@ static void Build_otherSheets(void)
 	
 	g_p_shtTime->p_mdl = ModelCreate("time");
 	g_p_shtTime->p_mdl->attach( g_p_shtTime->p_mdl, (Observer *)g_p_shtTime);
-	g_p_shtTime->p_mdl->getMdlData( g_p_shtTime->p_mdl, 0, &time);
-
-	Timer2str( &time, s_timer, TIME_BUF_LEN);
-	g_p_shtTime->cnt.data = s_timer;
-	g_p_shtTime->cnt.len = strlen( s_timer);
+	g_p_shtTime->cnt.data = g_p_shtTime->p_mdl->to_string(g_p_shtTime->p_mdl, 0, NULL);
+	g_p_shtTime->cnt.len = strlen(g_p_shtTime->cnt.data);
 	
 }
 

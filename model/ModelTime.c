@@ -37,13 +37,13 @@
 //------------------------------------------------------------------------------
 // local vars
 //------------------------------------------------------------------------------
-
+static char s_timer[16];
 
 //------------------------------------------------------------------------------
 // local function prototypes
 //------------------------------------------------------------------------------
 /* Cycle/Sync Callback functions */
-
+static char* MdlTime_to_string( Model *self, IN int aux, void *arg);
 //============================================================================//
 //            P U B L I C   F U N C T I O N S                                 //
 //============================================================================//
@@ -68,7 +68,7 @@ int MdlTime_init( Model *self, IN void *arg)
 int MdlTime_getData(  Model *self, IN int aux, void *arg) 
 {
 	struct  tm	*tm = ( struct  tm	*) self->coreData;
-	struct  tm	*tm2 = ( struct  tm	*) arg;
+	struct  tm	*tm2 = NULL;
 	tm->tm_sec ++;
 	if( tm->tm_sec >59)
 	{
@@ -83,14 +83,25 @@ int MdlTime_getData(  Model *self, IN int aux, void *arg)
 		tm->tm_min = 0;
 		
 	}
-	tm2->tm_hour = tm->tm_hour;
-	tm2->tm_min = tm->tm_min;
-	tm2->tm_sec = tm->tm_sec;
+	
+	if(arg != NULL) {
+		tm2 = ( struct  tm	*) arg;
+		tm2->tm_hour = tm->tm_hour;
+		tm2->tm_min = tm->tm_min;
+		tm2->tm_sec = tm->tm_sec;
+	}
 	
 //	memcpy( self->coreData, arg, self->crDt_len);
+	self->notify( self);
 	return RET_OK;
 }
+CTOR( ModelTime)
+SUPER_CTOR( Model);
+FUNCTION_SETTING( Model.init, MdlTime_init);
+FUNCTION_SETTING( Model.getMdlData, MdlTime_getData);
+FUNCTION_SETTING( Model.to_string, MdlTime_to_string);
 
+END_CTOR
 //=========================================================================//
 //                                                                         //
 //          P R I V A T E   D E F I N I T I O N S                          //
@@ -99,9 +110,13 @@ int MdlTime_getData(  Model *self, IN int aux, void *arg)
 /// \name Private Functions
 /// \{
 
-CTOR( ModelTime)
-SUPER_CTOR( Model);
-FUNCTION_SETTING( Model.init, MdlTime_init);
-FUNCTION_SETTING( Model.getMdlData, MdlTime_getData);
-END_CTOR
+
+
+
+static char* MdlTime_to_string( Model *self, IN int aux, void *arg)
+{
+	struct  tm	*p_tm= (struct  tm	*) self->coreData;
+	snprintf(s_timer, 16, "%02d:%02d:%02d", p_tm->tm_hour, p_tm->tm_min, p_tm->tm_sec);
+	return s_timer;
+}
 

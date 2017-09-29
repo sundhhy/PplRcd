@@ -27,6 +27,7 @@
 .\objects\datahmi.o: E:\mylib\sdhLib\inc\arithmetic/list.h
 .\objects\datahmi.o: E:\mylib\sdhLib\inc\basis/assert.h
 .\objects\datahmi.o: .\model\ModelTest.h
+.\objects\datahmi.o: HMI\focus.h
 .\objects\datahmi.o: HMI\commHMI.h
 .\objects\datahmi.o: HMI\menuHMI.h
 .\objects\datahmi.o: HMI\HMIFactory.h

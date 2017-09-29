@@ -19,7 +19,7 @@
 #define LCD_DELAY_MS  			20
 #define	UGPU_CMDBUF_LEN			1024
 
-#define USE_CMD_BUF				0
+#define USE_CMD_BUF				1
 //------------------------------------------------------------------------------
 // module global vars
 //------------------------------------------------------------------------------
@@ -182,13 +182,18 @@ static int GpuBox( int x1, int y1, int x2, int y2, char type, char c)
 {
 	
 #if USE_CMD_BUF == 1
-	if( type)
+	if( type == FILLED_RECTANGLE)
 	{
 		sprintf( lcdBuf, "BOXF(%d,%d,%d,%d,%d);", x1, y1, x2, y2,c);
 	}
-	else
+	else if( type == EMPTY_RECTANGLE)
 	{
 		sprintf( lcdBuf, "BOX(%d,%d,%d,%d,%d);", x1, y1, x2, y2,c);
+	}
+	else if( type == LINE)
+	{
+		//todo:Ïß¶
+		sprintf( lcdBuf, "PL(%d,%d,%d,%d,%d);", x1, y1, x2, y2,c);
 	}
 	Cmdbuf_manager(lcdBuf);
 	GpuSend(lcdBuf);
@@ -358,7 +363,7 @@ static void Cmdbuf_manager(char *p_cmd)
 	
 	if((cmd_count +  cmd_len) > UGPU_CMDBUF_LEN) {
 		GpuDone();
-		
+		osDelay(100);
 	} 
 		
 	cmd_count += cmd_len;
@@ -375,11 +380,18 @@ static void GpuDone( void)
 		ret = I_sendDev->read(I_sendDev, tmpbuf, 8);
 		if(ret > 0) {
 			if(tmpbuf[0] == 'O' && tmpbuf[1] == 'K')
-				break;
-		}
+				break; 
+			else
+				goto err;
+		} else
+			goto err;
+		
 			
-		osDelay(200);
+		
 	}
+	//todo:ĞèÒªÔö¼Ó´íÎó´¦Àí
+	err:
+	osDelay(100);
 	cmd_count = 0;
 #endif
 }

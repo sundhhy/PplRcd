@@ -48,6 +48,11 @@ Expr *ExpCreate( char *type)
 	{
 		return (Expr *)GetGmtrExpr();
 	}
+	p = strstr( type, "line");
+	if( p)
+	{
+		return (Expr *)GetGmtrExpr();
+	}
 	p = strstr( type, "gr");
 	if( p)
 	{

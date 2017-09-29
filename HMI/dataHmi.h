@@ -27,7 +27,8 @@ CLASS( dataHMI)
 	sheet  		*arr_p_sht_data[BARHMI_NUM_BARS];
 	sheet  		**arr_p_sht_unit;
 	sheet  		**arr_p_sht_alarm;
-	
+	char		flags;
+	char 		none[3];
 	
 };
 //------------------------------------------------------------------------------

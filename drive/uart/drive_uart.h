@@ -7,6 +7,8 @@
 #include "dri_cmd.h"
 #include "hardwareConfig.h"
 
+
+
 #define SENDMODE_CPU			0
 #define SENDMODE_INTR			1
 #define SENDMODE_DMA			2

@@ -104,7 +104,6 @@ ABS_CLASS( Glyph)
 	I_dev_lcd	*myLcd ;
 	
 	
-
 	
 	abstract int ( *getSize)(Glyph *self, int font, uint16_t *size_x, uint16_t *size_y);
 	abstract void (*vdraw)( Glyph *self, dspContent_t *cnt, vArea_t *area);
@@ -113,6 +112,8 @@ ABS_CLASS( Glyph)
 	/*          170805         @Deprecated   */
 	
 	int (*init)( Glyph *self, I_dev_lcd *lcd);
+	void (*draw_self)(Glyph *self);
+
 //	int (*setFont)( Glyph *self, int font);
 //	int (*setClu)( Glyph *self, int c);
 //	int (*setBgC)( Glyph *self, int c);
@@ -138,6 +139,7 @@ ABS_CLASS( Glyph)
 };
 
 void Flush_LCD(void);
+void CLR_LCD(void);
 void View_test(void);
 uint8_t ColorInvert( uint8_t clr);
 int	String2Bkc( char *s);

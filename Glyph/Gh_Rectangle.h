@@ -5,6 +5,8 @@
 #include <stdint.h>
 #include "arithmetic/cycQueue.h"
 
+#define GMT_LINE		1
+#define GMT_RECT		2
 
 CLASS(GhRectangle)
 {

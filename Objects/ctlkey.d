@@ -47,3 +47,4 @@
 .\objects\ctlkey.o: E:\mylib\sdhLib\inc\arithmetic/list.h
 .\objects\ctlkey.o: E:\mylib\sdhLib\inc\basis/assert.h
 .\objects\ctlkey.o: .\model\ModelTest.h
+.\objects\ctlkey.o: ..\PplRcd\HMI/focus.h

@@ -27,6 +27,7 @@
 .\objects\chninfopic.o: E:\mylib\sdhLib\inc\arithmetic/list.h
 .\objects\chninfopic.o: E:\mylib\sdhLib\inc\basis/assert.h
 .\objects\chninfopic.o: .\model\ModelTest.h
+.\objects\chninfopic.o: HMI\focus.h
 .\objects\chninfopic.o: HMI\HMIFactory.h
 .\objects\chninfopic.o: HMI\commHMI.h
 .\objects\chninfopic.o: HMI\mainHMI.h
