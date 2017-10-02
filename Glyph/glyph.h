@@ -139,6 +139,7 @@ ABS_CLASS( Glyph)
 };
 
 void Flush_LCD(void);
+void LCD_Run(void);
 void CLR_LCD(void);
 void View_test(void);
 uint8_t ColorInvert( uint8_t clr);

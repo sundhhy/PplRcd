@@ -33,6 +33,11 @@ CLASS( chnInfoHmi)
 //------------------------------------------------------------------------------
 // global variable declarations
 //------------------------------------------------------------------------------
+void Bulid_ChnData(sheet **pp_shts, void *code, int ( *update)( void *p_sht, void *p_srcMdl));
+
+
+//d¶ªÆú
+
 sheet	*CIF_build_pic( char num, char total);
 void ChnInfo_Set_numChn( HMI *p_hmi, char	numchn);
 void ChnInfo_Set_view(HMI *p_hmi, video_t *p_v, uint16_t offset_x, uint16_t offset_y);

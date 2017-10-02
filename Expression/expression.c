@@ -136,10 +136,10 @@ int Set_shtContextAtt( char *p_att, sheet *p_sht)
 		
 		
 	}
-	else {
-		p_sht->p_mdl = NULL;
-		
-	}
+//	else {
+//		p_sht->p_mdl = NULL;
+//		
+//	}
 	
 	if( GetKeyVal( p_att, "aux", tmpbuf, 8))
 	{

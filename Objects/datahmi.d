@@ -29,10 +29,10 @@
 .\objects\datahmi.o: .\model\ModelTest.h
 .\objects\datahmi.o: HMI\focus.h
 .\objects\datahmi.o: HMI\commHMI.h
+.\objects\datahmi.o: HMI\keyboardHMI.h
 .\objects\datahmi.o: HMI\menuHMI.h
 .\objects\datahmi.o: HMI\HMIFactory.h
 .\objects\datahmi.o: HMI\mainHMI.h
-.\objects\datahmi.o: HMI\keyboardHMI.h
 .\objects\datahmi.o: HMI\barGraphHMI.h
 .\objects\datahmi.o: HMI\real_time_trendHmi.h
 .\objects\datahmi.o: .\Expression\ExpFactory.h

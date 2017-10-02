@@ -78,8 +78,6 @@ static void	RT_trendHmi_HitHandle( HMI *self, char *s);
 //½¹µã
 
 static void	RLT_init_focus(HMI *self);
-static void	RLT_clear_focus(HMI *self, uint8_t fouse_row, uint8_t fouse_col);
-static void	RLT_show_focus(HMI *self, uint8_t fouse_row, uint8_t fouse_col);
 
 //ÃüÁî
 static void RT_trendHmi_EnterCmdHdl( shtCmd *self, struct SHEET *p_sht, void *arg);
@@ -119,8 +117,7 @@ FUNCTION_SETTING( HMI.show, RT_trendHmi_Show);
 FUNCTION_SETTING( HMI.dataVisual, RLT_dataVisual);
 
 FUNCTION_SETTING( HMI.init_focus, RLT_init_focus);
-FUNCTION_SETTING( HMI.clear_focus, RLT_clear_focus);
-FUNCTION_SETTING( HMI.show_focus, RLT_show_focus);
+
 
 FUNCTION_SETTING( HMI.hitHandle, RT_trendHmi_HitHandle);
 
@@ -209,7 +206,7 @@ static void RT_trendHmi_HideSheet( HMI *self )
 	
 	
 //	self->clear_focus(self, 0, 0);
-	
+	self->clear_focus( self, self->p_fcuu->focus_row, self->p_fcuu->focus_col);
 	Focus_free(self->p_fcuu);
 }	
 
@@ -232,26 +229,26 @@ static void	RLT_init_focus(HMI *self)
 	
 }
 
-static void	RLT_clear_focus(HMI *self, uint8_t fouse_row, uint8_t fouse_col)
-{
-	sheet *p_sht = Focus_Get_sht(self->p_fcuu, fouse_row, fouse_col);
-	
-	if(p_sht == NULL)
-		return;
-	p_sht->cnt.effects = GP_CLR_EFF( p_sht->cnt.effects, EFF_FOCUS);
-	Sheet_slide( p_sht);
-//	Flush_LCD();
-}
-static void	RLT_show_focus(HMI *self, uint8_t fouse_row, uint8_t fouse_col)
-{
-	sheet *p_sht = Focus_Get_focus(self->p_fcuu);
-	
-	if(p_sht == NULL)
-		return;
-	p_sht->cnt.effects = GP_SET_EFF( p_sht->cnt.effects, EFF_FOCUS);
-	Sheet_slide( p_sht);
-//	Flush_LCD();
-}
+//static void	RLT_clear_focus(HMI *self, uint8_t fouse_row, uint8_t fouse_col)
+//{
+//	sheet *p_sht = Focus_Get_sht(self->p_fcuu, fouse_row, fouse_col);
+//	
+//	if(p_sht == NULL)
+//		return;
+//	p_sht->cnt.effects = GP_CLR_EFF( p_sht->cnt.effects, EFF_FOCUS);
+//	Sheet_slide( p_sht);
+////	Flush_LCD();
+//}
+//static void	RLT_show_focus(HMI *self, uint8_t fouse_row, uint8_t fouse_col)
+//{
+//	sheet *p_sht = Focus_Get_focus(self->p_fcuu);
+//	
+//	if(p_sht == NULL)
+//		return;
+//	p_sht->cnt.effects = GP_SET_EFF( p_sht->cnt.effects, EFF_FOCUS);
+//	Sheet_slide( p_sht);
+////	Flush_LCD();
+//}
 
 static void	RT_trendHmi_Show( HMI *self )
 {

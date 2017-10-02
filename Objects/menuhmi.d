@@ -30,8 +30,8 @@
 .\objects\menuhmi.o: HMI\focus.h
 .\objects\menuhmi.o: HMI\HMIFactory.h
 .\objects\menuhmi.o: HMI\commHMI.h
-.\objects\menuhmi.o: HMI\mainHMI.h
 .\objects\menuhmi.o: HMI\keyboardHMI.h
+.\objects\menuhmi.o: HMI\mainHMI.h
 .\objects\menuhmi.o: HMI\barGraphHMI.h
 .\objects\menuhmi.o: HMI\dataHMI.h
 .\objects\menuhmi.o: HMI\real_time_trendHmi.h

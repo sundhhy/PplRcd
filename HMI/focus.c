@@ -109,10 +109,10 @@ void Focus_free(focus_user_t *p_fcuu)
 
 void Focus_Set_focus(focus_user_t *p_fcuu, int row, int col)
 {
-	if(row < p_fcuu->rows) 
+	if(row <= p_fcuu->rows) 
 		p_fcuu->focus_row = row;
 	
-	if(col < p_fcuu->columns) 
+	if(col <= p_fcuu->columns) 
 		p_fcuu->focus_col = col;
 }
 	

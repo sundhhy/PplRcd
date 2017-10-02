@@ -152,6 +152,10 @@ void Sheet_setbuf( struct SHEET *p_sht, uint8_t *buf, int bxsize, int bysize, in
 int ShtUpdate( void *p_sht, void *p_mdl)
 {
 	struct SHEET *p = ( struct SHEET *)p_sht;
+	
+	if(Sheet_is_hide(p_sht))
+		return;
+		
 	p->cnt.data = p->p_mdl->to_string( p->p_mdl, 0, NULL);
 	p->cnt.len = strlen( p->cnt.data);
 	Sheet_slide( p_sht);
@@ -173,6 +177,9 @@ void Sheet_updown( struct SHEET *p_sht, int height)
     if( p_sht == NULL)
 		return;
 	
+//	if(p_sht->height | 0x80) {
+//		old = p_sht->height - 0x100 ;
+//	} else
 	old = p_sht->height;
     if( height > p_ctl->top + 1)
     {
@@ -253,6 +260,15 @@ void Sheet_updown( struct SHEET *p_sht, int height)
     
     return;
     
+}
+
+int Sheet_is_hide(sheet *p_sht)
+{
+	if(p_sht->height < 0)
+		return 1;
+	else
+		return 0;
+	
 }
 
 void Sheet_refresh( struct SHEET *p_sht)

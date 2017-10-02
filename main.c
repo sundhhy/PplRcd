@@ -287,6 +287,7 @@ int main (void) {
 		osDelay(250);
 		p_mdl_test->getMdlData( p_mdl_test, 10000, NULL);
 		mTime->getMdlData( mTime, 0, NULL);
+		LCD_Run();
 	}
 	
 #	elif TDD_KEYBOARD == 1

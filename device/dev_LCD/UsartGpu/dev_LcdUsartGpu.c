@@ -229,43 +229,14 @@ static int GpuWrString( char m ,char *string, int len, int x, int y, int font, c
 	if( m >= 0) {
 		
 		sprintf( lcdBuf, "PS%d(%d,%d,%d,'",f, m, x, y);
+		sprintf(colour, "',%d, 0);",c);
 		
 	} else {
 		
 		sprintf( lcdBuf, "DS%d(%d,%d,'",f, x, y);
+		sprintf(colour, "',%d);",c);
 	}
-//	switch( font)
-//	{
-//		case FONT_12:
-//			sprintf( lcdBuf, "DS12(%d,%d,'", x, y);
-//			
-//			break;
-//		case FONT_16:
-//			sprintf( lcdBuf, "DS16(%d,%d,'", x, y);
-//			break;
-//		case FONT_24:
-//			sprintf( lcdBuf, "DS24(%d,%d,'", x, y);
-//			break;
-//		case FONT_32:
-//			sprintf( lcdBuf, "DS32(%d,%d,'", x, y);
-//			break;
-//		case FONT_48:
-//			sprintf( lcdBuf, "DS48(%d,%d,'", x, y);
-//			break;
-//		case FONT_64:
-//			sprintf( lcdBuf, "DS64(%d,%d,'", x, y);
-//			break;
-//		default:
-//			sprintf( lcdBuf, "DS12(%d,%d,'", x, y);
-//			break;
-//	}
 
-
-#if USE_CMD_BUF == 1
-	sprintf(colour, "',%d);",c);
-#else	
-	sprintf(colour, "',%d);\r\n",c);
-#endif
 	
 	
 	charMax -= strlen( lcdBuf) + strlen( colour);
@@ -279,6 +250,7 @@ static int GpuWrString( char m ,char *string, int len, int x, int y, int font, c
 	Cmdbuf_manager(lcdBuf);
 	GpuSend(lcdBuf);
 #else	
+	strcat( lcdBuf,"\r\n");
 	GpuSend(lcdBuf);
 	osDelay(LCD_DELAY_MS);
 #endif	
@@ -391,7 +363,7 @@ static void GpuDone( void)
 	}
 	//todo:需要增加错误处理
 	err:
-	osDelay(100);
+	osDelay(200);
 	cmd_count = 0;
 #endif
 }

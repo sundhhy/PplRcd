@@ -28,6 +28,7 @@
 .\objects\commhmi.o: E:\mylib\sdhLib\inc\basis/assert.h
 .\objects\commhmi.o: .\model\ModelTest.h
 .\objects\commhmi.o: HMI\focus.h
+.\objects\commhmi.o: HMI\keyboardHMI.h
 .\objects\commhmi.o: .\Expression\ExpFactory.h
 .\objects\commhmi.o: .\Expression\expression.h
 .\objects\commhmi.o: .\Views\Composition.h
@@ -35,7 +36,6 @@
 .\objects\commhmi.o: E:\mylib\sdhLib\inc\basis/assert.h
 .\objects\commhmi.o: HMI\HMIFactory.h
 .\objects\commhmi.o: HMI\mainHMI.h
-.\objects\commhmi.o: HMI\keyboardHMI.h
 .\objects\commhmi.o: HMI\menuHMI.h
 .\objects\commhmi.o: HMI\barGraphHMI.h
 .\objects\commhmi.o: HMI\dataHMI.h
@@ -60,3 +60,4 @@
 .\objects\commhmi.o: d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\StdPeriph_Driver\inc\misc.h
 .\objects\commhmi.o: HMI\format.h
 .\objects\commhmi.o: E:\mylib\sdhLib\inc\basis/assert.h
+.\objects\commhmi.o: HMI\chnInfoPic.h

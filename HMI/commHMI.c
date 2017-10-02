@@ -7,6 +7,7 @@
 #include "format.h"
 #include "focus.h"
 
+#include "chnInfoPic.h"
 
 
 //提供 按键，事件，消息，窗口，报警，时间，复选框的图层
@@ -22,12 +23,14 @@
 //------------------------------------------------------------------------------
 // module global vars
 //------------------------------------------------------------------------------
+sheet			*g_p_sht_title;
 sheet			*g_p_shtTime;
 sheet			*g_p_ico_memu;
 sheet			*g_p_ico_bar;
 sheet			*g_p_ico_digital;
 sheet			*g_p_ico_trend;
 
+sheet			*g_arr_p_chnData[NUM_CHANNEL];
 sheet			*g_arr_p_chnUtil[NUM_CHANNEL];
 sheet			*g_arr_p_chnAlarm[NUM_CHANNEL];
 
@@ -38,7 +41,7 @@ const char	arr_clrs[NUM_CHANNEL] = { 43, COLOUR_GREN, COLOUR_BLUE, COLOUR_YELLOW
 //------------------------------------------------------------------------------
 // global function prototypes
 //------------------------------------------------------------------------------
-
+keyboardHMI		*g_keyHmi;
 //============================================================================//
 //            P R I V A T E   D E F I N I T I O N S                           //
 //============================================================================//
@@ -48,23 +51,20 @@ const char	arr_clrs[NUM_CHANNEL] = { 43, COLOUR_GREN, COLOUR_BLUE, COLOUR_YELLOW
 //------------------------------------------------------------------------------
 #define TIME_BUF_LEN		16
 
+static ro_char code_title[] =  {"<text vx0=0 vy0=4 m=0 clr=white f=24> </>" };
 
-const char timeCode[] = { "<time vx0=200 vy0=0 bx=60  by=24 f=24 xali=m bkc=black clr=yellow spr=/> </time>" };
+static ro_char timeCode[] = { "<time vx0=200 vy0=0 bx=60  by=24 f=24 xali=m m=0 clr=yellow spr=/> </time>" };
 
-const char ico_memu[] = { "<bu vx0=10 vy0=206 bx=33 by=33 bkc=black clr=black><pic  bx=32  by=32 >1</></bu>" };
+static ro_char ico_memu[] = { "<bu vx0=10 vy0=206 bx=33 by=33 bkc=black clr=black><pic  bx=32  by=32 >1</></bu>" };
 //进入棒图图标
-const char ico_bar[] = { "<bu vx0=50 vy0=206 bx=33 by=33 bkc=black clr=black><pic  bx=32  by=32 >2</></bu>" };
+static ro_char ico_bar[] = { "<bu vx0=80 vy0=206 bx=33 by=33 bkc=black clr=black><pic  bx=32  by=32 >2</></bu>" };
 //进入数显画面图标
-const char ico_digital[] = { "<bu vx0=90 vy0=206 bx=33 by=33bkc=black clr=black><pic  bx=32  by=32 >3</></bu>" };
+static ro_char ico_digital[] = { "<bu vx0=160 vy0=206 bx=33 by=33bkc=black clr=black><pic  bx=32  by=32 >3</></bu>" };
 //进入趋势画面图标
-const char ico_trend[] = { "<bu vx0=130 vy0=206 bx=33 by=33 bkc=black clr=black><pic  bx=32  by=32 >4</></bu>" };
+static ro_char ico_trend[] = { "<bu vx0=240 vy0=206 bx=33 by=33 bkc=black clr=black><pic  bx=32  by=32 >4</></bu>" };
 
 
-//每个通道的单位
-static const char cmmhmi_code_unit[] = { "<text f=16 m=0 mdl=test aux=1>m3/h</>" };
 
-//通道报警:HH HI LI LL
-static const char cmmhmi_code_alarm[] = { "<text f=16 clr=red m=0 mdl=test aux=2> </>" };
 
 //------------------------------------------------------------------------------
 // local types
@@ -79,7 +79,6 @@ static char s_timer[TIME_BUF_LEN];
 //------------------------------------------------------------------------------
 static int	Init_cmmHmi( HMI *self, void *arg);
 
-static void Build_ChnSheets(void);
 static void Build_icoSheets(void);
 static void Build_otherSheets(void);
 
@@ -135,6 +134,10 @@ static int	Init_cmmHmi( HMI *self, void *arg)
 	p_hmi->init( p_hmi, NULL);
 	barHmi = SUB_PTR( p_hmi, HMI, barGhHMI);
 	
+	p_hmi = CreateHMI( HMI_KYBRD);
+	p_hmi->init( p_hmi, NULL);
+	g_keyHmi = SUB_PTR( p_hmi, HMI, keyboardHMI);
+	
 	//初始化其他界面
 	p_hmi = CreateHMI( HMI_DATA);
 	p_hmi->init( p_hmi, NULL);
@@ -154,24 +157,7 @@ static int	Init_cmmHmi( HMI *self, void *arg)
 
 
 
-static void Build_ChnSheets(void)
-{
-	int 		i = 0;
-	shtctl 		*p_shtctl = NULL;
-	Expr 		*p_exp ;
-		
-	p_shtctl = GetShtctl();
-	
-	p_exp = ExpCreate( "text");
-	for(i = 0; i < NUM_CHANNEL; i++) {
-		g_arr_p_chnUtil[i] = Sheet_alloc( p_shtctl);
-		p_exp->inptSht( p_exp, (void *)cmmhmi_code_unit, g_arr_p_chnUtil[i]) ;
-		g_arr_p_chnAlarm[i] = Sheet_alloc( p_shtctl);
-		p_exp->inptSht( p_exp, (void *)cmmhmi_code_alarm, g_arr_p_chnAlarm[i]) ;
-		
-	}
-	
-}
+
 
 static void Build_icoSheets(void)
 {
@@ -220,7 +206,10 @@ static void Build_otherSheets(void)
 		
 	p_shtctl = GetShtctl();
 	
-	
+	//title
+	g_p_sht_title = Sheet_alloc( p_shtctl);
+	p_exp = ExpCreate( "text");
+	p_exp->inptSht( p_exp, (void *)code_title, g_p_sht_title) ;
 	
 	//timer
 	g_p_shtTime = Sheet_alloc( p_shtctl);

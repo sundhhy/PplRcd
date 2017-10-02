@@ -29,10 +29,10 @@
 .\objects\real_time_trendhmi.o: .\model\ModelTest.h
 .\objects\real_time_trendhmi.o: HMI\focus.h
 .\objects\real_time_trendhmi.o: HMI\commHMI.h
+.\objects\real_time_trendhmi.o: HMI\keyboardHMI.h
 .\objects\real_time_trendhmi.o: HMI\menuHMI.h
 .\objects\real_time_trendhmi.o: HMI\HMIFactory.h
 .\objects\real_time_trendhmi.o: HMI\mainHMI.h
-.\objects\real_time_trendhmi.o: HMI\keyboardHMI.h
 .\objects\real_time_trendhmi.o: HMI\barGraphHMI.h
 .\objects\real_time_trendhmi.o: HMI\dataHMI.h
 .\objects\real_time_trendhmi.o: .\Expression\ExpFactory.h

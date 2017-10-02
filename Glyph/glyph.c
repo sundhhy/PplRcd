@@ -42,7 +42,7 @@
 // local vars
 //------------------------------------------------------------------------------
 
-
+static char		flush_flag = 0;
 //------------------------------------------------------------------------------
 // local function prototypes
 //------------------------------------------------------------------------------
@@ -55,12 +55,22 @@ static void vDraw( Glyph *self, dspContent_t *cnt, vArea_t *area);
 //============================================================================//
 void Flush_LCD(void)
 {
-	I_dev_lcd *lcd;
-	Dev_open( LCD_DEVID, (void *)&lcd);
-	lcd->done();
+	flush_flag = 1;
+	
 	
 }
 
+void LCD_Run(void)
+{
+	if(flush_flag) {
+		I_dev_lcd *lcd;
+		Dev_open( LCD_DEVID, (void *)&lcd);
+		lcd->done();
+		flush_flag = 0;
+		
+	}
+	
+}
 void CLR_LCD(void)
 {
 	I_dev_lcd *lcd;

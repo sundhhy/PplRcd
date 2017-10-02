@@ -144,8 +144,25 @@ static void DHitHandle( HMI *self, char *s_key)
 }
 
 void	Init_focus(HMI *self) {}
-void	Clear_focus(HMI *self, uint8_t fouse_row, uint8_t fouse_col) {}
-void	Show_focus( HMI *self, uint8_t fouse_row, uint8_t fouse_col) {}
+void	Clear_focus(HMI *self, uint8_t fouse_row, uint8_t fouse_col) 
+{
+	sheet *p_sht = Focus_Get_sht(self->p_fcuu, fouse_row, fouse_col);
+	
+	if(p_sht == NULL)
+		return;
+	p_sht->cnt.effects = GP_CLR_EFF( p_sht->cnt.effects, EFF_FOCUS);
+	Sheet_slide( p_sht);
+
+}
+void	Show_focus( HMI *self, uint8_t fouse_row, uint8_t fouse_col) 
+{
+	sheet *p_sht = Focus_Get_focus(self->p_fcuu);
+	
+	if(p_sht == NULL)
+		return;
+	p_sht->cnt.effects = GP_SET_EFF( p_sht->cnt.effects, EFF_FOCUS);
+	Sheet_slide( p_sht);
+}
 
 
 

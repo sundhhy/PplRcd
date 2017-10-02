@@ -30,8 +30,8 @@
 .\objects\chninfopic.o: HMI\focus.h
 .\objects\chninfopic.o: HMI\HMIFactory.h
 .\objects\chninfopic.o: HMI\commHMI.h
-.\objects\chninfopic.o: HMI\mainHMI.h
 .\objects\chninfopic.o: HMI\keyboardHMI.h
+.\objects\chninfopic.o: HMI\mainHMI.h
 .\objects\chninfopic.o: HMI\menuHMI.h
 .\objects\chninfopic.o: HMI\barGraphHMI.h
 .\objects\chninfopic.o: HMI\dataHMI.h

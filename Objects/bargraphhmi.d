@@ -29,9 +29,9 @@
 .\objects\bargraphhmi.o: .\model\ModelTest.h
 .\objects\bargraphhmi.o: HMI\focus.h
 .\objects\bargraphhmi.o: HMI\commHMI.h
+.\objects\bargraphhmi.o: HMI\keyboardHMI.h
 .\objects\bargraphhmi.o: HMI\HMIFactory.h
 .\objects\bargraphhmi.o: HMI\mainHMI.h
-.\objects\bargraphhmi.o: HMI\keyboardHMI.h
 .\objects\bargraphhmi.o: HMI\menuHMI.h
 .\objects\bargraphhmi.o: HMI\dataHMI.h
 .\objects\bargraphhmi.o: HMI\real_time_trendHmi.h

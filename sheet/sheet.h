@@ -51,7 +51,7 @@ CLASS( shtDefCmd)
 
 /* sheet.c   */
 typedef struct SHEET {
-	int ( *update)( void *p_sht);	//注意：必须放在第一个位置
+	int ( *update)( void *p_sht, void *p_srcMdl);	//注意：必须放在第一个位置
 	
 	subShtAtt_t		subAtt;
 	struct SHEET	**pp_sub;
@@ -62,10 +62,13 @@ typedef struct SHEET {
 
 	
 	//在整个图层系统中的高度,要连续分配，否则不能正确处理
-	int16_t		height;
+	short		height;
 	uint8_t		flags;	
 	uint8_t		col_inv;
-		
+	
+	uint8_t		id;
+	uint8_t		none[3];
+	
 	dspContent_t	cnt;
 	vArea_t			area;
 	Glyph			*p_gp;
@@ -106,6 +109,6 @@ int ShtUpdate( void *p_sht, void *p);
 void Sheet_refresh( struct SHEET *p_sht);
 void Sheet_slide(  struct SHEET *p_sht);
 void Sheet_free( struct SHEET *p_sht);
-
+int Sheet_is_hide(sheet *p_sht);
 shtDefCmd *Get_shtDefCmd(void);
 #endif

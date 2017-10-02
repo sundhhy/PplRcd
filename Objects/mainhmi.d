@@ -28,9 +28,9 @@
 .\objects\mainhmi.o: E:\mylib\sdhLib\inc\basis/assert.h
 .\objects\mainhmi.o: .\model\ModelTest.h
 .\objects\mainhmi.o: HMI\focus.h
-.\objects\mainhmi.o: HMI\HMIFactory.h
 .\objects\mainhmi.o: HMI\commHMI.h
 .\objects\mainhmi.o: HMI\keyboardHMI.h
+.\objects\mainhmi.o: HMI\HMIFactory.h
 .\objects\mainhmi.o: HMI\menuHMI.h
 .\objects\mainhmi.o: HMI\barGraphHMI.h
 .\objects\mainhmi.o: HMI\dataHMI.h
