@@ -36,6 +36,10 @@
 .\objects\chninfopic.o: HMI\barGraphHMI.h
 .\objects\chninfopic.o: HMI\dataHMI.h
 .\objects\chninfopic.o: HMI\real_time_trendHmi.h
+.\objects\chninfopic.o: HMI\news_select_HMI.h
+.\objects\chninfopic.o: HMI\News_Alarm_HMI.h
+.\objects\chninfopic.o: HMI\News_Power_down_HMI.h
+.\objects\chninfopic.o: HMI\History_HMI.h
 .\objects\chninfopic.o: .\Expression\ExpFactory.h
 .\objects\chninfopic.o: .\Expression\expression.h
 .\objects\chninfopic.o: .\Views\Composition.h

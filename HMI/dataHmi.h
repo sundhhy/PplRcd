@@ -23,7 +23,6 @@ CLASS( dataHMI)
 	IMPLEMENTS( shtCmd);
 	IMPLEMENTS( Observer);
 	
-	sheet  		*p_bkg;
 //	sheet  		*arr_p_sht_data[BARHMI_NUM_BARS];
 //	sheet  		**arr_p_sht_unit;
 //	sheet  		**arr_p_sht_alarm;

@@ -35,7 +35,7 @@ sheet  		*g_p_curve_bkg;
 //------------------------------------------------------------------------------
 
 static const char RT_hmi_curve_point[] = { "<line></>" };
-static const char code_curve_bkPic[] =  {"<bpic vx0=0 vy0=50 m=1 >24</>" };
+static const char code_curve_bkPic[] =  {"<bpic vx0=0 vy0=50 m=1 >15</>" };
 static	sheet  	*p_sht_curve;
 
 //------------------------------------------------------------------------------

@@ -8,6 +8,8 @@
 #define SUBTYPE_NONE		0
 #define SUBTYPE_CPIC		1
 #define SUBTYPE_BPIC		2
+#define SUBTYPE_ICON		3
+
 
 CLASS(GhPic)
 {

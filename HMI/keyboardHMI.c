@@ -52,16 +52,16 @@ const char KEY_backspace	=		-2;
 const char KEY_GO			=		-3;
 const char KEY_Return		=		-4;
 
-const char virKey_uppercase_Code[] = { "<pic vx0=0 vy0=40 >14</>" };
-const char virKey_uppercaseFocus_Code[] = { "<cpic vx0=0 vy0=0 >15</>" };
+const char virKey_uppercase_Code[] = { "<pic vx0=0 vy0=40 >1</>" };
+const char virKey_uppercaseFocus_Code[] = { "<cpic vx0=0 vy0=0 >2</>" };
 
-const char virKey_digit_Code[] = { "<pic vx0=0 vy0=40 >16</>" };
-const char virKey_digitFocus_Code[] = { "<cpic vx0=0 vy0=0 >17</>" };
+const char virKey_digit_Code[] = { "<pic vx0=0 vy0=40 >3</>" };
+const char virKey_digitFocus_Code[] = { "<cpic vx0=0 vy0=0 >4</>" };
 
 
-const char edit_TxtCode[] = { "<text clr=white > </>" };
+const char edit_TxtCode[] = { "<text vx0=0 vy0=0 f=16 clr=white > </>" };
 const char edit_CursorCode[] = { "<box bkc=black ></>" };
-const char edit_NotifyCode[] = { "<bu clr=blue  vx0=280 vy0=0 cg=4 rg=4 ><text f=16 xali=r yali=r clr=red>小写</></>" };
+const char edit_NotifyCode[] = { "<bu clr=blue  vx0=270 vy0=0 cg=4 rg=4 ><text f=16 xali=r yali=r clr=red>小写</></>" };
 const char	notify_uppcase[] = "大写";
 const char	notify_lowercase[] = "小写";
 const char	notify_emptycase[] = "数字";
@@ -127,7 +127,7 @@ typedef struct {
 	char 			keybrdbuf[KEYBBUFLEN];
 	uint8_t			bufidx;
 	uint8_t			maxidx;
-	uint8_t			vsizex;
+	uint8_t			none;
 //	uint8_t			cleansize;		//输入框的空余空间
 	uint8_t			inputMethod;
 }edit_t;
@@ -264,6 +264,7 @@ static int	Init_kbmHmi( HMI *self, void *arg)
 	keyEdit.p_shtTxt = Sheet_alloc( p_shtctl);
 	p_exp = ExpCreate( "text");
 	p_exp->inptSht( p_exp, (void *)edit_TxtCode, keyEdit.p_shtTxt) ;
+	keyEdit.p_shtTxt->cnt.data = keyEdit.keybrdbuf;
 	
 	keyEdit.p_shtCursor = Sheet_alloc( p_shtctl);
 	p_exp = ExpCreate( "box");
@@ -295,26 +296,31 @@ static void KBInitSheet( HMI *self )
 	
 	if( cthis->p_shtInput != NULL) {
 		//保存旧的设置
-		shtInputSave.area.x0 = cthis->p_shtInput->area.x0;
-		shtInputSave.area.y0 = cthis->p_shtInput->area.y0;
-		shtInputSave.area.x1 = cthis->p_shtInput->area.x1;
-		shtInputSave.area.y1 = cthis->p_shtInput->area.y1;
+//		shtInputSave.area.x0 = cthis->p_shtInput->area.x0;
+//		shtInputSave.area.y0 = cthis->p_shtInput->area.y0;
+//		shtInputSave.area.x1 = cthis->p_shtInput->area.x1;
+//		shtInputSave.area.y1 = cthis->p_shtInput->area.y1;
+//		shtInputSave.cnt.effects = cthis->p_shtInput->cnt.effects;
+//		shtInputSave.cnt.bkc = cthis->p_shtInput->cnt.bkc;
+//		
+//		
+//		//设置新的坐标
+//		cthis->p_shtInput->area.x0 = 0;
+////		cthis->p_shtInput->area.y0 = 30 - ( shtInputSave.area.y1 - shtInputSave.area.y0);
+////		cthis->p_shtInput->area.x1 = shtInputSave.area.x1 - shtInputSave.area.x0;
+//		cthis->p_shtInput->area.y0 = 0;
+//		cthis->p_shtInput->area.x1 = shtInputSave.area.x1 - cthis->p_shtInput->bxsize;
+//		cthis->p_shtInput->area.y1 = 30;
+//		cthis->p_shtInput->cnt.effects = 0;
+//		cthis->p_shtInput->cnt.bkc = COLOUR_BLACK;
 		
 		
-		
-		//设置新的坐标
-		cthis->p_shtInput->area.x0 = 0;
-		cthis->p_shtInput->area.y0 = 30 - ( shtInputSave.area.y1 - shtInputSave.area.y0);
-		cthis->p_shtInput->area.x1 = shtInputSave.area.x1 - shtInputSave.area.x0;
-		cthis->p_shtInput->area.y1 = 30;
-		
-		
-		
-		
-		FormatSheetSub( cthis->p_shtInput);
-		Sheet_updown( cthis->p_shtInput, 0);
-		Edit_init( &keyEdit, cthis->p_shtInput);
-		Sheet_updown( keyEdit.p_shtNotify, 1);
+//		FormatSheetSub( cthis->p_shtInput);
+//		Sheet_updown( cthis->p_shtInput, 0);
+		Edit_init(&keyEdit, cthis->p_shtInput);
+		Sheet_updown( keyEdit.p_shtNotify, 0);
+		Sheet_updown(keyEdit.p_shtTxt, 1);
+
 	}
 	
 }
@@ -326,14 +332,19 @@ static void KBHide( HMI *self )
 	//恢复输入框的设置
 	if( cthis->p_shtInput != NULL) {
 		//保存旧的设置
-		cthis->p_shtInput->area.x0 = shtInputSave.area.x0;
-		cthis->p_shtInput->area.y0 = shtInputSave.area.y0;
-		cthis->p_shtInput->area.x1 = shtInputSave.area.x1;
-		cthis->p_shtInput->area.y1 = shtInputSave.area.y1;
-				
-		FormatSheetSub( cthis->p_shtInput);
-		Sheet_updown( cthis->p_shtInput, -1);
+//		cthis->p_shtInput->area.x0 = shtInputSave.area.x0;
+//		cthis->p_shtInput->area.y0 = shtInputSave.area.y0;
+//		cthis->p_shtInput->area.x1 = shtInputSave.area.x1;
+//		cthis->p_shtInput->area.y1 = shtInputSave.area.y1;
+//		cthis->p_shtInput->cnt.effects = shtInputSave.cnt.effects;
+//		cthis->p_shtInput->cnt.bkc = shtInputSave.cnt.bkc;
+//				
+//		FormatSheetSub( cthis->p_shtInput);
+		Sheet_updown(keyEdit.p_shtTxt, -1);
 		Sheet_updown( keyEdit.p_shtNotify, -1);
+
+//		Sheet_updown( cthis->p_shtInput, -1);
+		
 		cthis->p_shtInput = NULL;
 	}
 //	Sheet_updown( cthis->p_shtVkey[  keyEdit.inputMethod], -1);
@@ -347,8 +358,7 @@ static void	KeyboardShow( HMI *self )
 	g_p_curHmi = self;
 	Dev_open( LCD_DEVID, (void *)&p_lcd);
 	p_lcd->Clear( CmmHmiAtt.bkc);
-	if( cthis->p_shtInput != NULL)
-		Sheet_refresh( cthis->p_shtInput);
+	
 	
 
 	SwitchVirKey( cthis->p_shtVkey, cthis->p_shtvKeyCursor, INPUTMETHOD_LOWER);
@@ -356,16 +366,20 @@ static void	KeyboardShow( HMI *self )
 	p_op = p_vko[ keyEdit.inputMethod];
 	p_op->vkey_init( &actKeyBlk); 
 
+	if( cthis->p_shtInput != NULL)
+		Sheet_refresh(keyEdit.p_shtTxt);
 	CleanFocus( keyEdit.inputMethod, &actKeyBlk.vkenCenter);		
 	DrawFocus( 0, &actKeyBlk.vkenCenter);
 	
+	Flush_LCD();
 	
 }
 
 static void CleanFocus( char vkeytype, virKeyInfo_t *p_focus)
 {
 	p_keyboardPic->p_gp->vdraw( p_keyboardPic->p_gp, &p_keyboardPic->cnt, &p_keyboardPic->area);
-	
+	Flush_LCD();
+
 }
 
 static void DrawFocus( char vkeytype, virKeyInfo_t *p_focus)
@@ -473,7 +487,11 @@ static void	KeyboardHitHandle( HMI *self, char *s)
 			CleanFocus( keyEdit.inputMethod, &actKeyBlk.vkenCenter);			
 			DrawFocus( 0, &actKeyBlk.vkenCenter);
 		} else if( actKeyBlk.vkenCenter.val == KEY_GO) {
-			
+			if( cthis->p_shtInput->input(cthis->p_shtInput, keyEdit.keybrdbuf, keyEdit.bufidx) == RET_OK) {
+				self->switchBack(self);
+			} else {
+				//todo: 提示错误
+			}
 		} else if( actKeyBlk.vkenCenter.val == KEY_backspace) {
 			Edit_pop (&keyEdit);
 		} else {
@@ -783,36 +801,49 @@ static void VK_Uppercase_init( virKeyBlock_t *p_vkb)
 #define SAVE_SPACE		2
 void Edit_init( edit_t *p_ed, sheet	*p_shtInput)
 {
-	sheet	*p_InputBox = p_shtInput->pp_sub[1];
+//	sheet	*p_InputBox = p_shtInput->pp_sub[1];
 	
 	
 	
-	p_ed->p_shtCursor->area.x0 = p_InputBox->area.x0 + 1;
-	p_ed->p_shtCursor->area.y0 = p_InputBox->area.y0 + 1;
-	p_ed->p_shtCursor->area.x1 = p_InputBox->area.x1 - 1;
-	p_ed->p_shtCursor->area.y1 = p_InputBox->area.y1 - 1;
+//	p_ed->p_shtCursor->area.x0 = p_InputBox->area.x0 + 1;
+//	p_ed->p_shtCursor->area.y0 = p_InputBox->area.y0 + 1;
+//	p_ed->p_shtCursor->area.x1 = p_InputBox->area.x1 - 1;
+//	p_ed->p_shtCursor->area.y1 = p_InputBox->area.y1 - 1;
 	
-	p_ed->vsizex = p_InputBox->area.x1 - p_InputBox->area.x0;
+//	p_ed->p_shtCursor->area.x0 = p_InputBox->area.x0 + 1;
+//	p_ed->p_shtCursor->area.y0 = p_InputBox->area.y0 + 1;
+//	p_ed->p_shtCursor->area.x1 = p_InputBox->area.x1 - 1;
+//	p_ed->p_shtCursor->area.y1 = p_InputBox->area.y1 - 1;
+	
+//	p_ed->vsizex = p_InputBox->area.x1 - p_InputBox->area.x0;
 //	p_ed->cleansize = p_ed->vsizex;
 	
-	p_ed->p_shtTxt->cnt.font = p_shtInput->cnt.font;
-	p_ed->p_shtTxt->p_gp->getSize( p_ed->p_shtTxt->p_gp,  p_ed->p_shtTxt->cnt.font, \
-		&p_ed->p_shtTxt->bxsize, &p_ed->p_shtTxt->bysize);
+//	p_ed->p_shtTxt->cnt.font = p_shtInput->cnt.font;
+//	p_ed->p_shtTxt->p_gp->getSize( p_ed->p_shtTxt->p_gp,  p_ed->p_shtTxt->cnt.font, \
+//		&p_ed->p_shtTxt->bxsize, &p_ed->p_shtTxt->bysize);
+//	
+//	p_ed->p_shtTxt->area.x0 = p_InputBox->area.x0 + SAVE_SPACE;
+//	p_ed->p_shtTxt->area.y0 = p_InputBox->area.y1 - p_ed->p_shtTxt->bysize - SAVE_SPACE;
 	
-	p_ed->p_shtTxt->area.x0 = p_InputBox->area.x0 + SAVE_SPACE;
-	p_ed->p_shtTxt->area.y0 = p_InputBox->area.y1 - p_ed->p_shtTxt->bysize - SAVE_SPACE;
+	memset(p_ed->p_shtTxt->cnt.data, ' ', KEYBBUFLEN);
+//	if(p_InputBox) {
+		memcpy(p_ed->p_shtTxt->cnt.data, p_shtInput->cnt.data, p_shtInput->cnt.len);
+//		
+////		p_ed->p_shtTxt->cnt.len = p_InputBox->cnt.len;
+//	} else {
+////		p_ed->p_shtTxt->cnt.len = 0;
+//	}
+	p_ed->bufidx = p_shtInput->cnt.len;
+	p_ed->maxidx = KEYBBUFLEN;
+	p_ed->p_shtTxt->cnt.len = KEYBBUFLEN;
+//	p_ed->maxidx = ( p_ed->vsizex - SAVE_SPACE)/ p_ed->p_shtTxt->bxsize;
+//	if( p_ed->maxidx > KEYBBUFLEN) {
+//		p_ed->maxidx = KEYBBUFLEN ;
+//	}
+//		
+//	p_ed->bufidx = 0;
 	
-	p_ed->p_shtTxt->cnt.data = 	p_ed->keybrdbuf;
-	p_ed->p_shtTxt->cnt.len = 	0;
-	
-	p_ed->maxidx = ( p_ed->vsizex - SAVE_SPACE)/ p_ed->p_shtTxt->bxsize;
-	if( p_ed->maxidx > sizeof( p_ed->keybrdbuf)) {
-		p_ed->maxidx = sizeof( p_ed->keybrdbuf) ;
-	}
-		
-	p_ed->bufidx = 0;
-	
-	memset( p_ed->keybrdbuf, 0, sizeof( p_ed->keybrdbuf));
+//	memset( p_ed->keybrdbuf, 0, sizeof( p_ed->keybrdbuf));
 	
 	
 	
@@ -823,32 +854,34 @@ void Edit_init( edit_t *p_ed, sheet	*p_shtInput)
 void Edit_push( edit_t *p_ed, virKeyInfo_t *p_kinfo)
 {
 	char val;
-	val = GetVKeyVal( p_kinfo->rownum, p_kinfo->colnum);
-	if( p_ed->bufidx >= p_ed->maxidx)
+	if(p_ed->bufidx >= p_ed->maxidx)
 		return;
+	
+	val = GetVKeyVal( p_kinfo->rownum, p_kinfo->colnum);
 	p_ed->keybrdbuf[p_ed->bufidx] = val;
 	p_ed->bufidx ++;
-	p_ed->p_shtTxt->cnt.len = 	p_ed->bufidx;
+//	p_ed->p_shtTxt->cnt.len = 	p_ed->bufidx;
 	
 	
-	p_ed->p_shtCursor->p_gp->vdraw( p_ed->p_shtCursor->p_gp, &p_ed->p_shtCursor->cnt, &p_ed->p_shtCursor->area);
+//	p_ed->p_shtCursor->p_gp->vdraw( p_ed->p_shtCursor->p_gp, &p_ed->p_shtCursor->cnt, &p_ed->p_shtCursor->area);
 	p_ed->p_shtTxt->p_gp->vdraw( p_ed->p_shtTxt->p_gp, &p_ed->p_shtTxt->cnt, &p_ed->p_shtTxt->area);
 	
-	
+	Flush_LCD();
 }
 
 void Edit_pop( edit_t *p_ed)
 {
-	if( p_ed->p_shtTxt->cnt.len == 0)
+	if( p_ed->bufidx == 0)
 		return;
-	p_ed->keybrdbuf[p_ed->bufidx] = 0;
 	p_ed->bufidx --;
-	p_ed->p_shtTxt->cnt.len = 	p_ed->bufidx;
+	p_ed->keybrdbuf[p_ed->bufidx] = ' ';
+	
+//	p_ed->p_shtTxt->cnt.len = 	p_ed->bufidx;
 	
 	
-	p_ed->p_shtCursor->p_gp->vdraw( p_ed->p_shtCursor->p_gp, &p_ed->p_shtCursor->cnt, &p_ed->p_shtCursor->area);
+//	p_ed->p_shtCursor->p_gp->vdraw( p_ed->p_shtCursor->p_gp, &p_ed->p_shtCursor->cnt, &p_ed->p_shtCursor->area);
 	p_ed->p_shtTxt->p_gp->vdraw( p_ed->p_shtTxt->p_gp, &p_ed->p_shtTxt->cnt, &p_ed->p_shtTxt->area);
-	
+	Flush_LCD();
 	
 }
 

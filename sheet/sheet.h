@@ -76,7 +76,7 @@ typedef struct SHEET {
 	
 	//键盘相关
 	shtCmd		*p_enterCmd;
-	
+	int	(*input)(void *self, void *data, int len);
 	
 //    struct SHTCTL *p_shtctl;
 }sheet;

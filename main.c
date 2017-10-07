@@ -53,7 +53,7 @@
 //系统编译时的月份和日作为子版本
 short  g_majorVer = 1;		
 short  g_childVer;
-
+		
 //------------------------------------------------------------------------------
 // global function prototypes
 //------------------------------------------------------------------------------
@@ -158,7 +158,7 @@ int main (void) {
 	Model 		*mTime;
 	Model 		*p_mdl_test;
 	HMI 		*p_mainHmi;
-	
+	int			count = 0;
 	osKernelInitialize ();                    // initialize CMSIS-RTOS
 
   // initialize peripherals here
@@ -174,6 +174,8 @@ int main (void) {
 	
 	p_mdl_test =  ModelCreate("test");
 	p_mdl_test->init( p_mdl_test, NULL);
+	
+	
 	
 	p_kb = GetKeyInsance();
 	p_kb->init( p_kb, NULL);
@@ -285,8 +287,12 @@ int main (void) {
 	while(1)
 	{
 		osDelay(250);
-		p_mdl_test->getMdlData( p_mdl_test, 10000, NULL);
-		mTime->getMdlData( mTime, 0, NULL);
+		if(count == 4) {
+			count = 0;
+			p_mdl_test->getMdlData( p_mdl_test, 10000, NULL);
+			mTime->getMdlData( mTime, 0, NULL);
+		}
+		count ++;
 		LCD_Run();
 	}
 	

@@ -61,6 +61,10 @@
 .\objects\main.o: HMI/barGraphHMI.h
 .\objects\main.o: HMI/dataHMI.h
 .\objects\main.o: HMI/real_time_trendHmi.h
+.\objects\main.o: HMI/news_select_HMI.h
+.\objects\main.o: HMI/News_Alarm_HMI.h
+.\objects\main.o: HMI/News_Power_down_HMI.h
+.\objects\main.o: HMI/History_HMI.h
 .\objects\main.o: control/CtlKey.h
 .\objects\main.o: control/Controller.h
 .\objects\main.o: ..\PplRcd\utils/keyboard.h

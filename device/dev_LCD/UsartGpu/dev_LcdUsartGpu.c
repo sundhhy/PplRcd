@@ -3,6 +3,7 @@
 #include <string.h>
 #include "cmsis_os.h"                                           // CMSIS RTOS header file
 #include "dev_LCD/UsartGpu/dev_LcdUsartGpu.h"
+#include "os/os_depend.h"
 
 
 #include "basis/sdhDebug.h"
@@ -25,7 +26,6 @@
 //------------------------------------------------------------------------------
 I_dev_Char *I_sendDev;
 
-
 //------------------------------------------------------------------------------
 // global function prototypes
 //------------------------------------------------------------------------------
@@ -45,8 +45,15 @@ I_dev_Char *I_sendDev;
 //------------------------------------------------------------------------------
 // local vars
 //------------------------------------------------------------------------------
+
+static short 	cmd_count = 0;
+static	char	tmp_u8;	
+//给串口屏幕用的信号量, 值为6是因为6之前的信号量都被串口使用掉了。
+//todo: 当然，如此手动分配信号量是不合理，以后有时间改进
+static sem_t	gpu_sem = 6;	
+
 static char	lcdBuf[LCDBUF_MAX];
-static int 	cmd_count = 0;
+
 
 //------------------------------------------------------------------------------
 // local function prototypes
@@ -64,6 +71,7 @@ static void GpuCutPicture( short x1, short y1, char num, short px1, short py1, c
 static void GpuBPic( char m, int x1, int y1, char num);
 static void GpuDone( void);
 static void Cmdbuf_manager(char *p_cmd);
+static void GpuIcon(int x1, int y1, char num, int xn, int yn, int n);
 //============================================================================//
 //            P U B L I C   F U N C T I O N S                                 //
 //============================================================================//
@@ -83,6 +91,7 @@ I_dev_lcd g_IUsartGpu =
 	GpuCutPicture,
 	GpuBPic,
 	GpuDone,
+	GpuIcon,
 	
 };
 //=========================================================================//
@@ -98,10 +107,11 @@ I_dev_lcd g_IUsartGpu =
 static void GpuCutPicture( short x1, short y1, char num, short px1, short py1, char w, char h)
 {
 #if USE_CMD_BUF == 1
+	Sem_wait(&gpu_sem, FOREVER);
 	sprintf( lcdBuf, "CPIC(%d,%d,%d,%d,%d,%d,%d);", x1, y1, num, px1, py1, w, h );
 	Cmdbuf_manager(lcdBuf);
 	GpuSend(lcdBuf);
-	
+	Sem_post(&gpu_sem);
 #else
 	sprintf( lcdBuf, "CPIC(%d,%d,%d,%d,%d,%d,%d);\r\n", x1, y1, num, px1, py1, w, h );
 	GpuSend(lcdBuf);
@@ -113,11 +123,29 @@ static void GpuCutPicture( short x1, short y1, char num, short px1, short py1, c
 static void GpuPic( int x1, int y1, char num)
 {
 #if USE_CMD_BUF == 1
+	Sem_wait(&gpu_sem, FOREVER);
 	sprintf( lcdBuf, "PIC(%d,%d,%d);", x1, y1, num);
 	Cmdbuf_manager(lcdBuf);
 	GpuSend(lcdBuf);
+	Sem_post(&gpu_sem);
 #else	
 	sprintf( lcdBuf, "PIC(%d,%d,%d);\r\n", x1, y1, num);
+	GpuSend(lcdBuf);
+	osDelay(40);
+#endif
+}
+
+
+static void GpuIcon(int x1, int y1, char num, int xn, int yn, int n)
+{
+#if USE_CMD_BUF == 1
+	Sem_wait(&gpu_sem, FOREVER);
+	sprintf( lcdBuf, "ICON(%d,%d,%d,%d,%d,%d);", x1, y1, num, xn, yn, n);
+	Cmdbuf_manager(lcdBuf);
+	GpuSend(lcdBuf);
+	Sem_post(&gpu_sem);
+#else	
+	sprintf( lcdBuf, "ICON(%d,%d,%d,%d,%d,%d);\r\n", x1, y1, num, xn, yn, n);
 	GpuSend(lcdBuf);
 	osDelay(40);
 #endif
@@ -126,9 +154,11 @@ static void GpuPic( int x1, int y1, char num)
 static void GpuBPic( char m, int x1, int y1, char num)
 {
 #if USE_CMD_BUF == 1
+	Sem_wait(&gpu_sem, FOREVER);
 	sprintf( lcdBuf, "BPIC(%d,%d,%d,%d);",m,  x1, y1, num);
 	Cmdbuf_manager(lcdBuf);
 	GpuSend(lcdBuf);
+	Sem_post(&gpu_sem);
 #else	
 	sprintf( lcdBuf, "BPIC(%d,%d,%d,%d);\r\n",m,  x1, y1, num);
 	GpuSend(lcdBuf);
@@ -141,7 +171,8 @@ static void GpuBPic( char m, int x1, int y1, char num)
 
 int Dev_UsartInit( void)
 {
-	
+	Sem_init(&gpu_sem);
+	Sem_post(&gpu_sem);
 	return Dev_open( DEVID_UART1, ( void *)&I_sendDev);
 	
 }
@@ -156,9 +187,11 @@ static int Dev_UsartdeInit( void)
 static int ClearLcd( int c)
 {
 #if USE_CMD_BUF == 1
+	Sem_wait(&gpu_sem, FOREVER);
 	sprintf( lcdBuf, "CLS(%d);", c);
 	Cmdbuf_manager(lcdBuf);
 	GpuSend(lcdBuf);
+	Sem_post(&gpu_sem);
 #else	
 	sprintf( lcdBuf, "CLS(%d);\r\n", c);
 	GpuSend(lcdBuf);
@@ -182,6 +215,7 @@ static int GpuBox( int x1, int y1, int x2, int y2, char type, char c)
 {
 	
 #if USE_CMD_BUF == 1
+	Sem_wait(&gpu_sem, FOREVER);
 	if( type == FILLED_RECTANGLE)
 	{
 		sprintf( lcdBuf, "BOXF(%d,%d,%d,%d,%d);", x1, y1, x2, y2,c);
@@ -197,6 +231,7 @@ static int GpuBox( int x1, int y1, int x2, int y2, char type, char c)
 	}
 	Cmdbuf_manager(lcdBuf);
 	GpuSend(lcdBuf);
+	Sem_post(&gpu_sem);
 #else	
 	if( type)
 	{
@@ -226,7 +261,7 @@ static int GpuWrString( char m ,char *string, int len, int x, int y, int font, c
 		f = FONT_12;
 	}
 		
-	if( m >= 0) {
+	if( m < 0x80) {
 		
 		sprintf( lcdBuf, "PS%d(%d,%d,%d,'",f, m, x, y);
 		sprintf(colour, "',%d, 0);",c);
@@ -247,8 +282,10 @@ static int GpuWrString( char m ,char *string, int len, int x, int y, int font, c
 	strcat( lcdBuf,colour);
 	
 #if USE_CMD_BUF == 1
+	Sem_wait(&gpu_sem, FOREVER);
 	Cmdbuf_manager(lcdBuf);
 	GpuSend(lcdBuf);
+	Sem_post(&gpu_sem);
 #else	
 	strcat( lcdBuf,"\r\n");
 	GpuSend(lcdBuf);
@@ -302,8 +339,10 @@ int GpuLabel( char *string,  int len, scArea_t *area, int font, char c, char ali
 	strcat( lcdBuf,tail);
 	
 #if USE_CMD_BUF == 1
+	Sem_wait(&gpu_sem, FOREVER);
 	Cmdbuf_manager(lcdBuf);
 	GpuSend(lcdBuf);
+	Sem_post(&gpu_sem);
 #else	
 	GpuSend(lcdBuf);
 	osDelay(LCD_DELAY_MS);
@@ -318,8 +357,10 @@ static void GpuBKColor( char c)
 		return;
 	sprintf( lcdBuf, "SBC(%d);", c);
 #if USE_CMD_BUF == 1
+	Sem_wait(&gpu_sem, FOREVER);
 	Cmdbuf_manager(lcdBuf);
 	GpuSend(lcdBuf);
+	Sem_post(&gpu_sem);
 #else	
 	GpuSend(lcdBuf);
 	memset( lcdBuf, 0, LCDBUF_MAX);
@@ -335,7 +376,7 @@ static void Cmdbuf_manager(char *p_cmd)
 	
 	if((cmd_count +  cmd_len) > UGPU_CMDBUF_LEN) {
 		GpuDone();
-		osDelay(100);
+		osDelay(250);
 	} 
 		
 	cmd_count += cmd_len;
@@ -345,7 +386,7 @@ static void GpuDone( void)
 #if USE_CMD_BUF == 1
 	char tmpbuf[8] = {0};
 	int		ret = 0;
-	
+	Sem_wait(&gpu_sem, FOREVER);
 	while(1) {
 		strcpy(tmpbuf, "\r\n");
 		GpuSend(tmpbuf);
@@ -365,6 +406,7 @@ static void GpuDone( void)
 	err:
 	osDelay(200);
 	cmd_count = 0;
+	Sem_post(&gpu_sem);
 #endif
 }
 

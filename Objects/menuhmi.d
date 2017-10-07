@@ -35,6 +35,10 @@
 .\objects\menuhmi.o: HMI\barGraphHMI.h
 .\objects\menuhmi.o: HMI\dataHMI.h
 .\objects\menuhmi.o: HMI\real_time_trendHmi.h
+.\objects\menuhmi.o: HMI\news_select_HMI.h
+.\objects\menuhmi.o: HMI\News_Alarm_HMI.h
+.\objects\menuhmi.o: HMI\News_Power_down_HMI.h
+.\objects\menuhmi.o: HMI\History_HMI.h
 .\objects\menuhmi.o: .\Expression\ExpFactory.h
 .\objects\menuhmi.o: .\Expression\expression.h
 .\objects\menuhmi.o: .\Views\Composition.h

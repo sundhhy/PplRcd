@@ -22,7 +22,7 @@ CLASS( mainHmi)
 {
 	EXTENDS( HMI);
 	
-	sheet  		*p_bkg;
+//	sheet  		*p_bkg;
 //	sheet  		*p_title;
 //	sheet  		*arr_p_sht_data[NUM_CHANNEL];
 //	sheet  			**pp_shts;

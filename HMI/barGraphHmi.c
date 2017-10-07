@@ -15,11 +15,7 @@
 //------------------------------------------------------------------------------
 // const defines
 //------------------------------------------------------------------------------
-#define BARHMI_NUM_BTNROW		1
-#define BARHMI_NUM_BTNCOL		4
 
-
-#define BARHMI_BK_PIC				0		//背景图片编号
 //------------------------------------------------------------------------------
 // module global vars
 //------------------------------------------------------------------------------
@@ -41,9 +37,13 @@ HMI *g_p_barGhHmi;
 // const defines
 //------------------------------------------------------------------------------
 
+#define BARHMI_NUM_BTNROW		1
+#define BARHMI_NUM_BTNCOL		4
+
+#define BARHMI_BKPICNUM		"12"
 #define BARHMI_TITLE		"棒图画面"
-static const char barhmi_code_bkPic[] =  {"<bpic vx0=0 vy0=0 m=0 >22</>" };
-static const char barhmi_code_clean[] = { "<cpic vx0=0 vy0=0 >22</>" };
+
+static const char barhmi_code_clean[] = { "<cpic vx0=0 vy0=0 >12</>" };
 static const char barhmi_code_bar[] = { "<box bx=35 ></>" };
 static const char barhmi_code_textPrcn[] = { "<text f=16 m=0 mdl=test aux=3>100</>" };
 
@@ -63,7 +63,6 @@ static const char barhmi_code_textPrcn[] = { "<text f=16 m=0 mdl=test aux=3>100<
 
 	
 //static sheet  *arr_p_sht_select[BARHMI_NUM_BTNCOL];
-static char		prn_buf[BARHMI_NUM_BARS][8];
 //------------------------------------------------------------------------------
 // local function prototypes
 //------------------------------------------------------------------------------
@@ -142,18 +141,16 @@ static int	Init_barGhHMI( HMI *self, void *arg)
 	p_shtctl = GetShtctl();
 	
 	//初始化背景图片
-	p_exp = ExpCreate( "pic");
-	cthis->p_bkg = Sheet_alloc( p_shtctl);
-	p_exp->inptSht( p_exp, (void *)barhmi_code_bkPic, cthis->p_bkg) ;
-	
-	cthis->p_bar_clean = Sheet_alloc( p_shtctl);
-	p_exp->inptSht( p_exp, (void *)barhmi_code_clean, cthis->p_bar_clean) ;
+//	p_exp = ExpCreate( "pic");
+//	cthis->p_bar_clean = Sheet_alloc( p_shtctl);
+//	p_exp->inptSht( p_exp, (void *)barhmi_code_clean, cthis->p_bar_clean) ;
 	
 	
 	
 	//初始化柱形图
 	Init_bar(cthis);
 	
+	cthis->flag = 0;
 
 	
 	
@@ -168,28 +165,38 @@ static void BarHmi_InitSheet( HMI *self )
 {
 	barGhHMI			*cthis = SUB_PTR( self, HMI, barGhHMI);
 	int i,  h = 0;
+	Expr 			*p_exp ;
+	
+	p_exp = ExpCreate( "pic");
+	p_exp->inptSht( p_exp, (void *)barhmi_code_clean, g_p_cpic) ;
+	
+	cthis->flag = 1;
+	BarHmi_Init_chnSht();
+	cthis->flag = 0;
+
+	g_p_sht_bkpic->cnt.data = BARHMI_BKPICNUM;
 
 	g_p_sht_title->cnt.data = BARHMI_TITLE;
 	g_p_sht_title->cnt.len = strlen(BARHMI_TITLE);
 	
 	
-	Sheet_updown( cthis->p_bkg, h++);
-	Sheet_updown( g_p_sht_title, h++);
-	Sheet_updown( g_p_shtTime, h++);
-	for( i = 0; i < BARHMI_NUM_BARS; i++) {
-		Sheet_updown( cthis->arr_p_barshts[i], h++);
+	Sheet_updown(g_p_sht_bkpic, h++);
+	Sheet_updown(g_p_sht_title, h++);
+	Sheet_updown(g_p_shtTime, h++);
+	for(i = 0; i < BARHMI_NUM_BARS; i++) {
+		Sheet_updown(cthis->arr_p_barshts[i], h++);
 		Sheet_updown(g_arr_p_chnData[i], h++);
 		Sheet_updown(g_arr_p_chnUtil[i], h++);
 //		Sheet_updown( cthis->arr_p_sht_textPrcn[i], h++);
 //		Sheet_updown( cthis->pp_bar_unit[i], h++);
 	}
 	
-	Sheet_updown( g_p_ico_memu, h++);
-	Sheet_updown( g_p_ico_bar, h++);
-	Sheet_updown( g_p_ico_digital, h++);
-	Sheet_updown( g_p_ico_trend, h++);
+	Sheet_updown(g_p_ico_memu, h++);
+	Sheet_updown(g_p_ico_bar, h++);
+	Sheet_updown(g_p_ico_digital, h++);
+	Sheet_updown(g_p_ico_trend, h++);
 	
-	BarHmi_Init_chnSht();
+	
 	//初始化焦点
 	self->init_focus(self);
 }
@@ -202,12 +209,12 @@ static void BarHmi_HideSheet( HMI *self )
 	
 //	self->clear_focus(self, cthis->focusRow, cthis->focusCol);
 	
+	cthis->flag = 0;
 	
-	
-	Sheet_updown( g_p_ico_trend, -1);
-	Sheet_updown( g_p_ico_digital, -1);
-	Sheet_updown( g_p_ico_bar, -1);
-	Sheet_updown( g_p_ico_memu, -1);
+	Sheet_updown(g_p_ico_trend, -1);
+	Sheet_updown(g_p_ico_digital, -1);
+	Sheet_updown(g_p_ico_bar, -1);
+	Sheet_updown(g_p_ico_memu, -1);
 	
 	for( i = BARHMI_NUM_BARS - 1; i >= 0; i--) {
 //		Sheet_updown( cthis->pp_bar_unit[i], -1);
@@ -216,9 +223,9 @@ static void BarHmi_HideSheet( HMI *self )
 		Sheet_updown(g_arr_p_chnData[i], -1);
 		Sheet_updown( cthis->arr_p_barshts[i], -1);
 	}
-	Sheet_updown( g_p_shtTime, -1);
-	Sheet_updown( g_p_sht_title, -1);
-	Sheet_updown( cthis->p_bkg, -1);
+	Sheet_updown(g_p_shtTime, -1);
+	Sheet_updown(g_p_sht_title, -1);
+	Sheet_updown(g_p_sht_bkpic, -1);
 	
 	self->clear_focus( self, self->p_fcuu->focus_row, self->p_fcuu->focus_col);
 	Focus_free(self->p_fcuu);
@@ -237,7 +244,8 @@ static void	BarHmi_Show( HMI *self )
 	
 //	Cal_bar( cthis);
 	
-	Sheet_refresh( cthis->p_bkg);
+	Sheet_refresh(g_p_sht_bkpic);
+	cthis->flag = 1;
 //	self->show_focus( self, 0, 0);
 }
 
@@ -515,9 +523,10 @@ static int BarHmi_Data_update(void *p_data, void *p_mdl)
 	uint32_t	prcn = 0;
 	uint32_t	height = 0;
 	
-		
-	if(Sheet_is_hide(p_sht))
+	if(self->flag == 0)
 		return 0;
+	
+//		return 0;
 	
 	
 	prcn = p_sht->p_mdl->getMdlData( p_sht->p_mdl, p_sht->cnt.mdl_aux,  &j);
@@ -529,12 +538,12 @@ static int BarHmi_Data_update(void *p_data, void *p_mdl)
 	self->arr_p_barshts[i]->area.y1 = bar_vy1;
 	
 	
-	self->p_bar_clean->area.x0 = bar_vx0[i];
-	self->p_bar_clean->area.x1 = bar_vx0[i] + self->arr_p_barshts[i]->bxsize + 5;
-	self->p_bar_clean->area.y0 = bar_vy1 - max_height;
-	self->p_bar_clean->area.y1 = bar_vy1;
-	self->p_bar_clean->area.offset_x = 0;
-	self->p_bar_clean->area.offset_y = 0;
+	g_p_cpic->area.x0 = bar_vx0[i];
+	g_p_cpic->area.x1 = bar_vx0[i] + self->arr_p_barshts[i]->bxsize + 5;
+	g_p_cpic->area.y0 = bar_vy1 - max_height;
+	g_p_cpic->area.y1 = bar_vy1;
+	g_p_cpic->area.offset_x = 0;
+	g_p_cpic->area.offset_y = 0;
 		
 		 
 	p_sht->p_mdl->to_string(p_sht->p_mdl, p_sht->cnt.mdl_aux, p_sht->cnt.data);
@@ -543,7 +552,9 @@ static int BarHmi_Data_update(void *p_data, void *p_mdl)
 	p_sht->area.y0 = text_vy0;
 	
 	//先清除之前的柱形图
-	self->p_bar_clean->p_gp->vdraw(self->p_bar_clean->p_gp, &self->p_bar_clean->cnt, &self->p_bar_clean->area);
+	if(Sheet_is_hide(p_sht))
+		return 0;
+	g_p_cpic->p_gp->vdraw(g_p_cpic->p_gp, &g_p_cpic->cnt, &g_p_cpic->area);
 	//显示柱形图和数值
 	Sheet_slide(p_sht);
 	Sheet_slide( self->arr_p_barshts[i]);
@@ -556,18 +567,19 @@ static int BarHmi_Data_update(void *p_data, void *p_mdl)
 static int BarHmi_Util_update(void *p_data, void *p_mdl)
 {
 	sheet		*p_sht = (sheet *)p_data;
-
+	barGhHMI *self = Get_barGhHMI();
 	uint16_t bar_vx0[BARHMI_NUM_BARS] = { 30, 78, 126, 172, 220, 268};
 	
 	uint16_t utit_vy0 = 46;
 	uint16_t i = p_sht->id;
 	
 	
-	
+	if(self->flag == 0)
+		return 0;
 	
 		
-	if(Sheet_is_hide(p_sht))
-		return 0;
+//	if(Sheet_is_hide(p_sht))
+//		return 0;
 	
 	
 	
@@ -576,7 +588,8 @@ static int BarHmi_Util_update(void *p_data, void *p_mdl)
 	p_sht->cnt.len = strlen(p_sht->cnt.data);
 	p_sht->area.x0 = bar_vx0[i];
 	p_sht->area.y0 = utit_vy0;
-	
+	if(Sheet_is_hide(p_sht))
+		return 0;
 	Sheet_slide( p_sht);
 	return 0;
 	

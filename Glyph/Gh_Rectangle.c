@@ -101,30 +101,41 @@ static void GhRec_vDraw( Glyph *self, dspContent_t *cnt, vArea_t *area)
 	uint8_t	bkc = cnt->bkc;
 	Dev_open( LCD_DEVID, (void *)&lcd);
 	
-	if( GP_CKECK_EFF( cnt->effects , EFF_FOCUS))
+	if(GP_CKECK_EFF( cnt->effects , EFF_FOCUS))
 	{
 		c = ColorInvert( c);
-		bkc  = ColorInvert( c);
+		bkc  = ColorInvert( bkc);
 	}
 	
-	if( cnt->subType == GMT_LINE) {
+	if(cnt->subType == GMT_LINE) {
 		
-		lcd->Box( area->x0, area->y0, area->x1, area->y1, LINE, c);
+		lcd->Box(area->x0, area->y0, area->x1, area->y1, LINE, c);
 	}
-	else if( cnt->bkc == ERR_COLOUR)
+	else if(cnt->bkc == ERR_COLOUR)
 	{
-		lcd->Box( area->x0, area->y0, area->x1, area->y1, EMPTY_RECTANGLE, c);
+		lcd->Box(area->x0, area->y0, area->x1, area->y1, EMPTY_RECTANGLE, c);
 	}
-	else if( cnt->bkc == cnt->colour)
-	{
-		lcd->Box( area->x0, area->y0, area->x1, area->y1, FILLED_RECTANGLE, c);
+	else if(area->grap) {
+		lcd->Box(area->x0, area->y0, area->x1, area->y1, EMPTY_RECTANGLE, c);
+		lcd->Box(area->x0 + area->grap, area->y0 + area->grap, area->x1 - area->grap, area->y1 - area->grap, FILLED_RECTANGLE, bkc);
+	} else {
+		lcd->Box(area->x0, area->y0, area->x1, area->y1, FILLED_RECTANGLE, c);
 	}
-	else
-	{
-		lcd->Box( area->x0, area->y0, area->x1, area->y1, EMPTY_RECTANGLE, c);
-		lcd->Box( area->x0 + 2, area->y0 + 2, area->x1 - 2, area->y1 - 2, FILLED_RECTANGLE, bkc);
-		
-	}
+//	else if(cnt->bkc == cnt->colour)
+//	{
+//		if(area->grap) {
+//			lcd->Box(area->x0, area->y0, area->x1, area->y1, EMPTY_RECTANGLE, c);
+//			lcd->Box(area->x0 + area->grap, area->y0 + area->grap, area->x1 - area->grap, area->y1 - area->grap, FILLED_RECTANGLE, bkc);
+//		} else {
+//			lcd->Box(area->x0, area->y0, area->x1, area->y1, FILLED_RECTANGLE, c);
+//		}
+//	}
+//	else
+//	{
+//		lcd->Box(area->x0, area->y0, area->x1, area->y1, EMPTY_RECTANGLE, c);
+//		lcd->Box(area->x0 + 2, area->y0 + 2, area->x1 - 2, area->y1 - 2, FILLED_RECTANGLE, bkc);
+//		
+//	}
 
 
 }

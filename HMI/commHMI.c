@@ -23,21 +23,32 @@
 //------------------------------------------------------------------------------
 // module global vars
 //------------------------------------------------------------------------------
+sheet			*g_p_sht_bkpic;
 sheet			*g_p_sht_title;
 sheet			*g_p_shtTime;
+sheet			*g_p_cpic;
 sheet			*g_p_ico_memu;
 sheet			*g_p_ico_bar;
 sheet			*g_p_ico_digital;
 sheet			*g_p_ico_trend;
+sheet			*g_p_ico_pgup;
+sheet			*g_p_ico_pgdn;
+sheet			*g_p_ico_eraseTool;
 
 sheet			*g_arr_p_chnData[NUM_CHANNEL];
 sheet			*g_arr_p_chnUtil[NUM_CHANNEL];
 sheet			*g_arr_p_chnAlarm[NUM_CHANNEL];
 
+char		prn_buf[BARHMI_NUM_BARS][8];
+
+
 hmiAtt_t CmmHmiAtt = { 10,1, COLOUR_BLACK, 4, 2};
 
 const char	arr_clrs[NUM_CHANNEL] = { 43, COLOUR_GREN, COLOUR_BLUE, COLOUR_YELLOW, \
 	COLOUR_BABYBLUE, COLOUR_PURPLE};
+
+ro_char news_cpic[] =  {"<cpic vx0=0 vx1=320 vy0=50 vy1=210>16</>" };
+
 //------------------------------------------------------------------------------
 // global function prototypes
 //------------------------------------------------------------------------------
@@ -51,17 +62,25 @@ keyboardHMI		*g_keyHmi;
 //------------------------------------------------------------------------------
 #define TIME_BUF_LEN		16
 
+static ro_char code_bkPic[] =  {"<bpic vx0=0 vy0=0 m=0 >23</>" };
 static ro_char code_title[] =  {"<text vx0=0 vy0=4 m=0 clr=white f=24> </>" };
 
 static ro_char timeCode[] = { "<time vx0=200 vy0=0 bx=60  by=24 f=24 xali=m m=0 clr=yellow spr=/> </time>" };
 
-static ro_char ico_memu[] = { "<bu vx0=10 vy0=206 bx=33 by=33 bkc=black clr=black><pic  bx=32  by=32 >1</></bu>" };
-//进入棒图图标
-static ro_char ico_bar[] = { "<bu vx0=80 vy0=206 bx=33 by=33 bkc=black clr=black><pic  bx=32  by=32 >2</></bu>" };
+//进入主菜单
+static ro_char ico_memu[] = { "<bu vx0=10 vy0=212 bx=49 by=25 bkc=black clr=black><pic bx=48  by=24 >18</></bu>" };
 //进入数显画面图标
-static ro_char ico_digital[] = { "<bu vx0=160 vy0=206 bx=33 by=33bkc=black clr=black><pic  bx=32  by=32 >3</></bu>" };
+static ro_char ico_digital[] = { "<bu vx0=160 vy0=212 bx=49 by=25 bkc=black clr=black><pic  bx=48  by=24 >19</></bu>" };
+//进入棒图图标
+static ro_char ico_bar[] = { "<bu vx0=80 vy0=212 bx=49 by=25 bkc=black clr=black><pic  bx=48  by=24 >20</></bu>" };
+
 //进入趋势画面图标
-static ro_char ico_trend[] = { "<bu vx0=240 vy0=206 bx=33 by=33 bkc=black clr=black><pic  bx=32  by=32 >4</></bu>" };
+static ro_char ico_trend[] = { "<bu vx0=240 vy0=212 bx=49 by=25 bkc=black clr=black><pic  bx=48  by=24 >21</></bu>" };
+
+static ro_char ico_pgup[] = { "<bu vx0=80 vy0=212 bx=25 by=25 bkc=black clr=black><pic  bx=24  by=24 >19</></bu>" };
+
+static ro_char ico_pgdn[] = { "<bu vx0=160 vy0=212 bx=25 by=25 bkc=black clr=black><pic  bx=24  by=24 >19</></bu>" };
+static ro_char ico_eraseTool[] = { "<bu vx0=240 vy0=212 bx=25 by=25 bkc=black clr=black><pic  bx=24  by=24 >19</></bu>" };
 
 
 
@@ -115,6 +134,8 @@ static int	Init_cmmHmi( HMI *self, void *arg)
 	HMI 			*p_hmi;
 	menuHMI			*menuHmi ;
 	barGhHMI		*barHmi ;
+	dataHMI			*dataHmi;
+	RLT_trendHMI	*rltHmi;
 	shtctl *p_shtctl = NULL;
 	Expr *p_exp ;
 	
@@ -125,30 +146,55 @@ static int	Init_cmmHmi( HMI *self, void *arg)
 	Build_icoSheets();
 	Build_otherSheets();
 	
+	//注意：按键一定要放在最开始初始化，因为其他界面会依赖按键的一些操作
+	p_hmi = CreateHMI(HMI_KYBRD);
+	p_hmi->init(p_hmi, NULL);
+	g_keyHmi = SUB_PTR(p_hmi, HMI, keyboardHMI);
+	
 	//创建与公用图标相关的界面
-	p_hmi = CreateHMI( HMI_MENU);
+	p_hmi = CreateHMI(HMI_MENU);
 	p_hmi->init( p_hmi, NULL);
-	menuHmi = SUB_PTR( p_hmi, HMI, menuHMI);
+	menuHmi = SUB_PTR(p_hmi, HMI, menuHMI);
 	
-	p_hmi = CreateHMI( HMI_BAR);
+	p_hmi = CreateHMI(HMI_DATA);
+	p_hmi->init(p_hmi, NULL);
+	dataHmi = SUB_PTR(p_hmi, HMI, dataHMI);
+	
+	p_hmi = CreateHMI(HMI_BAR);
 	p_hmi->init( p_hmi, NULL);
-	barHmi = SUB_PTR( p_hmi, HMI, barGhHMI);
+	barHmi = SUB_PTR(p_hmi, HMI, barGhHMI);
 	
-	p_hmi = CreateHMI( HMI_KYBRD);
-	p_hmi->init( p_hmi, NULL);
-	g_keyHmi = SUB_PTR( p_hmi, HMI, keyboardHMI);
-	
-	//初始化其他界面
-	p_hmi = CreateHMI( HMI_DATA);
-	p_hmi->init( p_hmi, NULL);
-	
-	p_hmi = CreateHMI( HMI_RLT_TREND);
-	p_hmi->init( p_hmi, NULL);
-	
+	p_hmi = CreateHMI(HMI_RLT_TREND);
+	p_hmi->init(p_hmi, NULL);
+	rltHmi = SUB_PTR(p_hmi, HMI, RLT_trendHMI);
 	
 	//将图标动作与相关界面处理绑定
 	g_p_ico_memu->p_enterCmd = &menuHmi->shtCmd;
+	g_p_ico_digital->p_enterCmd = &dataHmi->shtCmd;
 	g_p_ico_bar->p_enterCmd = &barHmi->shtCmd;
+	g_p_ico_trend->p_enterCmd = &rltHmi->shtCmd;
+	
+	
+	
+	
+	//初始化其他界面
+	
+	
+	
+	
+	p_hmi = CreateHMI(HMI_NWS);
+	p_hmi->init(p_hmi, NULL);
+	
+	p_hmi = CreateHMI(HMI_NEWS_ALARM);
+	p_hmi->init(p_hmi, NULL);
+	
+	p_hmi = CreateHMI(HMI_NEWS_POWER_DOWN);
+	p_hmi->init(p_hmi, NULL);
+	
+	p_hmi = CreateHMI(HMI_HISTORY);
+	p_hmi->init(p_hmi, NULL);
+	
+	
 	
 	return RET_OK;
 }
@@ -171,31 +217,54 @@ static void Build_icoSheets(void)
 
 	
 	//初始化公用图标
-	g_p_ico_memu  = Sheet_alloc( p_shtctl);
-	p_exp->inptSht( p_exp, (void *)ico_memu, g_p_ico_memu) ;
+	g_p_ico_memu  = Sheet_alloc(p_shtctl);
+	p_exp->inptSht(p_exp, (void *)ico_memu, g_p_ico_memu) ;
 	g_p_ico_memu->area.x1 = g_p_ico_memu->area.x0 + g_p_ico_memu->bxsize;
 	g_p_ico_memu->area.y1 = g_p_ico_memu->area.y0 + g_p_ico_memu->bysize;
-	FormatSheetSub( g_p_ico_memu);
+	g_p_ico_memu->id = ICO_ID_MENU;
+	FormatSheetSub(g_p_ico_memu);
 	
 	
-	g_p_ico_bar  = Sheet_alloc( p_shtctl);
-	p_exp->inptSht( p_exp, (void *)ico_bar, g_p_ico_bar) ;
+	g_p_ico_bar  = Sheet_alloc(p_shtctl);
+	p_exp->inptSht(p_exp, (void *)ico_bar, g_p_ico_bar) ;
 	g_p_ico_bar->area.x1 = g_p_ico_bar->area.x0 + g_p_ico_bar->bxsize;
 	g_p_ico_bar->area.y1 = g_p_ico_bar->area.y0 + g_p_ico_bar->bysize;
-	FormatSheetSub( g_p_ico_bar);
+	FormatSheetSub(g_p_ico_bar);
 	
 	
-	g_p_ico_digital  = Sheet_alloc( p_shtctl);
-	p_exp->inptSht( p_exp, (void *)ico_digital, g_p_ico_digital) ;
+	g_p_ico_digital  = Sheet_alloc(p_shtctl);
+	p_exp->inptSht(p_exp, (void *)ico_digital, g_p_ico_digital) ;
 	g_p_ico_digital->area.x1 = g_p_ico_digital->area.x0 + g_p_ico_bar->bxsize;
 	g_p_ico_digital->area.y1 = g_p_ico_digital->area.y0 + g_p_ico_bar->bysize;
-	FormatSheetSub( g_p_ico_digital);
+	FormatSheetSub(g_p_ico_digital);
 	
-	g_p_ico_trend  = Sheet_alloc( p_shtctl);
-	p_exp->inptSht( p_exp, (void *)ico_trend, g_p_ico_trend) ;
+	g_p_ico_trend  = Sheet_alloc(p_shtctl);
+	p_exp->inptSht(p_exp, (void *)ico_trend, g_p_ico_trend) ;
 	g_p_ico_trend->area.x1 = g_p_ico_trend->area.x0 + g_p_ico_trend->bxsize;
 	g_p_ico_trend->area.y1 = g_p_ico_trend->area.y0 + g_p_ico_trend->bysize;
-	FormatSheetSub( g_p_ico_trend);
+	FormatSheetSub(g_p_ico_trend);
+	
+	g_p_ico_pgup  = Sheet_alloc(p_shtctl);
+	p_exp->inptSht(p_exp, (void *)ico_pgup, g_p_ico_pgup) ;
+	g_p_ico_pgup->area.x1 = g_p_ico_pgup->area.x0 + g_p_ico_pgup->bxsize;
+	g_p_ico_pgup->area.y1 = g_p_ico_pgup->area.y0 + g_p_ico_pgup->bysize;
+	g_p_ico_pgup->id = ICO_ID_PGUP;
+	FormatSheetSub(g_p_ico_pgup);
+	
+	g_p_ico_pgdn  = Sheet_alloc( p_shtctl);
+	p_exp->inptSht(p_exp, (void *)ico_pgdn, g_p_ico_pgdn) ;
+	g_p_ico_pgdn->area.x1 = g_p_ico_pgdn->area.x0 + g_p_ico_pgdn->bxsize;
+	g_p_ico_pgdn->area.y1 = g_p_ico_pgdn->area.y0 + g_p_ico_pgdn->bysize;
+	g_p_ico_pgdn->id = ICO_ID_PGDN;
+	FormatSheetSub(g_p_ico_pgdn);
+	
+	
+	g_p_ico_eraseTool  = Sheet_alloc(p_shtctl);
+	p_exp->inptSht(p_exp, (void *)ico_eraseTool, g_p_ico_eraseTool) ;
+	g_p_ico_eraseTool->area.x1 = g_p_ico_eraseTool->area.x0 + g_p_ico_eraseTool->bxsize;
+	g_p_ico_eraseTool->area.y1 = g_p_ico_eraseTool->area.y0 + g_p_ico_eraseTool->bysize;
+	g_p_ico_eraseTool->id = ICO_ID_ERASETOOL;
+	FormatSheetSub(g_p_ico_eraseTool);
 	
 }
 
@@ -205,6 +274,14 @@ static void Build_otherSheets(void)
 	Expr 		*p_exp ;
 		
 	p_shtctl = GetShtctl();
+	
+	g_p_cpic = Sheet_alloc( p_shtctl);
+	
+	g_p_sht_bkpic = Sheet_alloc( p_shtctl);
+	p_exp = ExpCreate( "pic");
+	p_exp->inptSht( p_exp, (void *)code_bkPic, g_p_sht_bkpic) ;
+	
+	
 	
 	//title
 	g_p_sht_title = Sheet_alloc( p_shtctl);

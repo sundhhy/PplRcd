@@ -146,19 +146,21 @@ void Focus_move_right(focus_user_t *p_fcuu)
 }
 void Focus_move_up(focus_user_t *p_fcuu)
 {
-	p_fcuu->focus_row ++;
-	if(p_fcuu->focus_row > p_fcuu->rows)
-		p_fcuu->focus_row = 0;
+
 	
-}
-void Focus_move_down(focus_user_t *p_fcuu)
-{
 	if(p_fcuu->focus_row > 0)
 		p_fcuu->focus_row --;
 	else
 	{
 		p_fcuu->focus_row = p_fcuu->rows;
 	}
+	
+}
+void Focus_move_down(focus_user_t *p_fcuu)
+{
+	p_fcuu->focus_row ++;
+	if(p_fcuu->focus_row > p_fcuu->rows)
+		p_fcuu->focus_row = 0;
 	
 }
 sheet* Focus_Get_focus(focus_user_t *p_fcuu)

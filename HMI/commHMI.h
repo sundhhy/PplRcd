@@ -16,6 +16,16 @@
 // const defines
 //------------------------------------------------------------------------------
 #define NUM_CHANNEL			6
+
+#define	ICO_ID_MENU				0x20
+#define	ICO_ID_PGUP				0x21
+#define	ICO_ID_PGDN				0x22
+#define	ICO_ID_ERASETOOL		0x23
+
+#define IS_CHECK(n)				((n&0xf0) == 0x30)
+#define SHTID_CHECK(n)			(0x30 + n)
+
+#define	GET_CHN_FROM_ID(id)		(id & 0x0f)
  //------------------------------------------------------------------------------
 // typedef
 //------------------------------------------------------------------------------
@@ -32,15 +42,34 @@ CLASS( cmmHmi)
 //------------------------------------------------------------------------------
 // global variable declarations
 //------------------------------------------------------------------------------
-extern	sheet		*g_p_shtTime, *g_p_ico_memu, *g_p_ico_bar, *g_p_ico_digital, *g_p_ico_trend;
-extern  sheet		*g_arr_p_chnData[NUM_CHANNEL];
-extern	sheet		*g_arr_p_chnUtil[NUM_CHANNEL];
-extern	sheet		*g_arr_p_chnAlarm[NUM_CHANNEL];
 
-extern	const char	arr_clrs[NUM_CHANNEL];
-extern	hmiAtt_t	CmmHmiAtt;
-extern keyboardHMI		*g_keyHmi;
-extern sheet			*g_p_sht_title;
+//sheet
+extern	sheet			*g_p_sht_bkpic, *g_p_shtTime, \
+	*g_p_ico_memu, *g_p_ico_digital, *g_p_ico_bar,  *g_p_ico_trend, *g_p_cpic;
+extern 	sheet			*g_p_ico_pgup;
+extern 	sheet			*g_p_ico_pgdn;
+extern	sheet			*g_p_ico_eraseTool;
+extern  sheet			*g_arr_p_chnData[NUM_CHANNEL];
+extern	sheet			*g_arr_p_chnUtil[NUM_CHANNEL];
+extern	sheet			*g_arr_p_chnAlarm[NUM_CHANNEL];
+extern 	sheet			*g_p_sht_title;
+extern	sheet  			*g_arr_p_check[NUM_CHANNEL]; 		//通道的勾选图标
+
+
+//values
+extern 	char			prn_buf[NUM_CHANNEL][8];
+extern	const char		arr_clrs[NUM_CHANNEL];
+extern	hmiAtt_t		CmmHmiAtt;
+extern 	keyboardHMI		*g_keyHmi;
+extern 	ro_char 		news_cpic[];
+//HMI
+extern 	HMI 			*g_p_HMI_menu;
+extern 	HMI 			*g_p_News_Alarm_HMI;
+extern	HMI 			*g_p_News_PwrDn_HMI;
+extern	HMI 			*g_p_History_HMI;
+
+
+
 //------------------------------------------------------------------------------
 // function prototypes
 //------------------------------------------------------------------------------

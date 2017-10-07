@@ -35,3 +35,7 @@
 .\objects\hmifactory.o: HMI\barGraphHMI.h
 .\objects\hmifactory.o: HMI\dataHMI.h
 .\objects\hmifactory.o: HMI\real_time_trendHmi.h
+.\objects\hmifactory.o: HMI\news_select_HMI.h
+.\objects\hmifactory.o: HMI\News_Alarm_HMI.h
+.\objects\hmifactory.o: HMI\News_Power_down_HMI.h
+.\objects\hmifactory.o: HMI\History_HMI.h

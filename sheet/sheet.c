@@ -102,6 +102,11 @@ err:
 	return p_ctl;
 	
 }
+int Sht_input( void *self, void *data, int len)
+{
+	return 0;
+	
+}
 
 struct SHEET *Sheet_alloc( struct SHTCTL *p_ctl)
 {
@@ -114,12 +119,13 @@ struct SHEET *Sheet_alloc( struct SHTCTL *p_ctl)
             p_sht = p_ctl->arr_sheets + i;
             p_sht->flags = SHEET_USE;
             p_sht->height = -1; 
+			p_sht->id = -1;
 			
 			p_sht->subAtt.numSubCol = 0;
 			p_sht->subAtt.numSubRow = 0;
 			p_sht->subAtt.subColGrap = 0;
 			p_sht->subAtt.subRowGrap = 0;
-			
+			p_sht->input = Sht_input;
 			
 			p_sht->p_enterCmd = (shtCmd*)Get_shtDefCmd();
 //			p_sht->p_enterCmd = NULL;
@@ -154,7 +160,7 @@ int ShtUpdate( void *p_sht, void *p_mdl)
 	struct SHEET *p = ( struct SHEET *)p_sht;
 	
 	if(Sheet_is_hide(p_sht))
-		return;
+		return RET_OK;
 		
 	p->cnt.data = p->p_mdl->to_string( p->p_mdl, 0, NULL);
 	p->cnt.len = strlen( p->cnt.data);
@@ -162,6 +168,8 @@ int ShtUpdate( void *p_sht, void *p_mdl)
 	return RET_OK;
 	
 }
+
+
 
 //把高度设置在最高图层
 void Sheet_append( struct SHEET *p_sht)

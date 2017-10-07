@@ -54,6 +54,9 @@ ABS_CLASS(HMI)
 	
 	focus_user_t	*p_fcuu;
 	
+	uint8_t			arg[4];		//切换屏幕时，用于屏幕间传递一些参数
+	
+	
 	//显示静态画面
 	int		(*init)( HMI *self, void *arg);
 	void	(*show)( HMI *self);

@@ -21,14 +21,14 @@ CLASS( barGhHMI)
 {
 	EXTENDS( HMI);
 	IMPLEMENTS( shtCmd);
-	sheet  			*p_bkg;
-	sheet  			*p_bar_clean;		//°ôÍ¼µÄ²Á³ý
+//	sheet  			*p_bar_clean;		//°ôÍ¼µÄ²Á³ý
 	sheet  			*arr_p_barshts[BARHMI_NUM_BARS];
 //	sheet  			*arr_p_sht_textPrcn[BARHMI_NUM_BARS];
 //	sheet  			**pp_bar_unit;
 //	uint8_t		focusRow;
 //	uint8_t		focusCol;
-//	uint8_t		none[2];
+	char		flag;
+	uint8_t		none[3];
 	
 };
 //------------------------------------------------------------------------------

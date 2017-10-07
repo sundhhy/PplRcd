@@ -53,26 +53,26 @@ typedef struct {
 	int8_t		offset_x;
 	int8_t		offset_y;
 	//privice
+	uint8_t		grap;			//正方形的内部和边框的间距
 	
+	//icon使用的额外参数
+	uint8_t		xn;
+	uint8_t		yn;
+	uint8_t		n;
 }vArea_t;
 
 
 
 /*                   @Deprecated   */
 typedef struct {
-	
-	
 	int16_t		cursorX;
 	int16_t		cursorY;
 	
 	int16_t		rowSize;
 	int8_t		colSize;
-	
-	
+
 	int8_t		scBkc;
-
 	scArea_t	scBoundary;
-
 }scInfo_t;
 
 

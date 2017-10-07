@@ -107,6 +107,7 @@ static void	SwitchHMI( HMI *self, HMI *p_hmi)
 	if( p_hmi == NULL)
 		return;
 	if( self != p_hmi) {		//切换到不同的界面上，才更新
+		
 		g_p_lastHmi = g_p_curHmi;
 		g_p_curHmi = p_hmi;
 	}

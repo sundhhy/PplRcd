@@ -29,7 +29,7 @@
 #define COLOUR_PURPLE		6	//вои╚
 #define COLOUR_WHITE		18
 #define COLOUR_DEEPPURPLE	57
-#define COLOUR_BLACK		0xff
+#define COLOUR_BLACK		63
 #define COLOUR_OTHER(n)		n
 
 #define DEF_COLOUR			COLOUR_WHITE
@@ -73,6 +73,7 @@ typedef struct{
 	void ( *cutPicture)( short x1, short y1, char num, short px1, short py1, char w, char h);
 	void ( *bkPicture)( char m, short x1, short y1, char num);
 	void	(*done)(void);
+	void	(*icon)(int x1, int y1, char num, int xn, int yn, int n);
 }I_dev_lcd;
 
 int DevLCD_open( int major, int minor, void **dev);

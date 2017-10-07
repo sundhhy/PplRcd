@@ -98,7 +98,10 @@ static void * PicInptSht( Expr *self, void *context, sheet *p_sht)
 	if( pp) {
 		p_sht->cnt.subType = SUBTYPE_BPIC;
 	} 
-	
+	pp = strstr( name, "icon");
+	if( pp) {
+		p_sht->cnt.subType = SUBTYPE_ICON;
+	} 
 	pnewPosition = GetNameVale( context, name, &pp, &len);
 	if( len == 0)
 		goto exit;

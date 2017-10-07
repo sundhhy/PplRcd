@@ -88,6 +88,8 @@ static void GhPic_vDraw( Glyph *self, dspContent_t *cnt, vArea_t *area)
 		area->x0, area->y0, ( area->x1 - area->x0), ( area->y1 - area->y0));
 	} else if( cnt->subType == SUBTYPE_BPIC) {
 		lcd->bkPicture( cnt->bkc, area->x0, area->y0, num);
+	}  else if( cnt->subType == SUBTYPE_ICON) {
+		lcd->icon(area->x0, area->y0, num, area->xn, area->yn, area->n);
 	}
 	else {
 		

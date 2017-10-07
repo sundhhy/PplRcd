@@ -362,7 +362,7 @@
             <uC99>0</uC99>
             <useXO>0</useXO>
             <VariousControls>
-              <MiscControls>--diag_suppress=1295;--diag_suppress=1</MiscControls>
+              <MiscControls>--diag_suppress=1295;--diag_suppress=1;--diag_suppress=177-D</MiscControls>
               <Define>USE_STDPERIPH_DRIVER, STM32F10X_HD, USE_STM3210B_EVAL,HSE_VALUE=8000000</Define>
               <Undefine></Undefine>
               <IncludePath>.\configs;.\BSP;E:\mylib\sdhLib\inc;.\device\dev_LCD\nokia_5110;..\PplRcd;.\drive;.\device;.\Glyph;.\Expression;.\Views;.\REEC;.\MVC;.\Views;..\PplRcd;.\model;.\sheet</IncludePath>
@@ -1077,6 +1077,46 @@
               <FileName>focus.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\HMI\focus.h</FilePath>
+            </File>
+            <File>
+              <FileName>news_select_HMI.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\HMI\news_select_HMI.c</FilePath>
+            </File>
+            <File>
+              <FileName>news_select_HMI.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\HMI\news_select_HMI.h</FilePath>
+            </File>
+            <File>
+              <FileName>News_Alarm_HMI.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\HMI\News_Alarm_HMI.h</FilePath>
+            </File>
+            <File>
+              <FileName>News_Alarm_HMI.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\HMI\News_Alarm_HMI.c</FilePath>
+            </File>
+            <File>
+              <FileName>News_Power_down_HMI.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\HMI\News_Power_down_HMI.h</FilePath>
+            </File>
+            <File>
+              <FileName>News_Power_down_HMI.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\HMI\News_Power_down_HMI.c</FilePath>
+            </File>
+            <File>
+              <FileName>History_HMI.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\HMI\History_HMI.h</FilePath>
+            </File>
+            <File>
+              <FileName>History_HMI.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\HMI\History_HMI.c</FilePath>
             </File>
           </Files>
         </Group>

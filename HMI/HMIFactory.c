@@ -72,6 +72,18 @@ HMI *CreateHMI( int hmiType)
 		case HMI_RLT_TREND:
 			p_hmi = SUPER_PTR(Get_RLT_trendHMI(), HMI);
 			break;
+		case HMI_NWS:
+			p_hmi = SUPER_PTR(Get_NewSlct_HMI(), HMI);
+			break;
+		case HMI_NEWS_ALARM:
+			p_hmi = SUPER_PTR(Get_News_Alarm_HMI(), HMI);
+			break;
+		case HMI_NEWS_POWER_DOWN:
+			p_hmi = SUPER_PTR(Get_PwrDn_HMI(), HMI);
+			break;
+		case HMI_HISTORY:
+			p_hmi = SUPER_PTR(Get_History_HMI(), HMI);
+			break;
 		default:
 			break;
 	}

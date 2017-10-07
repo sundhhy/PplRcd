@@ -29,6 +29,7 @@ cg	:	columnGap 列间距
 ls	:	lineSpacing	行间距
 bx/by : 图像在x/y轴上的长度
 vx0,vy0:	在屏幕上的起始坐标
+grap: 		矩形中心与边框的间距
 m		: 背景图片编号
 mdl : 要绑定的模型的种类
 aux:	与模型相关的参数
@@ -171,9 +172,27 @@ int Set_shtAreaAtt( char *p_att, sheet *p_sht)
 	{
 		p_sht->area.x0 = atoi( tmpbuf);
 	}
+	if( GetKeyVal( p_att, "vx1", tmpbuf, 4))
+	{
+		p_sht->area.x1 = atoi( tmpbuf);
+	}
 	if( GetKeyVal( p_att, "vy0", tmpbuf, 4))
 	{
 		p_sht->area.y0 = atoi( tmpbuf);
+	}
+	if( GetKeyVal( p_att, "vy1", tmpbuf, 4))
+	{
+		p_sht->area.y1 = atoi( tmpbuf);
+	}
+	
+	if( GetKeyVal( p_att, "grap", tmpbuf, 4))
+	{
+		p_sht->area.grap = atoi( tmpbuf);
+		
+	}
+	else
+	{
+		p_sht->area.grap  = 0;
 	}
 	
 	if( GetKeyVal( p_att, "cg", tmpbuf, 4))
@@ -185,6 +204,8 @@ int Set_shtAreaAtt( char *p_att, sheet *p_sht)
 	{
 		p_sht->subAtt.subColGrap = 0;
 	}
+	
+	
 	if( GetKeyVal( p_att, "rg", tmpbuf, 4))
 	{
 		p_sht->subAtt.subRowGrap  = atoi( tmpbuf);
@@ -212,6 +233,30 @@ int Set_shtAreaAtt( char *p_att, sheet *p_sht)
 		ret |= SET_ATT_BSIZEFAIL;
 	}
 	
+	if( GetKeyVal( p_att, "xn", tmpbuf, 4))
+	{
+		p_sht->area.xn = atoi( tmpbuf);
+	}
+	else
+	{
+		p_sht->area.xn = 0;
+	}
+	if( GetKeyVal( p_att, "yn", tmpbuf, 4))
+	{
+		p_sht->area.yn = atoi( tmpbuf);
+	}
+	else
+	{
+		p_sht->area.yn = 0;
+	}
+	if( GetKeyVal( p_att, "n", tmpbuf, 4))
+	{
+		p_sht->area.n = atoi( tmpbuf);
+	}
+	else
+	{
+		p_sht->area.n = 0;
+	}
 	
 	return ret;
 }

@@ -39,7 +39,7 @@ HMI *g_p_mainHmi;
 //------------------------------------------------------------------------------
 // const defines
 //------------------------------------------------------------------------------
-
+#define MAINHMI_BKPICNUM		"11"
 #define	MAINHMI_TITLE		"×ÜÃ²»­Ãæ"
 
 static ro_char MAIN_hmi_code_bkPic[] =  {"<bpic vx0=0 vy0=0 m=0 >20</>" };
@@ -195,8 +195,8 @@ static int	Init_mainHmi( HMI *self, void *arg)
 
 	//³õÊ¼»¯±³¾°Í¼Æ¬
 	p_exp = ExpCreate( "pic");
-	cthis->p_bkg = Sheet_alloc( p_shtctl);
-	p_exp->inptSht( p_exp, (void *)MAIN_hmi_code_bkPic, cthis->p_bkg) ;
+//	cthis->p_bkg = Sheet_alloc( p_shtctl);
+//	p_exp->inptSht( p_exp, (void *)MAIN_hmi_code_bkPic, cthis->p_bkg) ;
 	
 	
 	
@@ -298,10 +298,10 @@ static void MainHmiHide( HMI *self )
 	
 
 	
-	Sheet_updown( g_p_ico_trend, -1);
-	Sheet_updown( g_p_ico_digital, -1);
-	Sheet_updown( g_p_ico_bar, -1);
-	Sheet_updown( g_p_ico_memu, -1);
+	Sheet_updown(g_p_ico_trend, -1);
+	Sheet_updown(g_p_ico_digital, -1);
+	Sheet_updown(g_p_ico_bar, -1);
+	Sheet_updown(g_p_ico_memu, -1);
 	for( i = 0; i < NUM_CHANNEL; i++) {
 		
 		Sheet_updown(g_arr_p_chnAlarm[i], -1);
@@ -316,10 +316,10 @@ static void MainHmiHide( HMI *self )
 //		
 //	}
 //	Sheet_updown(  p_sheets[0][0], -1);
-	Sheet_updown( g_p_shtTime, -1);
-	Sheet_updown( g_p_sht_title, -1);
-	Sheet_updown( cthis->p_bkg, -1);
-	self->clear_focus( self, self->p_fcuu->focus_row, self->p_fcuu->focus_col);
+	Sheet_updown(g_p_shtTime, -1);
+	Sheet_updown(g_p_sht_title, -1);
+	Sheet_updown(g_p_sht_bkpic, -1);
+	self->clear_focus(self, self->p_fcuu->focus_row, self->p_fcuu->focus_col);
 	Focus_free(self->p_fcuu);
 	
 }	
@@ -330,13 +330,14 @@ static void MaininitSheet( HMI *self )
 	int i,  h = 0;;
 	
 	h = 0;
+	g_p_sht_bkpic->cnt.data = MAINHMI_BKPICNUM;
 
 	g_p_sht_title->cnt.data = MAINHMI_TITLE;
 	g_p_sht_title->cnt.len = strlen(MAINHMI_TITLE);
 	
-	Sheet_updown( cthis->p_bkg, h++);
-	Sheet_updown( g_p_sht_title, h++);
-	Sheet_updown( g_p_shtTime, h++);
+	Sheet_updown(g_p_sht_bkpic, h++);
+	Sheet_updown(g_p_sht_title, h++);
+	Sheet_updown(g_p_shtTime, h++);
 	for( i = 0; i < NUM_CHANNEL; i++) {
 		Sheet_updown(g_arr_p_chnData[i], h++);
 		Sheet_updown(g_arr_p_chnUtil[i], h++);
@@ -351,10 +352,10 @@ static void MaininitSheet( HMI *self )
 //		}
 //		
 //	}
-	Sheet_updown( g_p_ico_memu, h++);
-	Sheet_updown( g_p_ico_bar, h++);
-	Sheet_updown( g_p_ico_digital, h++);
-	Sheet_updown( g_p_ico_trend, h++);
+	Sheet_updown(g_p_ico_memu, h++);
+	Sheet_updown(g_p_ico_bar, h++);
+	Sheet_updown(g_p_ico_digital, h++);
+	Sheet_updown(g_p_ico_trend, h++);
 	
 	
 //	g_p_shtTime->cnt.bkc = p_sheets[0][0]->cnt.bkc;
@@ -374,7 +375,7 @@ static void	MainHmiShow( HMI *self )
 //	p_lcd->Clear( mainHmiAtt.bkc);
 //	MainHmi_Init_chnShet();
 	
-	Sheet_refresh( cthis->p_bkg);
+	Sheet_refresh(g_p_sht_bkpic);
 //	Sheet_refresh( cthis->p_title);
 //	self->show_focus( self, 0, 0);
 }

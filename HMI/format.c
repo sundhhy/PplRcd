@@ -73,7 +73,7 @@ int FormatSheet( const hmiAtt_t *p_hmiAtt, video_t *p_v, sheet **pp_shts)
 	
 	int	crdn = 0;
 	int	crdny = 0;
-
+	
 
 	if( p_hmiAtt->numRow > NUMROW_MAX)
 		goto err;
@@ -212,7 +212,7 @@ void FormatSheetSub( sheet *p_sht)
 	hmiAtt_t att;
 	short i = 0, j = 0;
 
-	if( p_sht == NULL)
+	if( p_sht == NULL || p_sht->pp_sub == NULL)
 		return;
 	
 	v.vxsize = p_sht->area.x1 - p_sht->area.x0 - p_sht->area.offset_x * 2;

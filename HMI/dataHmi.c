@@ -17,9 +17,6 @@
 // const defines
 //------------------------------------------------------------------------------
 
-#define	DATAHMI_TITLE	"ÊýÏÔ»­Ãæ"
-
-#define BARHMI_BK_PIC				0		//±³¾°Í¼Æ¬±àºÅ
 //------------------------------------------------------------------------------
 // module global vars
 //------------------------------------------------------------------------------
@@ -40,6 +37,9 @@ HMI *g_p_dataHmi;
 //------------------------------------------------------------------------------
 // const defines
 //------------------------------------------------------------------------------
+#define		DATAHMI_BKPICNUM		"13"
+
+#define		DATAHMI_TITLE	"ÊýÏÔ»­Ãæ"
 
 static const char datahmi_code_bkPic[] =  {"<bpic vx0=0 vy0=0 m=0 >21</>" };
 static const char datahmi_code_data[] = { "<text f=32 m=0 aux=0>100</>" };
@@ -137,8 +137,7 @@ static int	Init_dataHMI( HMI *self, void *arg)
 	
 	//³õÊ¼»¯±³¾°Í¼Æ¬
 	p_exp = ExpCreate( "pic");
-	cthis->p_bkg = Sheet_alloc( p_shtctl);
-	p_exp->inptSht( p_exp, (void *)datahmi_code_bkPic, cthis->p_bkg) ;
+	
 	
 //	Bulid_dataSheet(cthis);
 
@@ -157,12 +156,14 @@ static void DataHmi_InitSheet( HMI *self )
 	dataHMI			*cthis = SUB_PTR( self, HMI, dataHMI);
 	int i,  h = 0;
 
+	g_p_sht_bkpic->cnt.data = DATAHMI_BKPICNUM;
+
 	g_p_sht_title->cnt.data = DATAHMI_TITLE;
 	g_p_sht_title->cnt.len = strlen(DATAHMI_TITLE);
 	
-	Sheet_updown( cthis->p_bkg, h++);
-	Sheet_updown( g_p_sht_title, h++);
-	Sheet_updown( g_p_shtTime, h++);
+	Sheet_updown(g_p_sht_bkpic, h++);
+	Sheet_updown(g_p_sht_title, h++);
+	Sheet_updown(g_p_shtTime, h++);
 	for( i = 0; i < BARHMI_NUM_BARS; i++) {
 		Sheet_updown(g_arr_p_chnData[i], h++);
 		Sheet_updown(g_arr_p_chnUtil[i], h++);
@@ -187,9 +188,9 @@ static void DataHmi_HideSheet( HMI *self )
 		Sheet_updown(g_arr_p_chnUtil[i], -1);
 		Sheet_updown(g_arr_p_chnAlarm[i], -1);
 	}
-	Sheet_updown( g_p_shtTime, -1);
-	Sheet_updown( g_p_sht_title, -1);
-	Sheet_updown( cthis->p_bkg, -1);
+	Sheet_updown(g_p_shtTime, -1);
+	Sheet_updown(g_p_sht_title, -1);
+	Sheet_updown(g_p_sht_bkpic, -1);
 //	self->clear_focus(self, 0, 0);
 }	
 
@@ -204,7 +205,7 @@ static void	DataHmi_Show( HMI *self )
 	
 	cthis->flags = 1;
 //	DataHmi_update( cthis);
-	Sheet_refresh( cthis->p_bkg);
+	Sheet_refresh(g_p_sht_bkpic);
 //	self->show_focus( self, 0, 0);
 }
 
