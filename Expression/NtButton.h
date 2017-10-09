@@ -13,5 +13,4 @@ CLASS( NtButton)
 
 
 NtButton *GetNtButton(void);
-
 #endif

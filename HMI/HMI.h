@@ -34,6 +34,13 @@
 #define HMIKEY_ENTER		"enter"
 #define HMIKEY_ESC		"esc"
 
+
+#define	HMI_FLAG_HIDE	0
+#define	HMI_FLAG_SHOW	1
+
+
+#define IS_HMI_HIDE(flag)	((flag&1) == 0)
+#define IS_HMI_KEYHANDLE(flag)	((flag&2))
  //------------------------------------------------------------------------------
 // typedef
 //------------------------------------------------------------------------------
@@ -53,8 +60,8 @@ ABS_CLASS(HMI)
 	HMI*			next;
 	
 	focus_user_t	*p_fcuu;
-	
-	uint8_t			arg[4];		//切换屏幕时，用于屏幕间传递一些参数
+	uint8_t			flag;
+	uint8_t			arg[3];		//切换屏幕时，用于屏幕间传递一些参数
 	
 	
 	//显示静态画面
@@ -92,10 +99,12 @@ extern const Except_T Hmi_Failed;
 //extern  ro_char str_endRow[];
 //extern	ro_char str_endCol[];
 extern HMI *g_p_curHmi;
-extern uint8_t	hmi_buf[6][244];
+extern char	*p_hmi_buf;
 //------------------------------------------------------------------------------
 // function prototypes
 //------------------------------------------------------------------------------
 int Is_rowEnd( const char *str);
 int Is_colEnd( const char *str);
+extern void Set_flag_show(uint8_t	*p_flag, int val);
+extern void Set_flag_keyhandle(uint8_t	*p_flag, int val);
 #endif

@@ -62,6 +62,8 @@
 ".\objects\news_alarm_hmi.o"
 ".\objects\news_power_down_hmi.o"
 ".\objects\history_hmi.o"
+".\objects\accumulate_hmi .o"
+".\objects\setup_hmi.o"
 ".\objects\model.o"
 ".\objects\modelfactory.o"
 ".\objects\modeltime.o"

@@ -7,4 +7,6 @@
 
 Expr *ExpCreate( char *type);
 
+extern dspContent_t	*Button_Get_subcnt(sheet *p_bu);
+
 #endif

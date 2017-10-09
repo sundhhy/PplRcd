@@ -1,4 +1,5 @@
 #include "HMI.h"
+#include "commHMI.h"
 #include <string.h>
 //提供 按键，事件，消息，窗口，报警，时间，复选框的图层
 //这些图层可能会被其他界面所使用
@@ -17,12 +18,12 @@ const Except_T Hmi_Failed = { "HMI Failed" };
 // module global vars
 //------------------------------------------------------------------------------
 
-//uint8_t	hmi_buf[6][244];
 	
 //------------------------------------------------------------------------------
 // global function prototypes
 //------------------------------------------------------------------------------
 HMI *g_p_curHmi;
+char	*p_hmi_buf;
 //============================================================================//
 //            P R I V A T E   D E F I N I T I O N S                           //
 //============================================================================//
@@ -51,6 +52,8 @@ static void	SwitchBack( HMI *self);
 static void HitHandle( HMI *self, char *s_key);
 static void LngpshHandle( HMI *self, char *s_key);
 static void DHitHandle( HMI *self, char *s_key);
+static void ConposeKeyHandle(HMI *self, char *s_key1, char *s_key2);
+
 void	Init_focus(HMI *self);
 void	Clear_focus(HMI *self, uint8_t fouse_row, uint8_t fouse_col);
 void	Show_focus( HMI *self, uint8_t fouse_row, uint8_t fouse_col);
@@ -74,6 +77,21 @@ void	Show_focus( HMI *self, uint8_t fouse_row, uint8_t fouse_col);
 //	
 //}
 
+
+void Set_flag_show(uint8_t	*p_flag, int val)
+{
+	val &= 1;
+	*p_flag &= 0xfe;
+	*p_flag |= val;
+}
+
+void Set_flag_keyhandle(uint8_t	*p_flag, int val)
+{
+	val &= 2;
+	*p_flag &= 0xfd;
+	*p_flag |= val;
+}
+
 ABS_CTOR( HMI)
 FUNCTION_SETTING( show, HmiShow);
 FUNCTION_SETTING( switchHMI, SwitchHMI);
@@ -81,6 +99,8 @@ FUNCTION_SETTING( switchBack, SwitchBack);
 FUNCTION_SETTING( hitHandle, HitHandle);
 FUNCTION_SETTING( longpushHandle, LngpshHandle);
 FUNCTION_SETTING( dhitHandle, DHitHandle);
+FUNCTION_SETTING( conposeKeyHandle, ConposeKeyHandle);
+
 
 FUNCTION_SETTING( init_focus, Init_focus);
 FUNCTION_SETTING( clear_focus, Clear_focus);
@@ -111,9 +131,11 @@ static void	SwitchHMI( HMI *self, HMI *p_hmi)
 		g_p_lastHmi = g_p_curHmi;
 		g_p_curHmi = p_hmi;
 	}
+	Set_flag_show(&self->flag, 0);
 	self->hide(self);
 	p_hmi->initSheet( p_hmi);
 	p_hmi->show( p_hmi);
+	Set_flag_show(&p_hmi->flag, 1);
 	
 }
 
@@ -122,9 +144,11 @@ static void	SwitchBack( HMI *self)
 	HMI *nowHmi = g_p_lastHmi;
 	g_p_lastHmi = g_p_curHmi;
 	g_p_curHmi = nowHmi;
+	Set_flag_show(&self->flag, 0);
 	self->hide( self);
 	nowHmi->initSheet( nowHmi);
 	nowHmi->show( nowHmi);
+	Set_flag_show(&nowHmi->flag, 1);
 	
 }
 
@@ -141,6 +165,21 @@ static void LngpshHandle( HMI *self, char *s_key)
 
 static void DHitHandle( HMI *self, char *s_key)
 {
+	
+}
+
+static void ConposeKeyHandle(HMI *self, char *s_key1, char *s_key2)
+{
+	if( !strcmp( s_key1, HMIKEY_LEFT) && !strcmp( s_key2, HMIKEY_RIGHT))
+	{
+
+		
+		self->switchHMI(self, g_p_Setup_HMI);
+	} else if( !strcmp( s_key1, HMIKEY_RIGHT) && !strcmp( s_key2, HMIKEY_LEFT)) {
+		
+		self->switchHMI(self, g_p_Setup_HMI);
+	}
+	
 	
 }
 

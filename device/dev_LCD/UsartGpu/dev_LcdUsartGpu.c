@@ -404,7 +404,7 @@ static void GpuDone( void)
 	}
 	//todo:需要增加错误处理
 	err:
-	osDelay(200);
+//	osDelay(200);
 	cmd_count = 0;
 	Sem_post(&gpu_sem);
 #endif

@@ -1118,6 +1118,26 @@
               <FileType>1</FileType>
               <FilePath>.\HMI\History_HMI.c</FilePath>
             </File>
+            <File>
+              <FileName>Accumulate_HMI .c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\HMI\Accumulate_HMI .c</FilePath>
+            </File>
+            <File>
+              <FileName>Accumulate_HMI.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\HMI\Accumulate_HMI.h</FilePath>
+            </File>
+            <File>
+              <FileName>Setup_HMI.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\HMI\Setup_HMI.c</FilePath>
+            </File>
+            <File>
+              <FileName>Setup_HMI.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\HMI\Setup_HMI.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

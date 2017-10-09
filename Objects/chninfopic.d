@@ -40,6 +40,8 @@
 .\objects\chninfopic.o: HMI\News_Alarm_HMI.h
 .\objects\chninfopic.o: HMI\News_Power_down_HMI.h
 .\objects\chninfopic.o: HMI\History_HMI.h
+.\objects\chninfopic.o: HMI\Accumulate_HMI.h
+.\objects\chninfopic.o: HMI\Setup_HMI.h
 .\objects\chninfopic.o: .\Expression\ExpFactory.h
 .\objects\chninfopic.o: .\Expression\expression.h
 .\objects\chninfopic.o: .\Views\Composition.h

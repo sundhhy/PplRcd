@@ -99,6 +99,8 @@ static void GhRec_vDraw( Glyph *self, dspContent_t *cnt, vArea_t *area)
 	I_dev_lcd *lcd;
 	uint8_t	c = cnt->colour;
 	uint8_t	bkc = cnt->bkc;
+	uint8_t	grap_x = 0;
+	uint8_t	grap_y = 0;
 	Dev_open( LCD_DEVID, (void *)&lcd);
 	
 	if(GP_CKECK_EFF( cnt->effects , EFF_FOCUS))
@@ -115,9 +117,17 @@ static void GhRec_vDraw( Glyph *self, dspContent_t *cnt, vArea_t *area)
 	{
 		lcd->Box(area->x0, area->y0, area->x1, area->y1, EMPTY_RECTANGLE, c);
 	}
-	else if(area->grap) {
+	else if(area->grap || area->offset_x || area->offset_y) {
 		lcd->Box(area->x0, area->y0, area->x1, area->y1, EMPTY_RECTANGLE, c);
-		lcd->Box(area->x0 + area->grap, area->y0 + area->grap, area->x1 - area->grap, area->y1 - area->grap, FILLED_RECTANGLE, bkc);
+		if(area->grap) {
+			grap_x = area->grap;
+			grap_y = area->grap;
+		} else {
+			grap_x = area->offset_x;
+			grap_y = area->offset_y;
+			
+		}
+		lcd->Box(area->x0 + grap_x, area->y0 + grap_y, area->x1 - grap_x, area->y1 - grap_y, FILLED_RECTANGLE, bkc);
 	} else {
 		lcd->Box(area->x0, area->y0, area->x1, area->y1, FILLED_RECTANGLE, c);
 	}

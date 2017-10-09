@@ -52,7 +52,7 @@ const char win_pic1_Code[] = { "<pic vx0=0 vy0=0 >5</>" };
 const char win_pic2_Code[] = { "<cpic vx0=0 vy0=0 >6</>" };
 
 static HMI **arr_pp_targetHmi[NUM_BTNROW][NUM_BTNCOL] = { { &g_p_mainHmi, &g_p_barGhHmi}, {&g_p_dataHmi, &g_p_RLT_trendHmi}, \
-	{&g_p_NewSlct_HMI, &g_p_History_HMI}, {&g_p_NewSlct_HMI, NULL}};
+	{&g_p_NewSlct_HMI, &g_p_RLT_trendHmi}, {&g_p_NewSlct_HMI, NULL}};
 
 //static const hmiAtt_t	menuHmiAtt = { 4,4, COLOUR_GRAY, NUM_BTNROW, NUM_BTNCOL};
 //static sheet *arr_p_menu_show[ NUM_BTNROW][NUM_BTNCOL] =  {NULL};
@@ -313,10 +313,14 @@ static void	MenuHitHandle( HMI *self, char *s)
 	if( !strcmp( s, HMIKEY_ENTER))
 	{
 		pp_trgtHmi = arr_pp_targetHmi[cthis->focusRow][cthis->focusCol];
-		if(cthis->focusRow == 2 && cthis->focusCol == 0) {
+		
 			
 			(*pp_trgtHmi)->arg[0] = 0;
-		} else if(cthis->focusRow == 3 && cthis->focusCol == 0){
+		if(cthis->focusRow == 3 && cthis->focusCol == 0){
+			(*pp_trgtHmi)->arg[0] = 1;
+			
+		}
+		if(cthis->focusRow == 2 && cthis->focusCol == 1){
 			(*pp_trgtHmi)->arg[0] = 1;
 			
 		}

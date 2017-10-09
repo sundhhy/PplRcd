@@ -194,7 +194,7 @@ int main (void) {
 #else
 #	if TDD_SHEET == 1
 	p_mainHmi->show( p_mainHmi);
-	
+	Set_flag_show(&p_mainHmi->flag, 1); 
 #	elif TDD_KEYBOARD == 1
 	mytxt = ( Glyph *)Get_GhTxt();
 	Dev_open( LCD_DEVID, (void *)&lcd);
@@ -286,14 +286,17 @@ int main (void) {
 	
 	while(1)
 	{
-		osDelay(250);
+		
+		
 		if(count == 4) {
 			count = 0;
 			p_mdl_test->getMdlData( p_mdl_test, 10000, NULL);
 			mTime->getMdlData( mTime, 0, NULL);
 		}
-		count ++;
 		LCD_Run();
+		osDelay(250);
+		count ++;
+		
 	}
 	
 #	elif TDD_KEYBOARD == 1

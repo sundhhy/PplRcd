@@ -197,23 +197,25 @@ int Set_shtAreaAtt( char *p_att, sheet *p_sht)
 	
 	if( GetKeyVal( p_att, "cg", tmpbuf, 4))
 	{
-		p_sht->subAtt.subColGrap = atoi( tmpbuf);
-		
+//		p_sht->subAtt.subColGrap = atoi( tmpbuf);
+		p_sht->area.offset_x = atoi( tmpbuf);
 	}
 	else
 	{
-		p_sht->subAtt.subColGrap = 0;
+//		p_sht->subAtt.subColGrap = 0;
+		p_sht->area.offset_x = 0;
 	}
 	
 	
 	if( GetKeyVal( p_att, "rg", tmpbuf, 4))
 	{
-		p_sht->subAtt.subRowGrap  = atoi( tmpbuf);
-		
+//		p_sht->subAtt.subRowGrap  = atoi( tmpbuf);
+		p_sht->area.offset_y = atoi( tmpbuf);
 	}
 	else
 	{
-		p_sht->subAtt.subRowGrap = 0;
+//		p_sht->subAtt.subRowGrap = 0;
+		p_sht->area.offset_y = 0;
 	}
 	
 	if( GetKeyVal( p_att, "bx", tmpbuf, 4))

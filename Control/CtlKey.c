@@ -87,63 +87,72 @@ static int KeyUpdate( keyObservice *self,  uint8_t num, keyMsg_t arr_msg[])
 //	CtlKey *cthis = SUB_PTR(self, keyObservice, CtlKey);
 	
 	int i = 0;
-	char  *p;
+	char  *p[2];
 	uint8_t eventCode;
 	
 	
 	if( g_p_curHmi == NULL)
-		return RET_OK;
+		goto exit;
+	
+	//最多支持2个组合按键
+	if(num > 2)
+		num = 2;
 	
 	for( i = 0; i < num; i++)
 	{
-		p = NULL;
+		p[i] = NULL;
 		switch( arr_msg[i].keyCode)
 		{
 			case KEYCODE_RIGHT:
-				p = HMIKEY_RIGHT;
+				p[i] = HMIKEY_RIGHT;
 				break;	
 			case KEYCODE_LEFT:
-				p = HMIKEY_LEFT;
+				p[i] = HMIKEY_LEFT;
 				break;
 			case KEYCODE_UP:
-				p = HMIKEY_UP;
+				p[i] = HMIKEY_UP;
 				break;
 			
 			case KEYCODE_DOWN:
-				p = HMIKEY_DOWN;
+				p[i] = HMIKEY_DOWN;
 				break;
 			
 			case KEYCODE_ENTER:
-				p = HMIKEY_ENTER;
+				p[i] = HMIKEY_ENTER;
 				break;
 			case KEYCODE_ESC:
-				p = HMIKEY_ESC;
+				p[i] = HMIKEY_ESC;
 				break;
 			default:
-				p = NULL;
+				p[i] = NULL;
 				break;
 			
 		}
-		if( p == NULL)
-			continue;
-		
-		eventCode = arr_msg[i].eventCode & ( ~KEYEVENT_UP);
-		switch( eventCode)
-		{
-			case KEYEVENT_HIT:
-				g_p_curHmi->hitHandle( g_p_curHmi, p);
-				break;	
-			case KEYEVENT_DHIT:
-				g_p_curHmi->dhitHandle( g_p_curHmi, p);
-				break;
-			case KEYEVENT_LPUSH:
-				g_p_curHmi->longpushHandle( g_p_curHmi, p);
-				break;
-		}
-		
+	}
+	
+	if(p[0] == NULL)
+		goto exit;
+	if(num == 2) {
+		g_p_curHmi->conposeKeyHandle(g_p_curHmi, p[0], p[1]);
+		goto exit;
+	}
+	
+	eventCode = arr_msg[0].eventCode & ( ~KEYEVENT_UP);
+	switch( eventCode)
+	{
+		case KEYEVENT_HIT:
+			g_p_curHmi->hitHandle( g_p_curHmi, p[0]);
+			break;	
+		case KEYEVENT_DHIT:
+			g_p_curHmi->dhitHandle( g_p_curHmi, p[0]);
+			break;
+		case KEYEVENT_LPUSH:
+			g_p_curHmi->longpushHandle( g_p_curHmi, p[0]);
+			break;
 		
 	}
 	
-	
+		
+	exit:	
 	return RET_OK;
 }

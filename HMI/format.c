@@ -145,16 +145,8 @@ int FormatSheet( const hmiAtt_t *p_hmiAtt, video_t *p_v, sheet **pp_shts)
 			sumXsize = sumXsize - p_shtCol->bxsize -  p_hmiAtt->colGrap;
 			
 			crdn +=  p_shtCol->bxsize +  p_hmiAtt->colGrap + empty;
-			freeXsize  = p_v->vxsize - crdn;
-			
-			
-			
-			
-				
+			freeXsize  = p_v->vxsize - crdn;		
 		}
-		
-		
-		
 	}
 	
 	//º∆À„vy

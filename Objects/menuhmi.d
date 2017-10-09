@@ -39,6 +39,8 @@
 .\objects\menuhmi.o: HMI\News_Alarm_HMI.h
 .\objects\menuhmi.o: HMI\News_Power_down_HMI.h
 .\objects\menuhmi.o: HMI\History_HMI.h
+.\objects\menuhmi.o: HMI\Accumulate_HMI.h
+.\objects\menuhmi.o: HMI\Setup_HMI.h
 .\objects\menuhmi.o: .\Expression\ExpFactory.h
 .\objects\menuhmi.o: .\Expression\expression.h
 .\objects\menuhmi.o: .\Views\Composition.h

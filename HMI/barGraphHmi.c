@@ -150,7 +150,7 @@ static int	Init_barGhHMI( HMI *self, void *arg)
 	//初始化柱形图
 	Init_bar(cthis);
 	
-	cthis->flag = 0;
+	self->flag = 0;
 
 	
 	
@@ -170,9 +170,9 @@ static void BarHmi_InitSheet( HMI *self )
 	p_exp = ExpCreate( "pic");
 	p_exp->inptSht( p_exp, (void *)barhmi_code_clean, g_p_cpic) ;
 	
-	cthis->flag = 1;
-	BarHmi_Init_chnSht();
-	cthis->flag = 0;
+
+	
+
 
 	g_p_sht_bkpic->cnt.data = BARHMI_BKPICNUM;
 
@@ -196,7 +196,7 @@ static void BarHmi_InitSheet( HMI *self )
 	Sheet_updown(g_p_ico_digital, h++);
 	Sheet_updown(g_p_ico_trend, h++);
 	
-	
+	BarHmi_Init_chnSht();
 	//初始化焦点
 	self->init_focus(self);
 }
@@ -209,7 +209,6 @@ static void BarHmi_HideSheet( HMI *self )
 	
 //	self->clear_focus(self, cthis->focusRow, cthis->focusCol);
 	
-	cthis->flag = 0;
 	
 	Sheet_updown(g_p_ico_trend, -1);
 	Sheet_updown(g_p_ico_digital, -1);
@@ -245,7 +244,6 @@ static void	BarHmi_Show( HMI *self )
 //	Cal_bar( cthis);
 	
 	Sheet_refresh(g_p_sht_bkpic);
-	cthis->flag = 1;
 //	self->show_focus( self, 0, 0);
 }
 
@@ -267,7 +265,7 @@ static void	BarHmi_HitHandle( HMI *self, char *s)
 	uint8_t		focusCol = self->p_fcuu->focus_col;
 	char		chgFouse = 0;
 	
-
+	Set_flag_keyhandle(&self->flag, 1);
 	if( !strcmp( s, HMIKEY_UP) )
 	{
 
@@ -313,6 +311,8 @@ static void	BarHmi_HitHandle( HMI *self, char *s)
 	{
 		self->switchBack(self);
 	}
+	
+	Set_flag_keyhandle(&self->flag, 0);
 	
 }
 
@@ -523,11 +523,9 @@ static int BarHmi_Data_update(void *p_data, void *p_mdl)
 	uint32_t	prcn = 0;
 	uint32_t	height = 0;
 	
-	if(self->flag == 0)
+
+	if(IS_HMI_KEYHANDLE(g_p_barGhHmi->flag))
 		return 0;
-	
-//		return 0;
-	
 	
 	prcn = p_sht->p_mdl->getMdlData( p_sht->p_mdl, p_sht->cnt.mdl_aux,  &j);
 	height = max_height * prcn / 1000;
@@ -554,6 +552,8 @@ static int BarHmi_Data_update(void *p_data, void *p_mdl)
 	//先清除之前的柱形图
 	if(Sheet_is_hide(p_sht))
 		return 0;
+	if(IS_HMI_HIDE(g_p_barGhHmi->flag))
+		return 0;
 	g_p_cpic->p_gp->vdraw(g_p_cpic->p_gp, &g_p_cpic->cnt, &g_p_cpic->area);
 	//显示柱形图和数值
 	Sheet_slide(p_sht);
@@ -573,22 +573,16 @@ static int BarHmi_Util_update(void *p_data, void *p_mdl)
 	uint16_t utit_vy0 = 46;
 	uint16_t i = p_sht->id;
 	
-	
-	if(self->flag == 0)
+	if(IS_HMI_KEYHANDLE(g_p_barGhHmi->flag))
 		return 0;
-	
-		
-//	if(Sheet_is_hide(p_sht))
-//		return 0;
-	
-	
-	
 		
 	p_sht->cnt.data = p_sht->p_mdl->to_string( p_sht->p_mdl, p_sht->cnt.mdl_aux, NULL);
 	p_sht->cnt.len = strlen(p_sht->cnt.data);
 	p_sht->area.x0 = bar_vx0[i];
 	p_sht->area.y0 = utit_vy0;
 	if(Sheet_is_hide(p_sht))
+		return 0;
+	if(IS_HMI_HIDE(g_p_barGhHmi->flag))
 		return 0;
 	Sheet_slide( p_sht);
 	return 0;

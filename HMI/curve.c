@@ -55,6 +55,8 @@ void Curve_init(void)
 	Expr 			*p_exp ;
 	shtctl 			*p_shtctl = NULL;
 	
+	p_hmi_buf = g_curve[0].points;
+	
 	p_shtctl = GetShtctl();
 	p_exp = ExpCreate( "line");
 	p_sht_curve = Sheet_alloc( p_shtctl);

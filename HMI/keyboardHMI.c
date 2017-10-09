@@ -61,7 +61,7 @@ const char virKey_digitFocus_Code[] = { "<cpic vx0=0 vy0=0 >4</>" };
 
 const char edit_TxtCode[] = { "<text vx0=0 vy0=0 f=16 clr=white > </>" };
 const char edit_CursorCode[] = { "<box bkc=black ></>" };
-const char edit_NotifyCode[] = { "<bu clr=blue  vx0=270 vy0=0 cg=4 rg=4 ><text f=16 xali=r yali=r clr=red>小写</></>" };
+const char edit_NotifyCode[] = { "<bu clr=blue  vx0=270 vy0=0 rg=4 cg=4 ><text f=16 xali=r yali=r clr=red>小写</></>" };
 const char	notify_uppcase[] = "大写";
 const char	notify_lowercase[] = "小写";
 const char	notify_emptycase[] = "数字";
@@ -367,7 +367,7 @@ static void	KeyboardShow( HMI *self )
 	p_op->vkey_init( &actKeyBlk); 
 
 	if( cthis->p_shtInput != NULL)
-		Sheet_refresh(keyEdit.p_shtTxt);
+		Sheet_refresh(keyEdit.p_shtNotify);
 	CleanFocus( keyEdit.inputMethod, &actKeyBlk.vkenCenter);		
 	DrawFocus( 0, &actKeyBlk.vkenCenter);
 	

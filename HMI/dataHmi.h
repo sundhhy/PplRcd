@@ -26,14 +26,14 @@ CLASS( dataHMI)
 //	sheet  		*arr_p_sht_data[BARHMI_NUM_BARS];
 //	sheet  		**arr_p_sht_unit;
 //	sheet  		**arr_p_sht_alarm;
-	char		flags;
-	char 		none[3];
+//	char		flags;
+//	char 		none[3];
 	
 };
 //------------------------------------------------------------------------------
 // global variable declarations
 //------------------------------------------------------------------------------
-extern HMI *g_p_dataHmi;
+
 //------------------------------------------------------------------------------
 // function prototypes
 //------------------------------------------------------------------------------

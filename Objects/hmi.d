@@ -27,3 +27,5 @@
 .\objects\hmi.o: E:\mylib\sdhLib\inc\basis/assert.h
 .\objects\hmi.o: .\model\ModelTest.h
 .\objects\hmi.o: HMI\focus.h
+.\objects\hmi.o: HMI\commHMI.h
+.\objects\hmi.o: HMI\keyboardHMI.h

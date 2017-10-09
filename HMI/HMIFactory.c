@@ -84,6 +84,12 @@ HMI *CreateHMI( int hmiType)
 		case HMI_HISTORY:
 			p_hmi = SUPER_PTR(Get_History_HMI(), HMI);
 			break;
+		case HMI_ACCM:
+			p_hmi = SUPER_PTR(Get_Accm_HMI(), HMI);
+			break;
+		case HMI_SETUP:
+			p_hmi = SUPER_PTR(Get_Setup_HMI(), HMI);
+			break;
 		default:
 			break;
 	}

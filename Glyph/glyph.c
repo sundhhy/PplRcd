@@ -100,12 +100,12 @@ int Set_effects(dspContent_t *p_cnt, int eff, int val)
 uint8_t ColorInvert( uint8_t clr)
 {
 	
-//	if( clr == COLOUR_BLUE)
-//		return COLOUR_GREN;
-	if( clr == COLOUR_WHITE)
+	if( clr == COLOUR_BLUE)
+		return COLOUR_GREN;
+	else if( clr == COLOUR_GREN)
+		return COLOUR_BLUE;
+	else if( clr == COLOUR_WHITE)
 		return COLOUR_BLACK;
-	else if(clr == ERR_COLOUR)
-		return ERR_COLOUR;
 	else
 		return COLOUR_WHITE;
 }

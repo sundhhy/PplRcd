@@ -46,13 +46,15 @@ sheet  		*g_arr_p_check[NUM_CHANNEL]; 		//是否显示的指示图形
 #define		RLTHMI_BKPICNUM		"14"
 #define		RLTHMI_TITLE		"实时趋势"
 
+#define 	HISTORY_TITLE		"历史趋势"
+
 static const char RT_hmi_code_chninfo[] =  {"<cpic vx0=260 vy0=30 vx1=320 vy1=240>23</>" };
 
 
 static const char RT_hmi_code_div[] = { "<text vx0=8 vy0=36 f=16 m=0 clr=red>1</>" };
 
 static const char RT_hmi_code_data[] = { "<text f=16 vx0=285 m=0 aux=3>100</>" };
-static const char RLT_hmi_code_chnshow[] ={ "<icon vx0=265 vy0=62 xn=4 yn=1 n=0>22</>" };
+static const char RLT_hmi_code_chnshow[] ={ "<icon vx0=265 vy0=62 xn=4 yn=1 n=0>17</>" };
 #define  CHNSHOW_ROW_SPACE		32
 
 //------------------------------------------------------------------------------
@@ -186,7 +188,7 @@ static int	Init_RT_trendHMI( HMI *self, void *arg)
 //	self->init_focus(self);
 	
 	
-	cthis->flags = 0;
+	self->flag = 0;
 	return RET_OK;
 
 }
@@ -204,8 +206,12 @@ static void RT_trendHmi_InitSheet( HMI *self )
 	
 	g_p_sht_bkpic->cnt.data = RLTHMI_BKPICNUM;
 
-	g_p_sht_title->cnt.data = RLTHMI_TITLE;
-	g_p_sht_title->cnt.len = strlen(RLTHMI_TITLE);
+	if(self->arg[0] == 0) {
+		g_p_sht_title->cnt.data = RLTHMI_TITLE;
+	} else if(self->arg[0] == 1) {
+		g_p_sht_title->cnt.data = HISTORY_TITLE;
+	} 
+	g_p_sht_title->cnt.len = strlen(g_p_sht_title->cnt.data);
 
 	Sheet_updown(g_p_sht_bkpic, h++);
 	Sheet_updown(g_p_curve_bkg, h++);
@@ -230,7 +236,6 @@ static void RT_trendHmi_HideSheet( HMI *self )
 	
 	int i;
 	
-	cthis->flags = 0;
 	
 	for( i = RLTHMI_NUM_CURVE - 1; i >= 0; i--) {
 		Sheet_updown(g_arr_p_check[i], -1);
@@ -257,7 +262,7 @@ static void	RLT_init_focus(HMI *self)
 	int	col = 0; 
 	RLT_trendHMI *cthis = SUB_PTR(self, HMI, RLT_trendHMI);
 	
-	self->p_fcuu = Focus_alloc(1, RLTHMI_NUM_CURVE + 1);
+	self->p_fcuu = Focus_alloc(1, RLTHMI_NUM_CURVE + 2);
 	
 	Focus_Set_focus(self->p_fcuu, 0, 0);
 	
@@ -265,7 +270,7 @@ static void	RLT_init_focus(HMI *self)
 	for(col = 0; col < RLTHMI_NUM_CURVE; col ++) {
 		Focus_Set_sht(self->p_fcuu, 0, col + 1, g_arr_p_check[col]);
 	}		
-	
+	Focus_Set_sht(self->p_fcuu, 0, RLTHMI_NUM_CURVE+1, g_p_ico_memu);
 	
 }
 
@@ -327,7 +332,6 @@ static void	RT_trendHmi_Show( HMI *self )
 	self->dataVisual(self, NULL);
 	self->show_focus( self, 0, 0);
 	Flush_LCD();
-	cthis->flags = 1;
 //	
 }
 
@@ -342,7 +346,8 @@ static void	RT_trendHmi_HitHandle( HMI *self, char *s)
 	uint8_t		chn = 0;
 
 	
-	cthis->flags |= 2;
+//	cthis->flags |= 2;
+	Set_flag_keyhandle(&self->flag, 1);
 	if( !strcmp( s, HMIKEY_UP) )
 	{
 		Focus_move_left(self->p_fcuu);
@@ -411,8 +416,8 @@ static void	RT_trendHmi_HitHandle( HMI *self, char *s)
 		self->switchBack(self);
 	}
 	
-	cthis->flags &= ~2;
-	
+//	cthis->flags &= ~2;
+	Set_flag_keyhandle(&self->flag, 0);
 	
 }
 
@@ -486,12 +491,12 @@ static int RLT_trendHmi_MdlUpdata( Observer *self, void *p_srcMdl)
 	uint8_t			i = 0;
 	int				y = 0;
 	
-	//本界面不是当前显示界面，退出
-	if(cthis->flags == 0)
-		return RET_OK;
-	//按键处理中，退出
-	if(cthis->flags & 2)
-		return RET_OK;
+	
+	
+	
+		
+	if(IS_HMI_HIDE(g_p_RLT_trendHmi->flag))
+		return 0;
 	
 	cthis->count ++;
 	if(cthis->count < cthis->div)
@@ -523,7 +528,8 @@ static int RLT_trendHmi_MdlUpdata( Observer *self, void *p_srcMdl)
 		g_arr_p_chnData[i]->p_gp->vdraw(g_arr_p_chnData[i]->p_gp, &g_arr_p_chnData[i]->cnt, &g_arr_p_chnData[i]->area);
 		
 		Curve_add_point(arr_p_crv[i], y);
-		Curve_draw(arr_p_crv[i]);
+		if(IS_HMI_KEYHANDLE(g_p_RLT_trendHmi->flag) == 0)
+			Curve_draw(arr_p_crv[i]);
 	}
 	Flush_LCD();
 	

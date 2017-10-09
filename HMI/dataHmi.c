@@ -138,12 +138,12 @@ static int	Init_dataHMI( HMI *self, void *arg)
 	//³õÊ¼»¯±³¾°Í¼Æ¬
 	p_exp = ExpCreate( "pic");
 	
-	
+	self->flag = 0;
 //	Bulid_dataSheet(cthis);
 
 	//³õÊ¼»¯½¹µã
 //	self->init_focus(self);
-	cthis->flags = 0;
+//	cthis->flags = 0;
 	
 	return RET_OK;
 
@@ -182,7 +182,7 @@ static void DataHmi_HideSheet( HMI *self )
 	int i;
 	
 
-	cthis->flags = 0;
+//	cthis->flags = 0;
 	for( i = BARHMI_NUM_BARS - 1; i >= 0; i--) {
 		Sheet_updown(g_arr_p_chnData[i], -1);
 		Sheet_updown(g_arr_p_chnUtil[i], -1);
@@ -203,9 +203,10 @@ static void	DataHmi_Show( HMI *self )
 	dataHMI		*cthis = SUB_PTR( self, HMI, dataHMI);
 	g_p_curHmi = self;
 	
-	cthis->flags = 1;
+	
 //	DataHmi_update( cthis);
 	Sheet_refresh(g_p_sht_bkpic);
+//	cthis->flags = 1;
 //	self->show_focus( self, 0, 0);
 }
 
@@ -403,8 +404,7 @@ static int DataHmi_Data_update(void *p_data, void *p_mdl)
 	sheet			*p_sht = (sheet *)p_data;
 	
 		
-	if(Sheet_is_hide(p_sht))
-		return 0;
+	
 	
 	row = p_sht->id / 2;
 	col = p_sht->id % 2;
@@ -418,6 +418,10 @@ static int DataHmi_Data_update(void *p_data, void *p_mdl)
 	p_sht->area.x0 = right_x +  (col ) * box_sizex - space_to_right - sizex;
 	p_sht->area.y0 = up_y + row * box_sizey + space_to_up;
 	
+	if(Sheet_is_hide(p_sht))
+		return 0;
+	if(IS_HMI_HIDE(g_p_dataHmi->flag))
+		return 0;
 	Sheet_slide( p_sht);
 	return 0;
 	
@@ -444,8 +448,7 @@ static int DataHmi_Util_update(void *p_data, void *p_mdl)
 	sheet			*p_sht = (sheet *)p_data;
 	
 		
-	if(Sheet_is_hide(p_sht))
-		return 0;
+	
 	
 	row = p_sht->id / 2;
 	col = p_sht->id % 2;
@@ -459,6 +462,10 @@ static int DataHmi_Util_update(void *p_data, void *p_mdl)
 	p_sht->area.x0 = right_x +  (col ) * box_sizex - space_to_right - sizex;
 	p_sht->area.y0 = up_y  + (row + 1) * box_sizey  -( sizey + space_to_bottom);
 	
+	if(Sheet_is_hide(p_sht))
+		return 0;
+	if(IS_HMI_HIDE(g_p_dataHmi->flag))
+		return 0;
 	Sheet_slide( p_sht);
 	return 0;
 	
@@ -481,8 +488,7 @@ static int DataHmi_Alarm_update(void *p_data, void *p_mdl)
 	uint16_t 		sizey = 0;
 	sheet			*p_sht = (sheet *)p_data;
 		
-	if(Sheet_is_hide(p_sht))
-		return 0;
+	
 	
 	row = p_sht->id / 2;
 	col = p_sht->id % 2;
@@ -496,6 +502,10 @@ static int DataHmi_Alarm_update(void *p_data, void *p_mdl)
 	p_sht->area.x0 = (col ) * box_sizex + space_to_left;
 	p_sht->area.y0 =  up_y  + (row + 1) * box_sizey  -( sizey + space_to_bottom);
 	
+	if(Sheet_is_hide(p_sht))
+		return 0;
+	if(IS_HMI_HIDE(g_p_dataHmi->flag))
+		return 0;
 	Sheet_slide( p_sht);
 	return 0;
 	

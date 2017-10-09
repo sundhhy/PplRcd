@@ -30,10 +30,10 @@ CLASS( RLT_trendHMI)
 	
 	
 	
-	char			flags;
+//	char			flags;
 	uint8_t			div;
 				
-	char 			str_div[2];
+	char 			str_div[3];
 	
 	uint8_t			count;
 	uint8_t			chn_show_map;		//通道是否显示的位图

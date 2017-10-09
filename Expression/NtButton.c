@@ -58,6 +58,11 @@ NtButton *GetNtButton(void)
 	return signalNtButton;
 }
 
+dspContent_t	*Button_Get_subcnt(sheet *p_bu)
+{
+	return &p_bu->pp_sub[0]->cnt;
+}
+
 CTOR( NtButton)
 SUPER_CTOR( Expr);
 FUNCTION_SETTING( Expr.inptSht, BuInptSht);
@@ -99,14 +104,12 @@ static void * BuInptSht( Expr *self, void *context, sheet *p_sht)
 	
 	
 	//一个buton应该有:text
-	p_sht->pp_sub = malloc( sizeof( sheet *));
-	p_sht->subAtt.numSubRow = 1;
-	p_sht->subAtt.numSubCol = 1;
-	
-	
-	
-	
-	p_sht->pp_sub[0] = Sheet_alloc( p_shtctl);
+	if(p_sht->pp_sub == NULL) {
+		p_sht->pp_sub = malloc( sizeof( sheet *));
+		p_sht->subAtt.numSubRow = 1;
+		p_sht->subAtt.numSubCol = 1;	
+		p_sht->pp_sub[0] = Sheet_alloc( p_shtctl);
+	}
 	pnewPosition = RemoveHead( pnewPosition);
 	
 	
@@ -127,10 +130,10 @@ static void * BuInptSht( Expr *self, void *context, sheet *p_sht)
 	if( ret & SET_ATT_BSIZEFAIL) {
 		//按钮未指定自己的尺寸
 		//将子图层的尺寸汇总作为自己的尺寸
-		p_sht->bxsize = p_sht->pp_sub[0]->bxsize +  p_sht->subAtt.subColGrap + 6;
-		p_sht->bysize = p_sht->pp_sub[0]->bysize + p_sht->subAtt.subRowGrap + 6 ;
-		p_sht->area.offset_x = 3;
-		p_sht->area.offset_y = 3;
+		p_sht->bxsize = p_sht->pp_sub[0]->bxsize +  p_sht->area.offset_x * 2;
+		p_sht->bysize = p_sht->pp_sub[0]->bysize + p_sht->area.offset_y * 2;
+		p_sht->area.x1 = p_sht->area.x0 + p_sht->bxsize;
+		p_sht->area.y1 = p_sht->area.y0 + p_sht->bysize;
 		
 		
 	} else {

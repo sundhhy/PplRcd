@@ -27,12 +27,16 @@ sheet			*g_p_sht_bkpic;
 sheet			*g_p_sht_title;
 sheet			*g_p_shtTime;
 sheet			*g_p_cpic;
+sheet			*g_p_text;
+sheet			*g_p_boxlist;
+
 sheet			*g_p_ico_memu;
 sheet			*g_p_ico_bar;
 sheet			*g_p_ico_digital;
 sheet			*g_p_ico_trend;
 sheet			*g_p_ico_pgup;
 sheet			*g_p_ico_pgdn;
+sheet			*g_p_ico_search;
 sheet			*g_p_ico_eraseTool;
 
 sheet			*g_arr_p_chnData[NUM_CHANNEL];
@@ -68,19 +72,18 @@ static ro_char code_title[] =  {"<text vx0=0 vy0=4 m=0 clr=white f=24> </>" };
 static ro_char timeCode[] = { "<time vx0=200 vy0=0 bx=60  by=24 f=24 xali=m m=0 clr=yellow spr=/> </time>" };
 
 //进入主菜单
-static ro_char ico_memu[] = { "<bu vx0=10 vy0=212 bx=49 by=25 bkc=black clr=black><pic bx=48  by=24 >18</></bu>" };
-//进入数显画面图标
-static ro_char ico_digital[] = { "<bu vx0=160 vy0=212 bx=49 by=25 bkc=black clr=black><pic  bx=48  by=24 >19</></bu>" };
+static ro_char ico_memu[] = { "<bu vx0=10 vy0=212 bx=49 by=25 bkc=black clr=black><pic bx=48  by=24 >20</></bu>" };
 //进入棒图图标
-static ro_char ico_bar[] = { "<bu vx0=80 vy0=212 bx=49 by=25 bkc=black clr=black><pic  bx=48  by=24 >20</></bu>" };
-
+static ro_char ico_bar[] = { "<bu vx0=80 vy0=212 bx=49 by=25 bkc=black clr=black><pic  bx=48  by=24 >21</></bu>" };
+//进入数显画面图标
+static ro_char ico_digital[] = { "<bu vx0=160 vy0=212 bx=49 by=25 bkc=black clr=black><pic  bx=48  by=24 >22</></bu>" };
 //进入趋势画面图标
-static ro_char ico_trend[] = { "<bu vx0=240 vy0=212 bx=49 by=25 bkc=black clr=black><pic  bx=48  by=24 >21</></bu>" };
+static ro_char ico_trend[] = { "<bu vx0=240 vy0=212 bx=49 by=25 bkc=black clr=black><pic  bx=48  by=24 >23</></bu>" };
 
-static ro_char ico_pgup[] = { "<bu vx0=80 vy0=212 bx=25 by=25 bkc=black clr=black><pic  bx=24  by=24 >19</></bu>" };
-
-static ro_char ico_pgdn[] = { "<bu vx0=160 vy0=212 bx=25 by=25 bkc=black clr=black><pic  bx=24  by=24 >19</></bu>" };
-static ro_char ico_eraseTool[] = { "<bu vx0=240 vy0=212 bx=25 by=25 bkc=black clr=black><pic  bx=24  by=24 >19</></bu>" };
+static ro_char ico_pgup[] = { "<bu vx0=80 vy0=212 bx=49 by=25 bkc=black clr=black><pic  bx=48  by=24 >25</></bu>" };
+static ro_char ico_pgdn[] = { "<bu vx0=160 vy0=212 bx=49 by=25 bkc=black clr=black><pic  bx=48  by=24 >26</></bu>" };
+static ro_char ico_eraseTool[] = {"<bu vx0=240 vy0=212 bx=49 by=25 bkc=black clr=black><pic  bx=48  by=24 >27</></bu>"};
+static ro_char ico_search[] = {"<bu vx0=240 vy0=212 bx=49 by=25 bkc=black clr=black><pic  bx=48  by=24 >24</></bu>"};
 
 
 
@@ -194,7 +197,11 @@ static int	Init_cmmHmi( HMI *self, void *arg)
 	p_hmi = CreateHMI(HMI_HISTORY);
 	p_hmi->init(p_hmi, NULL);
 	
+	p_hmi = CreateHMI(HMI_ACCM);
+	p_hmi->init(p_hmi, NULL);
 	
+	p_hmi = CreateHMI(HMI_SETUP);
+	p_hmi->init(p_hmi, NULL);
 	
 	return RET_OK;
 }
@@ -266,6 +273,13 @@ static void Build_icoSheets(void)
 	g_p_ico_eraseTool->id = ICO_ID_ERASETOOL;
 	FormatSheetSub(g_p_ico_eraseTool);
 	
+	g_p_ico_search  = Sheet_alloc(p_shtctl);
+	p_exp->inptSht(p_exp, (void *)ico_eraseTool, g_p_ico_search) ;
+	g_p_ico_search->area.x1 = g_p_ico_search->area.x0 + g_p_ico_search->bxsize;
+	g_p_ico_search->area.y1 = g_p_ico_search->area.y0 + g_p_ico_search->bysize;
+	g_p_ico_search->id = ICO_ID_ERASETOOL;
+	FormatSheetSub(g_p_ico_search);
+	
 }
 
 static void Build_otherSheets(void)
@@ -276,6 +290,9 @@ static void Build_otherSheets(void)
 	p_shtctl = GetShtctl();
 	
 	g_p_cpic = Sheet_alloc( p_shtctl);
+	g_p_text = Sheet_alloc( p_shtctl);
+	g_p_boxlist = Sheet_alloc( p_shtctl);
+	g_p_boxlist->id = SHEET_BOXLIST;
 	
 	g_p_sht_bkpic = Sheet_alloc( p_shtctl);
 	p_exp = ExpCreate( "pic");

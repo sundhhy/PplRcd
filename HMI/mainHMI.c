@@ -182,7 +182,7 @@ static int	Init_mainHmi( HMI *self, void *arg)
 	
 	p_cmm = CreateHMI( HMI_CMM);
 	p_cmm->init( p_cmm, NULL);
-	
+	self->flag = 0;
 	//³õÊ¼»¯
 //	p_kb = CreateHMI( HMI_KYBRD);
 //	p_kb->init( p_kb, NULL);
@@ -536,8 +536,6 @@ static int MainHmi_Data_update(void *p_data, void *p_mdl)
 	sheet			*p_sht = (sheet *)p_data;
 	
 		
-	if(Sheet_is_hide(p_sht))
-		return 0;
 	
 	i = p_sht->id % 3;
 	j = p_sht->id / 3;
@@ -551,6 +549,10 @@ static int MainHmi_Data_update(void *p_data, void *p_mdl)
 	p_sht->area.x0 = right_x +  (i ) * box_sizex - space_to_right - sizex;
 	p_sht->area.y0 = up_y + j * box_sizey + space_to_up;
 	
+	if(Sheet_is_hide(p_sht))
+		return 0;
+	if(IS_HMI_HIDE(g_p_mainHmi->flag))
+		return 0;
 	Sheet_slide( p_sht);
 	return 0;
 	
@@ -575,8 +577,6 @@ static int MainHmi_Util_update(void *p_data, void *p_mdl)
 	sheet			*p_sht = (sheet *)p_data;
 	
 		
-	if(Sheet_is_hide(p_sht))
-		return 0;
 	
 	i = p_sht->id % 3;
 	j = p_sht->id / 3;
@@ -590,6 +590,10 @@ static int MainHmi_Util_update(void *p_data, void *p_mdl)
 	p_sht->area.x0 = right_x +  (i ) * box_sizex - space_to_right - sizex;
 	p_sht->area.y0 = up_y  + (j + 1) * box_sizey  -( sizey + space_to_bottom);
 	
+	if(Sheet_is_hide(p_sht))
+		return 0;
+	if(IS_HMI_HIDE(g_p_mainHmi->flag))
+		return 0;
 	Sheet_slide( p_sht);
 	return 0;
 	
@@ -614,8 +618,6 @@ static int MainHmi_Alarm_update(void *p_data, void *p_mdl)
 	sheet			*p_sht = (sheet *)p_data;
 	
 		
-	if(Sheet_is_hide(p_sht))
-		return 0;
 	
 	i = p_sht->id % 3;
 	j = p_sht->id / 3;
@@ -628,7 +630,10 @@ static int MainHmi_Alarm_update(void *p_data, void *p_mdl)
 
 	p_sht->area.x0 = (i ) * box_sizex + space_to_left;
 	p_sht->area.y0 =  up_y  + (j + 1) * box_sizey  -( sizey + space_to_bottom);
-	
+	if(Sheet_is_hide(p_sht))
+		return 0;
+	if(IS_HMI_HIDE(g_p_mainHmi->flag))
+		return 0;
 	Sheet_slide( p_sht);
 	return 0;
 	
