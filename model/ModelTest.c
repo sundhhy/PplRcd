@@ -114,7 +114,7 @@ static int MdlTests_getData(  Model *self, IN int aux, void *arg)
 	}
 		
 	cthis->i_rand = rand()%cthis->range;
-	self->notify( self);
+	self->notify(self);
 	return cthis->i_rand ;
 	
 }

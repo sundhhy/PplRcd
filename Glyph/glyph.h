@@ -10,6 +10,7 @@
 //文本类的子类型
 #define TEXT_ST_TEXT					0
 #define TEXT_ST_LABLE					1    //子类型
+#define TEXT_ST_UNTIL					2    //单位
 
 #define EFF_FOCUS				1  //被选选中
 #define EFF_HIDE				2  //隐藏

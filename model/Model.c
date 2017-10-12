@@ -101,7 +101,7 @@ void Mdl_notify (Model *self)
 	
 	
 	
-	List_map( self->tObs, DoUpdate, self);
+	List_map(self->tObs, DoUpdate, self);
 }
 
 void Mdl_unit_to_string( char unit, char *buf, int len)

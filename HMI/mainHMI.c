@@ -47,9 +47,9 @@ static ro_char MAIN_hmi_code_bkPic[] =  {"<bpic vx0=0 vy0=0 m=0 >20</>" };
 
 //每个通道的单位
 static ro_char MAIN_hmi_code_data[] = { "<text f=32 m=0 mdl=test aux=0>100</>" };
-static ro_char MAIN_hmi_code_unit[] = { "<text f=16 m=0 mdl=test aux=1>m3/h</>" };
+static ro_char MAIN_hmi_code_unit[] = { "<text f=24 m=0 mdl=test aux=1>m3/h</>" };
 //通道报警:HH HI LI LL
-static ro_char MAIN_hmi_code_alarm[] = { "<text f=16 clr=red m=0 mdl=test aux=2> </>" };
+static ro_char MAIN_hmi_code_alarm[] = { "<text f=16 m=0 mdl=test aux=2> </>" };
 
 //static ro_char p_input1[] = { "<input cg=2 xali=l f=24> <text f=16  yali=m clr=blue >test1</>\
 //<box clr=blue bx=126 by=30></></gr>" };
@@ -130,6 +130,7 @@ void Build_ChnSheets(void)
 		p_exp->inptSht( p_exp, (void *)MAIN_hmi_code_unit, g_arr_p_chnUtil[i]) ;
 		g_arr_p_chnUtil[i]->id = i;
 		g_arr_p_chnUtil[i]->update = MainHmi_Util_update;
+		g_arr_p_chnUtil[i]->cnt.subType = TEXT_ST_UNTIL;
 		p_mdl = g_arr_p_chnUtil[i]->p_mdl;
 		p_mdl->attach(p_mdl, (Observer *)g_arr_p_chnUtil[i]);
 		
@@ -302,20 +303,12 @@ static void MainHmiHide( HMI *self )
 	Sheet_updown(g_p_ico_digital, -1);
 	Sheet_updown(g_p_ico_bar, -1);
 	Sheet_updown(g_p_ico_memu, -1);
-	for( i = 0; i < NUM_CHANNEL; i++) {
+	for( i = 0; i < NUM_CHANNEL; i++) {		//
 		
 		Sheet_updown(g_arr_p_chnAlarm[i], -1);
 		Sheet_updown(g_arr_p_chnUtil[i], -1);
 		Sheet_updown(g_arr_p_chnData[i], -1);
 	}
-//	for( i = CHN_ROW + 1; i > 0; i--) {
-//		for( j = CHN_COL; j >= 0; j --) {
-//			if( p_sheets[i][j])
-//				Sheet_updown( p_sheets[i][j], -1);
-//		}
-//		
-//	}
-//	Sheet_updown(  p_sheets[0][0], -1);
 	Sheet_updown(g_p_shtTime, -1);
 	Sheet_updown(g_p_sht_title, -1);
 	Sheet_updown(g_p_sht_bkpic, -1);
@@ -344,21 +337,13 @@ static void MaininitSheet( HMI *self )
 		Sheet_updown(g_arr_p_chnAlarm[i], h++);
 		
 	}
-	
-//	for( i = 1; i < CHN_ROW + 1; i++) {
-//		for( j = 0; j < CHN_COL; j ++) {
-//			if( p_sheets[i][j])
-//				Sheet_updown( p_sheets[i][j], h++);
-//		}
-//		
-//	}
+
 	Sheet_updown(g_p_ico_memu, h++);
 	Sheet_updown(g_p_ico_bar, h++);
 	Sheet_updown(g_p_ico_digital, h++);
 	Sheet_updown(g_p_ico_trend, h++);
 	
 	
-//	g_p_shtTime->cnt.bkc = p_sheets[0][0]->cnt.bkc;
 	MainHmi_Init_chnShet();
 	self->init_focus(self);
 	
@@ -526,8 +511,8 @@ static int MainHmi_Data_update(void *p_data, void *p_mdl)
 	
 	//到四周边界的空隙
 	uint8_t		space_to_up = 		box_sizey/3;	
-	uint8_t		space_to_bottom = 	2;
-	uint8_t		space_to_left = 	8;	
+	uint8_t		space_to_bottom = 	0;
+	uint8_t		space_to_left = 	0;	
 	uint8_t		space_to_right = 	8;
 	
 	char 			i = 0, j = 0;
@@ -566,9 +551,9 @@ static int MainHmi_Util_update(void *p_data, void *p_mdl)
 	uint8_t		box_sizex = 106;		
 	
 	//到四周边界的空隙
-	uint8_t		space_to_up = 		box_sizey/4;	
+	uint8_t		space_to_up = 		0;	
 	uint8_t		space_to_bottom = 	2;
-	uint8_t		space_to_left = 	8;	
+	uint8_t		space_to_left = 	0;	
 	uint8_t		space_to_right = 	8;
 	
 	char 			i = 0, j = 0;
@@ -607,10 +592,10 @@ static int MainHmi_Alarm_update(void *p_data, void *p_mdl)
 	uint8_t		box_sizex = 106;		
 	
 	//到四周边界的空隙
-	uint8_t		space_to_up = 		box_sizey/3;	
-	uint8_t		space_to_bottom = 	2;
-	uint8_t		space_to_left = 	8;	
-	uint8_t		space_to_right = 	8;
+	uint8_t		space_to_up = 		2;	
+	uint8_t		space_to_bottom = 	0;
+	uint8_t		space_to_left = 	0;	
+	uint8_t		space_to_right = 	0;
 	
 	char 			i = 0, j = 0;
 	uint16_t 		sizex = 0;
@@ -628,8 +613,9 @@ static int MainHmi_Alarm_update(void *p_data, void *p_mdl)
 	p_sht->p_gp->getSize( p_sht->p_gp, p_sht->cnt.font, &sizex, &sizey);
 	sizex = sizex * p_sht->cnt.len;	
 
-	p_sht->area.x0 = (i ) * box_sizex + space_to_left;
-	p_sht->area.y0 =  up_y  + (j + 1) * box_sizey  -( sizey + space_to_bottom);
+//	p_sht->area.x0 = (i ) * box_sizex + space_to_left;
+	p_sht->area.x0 = right_x +  (i ) * box_sizex - space_to_right - sizex;
+	p_sht->area.y0 =  up_y  + (j ) * box_sizey  + ( 0 + space_to_up);
 	if(Sheet_is_hide(p_sht))
 		return 0;
 	if(IS_HMI_HIDE(g_p_mainHmi->flag))

@@ -3,7 +3,7 @@
 <title>Static Call Graph - [.\Objects\PplRcd.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image .\Objects\PplRcd.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5050106: Last Updated: Mon Oct 09 23:16:56 2017
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5050106: Last Updated: Thu Oct 12 23:19:22 2017
 <BR><P>
 <H3>Maximum Stack Usage =        232 bytes + Unknown(Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -867,7 +867,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[18b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Get_Accm_HMI
 </UL>
 
-<P><STRONG><a name="[171]"></a>Build_ChnSheets</STRONG> (Thumb, 230 bytes, Stack size 24 bytes, mainhmi.o(i.Build_ChnSheets))
+<P><STRONG><a name="[171]"></a>Build_ChnSheets</STRONG> (Thumb, 242 bytes, Stack size 24 bytes, mainhmi.o(i.Build_ChnSheets))
 <BR><BR>[Stack]<UL><LI>Max Depth = 184<LI>Call Chain = Build_ChnSheets &rArr; GetShtctl &rArr; Dev_open &rArr; DevChar_open &rArr; Get_DevUart &rArr; Dev_Uart_new &rArr; malloc &rArr; internal_alloc
 </UL>
 <BR>[Calls]<UL><LI><a href="#[16d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Sheet_alloc
@@ -4379,8 +4379,8 @@ Local Symbols
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> gh_txt.o(i.GhTxt_ctor)
 </UL>
-<P><STRONG><a name="[81]"></a>GhTxt_vDraw</STRONG> (Thumb, 146 bytes, Stack size 48 bytes, gh_txt.o(i.GhTxt_vDraw))
-<BR><BR>[Stack]<UL><LI>Max Depth = 192<LI>Call Chain = GhTxt_vDraw &rArr; Dev_open &rArr; DevChar_open &rArr; Get_DevUart &rArr; Dev_Uart_new &rArr; malloc &rArr; internal_alloc
+<P><STRONG><a name="[81]"></a>GhTxt_vDraw</STRONG> (Thumb, 364 bytes, Stack size 56 bytes, gh_txt.o(i.GhTxt_vDraw))
+<BR><BR>[Stack]<UL><LI>Max Depth = 200<LI>Call Chain = GhTxt_vDraw &rArr; Dev_open &rArr; DevChar_open &rArr; Get_DevUart &rArr; Dev_Uart_new &rArr; malloc &rArr; internal_alloc
 </UL>
 <BR>[Calls]<UL><LI><a href="#[177]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Dev_open
 <LI><a href="#[1f2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ColorInvert
@@ -4743,7 +4743,7 @@ Local Symbols
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> mainhmi.o(i.mainHmi_ctor)
 </UL>
-<P><STRONG><a name="[6a]"></a>MainHmi_Alarm_update</STRONG> (Thumb, 198 bytes, Stack size 64 bytes, mainhmi.o(i.MainHmi_Alarm_update))
+<P><STRONG><a name="[6a]"></a>MainHmi_Alarm_update</STRONG> (Thumb, 188 bytes, Stack size 64 bytes, mainhmi.o(i.MainHmi_Alarm_update))
 <BR><BR>[Stack]<UL><LI>Max Depth = 96<LI>Call Chain = MainHmi_Alarm_update &rArr; Sheet_slide &rArr; Sheet_refreshsub
 </UL>
 <BR>[Calls]<UL><LI><a href="#[164]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Sheet_slide
@@ -4753,7 +4753,7 @@ Local Symbols
 <BR>[Address Reference Count : 2]<UL><LI> mainhmi.o(i.MainHmi_Init_chnShet)
 <LI> mainhmi.o(i.Build_ChnSheets)
 </UL>
-<P><STRONG><a name="[68]"></a>MainHmi_Data_update</STRONG> (Thumb, 198 bytes, Stack size 64 bytes, mainhmi.o(i.MainHmi_Data_update))
+<P><STRONG><a name="[68]"></a>MainHmi_Data_update</STRONG> (Thumb, 196 bytes, Stack size 64 bytes, mainhmi.o(i.MainHmi_Data_update))
 <BR><BR>[Stack]<UL><LI>Max Depth = 96<LI>Call Chain = MainHmi_Data_update &rArr; Sheet_slide &rArr; Sheet_refreshsub
 </UL>
 <BR>[Calls]<UL><LI><a href="#[164]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Sheet_slide
@@ -4780,7 +4780,7 @@ Local Symbols
 <BR>[Called By]<UL><LI><a href="#[118]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MaininitSheet
 </UL>
 
-<P><STRONG><a name="[69]"></a>MainHmi_Util_update</STRONG> (Thumb, 208 bytes, Stack size 64 bytes, mainhmi.o(i.MainHmi_Util_update))
+<P><STRONG><a name="[69]"></a>MainHmi_Util_update</STRONG> (Thumb, 198 bytes, Stack size 64 bytes, mainhmi.o(i.MainHmi_Util_update))
 <BR><BR>[Stack]<UL><LI>Max Depth = 96<LI>Call Chain = MainHmi_Util_update &rArr; Sheet_slide &rArr; Sheet_refreshsub
 </UL>
 <BR>[Calls]<UL><LI><a href="#[164]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Sheet_slide
