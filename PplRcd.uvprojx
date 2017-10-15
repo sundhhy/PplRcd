@@ -1109,16 +1109,6 @@
               <FilePath>.\HMI\News_Power_down_HMI.c</FilePath>
             </File>
             <File>
-              <FileName>History_HMI.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\HMI\History_HMI.h</FilePath>
-            </File>
-            <File>
-              <FileName>History_HMI.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\HMI\History_HMI.c</FilePath>
-            </File>
-            <File>
               <FileName>Accumulate_HMI .c</FileName>
               <FileType>1</FileType>
               <FilePath>.\HMI\Accumulate_HMI .c</FilePath>
@@ -1137,6 +1127,66 @@
               <FileName>Setup_HMI.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\HMI\Setup_HMI.h</FilePath>
+            </File>
+            <File>
+              <FileName>Setting_HMI.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\HMI\Setting_HMI.c</FilePath>
+            </File>
+            <File>
+              <FileName>Setting_HMI.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\HMI\Setting_HMI.h</FilePath>
+            </File>
+            <File>
+              <FileName>Set_system_strategy.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\HMI\Set_system_strategy.c</FilePath>
+            </File>
+            <File>
+              <FileName>Set_system_strategy.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\HMI\Set_system_strategy.h</FilePath>
+            </File>
+            <File>
+              <FileName>Set_channel_strategy.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\HMI\Set_channel_strategy.c</FilePath>
+            </File>
+            <File>
+              <FileName>Set_alarm_strategy.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\HMI\Set_alarm_strategy.c</FilePath>
+            </File>
+            <File>
+              <FileName>Set_arithmetic_strategy.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\HMI\Set_arithmetic_strategy.c</FilePath>
+            </File>
+            <File>
+              <FileName>Set_view_strategy.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\HMI\Set_view_strategy.c</FilePath>
+            </File>
+            <File>
+              <FileName>Set_dataBackUp_strategy.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\HMI\Set_dataBackUp_strategy.c</FilePath>
+            </File>
+            <File>
+              <FileName>Set_dataPrint_strategy.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\HMI\Set_dataPrint_strategy.c</FilePath>
+            </File>
+            <File>
+              <FileName>Acc_day.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\HMI\Acc_day.c</FilePath>
+            </File>
+            <File>
+              <FileName>Acc_month.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\HMI\Acc_month.c</FilePath>
             </File>
           </Files>
         </Group>

@@ -130,6 +130,7 @@ static void	Setup_initSheet(HMI *self)
 	
 	p_exp = ExpCreate( "text");
 	p_exp->inptSht( p_exp, (void *)setup_hmi_code_passwd, g_p_text) ;
+	g_p_text ->p_enterCmd = &g_keyHmi->shtCmd;
 
 	g_p_sht_bkpic->cnt.data = SETUP_PICNUM;
 
@@ -147,8 +148,9 @@ static void	Setup_initSheet(HMI *self)
 static void	Setup_HMI_hide(HMI *self)
 {
 	Setup_HMI		*cthis = SUB_PTR( self, HMI, Setup_HMI);
+	
 	Sheet_free(cthis->p_clean_focus);
-
+	
 	Sheet_updown(g_p_text, -1);
 	Sheet_updown(g_p_shtTime, -1);
 	Sheet_updown(g_p_sht_title, -1);
@@ -163,8 +165,19 @@ static void	Setup_HMI_hide(HMI *self)
 static void	Setup_HMI_init_focus(HMI *self)
 {
 	Setup_HMI		*cthis = SUB_PTR( self, HMI, Setup_HMI);
-	self->p_fcuu = Focus_alloc(5, 2);		
-	Focus_Set_focus(self->p_fcuu, 0, 0);
+	short i;
+	self->p_fcuu = Focus_alloc(5, 2);
+	
+	Focus_Set_sht(self->p_fcuu, 0, 0, g_p_text);
+	Focus_Set_sht(self->p_fcuu, 0, 1, g_p_text);
+	
+	for(i = 1; i < 5; i++) {
+		
+		Focus_Set_sht(self->p_fcuu, i, 0, g_p_sht_bkpic);
+		Focus_Set_sht(self->p_fcuu, i, 1, g_p_sht_bkpic);
+	}
+	
+	Focus_Set_focus(self->p_fcuu, 5, 0);
 }
 
 static void	Setup_HMI_clear_focus(HMI *self, uint8_t fouse_row, uint8_t fouse_col)
@@ -184,7 +197,6 @@ static void	Setup_HMI_clear_focus(HMI *self, uint8_t fouse_row, uint8_t fouse_co
 		
 		cthis->p_clean_focus->area.x1 = cthis->p_clean_focus->area.x0 + cthis->p_clean_focus->bxsize;
 		cthis->p_clean_focus->area.y1 = cthis->p_clean_focus->area.y0 + cthis->p_clean_focus->bysize;
-//		self->show(self);
 		cthis->p_clean_focus->p_gp->vdraw( cthis->p_clean_focus->p_gp, &cthis->p_clean_focus->cnt, &cthis->p_clean_focus->area);
 		Flush_LCD();
 	}
@@ -196,8 +208,7 @@ static void	Setup_HMI_show_focus(HMI *self, uint8_t fouse_row, uint8_t fouse_col
 	uint8_t			row, col;
 	uint8_t			vx0 = 0;
 	uint8_t			vy0 = 80;
-//	if(self->p_fcuu->focus_row > 2)
-//		return;
+
 	row = self->p_fcuu->focus_row;
 	col = self->p_fcuu->focus_col;
 	if(row == 0) {
@@ -213,13 +224,7 @@ static void	Setup_HMI_show_focus(HMI *self, uint8_t fouse_row, uint8_t fouse_col
 		Flush_LCD();
 	}
 	
-//	
-//	g_p_cpic->area.y0 = vy0[self->p_fcuu->focus_row];
-////	g_p_cpic->area.y1 = g_p_cpic->area.y0 + g_p_cpic->bysize;
-////	g_p_cpic->area.x1 = g_p_cpic->area.x0 + g_p_cpic->bxsize;
-//	
-//	g_p_cpic->p_gp->vdraw( g_p_cpic->p_gp, &g_p_cpic->cnt, &g_p_cpic->area);
-//	Flush_LCD();
+
 }
 
 
@@ -228,6 +233,7 @@ static void	Setup_HMI_hitHandle(HMI *self, char *s_key)
 	
 	Setup_HMI		*cthis = SUB_PTR( self, HMI, Setup_HMI);
 	sheet		*p_focus;
+	shtCmd		*p_cmd;
 	uint8_t		focusRow = self->p_fcuu->focus_row;
 	uint8_t		focusCol = self->p_fcuu->focus_col;
 	uint8_t		chgFouse = 0;
@@ -257,9 +263,20 @@ static void	Setup_HMI_hitHandle(HMI *self, char *s_key)
 	if( !strcmp(s_key, HMIKEY_ENTER))
 	{
 		p_focus = Focus_Get_focus(self->p_fcuu);
-		
-		
-		
+		if(p_focus->id == SHEET_G_TEXT) {
+			p_cmd = p_focus->p_enterCmd;
+			p_cmd->shtExcute(p_cmd, p_focus, self);
+		} else {
+			if(p_focus == NULL) 
+				goto exit;
+			if(self->p_fcuu->focus_row == 4 && self->p_fcuu->focus_col) {
+				self->switchHMI(self, g_p_HMI_menu);
+			} else {
+				g_p_Setting_HMI->arg[0] = self->p_fcuu->focus_row - 1;
+				g_p_Setting_HMI->arg[1] = self->p_fcuu->focus_col;
+				self->switchHMI(self, g_p_Setting_HMI);
+			}
+		}
 	}
 	
 	if( !strcmp(s_key, HMIKEY_ESC))

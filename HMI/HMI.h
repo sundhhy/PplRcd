@@ -53,6 +53,14 @@ typedef struct {
 	uint8_t		none[3];
 }hmiAtt_t;
 
+typedef struct {
+	//将pp_data指定的行号和列号的显示字符串指针，并返回字符串的长度
+	//长度为0时表示没有数据
+	//所有的显示应该是对齐的，不考虑出现空洞的情况
+	int (*entry_txt)(int row, int col, void *pp_text);		
+	
+}strategy_t;
+
 
 ABS_CLASS(HMI)
 {

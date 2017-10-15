@@ -38,6 +38,6 @@
 .\objects\hmifactory.o: HMI\news_select_HMI.h
 .\objects\hmifactory.o: HMI\News_Alarm_HMI.h
 .\objects\hmifactory.o: HMI\News_Power_down_HMI.h
-.\objects\hmifactory.o: HMI\History_HMI.h
 .\objects\hmifactory.o: HMI\Accumulate_HMI.h
 .\objects\hmifactory.o: HMI\Setup_HMI.h
+.\objects\hmifactory.o: HMI\Setting_HMI.h

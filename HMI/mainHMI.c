@@ -47,7 +47,7 @@ static ro_char MAIN_hmi_code_bkPic[] =  {"<bpic vx0=0 vy0=0 m=0 >20</>" };
 
 //每个通道的单位
 static ro_char MAIN_hmi_code_data[] = { "<text f=32 m=0 mdl=test aux=0>100</>" };
-static ro_char MAIN_hmi_code_unit[] = { "<text f=24 m=0 mdl=test aux=1>m3/h</>" };
+static ro_char MAIN_hmi_code_unit[] = { "<text f=16 m=0 mdl=test aux=1>m3/h</>" };
 //通道报警:HH HI LI LL
 static ro_char MAIN_hmi_code_alarm[] = { "<text f=16 m=0 mdl=test aux=2> </>" };
 
@@ -130,7 +130,7 @@ void Build_ChnSheets(void)
 		p_exp->inptSht( p_exp, (void *)MAIN_hmi_code_unit, g_arr_p_chnUtil[i]) ;
 		g_arr_p_chnUtil[i]->id = i;
 		g_arr_p_chnUtil[i]->update = MainHmi_Util_update;
-		g_arr_p_chnUtil[i]->cnt.subType = TEXT_ST_UNTIL;
+//		g_arr_p_chnUtil[i]->cnt.subType = TEXT_ST_UNTIL;
 		p_mdl = g_arr_p_chnUtil[i]->p_mdl;
 		p_mdl->attach(p_mdl, (Observer *)g_arr_p_chnUtil[i]);
 		

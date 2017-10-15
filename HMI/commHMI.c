@@ -193,9 +193,9 @@ static int	Init_cmmHmi( HMI *self, void *arg)
 	
 	p_hmi = CreateHMI(HMI_NEWS_POWER_DOWN);
 	p_hmi->init(p_hmi, NULL);
-	
-	p_hmi = CreateHMI(HMI_HISTORY);
-	p_hmi->init(p_hmi, NULL);
+//	
+//	p_hmi = CreateHMI(HMI_HISTORY);
+//	p_hmi->init(p_hmi, NULL);
 	
 	p_hmi = CreateHMI(HMI_ACCM);
 	p_hmi->init(p_hmi, NULL);
@@ -203,6 +203,9 @@ static int	Init_cmmHmi( HMI *self, void *arg)
 	p_hmi = CreateHMI(HMI_SETUP);
 	p_hmi->init(p_hmi, NULL);
 	
+	
+	p_hmi = CreateHMI(HMI_SETTING);
+	p_hmi->init(p_hmi, NULL);
 	return RET_OK;
 }
 
@@ -293,6 +296,7 @@ static void Build_otherSheets(void)
 	g_p_text = Sheet_alloc( p_shtctl);
 	g_p_boxlist = Sheet_alloc( p_shtctl);
 	g_p_boxlist->id = SHEET_BOXLIST;
+	g_p_text->id = SHEET_G_TEXT;
 	
 	g_p_sht_bkpic = Sheet_alloc( p_shtctl);
 	p_exp = ExpCreate( "pic");

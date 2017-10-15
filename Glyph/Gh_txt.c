@@ -125,12 +125,14 @@ static void GhTxt_vDraw( Glyph *self, dspContent_t *cnt, vArea_t *area)
 		lcd->BKColor( bkc);
 	}
 	
-	if( cnt->subType == TEXT_ST_LABLE)
-	{
-		lcd->label( cnt->data, cnt->len,( scArea_t *)area, cnt->font,c, area->alix);
+//	if( cnt->subType == TEXT_ST_LABLE)
+//	{
+//		lcd->label( cnt->data, cnt->len,( scArea_t *)area, cnt->font,c, area->alix);
+//		
+//	}
+//	else 
 		
-	}
-	else if( cnt->subType == TEXT_ST_UNTIL)
+	if( cnt->subType == TEXT_ST_UNTIL)
 	{
 		//需要显示上标的单位
 			//目前只考虑m2/m3这两种上标显示
@@ -148,6 +150,7 @@ static void GhTxt_vDraw( Glyph *self, dspContent_t *cnt, vArea_t *area)
 		} else {
 			//显示m3/m2之前的内容(包括m）
 			lcd->wrString( m, cnt->data, i + 1, area->x0, area->y0, cnt->font,c);
+//			lcd->wrString( m, cnt->data, i + 1, area->x0, area->y0, FONT_16,c);
 			//显示上标2、3
 				//上标比正常字体小1号
 				//因为gpu不支持12的字体，因此单位显示时应用24号字体，这样上标用16的字体
@@ -157,6 +160,8 @@ static void GhTxt_vDraw( Glyph *self, dspContent_t *cnt, vArea_t *area)
 			//显示上标2/3之后的内容
 			tmp_x0 += 6;
 			lcd->wrString(m, cnt->data + i + 2, cnt->len - i - 1, tmp_x0, area->y0,cnt->font,c);
+//			lcd->wrString(m, cnt->data + i + 2, cnt->len - i - 1, tmp_x0, area->y0,FONT_16,c);
+
 //			lcd->done();
 		}
 		lcd->label( cnt->data, cnt->len,( scArea_t *)area, cnt->font,c, area->alix);

@@ -38,9 +38,9 @@
 .\objects\datahmi.o: HMI\news_select_HMI.h
 .\objects\datahmi.o: HMI\News_Alarm_HMI.h
 .\objects\datahmi.o: HMI\News_Power_down_HMI.h
-.\objects\datahmi.o: HMI\History_HMI.h
 .\objects\datahmi.o: HMI\Accumulate_HMI.h
 .\objects\datahmi.o: HMI\Setup_HMI.h
+.\objects\datahmi.o: HMI\Setting_HMI.h
 .\objects\datahmi.o: .\Expression\ExpFactory.h
 .\objects\datahmi.o: .\Expression\expression.h
 .\objects\datahmi.o: .\Views\Composition.h

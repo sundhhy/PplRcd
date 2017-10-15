@@ -15,9 +15,10 @@
 #include "news_select_HMI.h"
 #include "News_Alarm_HMI.h"
 #include "News_Power_down_HMI.h"
-#include "History_HMI.h"
+//#include "History_HMI.h"
 #include "Accumulate_HMI.h"
 #include "Setup_HMI.h"
+#include "Setting_HMI.h"
 
 
 //------------------------------------------------------------------------------
@@ -37,9 +38,10 @@
 #define HMI_NWS					8
 #define HMI_NEWS_ALARM			9
 #define HMI_NEWS_POWER_DOWN		10
-#define HMI_HISTORY				11
+//#define HMI_HISTORY				11
 #define HMI_ACCM				12
 #define HMI_SETUP				13
+#define HMI_SETTING				14
 
  //------------------------------------------------------------------------------
 // typedef

@@ -32,6 +32,7 @@ HMI 	*g_p_Accm_HMI;
 //------------------------------------------------------------------------------
 static ro_char accm_code_chntext[] =  {"<text f=16 clr=blue vx0=200 vy0=214 >通道：</>" };
 static ro_char accm_code_chnboxlist[] =  {"<bu clr=blue vx0=240 vy0=212 cg=8 rg=2><text xali=m yali=m f=16 clr=blue m=0 >01</></>" };
+static ro_char accm_code_info[] =  {"<text  f=16 clr=white m=0> </>" };
 
 //------------------------------------------------------------------------------
 // local types
@@ -51,6 +52,7 @@ static void	Accm_HMI_hide(HMI *self);
 static void	Alarm_initSheet(HMI *self);
 static void	Accm_HMI_init_focus(HMI *self);
 
+static void	Accm_show_info(Accm_HMI *self, strategy_t *p);
 static void	Accm_HMI_hitHandle( HMI *self, char *s_key);
 //============================================================================//
 //            P U B L I C   F U N C T I O N S                                 //
@@ -108,6 +110,7 @@ static void Show_Accm_HMI(HMI *self)
 {
 	Accm_HMI		*cthis = SUB_PTR( self, HMI, Accm_HMI);
 	Sheet_refresh(g_p_sht_bkpic);
+	Accm_show_info(cthis, cthis->p_stt);
 	self->show_focus( self,self->p_fcuu->focus_row, 0);
 }
 static void	Alarm_initSheet(HMI *self)
@@ -116,6 +119,8 @@ static void	Alarm_initSheet(HMI *self)
 	dspContent_t	*p_cnt;
 	int  			h = 0;
 	Expr 			*p_exp ;
+	shtctl 			*p_shtctl = NULL;
+	p_shtctl = GetShtctl();
 	
 	p_exp = ExpCreate( "pic");
 	p_exp->inptSht( p_exp, (void *)news_cpic, g_p_cpic) ;
@@ -125,6 +130,11 @@ static void	Alarm_initSheet(HMI *self)
 	
 	p_exp = ExpCreate( "bu");
 	p_exp->inptSht( p_exp, (void *)accm_code_chnboxlist, g_p_boxlist) ;
+	
+	cthis->p_sht_info = Sheet_alloc(p_shtctl);
+	p_exp = ExpCreate( "text");
+	p_exp->inptSht( p_exp, (void *)accm_code_info, cthis->p_sht_info) ;
+	
 	FormatSheetSub(g_p_boxlist);
 	p_cnt = Button_Get_subcnt(g_p_boxlist);
 	p_cnt->data = p_hmi_buf;
@@ -134,8 +144,10 @@ static void	Alarm_initSheet(HMI *self)
 	g_p_sht_bkpic->cnt.data = ACCM_PICNUM;
 	if(self->arg[0] == 0) {
 		g_p_sht_title->cnt.data = ACCM_DAY_TITLE;
+		cthis->p_stt = &g_AccDay_strategy;
 	} else if(self->arg[0] == 1) {
 		g_p_sht_title->cnt.data = ACCM_MONTH_TITLE;
+		cthis->p_stt = &g_AccMonth_strategy;
 	}
 	g_p_sht_title->cnt.len = strlen(g_p_sht_title->cnt.data);
 	
@@ -164,7 +176,7 @@ static void	Accm_HMI_hide(HMI *self)
 	Sheet_updown(g_p_sht_bkpic, -1);
 	
 	
-	
+	Sheet_free(cthis->p_sht_info);
 	Focus_free(self->p_fcuu);
 }
 
@@ -282,6 +294,32 @@ static void	Accm_HMI_hitHandle(HMI *self, char *s_key)
 	
 	exit:
 		return;
+}
+
+static void	Accm_show_info(Accm_HMI *self, strategy_t *p)
+{
+	uint8_t	col = 0;
+	uint8_t	len = 0;
+	uint8_t	total_bxsize = 0;
+	
+	self->p_sht_info->area.x0 = 0;
+	//显示标题
+	while(1) {
+		len = p->entry_txt(0, col, &self->p_sht_info->cnt.data);
+		if(len == 0)
+			break;
+		self->p_sht_info->cnt.len = len;
+		
+		total_bxsize = self->p_sht_info->bxsize * len;
+		self->p_sht_info->area.y0 = STRIPE_VY0 ;
+
+		
+		self->p_sht_info->p_gp->vdraw(self->p_sht_info->p_gp, &self->p_sht_info->cnt, &self->p_sht_info->area);
+		self->p_sht_info->area.x0 += total_bxsize + 4 * self->p_sht_info->bxsize;
+
+		col ++;
+	}
+	
 }
 
 

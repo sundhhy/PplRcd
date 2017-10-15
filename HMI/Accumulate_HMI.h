@@ -24,6 +24,8 @@
 CLASS(Accm_HMI)
 {
 	EXTENDS(HMI);
+	sheet		*p_sht_info;
+	strategy_t *p_stt;
 	
 	uint8_t		cur_chn;
 	uint8_t		none[3];
@@ -39,7 +41,7 @@ CLASS(Accm_HMI)
 //------------------------------------------------------------------------------
 // global variable declarations
 //------------------------------------------------------------------------------
-
+extern strategy_t	g_AccDay_strategy, g_AccMonth_strategy;
 //------------------------------------------------------------------------------
 // function prototypes
 //------------------------------------------------------------------------------

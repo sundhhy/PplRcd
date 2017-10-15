@@ -24,11 +24,18 @@
 #define	ICO_ID_SEARCH			0x24
 
 #define	SHEET_BOXLIST				0x2a
+#define	SHEET_G_TEXT				0x2b
 
 #define IS_CHECK(n)				((n&0xf0) == 0x30)
 #define SHTID_CHECK(n)			(0x30 + n)
 
 #define	GET_CHN_FROM_ID(id)		(id & 0x0f)
+
+//条纹背景图片的属性,这是从背景图片中得到的数据
+#define STRIPE_MAX_ROWS			11
+#define STRIPE_VY0				34		//第一行宽2个像素点，就单独出来
+#define STRIPE_VY1				50
+#define STRIPE_SIZE_Y			16
  //------------------------------------------------------------------------------
 // typedef
 //------------------------------------------------------------------------------
@@ -80,7 +87,7 @@ extern	HMI 			*g_p_History_HMI;
 extern	HMI 			*g_p_Accm_HMI;
 
 extern 	HMI 			*g_p_Setup_HMI;
-
+extern 	HMI 			*g_p_Setting_HMI;
 //------------------------------------------------------------------------------
 // function prototypes
 //------------------------------------------------------------------------------

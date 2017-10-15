@@ -66,7 +66,7 @@ static void * TxtInptSht( Expr *self, void *context, sheet *p_sht)
 		}
 		if( p_sht->cnt.font < FONT_16)
 			p_sht->cnt.font = FONT_16;
-		p_sht->cnt.subType = TEXT_ST_LABLE;
+//		p_sht->cnt.subType = TEXT_ST_LABLE;
 		p_sht->bxsize = SIZE_BOUNDARY;
 		
 	}
