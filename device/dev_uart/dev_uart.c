@@ -20,7 +20,8 @@ static Dev_Uart *devUart[DEV_UART_MAX];
 
 Dev_Uart *Get_DevUart( int minor)
 {
-	uint8_t	*prxSem, *ptxSem, *p_lock;
+	uint8_t	*prxSem, *ptxSem;
+//	uint8_t	*p_lock;
 	I_dev_Char *devChar;
 	if( ( minor +1) > DEV_UART_MAX)
 		return NULL;
@@ -34,23 +35,23 @@ Dev_Uart *Get_DevUart( int minor)
 		devUart[ minor]->minor = minor;
 		prxSem =  malloc( 1);
 		ptxSem =  malloc( 1);
-		p_lock =  malloc( 1);
+//		p_lock =  malloc( 1);
 		
-		*prxSem = minor * 3;
-		*ptxSem = minor * 3 + 1;
-		*p_lock = minor * 3 + 2;
+		*prxSem = minor * 2;
+		*ptxSem = minor * 2 + 1;
+//		*p_lock = minor * 3 + 2;
 		if( Sem_init( prxSem))
 			goto errExit0;
 		if( Sem_init( ptxSem))
 			goto errExit1;
-		if( Sem_init( p_lock))
-			goto errExit1;
+//		if( Sem_init( p_lock))
+//			goto errExit1;
 		
-		Sem_post(p_lock);
+//		Sem_post(p_lock);
 		
 		devUart[ minor]->rxsem = prxSem;
 		devUart[ minor]->txsem = ptxSem;
-		devUart[ minor]->p_lock = p_lock;
+//		devUart[ minor]->p_lock = p_lock;
 		
 		devUart[ minor]->dri->device = devUart[ minor];
 		
@@ -132,9 +133,9 @@ int Dev_Uart_write( I_dev_Char *self, void *buf, int wrLen)
 	Dev_Uart *cthis = ( Dev_Uart *)self;
 	driveUart *driUart = cthis->dri;
 	int			ret = 0;
-	Sem_wait(cthis->p_lock, FOREVER);
+//	Sem_wait(cthis->p_lock, FOREVER);
 	ret = driUart->write( driUart, buf, wrLen);
-	Sem_post(cthis->p_lock);
+//	Sem_post(cthis->p_lock);
 }
 
 int Dev_Uart_ioctol( I_dev_Char *self ,int cmd, ...)

@@ -13,6 +13,7 @@
 //------------------------------------------------------------------------------
 curve_ctl_t		g_curve[6];
 sheet  		*g_p_curve_bkg;
+char		*arr_p_hmi_buf[6];
 //------------------------------------------------------------------------------
 // global function prototypes
 //------------------------------------------------------------------------------
@@ -54,8 +55,13 @@ void Curve_init(void)
 {
 	Expr 			*p_exp ;
 	shtctl 			*p_shtctl = NULL;
+	int				i;
 	
-	p_hmi_buf = g_curve[0].points;
+	for(i = 0; i < 6; i++) {
+		arr_p_hmi_buf[i] = g_curve[i].points;
+	}
+	
+	
 	
 	p_shtctl = GetShtctl();
 	p_exp = ExpCreate( "line");

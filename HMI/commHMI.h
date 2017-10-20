@@ -36,6 +36,9 @@
 #define STRIPE_VY0				34		//第一行宽2个像素点，就单独出来
 #define STRIPE_VY1				50
 #define STRIPE_SIZE_Y			16
+#define STRIPE_CLR_1			COLOUR_GRAY
+#define STRIPE_CLR_2			COLOUR_BLACK
+#define STRIPE_CLR_FOCUSE		COLOUR_BLUE
  //------------------------------------------------------------------------------
 // typedef
 //------------------------------------------------------------------------------
@@ -88,10 +91,15 @@ extern	HMI 			*g_p_Accm_HMI;
 
 extern 	HMI 			*g_p_Setup_HMI;
 extern 	HMI 			*g_p_Setting_HMI;
+
+
+extern char			*arr_p_hmi_buf[6];
 //------------------------------------------------------------------------------
 // function prototypes
 //------------------------------------------------------------------------------
 cmmHmi *GetCmmHMI(void);
 
 extern void Build_ChnSheets(void);
+extern int Stripe_clean_clr(int row);
+extern int Stripe_vy(int row) ;
 #endif

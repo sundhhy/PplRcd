@@ -121,6 +121,7 @@ struct SHEET *Sheet_alloc( struct SHTCTL *p_ctl)
             p_sht->height = -1; 
 			p_sht->id = -1;
 			p_sht->pp_sub = NULL;
+			p_sht->e_heifht = 0;
 			
 			p_sht->cnt.subType = 0;
 			
@@ -312,7 +313,7 @@ void Sheet_refresh( struct SHEET *p_sht)
 void Sheet_slide( struct SHEET *p_sht)
 {
 	//todo: 增加坐标是否重叠判断，如果重叠要把比他更高的图层也要显示
-	if( p_sht->height < 0)
+	if((p_sht->height +  p_sht->e_heifht)< 0)
 		return;
 	p_sht->p_gp->vdraw( p_sht->p_gp, &p_sht->cnt, &p_sht->area);
 	Sheet_refreshsub( p_sht);

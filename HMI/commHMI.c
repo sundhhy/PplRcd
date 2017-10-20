@@ -119,6 +119,28 @@ cmmHmi *GetCmmHMI(void)
 	
 }
 
+int Stripe_clean_clr(int row)
+{
+	if(row & 1) {
+		
+		return STRIPE_CLR_2;
+	} else {
+		
+		return STRIPE_CLR_1;
+	}
+	
+}
+
+int Stripe_vy(int row) 
+{
+	int y;
+	if(row == 0)
+		y = STRIPE_VY0 ;
+	else 
+		y = STRIPE_VY1 + (row - 1)* STRIPE_SIZE_Y;
+	return y;
+}
+
 
 CTOR( cmmHmi)
 SUPER_CTOR( HMI);

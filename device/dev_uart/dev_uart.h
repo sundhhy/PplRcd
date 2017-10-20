@@ -16,7 +16,7 @@ CLASS( Dev_Uart)
 	IMPLEMENTS( I_dev_Char);
 	driveUart		*dri;
 	void		*txsem, *rxsem;
-	void		*p_lock;
+//	void		*p_lock;
 	void		*txled, *rxled;
 	uint8_t		minor;
 	uint8_t		none[3];

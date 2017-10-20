@@ -116,7 +116,21 @@ END_CTOR
 static char* MdlTime_to_string( Model *self, IN int aux, void *arg)
 {
 	struct  tm	*p_tm= (struct  tm	*) self->coreData;
-	snprintf(s_timer, 16, "%02d:%02d:%02d", p_tm->tm_hour, p_tm->tm_min, p_tm->tm_sec);
+	switch(aux) {
+		case 0:
+			snprintf(s_timer, 16, "%02d:%02d:%02d", p_tm->tm_hour, p_tm->tm_min, p_tm->tm_sec);
+			return s_timer;
+		case 1:
+			if(arg == NULL)
+				break;
+			sprintf(arg, "%02d:%02d:%02d  %02d:%02d:%02d", p_tm->tm_year, p_tm->tm_mon, p_tm->tm_mday, \
+				p_tm->tm_hour, p_tm->tm_min, p_tm->tm_sec);
+			return arg;
+		default:break;
+				
+
+	}
 	return s_timer;
+	
 }
 

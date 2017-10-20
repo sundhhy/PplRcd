@@ -209,30 +209,35 @@
         <Ww>
           <count>0</count>
           <WinNumber>2</WinNumber>
-          <ItemText>fcsMgr</ItemText>
+          <ItemText>arr_p_setting_strategy</ItemText>
         </Ww>
         <Ww>
           <count>1</count>
           <WinNumber>2</WinNumber>
-          <ItemText>lcdBuf</ItemText>
+          <ItemText>fcsMgr</ItemText>
         </Ww>
         <Ww>
           <count>2</count>
           <WinNumber>2</WinNumber>
-          <ItemText>p_sheets</ItemText>
+          <ItemText>lcdBuf</ItemText>
         </Ww>
         <Ww>
           <count>3</count>
           <WinNumber>2</WinNumber>
-          <ItemText>actKeyBlk</ItemText>
+          <ItemText>p_sheets</ItemText>
         </Ww>
         <Ww>
           <count>4</count>
           <WinNumber>2</WinNumber>
-          <ItemText>arr_pp_targetHmi</ItemText>
+          <ItemText>actKeyBlk</ItemText>
         </Ww>
         <Ww>
           <count>5</count>
+          <WinNumber>2</WinNumber>
+          <ItemText>arr_pp_targetHmi</ItemText>
+        </Ww>
+        <Ww>
+          <count>6</count>
           <WinNumber>2</WinNumber>
           <ItemText>cmd_count</ItemText>
         </Ww>
@@ -1017,7 +1022,7 @@
 
   <Group>
     <GroupName>Glyph</GroupName>
-    <tvExp>0</tvExp>
+    <tvExp>1</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>
@@ -1181,7 +1186,7 @@
 
   <Group>
     <GroupName>expression</GroupName>
-    <tvExp>0</tvExp>
+    <tvExp>1</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>

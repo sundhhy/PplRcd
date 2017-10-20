@@ -70,7 +70,7 @@ typedef struct{
 	int ( *getStrSize)( int font, uint16_t *width, uint16_t *heigh);
 	void ( *getScrnSize)( uint16_t *xsize, uint16_t *ysize);
 	void ( *picture)( int x1, int y1, char num);
-	void ( *cutPicture)( short x1, short y1, char num, short px1, short py1, char w, char h);
+	void ( *cutPicture)( short x1, short y1, short num, short px1, short py1, short w, short h);
 	void ( *bkPicture)( char m, short x1, short y1, char num);
 	void	(*done)(void);
 	void	(*icon)(int x1, int y1, char num, int xn, int yn, int n);

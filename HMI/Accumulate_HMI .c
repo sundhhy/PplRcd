@@ -137,7 +137,7 @@ static void	Alarm_initSheet(HMI *self)
 	
 	FormatSheetSub(g_p_boxlist);
 	p_cnt = Button_Get_subcnt(g_p_boxlist);
-	p_cnt->data = p_hmi_buf;
+	p_cnt->data = arr_p_hmi_buf[0];
 	sprintf(p_cnt->data, "%02d", cthis->cur_chn);
 	p_cnt->len = strlen(p_cnt->data);
 	

@@ -26,151 +26,25 @@ Project File Date:  10/15/2017
 
 <h2>Output:</h2>
 Build target 'Target 1'
-compiling main.c...
-compiling commHMI.c...
-HMI\commHMI.c(142): warning:  #177-D: variable "p_shtctl" was declared but never referenced
-        shtctl *p_shtctl = NULL;
-HMI\commHMI.c(143): warning:  #177-D: variable "p_exp" was declared but never referenced
-        Expr *p_exp ;
-HMI\commHMI.c(86): warning:  #177-D: variable "ico_search" was declared but never referenced
-  static ro_char ico_search[] = {"<bu vx0=240 vy0=212 bx=49 by=25 bkc=black clr=black><pic  bx=48  by=24 >24</></bu>"};
-HMI\commHMI.c(98): warning:  #177-D: variable "s_timer" was declared but never referenced
-  static char s_timer[TIME_BUF_LEN];
-HMI\commHMI.c: 4 warnings, 0 errors
-compiling HMIFactory.c...
-compiling mainHMI.c...
-HMI\mainHMI.c(176): warning:  #177-D: variable "cthis" was declared but never referenced
-        mainHmi                 *cthis = SUB_PTR( self, HMI, mainHmi);
-HMI\mainHMI.c(177): warning:  #177-D: variable "p_txtCnt" was declared but never referenced
-        ro_char                 *p_txtCnt;
-HMI\mainHMI.c(178): warning:  #550-D: variable "p_exp" was set but never used
+compiling Setting_HMI.c...
+HMI\Setting_HMI.c(110): warning:  #177-D: variable "cthis" was declared but never referenced
+        Setting_HMI             *cthis = SUB_PTR( self, HMI, Setting_HMI);
+HMI\Setting_HMI.c(111): warning:  #550-D: variable "p_exp" was set but never used
         Expr                    *p_exp ;
-HMI\mainHMI.c(179): warning:  #550-D: variable "p_shtctl" was set but never used
+HMI\Setting_HMI.c(112): warning:  #550-D: variable "p_shtctl" was set but never used
         shtctl                  *p_shtctl = NULL;
-HMI\mainHMI.c(180): warning:  #177-D: variable "pp_sht" was declared but never referenced
-        struct SHEET    **pp_sht;
-HMI\mainHMI.c(182): warning:  #177-D: variable "i" was declared but never referenced
-        short i,j;
-HMI\mainHMI.c(182): warning:  #177-D: variable "j" was declared but never referenced
-        short i,j;
-HMI\mainHMI.c(297): warning:  #177-D: variable "cthis" was declared but never referenced
-        mainHmi         *cthis = SUB_PTR( self, HMI, mainHmi);
-HMI\mainHMI.c(298): warning:  #177-D: variable "j" was declared but never referenced
-        int i, j;
-HMI\mainHMI.c(322): warning:  #177-D: variable "cthis" was declared but never referenced
-        mainHmi         *cthis = SUB_PTR( self, HMI, mainHmi);
-HMI\mainHMI.c(355): warning:  #177-D: variable "cthis" was declared but never referenced
-        mainHmi         *cthis = SUB_PTR( self, HMI, mainHmi);
-HMI\mainHMI.c(356): warning:  #177-D: variable "i" was declared but never referenced
-        int             i = 0;
-HMI\mainHMI.c(370): warning:  #177-D: variable "cthis" was declared but never referenced
-        mainHmi         *cthis = SUB_PTR( self, HMI, mainHmi);
-HMI\mainHMI.c(430): warning:  #177-D: variable "cthis" was declared but never referenced
-        mainHmi         *cthis = SUB_PTR( self, HMI, mainHmi);
-HMI\mainHMI.c(452): warning:  #177-D: variable "p_mdl" was declared but never referenced
-        Model           *p_mdl = NULL;
-HMI\mainHMI.c(514): warning:  #177-D: variable "space_to_bottom" was declared but never referenced
-        uint8_t         space_to_bottom =       0;
-HMI\mainHMI.c(515): warning:  #177-D: variable "space_to_left" was declared but never referenced
-        uint8_t         space_to_left =         0;      
-HMI\mainHMI.c(554): warning:  #177-D: variable "space_to_up" was declared but never referenced
-        uint8_t         space_to_up =           0;      
-HMI\mainHMI.c(556): warning:  #177-D: variable "space_to_left" was declared but never referenced
-        uint8_t         space_to_left =         0;      
-HMI\mainHMI.c(596): warning:  #177-D: variable "space_to_bottom" was declared but never referenced
-        uint8_t         space_to_bottom =       0;
-HMI\mainHMI.c(597): warning:  #177-D: variable "space_to_left" was declared but never referenced
-        uint8_t         space_to_left =         0;      
-HMI\mainHMI.c(45): warning:  #177-D: variable "MAIN_hmi_code_bkPic" was declared but never referenced
-  static ro_char MAIN_hmi_code_bkPic[] =  {"<bpic vx0=0 vy0=0 m=0 >20</>" };
-HMI\mainHMI.c(85): warning:  #177-D: function "BuildChnInfoPic" was declared but never referenced
-  static void BuildChnInfoPic( sheet *arr_p_sheets[ CHN_ROW + 2][CHN_COL], char total);
-HMI\mainHMI.c: 23 warnings, 0 errors
-compiling chnInfoPic.c...
-compiling menuHMI.c...
-compiling barGraphHmi.c...
-HMI\barGraphHmi.c(138): warning:  #177-D: variable "p_exp" was declared but never referenced
-        Expr                    *p_exp ;
-HMI\barGraphHmi.c(139): warning:  #550-D: variable "p_shtctl" was set but never used
-        shtctl                  *p_shtctl = NULL;
-HMI\barGraphHmi.c(240): warning:  #177-D: variable "cthis" was declared but never referenced
-        barGhHMI                *cthis = SUB_PTR( self, HMI, barGhHMI);
-HMI\barGraphHmi.c(252): warning:  #177-D: variable "cthis" was declared but never referenced
-        barGhHMI                *cthis = SUB_PTR( self, HMI, barGhHMI);
-HMI\barGraphHmi.c(321): warning:  #177-D: variable "cthis" was declared but never referenced
-        barGhHMI                *cthis = SUB_PTR( self, HMI, barGhHMI);
-HMI\barGraphHmi.c(485): warning:  #177-D: variable "p_mdl" was declared but never referenced
-        Model           *p_mdl = NULL;
-HMI\barGraphHmi.c: 6 warnings, 0 errors
-compiling dataHmi.c...
-HMI\dataHmi.c(132): warning:  #177-D: variable "cthis" was declared but never referenced
-        dataHMI         *cthis = SUB_PTR( self, HMI, dataHMI);
-HMI\dataHmi.c(133): warning:  #550-D: variable "p_exp" was set but never used
-        Expr                    *p_exp ;
-HMI\dataHmi.c(134): warning:  #550-D: variable "p_shtctl" was set but never used
-        shtctl                  *p_shtctl = NULL;
-HMI\dataHmi.c(156): warning:  #177-D: variable "cthis" was declared but never referenced
-        dataHMI                 *cthis = SUB_PTR( self, HMI, dataHMI);
-HMI\dataHmi.c(180): warning:  #177-D: variable "cthis" was declared but never referenced
-        dataHMI                 *cthis = SUB_PTR( self, HMI, dataHMI);
-HMI\dataHmi.c(203): warning:  #177-D: variable "cthis" was declared but never referenced
-        dataHMI         *cthis = SUB_PTR( self, HMI, dataHMI);
-HMI\dataHmi.c(246): warning:  #177-D: variable "p_mdl" was declared but never referenced
-        Model           *p_mdl = NULL;
-HMI\dataHmi.c(396): warning:  #177-D: variable "space_to_bottom" was declared but never referenced
-        uint8_t         space_to_bottom =       2;
-HMI\dataHmi.c(397): warning:  #177-D: variable "space_to_left" was declared but never referenced
-        uint8_t         space_to_left =         8;      
-HMI\dataHmi.c(440): warning:  #177-D: variable "space_to_up" was declared but never referenced
-        uint8_t         space_to_up =           2;      
-HMI\dataHmi.c(442): warning:  #177-D: variable "space_to_left" was declared but never referenced
-        uint8_t         space_to_left =         8;      
-HMI\dataHmi.c(476): warning:  #177-D: variable "right_x" was declared but never referenced
-        uint8_t         right_x = 160;
-HMI\dataHmi.c(481): warning:  #177-D: variable "space_to_up" was declared but never referenced
-        uint8_t         space_to_up =           2;      
-HMI\dataHmi.c(484): warning:  #177-D: variable "space_to_right" was declared but never referenced
-        uint8_t         space_to_right =        8;
-HMI\dataHmi.c(44): warning:  #177-D: variable "datahmi_code_bkPic" was declared but never referenced
-  static const char datahmi_code_bkPic[] =  {"<bpic vx0=0 vy0=0 m=0 >21</>" };
-HMI\dataHmi.c: 15 warnings, 0 errors
-compiling real_time_trendHmi.c...
-HMI\real_time_trendHmi.c(326): warning:  #177-D: variable "cthis" was declared but never referenced
-        RLT_trendHMI            *cthis = SUB_PTR(self, HMI, RLT_trendHMI);
-HMI\real_time_trendHmi.c(438): warning:  #177-D: variable "cthis" was declared but never referenced
-        RLT_trendHMI            *cthis = SUB_PTR( self, HMI, RLT_trendHMI);
-HMI\real_time_trendHmi.c(455): warning:  #177-D: variable "p_exp" was declared but never referenced
-        Expr                    *p_exp ;
-HMI\real_time_trendHmi.c(456): warning:  #550-D: variable "p_shtctl" was set but never used
-        shtctl                  *p_shtctl = NULL;
-HMI\real_time_trendHmi.c(459): warning:  #177-D: variable "data_vy" was declared but never referenced
-        uint8_t                 data_vy[6] = {65, 98, 128, 160, 195, 225};
-HMI\real_time_trendHmi.c(484): warning:  #177-D: variable "p_hmi" was declared but never referenced
-        HMI                             *p_hmi = SUPER_PTR(cthis, HMI);
-HMI\real_time_trendHmi.c(565): warning:  #177-D: variable "p_mdl" was declared but never referenced
-        Model           *p_mdl = NULL;
-HMI\real_time_trendHmi.c: 7 warnings, 0 errors
-compiling Accumulate_HMI .c...
-HMI\Accumulate_HMI .c(97): warning:  #177-D: variable "p_exp" was declared but never referenced
-        Expr                    *p_exp ;
-HMI\Accumulate_HMI .c(98): warning:  #550-D: variable "p_shtctl" was set but never used
-        shtctl                  *p_shtctl = NULL;
-HMI\Accumulate_HMI .c(99): warning:  #177-D: variable "i" was declared but never referenced
+HMI\Setting_HMI.c(113): warning:  #177-D: variable "i" was declared but never referenced
         short                           i = 0;  
-HMI\Accumulate_HMI .c(186): warning:  #177-D: variable "cthis" was declared but never referenced
-        Accm_HMI                *cthis = SUB_PTR( self, HMI, Accm_HMI);
-HMI\Accumulate_HMI .c: 4 warnings, 0 errors
-compiling Acc_day.c...
-HMI\Acc_day.c(67): warning:  #1-D: last line of file ends without a newline
-  }
-HMI\Acc_day.c: 1 warning, 0 errors
-compiling Acc_month.c...
-HMI\Acc_month.c(67): warning:  #1-D: last line of file ends without a newline
-  }
-HMI\Acc_month.c: 1 warning, 0 errors
+HMI\Setting_HMI.c(135): warning:  #177-D: variable "i" was declared but never referenced
+        int                     i, h = 0;
+HMI\Setting_HMI.c(425): warning:  #177-D: label "exit" was declared but never referenced
+        exit:
+HMI\Setting_HMI.c(236): warning:  #177-D: function "Setting_HMI_minus_focus" was declared but never referenced
+  static void Setting_HMI_minus_focus(Setting_HMI *self)
+HMI\Setting_HMI.c: 7 warnings, 0 errors
 linking...
-Program Size: Code=52132 RO-data=4112 RW-data=1036 ZI-data=26836  
-".\Objects\PplRcd.axf" - 0 Error(s), 61 Warning(s).
+Program Size: Code=53412 RO-data=4100 RW-data=1284 ZI-data=26860  
+".\Objects\PplRcd.axf" - 0 Error(s), 7 Warning(s).
 
 <h2>Software Packages used:</h2>
 
@@ -179,21 +53,21 @@ Package Vendor: ARM
                 ::CMSIS:RTOS:1.0 (API)
                 CMSIS (Cortex Microcontroller Software Interface Standard)
    * Component: RTOS Version: 1.0
-   * Component: CORE Version: 4.2.0
    * Component: Keil RTX Version: 4.79.0
+   * Component: CORE Version: 4.2.0
 
 Package Vendor: Keil
                 http://www.keil.com/pack/Keil.STM32F1xx_DFP.2.1.0.pack
-                Keil::Device:StdPeriph Drivers:RCC:3.5.0
+                Keil::Device:StdPeriph Drivers:Framework:3.5.1
                 STMicroelectronics STM32F1 Series Device Support, Drivers and Examples
-   * Component: RCC Version: 3.5.0
-   * Component: USART Version: 3.5.0
-   * Component: EXTI Version: 3.5.0
    * Component: Framework Version: 3.5.1
-   * Component: Flash Version: 3.5.0
-   * Component: GPIO Version: 3.5.0
-   * Component: TIM Version: 3.5.0
    * Component: Startup Version: 1.0.0
+   * Component: RCC Version: 3.5.0
+   * Component: TIM Version: 3.5.0
+   * Component: EXTI Version: 3.5.0
+   * Component: GPIO Version: 3.5.0
+   * Component: Flash Version: 3.5.0
+   * Component: USART Version: 3.5.0
    * Component: DMA Version: 3.5.0
 
 <h2>Collection of Component include folders:</h2>
@@ -209,59 +83,59 @@ Package Vendor: Keil
 
    * Component: ::CMSIS:RTOS:1.0 (API)
 
-   * Component: ARM::CMSIS:CORE:4.2.0
-
    * Component: ARM::CMSIS:RTOS:Keil RTX:4.79.0
-      Source file:   CMSIS\RTOS\RTX\Templates\RTX_Conf_CM.c
+      Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\Semaphore.c
+      Library file:  CMSIS\RTOS\RTX\LIB\ARM\RTX_CM3.lib
+      Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\main.c
       Source file:   CMSIS\RTOS\RTX\SRC\ARM\SVC_Table.s
-      Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\Thread.c
-      Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\Timer.c
-      Include file:  CMSIS\RTOS\RTX\UserCodeTemplates\osObjects.h
-      Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\MemPool.c
+      Source file:   CMSIS\RTOS\RTX\Templates\RTX_Conf_CM.c
       Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\MsgQueue.c
       Include file:  CMSIS\RTOS\RTX\INC\cmsis_os.h
-      Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\main.c
-      Library file:  CMSIS\RTOS\RTX\LIB\ARM\RTX_CM3.lib
       Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\Mutex.c
       Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\MailQueue.c
-      Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\Semaphore.c
+      Include file:  CMSIS\RTOS\RTX\UserCodeTemplates\osObjects.h
+      Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\Thread.c
+      Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\Timer.c
+      Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\MemPool.c
 
-   * Component: Keil::Device:StdPeriph Drivers:RCC:3.5.0
-      Include file:  Device\StdPeriph_Driver\inc\stm32f10x_rcc.h
-      Source file:   Device\StdPeriph_Driver\src\stm32f10x_rcc.c
-
-   * Component: Keil::Device:StdPeriph Drivers:USART:3.5.0
-      Source file:   Device\StdPeriph_Driver\src\stm32f10x_usart.c
-      Include file:  Device\StdPeriph_Driver\inc\stm32f10x_usart.h
-
-   * Component: Keil::Device:StdPeriph Drivers:EXTI:3.5.0
-      Source file:   Device\StdPeriph_Driver\src\stm32f10x_exti.c
-      Include file:  Device\StdPeriph_Driver\inc\stm32f10x_exti.h
+   * Component: ARM::CMSIS:CORE:4.2.0
 
    * Component: Keil::Device:StdPeriph Drivers:Framework:3.5.1
-      Source file:   Device\StdPeriph_Driver\src\misc.c
+      Source file:   Device\StdPeriph_Driver\templates\stm32f10x_it.c
       Include file:  Device\StdPeriph_Driver\inc\misc.h
       Include file:  Device\StdPeriph_Driver\templates\stm32f10x_it.h
+      Source file:   Device\StdPeriph_Driver\src\misc.c
       Source file:   Device\StdPeriph_Driver\templates\stm32f10x_conf.h
-      Source file:   Device\StdPeriph_Driver\templates\stm32f10x_it.c
-
-   * Component: Keil::Device:StdPeriph Drivers:Flash:3.5.0
-      Include file:  Device\StdPeriph_Driver\inc\stm32f10x_flash.h
-      Source file:   Device\StdPeriph_Driver\src\stm32f10x_flash.c
-
-   * Component: Keil::Device:StdPeriph Drivers:GPIO:3.5.0
-      Source file:   Device\StdPeriph_Driver\src\stm32f10x_gpio.c
-      Include file:  Device\StdPeriph_Driver\inc\stm32f10x_gpio.h
-
-   * Component: Keil::Device:StdPeriph Drivers:TIM:3.5.0
-      Include file:  Device\StdPeriph_Driver\inc\stm32f10x_tim.h
-      Source file:   Device\StdPeriph_Driver\src\stm32f10x_tim.c
 
    * Component: Keil::Device:Startup:1.0.0
       Source file:   Device\Source\ARM\STM32F1xx_OPT.s
       Source file:   Device\Source\ARM\startup_stm32f10x_hd.s
       Source file:   Device\Source\system_stm32f10x.c
       Include file:  RTE_Driver\Config\RTE_Device.h
+
+   * Component: Keil::Device:StdPeriph Drivers:RCC:3.5.0
+      Include file:  Device\StdPeriph_Driver\inc\stm32f10x_rcc.h
+      Source file:   Device\StdPeriph_Driver\src\stm32f10x_rcc.c
+
+   * Component: Keil::Device:StdPeriph Drivers:TIM:3.5.0
+      Source file:   Device\StdPeriph_Driver\src\stm32f10x_tim.c
+      Include file:  Device\StdPeriph_Driver\inc\stm32f10x_tim.h
+
+   * Component: Keil::Device:StdPeriph Drivers:EXTI:3.5.0
+      Include file:  Device\StdPeriph_Driver\inc\stm32f10x_exti.h
+      Source file:   Device\StdPeriph_Driver\src\stm32f10x_exti.c
+
+   * Component: Keil::Device:StdPeriph Drivers:GPIO:3.5.0
+      Include file:  Device\StdPeriph_Driver\inc\stm32f10x_gpio.h
+      Source file:   Device\StdPeriph_Driver\src\stm32f10x_gpio.c
+
+   * Component: Keil::Device:StdPeriph Drivers:Flash:3.5.0
+      Include file:  Device\StdPeriph_Driver\inc\stm32f10x_flash.h
+      Source file:   Device\StdPeriph_Driver\src\stm32f10x_flash.c
+
+   * Component: Keil::Device:StdPeriph Drivers:USART:3.5.0
+      Include file:  Device\StdPeriph_Driver\inc\stm32f10x_usart.h
+      Source file:   Device\StdPeriph_Driver\src\stm32f10x_usart.c
 
    * Component: Keil::Device:StdPeriph Drivers:DMA:3.5.0
       Include file:  Device\StdPeriph_Driver\inc\stm32f10x_dma.h

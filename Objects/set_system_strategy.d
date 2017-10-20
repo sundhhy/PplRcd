@@ -31,8 +31,3 @@
 .\objects\set_system_strategy.o: HMI\commHMI.h
 .\objects\set_system_strategy.o: HMI\keyboardHMI.h
 .\objects\set_system_strategy.o: HMI\Setting_HMI.h
-.\objects\set_system_strategy.o: .\Expression\ExpFactory.h
-.\objects\set_system_strategy.o: .\Expression\expression.h
-.\objects\set_system_strategy.o: .\Views\Composition.h
-.\objects\set_system_strategy.o: .\Expression\Reader.h
-.\objects\set_system_strategy.o: E:\mylib\sdhLib\inc\basis/assert.h
