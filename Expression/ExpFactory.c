@@ -67,11 +67,11 @@ Expr *ExpCreate( char *type)
 	
 	//不注意大小写
 	//动态显示图元
-	p = strstr( type, "time");
-	if( p)
-	{
-		return (Expr *)GetTimeExpr();
-	}
+//	p = strstr( type, "time");
+//	if( p)
+//	{
+//		return (Expr *)GetTimeExpr();
+//	}
 	
 	if( !strcasecmp( type, "bu"))
 	{

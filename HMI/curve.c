@@ -11,9 +11,8 @@
 //------------------------------------------------------------------------------
 // module global vars
 //------------------------------------------------------------------------------
-curve_ctl_t		g_curve[6];
+curve_ctl_t		g_curve[NUM_CHANNEL];
 sheet  		*g_p_curve_bkg;
-char		*arr_p_hmi_buf[6];
 //------------------------------------------------------------------------------
 // global function prototypes
 //------------------------------------------------------------------------------
@@ -55,11 +54,9 @@ void Curve_init(void)
 {
 	Expr 			*p_exp ;
 	shtctl 			*p_shtctl = NULL;
-	int				i;
+//	int				i;
 	
-	for(i = 0; i < 6; i++) {
-		arr_p_hmi_buf[i] = g_curve[i].points;
-	}
+
 	
 	
 	
@@ -121,7 +118,7 @@ void Curve_add_point(curve_ctl_t *p_cctl, int val)
 
 void Curve_draw(curve_ctl_t *p_cctl)
 {
-	short 	i = 0;
+//	short 	i = 0;
 	short	points = 0;
 	
 	if(p_cctl->flags == CURVE_HIDE)
@@ -298,3 +295,5 @@ static void Curve_draw_right_to_left(curve_ctl_t *p_cctl)
 {
 	
 }
+
+

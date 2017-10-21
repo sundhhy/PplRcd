@@ -65,3 +65,5 @@ static int AccDay_Strategy_entry(int row, int col, void *pp_text)
 	
 	return 0;
 }
+
+

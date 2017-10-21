@@ -60,6 +60,8 @@ static void	Setting_HMI_init_focus(HMI *self);
 static void	Setting_HMI_clear_focus(HMI *self, uint8_t fouse_row, uint8_t fouse_col);
 static void	Setting_HMI_show_focus(HMI *self, uint8_t fouse_row, uint8_t fouse_col);
 static void	Setting_HMI_hitHandle( HMI *self, char *s_key);
+static void	Setting_HMI_longpush( HMI *self, char *s_key);
+
 
 static void	Show_entry(HMI *self, strategy_t *p_st);
 static int Show_more(HMI *self, int up_or_dn);
@@ -93,6 +95,8 @@ FUNCTION_SETTING(HMI.hide, Setting_HMI_hide);
 FUNCTION_SETTING(HMI.show, Show_Setting_HMI);
 
 FUNCTION_SETTING(HMI.hitHandle, Setting_HMI_hitHandle);
+FUNCTION_SETTING(HMI.longpushHandle, Setting_HMI_longpush);
+
 FUNCTION_SETTING(HMI.init_focus, Setting_HMI_init_focus);
 FUNCTION_SETTING(HMI.clear_focus, Setting_HMI_clear_focus);
 FUNCTION_SETTING(HMI.show_focus, Setting_HMI_show_focus);
@@ -107,14 +111,14 @@ END_CTOR
 
 static int	Init_Setting_HMI(HMI *self, void *arg)
 {
-	Setting_HMI		*cthis = SUB_PTR( self, HMI, Setting_HMI);
-	Expr 			*p_exp ;
-	shtctl 			*p_shtctl = NULL;
-	short				i = 0;	
-	p_shtctl = GetShtctl();
-	
+//	Setting_HMI		*cthis = SUB_PTR( self, HMI, Setting_HMI);
+//	Expr 			*p_exp ;
+//	shtctl 			*p_shtctl = NULL;
+//	short				i = 0;	
+//	p_shtctl = GetShtctl();
+//	
 
-	p_exp = ExpCreate( "pic");
+//	p_exp = ExpCreate( "pic");
 	
 		
 	return RET_OK;
@@ -132,9 +136,9 @@ static void Show_Setting_HMI(HMI *self)
 static void	Setting_initSheet(HMI *self)
 {
 	Setting_HMI		*cthis = SUB_PTR( self, HMI, Setting_HMI);
-	int  			i, h = 0;
-	Expr 			*p_exp ;
-	shtctl 			*p_shtctl = NULL;
+	int  		 			h = 0;
+	Expr 					*p_exp ;
+	shtctl 				*p_shtctl = NULL;
 	p_shtctl = GetShtctl();
 	
 	cthis->p_sy = arr_p_setting_strategy[self->arg[0]][self->arg[1]];
@@ -274,11 +278,25 @@ static sheet* Setting_HMI_get_focus(Setting_HMI *self, int arg)
 
 static void Strategy_focus(Setting_HMI *self, strategy_focus_t *p_syf, int opt)
 {
+	int f_data_len = 0;
 	uint16_t	txt_xsize, txt_ysize;
 	self->p_sht_text->p_gp->getSize(self->p_sht_text->p_gp, self->p_sht_text->cnt.font, &txt_xsize, &txt_ysize);
+	
+	if(opt == 2) {
+		//重新刷新选择区域的值
+		f_data_len = self->p_sy->get_focus_data(&self->p_sht_text->cnt.data);
+		if(f_data_len <= 0)
+			return;
+		self->p_sht_text->cnt.len = f_data_len;
+		self->p_sht_text->area.x0 = self->col_vx0[p_syf->f_col] + txt_xsize * p_syf->start_byte;
+		self->p_sht_text->area.y0 = Stripe_vy(p_syf->f_row) + txt_ysize;
+		self->p_sht_text->p_gp->vdraw(self->p_sht_text->p_gp, &self->p_sht_text->cnt, &self->p_sht_text->area);
+		return;
+	}
+	
 	if(opt == 0) {
 		self->p_sht_CUR->cnt.colour = Stripe_clean_clr(p_syf->f_row);
-	} else {
+	} else if(opt == 1){
 		
 		self->p_sht_CUR->cnt.colour = STRIPE_CLR_FOCUSE;
 	}
@@ -325,7 +343,7 @@ static void	Setting_HMI_hitHandle(HMI *self, char *s_key)
 			} 
 		} else {
 			
-			Setting_HMI_add_focus(cthis);
+			Setting_HMI_minus_focus(cthis);
 			chgFouse = 1;
 		}
 		
@@ -352,20 +370,11 @@ static void	Setting_HMI_hitHandle(HMI *self, char *s_key)
 		if(cthis->strategy_flag & FOCUS_IN_STARTEGY) {
 			
 			if(p_sy->key_hit_up(NULL) == RET_OK) {
-				
-				sy_chgFouse = 1;
-			} else {
-				sy_chgFouse = 2;
-				
-				CLR_PG_FLAG(cthis->strategy_flag, FOCUS_IN_STARTEGY);
-				
-			}  
-		} else {
-			self->clear_focus(self, 0, focusCol);
-			Strategy_focus(cthis, &cthis->p_sy->sf, 1);
-			SET_PG_FLAG(cthis->strategy_flag, FOCUS_IN_STARTEGY);
-			
-		}
+				//编辑区内的上下操作是用来修改参数的
+				//因此在修改参数成功之后，要重新显示被选中区的值
+				sy_chgFouse = 3;
+			} 
+		} 
 		
 	}
 	
@@ -375,25 +384,19 @@ static void	Setting_HMI_hitHandle(HMI *self, char *s_key)
 			
 			if(p_sy->key_hit_dn(NULL) == RET_OK) {
 				
-				sy_chgFouse = 1;
-			} else {
-				sy_chgFouse = 2;
-				CLR_PG_FLAG(cthis->strategy_flag, FOCUS_IN_STARTEGY);
-				
-			}  
-		} else {
-			self->clear_focus(self, 0, focusCol);
-			Strategy_focus(cthis, &cthis->p_sy->sf, 1);
-			SET_PG_FLAG(cthis->strategy_flag, FOCUS_IN_STARTEGY);
-			
-		}
+				sy_chgFouse = 3;
+			} 
+		} 
 	}
 	
 	
 	if( !strcmp(s_key, HMIKEY_ENTER))
 	{	
-		if(p_sy->key_hit_er(NULL) == RET_OK) {
+		if(cthis->strategy_flag & FOCUS_IN_STARTEGY) {
 			
+			if(p_sy->key_hit_er(NULL) == RET_OK) {
+			
+			}
 		} else {
 			p_focus = Setting_HMI_get_focus(cthis, -1);
 			if(Show_more(self, p_focus->id) == ERR_OPT_FAILED) {
@@ -416,14 +419,90 @@ static void	Setting_HMI_hitHandle(HMI *self, char *s_key)
 		//光标从编辑区跳出
 		Strategy_focus(cthis, &cthis->p_sy->sf, 0);
 		self->show_focus(self, 0, 0);
+	} else if(sy_chgFouse ==3){
+		//刷新选择区域的值
+		Strategy_focus(cthis, &cthis->p_sy->sf, 2);
 	}else if( chgFouse) {	
 		self->clear_focus(self, 0, focusCol);
 		self->show_focus(self, 0, 0);
 		
 	}
 	
-	exit:
+//	exit:
 		return;
+}
+
+//长按按键:up,dn 来对光标的行进行切换
+//切换有两种情况:编辑区内的行切换, 编辑区内外之间的切换
+static void	Setting_HMI_longpush( HMI *self, char *s_key)
+{
+	Setting_HMI		*cthis = SUB_PTR( self, HMI, Setting_HMI);
+	strategy_keyval_t	skt = {SY_KEYTYPE_LONGPUSH};
+	strategy_focus_t	old_sf;
+	uint8_t		focusCol = cthis->f_col;
+	uint8_t		sy_chgFouse = 0;
+
+	old_sf.f_col = cthis->p_sy->sf.f_col;
+	old_sf.f_row = cthis->p_sy->sf.f_row;
+	old_sf.start_byte = cthis->p_sy->sf.start_byte;
+	old_sf.num_byte =cthis->p_sy->sf.num_byte;
+	
+	
+	if( !strcmp( s_key, HMIKEY_UP) )
+	{
+		
+		if(cthis->strategy_flag & FOCUS_IN_STARTEGY) {
+			//光标位于编辑区，则用编辑区的处理函数处理
+			
+			if(cthis->p_sy->key_hit_up(&skt) == RET_OK) {
+				
+				sy_chgFouse = 1;
+			} else {
+				//如果在编辑区内部切换产生了错误，则认为行已经超出了编辑区的范围了，将光标切换到编辑区外
+				sy_chgFouse = 2;
+				
+				CLR_PG_FLAG(cthis->strategy_flag, FOCUS_IN_STARTEGY);
+				
+			}  
+		} else {
+			//在界面中，只有一行，因此任何的行切换操作，都意味将光标切到编辑区内
+			//吧光标切回编辑区之前，先将编辑区之外的光标清除掉
+			self->clear_focus(self, 0, focusCol);
+			Strategy_focus(cthis, &cthis->p_sy->sf, 1);
+			SET_PG_FLAG(cthis->strategy_flag, FOCUS_IN_STARTEGY);
+			
+		}
+		
+	}
+	
+	if( !strcmp( s_key, HMIKEY_DOWN) )
+	{
+		if(cthis->strategy_flag & FOCUS_IN_STARTEGY) {
+			
+			if(cthis->p_sy->key_hit_dn(&skt) == RET_OK) {
+				
+				sy_chgFouse = 1;
+			} else {
+				sy_chgFouse = 2;
+				CLR_PG_FLAG(cthis->strategy_flag, FOCUS_IN_STARTEGY);
+				
+			}  
+		} else {
+			self->clear_focus(self, 0, focusCol);
+			Strategy_focus(cthis, &cthis->p_sy->sf, 1);
+			SET_PG_FLAG(cthis->strategy_flag, FOCUS_IN_STARTEGY);
+			
+		}
+	}
+	if(sy_chgFouse == 1) {
+		Strategy_focus(cthis, &old_sf, 0);
+		Strategy_focus(cthis, &cthis->p_sy->sf, 1);
+	} else if(sy_chgFouse == 2){
+		//光标从编辑区跳出
+		Strategy_focus(cthis, &cthis->p_sy->sf, 0);
+		self->show_focus(self, 0, 0);
+	}
+	
 }
 static void Clean_stripe(HMI *self)
 {

@@ -66,3 +66,5 @@ static int ViewStrategy_entry(int row, int col, void *pp_text)
 	
 	return 0;
 }
+
+

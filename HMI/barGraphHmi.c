@@ -135,10 +135,10 @@ END_CTOR
 static int	Init_barGhHMI( HMI *self, void *arg)
 {
 	barGhHMI		*cthis = SUB_PTR( self, HMI, barGhHMI);
-	Expr 			*p_exp ;
-	shtctl 			*p_shtctl = NULL;
+//	Expr 			*p_exp ;
+//	shtctl 			*p_shtctl = NULL;
 	
-	p_shtctl = GetShtctl();
+//	p_shtctl = GetShtctl();
 	
 	//³õÊ¼»¯±³¾°Í¼Æ¬
 //	p_exp = ExpCreate( "pic");
@@ -237,7 +237,7 @@ static void BarHmi_HideSheet( HMI *self )
 
 static void	BarHmi_Show( HMI *self )
 {
-	barGhHMI		*cthis = SUB_PTR( self, HMI, barGhHMI);
+//	barGhHMI		*cthis = SUB_PTR( self, HMI, barGhHMI);
 	g_p_curHmi = self;
 	
 	
@@ -249,7 +249,7 @@ static void	BarHmi_Show( HMI *self )
 
 static void	BarHmi_HitHandle( HMI *self, char *s)
 {
-	barGhHMI		*cthis = SUB_PTR( self, HMI, barGhHMI);
+//	barGhHMI		*cthis = SUB_PTR( self, HMI, barGhHMI);
 	shtCmd		*p_cmd;
 //	HMI 		**pp_trgtHmi;
 //	uint8_t		focusRow = cthis->focusRow;
@@ -318,7 +318,7 @@ static void	BarHmi_HitHandle( HMI *self, char *s)
 
 static void BarHmi_InitFouse( HMI *self )
 {
-	barGhHMI		*cthis = SUB_PTR( self, HMI, barGhHMI);
+//	barGhHMI		*cthis = SUB_PTR( self, HMI, barGhHMI);
 	
 	
 	self->p_fcuu = Focus_alloc(1, 4);
@@ -482,7 +482,7 @@ static void Init_bar( barGhHMI *self)
 static void BarHmi_Init_chnSht(void)
 {
 	Expr 		*p_exp ;
-	Model		*p_mdl = NULL;
+//	Model		*p_mdl = NULL;
 	int			i = 0;
 	p_exp = ExpCreate( "text");
 	for(i = 0; i < NUM_CHANNEL; i++) {

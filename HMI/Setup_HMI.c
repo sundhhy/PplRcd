@@ -96,29 +96,29 @@ END_CTOR
 
 static int	Init_Setup_HMI(HMI *self, void *arg)
 {
-	Setup_HMI		*cthis = SUB_PTR( self, HMI, Setup_HMI);
-	Expr 			*p_exp ;
-	shtctl 			*p_shtctl = NULL;
-	short				i = 0;	
-	p_shtctl = GetShtctl();
-	
+//	Setup_HMI		*cthis = SUB_PTR( self, HMI, Setup_HMI);
+//	Expr 			*p_exp ;
+//	shtctl 			*p_shtctl = NULL;
+//	short				i = 0;	
+//	p_shtctl = GetShtctl();
+//	
 
-	p_exp = ExpCreate( "pic");
-	
+//	p_exp = ExpCreate( "pic");
+//	
 		
 	return RET_OK;
 }
 
 static void Show_Setup_HMI(HMI *self)
 {
-	Setup_HMI		*cthis = SUB_PTR( self, HMI, Setup_HMI);
+//	Setup_HMI		*cthis = SUB_PTR( self, HMI, Setup_HMI);
 	Sheet_refresh(g_p_sht_bkpic);
 }
 static void	Setup_initSheet(HMI *self)
 {
 	Setup_HMI		*cthis = SUB_PTR( self, HMI, Setup_HMI);
-	int  			i, h = 0;
-	Expr 			*p_exp ;
+	int  				h = 0;
+	Expr 				*p_exp ;
 	shtctl 			*p_shtctl = NULL;
 	p_shtctl = GetShtctl();
 	
@@ -164,7 +164,7 @@ static void	Setup_HMI_hide(HMI *self)
 
 static void	Setup_HMI_init_focus(HMI *self)
 {
-	Setup_HMI		*cthis = SUB_PTR( self, HMI, Setup_HMI);
+//	Setup_HMI		*cthis = SUB_PTR( self, HMI, Setup_HMI);
 	short i;
 	self->p_fcuu = Focus_alloc(5, 2);
 	
@@ -204,7 +204,7 @@ static void	Setup_HMI_clear_focus(HMI *self, uint8_t fouse_row, uint8_t fouse_co
 }
 static void	Setup_HMI_show_focus(HMI *self, uint8_t fouse_row, uint8_t fouse_col)
 {
-	Setup_HMI		*cthis = SUB_PTR( self, HMI, Setup_HMI);
+//	Setup_HMI		*cthis = SUB_PTR( self, HMI, Setup_HMI);
 	uint8_t			row, col;
 	uint8_t			vx0 = 0;
 	uint8_t			vy0 = 80;
@@ -231,7 +231,7 @@ static void	Setup_HMI_show_focus(HMI *self, uint8_t fouse_row, uint8_t fouse_col
 static void	Setup_HMI_hitHandle(HMI *self, char *s_key)
 {
 	
-	Setup_HMI		*cthis = SUB_PTR( self, HMI, Setup_HMI);
+//	Setup_HMI		*cthis = SUB_PTR( self, HMI, Setup_HMI);
 	sheet		*p_focus;
 	shtCmd		*p_cmd;
 	uint8_t		focusRow = self->p_fcuu->focus_row;

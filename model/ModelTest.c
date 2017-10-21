@@ -190,7 +190,6 @@ static char* MdlTest_to_string( Model *self, IN int aux, void *arg)
 			else
 				sprintf( p, "%d", cthis->i_rand);
 			return p;
-			break;
 		default:
 			break;
 			

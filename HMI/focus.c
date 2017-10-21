@@ -47,7 +47,7 @@ static sheet *arr_p_focus_shts[MAX_FOCUS];
 // local function prototypes
 //------------------------------------------------------------------------------
 static int  Focus_find(int rows, int columns);
-static sheet*  Focus_getSht(int rows, int columns);
+//static sheet*  Focus_getSht(int rows, int columns);
 //============================================================================//
 //            P U B L I C   F U N C T I O N S                                 //
 //============================================================================//
@@ -65,7 +65,7 @@ void Focus_init(void)
 focus_user_t* Focus_alloc(int rows, int columns)
 {
 	focus_user_t	*p_fcu = NULL;
-	sheet			*p_sht = NULL;
+//	sheet			*p_sht = NULL;
 	int	i = 0;
 	
 	
@@ -232,3 +232,5 @@ static int  Focus_find(int rows, int columns)
 //	
 //	
 //}
+
+

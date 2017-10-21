@@ -323,7 +323,7 @@ static int	RLT_div_input(void *self, void *data, int len)
 }
 static void	RT_trendHmi_Show( HMI *self )
 {
-	RLT_trendHMI		*cthis = SUB_PTR(self, HMI, RLT_trendHMI);
+//	RLT_trendHMI		*cthis = SUB_PTR(self, HMI, RLT_trendHMI);
 	g_p_curHmi = self;
 	
 	
@@ -435,7 +435,7 @@ static void RT_trendHmi_EnterCmdHdl( shtCmd *self, struct SHEET *p_sht, void *ar
 
 static void RLT_dataVisual( HMI *self, void *arg)
 {
-	RLT_trendHMI		*cthis = SUB_PTR( self, HMI, RLT_trendHMI);
+//	RLT_trendHMI		*cthis = SUB_PTR( self, HMI, RLT_trendHMI);
 	int					i;
 	
 	for(i = 0; i < RLTHMI_NUM_CURVE; i++) {
@@ -452,14 +452,14 @@ static void RLT_dataVisual( HMI *self, void *arg)
 static void Bulid_rtCurveSheet( RLT_trendHMI *self)
 {
 	
-	Expr 			*p_exp ;
-	shtctl 			*p_shtctl = NULL;
+//	Expr 			*p_exp ;
+//	shtctl 			*p_shtctl = NULL;
 	Model			*p_mdl = NULL;
 //	short 			i;
-	uint8_t			data_vy[6] = {65, 98, 128, 160, 195, 225};
+//	uint8_t			data_vy[6] = {65, 98, 128, 160, 195, 225};
 	
 	
-	p_shtctl = GetShtctl();
+//	p_shtctl = GetShtctl();
 
 //	for( i = 0; i < RLTHMI_NUM_CURVE; i++) {
 //		
@@ -481,7 +481,7 @@ static void Bulid_rtCurveSheet( RLT_trendHMI *self)
 static int RLT_trendHmi_MdlUpdata( Observer *self, void *p_srcMdl)
 {
 	RLT_trendHMI 	*cthis = SUB_PTR( self, Observer, RLT_trendHMI);
-	HMI				*p_hmi = SUPER_PTR(cthis, HMI);
+//	HMI				*p_hmi = SUPER_PTR(cthis, HMI);
 	Model			*p_mdl ;
 	
 	int				range = 100;
@@ -562,7 +562,7 @@ static void RLT_Init_curve(RLT_trendHMI *self)
 static void RLTHmi_Init_chnSht(void)
 {
 	Expr 		*p_exp ;
-	Model		*p_mdl = NULL;
+//	Model		*p_mdl = NULL;
 	uint8_t			data_vy[6] = {65, 98, 128, 160, 195, 225};
 	uint16_t			i = 0;
 	p_exp = ExpCreate( "text");

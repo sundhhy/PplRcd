@@ -24,9 +24,12 @@ typedef struct {
 	uint8_t		columns;
 	uint8_t		focus_row;
 	uint8_t		focus_col;
+	short		first_idx;		//
+
 	uint8_t		flags;
-	uint8_t		first_idx;		//
-	uint8_t		none[2];
+
+
+	uint8_t		none;
 //	sheet		*p_firstSht;
 }focus_user_t;
 

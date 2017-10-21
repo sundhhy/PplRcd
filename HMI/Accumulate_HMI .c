@@ -94,10 +94,10 @@ END_CTOR
 static int	Init_Accm_HMI(HMI *self, void *arg)
 {
 	Accm_HMI		*cthis = SUB_PTR( self, HMI, Accm_HMI);
-	Expr 			*p_exp ;
-	shtctl 			*p_shtctl = NULL;
-	short				i = 0;	
-	p_shtctl = GetShtctl();
+//	Expr 			*p_exp ;
+//	shtctl 			*p_shtctl = NULL;
+//	short				i = 0;	
+//	p_shtctl = GetShtctl();
 	
 	cthis->cur_chn = 0;
 	
@@ -120,6 +120,9 @@ static void	Alarm_initSheet(HMI *self)
 	int  			h = 0;
 	Expr 			*p_exp ;
 	shtctl 			*p_shtctl = NULL;
+	
+	VRAM_init();
+	
 	p_shtctl = GetShtctl();
 	
 	p_exp = ExpCreate( "pic");
@@ -137,7 +140,7 @@ static void	Alarm_initSheet(HMI *self)
 	
 	FormatSheetSub(g_p_boxlist);
 	p_cnt = Button_Get_subcnt(g_p_boxlist);
-	p_cnt->data = arr_p_hmi_buf[0];
+	p_cnt->data = VRAM_alloc(40);
 	sprintf(p_cnt->data, "%02d", cthis->cur_chn);
 	p_cnt->len = strlen(p_cnt->data);
 	
@@ -183,7 +186,7 @@ static void	Accm_HMI_hide(HMI *self)
 
 static void	Accm_HMI_init_focus(HMI *self)
 {
-	Accm_HMI		*cthis = SUB_PTR( self, HMI, Accm_HMI);
+//	Accm_HMI		*cthis = SUB_PTR( self, HMI, Accm_HMI);
 	self->p_fcuu = Focus_alloc(1, 2);
 	
 	Focus_Set_focus(self->p_fcuu, 0, 0);

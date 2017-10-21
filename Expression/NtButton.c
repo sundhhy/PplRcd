@@ -93,9 +93,9 @@ static void * BuInptSht( Expr *self, void *context, sheet *p_sht)
 	char	*att = expTempBUf;
 	Expr 	*p_exp ;
 	int 	ret = 0;
-	char	name[7];
+//	char	name[7];
 	char	nameLen = 7;
-	char 	tmpbuf[4] = {0};
+//	char 	tmpbuf[4] = {0};
 
 	GetAttribute( context, att, TEMPBUF_LEN);
 	Set_shtContextAtt( att, p_sht);

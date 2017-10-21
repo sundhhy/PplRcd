@@ -136,6 +136,8 @@ int Dev_Uart_write( I_dev_Char *self, void *buf, int wrLen)
 //	Sem_wait(cthis->p_lock, FOREVER);
 	ret = driUart->write( driUart, buf, wrLen);
 //	Sem_post(cthis->p_lock);
+	
+	return ret;
 }
 
 int Dev_Uart_ioctol( I_dev_Char *self ,int cmd, ...)

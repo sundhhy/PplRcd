@@ -47,10 +47,10 @@
 #define INPUTMETHOD_LOWER			1
 #define INPUTMETHOD_DIGIT			2
 
-const char KEY_123			=		-1;
-const char KEY_backspace	=		-2;
-const char KEY_GO			=		-3;
-const char KEY_Return		=		-4;
+const char KEY_123			=		0xff;
+const char KEY_backspace	=		0xfe;
+const char KEY_GO			=		0xfd;
+const char KEY_Return		=		0xfc;
 
 const char virKey_uppercase_Code[] = { "<pic vx0=0 vy0=40 >1</>" };
 const char virKey_uppercaseFocus_Code[] = { "<cpic vx0=0 vy0=0 >2</>" };
@@ -95,9 +95,9 @@ keyvalptr  arr_p_keyval[NUM_VIRKEY]= { uppKeyVal, lowerKeyVal, digitKeyVal};
 typedef struct {
 	uint16_t		pvx0, pvy0;
 	uint16_t		pvx1, pvy1;
-	char		val;
-	uint8_t		rownum, colnum;
-	uint8_t		none;
+	uint8_t			val;
+	uint8_t			rownum, colnum;
+	uint8_t			none;
 }virKeyInfo_t;
 
 typedef struct {
@@ -516,17 +516,17 @@ static void KeyboardEnterCmdHdl( shtCmd *self, struct SHEET *p_sht, void *arg)
 
 
 /*********** vir key *****************************************/
-static void VKeyClone( virKeyInfo_t *p_dstVkey, virKeyInfo_t *p_srcVkey)
-{
-	p_dstVkey->pvx0 = p_srcVkey->pvx0;
-	p_dstVkey->pvx1 = p_srcVkey->pvx1;
-	p_dstVkey->pvy0 = p_srcVkey->pvy0;
-	p_dstVkey->pvy1 = p_srcVkey->pvy1;
-	p_dstVkey->val = p_srcVkey->val;
-	p_dstVkey->rownum = p_srcVkey->rownum;
-	p_dstVkey->colnum = p_srcVkey->colnum;
-	
-}
+//static void VKeyClone( virKeyInfo_t *p_dstVkey, virKeyInfo_t *p_srcVkey)
+//{
+//	p_dstVkey->pvx0 = p_srcVkey->pvx0;
+//	p_dstVkey->pvx1 = p_srcVkey->pvx1;
+//	p_dstVkey->pvy0 = p_srcVkey->pvy0;
+//	p_dstVkey->pvy1 = p_srcVkey->pvy1;
+//	p_dstVkey->val = p_srcVkey->val;
+//	p_dstVkey->rownum = p_srcVkey->rownum;
+//	p_dstVkey->colnum = p_srcVkey->colnum;
+//	
+//}
 
 static void VKeyClean( virKeyInfo_t *p_vkey)
 {

@@ -16,6 +16,7 @@
 // const defines
 //------------------------------------------------------------------------------
 #define NUM_CHANNEL			6
+#define CURVE_POINT			240
 
 #define	ICO_ID_MENU				0x20
 #define	ICO_ID_PGUP				0x21
@@ -39,6 +40,9 @@
 #define STRIPE_CLR_1			COLOUR_GRAY
 #define STRIPE_CLR_2			COLOUR_BLACK
 #define STRIPE_CLR_FOCUSE		COLOUR_BLUE
+
+#define OP_ADD				0
+#define OP_SUB				0
  //------------------------------------------------------------------------------
 // typedef
 //------------------------------------------------------------------------------
@@ -52,6 +56,19 @@ CLASS( cmmHmi)
 	
 	
 };
+
+//曲线管理器
+typedef struct {
+	uint8_t		num_points;
+	uint8_t		current_idx;
+	uint8_t		start_idx;
+	uint8_t		flags;		//是否显示等属性
+	uint8_t		colour;
+	uint8_t		start_x;	
+	uint8_t		direct;		//0:从左到右 1：从右到左
+	uint8_t		step;		//每个坐标移动的距离
+	uint8_t		points[CURVE_POINT];
+}curve_ctl_t;
 //------------------------------------------------------------------------------
 // global variable declarations
 //------------------------------------------------------------------------------
@@ -77,6 +94,8 @@ extern	const char		arr_clrs[NUM_CHANNEL];
 extern	hmiAtt_t		CmmHmiAtt;
 extern 	keyboardHMI		*g_keyHmi;
 extern 	ro_char 		news_cpic[];
+extern curve_ctl_t		g_curve[NUM_CHANNEL];
+
 //HMI
 extern 	HMI 			*g_p_mainHmi;
 extern 	HMI 			*g_p_HMI_menu;
@@ -93,7 +112,6 @@ extern 	HMI 			*g_p_Setup_HMI;
 extern 	HMI 			*g_p_Setting_HMI;
 
 
-extern char			*arr_p_hmi_buf[6];
 //------------------------------------------------------------------------------
 // function prototypes
 //------------------------------------------------------------------------------
@@ -102,4 +120,8 @@ cmmHmi *GetCmmHMI(void);
 extern void Build_ChnSheets(void);
 extern int Stripe_clean_clr(int row);
 extern int Stripe_vy(int row) ;
+
+extern void VRAM_init(void);
+extern void *VRAM_alloc(int bytes);
+extern void Str_Calculations(char *p_str, int len, int hex, int op, int val, int rangel, int rangeh);
 #endif

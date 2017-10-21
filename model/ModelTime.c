@@ -17,7 +17,7 @@
 // module global vars
 //------------------------------------------------------------------------------
 
-
+const	char	g_moth_day[12] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
 //------------------------------------------------------------------------------
 // global function prototypes
 //------------------------------------------------------------------------------
@@ -44,6 +44,7 @@ static char s_timer[16];
 //------------------------------------------------------------------------------
 /* Cycle/Sync Callback functions */
 static char* MdlTime_to_string( Model *self, IN int aux, void *arg);
+static int MdlTime_set_by_string( Model *self, IN int aux, void *arg);
 //============================================================================//
 //            P U B L I C   F U N C T I O N S                                 //
 //============================================================================//
@@ -99,6 +100,8 @@ CTOR( ModelTime)
 SUPER_CTOR( Model);
 FUNCTION_SETTING( Model.init, MdlTime_init);
 FUNCTION_SETTING( Model.getMdlData, MdlTime_getData);
+FUNCTION_SETTING( Model.set_by_string, MdlTime_set_by_string);
+
 FUNCTION_SETTING( Model.to_string, MdlTime_to_string);
 
 END_CTOR
@@ -123,7 +126,7 @@ static char* MdlTime_to_string( Model *self, IN int aux, void *arg)
 		case 1:
 			if(arg == NULL)
 				break;
-			sprintf(arg, "%02d:%02d:%02d  %02d:%02d:%02d", p_tm->tm_year, p_tm->tm_mon, p_tm->tm_mday, \
+			sprintf(arg, "%02d:%02d:%02d %02d:%02d:%02d", p_tm->tm_year, p_tm->tm_mon, p_tm->tm_mday, \
 				p_tm->tm_hour, p_tm->tm_min, p_tm->tm_sec);
 			return arg;
 		default:break;
@@ -134,3 +137,73 @@ static char* MdlTime_to_string( Model *self, IN int aux, void *arg)
 	
 }
 
+
+static int MdlTime_set_by_string( Model *self, IN int aux, void *arg)
+{
+	struct  tm	t = {0};
+	struct  tm	*p_tm= (struct  tm	*) self->coreData;
+	short		i;
+	short		val;
+	char	s_data[4];
+	switch(aux) {
+		case 0:
+			return RET_OK;
+		case 1:
+			//"%02d:%02d:%02d %02d:%02d:%02d", p_tm->tm_year, p_tm->tm_mon, p_tm->tm_mday, \
+				p_tm->tm_hour, p_tm->tm_min, p_tm->tm_sec
+			if(arg == NULL)
+				break;
+			for(i = 0; i < 6; i+=3) {
+				
+				memcpy(s_data, (char *)arg + i, 2);
+				s_data[2] = 0;
+				val = atoi(s_data);
+				if(i == 0) {
+					val += 2000;
+					t.tm_year = val;
+					
+				} else if(i == 1) {
+					if(val > 12)
+						return -1;
+					t.tm_mon = val;
+					
+				} else if(i == 2) {
+					if(val > g_moth_day[t.tm_mon])
+						return -1;
+					t.tm_mday = val;
+					
+				} else if(i == 3) {
+					if(val > 23)
+						return -1;
+					t.tm_hour = val;
+					
+				} else if(i == 4) {
+					if(val > 59)
+						return -1;
+					t.tm_min = val;
+					
+				} else if(i == 5) {
+					if(val > 59)
+						return -1;
+					t.tm_sec = val;
+					
+				}
+				
+				
+			}
+			
+			p_tm->tm_year = t.tm_year;
+			p_tm->tm_mon = t.tm_mon;
+			p_tm->tm_mday = t.tm_mday;
+			p_tm->tm_hour = t.tm_hour;
+			p_tm->tm_min = t.tm_min;
+			p_tm->tm_sec = t.tm_sec;
+			
+			return RET_OK;
+		default:break;
+				
+
+	}
+	return -1;
+	
+}

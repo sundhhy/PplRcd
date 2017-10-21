@@ -67,3 +67,5 @@ static int AlarmStrategy_entry(int row, int col, void *pp_text)
 	
 	return 0;
 }
+
+

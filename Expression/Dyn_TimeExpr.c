@@ -169,8 +169,8 @@ static void * TimeInterpret( Expr *self, void *faVd, void *context)
 exit:
 	memset( expTempBUf, 0, sizeof( expTempBUf));
 	return pnewPosition;
-err1:
-	FREE( vd->pdyndHdl);
+//err1:
+//	FREE( vd->pdyndHdl);
 err:
 	FREE( vd->dspArea.boundary);
 	free(vd);
@@ -194,17 +194,17 @@ END_CTOR
 /// \name Private Functions
 /// \{
 
-static int Dyn_timeHdl( void *pDynd, int option, void **ppResult)
-{
-	struct  tm *pTm = ( struct  tm *)pDynd;
-	if( pDynd == NULL)
-		return ERR_BAD_PARAMETER;
-	
-	sprintf( timeStr, "%02d:%02d:%02d", pTm->tm_hour, pTm->tm_min, pTm->tm_sec);
-	*ppResult = timeStr;
-	return strlen(timeStr) ;
-	
-}
+//static int Dyn_timeHdl( void *pDynd, int option, void **ppResult)
+//{
+//	struct  tm *pTm = ( struct  tm *)pDynd;
+//	if( pDynd == NULL)
+//		return ERR_BAD_PARAMETER;
+//	
+//	sprintf( timeStr, "%02d:%02d:%02d", pTm->tm_hour, pTm->tm_min, pTm->tm_sec);
+//	*ppResult = timeStr;
+//	return strlen(timeStr) ;
+//	
+//}
 
 
 

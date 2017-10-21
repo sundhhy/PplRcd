@@ -96,11 +96,11 @@ END_CTOR
 
 static int	Init_Nws_HMI(HMI *self, void *arg)
 {
-	NewSlct_HMI		*cthis = SUB_PTR( self, HMI, NewSlct_HMI);
-	Expr 			*p_exp ;
-	shtctl 			*p_shtctl = NULL;
-	short				i = 0;	
-	p_shtctl = GetShtctl();
+//	NewSlct_HMI		*cthis = SUB_PTR( self, HMI, NewSlct_HMI);
+//	Expr 			*p_exp ;
+//	shtctl 			*p_shtctl = NULL;
+//	short				i = 0;	
+//	p_shtctl = GetShtctl();
 	
 	self->arg[0] = 0;
 	//³õÊ¼»¯±³¾°Í¼Æ¬
@@ -119,7 +119,7 @@ static int	Init_Nws_HMI(HMI *self, void *arg)
 
 static void Show_Nws_HMI(HMI *self)
 {
-	NewSlct_HMI		*cthis = SUB_PTR( self, HMI, NewSlct_HMI);
+//	NewSlct_HMI		*cthis = SUB_PTR( self, HMI, NewSlct_HMI);
 	g_p_sht_bkpic->p_gp->vdraw( g_p_sht_bkpic->p_gp, &g_p_sht_bkpic->cnt, &g_p_sht_bkpic->area);
 	self->show_focus( self,self->p_fcuu->focus_row, 0);
 }
@@ -149,7 +149,7 @@ static void	Nws_HMI_hide(HMI *self)
 
 static void	Nws_HMI_init_focus(HMI *self)
 {
-	NewSlct_HMI		*cthis = SUB_PTR( self, HMI, NewSlct_HMI);
+//	NewSlct_HMI		*cthis = SUB_PTR( self, HMI, NewSlct_HMI);
 	int row = 0;
 //	cthis->focus_row = 0;
 	
@@ -165,13 +165,13 @@ static void	Nws_HMI_init_focus(HMI *self)
 
 static void	Nws_HMI_clear_focus(HMI *self, uint8_t fouse_row, uint8_t fouse_col)
 {
-	NewSlct_HMI		*cthis = SUB_PTR( self, HMI, NewSlct_HMI);
+//	NewSlct_HMI		*cthis = SUB_PTR( self, HMI, NewSlct_HMI);
 	g_p_sht_bkpic->p_gp->vdraw( g_p_sht_bkpic->p_gp, &g_p_sht_bkpic->cnt, &g_p_sht_bkpic->area);
 	Flush_LCD();
 }
 static void	Nws_HMI_show_focus(HMI *self, uint8_t fouse_row, uint8_t fouse_col)
 {
-	NewSlct_HMI		*cthis = SUB_PTR( self, HMI, NewSlct_HMI);
+//	NewSlct_HMI		*cthis = SUB_PTR( self, HMI, NewSlct_HMI);
 	uint8_t			vy0[3] = {60, 100, 140};
 	if(self->p_fcuu->focus_row > 2)
 		return;
@@ -189,8 +189,8 @@ static void	Nws_HMI_show_focus(HMI *self, uint8_t fouse_row, uint8_t fouse_col)
 static void	Nws_HMI_hitHandle(HMI *self, char *s_key)
 {
 	
-	NewSlct_HMI		*cthis = SUB_PTR( self, HMI, NewSlct_HMI);
-	sheet		*p_focus;
+//	NewSlct_HMI		*cthis = SUB_PTR( self, HMI, NewSlct_HMI);
+//	sheet		*p_focus;
 	uint8_t		focusRow = self->p_fcuu->focus_row;
 	uint8_t		chgFouse = 0;
 

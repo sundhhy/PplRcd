@@ -52,7 +52,7 @@ ABS_CLASS( Model)
 	int	(*setMdlData)( Model *self, IN int aux, IN void *arg);
 	int	(*addTmMdl)( Model *self, Model *m);
 	int (*delTmMdl)( Model *self, Model *m);
-	
+	int (*set_by_string)( Model *self,IN int aux, void *arg);
 //	int (*installDataSource)( Model *self, void *dsr);
 	
 	void (*notify)( Model *self);
@@ -73,7 +73,7 @@ ABS_CLASS( Model)
 // global variable declarations
 //------------------------------------------------------------------------------
 extern const Except_T model_Failed;
-
+extern const	char	g_moth_day[12];
 //------------------------------------------------------------------------------
 // function prototypes
 //------------------------------------------------------------------------------

@@ -43,7 +43,7 @@ static void GhTxt_vDraw( Glyph *self, dspContent_t *cnt, vArea_t *area);
 
 	/*          170805         @Deprecated   */
 
-static void GhTxt_Draw( Glyph *self, dspContent_t *cnt, dspArea_t *area);
+//static void GhTxt_Draw( Glyph *self, dspContent_t *cnt, dspArea_t *area);
 static int GhTxt_GetSize(Glyph *self, int font, uint16_t *x, uint16_t *y);
 //============================================================================//
 //            P U B L I C   F U N C T I O N S                                 //
@@ -100,7 +100,7 @@ END_CTOR
 static void GhTxt_vDraw( Glyph *self, dspContent_t *cnt, vArea_t *area)
 {
 	I_dev_lcd *lcd;
-	char	m = -1;
+	char	m = 0xff;
 	uint8_t	c = cnt->colour;
 	uint8_t	bkc = cnt->bkc;
 	uint8_t	i ;

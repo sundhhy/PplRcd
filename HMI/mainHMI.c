@@ -42,7 +42,7 @@ HMI *g_p_mainHmi;
 #define MAINHMI_BKPICNUM		"11"
 #define	MAINHMI_TITLE		"总貌画面"
 
-static ro_char MAIN_hmi_code_bkPic[] =  {"<bpic vx0=0 vy0=0 m=0 >20</>" };
+//static ro_char MAIN_hmi_code_bkPic[] =  {"<bpic vx0=0 vy0=0 m=0 >20</>" };
 
 
 //每个通道的单位
@@ -82,7 +82,7 @@ static void	MainHitHandle( HMI *self, char *s);
 static void MainHmiHide( HMI *self );
 static void MaininitSheet( HMI *self );
 
-static void BuildChnInfoPic( sheet *arr_p_sheets[ CHN_ROW + 2][CHN_COL], char total);
+//static void BuildChnInfoPic( sheet *arr_p_sheets[ CHN_ROW + 2][CHN_COL], char total);
 
 static void MainHmi_InitFouse( HMI *self );
 
@@ -173,13 +173,13 @@ static int	Init_mainHmi( HMI *self, void *arg)
 	
 //	HMI 			*p_kb;
 //	keyboardHMI		*keyHmi ;
-	mainHmi			*cthis = SUB_PTR( self, HMI, mainHmi);
-	ro_char 		*p_txtCnt;
-	Expr 			*p_exp ;
-	shtctl 			*p_shtctl = NULL;
-	struct SHEET 	**pp_sht;
+//	mainHmi			*cthis = SUB_PTR( self, HMI, mainHmi);
+//	ro_char 		*p_txtCnt;
+//	Expr 			*p_exp ;
+//	shtctl 			*p_shtctl = NULL;
+//	struct SHEET 	**pp_sht;
 
-	short i,j;
+//	short i,j;
 	
 	p_cmm = CreateHMI( HMI_CMM);
 	p_cmm->init( p_cmm, NULL);
@@ -190,12 +190,12 @@ static int	Init_mainHmi( HMI *self, void *arg)
 //	keyHmi = SUB_PTR( p_kb, HMI, keyboardHMI);
 	
 	
-	p_shtctl = GetShtctl();
+//	p_shtctl = GetShtctl();
 	
 //	cthis->pp_shts = &p_sheets[0][0];
 
 	//初始化背景图片
-	p_exp = ExpCreate( "pic");
+//	p_exp = ExpCreate( "pic");
 //	cthis->p_bkg = Sheet_alloc( p_shtctl);
 //	p_exp->inptSht( p_exp, (void *)MAIN_hmi_code_bkPic, cthis->p_bkg) ;
 	
@@ -294,8 +294,8 @@ static int	Init_mainHmi( HMI *self, void *arg)
 //}
 static void MainHmiHide( HMI *self )
 {
-	mainHmi		*cthis = SUB_PTR( self, HMI, mainHmi);
-	int i, j;
+//	mainHmi		*cthis = SUB_PTR( self, HMI, mainHmi);
+	int i;
 	
 
 	
@@ -319,7 +319,7 @@ static void MainHmiHide( HMI *self )
 
 static void MaininitSheet( HMI *self )
 {
-	mainHmi		*cthis = SUB_PTR( self, HMI, mainHmi);
+//	mainHmi		*cthis = SUB_PTR( self, HMI, mainHmi);
 	int i,  h = 0;;
 	
 	h = 0;
@@ -352,8 +352,8 @@ static void MaininitSheet( HMI *self )
 
 static void	MainHmiShow( HMI *self )
 {
-	mainHmi		*cthis = SUB_PTR( self, HMI, mainHmi);
-	int		i = 0;
+//	mainHmi		*cthis = SUB_PTR( self, HMI, mainHmi);
+//	int		i = 0;
 //	I_dev_lcd 	*p_lcd;
 	g_p_curHmi = self;
 //	Dev_open( LCD_DEVID, (void *)&p_lcd);
@@ -367,7 +367,7 @@ static void	MainHmiShow( HMI *self )
 
 static void	MainHitHandle( HMI *self, char *s)
 {
-	mainHmi		*cthis = SUB_PTR( self, HMI, mainHmi);
+//	mainHmi		*cthis = SUB_PTR( self, HMI, mainHmi);
 	sheet 		*p_sht;
 	shtCmd		*p_cmd;
 //	uint8_t		focusRow = cthis->focusRow;
@@ -427,7 +427,7 @@ static void	MainHitHandle( HMI *self, char *s)
 //焦点操作
 static void MainHmi_InitFouse( HMI *self )
 {
-	mainHmi		*cthis = SUB_PTR( self, HMI, mainHmi);
+//	mainHmi		*cthis = SUB_PTR( self, HMI, mainHmi);
 //	int			i = 0;
 	
 	self->p_fcuu = Focus_alloc(1, 4);
@@ -449,7 +449,7 @@ static void MainHmi_InitFouse( HMI *self )
 static void MainHmi_Init_chnShet(void)
 {
 	Expr 		*p_exp ;
-	Model		*p_mdl = NULL;
+//	Model		*p_mdl = NULL;
 	int			i = 0;
 	p_exp = ExpCreate( "text");
 	for(i = 0; i < NUM_CHANNEL; i++) {
@@ -511,8 +511,8 @@ static int MainHmi_Data_update(void *p_data, void *p_mdl)
 	
 	//到四周边界的空隙
 	uint8_t		space_to_up = 		box_sizey/3;	
-	uint8_t		space_to_bottom = 	0;
-	uint8_t		space_to_left = 	0;	
+//	uint8_t		space_to_bottom = 	0;
+//	uint8_t		space_to_left = 	0;	
 	uint8_t		space_to_right = 	8;
 	
 	char 			i = 0, j = 0;
@@ -551,9 +551,9 @@ static int MainHmi_Util_update(void *p_data, void *p_mdl)
 	uint8_t		box_sizex = 106;		
 	
 	//到四周边界的空隙
-	uint8_t		space_to_up = 		0;	
+//	uint8_t		space_to_up = 		0;	
 	uint8_t		space_to_bottom = 	2;
-	uint8_t		space_to_left = 	0;	
+//	uint8_t		space_to_left = 	0;	
 	uint8_t		space_to_right = 	8;
 	
 	char 			i = 0, j = 0;
@@ -593,8 +593,8 @@ static int MainHmi_Alarm_update(void *p_data, void *p_mdl)
 	
 	//到四周边界的空隙
 	uint8_t		space_to_up = 		2;	
-	uint8_t		space_to_bottom = 	0;
-	uint8_t		space_to_left = 	0;	
+//	uint8_t		space_to_bottom = 	0;
+//	uint8_t		space_to_left = 	0;	
 	uint8_t		space_to_right = 	0;
 	
 	char 			i = 0, j = 0;

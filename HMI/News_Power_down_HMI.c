@@ -89,11 +89,11 @@ END_CTOR
 
 static int	Init_News_PwrDn_HMI(HMI *self, void *arg)
 {
-	News_PwrDn_HMI		*cthis = SUB_PTR( self, HMI, News_PwrDn_HMI);
-	Expr 			*p_exp ;
-	shtctl 			*p_shtctl = NULL;
-	short				i = 0;	
-	p_shtctl = GetShtctl();
+//	News_PwrDn_HMI		*cthis = SUB_PTR( self, HMI, News_PwrDn_HMI);
+//	Expr 			*p_exp ;
+//	shtctl 			*p_shtctl = NULL;
+//	short				i = 0;	
+//	p_shtctl = GetShtctl();
 	
 	
 	
@@ -103,14 +103,14 @@ static int	Init_News_PwrDn_HMI(HMI *self, void *arg)
 
 static void Show_News_PwrDn_HMI(HMI *self)
 {
-	News_PwrDn_HMI		*cthis = SUB_PTR( self, HMI, News_PwrDn_HMI);
+//	News_PwrDn_HMI		*cthis = SUB_PTR( self, HMI, News_PwrDn_HMI);
 	Sheet_refresh(g_p_sht_bkpic);
 //	cthis->p_bkg->p_gp->vdraw( cthis->p_bkg->p_gp, &cthis->p_bkg->cnt, &cthis->p_bkg->area);
 	self->show_focus( self,self->p_fcuu->focus_row, 0);
 }
 static void	PwrDn_initSheet(HMI *self)
 {
-	News_PwrDn_HMI		*cthis = SUB_PTR( self, HMI, News_PwrDn_HMI);
+//	News_PwrDn_HMI		*cthis = SUB_PTR( self, HMI, News_PwrDn_HMI);
 	int  			h = 0;
 	Expr 			*p_exp ;
 	
@@ -137,7 +137,7 @@ static void	PwrDn_initSheet(HMI *self)
 }
 static void	News_PwrDn_HMI_hide(HMI *self)
 {
-	News_PwrDn_HMI		*cthis = SUB_PTR( self, HMI, News_PwrDn_HMI);
+//	News_PwrDn_HMI		*cthis = SUB_PTR( self, HMI, News_PwrDn_HMI);
 
 	Sheet_updown( g_p_ico_eraseTool, -1);
 	Sheet_updown( g_p_ico_pgdn, -1);
@@ -155,7 +155,7 @@ static void	News_PwrDn_HMI_hide(HMI *self)
 
 static void	News_PwrDn_HMI_init_focus(HMI *self)
 {
-	News_PwrDn_HMI		*cthis = SUB_PTR( self, HMI, News_PwrDn_HMI);
+//	News_PwrDn_HMI		*cthis = SUB_PTR( self, HMI, News_PwrDn_HMI);
 	self->p_fcuu = Focus_alloc(1, 4);
 	
 	Focus_Set_focus(self->p_fcuu, 0, 0);
@@ -173,7 +173,7 @@ static void	News_PwrDn_HMI_init_focus(HMI *self)
 static void	News_PwrDn_HMI_hitHandle(HMI *self, char *s_key)
 {
 	
-	News_PwrDn_HMI		*cthis = SUB_PTR( self, HMI, News_PwrDn_HMI);
+//	News_PwrDn_HMI		*cthis = SUB_PTR( self, HMI, News_PwrDn_HMI);
 	sheet		*p_focus;
 	uint8_t		focusCol = self->p_fcuu->focus_col;
 	uint8_t		chgFouse = 0;

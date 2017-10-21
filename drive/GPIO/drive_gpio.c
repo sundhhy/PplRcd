@@ -275,7 +275,7 @@ static int GpioRead( driveGpio *self,char *p_ch_val)
 static int GpioTest( driveGpio *self, void *buf, int size)
 {
 	
-	
+	return RET_OK;
 }
 
 
@@ -295,7 +295,7 @@ static void GpioSetEncode( driveGpio *self, int e)
 
 static void ExtiIrq( driveGpio *p_gpio)
 {
-	char type;
+//	char type;
 	char pin;
 	if( p_gpio == NULL)
 		return;

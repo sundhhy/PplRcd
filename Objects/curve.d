@@ -28,6 +28,8 @@
 .\objects\curve.o: E:\mylib\sdhLib\inc\basis/assert.h
 .\objects\curve.o: .\model\ModelTest.h
 .\objects\curve.o: HMI\focus.h
+.\objects\curve.o: HMI\commHMI.h
+.\objects\curve.o: HMI\keyboardHMI.h
 .\objects\curve.o: .\Expression\ExpFactory.h
 .\objects\curve.o: .\Expression\expression.h
 .\objects\curve.o: .\Views\Composition.h

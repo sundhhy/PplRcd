@@ -66,3 +66,5 @@ static int ArtStrategy_entry(int row, int col, void *pp_text)
 	
 	return 0;
 }
+
+

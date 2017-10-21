@@ -91,6 +91,9 @@ void Set_flag_keyhandle(uint8_t	*p_flag, int val)
 	*p_flag |= val;
 }
 
+
+
+
 ABS_CTOR( HMI)
 FUNCTION_SETTING( show, HmiShow);
 FUNCTION_SETTING( switchHMI, SwitchHMI);

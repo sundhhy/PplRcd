@@ -366,32 +366,32 @@ static int Init( Glyph *self, I_dev_lcd *lcd)
 //	self->colour = DEF_COLOUR;
 	return RET_OK;
 }
-static int SetFont( Glyph *self, int font)
-{
-	if( CHECK_FONT(  font))
-	{
-		
-		return RET_OK;
-	}
+//static int SetFont( Glyph *self, int font)
+//{
+//	if( CHECK_FONT(  font))
+//	{
+//		
+//		return RET_OK;
+//	}
 
-	return ERR_BAD_PARAMETER;
-	
-}
-static int SetClu( Glyph *self, int c)
-{
+//	return ERR_BAD_PARAMETER;
+//	
+//}
+//static int SetClu( Glyph *self, int c)
+//{
 
-	return RET_OK;
-	
-}
+//	return RET_OK;
+//	
+//}
 
 
 
-static int SetBgC( Glyph *self, int c)
-{
-//	self->disArg.bgC = c;
-	return RET_OK;
-	
-}
+//static int SetBgC( Glyph *self, int c)
+//{
+////	self->disArg.bgC = c;
+//	return RET_OK;
+//	
+//}
 
 //static int setWidth( Glyph *self, uint16_t wd)
 //{

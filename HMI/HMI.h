@@ -27,17 +27,19 @@
 //------------------------------------------------------------------------------
 // const defines
 //------------------------------------------------------------------------------
-#define HMIKEY_UP		"up"
-#define HMIKEY_DOWN		"down"
-#define HMIKEY_LEFT		"left"
+#define HMIKEY_UP				"up"
+#define HMIKEY_DOWN			"down"
+#define HMIKEY_LEFT			"left"
 #define HMIKEY_RIGHT		"right"
 #define HMIKEY_ENTER		"enter"
-#define HMIKEY_ESC		"esc"
+#define HMIKEY_ESC			"esc"
 
 
 #define	HMI_FLAG_HIDE	0
 #define	HMI_FLAG_SHOW	1
 
+#define SY_KEYTYPE_HIT				0
+#define SY_KEYTYPE_LONGPUSH		1
 
 #define IS_HMI_HIDE(flag)	((flag&1) == 0)
 #define IS_HMI_KEYHANDLE(flag)	((flag&2))
@@ -57,6 +59,12 @@ typedef struct {
 	uint8_t		f_row, f_col;
 	uint8_t		start_byte, num_byte;
 }strategy_focus_t;
+
+typedef struct {
+	uint8_t		key_type;
+	uint8_t		none[3];
+}strategy_keyval_t;
+
 typedef struct {
 	
 	//将pp_data指定的行号和列号的显示字符串指针，并返回字符串的长度
@@ -69,7 +77,7 @@ typedef struct {
 	int	(*key_hit_lt)(void	*arg);
 	int	(*key_hit_rt)(void	*arg);
 	int	(*key_hit_er)(void	*arg);
-	
+	int	(*get_focus_data)(void *pp_data);		//成功返回大于0，失败返回-1
 	strategy_focus_t	sf;
 }strategy_t;
 

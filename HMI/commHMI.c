@@ -83,7 +83,7 @@ static ro_char ico_trend[] = { "<bu vx0=240 vy0=212 bx=49 by=25 bkc=black clr=bl
 static ro_char ico_pgup[] = { "<bu vx0=80 vy0=212 bx=49 by=25 bkc=black clr=black><pic  bx=48  by=24 >25</></bu>" };
 static ro_char ico_pgdn[] = { "<bu vx0=160 vy0=212 bx=49 by=25 bkc=black clr=black><pic  bx=48  by=24 >26</></bu>" };
 static ro_char ico_eraseTool[] = {"<bu vx0=240 vy0=212 bx=49 by=25 bkc=black clr=black><pic  bx=48  by=24 >27</></bu>"};
-static ro_char ico_search[] = {"<bu vx0=240 vy0=212 bx=49 by=25 bkc=black clr=black><pic  bx=48  by=24 >24</></bu>"};
+//static ro_char ico_search[] = {"<bu vx0=240 vy0=212 bx=49 by=25 bkc=black clr=black><pic  bx=48  by=24 >24</></bu>"};
 
 
 
@@ -91,11 +91,14 @@ static ro_char ico_search[] = {"<bu vx0=240 vy0=212 bx=49 by=25 bkc=black clr=bl
 //------------------------------------------------------------------------------
 // local types
 //------------------------------------------------------------------------------
+typedef struct {
+	uint16_t		free_idx[NUM_CHANNEL];		//已经被使用	
+}vram_mgr_t;
 //------------------------------------------------------------------------------
 // local vars
 //------------------------------------------------------------------------------
 static cmmHmi *singalCmmHmi;
-static char s_timer[TIME_BUF_LEN];
+//static char s_timer[TIME_BUF_LEN];
 //------------------------------------------------------------------------------
 // local function prototypes
 //------------------------------------------------------------------------------
@@ -141,7 +144,100 @@ int Stripe_vy(int row)
 	return y;
 }
 
+//对数字字符串运算
+//不会对字符串中的值进行合法判断
+//暂时支持最大999
+void Str_Calculations(char *p_str, int len, int hex, int op, int val, int rangel, int rangeh)
+{
+	
+	int dig = 0;
+	int i;
+	short w[5] = {1, 10, 100, 1000, 10000};		
+	if(hex) {
+		//16进制
+		
+		
+	} else {
+		
+		for(i = 0; i < len; i ++) {
+			
+			dig += (p_str[i] - '0') * w[len - i - 1];
+			
+		}
+		
+	}
+	//未指定范围
+	if(rangeh == 0 && rangel == 0) {
+		rangel = 0;
+		rangeh = w[len] - 1;
+		
+	}
+	
+	if(op == OP_ADD) {
+		if(dig < rangeh)
+			dig += val;
+		else 
+			dig = rangel;
+		
+	} else if(op == OP_SUB) {
+		
+		if(dig > rangel)
+			dig -= val;
+		else 
+			dig = rangeh;
+	}
+	
+	
+	snprintf(p_str, len, "%d", dig);
+	
+	
+}
 
+//一个简单的内存分配
+//把用于曲线显示的大量内存，用于其他界面上的显存
+//每次要分配内存之前都要重新初始化下
+//因此这种内存在切换界面之后，之前的内存就会被回收
+//界面在使用这种显存的时候，都要事先进行初始化
+void VRAM_init(void)
+{
+	vram_mgr_t *p_vram = (vram_mgr_t *)g_curve[0].points;
+	int i = 0;
+	
+	for(i = 0; i < NUM_CHANNEL; i++) {
+		
+		p_vram->free_idx[i] = 0;
+		
+	}
+	
+	p_vram->free_idx[0] = sizeof(vram_mgr_t);
+	
+	
+	
+}
+
+//分配算法是最简单的，第一个匹配地址
+void *VRAM_alloc(int bytes)
+{
+	vram_mgr_t *p_vram = (vram_mgr_t *)g_curve[0].points;
+	void	*p;
+	int i = 0;
+	
+	for(i = 0; i < NUM_CHANNEL; i++) {
+		
+		if((CURVE_POINT - p_vram->free_idx[i]) >=  bytes) {
+			p = g_curve[i].points + p_vram->free_idx[i];
+			p_vram->free_idx[i] += bytes;
+			return p;
+				
+		}
+		
+	}
+	
+	return NULL;
+	
+	
+	
+}
 CTOR( cmmHmi)
 SUPER_CTOR( HMI);
 FUNCTION_SETTING( HMI.init, Init_cmmHmi);
@@ -161,8 +257,8 @@ static int	Init_cmmHmi( HMI *self, void *arg)
 	barGhHMI		*barHmi ;
 	dataHMI			*dataHmi;
 	RLT_trendHMI	*rltHmi;
-	shtctl *p_shtctl = NULL;
-	Expr *p_exp ;
+//	shtctl *p_shtctl = NULL;
+//	Expr *p_exp ;
 	
 	Focus_init();
 	

@@ -41,7 +41,7 @@ HMI *g_p_dataHmi;
 
 #define		DATAHMI_TITLE	"数显画面"
 
-static const char datahmi_code_bkPic[] =  {"<bpic vx0=0 vy0=0 m=0 >21</>" };
+//static const char datahmi_code_bkPic[] =  {"<bpic vx0=0 vy0=0 m=0 >21</>" };
 static const char datahmi_code_data[] = { "<text f=32 m=0 aux=0>100</>" };
 
 
@@ -129,14 +129,14 @@ END_CTOR
 
 static int	Init_dataHMI( HMI *self, void *arg)
 {
-	dataHMI		*cthis = SUB_PTR( self, HMI, dataHMI);
-	Expr 			*p_exp ;
-	shtctl 			*p_shtctl = NULL;
+//	dataHMI		*cthis = SUB_PTR( self, HMI, dataHMI);
+//	Expr 			*p_exp ;
+//	shtctl 			*p_shtctl = NULL;
 	
-	p_shtctl = GetShtctl();
+//	p_shtctl = GetShtctl();
 	
 	//初始化背景图片
-	p_exp = ExpCreate( "pic");
+//	p_exp = ExpCreate( "pic");
 	
 	self->flag = 0;
 //	Bulid_dataSheet(cthis);
@@ -153,7 +153,7 @@ static int	Init_dataHMI( HMI *self, void *arg)
 
 static void DataHmi_InitSheet( HMI *self )
 {
-	dataHMI			*cthis = SUB_PTR( self, HMI, dataHMI);
+//	dataHMI			*cthis = SUB_PTR( self, HMI, dataHMI);
 	int i,  h = 0;
 
 	g_p_sht_bkpic->cnt.data = DATAHMI_BKPICNUM;
@@ -177,7 +177,7 @@ static void DataHmi_InitSheet( HMI *self )
 
 static void DataHmi_HideSheet( HMI *self )
 {
-	dataHMI			*cthis = SUB_PTR( self, HMI, dataHMI);
+//	dataHMI			*cthis = SUB_PTR( self, HMI, dataHMI);
 	
 	int i;
 	
@@ -200,7 +200,7 @@ static void DataHmi_HideSheet( HMI *self )
 
 static void	DataHmi_Show( HMI *self )
 {
-	dataHMI		*cthis = SUB_PTR( self, HMI, dataHMI);
+//	dataHMI		*cthis = SUB_PTR( self, HMI, dataHMI);
 	g_p_curHmi = self;
 	
 	
@@ -243,7 +243,7 @@ static void DataHmi_EnterCmdHdl( shtCmd *self, struct SHEET *p_sht, void *arg)
 static void DataHmi_Init_chnSht(void)
 {
 	Expr 		*p_exp ;
-	Model		*p_mdl = NULL;
+//	Model		*p_mdl = NULL;
 	int			i = 0;
 	p_exp = ExpCreate( "text");
 	for(i = 0; i < NUM_CHANNEL; i++) {
@@ -393,8 +393,8 @@ static int DataHmi_Data_update(void *p_data, void *p_mdl)
 	
 	//到四周边界的空隙
 	uint8_t		space_to_up = 		2;	
-	uint8_t		space_to_bottom = 	2;
-	uint8_t		space_to_left = 	8;	
+//	uint8_t		space_to_bottom = 	2;
+//	uint8_t		space_to_left = 	8;	
 	uint8_t		space_to_right = 	8;
 	
 	char 			row = 0, col = 0;
@@ -437,9 +437,9 @@ static int DataHmi_Util_update(void *p_data, void *p_mdl)
 	uint8_t		box_sizex = 160;		
 	
 	//到四周边界的空隙
-	uint8_t		space_to_up = 		2;	
+//	uint8_t		space_to_up = 		2;	
 	uint8_t		space_to_bottom = 	2;
-	uint8_t		space_to_left = 	8;	
+//	uint8_t		space_to_left = 	8;	
 	uint8_t		space_to_right = 	8;
 	
 	char 			row = 0, col = 0;
@@ -473,15 +473,15 @@ static int DataHmi_Util_update(void *p_data, void *p_mdl)
 static int DataHmi_Alarm_update(void *p_data, void *p_mdl)
 {
 	uint8_t		up_y = 30;
-	uint8_t		right_x = 160;
+//	uint8_t		right_x = 160;
 	uint8_t		box_sizey = 70;		
 	uint8_t		box_sizex = 160;		
 	
 	//到四周边界的空隙
-	uint8_t		space_to_up = 		2;	
+//	uint8_t		space_to_up = 		2;	
 	uint8_t		space_to_bottom = 	2;
 	uint8_t		space_to_left = 	8;	
-	uint8_t		space_to_right = 	8;
+//	uint8_t		space_to_right = 	8;
 	
 	char 			row = 0, col = 0;
 	uint16_t 		sizex = 0;
