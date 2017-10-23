@@ -104,6 +104,7 @@ static int Sys_init(void *arg)
 	memset(&g_sys_strategy.sf, 0, sizeof(g_sys_strategy.sf));
 	g_sys_strategy.sf.f_col = 1;
 	g_sys_strategy.sf.f_row = 0;
+	g_sys_strategy.sf.num_byte = 1;
 	
 	VRAM_init();
 	for(i = 0; i < 14; i++) {

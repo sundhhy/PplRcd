@@ -3,7 +3,7 @@
 <title>Static Call Graph - [.\Objects\PplRcd.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image .\Objects\PplRcd.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060061: Last Updated: Sat Oct 21 15:15:19 2017
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5050106: Last Updated: Sat Oct 21 20:15:33 2017
 <BR><P>
 <H3>Maximum Stack Usage =        248 bytes + Unknown(Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -1296,7 +1296,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[12c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;KeyboardHitHandle
 </UL>
 
-<P><STRONG><a name="[1d2]"></a>Except_raise</STRONG> (Thumb, 128 bytes, Stack size 0 bytes, except.o(i.Except_raise))
+<P><STRONG><a name="[1d2]"></a>Except_raise</STRONG> (Thumb, 130 bytes, Stack size 0 bytes, except.o(i.Except_raise))
 <BR><BR>[Stack]<UL><LI>Max Depth = 24 + In Cycle
 <LI>Call Chain = Except_raise &rArr;  Except_raise (Cycle)
 </UL>
@@ -2455,7 +2455,7 @@ Global Symbols
 <LI><a href="#[f8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;TxtInptSht
 </UL>
 
-<P><STRONG><a name="[1c4]"></a>Sem_init</STRONG> (Thumb, 238 bytes, Stack size 16 bytes, rtx_depend.o(i.Sem_init))
+<P><STRONG><a name="[1c4]"></a>Sem_init</STRONG> (Thumb, 276 bytes, Stack size 16 bytes, rtx_depend.o(i.Sem_init))
 <BR><BR>[Stack]<UL><LI>Max Depth = 24<LI>Call Chain = Sem_init &rArr; osSemaphoreCreate &rArr; svcSemaphoreCreate
 </UL>
 <BR>[Calls]<UL><LI><a href="#[25f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osSemaphoreWait
@@ -2465,7 +2465,7 @@ Global Symbols
 <LI><a href="#[2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Dev_UsartInit
 </UL>
 
-<P><STRONG><a name="[19b]"></a>Sem_post</STRONG> (Thumb, 92 bytes, Stack size 16 bytes, rtx_depend.o(i.Sem_post))
+<P><STRONG><a name="[19b]"></a>Sem_post</STRONG> (Thumb, 104 bytes, Stack size 16 bytes, rtx_depend.o(i.Sem_post))
 <BR><BR>[Stack]<UL><LI>Max Depth = 48<LI>Call Chain = Sem_post &rArr; osSemaphoreRelease &rArr; isrSemaphoreRelease &rArr; isr_sem_send &rArr; rt_psq_enq
 </UL>
 <BR>[Calls]<UL><LI><a href="#[260]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osSemaphoreRelease
@@ -2485,7 +2485,7 @@ Global Symbols
 <LI><a href="#[4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ClearLcd
 </UL>
 
-<P><STRONG><a name="[198]"></a>Sem_wait</STRONG> (Thumb, 104 bytes, Stack size 16 bytes, rtx_depend.o(i.Sem_wait))
+<P><STRONG><a name="[198]"></a>Sem_wait</STRONG> (Thumb, 118 bytes, Stack size 16 bytes, rtx_depend.o(i.Sem_wait))
 <BR><BR>[Stack]<UL><LI>Max Depth = 16<LI>Call Chain = Sem_wait
 </UL>
 <BR>[Calls]<UL><LI><a href="#[25f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osSemaphoreWait
@@ -2731,8 +2731,8 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[17d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GetShtctl
 </UL>
 
-<P><STRONG><a name="[19e]"></a>Str_Calculations</STRONG> (Thumb, 132 bytes, Stack size 64 bytes, commhmi.o(i.Str_Calculations))
-<BR><BR>[Stack]<UL><LI>Max Depth = 96<LI>Call Chain = Str_Calculations &rArr; __2snprintf
+<P><STRONG><a name="[19e]"></a>Str_Calculations</STRONG> (Thumb, 170 bytes, Stack size 72 bytes, commhmi.o(i.Str_Calculations))
+<BR><BR>[Stack]<UL><LI>Max Depth = 104<LI>Call Chain = Str_Calculations &rArr; __2snprintf
 </UL>
 <BR>[Calls]<UL><LI><a href="#[237]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2snprintf
 </UL>
@@ -2836,8 +2836,8 @@ Global Symbols
 <P><STRONG><a name="[21d]"></a>TIM_DeInit</STRONG> (Thumb, 424 bytes, Stack size 8 bytes, stm32f10x_tim.o(i.TIM_DeInit))
 <BR><BR>[Stack]<UL><LI>Max Depth = 8<LI>Call Chain = TIM_DeInit
 </UL>
-<BR>[Calls]<UL><LI><a href="#[274]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RCC_APB2PeriphResetCmd
-<LI><a href="#[275]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RCC_APB1PeriphResetCmd
+<BR>[Calls]<UL><LI><a href="#[275]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RCC_APB1PeriphResetCmd
+<LI><a href="#[274]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RCC_APB2PeriphResetCmd
 </UL>
 <BR>[Called By]<UL><LI><a href="#[21c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;InitTimer
 </UL>
@@ -2911,8 +2911,8 @@ Global Symbols
 <P><STRONG><a name="[279]"></a>USART_DeInit</STRONG> (Thumb, 134 bytes, Stack size 8 bytes, stm32f10x_usart.o(i.USART_DeInit))
 <BR><BR>[Stack]<UL><LI>Max Depth = 8<LI>Call Chain = USART_DeInit
 </UL>
-<BR>[Calls]<UL><LI><a href="#[274]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RCC_APB2PeriphResetCmd
-<LI><a href="#[275]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RCC_APB1PeriphResetCmd
+<BR>[Calls]<UL><LI><a href="#[275]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RCC_APB1PeriphResetCmd
+<LI><a href="#[274]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RCC_APB2PeriphResetCmd
 </UL>
 <BR>[Called By]<UL><LI><a href="#[11c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UartInit
 <LI><a href="#[11d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UartDeInit
@@ -3848,7 +3848,7 @@ Global Symbols
 <LI><a href="#[36]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SysTick_Handler
 </UL>
 
-<P><STRONG><a name="[2cd]"></a>rt_tsk_create</STRONG> (Thumb, 118 bytes, Stack size 24 bytes, rt_task.o(i.rt_tsk_create))
+<P><STRONG><a name="[2cd]"></a>rt_tsk_create</STRONG> (Thumb, 120 bytes, Stack size 24 bytes, rt_task.o(i.rt_tsk_create))
 <BR><BR>[Stack]<UL><LI>Max Depth = 56<LI>Call Chain = rt_tsk_create &rArr; rt_init_context &rArr; rt_init_stack
 </UL>
 <BR>[Calls]<UL><LI><a href="#[2b4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_dispatch
@@ -3859,7 +3859,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[145]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;svcThreadCreate
 </UL>
 
-<P><STRONG><a name="[2cf]"></a>rt_tsk_delete</STRONG> (Thumb, 352 bytes, Stack size 40 bytes, rt_task.o(i.rt_tsk_delete))
+<P><STRONG><a name="[2cf]"></a>rt_tsk_delete</STRONG> (Thumb, 346 bytes, Stack size 40 bytes, rt_task.o(i.rt_tsk_delete))
 <BR><BR>[Stack]<UL><LI>Max Depth = 68<LI>Call Chain = rt_tsk_delete &rArr; rt_dispatch &rArr; rt_put_prio
 </UL>
 <BR>[Calls]<UL><LI><a href="#[2b8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_rmv_dly
@@ -4707,9 +4707,9 @@ Local Symbols
 <P><STRONG><a name="[134]"></a>MainHitHandle</STRONG> (Thumb, 156 bytes, Stack size 32 bytes, mainhmi.o(i.MainHitHandle))
 <BR><BR>[Stack]<UL><LI>Max Depth = 40<LI>Call Chain = MainHitHandle &rArr; strcmp
 </UL>
-<BR>[Calls]<UL><LI><a href="#[176]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Focus_move_right
+<BR>[Calls]<UL><LI><a href="#[171]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Focus_Get_focus
+<LI><a href="#[176]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Focus_move_right
 <LI><a href="#[175]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Focus_move_left
-<LI><a href="#[171]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Focus_Get_focus
 <LI><a href="#[172]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strcmp
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> mainhmi.o(i.mainHmi_ctor)
@@ -4717,8 +4717,8 @@ Local Symbols
 <P><STRONG><a name="[131]"></a>MainHmiHide</STRONG> (Thumb, 160 bytes, Stack size 16 bytes, mainhmi.o(i.MainHmiHide))
 <BR><BR>[Stack]<UL><LI>Max Depth = 200<LI>Call Chain = MainHmiHide &rArr; Sheet_updown &rArr; GetShtctl &rArr; Dev_open &rArr; DevChar_open &rArr; Get_DevUart &rArr; Dev_Uart_new &rArr; malloc &rArr; internal_alloc
 </UL>
-<BR>[Calls]<UL><LI><a href="#[170]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Focus_free
-<LI><a href="#[16e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Sheet_updown
+<BR>[Calls]<UL><LI><a href="#[16e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Sheet_updown
+<LI><a href="#[170]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Focus_free
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> mainhmi.o(i.mainHmi_ctor)
 </UL>
@@ -5043,18 +5043,18 @@ Local Symbols
 <P><STRONG><a name="[103]"></a>BarHmi_HideSheet</STRONG> (Thumb, 164 bytes, Stack size 16 bytes, bargraphhmi.o(i.BarHmi_HideSheet))
 <BR><BR>[Stack]<UL><LI>Max Depth = 200<LI>Call Chain = BarHmi_HideSheet &rArr; Sheet_updown &rArr; GetShtctl &rArr; Dev_open &rArr; DevChar_open &rArr; Get_DevUart &rArr; Dev_Uart_new &rArr; malloc &rArr; internal_alloc
 </UL>
-<BR>[Calls]<UL><LI><a href="#[170]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Focus_free
-<LI><a href="#[16e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Sheet_updown
+<BR>[Calls]<UL><LI><a href="#[16e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Sheet_updown
+<LI><a href="#[170]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Focus_free
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> bargraphhmi.o(i.barGhHMI_ctor)
 </UL>
 <P><STRONG><a name="[105]"></a>BarHmi_HitHandle</STRONG> (Thumb, 184 bytes, Stack size 32 bytes, bargraphhmi.o(i.BarHmi_HitHandle))
 <BR><BR>[Stack]<UL><LI>Max Depth = 40<LI>Call Chain = BarHmi_HitHandle &rArr; strcmp
 </UL>
-<BR>[Calls]<UL><LI><a href="#[176]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Focus_move_right
-<LI><a href="#[175]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Focus_move_left
-<LI><a href="#[171]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Focus_Get_focus
+<BR>[Calls]<UL><LI><a href="#[171]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Focus_Get_focus
 <LI><a href="#[184]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Set_flag_keyhandle
+<LI><a href="#[176]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Focus_move_right
+<LI><a href="#[175]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Focus_move_left
 <LI><a href="#[172]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strcmp
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> bargraphhmi.o(i.barGhHMI_ctor)
@@ -5289,8 +5289,8 @@ Local Symbols
 <P><STRONG><a name="[dc]"></a>RT_trendHmi_HideSheet</STRONG> (Thumb, 122 bytes, Stack size 16 bytes, real_time_trendhmi.o(i.RT_trendHmi_HideSheet))
 <BR><BR>[Stack]<UL><LI>Max Depth = 200<LI>Call Chain = RT_trendHmi_HideSheet &rArr; Sheet_updown &rArr; GetShtctl &rArr; Dev_open &rArr; DevChar_open &rArr; Get_DevUart &rArr; Dev_Uart_new &rArr; malloc &rArr; internal_alloc
 </UL>
-<BR>[Calls]<UL><LI><a href="#[170]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Focus_free
-<LI><a href="#[16e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Sheet_updown
+<BR>[Calls]<UL><LI><a href="#[16e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Sheet_updown
+<LI><a href="#[170]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Focus_free
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> real_time_trendhmi.o(i.RLT_trendHMI_ctor)
 </UL>
@@ -5298,10 +5298,10 @@ Local Symbols
 <BR><BR>[Stack]<UL><LI>Max Depth = 48<LI>Call Chain = RT_trendHmi_HitHandle &rArr; strcmp
 </UL>
 <BR>[Calls]<UL><LI><a href="#[196]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Flush_LCD
-<LI><a href="#[176]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Focus_move_right
-<LI><a href="#[175]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Focus_move_left
 <LI><a href="#[171]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Focus_Get_focus
 <LI><a href="#[184]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Set_flag_keyhandle
+<LI><a href="#[176]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Focus_move_right
+<LI><a href="#[175]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Focus_move_left
 <LI><a href="#[172]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strcmp
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> real_time_trendhmi.o(i.RLT_trendHMI_ctor)
@@ -5439,17 +5439,17 @@ Local Symbols
 <P><STRONG><a name="[c8]"></a>News_Alarm_HMI_hide</STRONG> (Thumb, 96 bytes, Stack size 8 bytes, news_alarm_hmi.o(i.News_Alarm_HMI_hide))
 <BR><BR>[Stack]<UL><LI>Max Depth = 192<LI>Call Chain = News_Alarm_HMI_hide &rArr; Sheet_updown &rArr; GetShtctl &rArr; Dev_open &rArr; DevChar_open &rArr; Get_DevUart &rArr; Dev_Uart_new &rArr; malloc &rArr; internal_alloc
 </UL>
-<BR>[Calls]<UL><LI><a href="#[170]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Focus_free
-<LI><a href="#[16e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Sheet_updown
+<BR>[Calls]<UL><LI><a href="#[16e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Sheet_updown
+<LI><a href="#[170]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Focus_free
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> news_alarm_hmi.o(i.News_Alarm_HMI_ctor)
 </UL>
 <P><STRONG><a name="[ca]"></a>News_Alarm_HMI_hitHandle</STRONG> (Thumb, 168 bytes, Stack size 24 bytes, news_alarm_hmi.o(i.News_Alarm_HMI_hitHandle))
 <BR><BR>[Stack]<UL><LI>Max Depth = 32<LI>Call Chain = News_Alarm_HMI_hitHandle &rArr; strcmp
 </UL>
-<BR>[Calls]<UL><LI><a href="#[176]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Focus_move_right
+<BR>[Calls]<UL><LI><a href="#[171]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Focus_Get_focus
+<LI><a href="#[176]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Focus_move_right
 <LI><a href="#[175]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Focus_move_left
-<LI><a href="#[171]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Focus_Get_focus
 <LI><a href="#[172]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strcmp
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> news_alarm_hmi.o(i.News_Alarm_HMI_ctor)
@@ -5476,17 +5476,17 @@ Local Symbols
 <P><STRONG><a name="[ce]"></a>News_PwrDn_HMI_hide</STRONG> (Thumb, 96 bytes, Stack size 8 bytes, news_power_down_hmi.o(i.News_PwrDn_HMI_hide))
 <BR><BR>[Stack]<UL><LI>Max Depth = 192<LI>Call Chain = News_PwrDn_HMI_hide &rArr; Sheet_updown &rArr; GetShtctl &rArr; Dev_open &rArr; DevChar_open &rArr; Get_DevUart &rArr; Dev_Uart_new &rArr; malloc &rArr; internal_alloc
 </UL>
-<BR>[Calls]<UL><LI><a href="#[170]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Focus_free
-<LI><a href="#[16e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Sheet_updown
+<BR>[Calls]<UL><LI><a href="#[16e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Sheet_updown
+<LI><a href="#[170]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Focus_free
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> news_power_down_hmi.o(i.News_PwrDn_HMI_ctor)
 </UL>
 <P><STRONG><a name="[d0]"></a>News_PwrDn_HMI_hitHandle</STRONG> (Thumb, 168 bytes, Stack size 24 bytes, news_power_down_hmi.o(i.News_PwrDn_HMI_hitHandle))
 <BR><BR>[Stack]<UL><LI>Max Depth = 32<LI>Call Chain = News_PwrDn_HMI_hitHandle &rArr; strcmp
 </UL>
-<BR>[Calls]<UL><LI><a href="#[176]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Focus_move_right
+<BR>[Calls]<UL><LI><a href="#[171]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Focus_Get_focus
+<LI><a href="#[176]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Focus_move_right
 <LI><a href="#[175]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Focus_move_left
-<LI><a href="#[171]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Focus_Get_focus
 <LI><a href="#[172]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strcmp
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> news_power_down_hmi.o(i.News_PwrDn_HMI_ctor)
@@ -5518,9 +5518,9 @@ Local Symbols
 <P><STRONG><a name="[79]"></a>Accm_HMI_hide</STRONG> (Thumb, 92 bytes, Stack size 16 bytes, accumulate_hmi .o(i.Accm_HMI_hide))
 <BR><BR>[Stack]<UL><LI>Max Depth = 208<LI>Call Chain = Accm_HMI_hide &rArr; Sheet_free &rArr; Sheet_updown &rArr; GetShtctl &rArr; Dev_open &rArr; DevChar_open &rArr; Get_DevUart &rArr; Dev_Uart_new &rArr; malloc &rArr; internal_alloc
 </UL>
-<BR>[Calls]<UL><LI><a href="#[170]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Focus_free
-<LI><a href="#[16e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Sheet_updown
+<BR>[Calls]<UL><LI><a href="#[16e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Sheet_updown
 <LI><a href="#[16f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Sheet_free
+<LI><a href="#[170]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Focus_free
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> accumulate_hmi .o(i.Accm_HMI_ctor)
 </UL>
@@ -5528,9 +5528,9 @@ Local Symbols
 <BR><BR>[Stack]<UL><LI>Max Depth = 56<LI>Call Chain = Accm_HMI_hitHandle &rArr; __2sprintf
 </UL>
 <BR>[Calls]<UL><LI><a href="#[173]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Button_Get_subcnt
+<LI><a href="#[171]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Focus_Get_focus
 <LI><a href="#[176]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Focus_move_right
 <LI><a href="#[175]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Focus_move_left
-<LI><a href="#[171]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Focus_Get_focus
 <LI><a href="#[172]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strcmp
 <LI><a href="#[16b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strlen
 <LI><a href="#[174]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2sprintf
@@ -5593,20 +5593,20 @@ Local Symbols
 <P><STRONG><a name="[f0]"></a>Setup_HMI_hide</STRONG> (Thumb, 68 bytes, Stack size 16 bytes, setup_hmi.o(i.Setup_HMI_hide))
 <BR><BR>[Stack]<UL><LI>Max Depth = 208<LI>Call Chain = Setup_HMI_hide &rArr; Sheet_free &rArr; Sheet_updown &rArr; GetShtctl &rArr; Dev_open &rArr; DevChar_open &rArr; Get_DevUart &rArr; Dev_Uart_new &rArr; malloc &rArr; internal_alloc
 </UL>
-<BR>[Calls]<UL><LI><a href="#[170]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Focus_free
-<LI><a href="#[16e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Sheet_updown
+<BR>[Calls]<UL><LI><a href="#[16e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Sheet_updown
 <LI><a href="#[16f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Sheet_free
+<LI><a href="#[170]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Focus_free
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> setup_hmi.o(i.Setup_HMI_ctor)
 </UL>
 <P><STRONG><a name="[f2]"></a>Setup_HMI_hitHandle</STRONG> (Thumb, 252 bytes, Stack size 32 bytes, setup_hmi.o(i.Setup_HMI_hitHandle))
 <BR><BR>[Stack]<UL><LI>Max Depth = 40<LI>Call Chain = Setup_HMI_hitHandle &rArr; strcmp
 </UL>
-<BR>[Calls]<UL><LI><a href="#[176]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Focus_move_right
-<LI><a href="#[175]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Focus_move_left
-<LI><a href="#[171]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Focus_Get_focus
+<BR>[Calls]<UL><LI><a href="#[171]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Focus_Get_focus
 <LI><a href="#[24c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Focus_move_up
 <LI><a href="#[24d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Focus_move_down
+<LI><a href="#[176]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Focus_move_right
+<LI><a href="#[175]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Focus_move_left
 <LI><a href="#[172]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strcmp
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> setup_hmi.o(i.Setup_HMI_ctor)
@@ -5759,7 +5759,7 @@ Local Symbols
 <BR>[Called By]<UL><LI><a href="#[e9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Setting_HMI_hitHandle
 </UL>
 
-<P><STRONG><a name="[269]"></a>Strategy_focus</STRONG> (Thumb, 290 bytes, Stack size 32 bytes, setting_hmi.o(i.Strategy_focus))
+<P><STRONG><a name="[269]"></a>Strategy_focus</STRONG> (Thumb, 284 bytes, Stack size 32 bytes, setting_hmi.o(i.Strategy_focus))
 <BR><BR>[Stack]<UL><LI>Max Depth = 32<LI>Call Chain = Strategy_focus
 </UL>
 <BR>[Calls]<UL><LI><a href="#[26e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Stripe_vy
@@ -5786,7 +5786,7 @@ Local Symbols
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> set_system_strategy.o(.data)
 </UL>
-<P><STRONG><a name="[16]"></a>Sys_init</STRONG> (Thumb, 56 bytes, Stack size 16 bytes, set_system_strategy.o(i.Sys_init))
+<P><STRONG><a name="[16]"></a>Sys_init</STRONG> (Thumb, 64 bytes, Stack size 16 bytes, set_system_strategy.o(i.Sys_init))
 <BR><BR>[Stack]<UL><LI>Max Depth = 28<LI>Call Chain = Sys_init &rArr; VRAM_alloc
 </UL>
 <BR>[Calls]<UL><LI><a href="#[17c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;VRAM_init
@@ -5795,7 +5795,7 @@ Local Symbols
 <BR>[Address Reference Count : 1]<UL><LI> set_system_strategy.o(.data)
 </UL>
 <P><STRONG><a name="[18]"></a>Sys_key_dn</STRONG> (Thumb, 98 bytes, Stack size 40 bytes, set_system_strategy.o(i.Sys_key_dn))
-<BR><BR>[Stack]<UL><LI>Max Depth = 136<LI>Call Chain = Sys_key_dn &rArr; Str_Calculations &rArr; __2snprintf
+<BR><BR>[Stack]<UL><LI>Max Depth = 144<LI>Call Chain = Sys_key_dn &rArr; Str_Calculations &rArr; __2snprintf
 </UL>
 <BR>[Calls]<UL><LI><a href="#[19e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Str_Calculations
 <LI><a href="#[1c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Sys_get_focusdata
@@ -5820,7 +5820,7 @@ Local Symbols
 <BR>[Address Reference Count : 1]<UL><LI> set_system_strategy.o(.data)
 </UL>
 <P><STRONG><a name="[17]"></a>Sys_key_up</STRONG> (Thumb, 98 bytes, Stack size 40 bytes, set_system_strategy.o(i.Sys_key_up))
-<BR><BR>[Stack]<UL><LI>Max Depth = 136<LI>Call Chain = Sys_key_up &rArr; Str_Calculations &rArr; __2snprintf
+<BR><BR>[Stack]<UL><LI>Max Depth = 144<LI>Call Chain = Sys_key_up &rArr; Str_Calculations &rArr; __2snprintf
 </UL>
 <BR>[Calls]<UL><LI><a href="#[19e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Str_Calculations
 <LI><a href="#[1c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Sys_get_focusdata
@@ -5851,7 +5851,7 @@ Local Symbols
 <BR>[Address Reference Count : 1]<UL><LI> set_channel_strategy.o(.data)
 </UL>
 <P><STRONG><a name="[20]"></a>Cns_key_dn</STRONG> (Thumb, 98 bytes, Stack size 40 bytes, set_channel_strategy.o(i.Cns_key_dn))
-<BR><BR>[Stack]<UL><LI>Max Depth = 136<LI>Call Chain = Cns_key_dn &rArr; Str_Calculations &rArr; __2snprintf
+<BR><BR>[Stack]<UL><LI>Max Depth = 144<LI>Call Chain = Cns_key_dn &rArr; Str_Calculations &rArr; __2snprintf
 </UL>
 <BR>[Calls]<UL><LI><a href="#[19e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Str_Calculations
 <LI><a href="#[24]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Cns_get_focusdata
@@ -5868,7 +5868,7 @@ Local Symbols
 <BR>[Address Reference Count : 1]<UL><LI> set_channel_strategy.o(.data)
 </UL>
 <P><STRONG><a name="[1f]"></a>Cns_key_up</STRONG> (Thumb, 98 bytes, Stack size 40 bytes, set_channel_strategy.o(i.Cns_key_up))
-<BR><BR>[Stack]<UL><LI>Max Depth = 136<LI>Call Chain = Cns_key_up &rArr; Str_Calculations &rArr; __2snprintf
+<BR><BR>[Stack]<UL><LI>Max Depth = 144<LI>Call Chain = Cns_key_up &rArr; Str_Calculations &rArr; __2snprintf
 </UL>
 <BR>[Calls]<UL><LI><a href="#[19e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Str_Calculations
 <LI><a href="#[24]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Cns_get_focusdata
@@ -6004,7 +6004,7 @@ Local Symbols
 <LI><a href="#[2a2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;isrSemaphoreRelease
 </UL>
 
-<P><STRONG><a name="[2d5]"></a>rt_ms2tick</STRONG> (Thumb, 58 bytes, Stack size 0 bytes, rt_cmsis.o(i.rt_ms2tick))
+<P><STRONG><a name="[2d5]"></a>rt_ms2tick</STRONG> (Thumb, 60 bytes, Stack size 0 bytes, rt_cmsis.o(i.rt_ms2tick))
 <BR><BR>[Called By]<UL><LI><a href="#[144]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;svcSemaphoreWait
 <LI><a href="#[141]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;svcMessageGet
 <LI><a href="#[13e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;svcDelay

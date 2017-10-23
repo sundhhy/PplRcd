@@ -152,7 +152,8 @@ void Str_Calculations(char *p_str, int len, int hex, int op, int val, int rangel
 	
 	int dig = 0;
 	int i;
-	short w[5] = {1, 10, 100, 1000, 10000};		
+	short w[5] = {1, 10, 100, 1000, 10000};	
+	char	buf[6] = {0};;
 	if(hex) {
 		//16进制
 		
@@ -188,9 +189,13 @@ void Str_Calculations(char *p_str, int len, int hex, int op, int val, int rangel
 	}
 	
 	
-	snprintf(p_str, len, "%d", dig);
-	
-	
+	snprintf(buf, 6, "%d", dig);
+	if(len > 6)
+		len = 6;
+	for(i = 0; i < len; i ++) {
+		p_str[i] = buf[i];
+			
+	}
 }
 
 //一个简单的内存分配

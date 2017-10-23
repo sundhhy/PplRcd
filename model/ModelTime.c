@@ -126,7 +126,7 @@ static char* MdlTime_to_string( Model *self, IN int aux, void *arg)
 		case 1:
 			if(arg == NULL)
 				break;
-			sprintf(arg, "%02d:%02d:%02d %02d:%02d:%02d", p_tm->tm_year, p_tm->tm_mon, p_tm->tm_mday, \
+			sprintf(arg, "%02d/%02d/%02d %02d:%02d:%02d", p_tm->tm_year, p_tm->tm_mon, p_tm->tm_mday, \
 				p_tm->tm_hour, p_tm->tm_min, p_tm->tm_sec);
 			return arg;
 		default:break;
@@ -153,36 +153,36 @@ static int MdlTime_set_by_string( Model *self, IN int aux, void *arg)
 				p_tm->tm_hour, p_tm->tm_min, p_tm->tm_sec
 			if(arg == NULL)
 				break;
-			for(i = 0; i < 6; i+=3) {
+			for(i = 0; i < 20; i+=3) {
 				
 				memcpy(s_data, (char *)arg + i, 2);
 				s_data[2] = 0;
 				val = atoi(s_data);
 				if(i == 0) {
-					val += 2000;
+//					val += 2000;
 					t.tm_year = val;
 					
-				} else if(i == 1) {
+				} else if(i == 1 * 3) {
 					if(val > 12)
 						return -1;
 					t.tm_mon = val;
 					
-				} else if(i == 2) {
+				} else if(i == 2 * 3) {
 					if(val > g_moth_day[t.tm_mon])
 						return -1;
 					t.tm_mday = val;
 					
-				} else if(i == 3) {
+				} else if(i == 3 * 3) {
 					if(val > 23)
 						return -1;
 					t.tm_hour = val;
 					
-				} else if(i == 4) {
+				} else if(i == 4 * 3) {
 					if(val > 59)
 						return -1;
 					t.tm_min = val;
 					
-				} else if(i == 5) {
+				} else if(i == 5 * 3) {
 					if(val > 59)
 						return -1;
 					t.tm_sec = val;

@@ -289,7 +289,7 @@ static void Strategy_focus(Setting_HMI *self, strategy_focus_t *p_syf, int opt)
 			return;
 		self->p_sht_text->cnt.len = f_data_len;
 		self->p_sht_text->area.x0 = self->col_vx0[p_syf->f_col] + txt_xsize * p_syf->start_byte;
-		self->p_sht_text->area.y0 = Stripe_vy(p_syf->f_row) + txt_ysize;
+		self->p_sht_text->area.y0 = Stripe_vy(p_syf->f_row);
 		self->p_sht_text->p_gp->vdraw(self->p_sht_text->p_gp, &self->p_sht_text->cnt, &self->p_sht_text->area);
 		return;
 	}
