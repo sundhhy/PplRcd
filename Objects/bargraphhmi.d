@@ -41,6 +41,7 @@
 .\objects\bargraphhmi.o: HMI\Accumulate_HMI.h
 .\objects\bargraphhmi.o: HMI\Setup_HMI.h
 .\objects\bargraphhmi.o: HMI\Setting_HMI.h
+.\objects\bargraphhmi.o: HMI\windowsHMI.h
 .\objects\bargraphhmi.o: .\Expression\ExpFactory.h
 .\objects\bargraphhmi.o: .\Expression\expression.h
 .\objects\bargraphhmi.o: .\Views\Composition.h

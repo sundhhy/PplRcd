@@ -329,6 +329,9 @@ static int	Init_cmmHmi( HMI *self, void *arg)
 	
 	p_hmi = CreateHMI(HMI_SETTING);
 	p_hmi->init(p_hmi, NULL);
+	
+	p_hmi = CreateHMI(HMI_WINDOWS);
+	p_hmi->init(p_hmi, NULL);
 	return RET_OK;
 }
 

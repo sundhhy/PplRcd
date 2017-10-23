@@ -41,3 +41,4 @@
 .\objects\hmifactory.o: HMI\Accumulate_HMI.h
 .\objects\hmifactory.o: HMI\Setup_HMI.h
 .\objects\hmifactory.o: HMI\Setting_HMI.h
+.\objects\hmifactory.o: HMI\windowsHMI.h

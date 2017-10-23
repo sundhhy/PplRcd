@@ -290,7 +290,7 @@ void Sheet_refresh( struct SHEET *p_sht)
 	int i;
     if( p_sht->height < 0)
 		return;
-	CLR_LCD();
+//	CLR_LCD();
 	for( i = p_sht->height; i <= p_ctl->top; i++)
 	{
 		

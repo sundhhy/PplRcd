@@ -48,6 +48,7 @@
 #define SY_KEYTYPE_HIT				0
 #define SY_KEYTYPE_LONGPUSH		1
 
+#define	HMIFLAG_WIN				4
 #define IS_HMI_HIDE(flag)	((flag&1) == 0)
 #define IS_HMI_KEYHANDLE(flag)	((flag&2))
  //------------------------------------------------------------------------------

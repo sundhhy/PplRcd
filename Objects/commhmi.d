@@ -46,6 +46,7 @@
 .\objects\commhmi.o: HMI\Accumulate_HMI.h
 .\objects\commhmi.o: HMI\Setup_HMI.h
 .\objects\commhmi.o: HMI\Setting_HMI.h
+.\objects\commhmi.o: HMI\windowsHMI.h
 .\objects\commhmi.o: ..\PplRcd\utils/time.h
 .\objects\commhmi.o: E:\PaperlessRecorder\myCode\PplRcd\RTE\Device\STM32F103VC\stm32f10x_conf.h
 .\objects\commhmi.o: E:\PaperlessRecorder\myCode\PplRcd\RTE\RTE_Components.h

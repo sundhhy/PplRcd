@@ -19,7 +19,10 @@
 #define HAS_PGUP		1
 #define HAS_PGDN		2
 
+
 #define FOCUS_IN_STARTEGY		0x10
+#define DO_NOTHING				0x20
+
 
 #define SET_PG_FLAG(fg, wt)	( fg = fg | wt)
 #define CLR_PG_FLAG(fg, wt)	( fg &= ~wt)
@@ -33,7 +36,7 @@ CLASS(Setting_HMI)
 	sheet	*p_sht_text;
 	sheet	*p_sht_CUR;			//在条纹中显示的光标
 	uint8_t	entry_start_row;
-	uint8_t	strategy_flag;		//是否有上下翻页图标的标志
+	uint8_t	sub_flag;		//是否有上下翻页图标的标志
 //	uint8_t	f_row;
 	uint8_t	f_col;
 	//无g_p_ico_pgup，g_p_ico_pgdn时为1;若有g_p_ico_pgup为2;若有g_p_ico_pgdn为3

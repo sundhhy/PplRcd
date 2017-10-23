@@ -1,5 +1,5 @@
-#ifndef _INC_mainHMI_H_
-#define _INC_mainHMI_H_
+#ifndef _INC_winHMI_H_
+#define _INC_winHMI_H_
 #include "HMI.h"
 #include "commHMI.h"
 
@@ -49,6 +49,6 @@ CLASS(winHmi)
 // function prototypes
 //------------------------------------------------------------------------------
 winHmi *Get_winHmi(void) ;
-void Win_SetTips(char *p_tips);
+
 
 #endif

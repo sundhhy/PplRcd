@@ -41,6 +41,7 @@
 .\objects\real_time_trendhmi.o: HMI\Accumulate_HMI.h
 .\objects\real_time_trendhmi.o: HMI\Setup_HMI.h
 .\objects\real_time_trendhmi.o: HMI\Setting_HMI.h
+.\objects\real_time_trendhmi.o: HMI\windowsHMI.h
 .\objects\real_time_trendhmi.o: .\Expression\ExpFactory.h
 .\objects\real_time_trendhmi.o: .\Expression\expression.h
 .\objects\real_time_trendhmi.o: .\Views\Composition.h

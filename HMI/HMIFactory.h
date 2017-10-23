@@ -19,7 +19,7 @@
 #include "Accumulate_HMI.h"
 #include "Setup_HMI.h"
 #include "Setting_HMI.h"
-
+#include "windowsHMI.h"
 
 //------------------------------------------------------------------------------
 // check for correct compilation options
@@ -42,7 +42,7 @@
 #define HMI_ACCM				12
 #define HMI_SETUP				13
 #define HMI_SETTING				14
-
+#define HMI_WINDOWS				15
  //------------------------------------------------------------------------------
 // typedef
 //------------------------------------------------------------------------------

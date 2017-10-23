@@ -35,3 +35,4 @@
 .\objects\setting_hmi.o: .\Views\Composition.h
 .\objects\setting_hmi.o: .\Expression\Reader.h
 .\objects\setting_hmi.o: E:\mylib\sdhLib\inc\basis/assert.h
+.\objects\setting_hmi.o: HMI\windowsHmi.h

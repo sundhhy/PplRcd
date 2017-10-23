@@ -67,6 +67,7 @@
 .\objects\main.o: HMI/Accumulate_HMI.h
 .\objects\main.o: HMI/Setup_HMI.h
 .\objects\main.o: HMI/Setting_HMI.h
+.\objects\main.o: HMI/windowsHMI.h
 .\objects\main.o: control/CtlKey.h
 .\objects\main.o: control/Controller.h
 .\objects\main.o: ..\PplRcd\utils/keyboard.h

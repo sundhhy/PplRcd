@@ -41,6 +41,7 @@
 .\objects\datahmi.o: HMI\Accumulate_HMI.h
 .\objects\datahmi.o: HMI\Setup_HMI.h
 .\objects\datahmi.o: HMI\Setting_HMI.h
+.\objects\datahmi.o: HMI\windowsHMI.h
 .\objects\datahmi.o: .\Expression\ExpFactory.h
 .\objects\datahmi.o: .\Expression\expression.h
 .\objects\datahmi.o: .\Views\Composition.h

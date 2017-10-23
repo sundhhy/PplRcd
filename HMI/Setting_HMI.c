@@ -1,6 +1,7 @@
 #include "Setting_HMI.h"
 #include "sdhDef.h"
 #include "ExpFactory.h"
+#include "windowsHmi.h"
 
 #include <string.h>
 
@@ -127,11 +128,33 @@ static int	Init_Setting_HMI(HMI *self, void *arg)
 static void Show_Setting_HMI(HMI *self)
 {
 	Setting_HMI		*cthis = SUB_PTR( self, HMI, Setting_HMI);
+	int ret = 0;
+	char		win_tips[32];
 	Sheet_refresh(g_p_sht_bkpic);
 	
 	cthis->entry_start_row = 0;
 	Show_entry(self, cthis->p_sy);
 	Strategy_focus(cthis, &cthis->p_sy->sf, 1);
+	
+	if(self->flag & HMIFLAG_WIN) {
+		if((self->arg[1] == 0) &&  (cthis->sub_flag & DO_NOTHING) == 0) { 		//窗口画面传递过来的检点列位置为“确定”
+			//然后根据选择进行处理
+			ret = cthis->p_sy->key_hit_er(NULL) ;
+			if(ret == RET_OK) {
+				SET_PG_FLAG(cthis->sub_flag, DO_NOTHING);	
+				g_p_winHmi->arg[0] = WINTYPE_CUR;
+				Win_SetTips("修改成功");
+				self->switchHMI(self, g_p_winHmi);
+			} else {
+				SET_PG_FLAG(cthis->sub_flag, DO_NOTHING);		//
+				g_p_winHmi->arg[0] = WINTYPE_ERROR;
+				sprintf(win_tips,"出现错误！错误码:%d", ret);
+				Win_SetTips(win_tips);
+				self->switchHMI(self, g_p_winHmi);
+			}
+		}
+		
+	}
 }
 static void	Setting_initSheet(HMI *self)
 {
@@ -141,7 +164,9 @@ static void	Setting_initSheet(HMI *self)
 	shtctl 				*p_shtctl = NULL;
 	p_shtctl = GetShtctl();
 	
-	cthis->p_sy = arr_p_setting_strategy[self->arg[0]][self->arg[1]];
+	
+	if((self->flag & HMIFLAG_WIN) == 0) 
+		cthis->p_sy = arr_p_setting_strategy[self->arg[0]][self->arg[1]];
 	
 	p_exp = ExpCreate( "pic");
 	p_exp->inptSht( p_exp, (void *)setting_hmi_code_clean, g_p_cpic) ;
@@ -190,10 +215,10 @@ static void	Setting_HMI_init_focus(HMI *self)
 {
 	Setting_HMI		*cthis = SUB_PTR( self, HMI, Setting_HMI);
 	cthis->f_col = 0;
-	cthis->strategy_flag = 0;
+	cthis->sub_flag &= 0xf0;
 	cthis->col_max = 1;
 	cthis->p_sy->init(NULL);
-	SET_PG_FLAG(cthis->strategy_flag, FOCUS_IN_STARTEGY);
+	SET_PG_FLAG(cthis->sub_flag, FOCUS_IN_STARTEGY);
 	
 //	self->p_fcuu = Focus_alloc(1, 2);
 //	Focus_Set_sht(self->p_fcuu, 0, 0, g_p_ico_pgup);
@@ -262,7 +287,7 @@ static sheet* Setting_HMI_get_focus(Setting_HMI *self, int arg)
 		return g_p_ico_memu;
 	else if(f == 1)
 	{
-		if(self->strategy_flag & HAS_PGUP)
+		if(self->sub_flag & HAS_PGUP)
 			return g_p_ico_pgup;
 		else
 			return g_p_ico_pgdn;
@@ -321,6 +346,8 @@ static void	Setting_HMI_hitHandle(HMI *self, char *s_key)
 	sheet			*p_focus;
 	strategy_t			*p_sy = cthis->p_sy;
 	strategy_focus_t	old_sf;
+	
+	
 //	uint8_t		focusRow = self->p_fcuu->focus_row;
 	uint8_t		focusCol = cthis->f_col;
 	uint8_t		sy_chgFouse = 0;
@@ -335,7 +362,7 @@ static void	Setting_HMI_hitHandle(HMI *self, char *s_key)
 	{
 		
 		
-		if(cthis->strategy_flag & FOCUS_IN_STARTEGY) {
+		if(cthis->sub_flag & FOCUS_IN_STARTEGY) {
 			
 			if(p_sy->key_hit_lt(NULL) == RET_OK) {
 			
@@ -351,7 +378,7 @@ static void	Setting_HMI_hitHandle(HMI *self, char *s_key)
 	
 	if( !strcmp( s_key, HMIKEY_RIGHT) )
 	{
-		if(cthis->strategy_flag & FOCUS_IN_STARTEGY) {
+		if(cthis->sub_flag & FOCUS_IN_STARTEGY) {
 			
 			if(p_sy->key_hit_rt(NULL) == RET_OK) {
 			
@@ -367,7 +394,7 @@ static void	Setting_HMI_hitHandle(HMI *self, char *s_key)
 	if( !strcmp( s_key, HMIKEY_UP) )
 	{
 		
-		if(cthis->strategy_flag & FOCUS_IN_STARTEGY) {
+		if(cthis->sub_flag & FOCUS_IN_STARTEGY) {
 			
 			if(p_sy->key_hit_up(NULL) == RET_OK) {
 				//编辑区内的上下操作是用来修改参数的
@@ -380,7 +407,7 @@ static void	Setting_HMI_hitHandle(HMI *self, char *s_key)
 	
 	if( !strcmp( s_key, HMIKEY_DOWN) )
 	{
-		if(cthis->strategy_flag & FOCUS_IN_STARTEGY) {
+		if(cthis->sub_flag & FOCUS_IN_STARTEGY) {
 			
 			if(p_sy->key_hit_dn(NULL) == RET_OK) {
 				
@@ -392,11 +419,31 @@ static void	Setting_HMI_hitHandle(HMI *self, char *s_key)
 	
 	if( !strcmp(s_key, HMIKEY_ENTER))
 	{	
-		if(cthis->strategy_flag & FOCUS_IN_STARTEGY) {
+		
+		
+		if(cthis->sub_flag & FOCUS_IN_STARTEGY) {
 			
-			if(p_sy->key_hit_er(NULL) == RET_OK) {
-			
+			//先提示
+			if((self->flag & HMIFLAG_WIN) == 0) {
+				g_p_winHmi->arg[0] = WINTYPE_CUR;
+				Win_SetTips("确认修改？");
+				self->switchHMI(self, g_p_winHmi);
+				
+			} else {
+				//然后根据选择进行处理
+				if(p_sy->key_hit_er(NULL) == RET_OK) {
+					g_p_winHmi->arg[0] = WINTYPE_CUR;
+					Win_SetTips("修改成功");
+					self->switchHMI(self, g_p_winHmi);
+				} else {
+					
+					g_p_winHmi->arg[0] = WINTYPE_ERROR;
+					Win_SetTips("出现错误！请仔细核对");
+					self->switchHMI(self, g_p_winHmi);
+				}
 			}
+			
+			
 		} else {
 			p_focus = Setting_HMI_get_focus(cthis, -1);
 			if(Show_more(self, p_focus->id) == ERR_OPT_FAILED) {
@@ -451,7 +498,7 @@ static void	Setting_HMI_longpush( HMI *self, char *s_key)
 	if( !strcmp( s_key, HMIKEY_UP) )
 	{
 		
-		if(cthis->strategy_flag & FOCUS_IN_STARTEGY) {
+		if(cthis->sub_flag & FOCUS_IN_STARTEGY) {
 			//光标位于编辑区，则用编辑区的处理函数处理
 			
 			if(cthis->p_sy->key_hit_up(&skt) == RET_OK) {
@@ -461,7 +508,7 @@ static void	Setting_HMI_longpush( HMI *self, char *s_key)
 				//如果在编辑区内部切换产生了错误，则认为行已经超出了编辑区的范围了，将光标切换到编辑区外
 				sy_chgFouse = 2;
 				
-				CLR_PG_FLAG(cthis->strategy_flag, FOCUS_IN_STARTEGY);
+				CLR_PG_FLAG(cthis->sub_flag, FOCUS_IN_STARTEGY);
 				
 			}  
 		} else {
@@ -469,7 +516,7 @@ static void	Setting_HMI_longpush( HMI *self, char *s_key)
 			//吧光标切回编辑区之前，先将编辑区之外的光标清除掉
 			self->clear_focus(self, 0, focusCol);
 			Strategy_focus(cthis, &cthis->p_sy->sf, 1);
-			SET_PG_FLAG(cthis->strategy_flag, FOCUS_IN_STARTEGY);
+			SET_PG_FLAG(cthis->sub_flag, FOCUS_IN_STARTEGY);
 			
 		}
 		
@@ -477,20 +524,20 @@ static void	Setting_HMI_longpush( HMI *self, char *s_key)
 	
 	if( !strcmp( s_key, HMIKEY_DOWN) )
 	{
-		if(cthis->strategy_flag & FOCUS_IN_STARTEGY) {
+		if(cthis->sub_flag & FOCUS_IN_STARTEGY) {
 			
 			if(cthis->p_sy->key_hit_dn(&skt) == RET_OK) {
 				
 				sy_chgFouse = 1;
 			} else {
 				sy_chgFouse = 2;
-				CLR_PG_FLAG(cthis->strategy_flag, FOCUS_IN_STARTEGY);
+				CLR_PG_FLAG(cthis->sub_flag, FOCUS_IN_STARTEGY);
 				
 			}  
 		} else {
 			self->clear_focus(self, 0, focusCol);
 			Strategy_focus(cthis, &cthis->p_sy->sf, 1);
-			SET_PG_FLAG(cthis->strategy_flag, FOCUS_IN_STARTEGY);
+			SET_PG_FLAG(cthis->sub_flag, FOCUS_IN_STARTEGY);
 			
 		}
 	}
@@ -588,9 +635,9 @@ static void	Show_entry(HMI *self, strategy_t *p_st)
 		g_p_ico_pgup->e_heifht = 1;
 		Sheet_slide(g_p_ico_pgup);
 		g_p_ico_pgup->e_heifht = 0;
-		SET_PG_FLAG(cthis->strategy_flag, HAS_PGUP);
+		SET_PG_FLAG(cthis->sub_flag, HAS_PGUP);
 	} else {
-		CLR_PG_FLAG(cthis->strategy_flag, HAS_PGUP);
+		CLR_PG_FLAG(cthis->sub_flag, HAS_PGUP);
 	}
 	
 	if(more) {
@@ -598,16 +645,16 @@ static void	Show_entry(HMI *self, strategy_t *p_st)
 		Sheet_slide(g_p_ico_pgdn);
 		g_p_ico_pgdn->e_heifht = 0;
 		
-		SET_PG_FLAG(cthis->strategy_flag, HAS_PGDN);
+		SET_PG_FLAG(cthis->sub_flag, HAS_PGDN);
 	} else {
-		CLR_PG_FLAG(cthis->strategy_flag, HAS_PGDN);
+		CLR_PG_FLAG(cthis->sub_flag, HAS_PGDN);
 	}
 	
-	if((cthis->strategy_flag & 0x0f)== 0)
+	if((cthis->sub_flag & 0x0f)== 0)
 		cthis->col_max = 1;
-	if(cthis->strategy_flag & HAS_PGUP)
+	if(cthis->sub_flag & HAS_PGUP)
 		cthis->col_max = 2;
-	if(cthis->strategy_flag & HAS_PGDN)
+	if(cthis->sub_flag & HAS_PGDN)
 		cthis->col_max = 2;
 
 	

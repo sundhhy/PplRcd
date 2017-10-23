@@ -42,6 +42,7 @@
 .\objects\chninfopic.o: HMI\Accumulate_HMI.h
 .\objects\chninfopic.o: HMI\Setup_HMI.h
 .\objects\chninfopic.o: HMI\Setting_HMI.h
+.\objects\chninfopic.o: HMI\windowsHMI.h
 .\objects\chninfopic.o: .\Expression\ExpFactory.h
 .\objects\chninfopic.o: .\Expression\expression.h
 .\objects\chninfopic.o: .\Views\Composition.h

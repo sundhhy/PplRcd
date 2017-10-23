@@ -110,7 +110,7 @@ extern	HMI 			*g_p_Accm_HMI;
 
 extern 	HMI 			*g_p_Setup_HMI;
 extern 	HMI 			*g_p_Setting_HMI;
-
+extern 	HMI 			*g_p_winHmi;
 
 //------------------------------------------------------------------------------
 // function prototypes
@@ -124,4 +124,6 @@ extern int Stripe_vy(int row) ;
 extern void VRAM_init(void);
 extern void *VRAM_alloc(int bytes);
 extern void Str_Calculations(char *p_str, int len, int hex, int op, int val, int rangel, int rangeh);
+
+extern void Win_SetTips(char *p_tips);
 #endif

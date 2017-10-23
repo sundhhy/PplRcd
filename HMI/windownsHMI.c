@@ -37,17 +37,17 @@ HMI *g_p_winHmi;
 // const defines
 //------------------------------------------------------------------------------
 #define	WINHMI_TITLE_CUE		"提示"
-#define	WINHMI_TITLE_ALARM	"警告!"
+#define	WINHMI_TITLE_ALARM		"警告!"
 #define	WINHMI_TITLE_ERR		"错误!"
 
-static ro_char winHim_code_bkpic[] =  {"<bpic m = 0 vx0=200 vy0=214 > </>" };
-static ro_char winHim_code_title[] =  {"<text m = 0 f=16 clr=white vx0=200 vy0=214 > </>" };
-static ro_char winHim_code_tips[] =  {"<text m = 0 f=16 clr=white vx0=200 vy0=214 > </>" };
-static ro_char winhmi_code_cur[] ={ "<icon vx0=100 vy0=200 xn=5 yn=1 n=0>17</>" };		//在按钮或者多选条目中的选中标识
+static ro_char winHim_code_bkpic[] =  {"<bpic m=1 vx0=80 vy0=60 >28</>" };
+static ro_char winHim_code_title[] =  {"<text m=1 f=16 clr=white vx0=88 vy0=62 > </>" };
+static ro_char winHim_code_tips[] =  {"<text m=1 f=16 clr=white vx0=88 vy0=80 > </>" };
+static ro_char winhmi_code_cur[] ={ "<icon vx0=96 vy0=160 xn=5 yn=1 n=0>19</>" };		//在按钮或者多选条目中的选中标识
 
-#define POPUP_BU_VX0				100
-#define POPUP_BU_VY0				200
-#define POPUP_BU_XGAP				200
+#define POPUP_BU_VX0				96
+#define POPUP_BU_VY0				160
+#define POPUP_BU_XGAP				64
 //------------------------------------------------------------------------------
 // local types
 //------------------------------------------------------------------------------
@@ -55,7 +55,7 @@ static ro_char winhmi_code_cur[] ={ "<icon vx0=100 vy0=200 xn=5 yn=1 n=0>17</>" 
 //------------------------------------------------------------------------------
 // local vars
 //------------------------------------------------------------------------------
-static winHmi *signal_winHmi;
+
 static char		*win_tips;
 //------------------------------------------------------------------------------
 // local function prototypes
@@ -88,6 +88,7 @@ static void MUS_focuse(winHmi *cthis, int	f_row, int f_col, int opt) ;
 //============================================================================//
 winHmi *Get_winHmi(void) 
 {
+	static winHmi *signal_winHmi;
 	if( signal_winHmi == NULL)
 	{
 		signal_winHmi = winHmi_new();
@@ -106,7 +107,7 @@ void Win_SetTips(char *p_tips)
 
 
 
-CTOR( winHmi)
+CTOR(winHmi)
 SUPER_CTOR( HMI);
 FUNCTION_SETTING(HMI.init, Init_winHmi);
 FUNCTION_SETTING(HMI.hide, winHmiHide);
@@ -175,7 +176,26 @@ static void winHmiHide(HMI *self )
 static void	winHmiShow(HMI *self )
 {
 	winHmi			*cthis = SUB_PTR( self, HMI, winHmi);
+	short	i, len;
+	g_p_lastHmi->flag |= HMIFLAG_WIN;
 	Sheet_refresh(cthis->p_sht_bkpic);
+	if(self->arg[0] < WINTYPE_MUS_BND) {
+		//简要提示，要考虑分行显示
+		len = cthis->p_sht_tips->cnt.len;
+		while(1) {
+			if(cthis->p_sht_tips->cnt.len > 18)
+				cthis->p_sht_tips->cnt.len = 18;
+			cthis->p_sht_tips->p_gp->vdraw(cthis->p_sht_tips->p_gp, &cthis->p_sht_tips->cnt, &cthis->p_sht_tips->area);
+			if(len < 17)
+				break;
+			cthis->p_sht_tips->area.y0 += 16;
+			cthis->p_sht_tips->cnt.data += 18;
+			len -= 18;
+			cthis->p_sht_tips->cnt.len = len;
+			
+		}
+		
+	}
 	
 	self->show_focus(self, 0xff, 0xff);
 }
@@ -206,7 +226,7 @@ static void winHmi_ClearFocuse(HMI *self, uint8_t fouse_row, uint8_t fouse_col)
 static void winHmi_ShowFocuse( HMI *self, uint8_t fouse_row, uint8_t fouse_col)
 {
 	winHmi		*cthis = SUB_PTR( self, HMI, winHmi);
-if(self->arg[0] < WINTYPE_MUS_BND) {
+	if(self->arg[0] < WINTYPE_MUS_BND) {
 		
 		PopUp_focuse(cthis, fouse_row, 1);
 	} else {
@@ -266,6 +286,7 @@ static void	MainHitHandle(HMI *self, char *s)
 		g_p_lastHmi->arg[0] = cthis->f_row;
 		g_p_lastHmi->arg[1] = cthis->f_col;
 		self->switchBack(self);
+		g_p_lastHmi->flag &= ~(1 << HMIFLAG_WIN);
 		
 	}
 	if( !strcmp( s, HMIKEY_ESC))
@@ -281,10 +302,10 @@ static int Win_CUR_move(winHmi *cthis, int kc)
 {
 	int ret = RET_OK;
 	if(cthis->win_type < WINTYPE_MUS_BND) {
-		if(cthis->f_row == 0)
-			cthis->f_row = 1;
+		if(cthis->f_col == 0)
+			cthis->f_col = 1;
 		else 
-			cthis->f_row = 1;
+			cthis->f_col = 0;
 		
 	} else {
 		//复选框的光标移动
@@ -308,6 +329,14 @@ static void Popup_init(winHmi *cthis)
 	cthis->p_sht_bkpic = Sheet_alloc(p_shtctl);
 	p_exp->inptSht( p_exp, (void *)winHim_code_bkpic, cthis->p_sht_bkpic) ;
 	
+	
+	p_exp = ExpCreate( "text");
+	cthis->p_sht_tips = Sheet_alloc(p_shtctl);
+	p_exp->inptSht( p_exp, (void *)winHim_code_tips, cthis->p_sht_tips);
+	cthis->p_sht_tips->cnt.data = win_tips;
+	cthis->p_sht_tips->cnt.len = strlen(cthis->p_sht_tips->cnt.data);
+	
+	
 	p_exp = ExpCreate( "text");
 	cthis->p_sht_title = Sheet_alloc(p_shtctl);
 	p_exp->inptSht( p_exp, (void *)winHim_code_title, cthis->p_sht_title) ;
@@ -321,6 +350,8 @@ static void Popup_init(winHmi *cthis)
 			break;
 		case WINTYPE_ERROR:
 			cthis->p_sht_title->cnt.data = WINHMI_TITLE_ERR;
+			cthis->p_sht_title->cnt.colour = COLOUR_RED;
+			cthis->p_sht_tips->cnt.colour = COLOUR_RED;
 			break;
 		default:
 			cthis->p_sht_title->cnt.data = WINHMI_TITLE_CUE;
@@ -328,11 +359,6 @@ static void Popup_init(winHmi *cthis)
 	}
 	cthis->p_sht_title->cnt.len = strlen(cthis->p_sht_title->cnt.data);
 	
-	p_exp = ExpCreate( "text");
-	cthis->p_sht_tips = Sheet_alloc(p_shtctl);
-	p_exp->inptSht( p_exp, (void *)winHim_code_tips, cthis->p_sht_tips);
-	cthis->p_sht_tips->cnt.data = win_tips;
-	cthis->p_sht_tips->cnt.len = strlen(cthis->p_sht_tips->cnt.data);
 	
 	p_exp = ExpCreate( "pic");
 	cthis->p_sht_cur = Sheet_alloc(p_shtctl);
@@ -340,8 +366,8 @@ static void Popup_init(winHmi *cthis)
 
 	Sheet_updown(cthis->p_sht_bkpic, h++);
 	Sheet_updown(cthis->p_sht_title, h++);
-	Sheet_updown(cthis->p_sht_tips, h++);
-	Sheet_updown(cthis->p_sht_cur, h++);
+//	Sheet_updown(cthis->p_sht_tips, h++);
+//	Sheet_updown(cthis->p_sht_cur, h++);
 	
 }
 //提示窗口:只有确定与取消两个按键
@@ -353,6 +379,7 @@ static void PopUp_focuse(winHmi *cthis, int	f_col, int opt)
 	} else {
 		
 		cthis->p_sht_cur->area.n = 0;
+		f_col = cthis->f_col;
 	}
 	cthis->p_sht_cur->area.x0 = POPUP_BU_VX0 + f_col * POPUP_BU_XGAP;
 	cthis->p_sht_cur->area.y0 = POPUP_BU_VY0;
@@ -363,8 +390,8 @@ static void PopUp_focuse(winHmi *cthis, int	f_col, int opt)
 
 static void Popup_hide(winHmi *cthis)
 {
-	Sheet_updown(cthis->p_sht_cur, -1);
-	Sheet_updown(cthis->p_sht_tips, -1);
+//	Sheet_updown(cthis->p_sht_cur, -1);
+//	Sheet_updown(cthis->p_sht_tips, -1);
 	Sheet_updown(cthis->p_sht_title, -1);
 	Sheet_updown(cthis->p_sht_bkpic, -1);
 	
