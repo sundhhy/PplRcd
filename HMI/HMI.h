@@ -34,6 +34,13 @@
 #define HMIKEY_ENTER		"enter"
 #define HMIKEY_ESC			"esc"
 
+#define HMI_KEYCODE_UP		0
+#define HMI_KEYCODE_DN		1
+#define HMI_KEYCODE_LT		2
+#define HMI_KEYCODE_RT		3
+#define HMI_KEYCODE_ER		4
+#define HMI_KEYCODE_ESC		5
+
 
 #define	HMI_FLAG_HIDE	0
 #define	HMI_FLAG_SHOW	1
@@ -126,7 +133,7 @@ typedef   const char  ro_char;
 extern const Except_T Hmi_Failed;
 //extern  ro_char str_endRow[];
 //extern	ro_char str_endCol[];
-extern HMI *g_p_curHmi;
+extern HMI *g_p_curHmi, *g_p_lastHmi;
 //------------------------------------------------------------------------------
 // function prototypes
 //------------------------------------------------------------------------------

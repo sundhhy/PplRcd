@@ -54,7 +54,7 @@ static const char RT_hmi_code_chninfo[] =  {"<cpic vx0=260 vy0=30 vx1=320 vy1=24
 static const char RT_hmi_code_div[] = { "<text vx0=8 vy0=36 f=16 m=0 clr=red>1</>" };
 
 static const char RT_hmi_code_data[] = { "<text f=16 vx0=285 m=0 aux=3>100</>" };
-static const char RLT_hmi_code_chnshow[] ={ "<icon vx0=265 vy0=62 xn=4 yn=1 n=0>17</>" };
+static const char RLT_hmi_code_chnshow[] ={ "<icon vx0=265 vy0=62 xn=5 yn=1 n=0>17</>" };
 #define  CHNSHOW_ROW_SPACE		32
 
 //------------------------------------------------------------------------------

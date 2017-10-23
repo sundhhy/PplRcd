@@ -49,7 +49,7 @@ I (D:\Keil_v5\ARM\ARMCC\include\setjmp.h)(0x55DB2B80)
 I (.\model\ModelTest.h)(0x59EAA067)
 I (HMI/HMIFactory.h)(0x59EAA067)
 I (HMI/commHMI.h)(0x59EAE133)
-I (HMI/HMI.h)(0x59EAB205)
+I (HMI/HMI.h)(0x59ED6617)
 I (.\sheet\sheet.h)(0x59EAA067)
 I (.\Glyph\glyph.h)(0x59EAA067)
 I (HMI/focus.h)(0x59EAF314)
@@ -1082,7 +1082,7 @@ F (.\sheet\sheet.h)(0x59EAA067)()
 F (.\sheet\sheetMemento.h)(0x59EAA067)()
 F (.\HMI\commHMI.c)(0x59EAF034)(-c --cpu Cortex-M3 -D__RTX -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I.\configs -I.\BSP -IE:\mylib\sdhLib\inc -I.\device\dev_LCD\nokia_5110 -I..\PplRcd -I.\drive -I.\device -I.\Glyph -I.\Expression -I.\Views -I.\REEC -I.\MVC -I.\Views -I..\PplRcd -I.\model -I.\sheet --diag_suppress=1295;--diag_suppress=1;--diag_suppress=177-D-I E:\PHN\mycode\PplRcd\RTE-I E:\PHN\mycode\PplRcd\RTE\Device\STM32F103VC-I D:\Keil_v5\ARM\PACK\ARM\CMSIS\4.5.0\CMSIS\Include-I D:\Keil_v5\ARM\PACK\ARM\CMSIS\4.5.0\CMSIS\RTOS\RTX\INC-I D:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\Include-I D:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\StdPeriph_Driver\inc-I D:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0-D__UVISION_VERSION="517" -D_RTE_ -DSTM32F10X_HD -DUSE_STDPERIPH_DRIVER -DSTM32F10X_HD -DUSE_STM3210B_EVAL -DHSE_VALUE="8000000"-o .\objects\commhmi.o --omf_browse .\objects\commhmi.crf --depend .\objects\commhmi.d)
 I (HMI\commHMI.h)(0x59EAE133)
-I (HMI\HMI.h)(0x59EAB205)
+I (HMI\HMI.h)(0x59ED6617)
 I (D:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x55DB2B80)
 I (D:\Keil_v5\ARM\ARMCC\include\string.h)(0x55DB2B78)
 I (E:\mylib\sdhLib\inc\lw_oopc.h)(0x590BF2DD)
@@ -1150,7 +1150,7 @@ F (.\HMI\HMIFactory.c)(0x59EAA067)(-c --cpu Cortex-M3 -D__RTX -D__MICROLIB -g -O
 I (HMI\HMIFactory.h)(0x59EAA067)
 I (D:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x55DB2B80)
 I (HMI\commHMI.h)(0x59EAE133)
-I (HMI\HMI.h)(0x59EAB205)
+I (HMI\HMI.h)(0x59ED6617)
 I (D:\Keil_v5\ARM\ARMCC\include\string.h)(0x55DB2B78)
 I (E:\mylib\sdhLib\inc\lw_oopc.h)(0x590BF2DD)
 I (D:\Keil_v5\ARM\ARMCC\include\stdlib.h)(0x55DB2B78)
@@ -1189,8 +1189,8 @@ I (HMI\Accumulate_HMI.h)(0x59EAA067)
 I (HMI\Setup_HMI.h)(0x59EAA067)
 I (HMI\Setting_HMI.h)(0x59EAA067)
 F (.\HMI\HMIFactory.h)(0x59EAA067)()
-F (.\HMI\HMI.c)(0x59EABB51)(-c --cpu Cortex-M3 -D__RTX -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I.\configs -I.\BSP -IE:\mylib\sdhLib\inc -I.\device\dev_LCD\nokia_5110 -I..\PplRcd -I.\drive -I.\device -I.\Glyph -I.\Expression -I.\Views -I.\REEC -I.\MVC -I.\Views -I..\PplRcd -I.\model -I.\sheet --diag_suppress=1295;--diag_suppress=1;--diag_suppress=177-D-I E:\PHN\mycode\PplRcd\RTE-I E:\PHN\mycode\PplRcd\RTE\Device\STM32F103VC-I D:\Keil_v5\ARM\PACK\ARM\CMSIS\4.5.0\CMSIS\Include-I D:\Keil_v5\ARM\PACK\ARM\CMSIS\4.5.0\CMSIS\RTOS\RTX\INC-I D:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\Include-I D:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\StdPeriph_Driver\inc-I D:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0-D__UVISION_VERSION="517" -D_RTE_ -DSTM32F10X_HD -DUSE_STDPERIPH_DRIVER -DSTM32F10X_HD -DUSE_STM3210B_EVAL -DHSE_VALUE="8000000"-o .\objects\hmi.o --omf_browse .\objects\hmi.crf --depend .\objects\hmi.d)
-I (HMI\HMI.h)(0x59EAB205)
+F (.\HMI\HMI.c)(0x59ED660E)(-c --cpu Cortex-M3 -D__RTX -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I.\configs -I.\BSP -IE:\mylib\sdhLib\inc -I.\device\dev_LCD\nokia_5110 -I..\PplRcd -I.\drive -I.\device -I.\Glyph -I.\Expression -I.\Views -I.\REEC -I.\MVC -I.\Views -I..\PplRcd -I.\model -I.\sheet --diag_suppress=1295;--diag_suppress=1;--diag_suppress=177-D-I E:\PHN\mycode\PplRcd\RTE-I E:\PHN\mycode\PplRcd\RTE\Device\STM32F103VC-I D:\Keil_v5\ARM\PACK\ARM\CMSIS\4.5.0\CMSIS\Include-I D:\Keil_v5\ARM\PACK\ARM\CMSIS\4.5.0\CMSIS\RTOS\RTX\INC-I D:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\Include-I D:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\StdPeriph_Driver\inc-I D:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0-D__UVISION_VERSION="517" -D_RTE_ -DSTM32F10X_HD -DUSE_STDPERIPH_DRIVER -DSTM32F10X_HD -DUSE_STM3210B_EVAL -DHSE_VALUE="8000000"-o .\objects\hmi.o --omf_browse .\objects\hmi.crf --depend .\objects\hmi.d)
+I (HMI\HMI.h)(0x59ED6617)
 I (D:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x55DB2B80)
 I (D:\Keil_v5\ARM\ARMCC\include\string.h)(0x55DB2B78)
 I (E:\mylib\sdhLib\inc\lw_oopc.h)(0x590BF2DD)
@@ -1219,10 +1219,10 @@ I (.\model\ModelTest.h)(0x59EAA067)
 I (HMI\focus.h)(0x59EAF314)
 I (HMI\commHMI.h)(0x59EAE133)
 I (HMI\keyboardHMI.h)(0x59EAA067)
-F (.\HMI\HMI.h)(0x59EAB205)()
+F (.\HMI\HMI.h)(0x59ED6617)()
 F (.\HMI\mainHMI.c)(0x59EAEFC1)(-c --cpu Cortex-M3 -D__RTX -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I.\configs -I.\BSP -IE:\mylib\sdhLib\inc -I.\device\dev_LCD\nokia_5110 -I..\PplRcd -I.\drive -I.\device -I.\Glyph -I.\Expression -I.\Views -I.\REEC -I.\MVC -I.\Views -I..\PplRcd -I.\model -I.\sheet --diag_suppress=1295;--diag_suppress=1;--diag_suppress=177-D-I E:\PHN\mycode\PplRcd\RTE-I E:\PHN\mycode\PplRcd\RTE\Device\STM32F103VC-I D:\Keil_v5\ARM\PACK\ARM\CMSIS\4.5.0\CMSIS\Include-I D:\Keil_v5\ARM\PACK\ARM\CMSIS\4.5.0\CMSIS\RTOS\RTX\INC-I D:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\Include-I D:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\StdPeriph_Driver\inc-I D:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0-D__UVISION_VERSION="517" -D_RTE_ -DSTM32F10X_HD -DUSE_STDPERIPH_DRIVER -DSTM32F10X_HD -DUSE_STM3210B_EVAL -DHSE_VALUE="8000000"-o .\objects\mainhmi.o --omf_browse .\objects\mainhmi.crf --depend .\objects\mainhmi.d)
 I (HMI\mainHMI.h)(0x59EAA067)
-I (HMI\HMI.h)(0x59EAB205)
+I (HMI\HMI.h)(0x59ED6617)
 I (D:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x55DB2B80)
 I (D:\Keil_v5\ARM\ARMCC\include\string.h)(0x55DB2B78)
 I (E:\mylib\sdhLib\inc\lw_oopc.h)(0x590BF2DD)
@@ -1272,7 +1272,7 @@ F (.\HMI\mainHMI.h)(0x59EAA067)()
 F (.\HMI\format.c)(0x59EAA067)(-c --cpu Cortex-M3 -D__RTX -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I.\configs -I.\BSP -IE:\mylib\sdhLib\inc -I.\device\dev_LCD\nokia_5110 -I..\PplRcd -I.\drive -I.\device -I.\Glyph -I.\Expression -I.\Views -I.\REEC -I.\MVC -I.\Views -I..\PplRcd -I.\model -I.\sheet --diag_suppress=1295;--diag_suppress=1;--diag_suppress=177-D-I E:\PHN\mycode\PplRcd\RTE-I E:\PHN\mycode\PplRcd\RTE\Device\STM32F103VC-I D:\Keil_v5\ARM\PACK\ARM\CMSIS\4.5.0\CMSIS\Include-I D:\Keil_v5\ARM\PACK\ARM\CMSIS\4.5.0\CMSIS\RTOS\RTX\INC-I D:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\Include-I D:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\StdPeriph_Driver\inc-I D:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0-D__UVISION_VERSION="517" -D_RTE_ -DSTM32F10X_HD -DUSE_STDPERIPH_DRIVER -DSTM32F10X_HD -DUSE_STM3210B_EVAL -DHSE_VALUE="8000000"-o .\objects\format.o --omf_browse .\objects\format.crf --depend .\objects\format.d)
 I (HMI\format.h)(0x59EAA067)
 I (D:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x55DB2B80)
-I (HMI\HMI.h)(0x59EAB205)
+I (HMI\HMI.h)(0x59ED6617)
 I (D:\Keil_v5\ARM\ARMCC\include\string.h)(0x55DB2B78)
 I (E:\mylib\sdhLib\inc\lw_oopc.h)(0x590BF2DD)
 I (D:\Keil_v5\ARM\ARMCC\include\stdlib.h)(0x55DB2B78)
@@ -1301,7 +1301,7 @@ I (HMI\focus.h)(0x59EAF314)
 F (.\HMI\format.h)(0x59EAA067)()
 F (.\HMI\keyboardHMI.c)(0x59EAF1B3)(-c --cpu Cortex-M3 -D__RTX -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I.\configs -I.\BSP -IE:\mylib\sdhLib\inc -I.\device\dev_LCD\nokia_5110 -I..\PplRcd -I.\drive -I.\device -I.\Glyph -I.\Expression -I.\Views -I.\REEC -I.\MVC -I.\Views -I..\PplRcd -I.\model -I.\sheet --diag_suppress=1295;--diag_suppress=1;--diag_suppress=177-D-I E:\PHN\mycode\PplRcd\RTE-I E:\PHN\mycode\PplRcd\RTE\Device\STM32F103VC-I D:\Keil_v5\ARM\PACK\ARM\CMSIS\4.5.0\CMSIS\Include-I D:\Keil_v5\ARM\PACK\ARM\CMSIS\4.5.0\CMSIS\RTOS\RTX\INC-I D:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\Include-I D:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\StdPeriph_Driver\inc-I D:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0-D__UVISION_VERSION="517" -D_RTE_ -DSTM32F10X_HD -DUSE_STDPERIPH_DRIVER -DSTM32F10X_HD -DUSE_STM3210B_EVAL -DHSE_VALUE="8000000"-o .\objects\keyboardhmi.o --omf_browse .\objects\keyboardhmi.crf --depend .\objects\keyboardhmi.d)
 I (HMI\keyboardHMI.h)(0x59EAA067)
-I (HMI\HMI.h)(0x59EAB205)
+I (HMI\HMI.h)(0x59ED6617)
 I (D:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x55DB2B80)
 I (D:\Keil_v5\ARM\ARMCC\include\string.h)(0x55DB2B78)
 I (E:\mylib\sdhLib\inc\lw_oopc.h)(0x590BF2DD)
@@ -1337,7 +1337,7 @@ I (HMI\format.h)(0x59EAA067)
 F (.\HMI\keyboardHMI.h)(0x59EAA067)()
 F (.\HMI\chnInfoPic.c)(0x59EAA067)(-c --cpu Cortex-M3 -D__RTX -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I.\configs -I.\BSP -IE:\mylib\sdhLib\inc -I.\device\dev_LCD\nokia_5110 -I..\PplRcd -I.\drive -I.\device -I.\Glyph -I.\Expression -I.\Views -I.\REEC -I.\MVC -I.\Views -I..\PplRcd -I.\model -I.\sheet --diag_suppress=1295;--diag_suppress=1;--diag_suppress=177-D-I E:\PHN\mycode\PplRcd\RTE-I E:\PHN\mycode\PplRcd\RTE\Device\STM32F103VC-I D:\Keil_v5\ARM\PACK\ARM\CMSIS\4.5.0\CMSIS\Include-I D:\Keil_v5\ARM\PACK\ARM\CMSIS\4.5.0\CMSIS\RTOS\RTX\INC-I D:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\Include-I D:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\StdPeriph_Driver\inc-I D:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0-D__UVISION_VERSION="517" -D_RTE_ -DSTM32F10X_HD -DUSE_STDPERIPH_DRIVER -DSTM32F10X_HD -DUSE_STM3210B_EVAL -DHSE_VALUE="8000000"-o .\objects\chninfopic.o --omf_browse .\objects\chninfopic.crf --depend .\objects\chninfopic.d)
 I (HMI\chnInfoPic.h)(0x59EAA067)
-I (HMI\HMI.h)(0x59EAB205)
+I (HMI\HMI.h)(0x59ED6617)
 I (D:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x55DB2B80)
 I (D:\Keil_v5\ARM\ARMCC\include\string.h)(0x55DB2B78)
 I (E:\mylib\sdhLib\inc\lw_oopc.h)(0x590BF2DD)
@@ -1387,7 +1387,7 @@ I (E:\mylib\sdhLib\inc\mem\CiiMem.h)(0x5909998B)
 F (.\HMI\chnInfoPic.h)(0x59EAA067)()
 F (.\HMI\menuHMI.c)(0x59EAA067)(-c --cpu Cortex-M3 -D__RTX -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I.\configs -I.\BSP -IE:\mylib\sdhLib\inc -I.\device\dev_LCD\nokia_5110 -I..\PplRcd -I.\drive -I.\device -I.\Glyph -I.\Expression -I.\Views -I.\REEC -I.\MVC -I.\Views -I..\PplRcd -I.\model -I.\sheet --diag_suppress=1295;--diag_suppress=1;--diag_suppress=177-D-I E:\PHN\mycode\PplRcd\RTE-I E:\PHN\mycode\PplRcd\RTE\Device\STM32F103VC-I D:\Keil_v5\ARM\PACK\ARM\CMSIS\4.5.0\CMSIS\Include-I D:\Keil_v5\ARM\PACK\ARM\CMSIS\4.5.0\CMSIS\RTOS\RTX\INC-I D:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\Include-I D:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\StdPeriph_Driver\inc-I D:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0-D__UVISION_VERSION="517" -D_RTE_ -DSTM32F10X_HD -DUSE_STDPERIPH_DRIVER -DSTM32F10X_HD -DUSE_STM3210B_EVAL -DHSE_VALUE="8000000"-o .\objects\menuhmi.o --omf_browse .\objects\menuhmi.crf --depend .\objects\menuhmi.d)
 I (HMI\menuHMI.h)(0x59EAA067)
-I (HMI\HMI.h)(0x59EAB205)
+I (HMI\HMI.h)(0x59ED6617)
 I (D:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x55DB2B80)
 I (D:\Keil_v5\ARM\ARMCC\include\string.h)(0x55DB2B78)
 I (E:\mylib\sdhLib\inc\lw_oopc.h)(0x590BF2DD)
@@ -1436,7 +1436,7 @@ I (HMI\chnInfoPic.h)(0x59EAA067)
 F (.\HMI\menuHMI.h)(0x59EAA067)()
 F (.\HMI\barGraphHmi.c)(0x59EAF314)(-c --cpu Cortex-M3 -D__RTX -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I.\configs -I.\BSP -IE:\mylib\sdhLib\inc -I.\device\dev_LCD\nokia_5110 -I..\PplRcd -I.\drive -I.\device -I.\Glyph -I.\Expression -I.\Views -I.\REEC -I.\MVC -I.\Views -I..\PplRcd -I.\model -I.\sheet --diag_suppress=1295;--diag_suppress=1;--diag_suppress=177-D-I E:\PHN\mycode\PplRcd\RTE-I E:\PHN\mycode\PplRcd\RTE\Device\STM32F103VC-I D:\Keil_v5\ARM\PACK\ARM\CMSIS\4.5.0\CMSIS\Include-I D:\Keil_v5\ARM\PACK\ARM\CMSIS\4.5.0\CMSIS\RTOS\RTX\INC-I D:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\Include-I D:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\StdPeriph_Driver\inc-I D:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0-D__UVISION_VERSION="517" -D_RTE_ -DSTM32F10X_HD -DUSE_STDPERIPH_DRIVER -DSTM32F10X_HD -DUSE_STM3210B_EVAL -DHSE_VALUE="8000000"-o .\objects\bargraphhmi.o --omf_browse .\objects\bargraphhmi.crf --depend .\objects\bargraphhmi.d)
 I (HMI\barGraphHMI.h)(0x59EAA067)
-I (HMI\HMI.h)(0x59EAB205)
+I (HMI\HMI.h)(0x59ED6617)
 I (D:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x55DB2B80)
 I (D:\Keil_v5\ARM\ARMCC\include\string.h)(0x55DB2B78)
 I (E:\mylib\sdhLib\inc\lw_oopc.h)(0x590BF2DD)
@@ -1485,7 +1485,7 @@ I (HMI\chnInfoPic.h)(0x59EAA067)
 F (.\HMI\barGraphHmi.h)(0x59EAA067)()
 F (.\HMI\dataHmi.c)(0x59EAF314)(-c --cpu Cortex-M3 -D__RTX -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I.\configs -I.\BSP -IE:\mylib\sdhLib\inc -I.\device\dev_LCD\nokia_5110 -I..\PplRcd -I.\drive -I.\device -I.\Glyph -I.\Expression -I.\Views -I.\REEC -I.\MVC -I.\Views -I..\PplRcd -I.\model -I.\sheet --diag_suppress=1295;--diag_suppress=1;--diag_suppress=177-D-I E:\PHN\mycode\PplRcd\RTE-I E:\PHN\mycode\PplRcd\RTE\Device\STM32F103VC-I D:\Keil_v5\ARM\PACK\ARM\CMSIS\4.5.0\CMSIS\Include-I D:\Keil_v5\ARM\PACK\ARM\CMSIS\4.5.0\CMSIS\RTOS\RTX\INC-I D:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\Include-I D:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\StdPeriph_Driver\inc-I D:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0-D__UVISION_VERSION="517" -D_RTE_ -DSTM32F10X_HD -DUSE_STDPERIPH_DRIVER -DSTM32F10X_HD -DUSE_STM3210B_EVAL -DHSE_VALUE="8000000"-o .\objects\datahmi.o --omf_browse .\objects\datahmi.crf --depend .\objects\datahmi.d)
 I (HMI\dataHMI.h)(0x59EAA067)
-I (HMI\HMI.h)(0x59EAB205)
+I (HMI\HMI.h)(0x59ED6617)
 I (D:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x55DB2B80)
 I (D:\Keil_v5\ARM\ARMCC\include\string.h)(0x55DB2B78)
 I (E:\mylib\sdhLib\inc\lw_oopc.h)(0x590BF2DD)
@@ -1532,9 +1532,9 @@ I (.\Expression\Reader.h)(0x59EAA066)
 I (HMI\format.h)(0x59EAA067)
 I (HMI\chnInfoPic.h)(0x59EAA067)
 F (.\HMI\dataHmi.h)(0x59EAA067)()
-F (.\HMI\real_time_trendHmi.c)(0x59EAF314)(-c --cpu Cortex-M3 -D__RTX -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I.\configs -I.\BSP -IE:\mylib\sdhLib\inc -I.\device\dev_LCD\nokia_5110 -I..\PplRcd -I.\drive -I.\device -I.\Glyph -I.\Expression -I.\Views -I.\REEC -I.\MVC -I.\Views -I..\PplRcd -I.\model -I.\sheet --diag_suppress=1295;--diag_suppress=1;--diag_suppress=177-D-I E:\PHN\mycode\PplRcd\RTE-I E:\PHN\mycode\PplRcd\RTE\Device\STM32F103VC-I D:\Keil_v5\ARM\PACK\ARM\CMSIS\4.5.0\CMSIS\Include-I D:\Keil_v5\ARM\PACK\ARM\CMSIS\4.5.0\CMSIS\RTOS\RTX\INC-I D:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\Include-I D:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\StdPeriph_Driver\inc-I D:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0-D__UVISION_VERSION="517" -D_RTE_ -DSTM32F10X_HD -DUSE_STDPERIPH_DRIVER -DSTM32F10X_HD -DUSE_STM3210B_EVAL -DHSE_VALUE="8000000"-o .\objects\real_time_trendhmi.o --omf_browse .\objects\real_time_trendhmi.crf --depend .\objects\real_time_trendhmi.d)
+F (.\HMI\real_time_trendHmi.c)(0x59ED6249)(-c --cpu Cortex-M3 -D__RTX -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I.\configs -I.\BSP -IE:\mylib\sdhLib\inc -I.\device\dev_LCD\nokia_5110 -I..\PplRcd -I.\drive -I.\device -I.\Glyph -I.\Expression -I.\Views -I.\REEC -I.\MVC -I.\Views -I..\PplRcd -I.\model -I.\sheet --diag_suppress=1295;--diag_suppress=1;--diag_suppress=177-D-I E:\PHN\mycode\PplRcd\RTE-I E:\PHN\mycode\PplRcd\RTE\Device\STM32F103VC-I D:\Keil_v5\ARM\PACK\ARM\CMSIS\4.5.0\CMSIS\Include-I D:\Keil_v5\ARM\PACK\ARM\CMSIS\4.5.0\CMSIS\RTOS\RTX\INC-I D:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\Include-I D:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\StdPeriph_Driver\inc-I D:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0-D__UVISION_VERSION="517" -D_RTE_ -DSTM32F10X_HD -DUSE_STDPERIPH_DRIVER -DSTM32F10X_HD -DUSE_STM3210B_EVAL -DHSE_VALUE="8000000"-o .\objects\real_time_trendhmi.o --omf_browse .\objects\real_time_trendhmi.crf --depend .\objects\real_time_trendhmi.d)
 I (HMI\real_time_trendHmi.h)(0x59EAA067)
-I (HMI\HMI.h)(0x59EAB205)
+I (HMI\HMI.h)(0x59ED6617)
 I (D:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x55DB2B80)
 I (D:\Keil_v5\ARM\ARMCC\include\string.h)(0x55DB2B78)
 I (E:\mylib\sdhLib\inc\lw_oopc.h)(0x590BF2DD)
@@ -1585,7 +1585,7 @@ F (.\HMI\real_time_trendHmi.h)(0x59EAA067)()
 F (.\HMI\curve.c)(0x59EAF1B4)(-c --cpu Cortex-M3 -D__RTX -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I.\configs -I.\BSP -IE:\mylib\sdhLib\inc -I.\device\dev_LCD\nokia_5110 -I..\PplRcd -I.\drive -I.\device -I.\Glyph -I.\Expression -I.\Views -I.\REEC -I.\MVC -I.\Views -I..\PplRcd -I.\model -I.\sheet --diag_suppress=1295;--diag_suppress=1;--diag_suppress=177-D-I E:\PHN\mycode\PplRcd\RTE-I E:\PHN\mycode\PplRcd\RTE\Device\STM32F103VC-I D:\Keil_v5\ARM\PACK\ARM\CMSIS\4.5.0\CMSIS\Include-I D:\Keil_v5\ARM\PACK\ARM\CMSIS\4.5.0\CMSIS\RTOS\RTX\INC-I D:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\Include-I D:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\StdPeriph_Driver\inc-I D:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0-D__UVISION_VERSION="517" -D_RTE_ -DSTM32F10X_HD -DUSE_STDPERIPH_DRIVER -DSTM32F10X_HD -DUSE_STM3210B_EVAL -DHSE_VALUE="8000000"-o .\objects\curve.o --omf_browse .\objects\curve.crf --depend .\objects\curve.d)
 I (HMI\curve.h)(0x59EABB88)
 I (D:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x55DB2B80)
-I (HMI\HMI.h)(0x59EAB205)
+I (HMI\HMI.h)(0x59ED6617)
 I (D:\Keil_v5\ARM\ARMCC\include\string.h)(0x55DB2B78)
 I (E:\mylib\sdhLib\inc\lw_oopc.h)(0x590BF2DD)
 I (D:\Keil_v5\ARM\ARMCC\include\stdlib.h)(0x55DB2B78)
@@ -1647,7 +1647,7 @@ I (.\model\ModelTest.h)(0x59EAA067)
 F (.\HMI\focus.h)(0x59EAF314)()
 F (.\HMI\news_select_HMI.c)(0x59EAF314)(-c --cpu Cortex-M3 -D__RTX -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I.\configs -I.\BSP -IE:\mylib\sdhLib\inc -I.\device\dev_LCD\nokia_5110 -I..\PplRcd -I.\drive -I.\device -I.\Glyph -I.\Expression -I.\Views -I.\REEC -I.\MVC -I.\Views -I..\PplRcd -I.\model -I.\sheet --diag_suppress=1295;--diag_suppress=1;--diag_suppress=177-D-I E:\PHN\mycode\PplRcd\RTE-I E:\PHN\mycode\PplRcd\RTE\Device\STM32F103VC-I D:\Keil_v5\ARM\PACK\ARM\CMSIS\4.5.0\CMSIS\Include-I D:\Keil_v5\ARM\PACK\ARM\CMSIS\4.5.0\CMSIS\RTOS\RTX\INC-I D:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\Include-I D:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\StdPeriph_Driver\inc-I D:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0-D__UVISION_VERSION="517" -D_RTE_ -DSTM32F10X_HD -DUSE_STDPERIPH_DRIVER -DSTM32F10X_HD -DUSE_STM3210B_EVAL -DHSE_VALUE="8000000"-o .\objects\news_select_hmi.o --omf_browse .\objects\news_select_hmi.crf --depend .\objects\news_select_hmi.d)
 I (HMI\news_select_HMI.h)(0x59EAA067)
-I (HMI\HMI.h)(0x59EAB205)
+I (HMI\HMI.h)(0x59ED6617)
 I (D:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x55DB2B80)
 I (D:\Keil_v5\ARM\ARMCC\include\string.h)(0x55DB2B78)
 I (E:\mylib\sdhLib\inc\lw_oopc.h)(0x590BF2DD)
@@ -1684,7 +1684,7 @@ F (.\HMI\news_select_HMI.h)(0x59EAA067)()
 F (.\HMI\News_Alarm_HMI.h)(0x59EAA067)()
 F (.\HMI\News_Alarm_HMI.c)(0x59EAF371)(-c --cpu Cortex-M3 -D__RTX -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I.\configs -I.\BSP -IE:\mylib\sdhLib\inc -I.\device\dev_LCD\nokia_5110 -I..\PplRcd -I.\drive -I.\device -I.\Glyph -I.\Expression -I.\Views -I.\REEC -I.\MVC -I.\Views -I..\PplRcd -I.\model -I.\sheet --diag_suppress=1295;--diag_suppress=1;--diag_suppress=177-D-I E:\PHN\mycode\PplRcd\RTE-I E:\PHN\mycode\PplRcd\RTE\Device\STM32F103VC-I D:\Keil_v5\ARM\PACK\ARM\CMSIS\4.5.0\CMSIS\Include-I D:\Keil_v5\ARM\PACK\ARM\CMSIS\4.5.0\CMSIS\RTOS\RTX\INC-I D:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\Include-I D:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\StdPeriph_Driver\inc-I D:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0-D__UVISION_VERSION="517" -D_RTE_ -DSTM32F10X_HD -DUSE_STDPERIPH_DRIVER -DSTM32F10X_HD -DUSE_STM3210B_EVAL -DHSE_VALUE="8000000"-o .\objects\news_alarm_hmi.o --omf_browse .\objects\news_alarm_hmi.crf --depend .\objects\news_alarm_hmi.d)
 I (HMI\News_Alarm_HMI.h)(0x59EAA067)
-I (HMI\HMI.h)(0x59EAB205)
+I (HMI\HMI.h)(0x59ED6617)
 I (D:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x55DB2B80)
 I (D:\Keil_v5\ARM\ARMCC\include\string.h)(0x55DB2B78)
 I (E:\mylib\sdhLib\inc\lw_oopc.h)(0x590BF2DD)
@@ -1720,7 +1720,7 @@ I (.\Expression\Reader.h)(0x59EAA066)
 F (.\HMI\News_Power_down_HMI.h)(0x59EAA067)()
 F (.\HMI\News_Power_down_HMI.c)(0x59EAF314)(-c --cpu Cortex-M3 -D__RTX -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I.\configs -I.\BSP -IE:\mylib\sdhLib\inc -I.\device\dev_LCD\nokia_5110 -I..\PplRcd -I.\drive -I.\device -I.\Glyph -I.\Expression -I.\Views -I.\REEC -I.\MVC -I.\Views -I..\PplRcd -I.\model -I.\sheet --diag_suppress=1295;--diag_suppress=1;--diag_suppress=177-D-I E:\PHN\mycode\PplRcd\RTE-I E:\PHN\mycode\PplRcd\RTE\Device\STM32F103VC-I D:\Keil_v5\ARM\PACK\ARM\CMSIS\4.5.0\CMSIS\Include-I D:\Keil_v5\ARM\PACK\ARM\CMSIS\4.5.0\CMSIS\RTOS\RTX\INC-I D:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\Include-I D:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\StdPeriph_Driver\inc-I D:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0-D__UVISION_VERSION="517" -D_RTE_ -DSTM32F10X_HD -DUSE_STDPERIPH_DRIVER -DSTM32F10X_HD -DUSE_STM3210B_EVAL -DHSE_VALUE="8000000"-o .\objects\news_power_down_hmi.o --omf_browse .\objects\news_power_down_hmi.crf --depend .\objects\news_power_down_hmi.d)
 I (HMI\News_Power_down_HMI.h)(0x59EAA067)
-I (HMI\HMI.h)(0x59EAB205)
+I (HMI\HMI.h)(0x59ED6617)
 I (D:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x55DB2B80)
 I (D:\Keil_v5\ARM\ARMCC\include\string.h)(0x55DB2B78)
 I (E:\mylib\sdhLib\inc\lw_oopc.h)(0x590BF2DD)
@@ -1755,7 +1755,7 @@ I (.\Views\Composition.h)(0x59EAA067)
 I (.\Expression\Reader.h)(0x59EAA066)
 F (.\HMI\Accumulate_HMI .c)(0x59EAF371)(-c --cpu Cortex-M3 -D__RTX -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I.\configs -I.\BSP -IE:\mylib\sdhLib\inc -I.\device\dev_LCD\nokia_5110 -I..\PplRcd -I.\drive -I.\device -I.\Glyph -I.\Expression -I.\Views -I.\REEC -I.\MVC -I.\Views -I..\PplRcd -I.\model -I.\sheet --diag_suppress=1295;--diag_suppress=1;--diag_suppress=177-D-I E:\PHN\mycode\PplRcd\RTE-I E:\PHN\mycode\PplRcd\RTE\Device\STM32F103VC-I D:\Keil_v5\ARM\PACK\ARM\CMSIS\4.5.0\CMSIS\Include-I D:\Keil_v5\ARM\PACK\ARM\CMSIS\4.5.0\CMSIS\RTOS\RTX\INC-I D:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\Include-I D:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\StdPeriph_Driver\inc-I D:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0-D__UVISION_VERSION="517" -D_RTE_ -DSTM32F10X_HD -DUSE_STDPERIPH_DRIVER -DSTM32F10X_HD -DUSE_STM3210B_EVAL -DHSE_VALUE="8000000"-o ".\objects\accumulate_hmi .o" --omf_browse ".\objects\accumulate_hmi .crf" --depend ".\objects\accumulate_hmi .d")
 I (HMI\Accumulate_HMI.h)(0x59EAA067)
-I (HMI\HMI.h)(0x59EAB205)
+I (HMI\HMI.h)(0x59ED6617)
 I (D:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x55DB2B80)
 I (D:\Keil_v5\ARM\ARMCC\include\string.h)(0x55DB2B78)
 I (E:\mylib\sdhLib\inc\lw_oopc.h)(0x590BF2DD)
@@ -1792,7 +1792,7 @@ I (HMI\format.h)(0x59EAA067)
 F (.\HMI\Accumulate_HMI.h)(0x59EAA067)()
 F (.\HMI\Setup_HMI.c)(0x59EAF371)(-c --cpu Cortex-M3 -D__RTX -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I.\configs -I.\BSP -IE:\mylib\sdhLib\inc -I.\device\dev_LCD\nokia_5110 -I..\PplRcd -I.\drive -I.\device -I.\Glyph -I.\Expression -I.\Views -I.\REEC -I.\MVC -I.\Views -I..\PplRcd -I.\model -I.\sheet --diag_suppress=1295;--diag_suppress=1;--diag_suppress=177-D-I E:\PHN\mycode\PplRcd\RTE-I E:\PHN\mycode\PplRcd\RTE\Device\STM32F103VC-I D:\Keil_v5\ARM\PACK\ARM\CMSIS\4.5.0\CMSIS\Include-I D:\Keil_v5\ARM\PACK\ARM\CMSIS\4.5.0\CMSIS\RTOS\RTX\INC-I D:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\Include-I D:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\StdPeriph_Driver\inc-I D:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0-D__UVISION_VERSION="517" -D_RTE_ -DSTM32F10X_HD -DUSE_STDPERIPH_DRIVER -DSTM32F10X_HD -DUSE_STM3210B_EVAL -DHSE_VALUE="8000000"-o .\objects\setup_hmi.o --omf_browse .\objects\setup_hmi.crf --depend .\objects\setup_hmi.d)
 I (HMI\Setup_HMI.h)(0x59EAA067)
-I (HMI\HMI.h)(0x59EAB205)
+I (HMI\HMI.h)(0x59ED6617)
 I (D:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x55DB2B80)
 I (D:\Keil_v5\ARM\ARMCC\include\string.h)(0x55DB2B78)
 I (E:\mylib\sdhLib\inc\lw_oopc.h)(0x590BF2DD)
@@ -1828,7 +1828,7 @@ I (.\Expression\Reader.h)(0x59EAA066)
 F (.\HMI\Setup_HMI.h)(0x59EAA067)()
 F (.\HMI\Setting_HMI.c)(0x59EAF371)(-c --cpu Cortex-M3 -D__RTX -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I.\configs -I.\BSP -IE:\mylib\sdhLib\inc -I.\device\dev_LCD\nokia_5110 -I..\PplRcd -I.\drive -I.\device -I.\Glyph -I.\Expression -I.\Views -I.\REEC -I.\MVC -I.\Views -I..\PplRcd -I.\model -I.\sheet --diag_suppress=1295;--diag_suppress=1;--diag_suppress=177-D-I E:\PHN\mycode\PplRcd\RTE-I E:\PHN\mycode\PplRcd\RTE\Device\STM32F103VC-I D:\Keil_v5\ARM\PACK\ARM\CMSIS\4.5.0\CMSIS\Include-I D:\Keil_v5\ARM\PACK\ARM\CMSIS\4.5.0\CMSIS\RTOS\RTX\INC-I D:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\Include-I D:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\StdPeriph_Driver\inc-I D:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0-D__UVISION_VERSION="517" -D_RTE_ -DSTM32F10X_HD -DUSE_STDPERIPH_DRIVER -DSTM32F10X_HD -DUSE_STM3210B_EVAL -DHSE_VALUE="8000000"-o .\objects\setting_hmi.o --omf_browse .\objects\setting_hmi.crf --depend .\objects\setting_hmi.d)
 I (HMI\Setting_HMI.h)(0x59EAA067)
-I (HMI\HMI.h)(0x59EAB205)
+I (HMI\HMI.h)(0x59ED6617)
 I (D:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x55DB2B80)
 I (D:\Keil_v5\ARM\ARMCC\include\string.h)(0x55DB2B78)
 I (E:\mylib\sdhLib\inc\lw_oopc.h)(0x590BF2DD)
@@ -1864,7 +1864,7 @@ I (.\Expression\Reader.h)(0x59EAA066)
 F (.\HMI\Setting_HMI.h)(0x59EAA067)()
 F (.\HMI\Set_system_strategy.c)(0x59EAF3EC)(-c --cpu Cortex-M3 -D__RTX -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I.\configs -I.\BSP -IE:\mylib\sdhLib\inc -I.\device\dev_LCD\nokia_5110 -I..\PplRcd -I.\drive -I.\device -I.\Glyph -I.\Expression -I.\Views -I.\REEC -I.\MVC -I.\Views -I..\PplRcd -I.\model -I.\sheet --diag_suppress=1295;--diag_suppress=1;--diag_suppress=177-D-I E:\PHN\mycode\PplRcd\RTE-I E:\PHN\mycode\PplRcd\RTE\Device\STM32F103VC-I D:\Keil_v5\ARM\PACK\ARM\CMSIS\4.5.0\CMSIS\Include-I D:\Keil_v5\ARM\PACK\ARM\CMSIS\4.5.0\CMSIS\RTOS\RTX\INC-I D:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\Include-I D:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\StdPeriph_Driver\inc-I D:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0-D__UVISION_VERSION="517" -D_RTE_ -DSTM32F10X_HD -DUSE_STDPERIPH_DRIVER -DSTM32F10X_HD -DUSE_STM3210B_EVAL -DHSE_VALUE="8000000"-o .\objects\set_system_strategy.o --omf_browse .\objects\set_system_strategy.crf --depend .\objects\set_system_strategy.d)
 I (HMI\Set_system_strategy.h)(0x59EAA067)
-I (HMI\HMI.h)(0x59EAB205)
+I (HMI\HMI.h)(0x59ED6617)
 I (D:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x55DB2B80)
 I (D:\Keil_v5\ARM\ARMCC\include\string.h)(0x55DB2B78)
 I (E:\mylib\sdhLib\inc\lw_oopc.h)(0x590BF2DD)
@@ -1898,7 +1898,7 @@ F (.\HMI\Set_system_strategy.h)(0x59EAA067)()
 F (.\HMI\Set_channel_strategy.c)(0x59EAF3EC)(-c --cpu Cortex-M3 -D__RTX -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I.\configs -I.\BSP -IE:\mylib\sdhLib\inc -I.\device\dev_LCD\nokia_5110 -I..\PplRcd -I.\drive -I.\device -I.\Glyph -I.\Expression -I.\Views -I.\REEC -I.\MVC -I.\Views -I..\PplRcd -I.\model -I.\sheet --diag_suppress=1295;--diag_suppress=1;--diag_suppress=177-D-I E:\PHN\mycode\PplRcd\RTE-I E:\PHN\mycode\PplRcd\RTE\Device\STM32F103VC-I D:\Keil_v5\ARM\PACK\ARM\CMSIS\4.5.0\CMSIS\Include-I D:\Keil_v5\ARM\PACK\ARM\CMSIS\4.5.0\CMSIS\RTOS\RTX\INC-I D:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\Include-I D:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\StdPeriph_Driver\inc-I D:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0-D__UVISION_VERSION="517" -D_RTE_ -DSTM32F10X_HD -DUSE_STDPERIPH_DRIVER -DSTM32F10X_HD -DUSE_STM3210B_EVAL -DHSE_VALUE="8000000"-o .\objects\set_channel_strategy.o --omf_browse .\objects\set_channel_strategy.crf --depend .\objects\set_channel_strategy.d)
 I (D:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x55DB2B80)
 I (HMI\Setting_HMI.h)(0x59EAA067)
-I (HMI\HMI.h)(0x59EAB205)
+I (HMI\HMI.h)(0x59ED6617)
 I (D:\Keil_v5\ARM\ARMCC\include\string.h)(0x55DB2B78)
 I (E:\mylib\sdhLib\inc\lw_oopc.h)(0x590BF2DD)
 I (D:\Keil_v5\ARM\ARMCC\include\stdlib.h)(0x55DB2B78)
@@ -1929,7 +1929,7 @@ I (HMI\keyboardHMI.h)(0x59EAA067)
 F (.\HMI\Set_alarm_strategy.c)(0x59EAF3EC)(-c --cpu Cortex-M3 -D__RTX -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I.\configs -I.\BSP -IE:\mylib\sdhLib\inc -I.\device\dev_LCD\nokia_5110 -I..\PplRcd -I.\drive -I.\device -I.\Glyph -I.\Expression -I.\Views -I.\REEC -I.\MVC -I.\Views -I..\PplRcd -I.\model -I.\sheet --diag_suppress=1295;--diag_suppress=1;--diag_suppress=177-D-I E:\PHN\mycode\PplRcd\RTE-I E:\PHN\mycode\PplRcd\RTE\Device\STM32F103VC-I D:\Keil_v5\ARM\PACK\ARM\CMSIS\4.5.0\CMSIS\Include-I D:\Keil_v5\ARM\PACK\ARM\CMSIS\4.5.0\CMSIS\RTOS\RTX\INC-I D:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\Include-I D:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\StdPeriph_Driver\inc-I D:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0-D__UVISION_VERSION="517" -D_RTE_ -DSTM32F10X_HD -DUSE_STDPERIPH_DRIVER -DSTM32F10X_HD -DUSE_STM3210B_EVAL -DHSE_VALUE="8000000"-o .\objects\set_alarm_strategy.o --omf_browse .\objects\set_alarm_strategy.crf --depend .\objects\set_alarm_strategy.d)
 I (D:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x55DB2B80)
 I (HMI\Setting_HMI.h)(0x59EAA067)
-I (HMI\HMI.h)(0x59EAB205)
+I (HMI\HMI.h)(0x59ED6617)
 I (D:\Keil_v5\ARM\ARMCC\include\string.h)(0x55DB2B78)
 I (E:\mylib\sdhLib\inc\lw_oopc.h)(0x590BF2DD)
 I (D:\Keil_v5\ARM\ARMCC\include\stdlib.h)(0x55DB2B78)
@@ -1960,7 +1960,7 @@ I (HMI\keyboardHMI.h)(0x59EAA067)
 F (.\HMI\Set_arithmetic_strategy.c)(0x59EAF3EC)(-c --cpu Cortex-M3 -D__RTX -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I.\configs -I.\BSP -IE:\mylib\sdhLib\inc -I.\device\dev_LCD\nokia_5110 -I..\PplRcd -I.\drive -I.\device -I.\Glyph -I.\Expression -I.\Views -I.\REEC -I.\MVC -I.\Views -I..\PplRcd -I.\model -I.\sheet --diag_suppress=1295;--diag_suppress=1;--diag_suppress=177-D-I E:\PHN\mycode\PplRcd\RTE-I E:\PHN\mycode\PplRcd\RTE\Device\STM32F103VC-I D:\Keil_v5\ARM\PACK\ARM\CMSIS\4.5.0\CMSIS\Include-I D:\Keil_v5\ARM\PACK\ARM\CMSIS\4.5.0\CMSIS\RTOS\RTX\INC-I D:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\Include-I D:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\StdPeriph_Driver\inc-I D:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0-D__UVISION_VERSION="517" -D_RTE_ -DSTM32F10X_HD -DUSE_STDPERIPH_DRIVER -DSTM32F10X_HD -DUSE_STM3210B_EVAL -DHSE_VALUE="8000000"-o .\objects\set_arithmetic_strategy.o --omf_browse .\objects\set_arithmetic_strategy.crf --depend .\objects\set_arithmetic_strategy.d)
 I (D:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x55DB2B80)
 I (HMI\Setting_HMI.h)(0x59EAA067)
-I (HMI\HMI.h)(0x59EAB205)
+I (HMI\HMI.h)(0x59ED6617)
 I (D:\Keil_v5\ARM\ARMCC\include\string.h)(0x55DB2B78)
 I (E:\mylib\sdhLib\inc\lw_oopc.h)(0x590BF2DD)
 I (D:\Keil_v5\ARM\ARMCC\include\stdlib.h)(0x55DB2B78)
@@ -1991,7 +1991,7 @@ I (HMI\keyboardHMI.h)(0x59EAA067)
 F (.\HMI\Set_view_strategy.c)(0x59EAF3EC)(-c --cpu Cortex-M3 -D__RTX -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I.\configs -I.\BSP -IE:\mylib\sdhLib\inc -I.\device\dev_LCD\nokia_5110 -I..\PplRcd -I.\drive -I.\device -I.\Glyph -I.\Expression -I.\Views -I.\REEC -I.\MVC -I.\Views -I..\PplRcd -I.\model -I.\sheet --diag_suppress=1295;--diag_suppress=1;--diag_suppress=177-D-I E:\PHN\mycode\PplRcd\RTE-I E:\PHN\mycode\PplRcd\RTE\Device\STM32F103VC-I D:\Keil_v5\ARM\PACK\ARM\CMSIS\4.5.0\CMSIS\Include-I D:\Keil_v5\ARM\PACK\ARM\CMSIS\4.5.0\CMSIS\RTOS\RTX\INC-I D:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\Include-I D:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\StdPeriph_Driver\inc-I D:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0-D__UVISION_VERSION="517" -D_RTE_ -DSTM32F10X_HD -DUSE_STDPERIPH_DRIVER -DSTM32F10X_HD -DUSE_STM3210B_EVAL -DHSE_VALUE="8000000"-o .\objects\set_view_strategy.o --omf_browse .\objects\set_view_strategy.crf --depend .\objects\set_view_strategy.d)
 I (D:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x55DB2B80)
 I (HMI\Setting_HMI.h)(0x59EAA067)
-I (HMI\HMI.h)(0x59EAB205)
+I (HMI\HMI.h)(0x59ED6617)
 I (D:\Keil_v5\ARM\ARMCC\include\string.h)(0x55DB2B78)
 I (E:\mylib\sdhLib\inc\lw_oopc.h)(0x590BF2DD)
 I (D:\Keil_v5\ARM\ARMCC\include\stdlib.h)(0x55DB2B78)
@@ -2022,7 +2022,7 @@ I (HMI\keyboardHMI.h)(0x59EAA067)
 F (.\HMI\Set_dataBackUp_strategy.c)(0x59EAF3ED)(-c --cpu Cortex-M3 -D__RTX -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I.\configs -I.\BSP -IE:\mylib\sdhLib\inc -I.\device\dev_LCD\nokia_5110 -I..\PplRcd -I.\drive -I.\device -I.\Glyph -I.\Expression -I.\Views -I.\REEC -I.\MVC -I.\Views -I..\PplRcd -I.\model -I.\sheet --diag_suppress=1295;--diag_suppress=1;--diag_suppress=177-D-I E:\PHN\mycode\PplRcd\RTE-I E:\PHN\mycode\PplRcd\RTE\Device\STM32F103VC-I D:\Keil_v5\ARM\PACK\ARM\CMSIS\4.5.0\CMSIS\Include-I D:\Keil_v5\ARM\PACK\ARM\CMSIS\4.5.0\CMSIS\RTOS\RTX\INC-I D:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\Include-I D:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\StdPeriph_Driver\inc-I D:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0-D__UVISION_VERSION="517" -D_RTE_ -DSTM32F10X_HD -DUSE_STDPERIPH_DRIVER -DSTM32F10X_HD -DUSE_STM3210B_EVAL -DHSE_VALUE="8000000"-o .\objects\set_databackup_strategy.o --omf_browse .\objects\set_databackup_strategy.crf --depend .\objects\set_databackup_strategy.d)
 I (D:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x55DB2B80)
 I (HMI\Setting_HMI.h)(0x59EAA067)
-I (HMI\HMI.h)(0x59EAB205)
+I (HMI\HMI.h)(0x59ED6617)
 I (D:\Keil_v5\ARM\ARMCC\include\string.h)(0x55DB2B78)
 I (E:\mylib\sdhLib\inc\lw_oopc.h)(0x590BF2DD)
 I (D:\Keil_v5\ARM\ARMCC\include\stdlib.h)(0x55DB2B78)
@@ -2053,7 +2053,7 @@ I (HMI\keyboardHMI.h)(0x59EAA067)
 F (.\HMI\Set_dataPrint_strategy.c)(0x59EAF3ED)(-c --cpu Cortex-M3 -D__RTX -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I.\configs -I.\BSP -IE:\mylib\sdhLib\inc -I.\device\dev_LCD\nokia_5110 -I..\PplRcd -I.\drive -I.\device -I.\Glyph -I.\Expression -I.\Views -I.\REEC -I.\MVC -I.\Views -I..\PplRcd -I.\model -I.\sheet --diag_suppress=1295;--diag_suppress=1;--diag_suppress=177-D-I E:\PHN\mycode\PplRcd\RTE-I E:\PHN\mycode\PplRcd\RTE\Device\STM32F103VC-I D:\Keil_v5\ARM\PACK\ARM\CMSIS\4.5.0\CMSIS\Include-I D:\Keil_v5\ARM\PACK\ARM\CMSIS\4.5.0\CMSIS\RTOS\RTX\INC-I D:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\Include-I D:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\StdPeriph_Driver\inc-I D:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0-D__UVISION_VERSION="517" -D_RTE_ -DSTM32F10X_HD -DUSE_STDPERIPH_DRIVER -DSTM32F10X_HD -DUSE_STM3210B_EVAL -DHSE_VALUE="8000000"-o .\objects\set_dataprint_strategy.o --omf_browse .\objects\set_dataprint_strategy.crf --depend .\objects\set_dataprint_strategy.d)
 I (D:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x55DB2B80)
 I (HMI\Setting_HMI.h)(0x59EAA067)
-I (HMI\HMI.h)(0x59EAB205)
+I (HMI\HMI.h)(0x59ED6617)
 I (D:\Keil_v5\ARM\ARMCC\include\string.h)(0x55DB2B78)
 I (E:\mylib\sdhLib\inc\lw_oopc.h)(0x590BF2DD)
 I (D:\Keil_v5\ARM\ARMCC\include\stdlib.h)(0x55DB2B78)
@@ -2084,7 +2084,7 @@ I (HMI\keyboardHMI.h)(0x59EAA067)
 F (.\HMI\Acc_day.c)(0x59EAF3ED)(-c --cpu Cortex-M3 -D__RTX -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I.\configs -I.\BSP -IE:\mylib\sdhLib\inc -I.\device\dev_LCD\nokia_5110 -I..\PplRcd -I.\drive -I.\device -I.\Glyph -I.\Expression -I.\Views -I.\REEC -I.\MVC -I.\Views -I..\PplRcd -I.\model -I.\sheet --diag_suppress=1295;--diag_suppress=1;--diag_suppress=177-D-I E:\PHN\mycode\PplRcd\RTE-I E:\PHN\mycode\PplRcd\RTE\Device\STM32F103VC-I D:\Keil_v5\ARM\PACK\ARM\CMSIS\4.5.0\CMSIS\Include-I D:\Keil_v5\ARM\PACK\ARM\CMSIS\4.5.0\CMSIS\RTOS\RTX\INC-I D:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\Include-I D:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\StdPeriph_Driver\inc-I D:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0-D__UVISION_VERSION="517" -D_RTE_ -DSTM32F10X_HD -DUSE_STDPERIPH_DRIVER -DSTM32F10X_HD -DUSE_STM3210B_EVAL -DHSE_VALUE="8000000"-o .\objects\acc_day.o --omf_browse .\objects\acc_day.crf --depend .\objects\acc_day.d)
 I (D:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x55DB2B80)
 I (HMI\Accumulate_HMI.h)(0x59EAA067)
-I (HMI\HMI.h)(0x59EAB205)
+I (HMI\HMI.h)(0x59ED6617)
 I (D:\Keil_v5\ARM\ARMCC\include\string.h)(0x55DB2B78)
 I (E:\mylib\sdhLib\inc\lw_oopc.h)(0x590BF2DD)
 I (D:\Keil_v5\ARM\ARMCC\include\stdlib.h)(0x55DB2B78)
@@ -2112,10 +2112,10 @@ I (.\model\ModelTest.h)(0x59EAA067)
 I (HMI\focus.h)(0x59EAF314)
 I (HMI\commHMI.h)(0x59EAE133)
 I (HMI\keyboardHMI.h)(0x59EAA067)
-F (.\HMI\Acc_month.c)(0x59EAF3ED)(-c --cpu Cortex-M3 -D__RTX -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I.\configs -I.\BSP -IE:\mylib\sdhLib\inc -I.\device\dev_LCD\nokia_5110 -I..\PplRcd -I.\drive -I.\device -I.\Glyph -I.\Expression -I.\Views -I.\REEC -I.\MVC -I.\Views -I..\PplRcd -I.\model -I.\sheet --diag_suppress=1295;--diag_suppress=1;--diag_suppress=177-D-I E:\PHN\mycode\PplRcd\RTE-I E:\PHN\mycode\PplRcd\RTE\Device\STM32F103VC-I D:\Keil_v5\ARM\PACK\ARM\CMSIS\4.5.0\CMSIS\Include-I D:\Keil_v5\ARM\PACK\ARM\CMSIS\4.5.0\CMSIS\RTOS\RTX\INC-I D:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\Include-I D:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\StdPeriph_Driver\inc-I D:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0-D__UVISION_VERSION="517" -D_RTE_ -DSTM32F10X_HD -DUSE_STDPERIPH_DRIVER -DSTM32F10X_HD -DUSE_STM3210B_EVAL -DHSE_VALUE="8000000"-o .\objects\acc_month.o --omf_browse .\objects\acc_month.crf --depend .\objects\acc_month.d)
+F (.\HMI\Acc_month.c)(0x59ED5BDF)(-c --cpu Cortex-M3 -D__RTX -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I.\configs -I.\BSP -IE:\mylib\sdhLib\inc -I.\device\dev_LCD\nokia_5110 -I..\PplRcd -I.\drive -I.\device -I.\Glyph -I.\Expression -I.\Views -I.\REEC -I.\MVC -I.\Views -I..\PplRcd -I.\model -I.\sheet --diag_suppress=1295;--diag_suppress=1;--diag_suppress=177-D-I E:\PHN\mycode\PplRcd\RTE-I E:\PHN\mycode\PplRcd\RTE\Device\STM32F103VC-I D:\Keil_v5\ARM\PACK\ARM\CMSIS\4.5.0\CMSIS\Include-I D:\Keil_v5\ARM\PACK\ARM\CMSIS\4.5.0\CMSIS\RTOS\RTX\INC-I D:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\Include-I D:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\StdPeriph_Driver\inc-I D:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0-D__UVISION_VERSION="517" -D_RTE_ -DSTM32F10X_HD -DUSE_STDPERIPH_DRIVER -DSTM32F10X_HD -DUSE_STM3210B_EVAL -DHSE_VALUE="8000000"-o .\objects\acc_month.o --omf_browse .\objects\acc_month.crf --depend .\objects\acc_month.d)
 I (D:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x55DB2B80)
 I (HMI\Accumulate_HMI.h)(0x59EAA067)
-I (HMI\HMI.h)(0x59EAB205)
+I (HMI\HMI.h)(0x59ED6617)
 I (D:\Keil_v5\ARM\ARMCC\include\string.h)(0x55DB2B78)
 I (E:\mylib\sdhLib\inc\lw_oopc.h)(0x590BF2DD)
 I (D:\Keil_v5\ARM\ARMCC\include\stdlib.h)(0x55DB2B78)
@@ -2143,6 +2143,56 @@ I (.\model\ModelTest.h)(0x59EAA067)
 I (HMI\focus.h)(0x59EAF314)
 I (HMI\commHMI.h)(0x59EAE133)
 I (HMI\keyboardHMI.h)(0x59EAA067)
+F (.\HMI\windownsHMI.c)(0x59ED6695)(-c --cpu Cortex-M3 -D__RTX -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I.\configs -I.\BSP -IE:\mylib\sdhLib\inc -I.\device\dev_LCD\nokia_5110 -I..\PplRcd -I.\drive -I.\device -I.\Glyph -I.\Expression -I.\Views -I.\REEC -I.\MVC -I.\Views -I..\PplRcd -I.\model -I.\sheet --diag_suppress=1295;--diag_suppress=1;--diag_suppress=177-D-I E:\PHN\mycode\PplRcd\RTE-I E:\PHN\mycode\PplRcd\RTE\Device\STM32F103VC-I D:\Keil_v5\ARM\PACK\ARM\CMSIS\4.5.0\CMSIS\Include-I D:\Keil_v5\ARM\PACK\ARM\CMSIS\4.5.0\CMSIS\RTOS\RTX\INC-I D:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\Include-I D:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\StdPeriph_Driver\inc-I D:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0-D__UVISION_VERSION="517" -D_RTE_ -DSTM32F10X_HD -DUSE_STDPERIPH_DRIVER -DSTM32F10X_HD -DUSE_STM3210B_EVAL -DHSE_VALUE="8000000"-o .\objects\windownshmi.o --omf_browse .\objects\windownshmi.crf --depend .\objects\windownshmi.d)
+I (HMI\windowsHmi.h)(0x59ED5C82)
+I (HMI\HMI.h)(0x59ED6617)
+I (D:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x55DB2B80)
+I (D:\Keil_v5\ARM\ARMCC\include\string.h)(0x55DB2B78)
+I (E:\mylib\sdhLib\inc\lw_oopc.h)(0x590BF2DD)
+I (D:\Keil_v5\ARM\ARMCC\include\stdlib.h)(0x55DB2B78)
+I (D:\Keil_v5\ARM\ARMCC\include\stddef.h)(0x55DB2B7E)
+I (E:\mylib\sdhLib\inc\sdhDef.h)(0x595608E8)
+I (..\PplRcd\sdhlibConf.h)(0x59EAA067)
+I (E:\mylib\sdhLib\inc\basis\sdhDebug.h)(0x59CA1B0F)
+I (D:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x55DB2B76)
+I (E:\mylib\sdhLib\inc\basis\sdhError.h)(0x59A51A04)
+I (E:\mylib\sdhLib\inc\basis\macros.h)(0x59648759)
+I (E:\mylib\sdhLib\inc\basis\assert.h)(0x590BFABD)
+I (E:\mylib\sdhLib\inc\basis\except.h)(0x5909998B)
+I (D:\Keil_v5\ARM\ARMCC\include\setjmp.h)(0x55DB2B80)
+I (.\sheet\sheet.h)(0x59EAA067)
+I (.\Glyph\glyph.h)(0x59EAA067)
+I (.\device\device.h)(0x59EAA067)
+I (.\device\deviceId.h)(0x59EAA067)
+I (.\device\dev_cmd.h)(0x59EAA067)
+I (.\device\dev_char.h)(0x59EAA067)
+I (.\device\dev_lcd.h)(0x59EAED57)
+I (.\model\ModelFactory.h)(0x59EAA067)
+I (.\model\Model.h)(0x59EAEA3C)
+I (E:\mylib\sdhLib\inc\arithmetic\list.h)(0x3460DF34)
+I (.\model\ModelTest.h)(0x59EAA067)
+I (HMI\focus.h)(0x59EAF314)
+I (HMI\commHMI.h)(0x59EAE133)
+I (HMI\keyboardHMI.h)(0x59EAA067)
+I (HMI\HMIFactory.h)(0x59EAA067)
+I (HMI\mainHMI.h)(0x59EAA067)
+I (HMI\menuHMI.h)(0x59EAA067)
+I (HMI\barGraphHMI.h)(0x59EAA067)
+I (HMI\dataHMI.h)(0x59EAA067)
+I (HMI\real_time_trendHmi.h)(0x59EAA067)
+I (HMI\news_select_HMI.h)(0x59EAA067)
+I (HMI\News_Alarm_HMI.h)(0x59EAA067)
+I (HMI\News_Power_down_HMI.h)(0x59EAA067)
+I (HMI\Accumulate_HMI.h)(0x59EAA067)
+I (HMI\Setup_HMI.h)(0x59EAA067)
+I (HMI\Setting_HMI.h)(0x59EAA067)
+I (.\Expression\ExpFactory.h)(0x59EAA066)
+I (.\Expression\expression.h)(0x59EAA066)
+I (.\Views\Composition.h)(0x59EAA067)
+I (.\Expression\Reader.h)(0x59EAA066)
+I (HMI\format.h)(0x59EAA067)
+I (HMI\chnInfoPic.h)(0x59EAA067)
+F (.\HMI\windowsHMI.h)(0x59ED5C82)()
 F (.\model\Model.c)(0x59EAA067)(-c --cpu Cortex-M3 -D__RTX -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I.\configs -I.\BSP -IE:\mylib\sdhLib\inc -I.\device\dev_LCD\nokia_5110 -I..\PplRcd -I.\drive -I.\device -I.\Glyph -I.\Expression -I.\Views -I.\REEC -I.\MVC -I.\Views -I..\PplRcd -I.\model -I.\sheet --diag_suppress=1295;--diag_suppress=1;--diag_suppress=177-D-I E:\PHN\mycode\PplRcd\RTE-I E:\PHN\mycode\PplRcd\RTE\Device\STM32F103VC-I D:\Keil_v5\ARM\PACK\ARM\CMSIS\4.5.0\CMSIS\Include-I D:\Keil_v5\ARM\PACK\ARM\CMSIS\4.5.0\CMSIS\RTOS\RTX\INC-I D:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\Include-I D:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\StdPeriph_Driver\inc-I D:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0-D__UVISION_VERSION="517" -D_RTE_ -DSTM32F10X_HD -DUSE_STDPERIPH_DRIVER -DSTM32F10X_HD -DUSE_STM3210B_EVAL -DHSE_VALUE="8000000"-o .\objects\model.o --omf_browse .\objects\model.crf --depend .\objects\model.d)
 I (model\Model.h)(0x59EAEA3C)
 I (D:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x55DB2B80)
@@ -2279,7 +2329,7 @@ I (.\device\deviceId.h)(0x59EAA067)
 I (.\device\dev_cmd.h)(0x59EAA067)
 I (.\device\dev_char.h)(0x59EAA067)
 I (.\device\dev_lcd.h)(0x59EAED57)
-I (..\PplRcd\HMI/HMI.h)(0x59EAB205)
+I (..\PplRcd\HMI/HMI.h)(0x59ED6617)
 I (D:\Keil_v5\ARM\ARMCC\include\string.h)(0x55DB2B78)
 I (E:\mylib\sdhLib\inc\sdhDef.h)(0x595608E8)
 I (..\PplRcd\sdhlibConf.h)(0x59EAA067)
