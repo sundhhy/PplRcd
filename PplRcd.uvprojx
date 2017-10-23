@@ -1178,6 +1178,16 @@
               <FileType>1</FileType>
               <FilePath>.\HMI\Acc_month.c</FilePath>
             </File>
+            <File>
+              <FileName>windownsHMI.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\HMI\windownsHMI.c</FilePath>
+            </File>
+            <File>
+              <FileName>windowsHMI.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\HMI\windowsHMI.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
