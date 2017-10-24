@@ -130,7 +130,7 @@ static void Show_Setting_HMI(HMI *self)
 	Setting_HMI		*cthis = SUB_PTR( self, HMI, Setting_HMI);
 	int ret = 0;
 	char		win_tips[32];
-	Sheet_refresh(g_p_sht_bkpic);
+	
 	
 	if(self->flag & HMIFLAG_WIN) {
 		if((self->arg[1] == 0) &&  (cthis->sub_flag & DO_NOTHING) == 0) { 		//窗口画面传递过来的检点列位置为“确定”
@@ -148,14 +148,14 @@ static void Show_Setting_HMI(HMI *self)
 				Win_SetTips(win_tips);
 				self->switchHMI(self, g_p_winHmi);
 			}
+			
+			return;
+			
 		}
 		
-	} else {
-		cthis->entry_start_row = 0;
-		
-	}
-	
-	
+	} 
+	Sheet_refresh(g_p_sht_bkpic);
+	cthis->entry_start_row = 0;
 	Show_entry(self, cthis->p_sy);
 	Strategy_focus(cthis, &cthis->p_sy->sf, 1);
 	
@@ -212,7 +212,6 @@ static void	Setting_HMI_hide(HMI *self)
 	
 	Sheet_free(cthis->p_sht_text);
 	Sheet_free(cthis->p_sht_CUR);
-//	Focus_free(self->p_fcuu);
 }
 
 
@@ -429,13 +428,15 @@ static void	Setting_HMI_hitHandle(HMI *self, char *s_key)
 		if(cthis->sub_flag & FOCUS_IN_STARTEGY) {
 			
 			//先提示
-			if((self->flag & HMIFLAG_WIN) == 0) {
+			if((self->flag & HMIFLAG_WIN) == 0) 
+			{
+				self->flag |= HMIFLAG_WIN;
 				g_p_winHmi->arg[0] = WINTYPE_CUR;
 				Win_SetTips("确认修改？");
 				self->switchHMI(self, g_p_winHmi);
 				
 			} 
-			
+			cthis->sub_flag &= ~DO_NOTHING;
 		} else {
 			p_focus = Setting_HMI_get_focus(cthis, -1);
 			if(Show_more(self, p_focus->id) == ERR_OPT_FAILED) {

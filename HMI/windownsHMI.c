@@ -238,7 +238,7 @@ static void winHmi_ShowFocuse( HMI *self, uint8_t fouse_row, uint8_t fouse_col)
 static void	MainHitHandle(HMI *self, char *s)
 {
 	winHmi		*cthis = SUB_PTR( self, HMI, winHmi);
-
+	HMI			*p_other;
 
 	uint8_t		focusRow = cthis->f_row;
 	uint8_t		focusCol = cthis->f_col;
@@ -275,7 +275,7 @@ static void	MainHitHandle(HMI *self, char *s)
 	if( chgFouse)
 	{
 			
-		self->clear_focus(self, focusRow, focusCol);
+		self->clear_focus(self, focusCol, focusCol);
 		self->show_focus(self, 0xff, 0xff);
 		
 	}
@@ -285,8 +285,9 @@ static void	MainHitHandle(HMI *self, char *s)
 		
 		g_p_lastHmi->arg[0] = cthis->f_row;
 		g_p_lastHmi->arg[1] = cthis->f_col;
+		p_other = g_p_lastHmi;
 		self->switchBack(self);
-		g_p_lastHmi->flag &= ~(1 << HMIFLAG_WIN);
+		p_other->flag &= ~HMIFLAG_WIN;
 		
 	}
 	if( !strcmp( s, HMIKEY_ESC))
