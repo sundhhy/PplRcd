@@ -28,6 +28,8 @@
 .\objects\ntinput.o: .\model\Model.h
 .\objects\ntinput.o: E:\mylib\sdhLib\inc\basis/assert.h
 .\objects\ntinput.o: .\model\ModelTest.h
+.\objects\ntinput.o: .\model\Model_channel.h
+.\objects\ntinput.o: ..\PplRcd\system.h
 .\objects\ntinput.o: Expression\ExpFactory.h
 .\objects\ntinput.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
 .\objects\ntinput.o: .\Glyph\Gh_None.h

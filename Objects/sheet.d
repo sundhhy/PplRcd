@@ -23,6 +23,8 @@
 .\objects\sheet.o: E:\mylib\sdhLib\inc\basis/except.h
 .\objects\sheet.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\setjmp.h
 .\objects\sheet.o: .\model\ModelTest.h
+.\objects\sheet.o: .\model\Model_channel.h
+.\objects\sheet.o: ..\PplRcd\system.h
 .\objects\sheet.o: E:\mylib\sdhLib\inc\mem/CiiMem.h
 .\objects\sheet.o: E:\mylib\sdhLib\inc\basis/assert.h
 .\objects\sheet.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h

@@ -27,6 +27,8 @@
 .\objects\real_time_trendhmi.o: E:\mylib\sdhLib\inc\arithmetic/list.h
 .\objects\real_time_trendhmi.o: E:\mylib\sdhLib\inc\basis/assert.h
 .\objects\real_time_trendhmi.o: .\model\ModelTest.h
+.\objects\real_time_trendhmi.o: .\model\Model_channel.h
+.\objects\real_time_trendhmi.o: ..\PplRcd\system.h
 .\objects\real_time_trendhmi.o: HMI\focus.h
 .\objects\real_time_trendhmi.o: HMI\commHMI.h
 .\objects\real_time_trendhmi.o: HMI\keyboardHMI.h

@@ -27,6 +27,8 @@
 .\objects\set_view_strategy.o: E:\mylib\sdhLib\inc\arithmetic/list.h
 .\objects\set_view_strategy.o: E:\mylib\sdhLib\inc\basis/assert.h
 .\objects\set_view_strategy.o: .\model\ModelTest.h
+.\objects\set_view_strategy.o: .\model\Model_channel.h
+.\objects\set_view_strategy.o: ..\PplRcd\system.h
 .\objects\set_view_strategy.o: HMI\focus.h
 .\objects\set_view_strategy.o: HMI\commHMI.h
 .\objects\set_view_strategy.o: HMI\keyboardHMI.h

@@ -1,5 +1,6 @@
 #include <stdint.h>
 #include "Setting_HMI.h"
+#include "ModelFactory.h"
 
 //============================================================================//
 //            G L O B A L   D E F I N I T I O N S                             //
@@ -50,12 +51,12 @@ strategy_t	g_chn_strategy = {
 //------------------------------------------------------------------------------
 // local vars
 //------------------------------------------------------------------------------
- static char *const arr_p_chnnel_entry[10] = {"通道号", "位号", "信号类型", "工程单位", \
-	 "量程下限", "量程上限", "记录容量", "滤波时间", "小信号切除", "零点调整"
- };
-	
- static char *const arr_p_chnnel_entry_2[2] = {"K:", "B:"};
- static char *arr_p_vram[14];
+static char *const arr_p_chnnel_entry[10] = {"通道号", "位号", "信号类型", "工程单位", \
+ "量程下限", "量程上限", "记录容量", "滤波时间", "小信号切除", "零点调整"
+};
+
+static char *arr_p_vram[10];
+static char		cur_set_chn = 0;
 
 //------------------------------------------------------------------------------
 // local function prototypes
@@ -74,23 +75,66 @@ strategy_t	g_chn_strategy = {
 static int ChnStrategy_entry(int row, int col, void *pp_text)
 {
 	char **pp = (char **)pp_text;
+	Model_chn		*p_mc = Get_Mode_chn(cur_set_chn);
+	Model				*p_md = SUPER_PTR(p_mc, Model);
 	if(col == 0) {
 		
 		if(row > 9)
 			return 0;
 		*pp = arr_p_chnnel_entry[row];
 		return strlen(arr_p_chnnel_entry[row]);
-	} else {
-		if(col > 2)
-			return 0;
-		
-		if(row == 9) {
-			*pp = arr_p_chnnel_entry_2[col];
-			return strlen(arr_p_chnnel_entry_2[row]);
+	} else if(col == 1){
+		switch(row) 
+		{
+			case 0:
+				sprintf(arr_p_vram[row], "%d", cur_set_chn);
+				break;
+			case 1:		//位号
+				sprintf(arr_p_vram[row], "%d", p_mc->chni.tag_NO);
+				break;
+			case 2:		//信号类型
+				p_md->to_string(p_md, AUX_SIGNALTYPE, arr_p_vram[row]);
+				break;
+			case 3:		//单位
+				p_md->to_string(p_md, AUX_UNIT, arr_p_vram[row]);
+				break;
+			case 4:		//下限
+				p_md->to_string(p_md, AUX_CHN_lower_limit, arr_p_vram[row]);
+				break;
+			case 5:		//上限
+				p_md->to_string(p_md, AUX_CHN_upper_limit, arr_p_vram[row]);
+				break;
+			case 6:		//记录容量
+				sprintf(arr_p_vram[row], "%d M", p_mc->chni.MB);
+				break;
+			case 7:		//滤波时间
+				sprintf(arr_p_vram[row], "%d S", p_mc->chni.filter_time_s);
+				break;
+			case 8:		//小信号切除
+				p_md->to_string(p_md, AUX_CHN_small_signal, arr_p_vram[row]);
+				break;
+			case 9:		//零点调整
+				p_md->to_string(p_md, AUX_CHN_K, arr_p_vram[row]);
+				
+				break;
+			default:
+				goto exit;
+			
 		}
 		
+		*pp = arr_p_vram[row];
+		return strlen(arr_p_vram[row]);
+		
+		
+	} else if(col == 2) {
+		
+		if(row == 9) {
+			p_md->to_string(p_md, AUX_CHN_B, arr_p_vram[row]);
+			*pp = arr_p_vram[row];
+			return strlen(arr_p_vram[row]);
+		}
 	}
-	
+	exit:	
 	return 0;
 }
 
@@ -116,7 +160,7 @@ static int Cns_get_focusdata(void *pp_data)
 	char		**pp_vram = (char **)pp_data;
 	int ret = p_syf->num_byte;
 	
-	if(p_syf->f_row < 14)
+	if(p_syf->f_row < 10)
 		*pp_vram = arr_p_vram[p_syf->f_row] + p_syf->start_byte;
 	else 
 		ret = -1;

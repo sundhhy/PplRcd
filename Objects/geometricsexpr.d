@@ -28,6 +28,8 @@
 .\objects\geometricsexpr.o: .\model\Model.h
 .\objects\geometricsexpr.o: E:\mylib\sdhLib\inc\basis/assert.h
 .\objects\geometricsexpr.o: .\model\ModelTest.h
+.\objects\geometricsexpr.o: .\model\Model_channel.h
+.\objects\geometricsexpr.o: ..\PplRcd\system.h
 .\objects\geometricsexpr.o: .\Glyph\Gh_txt.h
 .\objects\geometricsexpr.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
 .\objects\geometricsexpr.o: .\Glyph\Gh_Rectangle.h

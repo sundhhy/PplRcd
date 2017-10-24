@@ -29,6 +29,8 @@
 .\objects\picexpr.o: .\model\Model.h
 .\objects\picexpr.o: E:\mylib\sdhLib\inc\basis/assert.h
 .\objects\picexpr.o: .\model\ModelTest.h
+.\objects\picexpr.o: .\model\Model_channel.h
+.\objects\picexpr.o: ..\PplRcd\system.h
 .\objects\picexpr.o: .\Glyph\Gh_Pic.h
 .\objects\picexpr.o: E:\mylib\sdhLib\inc\arithmetic/cycQueue.h
 .\objects\picexpr.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h

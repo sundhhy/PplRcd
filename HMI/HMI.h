@@ -48,7 +48,10 @@
 #define SY_KEYTYPE_HIT				0
 #define SY_KEYTYPE_LONGPUSH		1
 
-#define	HMIFLAG_WIN				4
+//界面在切换到窗口之前设置该标志，然后窗口在切回界面之后，窗口会将改标志清除
+//表示界面接下来要跟窗口进行交互，因此在窗口切换回界面的时候，会处理一些额外的交互信息
+//故每个需要与窗口交互的界面，在其show方法中，都应该有与窗口界面交互的处理 
+#define	HMIFLAG_WIN				4			
 #define IS_HMI_HIDE(flag)	((flag&1) == 0)
 #define IS_HMI_KEYHANDLE(flag)	((flag&2))
  //------------------------------------------------------------------------------

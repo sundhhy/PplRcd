@@ -4,7 +4,7 @@
 #include "lw_oopc.h"
 #include "Model.h"
 #include "ModelTest.h"
-
+#include "Model_channel.h"
 // type : time
 //
 Model *ModelCreate( char *type);

@@ -27,6 +27,8 @@
 .\objects\acc_month.o: E:\mylib\sdhLib\inc\arithmetic/list.h
 .\objects\acc_month.o: E:\mylib\sdhLib\inc\basis/assert.h
 .\objects\acc_month.o: .\model\ModelTest.h
+.\objects\acc_month.o: .\model\Model_channel.h
+.\objects\acc_month.o: ..\PplRcd\system.h
 .\objects\acc_month.o: HMI\focus.h
 .\objects\acc_month.o: HMI\commHMI.h
 .\objects\acc_month.o: HMI\keyboardHMI.h

@@ -27,6 +27,8 @@
 .\objects\accumulate_hmi .o: E:\mylib\sdhLib\inc\arithmetic/list.h
 .\objects\accumulate_hmi .o: E:\mylib\sdhLib\inc\basis/assert.h
 .\objects\accumulate_hmi .o: .\model\ModelTest.h
+.\objects\accumulate_hmi .o: .\model\Model_channel.h
+.\objects\accumulate_hmi .o: ..\PplRcd\system.h
 .\objects\accumulate_hmi .o: HMI\focus.h
 .\objects\accumulate_hmi .o: HMI\commHMI.h
 .\objects\accumulate_hmi .o: HMI\keyboardHMI.h

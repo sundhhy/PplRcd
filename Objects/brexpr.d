@@ -28,5 +28,7 @@
 .\objects\brexpr.o: .\model\Model.h
 .\objects\brexpr.o: E:\mylib\sdhLib\inc\basis/assert.h
 .\objects\brexpr.o: .\model\ModelTest.h
+.\objects\brexpr.o: .\model\Model_channel.h
+.\objects\brexpr.o: ..\PplRcd\system.h
 .\objects\brexpr.o: .\Glyph\Gh_none.h
 .\objects\brexpr.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h

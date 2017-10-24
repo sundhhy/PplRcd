@@ -27,6 +27,8 @@
 .\objects\news_select_hmi.o: E:\mylib\sdhLib\inc\arithmetic/list.h
 .\objects\news_select_hmi.o: E:\mylib\sdhLib\inc\basis/assert.h
 .\objects\news_select_hmi.o: .\model\ModelTest.h
+.\objects\news_select_hmi.o: .\model\Model_channel.h
+.\objects\news_select_hmi.o: ..\PplRcd\system.h
 .\objects\news_select_hmi.o: HMI\focus.h
 .\objects\news_select_hmi.o: HMI\commHMI.h
 .\objects\news_select_hmi.o: HMI\keyboardHMI.h

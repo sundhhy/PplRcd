@@ -16,5 +16,7 @@
 .\objects\modelfactory.o: E:\mylib\sdhLib\inc\basis/except.h
 .\objects\modelfactory.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\setjmp.h
 .\objects\modelfactory.o: model\ModelTest.h
+.\objects\modelfactory.o: model\Model_channel.h
+.\objects\modelfactory.o: ..\PplRcd\system.h
 .\objects\modelfactory.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
 .\objects\modelfactory.o: model\ModelTime.h

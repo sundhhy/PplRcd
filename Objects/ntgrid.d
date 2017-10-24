@@ -28,6 +28,8 @@
 .\objects\ntgrid.o: .\model\Model.h
 .\objects\ntgrid.o: E:\mylib\sdhLib\inc\basis/assert.h
 .\objects\ntgrid.o: .\model\ModelTest.h
+.\objects\ntgrid.o: .\model\Model_channel.h
+.\objects\ntgrid.o: ..\PplRcd\system.h
 .\objects\ntgrid.o: Expression\ExpFactory.h
 .\objects\ntgrid.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
 .\objects\ntgrid.o: .\Glyph\Gh_Rectangle.h

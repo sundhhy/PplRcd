@@ -28,5 +28,7 @@
 .\objects\txtexpr.o: .\model\Model.h
 .\objects\txtexpr.o: E:\mylib\sdhLib\inc\basis/assert.h
 .\objects\txtexpr.o: .\model\ModelTest.h
+.\objects\txtexpr.o: .\model\Model_channel.h
+.\objects\txtexpr.o: ..\PplRcd\system.h
 .\objects\txtexpr.o: .\Glyph\Gh_txt.h
 .\objects\txtexpr.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h

@@ -27,4 +27,6 @@
 .\objects\expression.o: .\model\Model.h
 .\objects\expression.o: E:\mylib\sdhLib\inc\basis/assert.h
 .\objects\expression.o: .\model\ModelTest.h
+.\objects\expression.o: .\model\Model_channel.h
+.\objects\expression.o: ..\PplRcd\system.h
 .\objects\expression.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h

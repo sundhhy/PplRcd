@@ -176,7 +176,7 @@ static void winHmiHide(HMI *self )
 static void	winHmiShow(HMI *self )
 {
 	winHmi			*cthis = SUB_PTR( self, HMI, winHmi);
-	short	i, len;
+	short	 len;
 	g_p_lastHmi->flag |= HMIFLAG_WIN;
 	Sheet_refresh(cthis->p_sht_bkpic);
 	if(self->arg[0] < WINTYPE_MUS_BND) {

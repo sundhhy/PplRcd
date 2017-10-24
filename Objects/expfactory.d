@@ -28,6 +28,8 @@
 .\objects\expfactory.o: .\model\Model.h
 .\objects\expfactory.o: E:\mylib\sdhLib\inc\basis/assert.h
 .\objects\expfactory.o: .\model\ModelTest.h
+.\objects\expfactory.o: .\model\Model_channel.h
+.\objects\expfactory.o: ..\PplRcd\system.h
 .\objects\expfactory.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
 .\objects\expfactory.o: Expression\TxtExpr.h
 .\objects\expfactory.o: Expression\NtButton.h

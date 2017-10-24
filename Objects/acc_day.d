@@ -27,6 +27,8 @@
 .\objects\acc_day.o: E:\mylib\sdhLib\inc\arithmetic/list.h
 .\objects\acc_day.o: E:\mylib\sdhLib\inc\basis/assert.h
 .\objects\acc_day.o: .\model\ModelTest.h
+.\objects\acc_day.o: .\model\Model_channel.h
+.\objects\acc_day.o: ..\PplRcd\system.h
 .\objects\acc_day.o: HMI\focus.h
 .\objects\acc_day.o: HMI\commHMI.h
 .\objects\acc_day.o: HMI\keyboardHMI.h

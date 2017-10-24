@@ -132,10 +132,6 @@ static void Show_Setting_HMI(HMI *self)
 	char		win_tips[32];
 	Sheet_refresh(g_p_sht_bkpic);
 	
-	cthis->entry_start_row = 0;
-	Show_entry(self, cthis->p_sy);
-	Strategy_focus(cthis, &cthis->p_sy->sf, 1);
-	
 	if(self->flag & HMIFLAG_WIN) {
 		if((self->arg[1] == 0) &&  (cthis->sub_flag & DO_NOTHING) == 0) { 		//窗口画面传递过来的检点列位置为“确定”
 			//然后根据选择进行处理
@@ -148,13 +144,22 @@ static void Show_Setting_HMI(HMI *self)
 			} else {
 				SET_PG_FLAG(cthis->sub_flag, DO_NOTHING);		//
 				g_p_winHmi->arg[0] = WINTYPE_ERROR;
-				sprintf(win_tips,"出现错误！错误码:%d", ret);
+				sprintf(win_tips,"错误码:%d", ret);
 				Win_SetTips(win_tips);
 				self->switchHMI(self, g_p_winHmi);
 			}
 		}
 		
+	} else {
+		cthis->entry_start_row = 0;
+		
 	}
+	
+	
+	Show_entry(self, cthis->p_sy);
+	Strategy_focus(cthis, &cthis->p_sy->sf, 1);
+	
+	
 }
 static void	Setting_initSheet(HMI *self)
 {
@@ -429,20 +434,7 @@ static void	Setting_HMI_hitHandle(HMI *self, char *s_key)
 				Win_SetTips("确认修改？");
 				self->switchHMI(self, g_p_winHmi);
 				
-			} else {
-				//然后根据选择进行处理
-				if(p_sy->key_hit_er(NULL) == RET_OK) {
-					g_p_winHmi->arg[0] = WINTYPE_CUR;
-					Win_SetTips("修改成功");
-					self->switchHMI(self, g_p_winHmi);
-				} else {
-					
-					g_p_winHmi->arg[0] = WINTYPE_ERROR;
-					Win_SetTips("出现错误！请仔细核对");
-					self->switchHMI(self, g_p_winHmi);
-				}
-			}
-			
+			} 
 			
 		} else {
 			p_focus = Setting_HMI_get_focus(cthis, -1);

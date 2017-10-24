@@ -27,6 +27,8 @@
 .\objects\setup_hmi.o: E:\mylib\sdhLib\inc\arithmetic/list.h
 .\objects\setup_hmi.o: E:\mylib\sdhLib\inc\basis/assert.h
 .\objects\setup_hmi.o: .\model\ModelTest.h
+.\objects\setup_hmi.o: .\model\Model_channel.h
+.\objects\setup_hmi.o: ..\PplRcd\system.h
 .\objects\setup_hmi.o: HMI\focus.h
 .\objects\setup_hmi.o: HMI\commHMI.h
 .\objects\setup_hmi.o: HMI\keyboardHMI.h

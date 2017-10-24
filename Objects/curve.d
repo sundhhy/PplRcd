@@ -27,6 +27,8 @@
 .\objects\curve.o: E:\mylib\sdhLib\inc\arithmetic/list.h
 .\objects\curve.o: E:\mylib\sdhLib\inc\basis/assert.h
 .\objects\curve.o: .\model\ModelTest.h
+.\objects\curve.o: .\model\Model_channel.h
+.\objects\curve.o: ..\PplRcd\system.h
 .\objects\curve.o: HMI\focus.h
 .\objects\curve.o: HMI\commHMI.h
 .\objects\curve.o: HMI\keyboardHMI.h
