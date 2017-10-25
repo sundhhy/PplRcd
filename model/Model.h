@@ -32,6 +32,51 @@
 //------------------------------------------------------------------------------
 // typedef
 //------------------------------------------------------------------------------
+
+//因为不能在定义时使用/,故用_代替/
+typedef enum {
+	eu_Nm3_h = 0,
+	eu_m3_h,
+	eu_m3_min,
+	eu_m3_s,
+	eu_L_h,
+	eu_L_min,
+	eu_L_s,
+	eu_kg_h,
+	eu_kg_min,
+	eu_kg_s,
+	eu_oC,
+	eu_Pa,
+	eu_MPa,
+	eu_kgf_cm2,
+	eu_Bar,
+	eu_mmH2O,
+	eu_mmHg,
+	eu_percent,			//%
+	eu_ppm,
+	eu_pH,
+	eu_r_min,
+	eu_Hz,
+	eu_kHz,
+	eu_mA,
+	eu_A,
+	eu_kA,
+	eu_mV,
+	eu_V,
+	eu_kV,
+	eu_W,
+	eu_kW,
+	eu_MW,
+	eu_Var,
+	eu_kVar,
+	eu_MVar,
+	eu_J,
+	eu_kJ,
+	eu_uS_cm,
+	eu_J_kgoC,
+	eu_kWh,
+	eu_ug_L
+}e_unit_t;
 INTERFACE( Observer)
 {
 	int ( *update)( Observer *self, void *p_srcMdl);
@@ -86,7 +131,7 @@ extern const	char	g_moth_day[12];
 
 
 void Mdl_unit_to_string( char unit, char *buf, int len);
-
+void Pe_float(int data, int prec, char *str);
 
 
 #endif

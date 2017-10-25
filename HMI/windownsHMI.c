@@ -240,7 +240,7 @@ static void	MainHitHandle(HMI *self, char *s)
 	winHmi		*cthis = SUB_PTR( self, HMI, winHmi);
 	HMI			*p_other;
 
-	uint8_t		focusRow = cthis->f_row;
+//	uint8_t		focusRow = cthis->f_row;
 	uint8_t		focusCol = cthis->f_col;
 	char			chgFouse = 0;
 	

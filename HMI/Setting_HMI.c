@@ -137,7 +137,7 @@ static void Show_Setting_HMI(HMI *self)
 			//然后根据选择进行处理
 			ret = cthis->p_sy->key_hit_er(NULL) ;
 			if(ret == RET_OK) {
-				SET_PG_FLAG(cthis->sub_flag, DO_NOTHING);	
+				SET_PG_FLAG(cthis->sub_flag, DO_NOTHING);		//下次从窗口界面切回的时候，就不处理了
 				g_p_winHmi->arg[0] = WINTYPE_CUR;
 				Win_SetTips("修改成功");
 				self->switchHMI(self, g_p_winHmi);
@@ -426,16 +426,10 @@ static void	Setting_HMI_hitHandle(HMI *self, char *s_key)
 		
 		
 		if(cthis->sub_flag & FOCUS_IN_STARTEGY) {
-			
-			//先提示
-			if((self->flag & HMIFLAG_WIN) == 0) 
-			{
-				self->flag |= HMIFLAG_WIN;
-				g_p_winHmi->arg[0] = WINTYPE_CUR;
-				Win_SetTips("确认修改？");
-				self->switchHMI(self, g_p_winHmi);
-				
-			} 
+			//提示
+			g_p_winHmi->arg[0] = WINTYPE_CUR;
+			Win_SetTips("确认修改？");
+			self->switchHMI(self, g_p_winHmi);
 			cthis->sub_flag &= ~DO_NOTHING;
 		} else {
 			p_focus = Setting_HMI_get_focus(cthis, -1);
