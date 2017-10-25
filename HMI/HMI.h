@@ -46,7 +46,8 @@
 #define	HMI_FLAG_SHOW	1
 
 #define SY_KEYTYPE_HIT				0
-#define SY_KEYTYPE_LONGPUSH		1
+#define SY_KEYTYPE_DHIT				1
+#define SY_KEYTYPE_LONGPUSH			2
 
 //窗口界面来负责对该位的操作
 //表示界面接下来要跟窗口进行交互，因此在窗口切换回界面的时候，会处理一些额外的交互信息
@@ -88,7 +89,7 @@ typedef struct {
 	int	(*key_hit_lt)(void	*arg);
 	int	(*key_hit_rt)(void	*arg);
 	int	(*key_hit_er)(void	*arg);
-	int	(*get_focus_data)(void *pp_data);		//成功返回大于0，失败返回-1
+	int	(*get_focus_data)(void *pp_data,  strategy_focus_t *p_in_syf);		//成功返回大于0，失败返回-1
 	strategy_focus_t	sf;
 }strategy_t;
 

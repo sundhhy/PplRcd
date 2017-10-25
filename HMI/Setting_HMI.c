@@ -61,7 +61,7 @@ static void	Setting_HMI_init_focus(HMI *self);
 static void	Setting_HMI_clear_focus(HMI *self, uint8_t fouse_row, uint8_t fouse_col);
 static void	Setting_HMI_show_focus(HMI *self, uint8_t fouse_row, uint8_t fouse_col);
 static void	Setting_HMI_hitHandle( HMI *self, char *s_key);
-static void	Setting_HMI_longpush( HMI *self, char *s_key);
+static void	Setting_HMI_dhit( HMI *self, char *s_key);
 
 
 static void	Show_entry(HMI *self, strategy_t *p_st);
@@ -96,7 +96,7 @@ FUNCTION_SETTING(HMI.hide, Setting_HMI_hide);
 FUNCTION_SETTING(HMI.show, Show_Setting_HMI);
 
 FUNCTION_SETTING(HMI.hitHandle, Setting_HMI_hitHandle);
-FUNCTION_SETTING(HMI.longpushHandle, Setting_HMI_longpush);
+FUNCTION_SETTING(HMI.dhitHandle, Setting_HMI_dhit);
 
 FUNCTION_SETTING(HMI.init_focus, Setting_HMI_init_focus);
 FUNCTION_SETTING(HMI.clear_focus, Setting_HMI_clear_focus);
@@ -305,31 +305,54 @@ static sheet* Setting_HMI_get_focus(Setting_HMI *self, int arg)
 	return NULL;
 }
 
-static void Strategy_focus(Setting_HMI *self, strategy_focus_t *p_syf, int opt)
+static void Strategy_focis_text(Setting_HMI *self, strategy_focus_t *p_syf, int opt)
 {
 	int f_data_len = 0;
+	uint16_t	txt_xsize, txt_ysize;
+	self->p_sht_text->p_gp->getSize(self->p_sht_text->p_gp, self->p_sht_text->cnt.font, &txt_xsize, &txt_ysize);
+	f_data_len = self->p_sy->get_focus_data(&self->p_sht_text->cnt.data, p_syf);
+	if(f_data_len <= 0)
+		return;
+	if(opt)
+		self->p_sht_text->cnt.colour = COLOUR_BLUE;
+	else
+		self->p_sht_text->cnt.colour = COLOUR_WHITE;
+	
+	self->p_sht_text->cnt.len = f_data_len;
+	self->p_sht_text->area.x0 = self->col_vx0[p_syf->f_col] + txt_xsize * p_syf->start_byte;
+	self->p_sht_text->area.y0 = Stripe_vy(p_syf->f_row);
+	self->p_sht_text->p_gp->vdraw(self->p_sht_text->p_gp, &self->p_sht_text->cnt, &self->p_sht_text->area);
+	return;
+	
+}
+
+static void Strategy_focus(Setting_HMI *self, strategy_focus_t *p_syf, int opt)
+{
+//	int f_data_len = 0;
 	uint16_t	txt_xsize, txt_ysize;
 	self->p_sht_text->p_gp->getSize(self->p_sht_text->p_gp, self->p_sht_text->cnt.font, &txt_xsize, &txt_ysize);
 	
 	if(opt == 2) {
 		//重新刷新选择区域的值
-		f_data_len = self->p_sy->get_focus_data(&self->p_sht_text->cnt.data);
-		if(f_data_len <= 0)
-			return;
-		self->p_sht_text->cnt.len = f_data_len;
-		self->p_sht_text->area.x0 = self->col_vx0[p_syf->f_col] + txt_xsize * p_syf->start_byte;
-		self->p_sht_text->area.y0 = Stripe_vy(p_syf->f_row);
-		self->p_sht_text->p_gp->vdraw(self->p_sht_text->p_gp, &self->p_sht_text->cnt, &self->p_sht_text->area);
+		
+		Strategy_focis_text(self, p_syf, 1);
+//		f_data_len = self->p_sy->get_focus_data(&self->p_sht_text->cnt.data);
+//		if(f_data_len <= 0)
+//			return;
+//		self->p_sht_text->cnt.colour = COLOUR_BLUE;
+//		self->p_sht_text->cnt.len = f_data_len;
+//		self->p_sht_text->area.x0 = self->col_vx0[p_syf->f_col] + txt_xsize * p_syf->start_byte;
+//		self->p_sht_text->area.y0 = Stripe_vy(p_syf->f_row);
+//		self->p_sht_text->p_gp->vdraw(self->p_sht_text->p_gp, &self->p_sht_text->cnt, &self->p_sht_text->area);
 		return;
 	}
 	
 	if(opt == 0) {
 		self->p_sht_CUR->cnt.colour = Stripe_clean_clr(p_syf->f_row);
 	} else if(opt == 1){
-		
 		self->p_sht_CUR->cnt.colour = STRIPE_CLR_FOCUSE;
 	}
-	
+	Strategy_focis_text(self, p_syf, opt);
 //	txt_xsize = txt_xsize >> 1;		//英文或数字是半个大小
 	self->p_sht_CUR->area.x0 = self->col_vx0[p_syf->f_col] + txt_xsize * p_syf->start_byte;
 	self->p_sht_CUR->area.x1 = self->p_sht_CUR->area.x0 + txt_xsize * p_syf->num_byte;
@@ -443,7 +466,7 @@ static void	Setting_HMI_hitHandle(HMI *self, char *s_key)
 	
 	if( !strcmp(s_key, HMIKEY_ESC))
 	{
-		self->switchBack(self);
+		self->switchHMI(self, g_p_Setup_HMI);
 	}
 	
 	if(sy_chgFouse == 1) {
@@ -468,10 +491,10 @@ static void	Setting_HMI_hitHandle(HMI *self, char *s_key)
 
 //长按按键:up,dn 来对光标的行进行切换
 //切换有两种情况:编辑区内的行切换, 编辑区内外之间的切换
-static void	Setting_HMI_longpush( HMI *self, char *s_key)
+static void	Setting_HMI_dhit( HMI *self, char *s_key)
 {
 	Setting_HMI		*cthis = SUB_PTR( self, HMI, Setting_HMI);
-	strategy_keyval_t	skt = {SY_KEYTYPE_LONGPUSH};
+	strategy_keyval_t	skt = {SY_KEYTYPE_DHIT};
 	strategy_focus_t	old_sf;
 	uint8_t		focusCol = cthis->f_col;
 	uint8_t		sy_chgFouse = 0;
@@ -586,11 +609,12 @@ static void	Show_entry(HMI *self, strategy_t *p_st)
 	
 	cthis->p_sht_text->p_gp->getSize(cthis->p_sht_text->p_gp, cthis->p_sht_text->cnt.font, &txt_xsize, &txt_ysize);
 	
-	for(col = 0; col < 2; col ++) {
+	for(col = 0; col < 3; col ++) {
 		
-		col_vx0 = col_maxlen * txt_xsize;
+		col_vx0 += col_maxlen * txt_xsize;
 		cthis->col_vx0[col] = col_vx0;
 		//显示一页中所有的行
+		col_maxlen = 0;
 		for(row = 0; row < STRIPE_MAX_ROWS; row ++) {
 			
 			text_len = p_st->entry_txt(row + cthis->entry_start_row, col, &cthis->p_sht_text->cnt.data);

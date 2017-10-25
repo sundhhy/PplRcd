@@ -21,7 +21,7 @@ static int Cns_key_lt(void *arg);
 static int Cns_key_rt(void *arg);
 static int Cns_key_er(void *arg);
 static int Cns_init(void *arg);
-static int Cns_get_focusdata(void *pp_data);
+static int Cns_get_focusdata(void *pp_data, strategy_focus_t *p_in_syf);
 strategy_t	g_chn_strategy = {
 	ChnStrategy_entry,
 	Cns_init,
@@ -55,7 +55,7 @@ static char *const arr_p_chnnel_entry[10] = {"通道号", "位号", "信号类型", "工程
  "量程下限", "量程上限", "记录容量", "滤波时间", "小信号切除", "零点调整"
 };
 
-static char *arr_p_vram[10];
+static char *arr_p_vram[11];
 static char		cur_set_chn = 0;
 
 //------------------------------------------------------------------------------
@@ -129,9 +129,9 @@ static int ChnStrategy_entry(int row, int col, void *pp_text)
 	} else if(col == 2) {
 		
 		if(row == 9) {
-			p_md->to_string(p_md, AUX_CHN_B, arr_p_vram[row]);
-			*pp = arr_p_vram[row];
-			return strlen(arr_p_vram[row]);
+			p_md->to_string(p_md, AUX_CHN_B, arr_p_vram[10]);
+			*pp = arr_p_vram[10];
+			return strlen(arr_p_vram[10]);
 		}
 	}
 	exit:	
@@ -144,9 +144,10 @@ static int Cns_init(void *arg)
 	memset(&g_chn_strategy.sf, 0, sizeof(g_chn_strategy.sf));
 	g_chn_strategy.sf.f_col = 1;
 	g_chn_strategy.sf.f_row = 0;
-	
+	g_chn_strategy.sf.num_byte = 1;
+
 	VRAM_init();
-	for(i = 0; i < 10; i++) {
+	for(i = 0; i < 11; i++) {
 		
 		arr_p_vram[i] = VRAM_alloc(48);
 		
@@ -154,13 +155,16 @@ static int Cns_init(void *arg)
 	
 	return RET_OK;
 }
-static int Cns_get_focusdata(void *pp_data)
+static int Cns_get_focusdata(void *pp_data, strategy_focus_t *p_in_syf)
 {
 	strategy_focus_t *p_syf = &g_chn_strategy.sf;
 	char		**pp_vram = (char **)pp_data;
-	int ret = p_syf->num_byte;
+	int ret = 0;
 	
-	if(p_syf->f_row < 10)
+	if(p_in_syf)
+		p_syf = p_in_syf;
+	ret = p_syf->num_byte;
+	if(p_syf->f_row < 11)
 		*pp_vram = arr_p_vram[p_syf->f_row] + p_syf->start_byte;
 	else 
 		ret = -1;
@@ -189,7 +193,7 @@ static int Cns_key_up(void *arg)
 	
 	
 	if(kt.key_type == SY_KEYTYPE_HIT) {
-		dl = Cns_get_focusdata(&p);
+		dl = Cns_get_focusdata(&p, NULL);
 		if(dl < 0)
 			return -1;
 		
@@ -206,9 +210,14 @@ static int Cns_key_up(void *arg)
 			
 		}
 		
-	} else if(kt.key_type == SY_KEYTYPE_LONGPUSH) {
+	} else if(kt.key_type == SY_KEYTYPE_DHIT) {
 		
-		ret = -1;
+		if(p_syf->f_row )
+			p_syf->f_row --;
+		else {
+			p_syf->f_row = 9;
+			ret = -1;
+		}
 	}
 	
 	return ret;
@@ -232,7 +241,7 @@ static int Cns_key_dn(void *arg)
 	
 	
 	if(kt.key_type == SY_KEYTYPE_HIT) {
-		dl = Cns_get_focusdata(&p);
+		dl = Cns_get_focusdata(&p, NULL);
 		if(dl < 0)
 			return -1;
 		
@@ -249,9 +258,13 @@ static int Cns_key_dn(void *arg)
 			
 		}
 		
-	} else if(kt.key_type == SY_KEYTYPE_LONGPUSH) {
-		
-		ret = -1;
+	} else if(kt.key_type == SY_KEYTYPE_DHIT) {
+		if(p_syf->f_row < 9)
+			p_syf->f_row ++;
+		else {
+			p_syf->f_row = 0;
+			ret = -1;
+		}
 	}
 	
 	return ret;

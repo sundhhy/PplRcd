@@ -216,10 +216,10 @@ static char* MdlChn_to_string( Model *self, IN int aux, void *arg)
 			strcat((char *)arg, " %");
 			break;
 		case AUX_CHN_K:
-			Pe_float(cthis->chni.k, 2, (char *)arg);
+			Pe_frefix_float(cthis->chni.k, 2, "K:",(char *)arg);
 			break;
 		case AUX_CHN_B:
-			Pe_float(cthis->chni.k, 1, (char *)arg);
+			Pe_frefix_float(cthis->chni.b, 1, "B:", (char *)arg);
 			break;	
 		
 		default:
@@ -329,7 +329,7 @@ static int  MdlChn_to_percentage( Model *self, void *arg)
 static void Read_default_conf(chn_info_t *p_ci, int chnnum)
 {
 	
-	
+	p_ci->signal_type = AI_0_400_ohm;
 }
 
 static void Pe_singnaltype(e_signal_t sgt, char *str)
@@ -379,7 +379,7 @@ static void Pe_singnaltype(e_signal_t sgt, char *str)
 			sprintf(str, "T");
 			break;
 		case AI_0_400_ohm:
-			sprintf(str, "0-400 O");
+			sprintf(str, "0-400O");
 			break;		
 		case PI_0_30_kHz:
 			sprintf(str, "PI");

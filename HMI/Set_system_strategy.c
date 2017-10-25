@@ -22,7 +22,7 @@ static int Sys_key_lt(void *arg);
 static int Sys_key_rt(void *arg);
 static int Sys_key_er(void *arg);
 static int Sys_init(void *arg);
-static int Sys_get_focusdata(void *pp_data);
+static int Sys_get_focusdata(void *pp_data,  strategy_focus_t *p_in_syf);
 
 strategy_t	g_sys_strategy = {
 	SysStrategy_entry,
@@ -83,7 +83,7 @@ static int SysStrategy_entry(int row, int col, void *pp_text)
 			return 0;
 		*pp = arr_p_sys_entry[row];
 		return strlen(arr_p_sys_entry[row]);
-	} else {
+	} else if(col == 1){
 		switch(row) {
 			case 0:
 				model = ModelCreate("time");
@@ -115,11 +115,15 @@ static int Sys_init(void *arg)
 	
 	return RET_OK;
 }
-static int Sys_get_focusdata(void *pp_data)
+static int Sys_get_focusdata(void *pp_data, strategy_focus_t *p_in_syf)
 {
 	strategy_focus_t *p_syf = &g_sys_strategy.sf;
 	char		**pp_vram = (char **)pp_data;
-	int ret = g_sys_strategy.sf.num_byte;
+	int ret = 0;
+	
+	if(p_in_syf)
+		p_syf = p_in_syf;
+	ret = p_syf->num_byte;
 	
 	if(p_syf->f_row < 14)
 		*pp_vram = arr_p_vram[p_syf->f_row] + p_syf->start_byte;
@@ -150,7 +154,7 @@ static int Sys_key_up(void *arg)
 	
 	
 	if(kt.key_type == SY_KEYTYPE_HIT) {
-		dl = Sys_get_focusdata(&p);
+		dl = Sys_get_focusdata(&p, NULL);
 		if(dl < 0)
 			return -1;
 		
@@ -167,7 +171,7 @@ static int Sys_key_up(void *arg)
 			
 		}
 		
-	} else if(kt.key_type == SY_KEYTYPE_LONGPUSH) {
+	} else if(kt.key_type == SY_KEYTYPE_DHIT) {
 		
 		ret = -1;
 	}
@@ -193,7 +197,7 @@ static int Sys_key_dn(void *arg)
 	
 	
 	if(kt.key_type == SY_KEYTYPE_HIT) {
-		dl = Sys_get_focusdata(&p);
+		dl = Sys_get_focusdata(&p, NULL);
 		if(dl < 0)
 			return -1;
 		
@@ -210,7 +214,7 @@ static int Sys_key_dn(void *arg)
 			
 		}
 		
-	} else if(kt.key_type == SY_KEYTYPE_LONGPUSH) {
+	} else if(kt.key_type == SY_KEYTYPE_DHIT) {
 		
 		ret = -1;
 	}

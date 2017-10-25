@@ -106,6 +106,15 @@ void Pe_float(int data, int prec, char *str)
 	
 }
 
+void Pe_frefix_float(int data, int prec, char *prefix, char *str)
+{
+	
+	if(prec == 1)
+		sprintf(str, "%s%d.%d", prefix, data/10, data%10);
+	else if(prec == 2) 
+		sprintf(str, "%s%d.%02d", prefix, data/100, data%100);
+}
+
 void Mdl_unit_to_string( char unit, char *buf, int len)
 {
 	switch( unit)
