@@ -70,6 +70,9 @@ static int Show_more(HMI *self, int up_or_dn);
  
 static sheet* Setting_HMI_get_focus(Setting_HMI *self, int arg);
 static void Strategy_focus(Setting_HMI *self, strategy_focus_t *p_syf, int opt);
+static int Setting_Sy_cmd(int cmd, void *p_rcv, void *arg);
+ 
+
 //============================================================================//
 //            P U B L I C   F U N C T I O N S                                 //
 //============================================================================//
@@ -170,8 +173,12 @@ static void	Setting_initSheet(HMI *self)
 	p_shtctl = GetShtctl();
 	
 	
-	if((self->flag & HMIFLAG_WIN) == 0) 
+	if((self->flag & HMIFLAG_WIN) == 0) {
 		cthis->p_sy = arr_p_setting_strategy[self->arg[0]][self->arg[1]];
+		cthis->p_sy->p_cmd_rcv = self;
+		cthis->p_sy->cmd_hdl = Setting_Sy_cmd;
+		
+	}
 	
 	p_exp = ExpCreate( "pic");
 	p_exp->inptSht( p_exp, (void *)setting_hmi_code_clean, g_p_cpic) ;
@@ -364,6 +371,8 @@ static void Strategy_focus(Setting_HMI *self, strategy_focus_t *p_syf, int opt)
 	self->p_sht_CUR->area.y1 = self->p_sht_CUR->area.y0;
 	self->p_sht_CUR->p_gp->vdraw(self->p_sht_CUR->p_gp, &self->p_sht_CUR->cnt, &self->p_sht_CUR->area);
 	
+	//»Ö¸´ÑÕÉ«
+	self->p_sht_text->cnt.colour = COLOUR_WHITE;
 }
 
 static void	Setting_HMI_hitHandle(HMI *self, char *s_key)
@@ -671,4 +680,26 @@ static void	Show_entry(HMI *self, strategy_t *p_st)
 	
 }
 
+
+static int Setting_Sy_cmd(int cmd, void *p_rcv, void *arg)
+{
+	HMI				*self = (HMI *)p_rcv;
+	Setting_HMI		*cthis = SUB_PTR( self, HMI, Setting_HMI);
+	int ret = RET_OK;
+	switch(cmd) {
+		case sycmd_reflush:
+			cthis->p_sht_text->cnt.colour = COLOUR_WHITE;
+			Show_entry(self, cthis->p_sy);
+			Strategy_focus(cthis, &cthis->p_sy->sf, 1);
+			Flush_LCD();
+			break;
+		
+		
+		
+	}
+	
+	return ret;
+	
+	
+}
 

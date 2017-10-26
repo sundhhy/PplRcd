@@ -55,6 +55,11 @@
 #define	HMIFLAG_WIN				0x10			
 #define IS_HMI_HIDE(flag)	((flag&1) == 0)
 #define IS_HMI_KEYHANDLE(flag)	((flag&2))
+
+
+
+//策略类
+
  //------------------------------------------------------------------------------
 // typedef
 //------------------------------------------------------------------------------
@@ -77,12 +82,18 @@ typedef struct {
 	uint8_t		none[3];
 }strategy_keyval_t;
 
+typedef int (*stategy_cmd)(int cmd, void *p_rcv,  void *arg);
+
+typedef enum {
+	sycmd_reflush = 0,
+}e_sycmd_r;
+
 typedef struct {
 	
 	//将pp_data指定的行号和列号的显示字符串指针，并返回字符串的长度
 	//长度为0时表示没有数据
 	//所有的显示应该是对齐的，不考虑出现空洞的情况
-	int (*entry_txt)(int row, int col, void *pp_text);	
+	int (*entry_txt)(int row, int col,void *pp_text);	
 	int	(*init)(void	*arg);
 	int	(*key_hit_up)(void	*arg);
 	int	(*key_hit_dn)(void	*arg);
@@ -91,6 +102,8 @@ typedef struct {
 	int	(*key_hit_er)(void	*arg);
 	int	(*get_focus_data)(void *pp_data,  strategy_focus_t *p_in_syf);		//成功返回大于0，失败返回-1
 	strategy_focus_t	sf;
+	void				*p_cmd_rcv;
+	stategy_cmd			cmd_hdl;
 }strategy_t;
 
 

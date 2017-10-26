@@ -393,10 +393,7 @@ static void Pe_singnaltype(e_signal_t sgt, char *str)
 		case AO_4_20_mA:
 			sprintf(str, "AO");
 			break;			
-	}
-			
-	
-	
+	}	
 }
 
 

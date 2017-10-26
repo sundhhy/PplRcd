@@ -168,9 +168,21 @@
         </SetRegEntry>
       </TargetDriverDllRegistry>
       <Breakpoint/>
+      <WatchWindow1>
+        <Ww>
+          <count>0</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>\\PplRcd\device/dev_LCD/UsartGpu/dev_LcdUsartGpu.c\lcdBuf</ItemText>
+        </Ww>
+      </WatchWindow1>
       <WatchWindow2>
         <Ww>
           <count>0</count>
+          <WinNumber>2</WinNumber>
+          <ItemText>lcdBuf</ItemText>
+        </Ww>
+        <Ww>
+          <count>1</count>
           <WinNumber>2</WinNumber>
           <ItemText>g_p_Setting_HMI</ItemText>
         </Ww>
@@ -324,7 +336,7 @@
 
   <Group>
     <GroupName>BSP</GroupName>
-    <tvExp>0</tvExp>
+    <tvExp>1</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>
@@ -772,7 +784,7 @@
 
   <Group>
     <GroupName>device</GroupName>
-    <tvExp>0</tvExp>
+    <tvExp>1</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>
@@ -858,7 +870,7 @@
 
   <Group>
     <GroupName>dev_char</GroupName>
-    <tvExp>0</tvExp>
+    <tvExp>1</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>
@@ -944,7 +956,7 @@
 
   <Group>
     <GroupName>Glyph</GroupName>
-    <tvExp>0</tvExp>
+    <tvExp>1</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>

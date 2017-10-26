@@ -202,7 +202,9 @@ static int Cns_key_up(void *arg)
 			case 0:
 				//时间参数修改
 				
-				Str_Calculations(p, dl,0, OP_ADD, 1, 0, 0);
+				Str_Calculations(p, dl,0, OP_ADD, 1, 0, NUM_CHANNEL);
+				cur_set_chn = atoi(p);
+				g_chn_strategy.cmd_hdl(sycmd_reflush, g_chn_strategy.p_cmd_rcv, NULL);
 				break;
 			default:
 				ret = -1;
@@ -249,8 +251,9 @@ static int Cns_key_dn(void *arg)
 		switch(p_syf->f_row) {
 			case 0:
 				//时间参数修改
-				
-				Str_Calculations(p, dl,0, OP_SUB, 1, 0, 0);
+				Str_Calculations(p, dl,0, OP_SUB, 1, 0, NUM_CHANNEL);
+				cur_set_chn = atoi(p);
+				g_chn_strategy.cmd_hdl(sycmd_reflush, g_chn_strategy.p_cmd_rcv, NULL);
 				break;
 			default:
 				ret = -1;

@@ -41,9 +41,13 @@
 //------------------------------------------------------------------------------
 // const defines
 //------------------------------------------------------------------------------
-#define  DOUBLEHIT_TIME_MS		300
-#define  LONGPUSH_TIME_MS		2000
-#define  REPORT_TIME_MS			500
+//#define  DOUBLEHIT_TIME_MS		300
+//#define  LONGPUSH_TIME_MS		2000
+//#define  REPORT_TIME_MS			500
+
+#define  DOUBLEHIT_TIME_MS		160
+#define  LONGPUSH_TIME_MS		1000
+#define  REPORT_TIME_MS			200
 
 const uint32_t	arr_keyGpioID[ NUM_KEYS] = { KEYGPIOID_RIGHT, KEYGPIOID_LEFT, \
 	KEYGPIOID_UP, KEYGPIOID_DOWN, KEYGPIOID_ENTER, KEYGPIOID_ESC};
