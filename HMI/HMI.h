@@ -82,10 +82,12 @@ typedef struct {
 	uint8_t		none[3];
 }strategy_keyval_t;
 
-typedef int (*stategy_cmd)(int cmd, void *p_rcv,  void *arg);
+typedef int (*stategy_cmd)(void *p_rcv, int cmd, void *arg);
 
 typedef enum {
 	sycmd_reflush = 0,
+	sycmd_win_tips,
+	sycmd_win_time,
 }e_sycmd_r;
 
 typedef struct {

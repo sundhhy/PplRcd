@@ -52,3 +52,4 @@
 .\objects\windownshmi.o: HMI\format.h
 .\objects\windownshmi.o: E:\mylib\sdhLib\inc\basis/assert.h
 .\objects\windownshmi.o: HMI\chnInfoPic.h
+.\objects\windownshmi.o: .\model\ModelTime.h

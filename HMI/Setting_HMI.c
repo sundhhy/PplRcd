@@ -15,10 +15,9 @@
 #define SETTING_PICNUM		"16"
 #define SETTING_TITLE		"设置"
 
-static const char setting_hmi_code_clean[] =  {"<cpic vx0=0 vy0=32 vx1=320 vy1=240>16</>" };
 static const char setting_hmi_code_text[] =  {"<text  f=16 clr=white m=0> </>" };
-static const char setting_hmi_code_CUR[] =  {"<line > </>" };
-
+static const char setting_hmi_code_CUR[] =  {"<box bkc=blue clr=blue> </>" };
+static const char setting_hmi_code_clean[] =  {"<cpic>16</>" };
 
 
 static char *setting_titles[4][2] = {{"系统设置", "通道设置"},{"报警设置", "算法设置"},\
@@ -70,7 +69,7 @@ static int Show_more(HMI *self, int up_or_dn);
  
 static sheet* Setting_HMI_get_focus(Setting_HMI *self, int arg);
 static void Strategy_focus(Setting_HMI *self, strategy_focus_t *p_syf, int opt);
-static int Setting_Sy_cmd(int cmd, void *p_rcv, void *arg);
+static int Setting_Sy_cmd(void *p_rcv, int cmd,  void *arg);
  
 
 //============================================================================//
@@ -131,24 +130,26 @@ static int	Init_Setting_HMI(HMI *self, void *arg)
 static void Show_Setting_HMI(HMI *self)
 {
 	Setting_HMI		*cthis = SUB_PTR( self, HMI, Setting_HMI);
-	int ret = 0;
-	char		win_tips[32];
+	int						flag_win ;
+	int 					ret = 0;
+	char					win_tips[32];
 	
 	
 	if(self->flag & HMIFLAG_WIN) {
 		if((self->arg[1] == 0) &&  (cthis->sub_flag & DO_NOTHING) == 0) { 		//窗口画面传递过来的检点列位置为“确定”
 			//然后根据选择进行处理
-			ret = cthis->p_sy->key_hit_er(NULL) ;
+			flag_win = 1;
+			ret = cthis->p_sy->key_hit_er(&flag_win) ;
 			if(ret == RET_OK) {
 				SET_PG_FLAG(cthis->sub_flag, DO_NOTHING);		//下次从窗口界面切回的时候，就不处理了
-				g_p_winHmi->arg[0] = WINTYPE_CUR;
-				Win_SetTips("修改成功");
+				g_p_winHmi->arg[0] = WINTYPE_TIPS;
+				Win_content("修改成功");
 				self->switchHMI(self, g_p_winHmi);
 			} else {
 				SET_PG_FLAG(cthis->sub_flag, DO_NOTHING);		//
 				g_p_winHmi->arg[0] = WINTYPE_ERROR;
 				sprintf(win_tips,"错误码:%d", ret);
-				Win_SetTips(win_tips);
+				Win_content(win_tips);
 				self->switchHMI(self, g_p_winHmi);
 			}
 			
@@ -180,8 +181,7 @@ static void	Setting_initSheet(HMI *self)
 		
 	}
 	
-	p_exp = ExpCreate( "pic");
-	p_exp->inptSht( p_exp, (void *)setting_hmi_code_clean, g_p_cpic) ;
+
 	
 	p_exp = ExpCreate( "text");
 	cthis->p_sht_text = Sheet_alloc(p_shtctl);
@@ -191,6 +191,9 @@ static void	Setting_initSheet(HMI *self)
 	cthis->p_sht_CUR = Sheet_alloc(p_shtctl);
 	p_exp->inptSht( p_exp, (void *)setting_hmi_code_CUR, cthis->p_sht_CUR) ;
 	
+	p_exp = ExpCreate( "pic");
+	cthis->p_sht_clean = Sheet_alloc(p_shtctl);
+	p_exp->inptSht( p_exp, (void *)setting_hmi_code_clean, cthis->p_sht_clean) ;
 
 
 	g_p_sht_bkpic->cnt.data = SETTING_PICNUM;
@@ -219,6 +222,7 @@ static void	Setting_HMI_hide(HMI *self)
 	
 	Sheet_free(cthis->p_sht_text);
 	Sheet_free(cthis->p_sht_CUR);
+	Sheet_free(cthis->p_sht_clean);
 }
 
 
@@ -312,7 +316,7 @@ static sheet* Setting_HMI_get_focus(Setting_HMI *self, int arg)
 	return NULL;
 }
 
-static void Strategy_focis_text(Setting_HMI *self, strategy_focus_t *p_syf, int opt)
+static void Strategy_focus_text(Setting_HMI *self, strategy_focus_t *p_syf, int opt)
 {
 	int f_data_len = 0;
 	uint16_t	txt_xsize, txt_ysize;
@@ -321,7 +325,7 @@ static void Strategy_focis_text(Setting_HMI *self, strategy_focus_t *p_syf, int 
 	if(f_data_len <= 0)
 		return;
 	if(opt)
-		self->p_sht_text->cnt.colour = COLOUR_BLUE;
+		self->p_sht_text->cnt.colour = COLOUR_BLACK;
 	else
 		self->p_sht_text->cnt.colour = COLOUR_WHITE;
 	
@@ -342,7 +346,7 @@ static void Strategy_focus(Setting_HMI *self, strategy_focus_t *p_syf, int opt)
 	if(opt == 2) {
 		//重新刷新选择区域的值
 		
-		Strategy_focis_text(self, p_syf, 1);
+		Strategy_focus_text(self, p_syf, 1);
 //		f_data_len = self->p_sy->get_focus_data(&self->p_sht_text->cnt.data);
 //		if(f_data_len <= 0)
 //			return;
@@ -355,21 +359,25 @@ static void Strategy_focus(Setting_HMI *self, strategy_focus_t *p_syf, int opt)
 	}
 	
 	if(opt == 0) {
-		self->p_sht_CUR->cnt.colour = Stripe_clean_clr(p_syf->f_row);
+		//擦除光标
+//		self->p_sht_CUR->cnt.colour = Stripe_clean_clr(p_syf->f_row);
+		
+		self->p_sht_clean->area.x0 = self->col_vx0[p_syf->f_col] + txt_xsize * p_syf->start_byte;
+		self->p_sht_clean->area.x1 = self->p_sht_CUR->area.x0 + txt_xsize * p_syf->num_byte;
+		self->p_sht_clean->area.y0 = Stripe_vy(p_syf->f_row) ;
+		self->p_sht_clean->area.y1 = self->p_sht_clean->area.y0 + txt_ysize - 1;
+		self->p_sht_clean->p_gp->vdraw(self->p_sht_clean->p_gp, &self->p_sht_clean->cnt, &self->p_sht_clean->area);
 	} else if(opt == 1){
-		self->p_sht_CUR->cnt.colour = STRIPE_CLR_FOCUSE;
+//		self->p_sht_CUR->cnt.colour = STRIPE_CLR_FOCUSE;
+		//显示光标
+		self->p_sht_CUR->area.x0 = self->col_vx0[p_syf->f_col] + txt_xsize * p_syf->start_byte;
+		self->p_sht_CUR->area.x1 = self->p_sht_CUR->area.x0 + txt_xsize * p_syf->num_byte;
+		self->p_sht_CUR->area.y0 = Stripe_vy(p_syf->f_row) ;
+		self->p_sht_CUR->area.y1 = self->p_sht_CUR->area.y0 + txt_ysize - 1;
+		self->p_sht_CUR->p_gp->vdraw(self->p_sht_CUR->p_gp, &self->p_sht_CUR->cnt, &self->p_sht_CUR->area);
 	}
-	Strategy_focis_text(self, p_syf, opt);
-//	txt_xsize = txt_xsize >> 1;		//英文或数字是半个大小
-	self->p_sht_CUR->area.x0 = self->col_vx0[p_syf->f_col] + txt_xsize * p_syf->start_byte;
-	self->p_sht_CUR->area.x1 = self->p_sht_CUR->area.x0 + txt_xsize * p_syf->num_byte;
-	self->p_sht_CUR->area.y0 = Stripe_vy(p_syf->f_row) + txt_ysize - 2;
-	self->p_sht_CUR->area.y1 = self->p_sht_CUR->area.y0;
-	
-	self->p_sht_CUR->p_gp->vdraw(self->p_sht_CUR->p_gp, &self->p_sht_CUR->cnt, &self->p_sht_CUR->area);
-	self->p_sht_CUR->area.y0 = Stripe_vy(p_syf->f_row) + txt_ysize - 1;
-	self->p_sht_CUR->area.y1 = self->p_sht_CUR->area.y0;
-	self->p_sht_CUR->p_gp->vdraw(self->p_sht_CUR->p_gp, &self->p_sht_CUR->cnt, &self->p_sht_CUR->area);
+	Strategy_focus_text(self, p_syf, opt);
+
 	
 	//恢复颜色
 	self->p_sht_text->cnt.colour = COLOUR_WHITE;
@@ -458,11 +466,8 @@ static void	Setting_HMI_hitHandle(HMI *self, char *s_key)
 		
 		
 		if(cthis->sub_flag & FOCUS_IN_STARTEGY) {
-			//提示
-			g_p_winHmi->arg[0] = WINTYPE_CUR;
-			Win_SetTips("确认修改？");
-			self->switchHMI(self, g_p_winHmi);
-			cthis->sub_flag &= ~DO_NOTHING;
+			cthis->p_sy->key_hit_er(NULL) ;
+			
 		} else {
 			p_focus = Setting_HMI_get_focus(cthis, -1);
 			if(Show_more(self, p_focus->id) == ERR_OPT_FAILED) {
@@ -681,7 +686,7 @@ static void	Show_entry(HMI *self, strategy_t *p_st)
 }
 
 
-static int Setting_Sy_cmd(int cmd, void *p_rcv, void *arg)
+static int Setting_Sy_cmd(void *p_rcv, int cmd,  void *arg)
 {
 	HMI				*self = (HMI *)p_rcv;
 	Setting_HMI		*cthis = SUB_PTR( self, HMI, Setting_HMI);
@@ -693,8 +698,18 @@ static int Setting_Sy_cmd(int cmd, void *p_rcv, void *arg)
 			Strategy_focus(cthis, &cthis->p_sy->sf, 1);
 			Flush_LCD();
 			break;
-		
-		
+		case sycmd_win_tips:
+			Win_content("确认修改？");
+			g_p_winHmi->arg[0] = WINTYPE_TIPS;
+			self->switchHMI(self, g_p_winHmi);
+			cthis->sub_flag &= ~DO_NOTHING;
+			break;
+		case sycmd_win_time:
+			Win_content(arg);
+			g_p_winHmi->arg[0] = WINTYPE_TIME_SET;
+			self->switchHMI(self, g_p_winHmi);
+			cthis->sub_flag &= ~DO_NOTHING;
+			break;
 		
 	}
 	

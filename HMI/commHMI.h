@@ -41,8 +41,7 @@
 #define STRIPE_CLR_2			COLOUR_BLACK
 #define STRIPE_CLR_FOCUSE		COLOUR_BLUE
 
-#define OP_ADD				0
-#define OP_SUB				1
+
  //------------------------------------------------------------------------------
 // typedef
 //------------------------------------------------------------------------------
@@ -123,7 +122,6 @@ extern int Stripe_vy(int row) ;
 
 extern void VRAM_init(void);
 extern void *VRAM_alloc(int bytes);
-extern void Str_Calculations(char *p_str, int len, int hex, int op, int val, int rangel, int rangeh);
 
-extern void Win_SetTips(char *p_tips);
+extern void Win_content(char *p_tips);
 #endif

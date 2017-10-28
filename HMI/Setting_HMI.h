@@ -35,6 +35,7 @@ CLASS(Setting_HMI)
 	strategy_t	*p_sy;
 	sheet	*p_sht_text;
 	sheet	*p_sht_CUR;			//在条纹中显示的光标
+	sheet	*p_sht_clean;			//在条纹中显示的光标
 	uint8_t	entry_start_row;
 	uint8_t	sub_flag;		//是否有上下翻页图标的标志
 //	uint8_t	f_row;

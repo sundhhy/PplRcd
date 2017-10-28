@@ -204,7 +204,7 @@ static int Cns_key_up(void *arg)
 				
 				Str_Calculations(p, dl,0, OP_ADD, 1, 0, NUM_CHANNEL);
 				cur_set_chn = atoi(p);
-				g_chn_strategy.cmd_hdl(sycmd_reflush, g_chn_strategy.p_cmd_rcv, NULL);
+				g_chn_strategy.cmd_hdl( g_chn_strategy.p_cmd_rcv, sycmd_reflush, NULL);
 				break;
 			default:
 				ret = -1;
@@ -253,7 +253,7 @@ static int Cns_key_dn(void *arg)
 				//时间参数修改
 				Str_Calculations(p, dl,0, OP_SUB, 1, 0, NUM_CHANNEL);
 				cur_set_chn = atoi(p);
-				g_chn_strategy.cmd_hdl(sycmd_reflush, g_chn_strategy.p_cmd_rcv, NULL);
+				g_chn_strategy.cmd_hdl(g_chn_strategy.p_cmd_rcv, sycmd_reflush, NULL);
 				break;
 			default:
 				ret = -1;

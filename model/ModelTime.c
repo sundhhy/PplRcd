@@ -3,7 +3,7 @@
 #include "utils/rtc_pcf8563.h"
 #include "mem/CiiMem.h"
 #include "sdhDef.h"
-
+#include "system.h"
 //#include "utils/rtc.h"
 //============================================================================//
 //            G L O B A L   D E F I N I T I O N S                             //
@@ -95,6 +95,92 @@ int MdlTime_getData(  Model *self, IN int aux, void *arg)
 //	memcpy( self->coreData, arg, self->crDt_len);
 	self->notify( self);
 	return RET_OK;
+}
+//"YY/MM/DD HH:MM:SS"
+void MdlTime_text_modify(char	*p_time_text, int idx, int op)
+{
+	switch(idx) {
+		case 0:		//年
+		case 1:
+			Str_Calculations(p_time_text + idx, 1, 0, op, 1, 0, 9);
+			break;
+		
+		//月
+		case 3:
+			Str_Calculations(p_time_text + idx, 1, 0, op, 1, 0, 1);
+			break;
+		case 4:
+			if(p_time_text[3] == '1')
+				Str_Calculations(p_time_text + idx, 1, 0, op, 1, 0, 2);
+			else 
+				Str_Calculations(p_time_text + idx, 1, 0, op, 1, 0, 9);
+			break;
+			//日
+		case 6:
+			Str_Calculations(p_time_text + idx, 1, 0, op, 1, 0, 3);
+			break;
+		case 7:
+			Str_Calculations(p_time_text + idx, 1, 0, op, 1, 0, 9);
+			break;
+		//时
+		case 9:
+			Str_Calculations(p_time_text + idx, 1, 0, op, 1, 0, 2);
+			break;
+		case 10:
+			Str_Calculations(p_time_text + idx, 1, 0, op, 1, 0, 9);
+			break;
+		//分
+		case 12:
+			Str_Calculations(p_time_text + idx, 1, 0, op, 1, 0, 5);
+			break;
+		case 13:
+			Str_Calculations(p_time_text + idx, 1, 0, op, 1, 0, 9);
+			break;
+		//秒
+		case 15:
+			Str_Calculations(p_time_text + idx, 1, 0, op, 1, 0, 5);
+			break;
+		case 16:
+			Str_Calculations(p_time_text + idx, 1, 0, op, 1, 0, 9);
+			break;
+		default:
+			break;
+	}
+	
+	
+}
+
+//对时间显示的字符上移动
+//返回新的位置
+int MdlTime_text_iteartor(char	*p_time_text, int idx, int director)
+{
+	int	new_idx = 0;
+	if(director == 0) {
+		//左移
+		if(idx == 0)
+			new_idx = 16;
+		
+		new_idx = idx - 1;
+		//跳过非数字字符
+		while(p_time_text[new_idx] > '9' || p_time_text[new_idx] < '0')
+			new_idx --;
+		
+		
+	} else {
+		//右移
+		if(idx == 16)
+			new_idx = 0;
+		
+		new_idx = idx + 1;
+		//跳过非数字字符
+		while(p_time_text[new_idx] > '9' || p_time_text[new_idx] < '0')
+			new_idx ++;
+	
+		
+	}
+	
+	return new_idx;
+	
 }
 CTOR( ModelTime)
 SUPER_CTOR( Model);

@@ -123,10 +123,13 @@ static int Sys_get_focusdata(void *pp_data, strategy_focus_t *p_in_syf)
 	
 	if(p_in_syf)
 		p_syf = p_in_syf;
-	ret = p_syf->num_byte;
 	
-	if(p_syf->f_row < 14)
+	
+	if(p_syf->f_row < 14) {
 		*pp_vram = arr_p_vram[p_syf->f_row] + p_syf->start_byte;
+		p_syf->num_byte = strlen(arr_p_vram[p_syf->f_row]);
+		ret = p_syf->num_byte;
+	}
 	else 
 		ret = -1;
 	
@@ -139,137 +142,133 @@ static int Sys_get_focusdata(void *pp_data, strategy_focus_t *p_in_syf)
 
 static int Sys_key_up(void *arg)
 {
-	strategy_keyval_t	kt = {SY_KEYTYPE_HIT};
-	strategy_focus_t *p_syf = &g_sys_strategy.sf;
-	char			*p;
-	int				dl;
+//	strategy_keyval_t	kt = {SY_KEYTYPE_HIT};
+//	strategy_focus_t *p_syf = &g_sys_strategy.sf;
+//	char			*p;
+//	int				dl;
 	int 			ret = RET_OK;
 //	uint8_t		rl, rh;
-	if(arg) {
-		kt.key_type = ((strategy_keyval_t *)arg)->key_type;
-		
-	}
-	
-	
-	
-	
-	if(kt.key_type == SY_KEYTYPE_HIT) {
-		dl = Sys_get_focusdata(&p, NULL);
-		if(dl < 0)
-			return -1;
-		
-		
-		switch(p_syf->f_row) {
-			case 0:
-				//时间参数修改
-				
-				Str_Calculations(p, dl,0, OP_ADD, 1, 0, 0);
-				break;
-			default:
-				ret = -1;
-				break;
-			
-		}
-		
-	} else if(kt.key_type == SY_KEYTYPE_DHIT) {
-		
-		ret = -1;
-	}
-	
+//	if(arg) {
+//		kt.key_type = ((strategy_keyval_t *)arg)->key_type;
+//		
+//	}
+//	
+//	
+//	
+//	
+//	if(kt.key_type == SY_KEYTYPE_HIT) {
+//		dl = Sys_get_focusdata(&p, NULL);
+//		if(dl < 0)
+//			return -1;
+//		
+//		
+//		switch(p_syf->f_row) {
+//			case 0:
+//				//时间参数修改
+//				
+//				Str_Calculations(p, dl,0, OP_ADD, 1, 0, 0);
+//				break;
+//			default:
+//				ret = -1;
+//				break;
+//			
+//		}
+//		
+//	} else if(kt.key_type == SY_KEYTYPE_DHIT) {
+//		
+//		ret = -1;
+//	}
+	ret = -1;
 	return ret;
 }
 
 static int Sys_key_dn(void *arg)
 {
 	
-	strategy_keyval_t	kt = {SY_KEYTYPE_HIT};
-	strategy_focus_t *p_syf = &g_sys_strategy.sf;
-	char			*p;
-	int				dl;
+//	strategy_keyval_t	kt = {SY_KEYTYPE_HIT};
+//	strategy_focus_t *p_syf = &g_sys_strategy.sf;
+//	char			*p;
+//	int				dl;
 	int 			ret = RET_OK;
 //	uint8_t		rl, rh;
-	if(arg) {
-		kt.key_type = ((strategy_keyval_t *)arg)->key_type;
-		
-	}
+//	if(arg) {
+//		kt.key_type = ((strategy_keyval_t *)arg)->key_type;
+//		
+//	}
 	
 	
 	
 	
-	if(kt.key_type == SY_KEYTYPE_HIT) {
-		dl = Sys_get_focusdata(&p, NULL);
-		if(dl < 0)
-			return -1;
-		
-		
-		switch(p_syf->f_row) {
-			case 0:
-				//时间参数修改
-				
-				Str_Calculations(p, dl,0, OP_SUB, 1, 0, 0);
-				break;
-			default:
-				ret = -1;
-				break;
-			
-		}
-		
-	} else if(kt.key_type == SY_KEYTYPE_DHIT) {
-		
-		ret = -1;
-	}
-	
+//	if(kt.key_type == SY_KEYTYPE_HIT) {
+//		dl = Sys_get_focusdata(&p, NULL);
+//		if(dl < 0)
+//			return -1;
+//		
+//		
+//		switch(p_syf->f_row) {
+//			case 0:
+//				//时间参数修改
+//				
+//				Str_Calculations(p, dl,0, OP_SUB, 1, 0, 0);
+//				break;
+//			default:
+//				ret = -1;
+//				break;
+//			
+//		}
+//		
+//	} else if(kt.key_type == SY_KEYTYPE_DHIT) {
+//		
+//		ret = -1;
+//	}
+	ret = -1;
 	return ret;
 }
 
 static int Sys_key_rt(void *arg)
 {
-	strategy_focus_t *p_syf = &g_sys_strategy.sf;
+//	strategy_focus_t *p_syf = &g_sys_strategy.sf;
 	int ret = RET_OK;
-	switch(p_syf->f_row) {
-		case 0:
-			g_sys_strategy.sf.num_byte = 1;
-			if(p_syf->start_byte == 17)
-				p_syf->start_byte = 0;
-			else {
-				p_syf->start_byte += 1;
-//				if(arr_p_vram[0][p_syf->start_byte] > '9' || arr_p_vram[0][p_syf->start_byte] < '0') {
-//					
-//					p_syf->start_byte ++;
-//				}
-			}
-			
-			break;
-		default:
-			ret = ERR_OPT_FAILED;
-			break;
-		
-		
-	}
-	
+//	switch(p_syf->f_row) {
+//		case 0:
+//			g_sys_strategy.sf.num_byte = 1;
+//			if(p_syf->start_byte == 17)
+//				p_syf->start_byte = 0;
+//			else {
+//				p_syf->start_byte += 1;
+//			}
+//			
+//			break;
+//		default:
+//			ret = ERR_OPT_FAILED;
+//			break;
+//		
+//		
+//	}
+	ret = -1;
 	return ret;
 }
 
 static int Sys_key_lt(void *arg)
 {
-	strategy_focus_t *p_syf = &g_sys_strategy.sf;
+//	strategy_focus_t *p_syf = &g_sys_strategy.sf;
 	int ret = RET_OK;
-	switch(p_syf->f_row) {
-		case 0:
-			g_sys_strategy.sf.num_byte = 1;
-			if(p_syf->start_byte == 0)
-				p_syf->start_byte = 17;
-			else {
-				p_syf->start_byte -= 1;
-			}
-			break;
-		default:
-			ret = ERR_OPT_FAILED;
-			break;
-		
-		
-	}
-	
+//	switch(p_syf->f_row) {
+//		case 0:
+//			g_sys_strategy.sf.num_byte = 1;
+//			if(p_syf->start_byte == 0)
+//				p_syf->start_byte = 17;
+//			else {
+//				p_syf->start_byte -= 1;
+//			}
+//			break;
+//		default:
+//			ret = ERR_OPT_FAILED;
+//			break;
+//		
+//		
+//	}
+	ret = -1;
 	return ret;
 }
 
@@ -279,16 +278,45 @@ static int Sys_key_er(void *arg)
 {
 	//将所有的配置项写入模型
 
+	strategy_focus_t 	*p_syf = &g_sys_strategy.sf;
+	Model							*model;
+	int								ret = RET_OK;
+	int								flag = 0;
 	
-	Model	*model;
+	if(arg) {
+		flag = *((int *)arg);
+		
+	}
+	
+	switch(p_syf->f_row) {
+	case 0:
+		if(flag == 0 ) {
+			
+			g_sys_strategy.cmd_hdl(g_sys_strategy.p_cmd_rcv, sycmd_win_time, arr_p_vram[0]);
+		} else {
+				model = ModelCreate("time");
+				ret = model->set_by_string(model, 1, arr_p_vram[0]);
+			
+		}
+		
+//		g_sys_strategy.sf.num_byte = 1;
+//		if(p_syf->start_byte == 0)
+//			p_syf->start_byte = 17;
+//		else {
+//			p_syf->start_byte -= 1;
+//		}
+		break;
+	default:
+		ret = ERR_OPT_FAILED;
+		break;
 	
 	
+}
 	
-	model = ModelCreate("time");
-	model->set_by_string(model, 1, arr_p_vram[0]);
+
 	
 	
-	return RET_OK;
+	return ret;
 }
 
 

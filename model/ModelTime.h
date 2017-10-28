@@ -31,8 +31,8 @@ CLASS( ModelTime)
 // function prototypes
 //------------------------------------------------------------------------------
 
-
-
+extern int MdlTime_text_iteartor(char	*p_time_text, int idx, int director);
+extern void MdlTime_text_modify(char	*p_time_text, int idx, int op);
 
 
 

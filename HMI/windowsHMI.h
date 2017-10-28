@@ -14,22 +14,23 @@
 //------------------------------------------------------------------------------
 // const defines
 //------------------------------------------------------------------------------
-#define	WINTYPE_CUR						0			//提示窗口
+#define	WINTYPE_TIPS					0			//提示窗口
 #define	WINTYPE_ALARM					1			
 #define	WINTYPE_ERROR					2	
 #define	WINTYPE_MUS_BND				3
-#define	WINTYPE_MUS_UNTIL			3			//单位复选框
+#define	WINTYPE_MUS_UNTIL			4			//单位复选框
+#define	WINTYPE_TIME_SET			5			//	
  //------------------------------------------------------------------------------
 // typedef
 //------------------------------------------------------------------------------
 CLASS(winHmi)
 {
 	EXTENDS(HMI);
-	
 	sheet  		*p_sht_bkpic;
 	sheet  		*p_sht_title;
 	sheet  		*p_sht_tips;
 	sheet  		*p_sht_cur;
+	
 
 //	sheet  		*arr_p_sht_data[NUM_CHANNEL];
 //	sheet  			**pp_shts;
