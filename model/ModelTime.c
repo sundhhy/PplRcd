@@ -102,46 +102,46 @@ void MdlTime_text_modify(char	*p_time_text, int idx, int op)
 	switch(idx) {
 		case 0:		//年
 		case 1:
-			Str_Calculations(p_time_text + idx, 1, 0, op, 1, 0, 9);
+			Str_Calculations(p_time_text + idx, 1, op, 1, 0, 9);
 			break;
 		
 		//月
 		case 3:
-			Str_Calculations(p_time_text + idx, 1, 0, op, 1, 0, 1);
+			Str_Calculations(p_time_text + idx, 1,  op, 1, 0, 1);
 			break;
 		case 4:
 			if(p_time_text[3] == '1')
-				Str_Calculations(p_time_text + idx, 1, 0, op, 1, 0, 2);
+				Str_Calculations(p_time_text + idx, 1,  op, 1, 0, 2);
 			else 
-				Str_Calculations(p_time_text + idx, 1, 0, op, 1, 0, 9);
+				Str_Calculations(p_time_text + idx, 1,  op, 1, 0, 9);
 			break;
 			//日
 		case 6:
-			Str_Calculations(p_time_text + idx, 1, 0, op, 1, 0, 3);
+			Str_Calculations(p_time_text + idx, 1,  op, 1, 0, 3);
 			break;
 		case 7:
-			Str_Calculations(p_time_text + idx, 1, 0, op, 1, 0, 9);
+			Str_Calculations(p_time_text + idx, 1,  op, 1, 0, 9);
 			break;
 		//时
 		case 9:
-			Str_Calculations(p_time_text + idx, 1, 0, op, 1, 0, 2);
+			Str_Calculations(p_time_text + idx, 1,  op, 1, 0, 2);
 			break;
 		case 10:
-			Str_Calculations(p_time_text + idx, 1, 0, op, 1, 0, 9);
+			Str_Calculations(p_time_text + idx, 1,  op, 1, 0, 9);
 			break;
 		//分
 		case 12:
-			Str_Calculations(p_time_text + idx, 1, 0, op, 1, 0, 5);
+			Str_Calculations(p_time_text + idx, 1,  op, 1, 0, 5);
 			break;
 		case 13:
-			Str_Calculations(p_time_text + idx, 1, 0, op, 1, 0, 9);
+			Str_Calculations(p_time_text + idx, 1,  op, 1, 0, 9);
 			break;
 		//秒
 		case 15:
-			Str_Calculations(p_time_text + idx, 1, 0, op, 1, 0, 5);
+			Str_Calculations(p_time_text + idx, 1,  op, 1, 0, 5);
 			break;
 		case 16:
-			Str_Calculations(p_time_text + idx, 1, 0, op, 1, 0, 9);
+			Str_Calculations(p_time_text + idx, 1,  op, 1, 0, 9);
 			break;
 		default:
 			break;
@@ -159,8 +159,8 @@ int MdlTime_text_iteartor(char	*p_time_text, int idx, int director)
 		//左移
 		if(idx == 0)
 			new_idx = 16;
-		
-		new_idx = idx - 1;
+		else
+			new_idx = idx - 1;
 		//跳过非数字字符
 		while(p_time_text[new_idx] > '9' || p_time_text[new_idx] < '0')
 			new_idx --;
@@ -168,10 +168,10 @@ int MdlTime_text_iteartor(char	*p_time_text, int idx, int director)
 		
 	} else {
 		//右移
-		if(idx == 16)
+		if(idx >= 16)
 			new_idx = 0;
-		
-		new_idx = idx + 1;
+		else
+			new_idx = idx + 1;
 		//跳过非数字字符
 		while(p_time_text[new_idx] > '9' || p_time_text[new_idx] < '0')
 			new_idx ++;

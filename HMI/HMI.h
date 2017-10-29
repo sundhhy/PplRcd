@@ -88,6 +88,7 @@ typedef enum {
 	sycmd_reflush = 0,
 	sycmd_win_tips,
 	sycmd_win_time,
+	wincmd_commit,
 }e_sycmd_r;
 
 typedef struct {
@@ -103,6 +104,8 @@ typedef struct {
 	int	(*key_hit_rt)(void	*arg);
 	int	(*key_hit_er)(void	*arg);
 	int	(*get_focus_data)(void *pp_data,  strategy_focus_t *p_in_syf);		//成功返回大于0，失败返回-1
+	int	(*commit)(void	*arg);
+
 	strategy_focus_t	sf;
 	void				*p_cmd_rcv;
 	stategy_cmd			cmd_hdl;

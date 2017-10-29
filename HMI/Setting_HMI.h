@@ -21,7 +21,6 @@
 
 
 #define FOCUS_IN_STARTEGY		0x10
-#define DO_NOTHING				0x20
 
 
 #define SET_PG_FLAG(fg, wt)	( fg = fg | wt)

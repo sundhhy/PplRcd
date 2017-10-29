@@ -23,7 +23,7 @@ static int Sys_key_rt(void *arg);
 static int Sys_key_er(void *arg);
 static int Sys_init(void *arg);
 static int Sys_get_focusdata(void *pp_data,  strategy_focus_t *p_in_syf);
-
+static int Sys_commit(void *arg);
 strategy_t	g_sys_strategy = {
 	SysStrategy_entry,
 	Sys_init,
@@ -33,6 +33,7 @@ strategy_t	g_sys_strategy = {
 	Sys_key_rt,
 	Sys_key_er,
 	Sys_get_focusdata,
+	Sys_commit,
 
 };
 //------------------------------------------------------------------------------
@@ -78,6 +79,7 @@ static int SysStrategy_entry(int row, int col, void *pp_text)
 {
 	char 	**pp = (char **)pp_text;
 	Model	*model;
+	strategy_focus_t *p_syf = &g_sys_strategy.sf;
 	if(col == 0) {
 		if(row > 13)
 			return 0;
@@ -88,6 +90,7 @@ static int SysStrategy_entry(int row, int col, void *pp_text)
 			case 0:
 				model = ModelCreate("time");
 				*pp = model->to_string(model, 1, arr_p_vram[0]);
+				p_syf->num_byte = strlen(arr_p_vram[0]);
 				return strlen(*pp);
 			
 			default: break;
@@ -110,7 +113,7 @@ static int Sys_init(void *arg)
 	for(i = 0; i < 14; i++) {
 		
 		arr_p_vram[i] = VRAM_alloc(48);
-		
+		memset(arr_p_vram, 0, 48);
 	}
 	
 	return RET_OK;
@@ -313,6 +316,36 @@ static int Sys_key_er(void *arg)
 	
 }
 	
+
+	
+	
+	return ret;
+}
+
+static int Sys_commit(void *arg)
+{
+	//将所有的配置项写入模型
+
+	strategy_focus_t 	*p_syf = &g_sys_strategy.sf;
+	Model							*model;
+	int								ret = RET_OK;
+	
+	
+	
+	switch(p_syf->f_row) {
+	case 0:
+
+		model = ModelCreate("time");
+		ret = model->set_by_string(model, 1, arr_p_vram[0]);
+			
+		break;
+	default:
+		ret = ERR_OPT_FAILED;
+		break;
+	
+	
+	
+	}
 
 	
 	

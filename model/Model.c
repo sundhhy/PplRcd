@@ -99,10 +99,41 @@ static void DoUpdate(void **x, void *cl)
 
 void Pe_float(int data, int prec, char *str)
 {
-	if(prec == 1)
-		sprintf(str, "%d.%d", data/10, data%10);
-	else if(prec == 2) 
-		sprintf(str, "%d.%02d", data/100, data%100);
+	int		d1, d2;
+	int		sign = 1;
+	
+	if(data < 0)
+		sign = -1;
+	
+	if(prec == 1) {
+		d1 = data/10;
+		d2 = data%10;
+		
+		//显示数字的符号时，把符号作为整体的符号来显示
+		//去除每个部分的符号，
+		d1 = d1 * sign;
+		d2 = d2 * sign;
+		if(sign > 0)
+			sprintf(str, "%d.%d", d1, d2);
+		else 
+			sprintf(str, "-%d.%d", d1, d2);
+		
+	}
+	else if(prec == 2)  {
+		d1 = data/100;
+		d2 = data%100;
+		
+		//显示数字的符号时，把符号作为整体的符号来显示
+		//去除每个部分的符号，
+		d1 = d1 * sign;
+		d2 = d2 * sign;
+		if(sign > 0)
+			sprintf(str, "%d.%02d", d1, d2);
+		else 
+			sprintf(str, "-%d.%02d", d1, d2);
+		
+	}
+	
 	
 }
 

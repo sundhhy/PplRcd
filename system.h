@@ -27,7 +27,7 @@
 //------------------------------------------------------------------------------
 // function prototypes
 //------------------------------------------------------------------------------
-extern void Str_Calculations(char *p_str, int len, int hex, int op, int val, int rangel, int rangeh);
-
+extern void Str_Calculations(char *p_str, int len,  int op, int val, int rangel, int rangeh);
+extern int	Operate_in_tange(int	arg1, int op, int arg2, int rangel, int rangeh);
 
 #endif

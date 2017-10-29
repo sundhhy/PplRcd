@@ -51,7 +51,7 @@ static int MdlChn_getData(  Model *self, IN int aux, void *arg) ;
 static char* MdlChn_to_string( Model *self, IN int aux, void *arg);
 static int  MdlChn_to_percentage( Model *self, void *arg);
 static int MdlChn_set_by_string( Model *self, IN int aux, void *arg);
-
+static int MdlChn_modify_sconf(Model *self, IN int aux, char *s, int op, int val);
 static void Read_default_conf(chn_info_t *p_ci, int chnnum);
 static void Pe_singnaltype(e_signal_t sgt, char *str);
 static int Str_to_data(char *str, int prec);
@@ -81,6 +81,8 @@ FUNCTION_SETTING( Model.init, MdlChn_init);
 FUNCTION_SETTING( Model.getMdlData, MdlChn_getData);
 FUNCTION_SETTING( Model.to_string, MdlChn_to_string);
 FUNCTION_SETTING( Model.to_percentage, MdlChn_to_percentage);
+FUNCTION_SETTING( Model.modify_str_conf, MdlChn_modify_sconf);
+
 FUNCTION_SETTING( Model.set_by_string, MdlChn_set_by_string);
 
 END_CTOR
@@ -205,21 +207,29 @@ static char* MdlChn_to_string( Model *self, IN int aux, void *arg)
 		case AUX_SIGNALTYPE:
 			Pe_singnaltype((e_signal_t)cthis->chni.signal_type, (char *)arg);
 			break;
-		case AUX_CHN_lower_limit:
+		case chnaux_record_mb:
+			sprintf(arg, "%d M", cthis->chni.MB);
+			break;
+		case chnaux_filter_ts:
+			sprintf(arg, "%d S", cthis->chni.filter_time_s);
+			break;
+		case chnaux_lower_limit:
 			Pe_float(cthis->chni.lower_limit, 1, (char *)arg);
 			break;
-		case AUX_CHN_upper_limit:
+		case chnaux_upper_limit:
 			Pe_float(cthis->chni.upper_limit, 1, (char *)arg);
 			break;
-		case AUX_CHN_small_signal:
+		case chnaux_small_signal:
 			Pe_float(cthis->chni.small_signal, 1, (char *)arg);
 			strcat((char *)arg, " %");
 			break;
-		case AUX_CHN_K:
-			Pe_frefix_float(cthis->chni.k, 2, "K:",(char *)arg);
+		case chnaux_k:
+//			Pe_frefix_float(cthis->chni.k, 2, "K:",(char *)arg);
+			Pe_float(cthis->chni.k, 2, (char *)arg);
 			break;
-		case AUX_CHN_B:
-			Pe_frefix_float(cthis->chni.b, 1, "B:", (char *)arg);
+		case chnaux_b:
+//			Pe_frefix_float(cthis->chni.b, 1, "B:", (char *)arg);
+			Pe_float(cthis->chni.b, 1, (char *)arg);
 			break;	
 		
 		default:
@@ -229,7 +239,52 @@ static char* MdlChn_to_string( Model *self, IN int aux, void *arg)
 	}
 	return NULL;
 }
-
+static int MdlChn_modify_sconf(Model *self, IN int aux, char *s, int op, int val)
+{
+	Model_chn		*cthis = SUB_PTR( self, Model, Model_chn);
+	switch(aux) {
+		case AUX_UNIT:
+			cthis->chni.unit = Operate_in_tange(cthis->chni.unit, op, 1, 0, eu_max - 1);
+			self->to_string(self, AUX_UNIT, s);
+			break;
+		case AUX_SIGNALTYPE:
+			cthis->chni.signal_type = Operate_in_tange(cthis->chni.signal_type, op, 1, 0, es_max - 1);
+			self->to_string(self, AUX_SIGNALTYPE, s);
+			break;
+		case chnaux_record_mb:
+			cthis->chni.MB = Operate_in_tange(cthis->chni.MB, op, val, 0, 99);
+			
+			sprintf(s, "%d M", cthis->chni.MB);
+			break;
+		case chnaux_filter_ts:
+			cthis->chni.filter_time_s = Operate_in_tange(cthis->chni.filter_time_s, op, val, 0, 99);
+			
+			sprintf(s, "%d S", cthis->chni.filter_time_s);
+			break;
+		case chnaux_lower_limit:
+			cthis->chni.lower_limit = Operate_in_tange(cthis->chni.lower_limit, op, val, -999999, 999999);
+			self->to_string(self, chnaux_lower_limit, s);
+			break;
+		case chnaux_upper_limit:
+			cthis->chni.upper_limit = Operate_in_tange(cthis->chni.upper_limit, op, val, -999999, 999999);
+			self->to_string(self, chnaux_upper_limit, s);
+			break;
+		case chnaux_small_signal:
+			cthis->chni.small_signal = Operate_in_tange(cthis->chni.small_signal, op, val, 0, 100);
+			self->to_string(self, chnaux_small_signal, s);
+			break;
+		case chnaux_k:
+			cthis->chni.k = Operate_in_tange(cthis->chni.k, op, val, -100, 100);
+			self->to_string(self, chnaux_k, s);
+			break;
+		case chnaux_b:
+			cthis->chni.b = Operate_in_tange(cthis->chni.b, op, val, -100, 100);
+			self->to_string(self, chnaux_b, s);
+			break;
+		
+	}
+	return RET_OK;
+}
 static int MdlChn_set_by_string(Model *self, IN int aux, void *arg)
 {
 //	Model_chn		*cthis = SUB_PTR( self, Model, Model_chn);
@@ -290,20 +345,20 @@ static int MdlChn_set_by_string(Model *self, IN int aux, void *arg)
 //		case AUX_SIGNALTYPE:
 //			Pe_singnaltype((e_signal_t)cthis->chni.signal_type, (char *)arg);
 //			break;
-//		case AUX_CHN_lower_limit:
+//		case chnaux_lower_limit:
 //			Pe_float(cthis->chni.lower_limit, 1, (char *)arg);
 //			break;
-//		case AUX_CHN_upper_limit:
+//		case chnaux_upper_limit:
 //			Pe_float(cthis->chni.upper_limit, 1, (char *)arg);
 //			break;
-//		case AUX_CHN_small_signal:
+//		case chnauxsmall_signal:
 //			Pe_float(cthis->chni.small_signal, 1, (char *)arg);
 //			strcat((char *)arg, " %");
 //			break;
-//		case AUX_CHN_K:
+//		case chnaux_k:
 //			Pe_float(cthis->chni.k, 2, (char *)arg);
 //			break;
-//		case AUX_CHN_B:
+//		case chnaux_b:
 //			Pe_float(cthis->chni.k, 1, (char *)arg);
 //			break;	
 //		
@@ -313,6 +368,8 @@ static int MdlChn_set_by_string(Model *self, IN int aux, void *arg)
 //		
 //	}
 //	
+
+	return 0;
 	
 }
 

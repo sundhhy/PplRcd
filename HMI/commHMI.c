@@ -144,29 +144,44 @@ int Stripe_vy(int row)
 	return y;
 }
 
+int	Operate_in_tange(int	arg1, int op, int arg2, int rangel, int rangeh)
+{
+	int	ret = 0;
+	
+	if(op == OP_ADD) {
+		ret = arg1 + arg2;
+		if(ret > rangeh) 
+			ret = rangel;
+		
+	} else if(op == OP_SUB) {
+		ret = arg1 - arg2;
+		if(ret < rangel)
+			ret = rangeh;
+	}
+	return ret;
+}
+
 //对数字字符串运算
 //不会对字符串中的值进行合法判断
 //暂时支持最大999
-void Str_Calculations(char *p_str, int len, int hex, int op, int val, int rangel, int rangeh)
+void Str_Calculations(char *p_str, int len, int op, int val, int rangel, int rangeh)
 {
 	
 	int dig = 0;
 	int i;
 	short w[5] = {1, 10, 100, 1000, 10000};	
-	char	buf[6] = {0};;
-	if(hex) {
-		//16进制
+	char	buf[6] = {0};
+
 		
+//	for(i = 0; i < len; i ++) {
+//		
+//		dig += (p_str[i] - '0') * w[len - i - 1];
+//		
+//	}
+	
+	dig = atoi(p_str);
 		
-	} else {
-		
-		for(i = 0; i < len; i ++) {
-			
-			dig += (p_str[i] - '0') * w[len - i - 1];
-			
-		}
-		
-	}
+	
 	//未指定范围
 	if(rangeh == 0 && rangel == 0) {
 		rangel = 0;

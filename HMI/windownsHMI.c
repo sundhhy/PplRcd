@@ -47,7 +47,7 @@ static ro_char winHim_code_title[] =  {"<text m=1 f=16 clr=white vx0=88 vy0=62 >
 static ro_char winHim_code_tips[] =  {"<text m=1 f=16 clr=white vx0=88 vy0=80 > </>" };
 static ro_char winhmi_code_cur[] ={ "<icon vx0=96 vy0=160 xn=5 yn=1 n=0>19</>" };		//在按钮或者多选条目中的选中标识
 
-#define CONTENT_VX0						80									//内容区
+#define CONTENT_VX0						88									//内容区
 #define CONTENT_VY0						80
 #define POPUP_BU_VX0				96
 #define POPUP_BU_VY0				160
@@ -66,7 +66,7 @@ static char		*win_content;
 //------------------------------------------------------------------------------
 static int	Init_winHmi( HMI *self, void *arg);
 static void	winHmiShow( HMI *self);
-static void	MainHitHandle( HMI *self, char *s);
+static void	WinHmi_hit( HMI *self, char *s);
 static void winHmiHide( HMI *self );
 static void MaininitSheet( HMI *self );
 
@@ -114,6 +114,21 @@ void Win_content(char *p_tips)
 	
 }
 
+//int WinHmi_cmd(void *p_rcv, int cmd,  void *arg)
+//{
+//	HMI			*self = (HMI *)p_rcv;
+//	winHmi		*cthis = SUB_PTR( self, HMI, winHmi);
+//	
+//	switch(cmd) {
+//		case sycmd_reflush:
+//			self->show(self);
+//			break;
+//		
+//		default:break;
+//	}
+//	
+//}
+
 
 
 CTOR(winHmi)
@@ -123,7 +138,7 @@ FUNCTION_SETTING(HMI.hide, winHmiHide);
 FUNCTION_SETTING(HMI.initSheet, MaininitSheet);
 
 FUNCTION_SETTING(HMI.show, winHmiShow);
-FUNCTION_SETTING(HMI.hitHandle, MainHitHandle);
+FUNCTION_SETTING(HMI.hitHandle, WinHmi_hit);
 
 FUNCTION_SETTING(HMI.init_focus, winHmi_InitFouse);
 FUNCTION_SETTING(HMI.clear_focus, winHmi_ClearFocuse);
@@ -192,7 +207,7 @@ static void	winHmiShow(HMI *self )
 {
 	winHmi			*cthis = SUB_PTR( self, HMI, winHmi);
 	short	 len;
-	g_p_lastHmi->flag |= HMIFLAG_WIN;
+	
 	Sheet_refresh(cthis->p_sht_bkpic);
 	if(self->arg[0] < WINTYPE_MUS_BND) {
 		//简要提示，要考虑分行显示
@@ -212,7 +227,7 @@ static void	winHmiShow(HMI *self )
 		
 	}
 	
-	self->show_focus(self, 0xff, 0xff);
+	self->show_focus(self, cthis->f_row, cthis->f_col);
 }
 
 
@@ -256,12 +271,12 @@ static void winHmi_ShowFocuse( HMI *self, uint8_t fouse_row, uint8_t fouse_col)
 	}
 }
 
-static void	MainHitHandle(HMI *self, char *s)
+static void	WinHmi_hit(HMI *self, char *s)
 {
 	winHmi		*cthis = SUB_PTR( self, HMI, winHmi);
-	HMI			*p_other;
+	HMI			*p_src_hmi;
 
-//	uint8_t		focusRow = cthis->f_row;
+	uint8_t		focusRow = cthis->f_row;
 	uint8_t		focusCol = cthis->f_col;
 	char			chgFouse = 0;
 	
@@ -293,25 +308,27 @@ static void	MainHitHandle(HMI *self, char *s)
 		}
 	}
 	
-	if( chgFouse)
-	{
-			
-		self->clear_focus(self, focusCol, focusCol);
-		self->show_focus(self, 0xff, 0xff);
-		
-	}
 	
 	if( !strcmp( s, HMIKEY_ENTER))
 	{
 		if((cthis->win_type == WINTYPE_TIME_SET) && cthis->f_row == 0) {
-			
+			//时间设置窗口有2行
+			//确认时，切换到第二行
 			cthis->f_row = 1;
+			cthis->f_col = 0;
+			chgFouse = 1;
+		} else if((self->arg[1] &WINFLAG_RETURN) ){
+			
+			p_src_hmi = g_p_lastHmi;
+			p_src_hmi->flag |= HMIFLAG_WIN;
+			self->switchBack(self);
+			p_src_hmi->flag &= ~HMIFLAG_WIN;
+			
 		} else {
 			g_p_lastHmi->arg[0] = cthis->f_row;
 			g_p_lastHmi->arg[1] = cthis->f_col;
-			p_other = g_p_lastHmi;
-			self->switchBack(self);
-			p_other->flag &= ~HMIFLAG_WIN;
+
+			cthis->cmd_hdl(cthis->p_cmd_rcv, wincmd_commit, NULL);
 		}
 		
 	}
@@ -321,6 +338,15 @@ static void	MainHitHandle(HMI *self, char *s)
 		g_p_lastHmi->arg[0] = 0xff;
 		g_p_lastHmi->arg[1] = 0xff;
 		self->switchBack(self);
+		
+	}
+	
+	
+	if( chgFouse)
+	{
+			
+		self->clear_focus(self, focusRow, focusCol);
+		self->show_focus(self, cthis->f_row, cthis->f_col);
 		
 	}
 	
@@ -455,6 +481,8 @@ static void Popup_hide(winHmi *cthis)
 	
 }
 
+
+
 //提示窗口:只有确定与取消两个按键
 static void PopUp_focuse(winHmi *cthis, int	f_col, int opt) 
 {
@@ -538,7 +566,7 @@ static void Timeset_focuse(winHmi *cthis, int	f_row, int f_col, int opt)
 		//对选中的字符进行高亮
 		cthis->p_sht_tips->p_gp->getSize(cthis->p_sht_tips->p_gp, cthis->p_sht_tips->cnt.font, &txt_xsize, &txt_ysize);
 		if(opt)
-			cthis->p_sht_tips->cnt.colour = COLOUR_BLACK;
+			cthis->p_sht_tips->cnt.colour = COLOUR_BLUE;
 		else
 			cthis->p_sht_tips->cnt.colour = COLOUR_WHITE;
 		

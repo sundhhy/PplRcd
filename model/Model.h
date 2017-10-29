@@ -75,7 +75,8 @@ typedef enum {
 	eu_uS_cm,
 	eu_J_kgoC,
 	eu_kWh,
-	eu_ug_L
+	eu_ug_L,
+	eu_max
 }e_unit_t;
 INTERFACE( Observer)
 {
@@ -102,6 +103,7 @@ ABS_CLASS( Model)
 	int	(*setMdlData)( Model *self, IN int aux, IN void *arg);
 	int	(*addTmMdl)( Model *self, Model *m);
 	int (*delTmMdl)( Model *self, Model *m);
+	int (*modify_str_conf)( Model *self, IN int aux, char *s, int op, int val);		//在设置时修改配置使用
 	int (*set_by_string)( Model *self,IN int aux, void *arg);
 //	int (*installDataSource)( Model *self, void *dsr);
 	

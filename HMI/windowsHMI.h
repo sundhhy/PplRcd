@@ -14,12 +14,17 @@
 //------------------------------------------------------------------------------
 // const defines
 //------------------------------------------------------------------------------
+
+//窗口类型在arg[0]传递
 #define	WINTYPE_TIPS					0			//提示窗口
 #define	WINTYPE_ALARM					1			
 #define	WINTYPE_ERROR					2	
 #define	WINTYPE_MUS_BND				3
 #define	WINTYPE_MUS_UNTIL			4			//单位复选框
-#define	WINTYPE_TIME_SET			5			//	
+#define	WINTYPE_TIME_SET			5			//
+
+//窗口标志在arg[1]中传递
+#define WINFLAG_RETURN				1			//该标志控制窗口在确认按键中返回原界面		
  //------------------------------------------------------------------------------
 // typedef
 //------------------------------------------------------------------------------
@@ -30,6 +35,9 @@ CLASS(winHmi)
 	sheet  		*p_sht_title;
 	sheet  		*p_sht_tips;
 	sheet  		*p_sht_cur;
+	
+	void				*p_cmd_rcv;
+	stategy_cmd			cmd_hdl;
 	
 
 //	sheet  		*arr_p_sht_data[NUM_CHANNEL];

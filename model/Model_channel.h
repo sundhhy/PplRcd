@@ -9,14 +9,24 @@
 //------------------------------------------------------------------------------
 // const defines
 //------------------------------------------------------------------------------
-#define AUX_CHN_lower_limit  	0x10
-#define AUX_CHN_upper_limit  	0x11
-#define AUX_CHN_small_signal  0x12
-#define AUX_CHN_K							0x13
-#define AUX_CHN_B							0x14
+//#define AUX_CHN_record_MB  					0x10
+//#define AUX_CHN_lower_limit  				0x10
+//#define AUX_CHN_upper_limit  				0x11
+//#define AUX_CHN_small_signal  				0x12
+//#define AUX_CHN_K							0x13
+//#define AUX_CHN_B							0x14
 //------------------------------------------------------------------------------
 // typedef
 //------------------------------------------------------------------------------
+typedef enum {
+	chnaux_record_mb = 0x10,
+	chnaux_filter_ts,
+	chnaux_lower_limit,
+	chnaux_upper_limit,
+	chnaux_small_signal,
+	chnaux_k,
+	chnaux_b
+}e_chn_aux_t;
 typedef enum {
 	AI_0_5_V = 0,
 	AI_0_10_mA,
@@ -36,7 +46,8 @@ typedef enum {
 	PI_0_30_kHz,
 	DI_8_30_V,
 	DI_0_5_V,
-	AO_4_20_mA
+	AO_4_20_mA,
+	es_max,
 }e_signal_t;
 
 typedef struct {
