@@ -92,7 +92,45 @@ static int SysStrategy_entry(int row, int col, void *pp_text)
 				*pp = model->to_string(model, 1, arr_p_vram[0]);
 				p_syf->num_byte = strlen(arr_p_vram[0]);
 				return strlen(*pp);
-			
+			case 1:
+				System_to_string(NULL, arr_p_vram[row], 48, es_psd);
+				break;
+			case 2:
+				sprintf(arr_p_vram[row], "%d", g_system.num_chn);
+				break;
+			case 3:
+				sprintf(arr_p_vram[row], "%d", g_system.record_gap_s);
+				break;
+			case 4:
+				System_to_string(NULL, arr_p_vram[row], 48, es_brk_cpl);
+				break;
+			case 5:
+				System_to_string(NULL, arr_p_vram[row], 48, es_brk_rss);
+				break;
+			case 6:
+				System_to_string(NULL, arr_p_vram[row], 48, es_cmn_md);
+				break;
+			case 7:
+				sprintf(arr_p_vram[row], "%d", g_system.baud_rate);
+				break;
+			case 8:
+				sprintf(arr_p_vram[row], "%d", g_system.id);
+				break;
+			case 9:
+				System_to_string(NULL, arr_p_vram[row], 48, es_mdfy_prm);
+				break;
+			case 10:
+				System_to_string(NULL, arr_p_vram[row], 48, es_CJC);
+				break;
+			case 11:
+				System_to_string(NULL, arr_p_vram[row], 48, es_vcs);
+				break;
+			case 12:
+				System_to_string(NULL, arr_p_vram[row], 48, es_beep);
+				break;
+			case 13:
+				sprintf(arr_p_vram[row], "....");
+				break;
 			default: break;
 		}
 		

@@ -54,7 +54,7 @@ static int MdlChn_set_by_string( Model *self, IN int aux, void *arg);
 static int MdlChn_modify_sconf(Model *self, IN int aux, char *s, int op, int val);
 static void Read_default_conf(chn_info_t *p_ci, int chnnum);
 static void Pe_singnaltype(e_signal_t sgt, char *str);
-static int Str_to_data(char *str, int prec);
+//static int Str_to_data(char *str, int prec);
 //============================================================================//
 //            P U B L I C   F U N C T I O N S                                 //
 //============================================================================//
@@ -455,9 +455,9 @@ static void Pe_singnaltype(e_signal_t sgt, char *str)
 
 
 
-static int Str_float_to_int(char *str, int prec)
-{
-	
-	return 0;
-}
+//static int Str_float_to_int(char *str, int prec)
+//{
+//	
+//	return 0;
+//}
 
