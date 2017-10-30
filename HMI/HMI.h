@@ -88,6 +88,7 @@ typedef enum {
 	sycmd_reflush = 0,
 	sycmd_win_tips,
 	sycmd_win_time,
+	sycmd_win_psd,
 	wincmd_commit,
 }e_sycmd_r;
 

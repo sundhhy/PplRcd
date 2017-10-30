@@ -661,6 +661,7 @@ static int Show_more(HMI *self, int up_or_dn)
 
 	Clean_stripe(self);
 	Show_entry(self, cthis->p_sy);
+	self->show_focus(self, self->p_fcuu->focus_row, self->p_fcuu->focus_col);
 	Flush_LCD();
 	
 	return RET_OK;
@@ -773,6 +774,15 @@ static int Setting_Sy_cmd(void *p_rcv, int cmd,  void *arg)
 		case sycmd_win_time:
 			Win_content(arg);
 			g_p_winHmi->arg[0] = WINTYPE_TIME_SET;
+			g_p_winHmi->arg[1] = 0;
+			p_win = Get_winHmi();
+			p_win->p_cmd_rcv = self;
+			p_win->cmd_hdl = Setting_Sy_cmd;
+			self->switchHMI(self, g_p_winHmi);
+			break;
+		case sycmd_win_psd:
+			Win_content(arg);
+			g_p_winHmi->arg[0] = WINTYPE_PASSWORD_SET;
 			g_p_winHmi->arg[1] = 0;
 			p_win = Get_winHmi();
 			p_win->p_cmd_rcv = self;

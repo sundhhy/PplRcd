@@ -4,6 +4,7 @@
 #include "system.h"
 #include <string.h>
 #include <stdio.h>
+#include <math.h>
 //------------------------------------------------------------------------------
 // const defines
 //------------------------------------------------------------------------------
@@ -46,6 +47,76 @@ static void Disable_string(char *p, int able);
 void System_default(system_conf_t *p_s)
 {
 	
+	
+}
+
+
+//"** ** **"
+void Password_modify(char	*p_s_psd, int idx, int op)
+{
+	
+	switch(idx) {
+		case 0:		
+		case 1:
+		case 3:
+		case 4:		
+		case 6:
+		case 7:
+			Str_Calculations(p_s_psd + idx, 1, op, 1, 0, 9);
+			break;
+		default:
+			break;
+	}
+	
+	
+}
+
+
+//"** ** **"
+void Password_set_by_str(char	*p_s_psd)
+{
+	short	i, data;
+	
+	for(i = 0; i < 3; i++) {
+		data = atoi(p_s_psd);
+	
+		g_system.password[i] = data;
+		
+		p_s_psd += 3;
+	}
+	
+}
+
+//对时间显示的字符上移动
+//返回新的位置
+int Password_iteartor(char	*p_time_text, int idx, int director)
+{
+	int	new_idx = 0;
+	if(director == 0) {
+		//左移
+		if(idx == 0)
+			new_idx = 7;
+		else
+			new_idx = idx - 1;
+		//跳过非数字字符
+		while(p_time_text[new_idx] > '9' || p_time_text[new_idx] < '0')
+			new_idx --;
+		
+		
+	} else {
+		//右移
+		if(idx >= 7)
+			new_idx = 0;
+		else
+			new_idx = idx + 1;
+		//跳过非数字字符
+		while(p_time_text[new_idx] > '9' || p_time_text[new_idx] < '0')
+			new_idx ++;
+	
+		
+	}
+	
+	return new_idx;
 	
 }
 
@@ -107,7 +178,7 @@ void System_to_string(void *p_data, char	*p_s, int len, int aux)
 				p_u8 = &g_system.CJC;
 			if(*p_u8 < 100) {
 				
-				sprintf(p_s, "设定 %d", *p_u8);
+				sprintf(p_s, "设定: %d", *p_u8);
 			} else {
 				sprintf(p_s, "外部    ");
 			}

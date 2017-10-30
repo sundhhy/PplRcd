@@ -63,4 +63,8 @@ extern void Str_Calculations(char *p_str, int len,  int op, int val, int rangel,
 extern int	Operate_in_tange(int	arg1, int op, int arg2, int rangel, int rangeh);
 extern void Sys_default(system_conf_t *p_s);
 void System_to_string(void *p_data, char	*p_s, int len, int aux);
+void Password_set_by_str(char	*p_s_psd);
+
+void Password_modify(char	*p_s_psd, int idx, int op);
+int Password_iteartor(char	*p_time_text, int idx, int director);
 #endif

@@ -21,7 +21,12 @@
 #define	WINTYPE_ERROR					2	
 #define	WINTYPE_MUS_BND				3
 #define	WINTYPE_MUS_UNTIL			4			//单位复选框
-#define	WINTYPE_TIME_SET			5			//
+
+
+//设置类窗口
+#define	WINTYPE_SETTING					0x10
+#define	WINTYPE_TIME_SET				0x10			//
+#define	WINTYPE_PASSWORD_SET			0x11			//
 
 //窗口标志在arg[1]中传递
 #define WINFLAG_RETURN				1			//该标志控制窗口在确认按键中返回原界面		

@@ -41,6 +41,8 @@ HMI *g_p_winHmi;
 #define	WINHMI_TITLE_ALARM		"警告!"
 #define	WINHMI_TITLE_ERR			"错误!"
 #define	WINT_TIMER_SET				"时间设置"
+#define	WINT_PSD_SET				"密码设置"
+
 
 static ro_char winHim_code_bkpic[] =  {"<bpic m=1 vx0=80 vy0=60 >28</>" };
 static ro_char winHim_code_title[] =  {"<text m=1 f=16 clr=white vx0=88 vy0=62 > </>" };
@@ -88,6 +90,9 @@ static void Timeset_init(winHmi *cthis);
 static void Timeset_hide(winHmi *cthis);
 static void Timeset_focuse(winHmi *cthis, int	f_row, int f_col, int opt) ;
 
+static void Password_init(winHmi *cthis);
+static void Password_hide(winHmi *cthis);
+static void Password_focuse(winHmi *cthis, int	f_row, int f_col, int opt) ;
 
 static void MUS_init(winHmi *cthis);
 static void MUS_hide(winHmi *cthis);
@@ -171,6 +176,9 @@ static void MaininitSheet(HMI *self )
 	if(cthis->win_type == WINTYPE_TIME_SET) {
 		
 		Timeset_init(cthis);
+	} else if(cthis->win_type == WINTYPE_PASSWORD_SET) {
+		Password_init(cthis);
+		
 	} else if(cthis->win_type < WINTYPE_MUS_BND) {
 		Popup_init(cthis);
 		
@@ -191,6 +199,9 @@ static void winHmiHide(HMI *self )
 	if(cthis->win_type == WINTYPE_TIME_SET) {
 		
 		Timeset_hide(cthis);
+	} else if(cthis->win_type == WINTYPE_PASSWORD_SET) {
+		Password_hide(cthis);
+		
 	} else if(cthis->win_type < WINTYPE_MUS_BND) {
 		Popup_hide(cthis);
 		
@@ -247,6 +258,9 @@ static void winHmi_ClearFocuse(HMI *self, uint8_t fouse_row, uint8_t fouse_col)
 	if(cthis->win_type == WINTYPE_TIME_SET) {
 		
 		Timeset_focuse(cthis, fouse_row, fouse_col, 0);
+	} else if(cthis->win_type == WINTYPE_PASSWORD_SET) {
+		Password_focuse(cthis, fouse_row, fouse_col, 0);
+		
 	} else if(self->arg[0] < WINTYPE_MUS_BND) {
 		
 		PopUp_focuse(cthis, fouse_row, 0);
@@ -262,6 +276,9 @@ static void winHmi_ShowFocuse( HMI *self, uint8_t fouse_row, uint8_t fouse_col)
 	if(cthis->win_type == WINTYPE_TIME_SET) {
 		
 		Timeset_focuse(cthis, fouse_row, fouse_col, 1);
+	} else if(cthis->win_type == WINTYPE_PASSWORD_SET) {
+		Password_focuse(cthis, fouse_row, fouse_col, 1);
+		
 	} else if(self->arg[0] < WINTYPE_MUS_BND) {
 		
 		PopUp_focuse(cthis, fouse_row, 1);
@@ -311,7 +328,7 @@ static void	WinHmi_hit(HMI *self, char *s)
 	
 	if( !strcmp( s, HMIKEY_ENTER))
 	{
-		if((cthis->win_type == WINTYPE_TIME_SET) && cthis->f_row == 0) {
+		if((cthis->win_type & WINTYPE_SETTING) && cthis->f_row == 0) {
 			//时间设置窗口有2行
 			//确认时，切换到第二行
 			cthis->f_row = 1;
@@ -352,6 +369,9 @@ static void	WinHmi_hit(HMI *self, char *s)
 	
 }
 
+
+//todo:这这里的if语句替换掉
+
 static int Win_CUR_move(winHmi *cthis, int kc)
 {
 	int ret = RET_OK;
@@ -391,6 +411,48 @@ static int Win_CUR_move(winHmi *cthis, int kc)
 			case HMI_KEYCODE_RT:
 				if(cthis->f_row == 0) {
 					cthis->f_col = MdlTime_text_iteartor(win_content, cthis->f_col, 1);
+				} else {
+					if(cthis->f_col == 0)
+						cthis->f_col = 1;
+					else 
+						cthis->f_col = 0;
+					
+				}
+				break;
+			
+			
+		}
+		
+	} else if(cthis->win_type == WINTYPE_PASSWORD_SET){
+		switch(kc) {
+			case HMI_KEYCODE_UP:
+				if(cthis->f_row == 0) {
+					Password_modify(win_content, cthis->f_col, OP_ADD);
+					
+				}
+				else 
+					cthis->f_row = 0;
+				break;
+			case HMI_KEYCODE_DN:
+				if(cthis->f_row == 0) {
+					Password_modify(win_content, cthis->f_col, OP_SUB);
+				}
+				else 
+					cthis->f_row = 0;
+				break;
+			case HMI_KEYCODE_LT:
+				if(cthis->f_row == 0) {
+					cthis->f_col = Password_iteartor(win_content, cthis->f_col, 0);
+				} else {
+					if(cthis->f_col == 0)
+						cthis->f_col = 1;
+					else 
+						cthis->f_col = 0;
+				}
+				break;
+			case HMI_KEYCODE_RT:
+				if(cthis->f_row == 0) {
+					cthis->f_col = Password_iteartor(win_content, cthis->f_col, 1);
 				} else {
 					if(cthis->f_col == 0)
 						cthis->f_col = 1;
@@ -596,8 +658,24 @@ static void Timeset_focuse(winHmi *cthis, int	f_row, int f_col, int opt)
 	
 }
 
-
-
+//密码设置和时间设置在显示上是一样的处理,即显示win_content
+//只有对具体的数值的设置，才有所不同
+static void Password_init(winHmi *cthis)
+{
+	Timeset_init(cthis);
+	cthis->p_sht_title->cnt.data = WINT_PSD_SET;
+	cthis->p_sht_title->cnt.len = strlen(cthis->p_sht_title->cnt.data);
+}
+static void Password_hide(winHmi *cthis)
+{
+	Timeset_hide(cthis);
+	
+}
+static void Password_focuse(winHmi *self, int	f_row, int f_col, int opt) 
+{
+	Timeset_focuse(self, f_row, f_col, opt);
+	
+}
 
 
 

@@ -61,10 +61,11 @@ strategy_t	g_sys_strategy = {
 	 "按键声音", "恢复出厂设置"};
  
 static char *arr_p_vram[14];
+static int	sys_page = 0;
 //------------------------------------------------------------------------------
 // local function prototypes
 //------------------------------------------------------------------------------
-
+static void Sys_update_syf(strategy_focus_t *p_syf);
 //============================================================================//
 //            P U B L I C   F U N C T I O N S                                 //
 //============================================================================//
@@ -88,10 +89,11 @@ static int SysStrategy_entry(int row, int col, void *pp_text)
 	} else if(col == 1){
 		switch(row) {
 			case 0:
+				sys_page = 0;
 				model = ModelCreate("time");
-				*pp = model->to_string(model, 1, arr_p_vram[0]);
+				model->to_string(model, 1, arr_p_vram[0]);
 				p_syf->num_byte = strlen(arr_p_vram[0]);
-				return strlen(*pp);
+				break;
 			case 1:
 				System_to_string(NULL, arr_p_vram[row], 48, es_psd);
 				break;
@@ -123,19 +125,24 @@ static int SysStrategy_entry(int row, int col, void *pp_text)
 				System_to_string(NULL, arr_p_vram[row], 48, es_CJC);
 				break;
 			case 11:
+				
 				System_to_string(NULL, arr_p_vram[row], 48, es_vcs);
 				break;
 			case 12:
 				System_to_string(NULL, arr_p_vram[row], 48, es_beep);
 				break;
 			case 13:
+				sys_page = 1;
 				sprintf(arr_p_vram[row], "....");
 				break;
-			default: break;
+			default:
+				goto exit;
 		}
+		*pp = arr_p_vram[row];
+		return strlen(*pp);
 		
 	}
-	
+	exit:
 	return 0;
 }
 
@@ -151,7 +158,7 @@ static int Sys_init(void *arg)
 	for(i = 0; i < 14; i++) {
 		
 		arr_p_vram[i] = VRAM_alloc(48);
-		memset(arr_p_vram, 0, 48);
+		memset(arr_p_vram[i], 0, 48);
 	}
 	
 	return RET_OK;
@@ -262,13 +269,15 @@ static int Sys_key_dn(void *arg)
 //		
 //		ret = -1;
 //	}
-	ret = -1;
+
+	
+	
 	return ret;
 }
 
 static int Sys_key_rt(void *arg)
 {
-//	strategy_focus_t *p_syf = &g_sys_strategy.sf;
+	strategy_focus_t *p_syf = &g_sys_strategy.sf;
 	int ret = RET_OK;
 //	switch(p_syf->f_row) {
 //		case 0:
@@ -286,13 +295,32 @@ static int Sys_key_rt(void *arg)
 //		
 //		
 //	}
-	ret = -1;
+//	ret = -1;
+	if(sys_page == 0) {
+		
+		p_syf->f_row = Operate_in_tange(p_syf->f_row, OP_ADD, 1, 0, 10);
+		
+		
+	} else {
+		p_syf->f_row = Operate_in_tange(p_syf->f_row, OP_ADD, 1, 0, 2);
+		
+		
+	}
+	
+	if(p_syf->f_row == 0)
+	{
+		//说明光标发生了反转
+		//只有超过范围才会反转
+		ret = -1;
+	}
+	
+	Sys_update_syf(p_syf);
 	return ret;
 }
 
 static int Sys_key_lt(void *arg)
 {
-//	strategy_focus_t *p_syf = &g_sys_strategy.sf;
+	strategy_focus_t *p_syf = &g_sys_strategy.sf;
 	int ret = RET_OK;
 //	switch(p_syf->f_row) {
 //		case 0:
@@ -309,7 +337,24 @@ static int Sys_key_lt(void *arg)
 //		
 //		
 //	}
-	ret = -1;
+	if(p_syf->f_row == 0)
+	{
+		//说明光标发生了反转
+		//只有超过范围才会反转
+		ret = -1;
+	}
+	if(sys_page == 0) {
+		
+		p_syf->f_row = Operate_in_tange(p_syf->f_row, OP_SUB, 1, 0, 10);
+		
+		
+	} else {
+		p_syf->f_row = Operate_in_tange(p_syf->f_row, OP_SUB, 1, 0, 2);
+		
+		
+	}
+	
+	Sys_update_syf(p_syf);
 	return ret;
 }
 
@@ -320,25 +365,25 @@ static int Sys_key_er(void *arg)
 	//将所有的配置项写入模型
 
 	strategy_focus_t 	*p_syf = &g_sys_strategy.sf;
-	Model							*model;
+//	Model							*model;
 	int								ret = RET_OK;
-	int								flag = 0;
+//	int								flag = 0;
 	
-	if(arg) {
-		flag = *((int *)arg);
-		
-	}
-	
+//	if(arg) {
+//		flag = *((int *)arg);
+//		
+//	}
+//	
 	switch(p_syf->f_row) {
 	case 0:
-		if(flag == 0 ) {
+//		if(flag == 0 ) {
 			
 			g_sys_strategy.cmd_hdl(g_sys_strategy.p_cmd_rcv, sycmd_win_time, arr_p_vram[0]);
-		} else {
-				model = ModelCreate("time");
-				ret = model->set_by_string(model, 1, arr_p_vram[0]);
-			
-		}
+//		} else {
+//				model = ModelCreate("time");
+//				ret = model->set_by_string(model, 1, arr_p_vram[0]);
+//			
+//		}
 		
 //		g_sys_strategy.sf.num_byte = 1;
 //		if(p_syf->start_byte == 0)
@@ -346,6 +391,10 @@ static int Sys_key_er(void *arg)
 //		else {
 //			p_syf->start_byte -= 1;
 //		}
+		break;
+	case 1:
+			
+		g_sys_strategy.cmd_hdl(g_sys_strategy.p_cmd_rcv, sycmd_win_psd, arr_p_vram[p_syf->f_row]);
 		break;
 	default:
 		ret = ERR_OPT_FAILED;
@@ -377,6 +426,9 @@ static int Sys_commit(void *arg)
 		ret = model->set_by_string(model, 1, arr_p_vram[0]);
 			
 		break;
+	case 1:
+		Password_set_by_str(arr_p_vram[p_syf->f_row]);
+		break;
 	default:
 		ret = ERR_OPT_FAILED;
 		break;
@@ -390,4 +442,21 @@ static int Sys_commit(void *arg)
 	return ret;
 }
 
+static void Sys_update_syf(strategy_focus_t *p_syf)
+{
+	p_syf->num_byte = strlen(arr_p_vram[p_syf->f_row]);
+	
+//	//把单位剔除掉
+//	switch(p_syf->f_row)
+//	{
+//		case 6:		//x M
+//		case 7:		//x S
+//		case 8:		//x %
+//			p_syf->num_byte -= 2;
+//			break;
+//		
+//	}
+//	
+	
+}
 
