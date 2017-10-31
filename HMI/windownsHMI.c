@@ -342,10 +342,18 @@ static void	WinHmi_hit(HMI *self, char *s)
 			p_src_hmi->flag &= ~HMIFLAG_WIN;
 			
 		} else {
-			g_p_lastHmi->arg[0] = cthis->f_row;
-			g_p_lastHmi->arg[1] = cthis->f_col;
-
-			cthis->cmd_hdl(cthis->p_cmd_rcv, wincmd_commit, NULL);
+//			g_p_lastHmi->arg[0] = cthis->f_row;
+//			g_p_lastHmi->arg[1] = cthis->f_col;
+			if(cthis->f_col == 0)		//确认按键
+				cthis->cmd_hdl(cthis->p_cmd_rcv, wincmd_commit, NULL);
+			else {
+				//取消则直接返回
+				p_src_hmi = g_p_lastHmi;
+				p_src_hmi->flag |= HMIFLAG_WIN;
+				self->switchBack(self);
+				p_src_hmi->flag &= ~HMIFLAG_WIN;
+			}
+				
 		}
 		
 	}

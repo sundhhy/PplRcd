@@ -51,9 +51,10 @@ static void Disable_string(char *p, int able);
 void System_default(system_conf_t *arg)
 {
 	system_conf_t *p_sc = &g_system;
-	
-	p_sc->baud_idx = 0;
-	p_sc->baud_rate = arr_baud[0];
+	memset(p_sc, 0, sizeof(system_conf_t));
+//	p_sc->baud_idx = 0;
+//	p_sc->baud_rate = arr_baud[0];
+//	p_sc->disable_view_chn_status = 0;
 }
 
 void System_init(void)
@@ -240,7 +241,7 @@ void System_modify_string(char	*p_s, int aux, int op, int val)
 			Break_deal_string(p_s, g_system.break_resistor);
 			break;
 		case es_baud:
-			g_system.baud_idx = Operate_in_tange(g_system.baud_idx, op, val, 0, 7);
+			g_system.baud_idx = Operate_in_tange(g_system.baud_idx, op, val, 0, 6);
 			g_system.baud_rate = arr_baud[g_system.baud_idx];
 			sprintf(p_s, "%d", g_system.baud_rate);
 			break;
@@ -263,12 +264,13 @@ void System_modify_string(char	*p_s, int aux, int op, int val)
 			
 		case es_CJC:
 			g_system.CJC = Operate_in_tange(g_system.CJC, op, val, 0, 100);
-			if(g_system.CJC < 100) {
-				
-				sprintf(p_s, "设定 %d", g_system.CJC);
-			} else {
-				sprintf(p_s, "外部    ");
-			}
+			System_to_string(NULL, p_s, 0xff, es_CJC);
+//			if(g_system.CJC < 100) {
+//				
+//				sprintf(p_s, "设定 %d", g_system.CJC);
+//			} else {
+//				sprintf(p_s, "外部    ");
+//			}
 			break;
 			
 			

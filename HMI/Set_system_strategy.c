@@ -66,7 +66,7 @@ static int	sys_page = 0;
 // local function prototypes
 //------------------------------------------------------------------------------
 static void Sys_update_syf(strategy_focus_t *p_syf);
-static void Sys_update_content(int op, int weight);
+static int Sys_update_content(int op, int weight);
 //============================================================================//
 //            P U B L I C   F U N C T I O N S                                 //
 //============================================================================//
@@ -90,7 +90,11 @@ static int SysStrategy_entry(int row, int col, void *pp_text)
 	} else if(col == 1){
 		switch(row) {
 			case 0:
+				
 				sys_page = 0;
+				p_syf->f_row = 0;
+				Sys_update_syf(p_syf);
+			
 				model = ModelCreate("time");
 				model->to_string(model, 1, arr_p_vram[0]);
 				p_syf->num_byte = strlen(arr_p_vram[0]);
@@ -133,8 +137,12 @@ static int SysStrategy_entry(int row, int col, void *pp_text)
 				System_to_string(NULL, arr_p_vram[row], 48, es_beep);
 				break;
 			case 13:
-				sys_page = 1;
+				
 				sprintf(arr_p_vram[row], "....");
+			
+				sys_page = 1;
+				p_syf->f_row = 11;
+				Sys_update_syf(p_syf);
 				break;
 			default:
 				goto exit;
@@ -209,7 +217,7 @@ static int Sys_key_up(void *arg)
 	
 
 
-	Sys_update_content(OP_ADD, g_set_weight);
+	ret = Sys_update_content(OP_ADD, g_set_weight);
 	return ret;
 }
 
@@ -234,7 +242,7 @@ static int Sys_key_dn(void *arg)
 	
 
 
-	Sys_update_content(OP_SUB, g_set_weight);
+	ret = Sys_update_content(OP_SUB, g_set_weight);
 
 
 	
@@ -356,14 +364,16 @@ static int Sys_key_er(void *arg)
 	int								ret = RET_OK;
 	switch(p_syf->f_row) {
 	case 0:	
-			g_sys_strategy.cmd_hdl(g_sys_strategy.p_cmd_rcv, sycmd_win_time, arr_p_vram[0]);
+		g_sys_strategy.cmd_hdl(g_sys_strategy.p_cmd_rcv, sycmd_win_time, arr_p_vram[0]);
 		break;
 	case 1:
 		g_sys_strategy.cmd_hdl(g_sys_strategy.p_cmd_rcv, sycmd_win_psd, arr_p_vram[p_syf->f_row]);
 		break;
 	case 13:
 		//恢复出厂设置，应该不只是恢复系统设置，包括通道设置等，应该也要恢复
-		System_default(NULL);
+		Win_content("确认恢复出厂设置？");
+		g_sys_strategy.cmd_hdl(g_sys_strategy.p_cmd_rcv, sycmd_win_tips, arr_p_vram[p_syf->f_row]);
+		
 		break;
 	default:
 		ret = ERR_OPT_FAILED;
@@ -398,6 +408,9 @@ static int Sys_commit(void *arg)
 	case 1:
 		Password_set_by_str(arr_p_vram[p_syf->f_row]);
 		break;
+	case 13:
+		System_default(NULL);
+		break;
 	default:
 		ret = ERR_OPT_FAILED;
 		break;
@@ -430,15 +443,18 @@ static void Sys_update_syf(strategy_focus_t *p_syf)
 }
 
 
-static void Sys_update_content(int op, int weight)
+static int Sys_update_content(int op, int weight)
 {
 	strategy_focus_t 	*p_syf = &g_sys_strategy.sf;
+	int					ret = RET_OK;
 	switch(p_syf->f_row) {
 	case 0:		
-			g_sys_strategy.cmd_hdl(g_sys_strategy.p_cmd_rcv, sycmd_win_time, arr_p_vram[0]);
+		g_sys_strategy.cmd_hdl(g_sys_strategy.p_cmd_rcv, sycmd_win_time, arr_p_vram[0]);
+		ret = 1;
 		break;
 	case 1:
 		g_sys_strategy.cmd_hdl(g_sys_strategy.p_cmd_rcv, sycmd_win_psd, arr_p_vram[p_syf->f_row]);
+		ret = 1;
 		break;
 	case 2:		//通道数目不允许配置
 		break;
@@ -477,6 +493,6 @@ static void Sys_update_content(int op, int weight)
 	
 	
 	}
-	
+	return ret;
 }
 

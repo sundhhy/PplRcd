@@ -114,7 +114,7 @@ END_CTOR
 
 static int	Init_Setting_HMI(HMI *self, void *arg)
 {
-//	Setting_HMI		*cthis = SUB_PTR( self, HMI, Setting_HMI);
+	Setting_HMI		*cthis = SUB_PTR( self, HMI, Setting_HMI);
 //	Expr 			*p_exp ;
 //	shtctl 			*p_shtctl = NULL;
 //	short				i = 0;	
@@ -123,7 +123,7 @@ static int	Init_Setting_HMI(HMI *self, void *arg)
 
 //	p_exp = ExpCreate( "pic");
 	
-		
+	cthis->entry_start_row = 0;	
 	return RET_OK;
 }
 
@@ -159,7 +159,7 @@ static void Show_Setting_HMI(HMI *self)
 //		
 //	} 
 	Sheet_refresh(g_p_sht_bkpic);
-	cthis->entry_start_row = 0;
+//	cthis->entry_start_row = 0;
 	Show_entry(self, cthis->p_sy);
 	Strategy_focus(cthis, &cthis->p_sy->sf, 1);
 	
@@ -648,6 +648,7 @@ static void Clean_stripe(HMI *self)
 	Sheet_refresh(g_p_sht_bkpic);
 }
 
+//切换页面时，将光标重新至于编辑区
 static int Show_more(HMI *self, int up_or_dn)
 {
 	Setting_HMI		*cthis = SUB_PTR( self, HMI, Setting_HMI);
@@ -661,7 +662,9 @@ static int Show_more(HMI *self, int up_or_dn)
 
 	Clean_stripe(self);
 	Show_entry(self, cthis->p_sy);
-	self->show_focus(self, self->p_fcuu->focus_row, self->p_fcuu->focus_col);
+	SET_PG_FLAG(cthis->sub_flag, FOCUS_IN_STARTEGY);
+//	self->show_focus(self, self->p_fcuu->focus_row, self->p_fcuu->focus_col);
+	Strategy_focus(cthis, &cthis->p_sy->sf, 1);
 	Flush_LCD();
 	
 	return RET_OK;
@@ -769,8 +772,11 @@ static int Setting_Sy_cmd(void *p_rcv, int cmd,  void *arg)
 //			Flush_LCD();
 			break;
 		case sycmd_win_tips:
-			Win_content("确认修改？");
+			
 			g_p_winHmi->arg[0] = WINTYPE_TIPS;
+			p_win = Get_winHmi();
+			p_win->p_cmd_rcv = self;
+			p_win->cmd_hdl = Setting_Sy_cmd;
 			self->switchHMI(self, g_p_winHmi);
 			break;
 		case sycmd_win_time:
@@ -805,6 +811,7 @@ static int Setting_Sy_cmd(void *p_rcv, int cmd,  void *arg)
 				g_p_winHmi->arg[1] = WINFLAG_RETURN;
 				sprintf(win_tips,"错误码:%d", ret);
 				Win_content(win_tips);
+				g_p_winHmi->switchHMI(g_p_winHmi, g_p_winHmi);
 //				self->switchHMI(self, g_p_winHmi);
 //				g_p_winHmi->show(g_p_winHmi);
 			}

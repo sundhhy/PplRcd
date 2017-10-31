@@ -127,7 +127,12 @@ void MdlTime_text_modify(char	*p_time_text, int idx, int op)
 			Str_Calculations(p_time_text + idx, 1,  op, 1, 0, 2);
 			break;
 		case 10:
-			Str_Calculations(p_time_text + idx, 1,  op, 1, 0, 9);
+			
+			if(p_time_text[9] == '2')
+				Str_Calculations(p_time_text + idx, 1,  op, 1, 0, 4);
+			else 
+				Str_Calculations(p_time_text + idx, 1,  op, 1, 0, 9);
+//			Str_Calculations(p_time_text + idx, 1,  op, 1, 0, 9);
 			break;
 		//·Ö
 		case 12:

@@ -172,15 +172,20 @@ void Str_Calculations(char *p_str, int len, int op, int val, int rangel, int ran
 	short w[5] = {1, 10, 100, 1000, 10000};	
 	char	buf[6] = {0};
 
+	if(len > 6)
+		len = 6;
+	for(i = 0; i < len; i ++) {
 		
-//	for(i = 0; i < len; i ++) {
-//		
-//		dig += (p_str[i] - '0') * w[len - i - 1];
-//		
-//	}
+		buf[i] = p_str[i];
+		
+	}
 	
-	dig = atoi(p_str);
+	dig = atoi(buf);
+	for(i = 0; i < 6; i ++) {
 		
+		buf[i] = 0;
+		
+	}	
 	
 	//Î´Ö¸¶¨·¶Î§
 	if(rangeh == 0 && rangel == 0) {
@@ -205,8 +210,7 @@ void Str_Calculations(char *p_str, int len, int op, int val, int rangel, int ran
 	
 	
 	snprintf(buf, 6, "%d", dig);
-	if(len > 6)
-		len = 6;
+	
 	for(i = 0; i < len; i ++) {
 		p_str[i] = buf[i];
 			
