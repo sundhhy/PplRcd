@@ -2,5 +2,10 @@
 .\objects\system.o: system.h
 .\objects\system.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
 .\objects\system.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
+.\objects\system.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
 .\objects\system.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
-.\objects\system.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\math.h
+.\objects\system.o: E:\mylib\sdhLib\inc\sdhDef.h
+.\objects\system.o: ..\PplRcd\sdhlibConf.h
+.\objects\system.o: E:\mylib\sdhLib\inc\basis/sdhDebug.h
+.\objects\system.o: E:\mylib\sdhLib\inc\basis/sdhError.h
+.\objects\system.o: E:\mylib\sdhLib\inc\basis/macros.h

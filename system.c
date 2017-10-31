@@ -3,8 +3,9 @@
 //============================================================================//
 #include "system.h"
 #include <string.h>
+#include <stdlib.h>
 #include <stdio.h>
-#include <math.h>
+#include "sdhDef.h"
 //------------------------------------------------------------------------------
 // const defines
 //------------------------------------------------------------------------------
@@ -25,7 +26,7 @@ system_conf_t	g_system;
 //------------------------------------------------------------------------------
 // const defines
 //------------------------------------------------------------------------------
-
+static const int	arr_baud[7] = {1200, 4800, 9600, 19200, 38400, 57200, 115200};
 //------------------------------------------------------------------------------
 // local types
 //------------------------------------------------------------------------------
@@ -44,10 +45,21 @@ static void Disable_string(char *p, int able);
 //============================================================================//
 //            P U B L I C   F U N C T I O N S                                 //
 //============================================================================//
-void System_default(system_conf_t *p_s)
+
+
+
+void System_default(system_conf_t *arg)
+{
+	system_conf_t *p_sc = &g_system;
+	
+	p_sc->baud_idx = 0;
+	p_sc->baud_rate = arr_baud[0];
+}
+
+void System_init(void)
 {
 	
-	
+	System_default(NULL);
 }
 
 
@@ -151,6 +163,9 @@ void System_to_string(void *p_data, char	*p_s, int len, int aux)
 			
 			Break_deal_string(p_s, *p_u8);
 			break;
+		case es_baud:
+			
+			break;
 		case es_cmn_md:
 			if(p_data)
 				p_u8 = (uint8_t *)p_data;
@@ -207,86 +222,65 @@ void System_to_string(void *p_data, char	*p_s, int len, int aux)
 
 
 
-void System_modify_string(void *p_data, char	*p_s, int aux, int op, int val)
+void System_modify_string(char	*p_s, int aux, int op, int val)
 {
-//	uint8_t *p_u8;
-//	switch(aux)
-//	{
-//		case es_psd:
-//			if(p_data)
-//				p_u8 = (uint8_t *)p_data;
-//			else 
-//				p_u8 = g_system.password;
-//			
-//			sprintf(p_s, "%02d %02d %02d", p_u8[0], p_u8[1], p_u8[2]);
-//			break;
-//		
-//		case es_brk_cpl:
-//			if(p_data)
-//				p_u8 = (uint8_t *)p_data;
-//			else 
-//				p_u8 = &g_system.break_couple;
-//			
-//			Break_deal_string(p_s, *p_u8);
-//			break;
-//		case es_brk_rss:
-//			if(p_data)
-//				p_u8 = (uint8_t *)p_data;
-//			else 
-//				p_u8 = &g_system.break_resistor;
-//			
-//			Break_deal_string(p_s, *p_u8);
-//			break;
-//		case es_cmn_md:
-//			if(p_data)
-//				p_u8 = (uint8_t *)p_data;
-//			else 
-//				p_u8 = &g_system.communication_mode;
-//			
-//			if(*p_u8 == 0)
-//				sprintf(p_s, "通讯");
-//			else 
-//				sprintf(p_s, "打印");
-//			break;
-//		case es_mdfy_prm:
-//			if(p_data)
-//				p_u8 = (uint8_t *)p_data;
-//			else 
-//				p_u8 = &g_system.disable_modify_adjust_paramter;
-//			
-//			Disable_string(p_s, *p_u8);
-//			break;
-//			
-//		case es_CJC:
-//			if(p_data)
-//				p_u8 = (uint8_t *)p_data;
-//			else 
-//				p_u8 = &g_system.CJC;
-//			if(*p_u8 < 100) {
-//				
-//				sprintf(p_s, "设定 %d", *p_u8);
-//			} else {
-//				sprintf(p_s, "外部    ");
-//			}
-//			break;
-//			
-//		case es_vcs:
-//			if(p_data)
-//				p_u8 = (uint8_t *)p_data;
-//			else 
-//				p_u8 = &g_system.disable_view_chn_status;
-//			
-//			Disable_string(p_s, *p_u8);
-//			break;
-//		case es_beep:
-//			if(p_data)
-//				p_u8 = (uint8_t *)p_data;
-//			else 
-//				p_u8 = &g_system.enable_beep;
-//			
-//			Disable_string(p_s, *p_u8);
-//			break;
-//	}
+	switch(aux)
+	{
+		case es_rcd_t_s:
+			g_system.record_gap_s = Operate_in_tange(g_system.record_gap_s, op, val, 0, 99);
+			sprintf(p_s, "%d", g_system.record_gap_s);
+			break;
+		case es_brk_cpl:
+			
+			g_system.break_couple = Operate_in_tange(g_system.break_couple, op, val, 0, 2);
+			Break_deal_string(p_s, g_system.break_couple);
+			break;
+		case es_brk_rss:
+			g_system.break_resistor = Operate_in_tange(g_system.break_resistor, op, val, 0, 2);
+			Break_deal_string(p_s, g_system.break_resistor);
+			break;
+		case es_baud:
+			g_system.baud_idx = Operate_in_tange(g_system.baud_idx, op, val, 0, 7);
+			g_system.baud_rate = arr_baud[g_system.baud_idx];
+			sprintf(p_s, "%d", g_system.baud_rate);
+			break;
+		case es_id:
+			g_system.id = Operate_in_tange(g_system.id, op, val, 1, 63);
+			sprintf(p_s, "%d", g_system.id);
+			break;
+		case es_cmn_md:
+			g_system.communication_mode = Operate_in_tange(g_system.communication_mode, op, val, 0, 1);
+			if(g_system.communication_mode == 0)
+				sprintf(p_s, "通讯");
+			else 
+				sprintf(p_s, "打印");
+			break;
+		case es_mdfy_prm:
+		
+			g_system.disable_modify_adjust_paramter = Operate_in_tange(g_system.disable_modify_adjust_paramter, op, val, 0, 1);
+			Disable_string(p_s, g_system.disable_modify_adjust_paramter );
+			break;
+			
+		case es_CJC:
+			g_system.CJC = Operate_in_tange(g_system.CJC, op, val, 0, 100);
+			if(g_system.CJC < 100) {
+				
+				sprintf(p_s, "设定 %d", g_system.CJC);
+			} else {
+				sprintf(p_s, "外部    ");
+			}
+			break;
+			
+			
+		case es_vcs:
+			g_system.disable_view_chn_status = Operate_in_tange(g_system.disable_view_chn_status, op, val, 0, 1);
+			Disable_string(p_s, g_system.disable_view_chn_status);
+			break;
+		case es_beep:
+			g_system.enable_beep = Operate_in_tange(g_system.enable_beep, op, val, 0, 1);
+			Disable_string(p_s, g_system.enable_beep);
+			break;
+	}
 	
 	
 }

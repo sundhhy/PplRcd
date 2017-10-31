@@ -162,6 +162,7 @@ int main (void) {
 	osKernelInitialize ();                    // initialize CMSIS-RTOS
 
   // initialize peripherals here
+	System_init();
 	OpenPrpClock();
 	Pin_init();
 	NVIC_Configuration();

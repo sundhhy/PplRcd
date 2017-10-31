@@ -22,6 +22,7 @@
 //------------------------------------------------------------------------------
 typedef enum {
 	es_psd = 0,
+	es_rcd_t_s,
 	es_brk_cpl,
 	es_brk_rss,
 	es_cmn_md,
@@ -43,8 +44,9 @@ typedef struct {
 	
 	uint8_t		communication_mode;			//仪表与pc连接： 通讯； 仪表与打印机连接: 打印
 	uint8_t		id;											// 1 - 63
-	uint8_t		baud_rate;
+	uint8_t		baud_idx;
 	uint8_t		none;
+	int 			baud_rate;
 	
 	uint8_t		CJC;								//冷端补偿 0-99 为设定模式， 100为外部，通过冷端补偿器温度进行补偿
 	uint8_t		disable_modify_adjust_paramter;		//禁止修改调节参数
@@ -56,12 +58,16 @@ typedef struct {
 // global variable declarations
 //------------------------------------------------------------------------------
 extern system_conf_t	g_system;
+extern int g_set_weight;
 //------------------------------------------------------------------------------
 // function prototypes
 //------------------------------------------------------------------------------
 extern void Str_Calculations(char *p_str, int len,  int op, int val, int rangel, int rangeh);
 extern int	Operate_in_tange(int	arg1, int op, int arg2, int rangel, int rangeh);
-extern void Sys_default(system_conf_t *p_s);
+
+extern void System_init(void);
+extern void Sys_default(system_conf_t *arg);
+void System_modify_string(char	*p_s, int aux, int op, int val);
 void System_to_string(void *p_data, char	*p_s, int len, int aux);
 void Password_set_by_str(char	*p_s_psd);
 

@@ -346,7 +346,7 @@ static void Strategy_focus_text(Setting_HMI *self, strategy_focus_t *p_syf, int 
 	
 	self->p_sht_text->cnt.len = f_data_len;
 	self->p_sht_text->area.x0 = self->col_vx0[p_syf->f_col] + txt_xsize * p_syf->start_byte;
-	self->p_sht_text->area.y0 = Stripe_vy(p_syf->f_row);
+	self->p_sht_text->area.y0 = Stripe_vy(p_syf->f_row - self->entry_start_row);
 	self->p_sht_text->p_gp->vdraw(self->p_sht_text->p_gp, &self->p_sht_text->cnt, &self->p_sht_text->area);
 	return;
 	
@@ -363,7 +363,7 @@ static void Strategy_focus(Setting_HMI *self, strategy_focus_t *p_syf, int opt)
 		self->p_sht_clean->area.x0 = self->col_vx0[p_syf->f_col] + txt_xsize * p_syf->start_byte - 4;
 //		self->p_sht_clean->area.x1 = self->p_sht_CUR->area.x0 + txt_xsize * ( strlen(self->p_sht_text->cnt.data) + 1) + 4;
 		self->p_sht_clean->area.x1 = self->p_sht_CUR->area.x0 + txt_xsize * ( 20) + 4;
-		self->p_sht_clean->area.y0 = Stripe_vy(p_syf->f_row) -1;
+		self->p_sht_clean->area.y0 = Stripe_vy(p_syf->f_row - self->entry_start_row) -1;
 		self->p_sht_clean->area.y1 = self->p_sht_clean->area.y0 + txt_ysize + 2;
 		self->p_sht_clean->p_gp->vdraw(self->p_sht_clean->p_gp, &self->p_sht_clean->cnt, &self->p_sht_clean->area);
 
@@ -376,7 +376,7 @@ static void Strategy_focus(Setting_HMI *self, strategy_focus_t *p_syf, int opt)
 		
 		self->p_sht_clean->area.x0 = self->col_vx0[p_syf->f_col] + txt_xsize * p_syf->start_byte - 4;
 		self->p_sht_clean->area.x1 = self->p_sht_CUR->area.x0 + txt_xsize * p_syf->num_byte  + 4;
-		self->p_sht_clean->area.y0 = Stripe_vy(p_syf->f_row) -1;
+		self->p_sht_clean->area.y0 = Stripe_vy(p_syf->f_row - self->entry_start_row) -1;
 		self->p_sht_clean->area.y1 = self->p_sht_clean->area.y0 + txt_ysize + 2;
 		self->p_sht_clean->p_gp->vdraw(self->p_sht_clean->p_gp, &self->p_sht_clean->cnt, &self->p_sht_clean->area);
 	} else if(opt == 1){
@@ -384,7 +384,7 @@ static void Strategy_focus(Setting_HMI *self, strategy_focus_t *p_syf, int opt)
 		//ÏÔÊ¾¹â±ê
 		self->p_sht_CUR->area.x0 = self->col_vx0[p_syf->f_col] + txt_xsize * p_syf->start_byte - 3;
 		self->p_sht_CUR->area.x1 = self->p_sht_CUR->area.x0 + txt_xsize * p_syf->num_byte  + 3;
-		self->p_sht_CUR->area.y0 = Stripe_vy(p_syf->f_row) - 1;
+		self->p_sht_CUR->area.y0 = Stripe_vy(p_syf->f_row - self->entry_start_row) - 1;
 		self->p_sht_CUR->area.y1 = self->p_sht_CUR->area.y0 + txt_ysize + 1;
 		self->p_sht_CUR->p_gp->vdraw(self->p_sht_CUR->p_gp, &self->p_sht_CUR->cnt, &self->p_sht_CUR->area);
 	}
@@ -704,10 +704,11 @@ static void	Show_entry(HMI *self, strategy_t *p_st)
 				col_maxlen = text_len;
 			
 			cthis->p_sht_text->area.x0 = col_vx0;
-			if(row == 0)
-				cthis->p_sht_text->area.y0 = STRIPE_VY0 ;
-			else 
-				cthis->p_sht_text->area.y0 = STRIPE_VY1 + (row - 1)* STRIPE_SIZE_Y;
+			cthis->p_sht_text->area.y0 = Stripe_vy(row);
+//			if(row == 0)
+//				cthis->p_sht_text->area.y0 = STRIPE_VY0 ;
+//			else 
+//				cthis->p_sht_text->area.y0 = STRIPE_VY1 + (row - 1)* STRIPE_SIZE_Y;
 			
 			cthis->p_sht_text->p_gp->vdraw(cthis->p_sht_text->p_gp, &cthis->p_sht_text->cnt, &cthis->p_sht_text->area);
 			
@@ -721,6 +722,7 @@ static void	Show_entry(HMI *self, strategy_t *p_st)
 		
 		col_maxlen += col_space;
 	}
+	
 	if(cthis->entry_start_row) {
 		g_p_ico_pgup->e_heifht = 1;
 		Sheet_slide(g_p_ico_pgup);

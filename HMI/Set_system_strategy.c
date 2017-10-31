@@ -1,7 +1,7 @@
 #include "Set_system_strategy.h"
 #include "sdhDef.h"
 #include "ModelFactory.h"
-
+#include "system.h"
 #include <string.h>
 
 //============================================================================//
@@ -66,6 +66,7 @@ static int	sys_page = 0;
 // local function prototypes
 //------------------------------------------------------------------------------
 static void Sys_update_syf(strategy_focus_t *p_syf);
+static void Sys_update_content(int op, int weight);
 //============================================================================//
 //            P U B L I C   F U N C T I O N S                                 //
 //============================================================================//
@@ -190,85 +191,51 @@ static int Sys_get_focusdata(void *pp_data, strategy_focus_t *p_in_syf)
 
 static int Sys_key_up(void *arg)
 {
-//	strategy_keyval_t	kt = {SY_KEYTYPE_HIT};
+	strategy_keyval_t	kt = {SY_KEYTYPE_HIT};
 //	strategy_focus_t *p_syf = &g_sys_strategy.sf;
-//	char			*p;
-//	int				dl;
 	int 			ret = RET_OK;
-//	uint8_t		rl, rh;
-//	if(arg) {
-//		kt.key_type = ((strategy_keyval_t *)arg)->key_type;
-//		
-//	}
-//	
-//	
-//	
-//	
-//	if(kt.key_type == SY_KEYTYPE_HIT) {
-//		dl = Sys_get_focusdata(&p, NULL);
-//		if(dl < 0)
-//			return -1;
-//		
-//		
-//		switch(p_syf->f_row) {
-//			case 0:
-//				//时间参数修改
-//				
-//				Str_Calculations(p, dl,0, OP_ADD, 1, 0, 0);
-//				break;
-//			default:
-//				ret = -1;
-//				break;
-//			
-//		}
-//		
-//	} else if(kt.key_type == SY_KEYTYPE_DHIT) {
-//		
-//		ret = -1;
-//	}
-	ret = -1;
+	
+	if(arg) {
+		kt.key_type = ((strategy_keyval_t *)arg)->key_type;
+		
+	}
+	if(kt.key_type == SY_KEYTYPE_LONGPUSH) {
+		g_set_weight += 10;
+		
+	} else {
+		g_set_weight = 1;
+	}
+
+	
+
+
+	Sys_update_content(OP_ADD, g_set_weight);
 	return ret;
 }
 
 static int Sys_key_dn(void *arg)
 {
 	
-//	strategy_keyval_t	kt = {SY_KEYTYPE_HIT};
+	strategy_keyval_t	kt = {SY_KEYTYPE_HIT};
 //	strategy_focus_t *p_syf = &g_sys_strategy.sf;
-//	char			*p;
-//	int				dl;
 	int 			ret = RET_OK;
-//	uint8_t		rl, rh;
-//	if(arg) {
-//		kt.key_type = ((strategy_keyval_t *)arg)->key_type;
-//		
-//	}
 	
+	if(arg) {
+		kt.key_type = ((strategy_keyval_t *)arg)->key_type;
+		
+	}
+	if(kt.key_type == SY_KEYTYPE_LONGPUSH) {
+		g_set_weight += 10;
+		
+	} else {
+		g_set_weight = 1;
+	}
+
 	
-	
-	
-//	if(kt.key_type == SY_KEYTYPE_HIT) {
-//		dl = Sys_get_focusdata(&p, NULL);
-//		if(dl < 0)
-//			return -1;
-//		
-//		
-//		switch(p_syf->f_row) {
-//			case 0:
-//				//时间参数修改
-//				
-//				Str_Calculations(p, dl,0, OP_SUB, 1, 0, 0);
-//				break;
-//			default:
-//				ret = -1;
-//				break;
-//			
-//		}
-//		
-//	} else if(kt.key_type == SY_KEYTYPE_DHIT) {
-//		
-//		ret = -1;
-//	}
+
+
+	Sys_update_content(OP_SUB, g_set_weight);
+
 
 	
 	
@@ -300,19 +267,29 @@ static int Sys_key_rt(void *arg)
 		
 		p_syf->f_row = Operate_in_tange(p_syf->f_row, OP_ADD, 1, 0, 10);
 		
+		if(p_syf->f_row == 0)
+		{
+			//说明光标发生了反转
+			//只有超过范围才会反转
+			ret = -1;
+		} else if(p_syf->f_row == 2)		{//通道数目不允许配置
+		
+			p_syf->f_row ++;
+			
+		}
 		
 	} else {
-		p_syf->f_row = Operate_in_tange(p_syf->f_row, OP_ADD, 1, 0, 2);
+		p_syf->f_row = Operate_in_tange(p_syf->f_row, OP_ADD, 1, 11, 13);
 		
-		
+		if(p_syf->f_row == 11)
+		{
+			//说明光标发生了反转
+			//只有超过范围才会反转
+			ret = -1;
+		}
 	}
 	
-	if(p_syf->f_row == 0)
-	{
-		//说明光标发生了反转
-		//只有超过范围才会反转
-		ret = -1;
-	}
+	
 	
 	Sys_update_syf(p_syf);
 	return ret;
@@ -337,19 +314,30 @@ static int Sys_key_lt(void *arg)
 //		
 //		
 //	}
-	if(p_syf->f_row == 0)
-	{
-		//说明光标发生了反转
-		//只有超过范围才会反转
-		ret = -1;
-	}
+	
 	if(sys_page == 0) {
-		
+		if(p_syf->f_row == 0)
+		{
+			//说明光标发生了反转
+			//只有超过范围才会反转
+			ret = -1;
+		}
 		p_syf->f_row = Operate_in_tange(p_syf->f_row, OP_SUB, 1, 0, 10);
 		
+		if(p_syf->f_row == 2)		{//通道数目不允许配置
+		
+			p_syf->f_row --;
+			
+		}
 		
 	} else {
-		p_syf->f_row = Operate_in_tange(p_syf->f_row, OP_SUB, 1, 0, 2);
+		if(p_syf->f_row == 11)
+		{
+			//说明光标发生了反转
+			//只有超过范围才会反转
+			ret = -1;
+		}
+		p_syf->f_row = Operate_in_tange(p_syf->f_row, OP_SUB, 1, 11, 13);
 		
 		
 	}
@@ -365,43 +353,24 @@ static int Sys_key_er(void *arg)
 	//将所有的配置项写入模型
 
 	strategy_focus_t 	*p_syf = &g_sys_strategy.sf;
-//	Model							*model;
 	int								ret = RET_OK;
-//	int								flag = 0;
-	
-//	if(arg) {
-//		flag = *((int *)arg);
-//		
-//	}
-//	
 	switch(p_syf->f_row) {
-	case 0:
-//		if(flag == 0 ) {
-			
+	case 0:	
 			g_sys_strategy.cmd_hdl(g_sys_strategy.p_cmd_rcv, sycmd_win_time, arr_p_vram[0]);
-//		} else {
-//				model = ModelCreate("time");
-//				ret = model->set_by_string(model, 1, arr_p_vram[0]);
-//			
-//		}
-		
-//		g_sys_strategy.sf.num_byte = 1;
-//		if(p_syf->start_byte == 0)
-//			p_syf->start_byte = 17;
-//		else {
-//			p_syf->start_byte -= 1;
-//		}
 		break;
 	case 1:
-			
 		g_sys_strategy.cmd_hdl(g_sys_strategy.p_cmd_rcv, sycmd_win_psd, arr_p_vram[p_syf->f_row]);
+		break;
+	case 13:
+		//恢复出厂设置，应该不只是恢复系统设置，包括通道设置等，应该也要恢复
+		System_default(NULL);
 		break;
 	default:
 		ret = ERR_OPT_FAILED;
 		break;
 	
 	
-}
+	}
 	
 
 	
@@ -457,6 +426,57 @@ static void Sys_update_syf(strategy_focus_t *p_syf)
 //		
 //	}
 //	
+	
+}
+
+
+static void Sys_update_content(int op, int weight)
+{
+	strategy_focus_t 	*p_syf = &g_sys_strategy.sf;
+	switch(p_syf->f_row) {
+	case 0:		
+			g_sys_strategy.cmd_hdl(g_sys_strategy.p_cmd_rcv, sycmd_win_time, arr_p_vram[0]);
+		break;
+	case 1:
+		g_sys_strategy.cmd_hdl(g_sys_strategy.p_cmd_rcv, sycmd_win_psd, arr_p_vram[p_syf->f_row]);
+		break;
+	case 2:		//通道数目不允许配置
+		break;
+	case 3:
+		System_modify_string(arr_p_vram[p_syf->f_row], es_rcd_t_s, op, weight);
+		break;
+	case 4:
+		System_modify_string(arr_p_vram[p_syf->f_row], es_brk_cpl, op, weight);
+		break;
+	case 5:
+		System_modify_string(arr_p_vram[p_syf->f_row], es_brk_rss, op, weight);
+		break;
+	case 6:
+		System_modify_string(arr_p_vram[p_syf->f_row], es_cmn_md, op, weight);
+		break;
+	case 7:
+		System_modify_string(arr_p_vram[p_syf->f_row], es_baud, op, weight);
+		break;
+	case 8:
+		System_modify_string(arr_p_vram[p_syf->f_row], es_id, op, weight);
+		break;
+	case 9:
+		System_modify_string(arr_p_vram[p_syf->f_row], es_mdfy_prm, op, weight);
+		break;
+	case 10:
+		System_modify_string(arr_p_vram[p_syf->f_row], es_CJC, op, weight);
+		break;
+	case 11:
+		System_modify_string(arr_p_vram[p_syf->f_row], es_vcs, op, weight);
+		break;
+	case 12:
+		System_modify_string(arr_p_vram[p_syf->f_row], es_beep, op, weight);
+		break;
+	default:
+		break;
+	
+	
+	}
 	
 }
 
