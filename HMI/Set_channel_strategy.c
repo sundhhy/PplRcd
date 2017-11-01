@@ -56,7 +56,7 @@ static char *const arr_p_chnnel_entry[11] = {"通道号", "位号", "信号类型", "工程
 };
 
 static char *arr_p_vram[11];
-static char		cur_set_chn = 0;
+
 
 //------------------------------------------------------------------------------
 // local function prototypes
@@ -76,7 +76,7 @@ static void Cns_update_content(int op, int weight);
 static int ChnStrategy_entry(int row, int col, void *pp_text)
 {
 	char **pp = (char **)pp_text;
-	Model_chn		*p_mc = Get_Mode_chn(cur_set_chn);
+	Model_chn		*p_mc = Get_Mode_chn(g_setting_chn);
 	Model				*p_md = SUPER_PTR(p_mc, Model);
 	if(col == 0) {
 		
@@ -88,7 +88,7 @@ static int ChnStrategy_entry(int row, int col, void *pp_text)
 		switch(row) 
 		{
 			case 0:
-				sprintf(arr_p_vram[row], "%d", cur_set_chn);
+				sprintf(arr_p_vram[row], "%d", g_setting_chn);
 				break;
 			case 1:		//位号
 				sprintf(arr_p_vram[row], "%d", p_mc->chni.tag_NO);
@@ -144,7 +144,7 @@ static int Cns_init(void *arg)
 	g_chn_strategy.sf.f_row = 0;
 	g_chn_strategy.sf.start_byte = 0;
 	g_chn_strategy.sf.num_byte = 1;
-
+	g_setting_chn = 0;
 	VRAM_init();
 	for(i = 0; i < 11; i++) {
 		
@@ -187,7 +187,7 @@ static int Cns_get_focusdata(void *pp_data, strategy_focus_t *p_in_syf)
 static int Cns_key_up(void *arg)
 {
 	
-//	Model_chn			*p_mc = Get_Mode_chn(cur_set_chn);
+//	Model_chn			*p_mc = Get_Mode_chn(g_setting_chn);
 //	Model				*p_md = SUPER_PTR(p_mc, Model);
 	strategy_keyval_t	kt = {SY_KEYTYPE_HIT};
 //	strategy_focus_t 	*p_syf = &g_chn_strategy.sf;
@@ -215,7 +215,7 @@ static int Cns_key_up(void *arg)
 static int Cns_key_dn(void *arg)
 {
 	
-//	Model_chn			*p_mc = Get_Mode_chn(cur_set_chn);
+//	Model_chn			*p_mc = Get_Mode_chn(g_setting_chn);
 //	Model				*p_md = SUPER_PTR(p_mc, Model);
 	strategy_keyval_t	kt = {SY_KEYTYPE_HIT};
 //	strategy_focus_t 	*p_syf = &g_chn_strategy.sf;
@@ -331,7 +331,7 @@ static void Cns_update_len(strategy_focus_t *p_syf)
 
 static void Cns_update_content(int op, int weight)
 {
-	Model_chn			*p_mc = Get_Mode_chn(cur_set_chn);
+	Model_chn			*p_mc = Get_Mode_chn(g_setting_chn);
 	Model				*p_md = SUPER_PTR(p_mc, Model);
 	strategy_focus_t 	*p_syf = &g_chn_strategy.sf;
 	
@@ -341,7 +341,7 @@ static void Cns_update_content(int op, int weight)
 	switch(p_syf->f_row) 
 	{
 		case 0:
-			cur_set_chn = Operate_in_tange(cur_set_chn, op, 1, 0, NUM_CHANNEL);
+			g_setting_chn = Operate_in_tange(g_setting_chn, op, 1, 0, NUM_CHANNEL);
 			g_chn_strategy.cmd_hdl(g_chn_strategy.p_cmd_rcv, sycmd_reflush, NULL);
 //			Str_Calculations(arr_p_vram[p_syf->f_row], 1,  op, weight, 0, NUM_CHANNEL);
 			break;

@@ -3,7 +3,7 @@
 <title>Static Call Graph - [.\Objects\PplRcd.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image .\Objects\PplRcd.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5050106: Last Updated: Tue Oct 31 22:47:24 2017
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060061: Last Updated: Wed Nov 01 09:26:17 2017
 <BR><P>
 <H3>Maximum Stack Usage =        248 bytes + Unknown(Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -1318,7 +1318,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[134]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;KeyboardHitHandle
 </UL>
 
-<P><STRONG><a name="[1e8]"></a>Except_raise</STRONG> (Thumb, 130 bytes, Stack size 0 bytes, except.o(i.Except_raise))
+<P><STRONG><a name="[1e8]"></a>Except_raise</STRONG> (Thumb, 128 bytes, Stack size 0 bytes, except.o(i.Except_raise))
 <BR><BR>[Stack]<UL><LI>Max Depth = 24 + In Cycle
 <LI>Call Chain = Except_raise &rArr;  Except_raise (Cycle)
 </UL>
@@ -2578,7 +2578,7 @@ Global Symbols
 <LI><a href="#[100]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;TxtInptSht
 </UL>
 
-<P><STRONG><a name="[1d8]"></a>Sem_init</STRONG> (Thumb, 276 bytes, Stack size 16 bytes, rtx_depend.o(i.Sem_init))
+<P><STRONG><a name="[1d8]"></a>Sem_init</STRONG> (Thumb, 238 bytes, Stack size 16 bytes, rtx_depend.o(i.Sem_init))
 <BR><BR>[Stack]<UL><LI>Max Depth = 24<LI>Call Chain = Sem_init &rArr; osSemaphoreCreate &rArr; svcSemaphoreCreate
 </UL>
 <BR>[Calls]<UL><LI><a href="#[289]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osSemaphoreWait
@@ -2588,12 +2588,13 @@ Global Symbols
 <LI><a href="#[2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Dev_UsartInit
 </UL>
 
-<P><STRONG><a name="[1ab]"></a>Sem_post</STRONG> (Thumb, 104 bytes, Stack size 16 bytes, rtx_depend.o(i.Sem_post))
+<P><STRONG><a name="[1ab]"></a>Sem_post</STRONG> (Thumb, 92 bytes, Stack size 16 bytes, rtx_depend.o(i.Sem_post))
 <BR><BR>[Stack]<UL><LI>Max Depth = 48<LI>Call Chain = Sem_post &rArr; osSemaphoreRelease &rArr; isrSemaphoreRelease &rArr; isr_sem_send &rArr; rt_psq_enq
 </UL>
 <BR>[Calls]<UL><LI><a href="#[28a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osSemaphoreRelease
 </UL>
-<BR>[Called By]<UL><LI><a href="#[6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GpuLabel
+<BR>[Called By]<UL><LI><a href="#[90]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UartPostRxSem
+<LI><a href="#[6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GpuLabel
 <LI><a href="#[2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Dev_UsartInit
 <LI><a href="#[5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GpuWrString
 <LI><a href="#[b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GpuPic
@@ -2605,10 +2606,9 @@ Global Symbols
 <LI><a href="#[7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GpuBKColor
 <LI><a href="#[4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ClearLcd
 <LI><a href="#[91]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UartPostTxSem
-<LI><a href="#[90]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UartPostRxSem
 </UL>
 
-<P><STRONG><a name="[1a8]"></a>Sem_wait</STRONG> (Thumb, 118 bytes, Stack size 16 bytes, rtx_depend.o(i.Sem_wait))
+<P><STRONG><a name="[1a8]"></a>Sem_wait</STRONG> (Thumb, 104 bytes, Stack size 16 bytes, rtx_depend.o(i.Sem_wait))
 <BR><BR>[Stack]<UL><LI>Max Depth = 16<LI>Call Chain = Sem_wait
 </UL>
 <BR>[Calls]<UL><LI><a href="#[289]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osSemaphoreWait
@@ -4040,7 +4040,7 @@ Global Symbols
 <LI><a href="#[37]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SysTick_Handler
 </UL>
 
-<P><STRONG><a name="[301]"></a>rt_tsk_create</STRONG> (Thumb, 120 bytes, Stack size 24 bytes, rt_task.o(i.rt_tsk_create))
+<P><STRONG><a name="[301]"></a>rt_tsk_create</STRONG> (Thumb, 118 bytes, Stack size 24 bytes, rt_task.o(i.rt_tsk_create))
 <BR><BR>[Stack]<UL><LI>Max Depth = 56<LI>Call Chain = rt_tsk_create &rArr; rt_init_context &rArr; rt_init_stack
 </UL>
 <BR>[Calls]<UL><LI><a href="#[302]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;dbg_task_notify
@@ -4051,7 +4051,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[14d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;svcThreadCreate
 </UL>
 
-<P><STRONG><a name="[303]"></a>rt_tsk_delete</STRONG> (Thumb, 346 bytes, Stack size 40 bytes, rt_task.o(i.rt_tsk_delete))
+<P><STRONG><a name="[303]"></a>rt_tsk_delete</STRONG> (Thumb, 352 bytes, Stack size 40 bytes, rt_task.o(i.rt_tsk_delete))
 <BR><BR>[Stack]<UL><LI>Max Depth = 68<LI>Call Chain = rt_tsk_delete &rArr; rt_dispatch &rArr; rt_put_prio
 </UL>
 <BR>[Calls]<UL><LI><a href="#[165]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_stk_check
@@ -6537,7 +6537,7 @@ Local Symbols
 <LI><a href="#[2d6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;isrSemaphoreRelease
 </UL>
 
-<P><STRONG><a name="[309]"></a>rt_ms2tick</STRONG> (Thumb, 60 bytes, Stack size 0 bytes, rt_cmsis.o(i.rt_ms2tick))
+<P><STRONG><a name="[309]"></a>rt_ms2tick</STRONG> (Thumb, 58 bytes, Stack size 0 bytes, rt_cmsis.o(i.rt_ms2tick))
 <BR><BR>[Called By]<UL><LI><a href="#[14c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;svcSemaphoreWait
 <LI><a href="#[149]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;svcMessageGet
 <LI><a href="#[146]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;svcDelay

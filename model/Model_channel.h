@@ -25,7 +25,16 @@ typedef enum {
 	chnaux_upper_limit,
 	chnaux_small_signal,
 	chnaux_k,
-	chnaux_b
+	chnaux_b.
+	alarm_hh,
+	alarm_hi,
+	alarm_lo,
+	alarm_ll,
+	tchspt_hh,
+	tchspt_hi,
+	tchspt_lo,
+	tchspt_ll,
+	alarm_backlash
 }e_chn_aux_t;
 typedef enum {
 	AI_0_5_V = 0,
@@ -67,11 +76,29 @@ typedef struct {
 	int					value;
 }chn_info_t;
 
+typedef struct {
+	uint8_t				alarm_hh;
+	uint8_t				alarm_hi;
+	uint8_t				alarm_lo;
+	uint8_t				alarm_ll;
+	
+	//报警输出触点
+	uint8_t				touch_spot_hh;
+	uint8_t				touch_spot_hi;
+	uint8_t				touch_spot_lo;
+	uint8_t				touch_spot_ll;
+	
+	uint8_t				alarm_backlash;		//报警回差  0 - 10.0%
+	uint8_t				none[3];
+}chn_alarm_t;
+	
+
 CLASS(Model_chn)
 {
 		
 	EXTENDS( Model);
 	chn_info_t		chni;
+	chn_alarm_t		alarm;
 	
 	char 	*str_buf;
 	char 	*unit_buf;
