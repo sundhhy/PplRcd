@@ -54,6 +54,7 @@ static int MdlChn_set_by_string( Model *self, IN int aux, void *arg);
 static int MdlChn_modify_sconf(Model *self, IN int aux, char *s, int op, int val);
 static void Read_default_conf(chn_info_t *p_ci, int chnnum);
 static void Pe_singnaltype(e_signal_t sgt, char *str);
+static void Pe_touch_spot(int spot, char *str);
 //static int Str_to_data(char *str, int prec);
 //============================================================================//
 //            P U B L I C   F U N C T I O N S                                 //
@@ -231,7 +232,34 @@ static char* MdlChn_to_string( Model *self, IN int aux, void *arg)
 //			Pe_frefix_float(cthis->chni.b, 1, "B:", (char *)arg);
 			Pe_float(cthis->chni.b, 1, (char *)arg);
 			break;	
-		
+	
+		case alarm_hh:
+			Pe_float(cthis->alarm.alarm_hh, 1, (char *)arg);
+			break;
+		case alarm_hi:
+			Pe_float(cthis->alarm.alarm_hi, 1, (char *)arg);
+			break;
+		case alarm_lo:
+			Pe_float(cthis->alarm.alarm_lo, 1, (char *)arg);
+			break;
+		case alarm_ll:
+			Pe_float(cthis->alarm.alarm_ll, 1, (char *)arg);
+			break;
+		case tchspt_hh:
+			Pe_touch_spot(cthis->alarm.touch_spot_hh, (char *)arg);
+			break;
+		case tchspt_hi:
+			Pe_touch_spot(cthis->alarm.touch_spot_hi, (char *)arg);
+			break;
+		case tchspt_lo:
+			Pe_touch_spot(cthis->alarm.touch_spot_lo, (char *)arg);	
+			break;
+		case tchspt_ll:
+			Pe_touch_spot(cthis->alarm.touch_spot_ll, (char *)arg);	
+			break;	
+		case alarm_backlash:
+			Pe_float(cthis->alarm.alarm_backlash, 1, (char *)arg);
+			break;
 		default:
 			break;
 			
@@ -281,6 +309,45 @@ static int MdlChn_modify_sconf(Model *self, IN int aux, char *s, int op, int val
 			cthis->chni.b = Operate_in_tange(cthis->chni.b, op, val, -100, 100);
 			self->to_string(self, chnaux_b, s);
 			break;
+		
+		case alarm_hh:
+			cthis->alarm.alarm_hh = Operate_in_tange(cthis->alarm.alarm_hh, op, val, -100, 100);
+			Pe_float(cthis->alarm.alarm_hh, 1, s);
+			break;
+		case alarm_hi:
+			cthis->alarm.alarm_hi = Operate_in_tange(cthis->alarm.alarm_hi, op, val, -100, 100);
+			Pe_float(cthis->alarm.alarm_hi, 1, s);
+			break;
+		case alarm_lo:
+			cthis->alarm.alarm_lo = Operate_in_tange(cthis->alarm.alarm_lo, op, val, -100, 100);
+			Pe_float(cthis->alarm.alarm_lo, 1, s);
+			break;
+		case alarm_ll:
+			cthis->alarm.alarm_ll = Operate_in_tange(cthis->alarm.alarm_ll, op, val, -100, 100);
+			Pe_float(cthis->alarm.alarm_ll, 1, (char *)s);
+			break;
+		case tchspt_hh:
+			cthis->alarm.touch_spot_hh = Operate_in_tange(cthis->alarm.touch_spot_hh, op, val, 1, 13);
+			Pe_touch_spot(cthis->alarm.touch_spot_hh, (char *)s);
+			break;
+		case tchspt_hi:
+			cthis->alarm.touch_spot_hi = Operate_in_tange(cthis->alarm.touch_spot_hi, op, val, 1, 13);
+			Pe_touch_spot(cthis->alarm.touch_spot_hi, (char *)s);
+			break;
+		case tchspt_lo:
+			cthis->alarm.touch_spot_lo = Operate_in_tange(cthis->alarm.touch_spot_lo, op, val, 1, 13);
+			Pe_touch_spot(cthis->alarm.touch_spot_lo, (char *)s);	
+			break;
+		case tchspt_ll:
+			cthis->alarm.touch_spot_ll = Operate_in_tange(cthis->alarm.touch_spot_ll, op, val, 1, 13);
+			Pe_touch_spot(cthis->alarm.touch_spot_ll, (char *)s);	
+			break;	
+		case alarm_backlash:
+			cthis->alarm.alarm_backlash = Operate_in_tange(cthis->alarm.alarm_backlash, op, val, 0, 100);
+			Pe_float(cthis->alarm.alarm_backlash, 1, (char *)s);
+			break;
+		
+		
 		
 	}
 	return RET_OK;
@@ -453,7 +520,14 @@ static void Pe_singnaltype(e_signal_t sgt, char *str)
 	}	
 }
 
-
+static void Pe_touch_spot(int spot, char *str)
+{
+	
+	if(spot < 12 && spot > 0)
+		sprintf(str, "%d", spot);
+	else
+		sprintf(str, "нч");
+}
 
 //static int Str_float_to_int(char *str, int prec)
 //{

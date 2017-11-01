@@ -57,9 +57,10 @@ typedef struct {
 //------------------------------------------------------------------------------
 // global variable declarations
 //------------------------------------------------------------------------------
-extern system_conf_t	g_system;
-extern int g_set_weight;
-extern char		g_setting_chn;
+extern 	system_conf_t		g_system;
+extern	char 				*arr_p_vram[16];
+extern 	int 				g_set_weight;
+extern 	char				g_setting_chn;
 //------------------------------------------------------------------------------
 // function prototypes
 //------------------------------------------------------------------------------

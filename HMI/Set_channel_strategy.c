@@ -55,7 +55,7 @@ static char *const arr_p_chnnel_entry[11] = {"通道号", "位号", "信号类型", "工程
  "量程下限", "量程上限", "记录容量", "滤波时间", "小信号切除", "零点调整 K", "零点调整 B"
 };
 
-static char *arr_p_vram[11];
+
 
 
 //------------------------------------------------------------------------------
@@ -149,7 +149,7 @@ static int Cns_init(void *arg)
 	for(i = 0; i < 11; i++) {
 		
 		arr_p_vram[i] = VRAM_alloc(48);
-		
+		memset(arr_p_vram[i], 0, 48);
 	}
 	
 	g_set_weight = 1;
@@ -215,10 +215,8 @@ static int Cns_key_up(void *arg)
 static int Cns_key_dn(void *arg)
 {
 	
-//	Model_chn			*p_mc = Get_Mode_chn(g_setting_chn);
-//	Model				*p_md = SUPER_PTR(p_mc, Model);
+
 	strategy_keyval_t	kt = {SY_KEYTYPE_HIT};
-//	strategy_focus_t 	*p_syf = &g_chn_strategy.sf;
 	int 				ret = RET_OK;
 	
 	if(arg) {
@@ -226,7 +224,7 @@ static int Cns_key_dn(void *arg)
 		
 	}
 	
-	//
+
 	if(kt.key_type == SY_KEYTYPE_LONGPUSH) {
 		g_set_weight += 10;
 		
@@ -244,18 +242,6 @@ static int Cns_key_rt(void *arg)
 {
 	strategy_focus_t *p_syf = &g_chn_strategy.sf;
 	int ret = RET_OK;
-//	switch(p_syf->f_row) {
-//		case 0:
-//			
-//			
-//			break;
-//		default:
-//			ret = ERR_OPT_FAILED;
-//			break;
-//		
-//		
-//	}
-	
 	
 	if(p_syf->f_row < 10)
 		p_syf->f_row ++;
@@ -265,7 +251,6 @@ static int Cns_key_rt(void *arg)
 		ret = -1;
 	}
 		
-	 
 	Cns_update_len(p_syf);
 	return ret;
 }
@@ -275,21 +260,7 @@ static int Cns_key_lt(void *arg)
 {
 	strategy_focus_t *p_syf = &g_chn_strategy.sf;
 	int ret = RET_OK;
-//	switch(p_syf->f_row) {
-//		case 0:
-//			p_syf->num_byte = 1;
-//			if(p_syf->start_byte == 0)
-//				p_syf->start_byte = 17;
-//			else {
-//				p_syf->start_byte -= 1;
-//			}
-//			break;
-//		default:
-//			ret = ERR_OPT_FAILED;
-//			break;
-//		
-//		
-//	}
+	
 	if(p_syf->f_row )
 		p_syf->f_row --;
 	else {

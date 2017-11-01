@@ -25,7 +25,7 @@ typedef enum {
 	chnaux_upper_limit,
 	chnaux_small_signal,
 	chnaux_k,
-	chnaux_b.
+	chnaux_b,
 	alarm_hh,
 	alarm_hi,
 	alarm_lo,
@@ -77,10 +77,10 @@ typedef struct {
 }chn_info_t;
 
 typedef struct {
-	uint8_t				alarm_hh;
-	uint8_t				alarm_hi;
-	uint8_t				alarm_lo;
-	uint8_t				alarm_ll;
+	short				alarm_hh;
+	short				alarm_hi;
+	short				alarm_lo;
+	short				alarm_ll;
 	
 	//±¨¾¯Êä³ö´¥µã
 	uint8_t				touch_spot_hh;
