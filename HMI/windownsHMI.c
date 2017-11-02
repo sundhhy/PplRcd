@@ -42,7 +42,7 @@ HMI *g_p_winHmi;
 #define	WINHMI_TITLE_ERR			"错误!"
 #define	WINT_TIMER_SET				"时间设置"
 #define	WINT_PSD_SET				"密码设置"
-
+#define	WINT_PSD_INPUT				"输入密码"
 
 static ro_char winHim_code_bkpic[] =  {"<bpic m=1 vx0=80 vy0=60 >28</>" };
 static ro_char winHim_code_title[] =  {"<text m=1 f=16 clr=white vx0=88 vy0=62 > </>" };
@@ -179,6 +179,9 @@ static void MaininitSheet(HMI *self )
 	} else if(cthis->win_type == WINTYPE_PASSWORD_SET) {
 		Password_init(cthis);
 		
+	} else if(cthis->win_type == WINTYPE_PASSWORD_INPUT) {
+		Password_init(cthis);
+		cthis->p_sht_title->cnt.data = WINT_PSD_INPUT;
 	} else if(cthis->win_type < WINTYPE_MUS_BND) {
 		Popup_init(cthis);
 		
@@ -200,6 +203,9 @@ static void winHmiHide(HMI *self )
 		
 		Timeset_hide(cthis);
 	} else if(cthis->win_type == WINTYPE_PASSWORD_SET) {
+		Password_hide(cthis);
+		
+	}  else if(cthis->win_type == WINTYPE_PASSWORD_INPUT) {
 		Password_hide(cthis);
 		
 	} else if(cthis->win_type < WINTYPE_MUS_BND) {
@@ -261,6 +267,9 @@ static void winHmi_ClearFocuse(HMI *self, uint8_t fouse_row, uint8_t fouse_col)
 	} else if(cthis->win_type == WINTYPE_PASSWORD_SET) {
 		Password_focuse(cthis, fouse_row, fouse_col, 0);
 		
+	} else if(cthis->win_type == WINTYPE_PASSWORD_INPUT) {
+		Password_focuse(cthis, fouse_row, fouse_col, 0);
+		
 	} else if(self->arg[0] < WINTYPE_MUS_BND) {
 		
 		PopUp_focuse(cthis, fouse_row, 0);
@@ -279,7 +288,10 @@ static void winHmi_ShowFocuse( HMI *self, uint8_t fouse_row, uint8_t fouse_col)
 	} else if(cthis->win_type == WINTYPE_PASSWORD_SET) {
 		Password_focuse(cthis, fouse_row, fouse_col, 1);
 		
-	} else if(self->arg[0] < WINTYPE_MUS_BND) {
+	} else if(cthis->win_type == WINTYPE_PASSWORD_INPUT) {
+		Password_focuse(cthis, fouse_row, fouse_col, 1);
+		
+	}  else if(self->arg[0] < WINTYPE_MUS_BND) {
 		
 		PopUp_focuse(cthis, fouse_row, 1);
 	} else {
@@ -431,7 +443,7 @@ static int Win_CUR_move(winHmi *cthis, int kc)
 			
 		}
 		
-	} else if(cthis->win_type == WINTYPE_PASSWORD_SET){
+	} else if((cthis->win_type == WINTYPE_PASSWORD_SET) || (cthis->win_type == WINTYPE_PASSWORD_INPUT)){
 		switch(kc) {
 			case HMI_KEYCODE_UP:
 				if(cthis->f_row == 0) {

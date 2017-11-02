@@ -22,7 +22,7 @@ static const char setup_hmi_code_clean[] =  {"<cpic  bx=160 by=40>17</>" };
 
 static const char setup_hmi_code_cpic[] =  {"<icon bx=160 by=40 xn=2 yn=4 n=0>18</>" };
 static const char setup_hmi_code_passwd[] =  {"<text vx0=100 vy0=44 f=24 clr=blue m=0> </>" };
-static const char setup_hmi_code_lock[] =  {"<text vx0=200 vy0=44 f=24 m=0> </>" };
+static const char setup_hmi_code_lock[] =  {"<text vx0=230 vy0=50 f=16 m=0> </>" };
 
 //------------------------------------------------------------------------------
 // module global vars
@@ -147,7 +147,7 @@ static void	Setup_initSheet(HMI *self)
 	p_exp = ExpCreate( "text");
 	cthis->p_password = Sheet_alloc( p_shtctl);
 	p_exp->inptSht( p_exp, (void *)setup_hmi_code_passwd, cthis->p_password) ;
-	
+	cthis->p_password->id = SHEET_PSD_TEXT;
 	p_exp = ExpCreate("text");
 	cthis->p_lock = Sheet_alloc( p_shtctl);
 	p_exp->inptSht( p_exp, (void *)setup_hmi_code_lock, cthis->p_lock) ;
@@ -160,8 +160,7 @@ static void	Setup_initSheet(HMI *self)
 		System_to_string(arr_p_vram[0], arr_p_vram[1] , 16, es_psd); 
 		
 		
-		cthis->p_password->cnt.data = arr_p_vram[1];
-		cthis->p_password->cnt.len = strlen(cthis->p_password->cnt.data);
+		
 		
 		Setup_HMI_lock(cthis);
 		
@@ -176,7 +175,8 @@ static void	Setup_initSheet(HMI *self)
 		
 		
 	}
-	
+	cthis->p_password->cnt.data = arr_p_vram[1];
+	cthis->p_password->cnt.len = strlen(cthis->p_password->cnt.data);
 
 	g_p_sht_bkpic->cnt.data = SETUP_PICNUM;
 
@@ -214,20 +214,38 @@ static void	Setup_HMI_hide(HMI *self)
 
 static void	Setup_HMI_init_focus(HMI *self)
 {
-//	Setup_HMI		*cthis = SUB_PTR( self, HMI, Setup_HMI);
+	Setup_HMI		*cthis = SUB_PTR( self, HMI, Setup_HMI);
 	short i;
-	self->p_fcuu = Focus_alloc(5, 2);
 	
-	Focus_Set_sht(self->p_fcuu, 0, 0, g_p_text);
-	Focus_Set_sht(self->p_fcuu, 0, 1, g_p_text);
-	
-	for(i = 1; i < 5; i++) {
+	if(cthis->unlock) {
+		self->p_fcuu = Focus_alloc(1, 1);
+		Focus_Set_sht(self->p_fcuu, 0, 0, cthis->p_password);
+		Focus_Set_focus(self->p_fcuu, 1, 0);
+	} else {
+		self->p_fcuu = Focus_alloc(4, 2);
+		for(i = 0; i < 4; i++) {
 		
-		Focus_Set_sht(self->p_fcuu, i, 0, g_p_sht_bkpic);
-		Focus_Set_sht(self->p_fcuu, i, 1, g_p_sht_bkpic);
+			Focus_Set_sht(self->p_fcuu, i, 0, g_p_sht_bkpic);
+			Focus_Set_sht(self->p_fcuu, i, 1, g_p_sht_bkpic);
+		}
+		
+		Focus_Set_focus(self->p_fcuu, 4, 0);
 	}
+
+//	Focus_Set_focus(self->p_fcuu, 5, 0);
 	
-	Focus_Set_focus(self->p_fcuu, 5, 0);
+//	self->p_fcuu = Focus_alloc(5, 2);
+//	
+//	Focus_Set_sht(self->p_fcuu, 0, 0, cthis->p_password);
+//	Focus_Set_sht(self->p_fcuu, 0, 1, cthis->p_password);
+//	
+//	for(i = 1; i < 5; i++) {
+//		
+//		Focus_Set_sht(self->p_fcuu, i, 0, g_p_sht_bkpic);
+//		Focus_Set_sht(self->p_fcuu, i, 1, g_p_sht_bkpic);
+//	}
+//	
+//	Focus_Set_focus(self->p_fcuu, 5, 0);
 }
 
 static void	Setup_HMI_clear_focus(HMI *self, uint8_t fouse_row, uint8_t fouse_col)
@@ -236,14 +254,16 @@ static void	Setup_HMI_clear_focus(HMI *self, uint8_t fouse_row, uint8_t fouse_co
 	uint8_t			vx0 = 0;
 	uint8_t			vy0 = 80;
 	
-	if(fouse_row == 0) {
-		g_p_text->cnt.effects = GP_CLR_EFF(g_p_text->cnt.effects, EFF_FOCUS);
-		Sheet_slide(g_p_text);
-	} else if(fouse_row > 4 || fouse_col >1) {
+	if(cthis->unlock ) {
+		if(fouse_row || fouse_col) 
+			return;
+		cthis->p_password->cnt.effects = GP_CLR_EFF(cthis->p_password->cnt.effects, EFF_FOCUS);
+		Sheet_slide(cthis->p_password);
+	} else if(fouse_row > 3 || fouse_col >1) {
 		return;
 	} else {
 		cthis->p_clean_focus->area.x0 = vx0 + fouse_col * cthis->p_clean_focus->bxsize;
-		cthis->p_clean_focus->area.y0 = vy0 + (fouse_row - 1) *  cthis->p_clean_focus->bysize;
+		cthis->p_clean_focus->area.y0 = vy0 + (fouse_row - 0) *  cthis->p_clean_focus->bysize;
 		
 		cthis->p_clean_focus->area.x1 = cthis->p_clean_focus->area.x0 + cthis->p_clean_focus->bxsize;
 		cthis->p_clean_focus->area.y1 = cthis->p_clean_focus->area.y0 + cthis->p_clean_focus->bysize;
@@ -254,22 +274,24 @@ static void	Setup_HMI_clear_focus(HMI *self, uint8_t fouse_row, uint8_t fouse_co
 }
 static void	Setup_HMI_show_focus(HMI *self, uint8_t fouse_row, uint8_t fouse_col)
 {
-//	Setup_HMI		*cthis = SUB_PTR( self, HMI, Setup_HMI);
+	Setup_HMI		*cthis = SUB_PTR( self, HMI, Setup_HMI);
 	uint8_t			row, col;
 	uint8_t			vx0 = 0;
 	uint8_t			vy0 = 80;
 
 	row = self->p_fcuu->focus_row;
 	col = self->p_fcuu->focus_col;
-	if(row == 0) {
-		g_p_text->cnt.effects = GP_SET_EFF(g_p_text->cnt.effects, EFF_FOCUS);
-		Sheet_slide(g_p_text);
-	} else if(row > 4 || col >1) {
+	if(cthis->unlock ) {
+		if(row || col) 
+			return;
+		cthis->p_password->cnt.effects = GP_SET_EFF(cthis->p_password->cnt.effects, EFF_FOCUS);
+		Sheet_slide(cthis->p_password);
+	} else if(row > 3 || col >1) {
 		return;
 	} else {
-		g_p_cpic->area.n = (row - 1) * 2 + col;
+		g_p_cpic->area.n = (row - 0) * 2 + col;
 		g_p_cpic->area.x0 = vx0 + col * g_p_cpic->bxsize;
-		g_p_cpic->area.y0 = vy0 + (row - 1) * g_p_cpic->bysize;
+		g_p_cpic->area.y0 = vy0 + (row - 0) * g_p_cpic->bysize;
 		g_p_cpic->p_gp->vdraw( g_p_cpic->p_gp, &g_p_cpic->cnt, &g_p_cpic->area);
 		Flush_LCD();
 	}
@@ -283,27 +305,27 @@ static void	Setup_HMI_hitHandle(HMI *self, char *s_key)
 	
 	Setup_HMI		*cthis = SUB_PTR( self, HMI, Setup_HMI);
 	sheet		*p_focus;
-	shtCmd		*p_cmd;
+//	shtCmd		*p_cmd;
 	uint8_t		focusRow = self->p_fcuu->focus_row;
 	uint8_t		focusCol = self->p_fcuu->focus_col;
 	uint8_t		chgFouse = 0;
 	
 	
-	if(cthis->unlock == 0)
-	{
-		if(!strcmp(s_key, HMIKEY_ESC))
-		{
-			self->switchBack(self);
-		} else {
-			Input_Password(self);
-			
-			
-		}
-		
-	
-		
-		return;
-	}
+//	if(cthis->unlock)
+//	{
+//		if(!strcmp(s_key, HMIKEY_ESC))
+//		{
+//			self->switchBack(self);
+//		} else {
+//			Input_Password(self);
+//			
+//			
+//		}
+//		
+//	
+//		
+//		return;
+//	}
 
 	if( !strcmp( s_key, HMIKEY_LEFT) )
 	{
@@ -330,16 +352,18 @@ static void	Setup_HMI_hitHandle(HMI *self, char *s_key)
 	if( !strcmp(s_key, HMIKEY_ENTER))
 	{
 		p_focus = Focus_Get_focus(self->p_fcuu);
-		if(p_focus->id == SHEET_G_TEXT) {
-			p_cmd = p_focus->p_enterCmd;
-			p_cmd->shtExcute(p_cmd, p_focus, self);
+		if(p_focus->id == SHEET_PSD_TEXT) {
+//			p_cmd = p_focus->p_enterCmd;
+//			p_cmd->shtExcute(p_cmd, p_focus, self);
+			Input_Password(self);
+			goto exit;
 		} else {
 			if(p_focus == NULL) 
 				goto exit;
-			if(self->p_fcuu->focus_row == 4 && self->p_fcuu->focus_col) {
+			if(self->p_fcuu->focus_row == 3 && self->p_fcuu->focus_col) {
 				self->switchHMI(self, g_p_HMI_menu);
 			} else {
-				g_p_Setting_HMI->arg[0] = self->p_fcuu->focus_row - 1;
+				g_p_Setting_HMI->arg[0] = self->p_fcuu->focus_row - 0;
 				g_p_Setting_HMI->arg[1] = self->p_fcuu->focus_col;
 				self->switchHMI(self, g_p_Setting_HMI);
 			}
@@ -371,7 +395,7 @@ static void Setup_HMI_unlock(Setup_HMI		*cthis)
 	cthis->p_lock->cnt.data = PSD_UNLOCK;
 	cthis->p_lock->cnt.len = strlen(cthis->p_lock->cnt.data);
 	cthis->p_lock->cnt.colour = COLOUR_GREN;
-	cthis->unlock = 1;
+	cthis->unlock = 0;
 	
 }
 static void Setup_HMI_lock(Setup_HMI		*cthis)
@@ -379,7 +403,7 @@ static void Setup_HMI_lock(Setup_HMI		*cthis)
 	cthis->p_lock->cnt.data = PSD_LOCKED;
 	cthis->p_lock->cnt.len = strlen(cthis->p_lock->cnt.data);
 	cthis->p_lock->cnt.colour = COLOUR_YELLOW;
-	cthis->unlock = 0;
+	cthis->unlock = 1;
 	
 }
 
@@ -425,7 +449,7 @@ static void Input_Password(HMI *self)
 {
 	winHmi			*p_win;
 	Win_content(arr_p_vram[1]);
-	g_p_winHmi->arg[0] = WINTYPE_PASSWORD_SET;
+	g_p_winHmi->arg[0] = WINTYPE_PASSWORD_INPUT;
 	g_p_winHmi->arg[1] = 0;
 	p_win = Get_winHmi();
 	p_win->p_cmd_rcv = self;

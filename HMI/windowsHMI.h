@@ -27,6 +27,8 @@
 #define	WINTYPE_SETTING					0x10
 #define	WINTYPE_TIME_SET				0x10			//
 #define	WINTYPE_PASSWORD_SET			0x11			//
+#define	WINTYPE_PASSWORD_INPUT			0x12			//
+
 
 //窗口标志在arg[1]中传递
 #define WINFLAG_RETURN				1			//该标志控制窗口在确认按键中返回原界面		

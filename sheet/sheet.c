@@ -124,6 +124,7 @@ struct SHEET *Sheet_alloc( struct SHTCTL *p_ctl)
 			p_sht->e_heifht = 0;
 			
 			p_sht->cnt.subType = 0;
+			p_sht->cnt.effects = 0;
 			
 			p_sht->subAtt.numSubCol = 0;
 			p_sht->subAtt.numSubRow = 0;

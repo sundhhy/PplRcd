@@ -26,6 +26,7 @@
 
 #define	SHEET_BOXLIST				0x2a
 #define	SHEET_G_TEXT				0x2b
+#define	SHEET_PSD_TEXT				0x2c
 
 #define IS_CHECK(n)				((n&0xf0) == 0x30)
 #define SHTID_CHECK(n)			(0x30 + n)
