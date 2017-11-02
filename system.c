@@ -85,6 +85,27 @@ void Password_modify(char	*p_s_psd, int idx, int op)
 	
 }
 
+int Str_Password_match(char *p_s_psd)
+{
+	
+	
+	short	i, data;
+	int			ret = 0;
+	
+	for(i = 0; i < 3; i++) {
+		data = atoi(p_s_psd);
+	
+		if( g_system.password[i] != data) {
+			ret = 1;
+			break;
+		}
+		
+		p_s_psd += 3;
+	}
+	
+	return ret;
+	
+}
 
 //"** ** **"
 void Password_set_by_str(char	*p_s_psd)

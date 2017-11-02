@@ -1,6 +1,7 @@
 #include "Setup_HMI.h"
 #include "sdhDef.h"
 #include "ExpFactory.h"
+#include "windowsHmi.h"
 
 #include <string.h>
 
@@ -14,10 +15,14 @@
 #define SETUP_PICNUM		"17"
 #define SETUP_TITLE		"设置"
 
+#define PSD_LOCKED		"未解锁"
+#define PSD_UNLOCK		"解锁"
+
 static const char setup_hmi_code_clean[] =  {"<cpic  bx=160 by=40>17</>" };
 
 static const char setup_hmi_code_cpic[] =  {"<icon bx=160 by=40 xn=2 yn=4 n=0>18</>" };
-static const char setup_hmi_code_passwd[] =  {"<text vx0=100 vy0=44 f=24 clr=blue m=0>** ** **</>" };
+static const char setup_hmi_code_passwd[] =  {"<text vx0=100 vy0=44 f=24 clr=blue m=0> </>" };
+static const char setup_hmi_code_lock[] =  {"<text vx0=200 vy0=44 f=24 m=0> </>" };
 
 //------------------------------------------------------------------------------
 // module global vars
@@ -56,6 +61,13 @@ static void	Setup_HMI_init_focus(HMI *self);
 static void	Setup_HMI_clear_focus(HMI *self, uint8_t fouse_row, uint8_t fouse_col);
 static void	Setup_HMI_show_focus(HMI *self, uint8_t fouse_row, uint8_t fouse_col);
 static void	Setup_HMI_hitHandle( HMI *self, char *s_key);
+
+
+
+static void Input_Password(HMI *self);
+static void Setup_HMI_lock(Setup_HMI		*cthis);
+static void Setup_HMI_unlock(Setup_HMI		*cthis);
+
 //============================================================================//
 //            P U B L I C   F U N C T I O N S                                 //
 //============================================================================//
@@ -122,15 +134,49 @@ static void	Setup_initSheet(HMI *self)
 	shtctl 			*p_shtctl = NULL;
 	p_shtctl = GetShtctl();
 	
+	
+	
+	
 	p_exp = ExpCreate( "pic");
 	p_exp->inptSht( p_exp, (void *)setup_hmi_code_cpic, g_p_cpic) ;
 	
 	cthis->p_clean_focus = Sheet_alloc( p_shtctl);
 	p_exp->inptSht( p_exp, (void *)setup_hmi_code_clean, cthis->p_clean_focus) ;
 	
+	//密码
 	p_exp = ExpCreate( "text");
-	p_exp->inptSht( p_exp, (void *)setup_hmi_code_passwd, g_p_text) ;
-	g_p_text ->p_enterCmd = &g_keyHmi->shtCmd;
+	cthis->p_password = Sheet_alloc( p_shtctl);
+	p_exp->inptSht( p_exp, (void *)setup_hmi_code_passwd, cthis->p_password) ;
+	
+	p_exp = ExpCreate("text");
+	cthis->p_lock = Sheet_alloc( p_shtctl);
+	p_exp->inptSht( p_exp, (void *)setup_hmi_code_lock, cthis->p_lock) ;
+	//如果是与窗口交互时切换回来就不进行初始化
+	if((self->flag & HMIFLAG_WIN) == 0) {
+		VRAM_init();
+		arr_p_vram[0] = VRAM_alloc(4);				//用来放数值的密码
+		arr_p_vram[1] = VRAM_alloc(16);				//用来放密码对应的字符串
+		memset(arr_p_vram[0], 0, 4);
+		System_to_string(arr_p_vram[0], arr_p_vram[1] , 16, es_psd); 
+		
+		
+		cthis->p_password->cnt.data = arr_p_vram[1];
+		cthis->p_password->cnt.len = strlen(cthis->p_password->cnt.data);
+		
+		Setup_HMI_lock(cthis);
+		
+	} else {
+		
+		if(cthis->unlock) {
+			Setup_HMI_lock(cthis);
+		} else {
+			
+			Setup_HMI_unlock(cthis);
+		}
+		
+		
+	}
+	
 
 	g_p_sht_bkpic->cnt.data = SETUP_PICNUM;
 
@@ -141,7 +187,8 @@ static void	Setup_initSheet(HMI *self)
 	Sheet_updown(g_p_sht_bkpic, h++);
 	Sheet_updown(g_p_sht_title, h++);
 	Sheet_updown(g_p_shtTime, h++);
-	Sheet_updown(g_p_text, h++);
+	Sheet_updown(cthis->p_password, h++);
+	Sheet_updown(cthis->p_lock, h++);
 
 	self->init_focus(self);
 }
@@ -149,14 +196,17 @@ static void	Setup_HMI_hide(HMI *self)
 {
 	Setup_HMI		*cthis = SUB_PTR( self, HMI, Setup_HMI);
 	
-	Sheet_free(cthis->p_clean_focus);
 	
-	Sheet_updown(g_p_text, -1);
+	
+	Sheet_updown(cthis->p_lock, -1);
+	Sheet_updown(cthis->p_password, -1);
 	Sheet_updown(g_p_shtTime, -1);
 	Sheet_updown(g_p_sht_title, -1);
 	Sheet_updown(g_p_sht_bkpic, -1);
 	
-	
+	Sheet_free(cthis->p_clean_focus);
+	Sheet_free(cthis->p_password);
+	Sheet_free(cthis->p_lock);
 	
 	Focus_free(self->p_fcuu);
 }
@@ -231,12 +281,29 @@ static void	Setup_HMI_show_focus(HMI *self, uint8_t fouse_row, uint8_t fouse_col
 static void	Setup_HMI_hitHandle(HMI *self, char *s_key)
 {
 	
-//	Setup_HMI		*cthis = SUB_PTR( self, HMI, Setup_HMI);
+	Setup_HMI		*cthis = SUB_PTR( self, HMI, Setup_HMI);
 	sheet		*p_focus;
 	shtCmd		*p_cmd;
 	uint8_t		focusRow = self->p_fcuu->focus_row;
 	uint8_t		focusCol = self->p_fcuu->focus_col;
 	uint8_t		chgFouse = 0;
+	
+	
+	if(cthis->unlock == 0)
+	{
+		if(!strcmp(s_key, HMIKEY_ESC))
+		{
+			self->switchBack(self);
+		} else {
+			Input_Password(self);
+			
+			
+		}
+		
+	
+		
+		return;
+	}
 
 	if( !strcmp( s_key, HMIKEY_LEFT) )
 	{
@@ -293,6 +360,79 @@ static void	Setup_HMI_hitHandle(HMI *self, char *s_key)
 	
 	exit:
 		return;
+}
+
+
+
+
+
+static void Setup_HMI_unlock(Setup_HMI		*cthis)
+{
+	cthis->p_lock->cnt.data = PSD_UNLOCK;
+	cthis->p_lock->cnt.len = strlen(cthis->p_lock->cnt.data);
+	cthis->p_lock->cnt.colour = COLOUR_GREN;
+	cthis->unlock = 1;
+	
+}
+static void Setup_HMI_lock(Setup_HMI		*cthis)
+{
+	cthis->p_lock->cnt.data = PSD_LOCKED;
+	cthis->p_lock->cnt.len = strlen(cthis->p_lock->cnt.data);
+	cthis->p_lock->cnt.colour = COLOUR_YELLOW;
+	cthis->unlock = 0;
+	
+}
+
+
+static int Setup_HMI_cmd(void *p_rcv, int cmd,  void *arg)
+{
+	HMI					*self = (HMI *)p_rcv;
+	Setup_HMI		*cthis = SUB_PTR( self, HMI, Setup_HMI);
+	int 				ret = RET_OK;
+	char				win_tips[32];
+	switch(cmd) {
+		
+		case wincmd_commit:
+			
+			ret = Str_Password_match(arr_p_vram[1]) ;
+			if(ret == 0) {
+				g_p_winHmi->arg[0] = WINTYPE_TIPS;
+				g_p_winHmi->arg[1] = WINFLAG_RETURN;
+				Win_content("密码输入成功");
+				Setup_HMI_unlock(cthis);
+				g_p_winHmi->switchHMI(g_p_winHmi, g_p_winHmi);
+			} else {
+				g_p_winHmi->arg[0] = WINTYPE_ERROR;
+				g_p_winHmi->arg[1] = WINFLAG_RETURN;
+				sprintf(win_tips,"密码错误");
+				Win_content(win_tips);
+				Setup_HMI_lock(cthis);
+				g_p_winHmi->switchHMI(g_p_winHmi, g_p_winHmi);
+
+			}
+		
+			break;
+		
+	}
+	
+	return ret;
+	
+	
+}
+
+
+static void Input_Password(HMI *self)
+{
+	winHmi			*p_win;
+	Win_content(arr_p_vram[1]);
+	g_p_winHmi->arg[0] = WINTYPE_PASSWORD_SET;
+	g_p_winHmi->arg[1] = 0;
+	p_win = Get_winHmi();
+	p_win->p_cmd_rcv = self;
+	p_win->cmd_hdl = Setup_HMI_cmd;
+	self->switchHMI(self, g_p_winHmi);
+	
+	
 }
 
 

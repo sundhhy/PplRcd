@@ -73,6 +73,7 @@ void System_modify_string(char	*p_s, int aux, int op, int val);
 void System_to_string(void *p_data, char	*p_s, int len, int aux);
 void Password_set_by_str(char	*p_s_psd);
 
+int Str_Password_match(char *p_s_psd);
 void Password_modify(char	*p_s_psd, int idx, int op);
 int Password_iteartor(char	*p_time_text, int idx, int director);
 #endif

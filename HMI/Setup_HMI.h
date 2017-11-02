@@ -26,9 +26,11 @@ CLASS(Setup_HMI)
 	EXTENDS(HMI);
 	
 	sheet	*p_clean_focus;
+	sheet	*p_password;
+	sheet	*p_lock;
 	
-	
-	
+	uint8_t		unlock;
+	uint8_t		none[3];
 	
 };
 

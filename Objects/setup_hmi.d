@@ -37,3 +37,4 @@
 .\objects\setup_hmi.o: .\Views\Composition.h
 .\objects\setup_hmi.o: .\Expression\Reader.h
 .\objects\setup_hmi.o: E:\mylib\sdhLib\inc\basis/assert.h
+.\objects\setup_hmi.o: HMI\windowsHmi.h
