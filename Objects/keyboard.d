@@ -29,6 +29,7 @@
 .\objects\keyboard.o: .\device\dev_cmd.h
 .\objects\keyboard.o: .\device\dev_char.h
 .\objects\keyboard.o: .\device\dev_lcd.h
+.\objects\keyboard.o: ..\PplRcd\system.h
 .\objects\keyboard.o: E:\mylib\sdhLib\inc\sdhDef.h
 .\objects\keyboard.o: ..\PplRcd\sdhlibConf.h
 .\objects\keyboard.o: E:\mylib\sdhLib\inc\basis/sdhDebug.h

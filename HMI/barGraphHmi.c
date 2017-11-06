@@ -505,11 +505,14 @@ static void BarHmi_Init_chnSht(void)
 	
 	}
 }
+
+
 static int BarHmi_Data_update(void *p_data, void *p_mdl)
 {
 	
 	barGhHMI *self = Get_barGhHMI();
 	sheet	*p_sht = (sheet *)p_data;
+	static	int test_chn = 0;
 
 	uint16_t bar_vx0[BARHMI_NUM_BARS] = { 30, 78, 126, 172, 220, 268};
 	
@@ -523,6 +526,12 @@ static int BarHmi_Data_update(void *p_data, void *p_mdl)
 	uint32_t	prcn = 0;
 	uint32_t	height = 0;
 	
+
+	if(test_chn != i)
+		return 0;
+	test_chn ++;
+	if(test_chn == 6)
+		test_chn = 0;
 
 	if(IS_HMI_KEYHANDLE(g_p_barGhHmi->flag))
 		return 0;
@@ -573,6 +582,7 @@ static int BarHmi_Util_update(void *p_data, void *p_mdl)
 	uint16_t utit_vy0 = 46;
 	uint16_t i = p_sht->id;
 	
+	
 	if(IS_HMI_KEYHANDLE(g_p_barGhHmi->flag))
 		return 0;
 		
@@ -584,6 +594,8 @@ static int BarHmi_Util_update(void *p_data, void *p_mdl)
 		return 0;
 	if(IS_HMI_HIDE(g_p_barGhHmi->flag))
 		return 0;
+	
+	
 	Sheet_slide( p_sht);
 	return 0;
 	

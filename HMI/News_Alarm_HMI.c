@@ -183,13 +183,13 @@ static void	News_Alarm_HMI_hitHandle(HMI *self, char *s_key)
 
 	if( !strcmp( s_key, HMIKEY_LEFT) )
 	{
-		Focus_move_left(self->p_fcuu);
+		Focus_move_up(self->p_fcuu);
 		chgFouse = 1;
 	}
 	
 	if( !strcmp( s_key, HMIKEY_RIGHT) )
 	{
-		Focus_move_right(self->p_fcuu);
+		Focus_move_down(self->p_fcuu);
 		chgFouse = 1;
 	}
 	if( !strcmp(s_key, HMIKEY_ENTER))

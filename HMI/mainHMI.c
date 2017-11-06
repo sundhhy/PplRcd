@@ -47,7 +47,7 @@ HMI *g_p_mainHmi;
 
 //每个通道的单位
 static ro_char MAIN_hmi_code_data[] = { "<text f=32 m=0 mdl=test aux=0>100</>" };
-static ro_char MAIN_hmi_code_unit[] = { "<text f=24 m=0 mdl=test aux=1>m3/h</>" };
+static ro_char MAIN_hmi_code_unit[] = { "<text f=16 m=0 mdl=test aux=1>m3/h</>" };
 //通道报警:HH HI LI LL
 static ro_char MAIN_hmi_code_alarm[] = { "<text f=16 m=0 mdl=test aux=2> </>" };
 

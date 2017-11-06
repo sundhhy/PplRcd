@@ -51,10 +51,10 @@ sheet  		*g_arr_p_check[NUM_CHANNEL]; 		//是否显示的指示图形
 static const char RT_hmi_code_chninfo[] =  {"<cpic vx0=260 vy0=30 vx1=320 vy1=240>23</>" };
 
 
-static const char RT_hmi_code_div[] = { "<text vx0=8 vy0=36 f=16 m=0 clr=red>1</>" };
+static const char RT_hmi_code_div[] = { "<text vx0=8 vy0=36 f=16 m=0 clr=red>12</>" };
 
 static const char RT_hmi_code_data[] = { "<text f=16 vx0=285 m=0 aux=3>100</>" };
-static const char RLT_hmi_code_chnshow[] ={ "<icon vx0=265 vy0=62 xn=5 yn=1 n=0>17</>" };
+static const char RLT_hmi_code_chnshow[] ={ "<icon vx0=265 vy0=62 xn=5 yn=1 n=0>19</>" };
 #define  CHNSHOW_ROW_SPACE		32
 
 //------------------------------------------------------------------------------
@@ -166,7 +166,7 @@ static int	Init_RT_trendHMI( HMI *self, void *arg)
 	cthis->p_div = Sheet_alloc( p_shtctl);
 	p_exp->inptSht( p_exp, (void *)RT_hmi_code_div, cthis->p_div);
 	cthis->str_div[0] = cthis->p_div->cnt.data[0];
-	cthis->div = atoi(cthis->p_div->cnt.data);
+	cthis->min_div = atoi(cthis->p_div->cnt.data);
 	cthis->p_div->cnt.data = cthis->str_div;
 	cthis->p_div ->p_enterCmd = &g_keyHmi->shtCmd;
 	cthis->p_div->input =  RLT_div_input;
@@ -317,7 +317,7 @@ static int	RLT_div_input(void *self, void *data, int len)
 	cthis->str_div[0] = ((char *)data)[0];
 	cthis->str_div[1] = ((char *)data)[1];
 	cthis->p_div->cnt.len = len;
-	cthis->div = atoi(data);
+	cthis->min_div = atoi(data);
 	
 	return RET_OK;
 }
@@ -499,7 +499,7 @@ static int RLT_trendHmi_MdlUpdata( Observer *self, void *p_srcMdl)
 		return 0;
 	
 	cthis->count ++;
-	if(cthis->count < cthis->div)
+	if(cthis->count < cthis->min_div)
 		return RET_OK;
 	cthis->count = 0;
 	//刷新时间未到就直接退出
@@ -521,7 +521,7 @@ static int RLT_trendHmi_MdlUpdata( Observer *self, void *p_srcMdl)
 		
 		if(y < (vy0 - height))
 			y = vy0 - height;
-//		y = 100;
+//		y = 100 - i * 10;
 		
 		g_arr_p_chnData[i]->cnt.data = p_mdl->to_string(p_mdl, AUX_DATA, NULL);
 		g_arr_p_chnData[i]->cnt.len = strlen(g_arr_p_chnData[i]->cnt.data);
@@ -552,7 +552,7 @@ static void RLT_Init_curve(RLT_trendHMI *self)
 		
 		Curve_clean(p_cctl);
 		self->count = 0;
-		Curve_set(p_cctl, 240/self->div, arr_clrs[i], 239, self->div);
+		Curve_set(p_cctl, 240/self->min_div, arr_clrs[i], 239, self->min_div);
 	}
 	
 	

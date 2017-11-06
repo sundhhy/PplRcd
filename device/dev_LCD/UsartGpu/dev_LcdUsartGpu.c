@@ -375,7 +375,7 @@ static void Cmdbuf_manager(char *p_cmd)
 	
 	if((cmd_count +  cmd_len) > UGPU_CMDBUF_LEN) {
 		GpuDone();
-		osDelay(250);
+		osDelay(200);
 	} 
 		
 	cmd_count += cmd_len;

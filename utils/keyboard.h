@@ -8,11 +8,14 @@
 #include "utils/time.h"
 #include <stdint.h>
 #include "device.h"
+#include "system.h"
 //------------------------------------------------------------------------------
 // const defines
 //------------------------------------------------------------------------------
+
+
 #define NUM_KEYS			6
-#define MAX_OBS			4
+#define MAX_OBS				4
 #define NUM_KEFIFO			16	//必须是2的幂
 
 //顺序与硬件上的引脚连接保持一致
@@ -23,12 +26,20 @@
 #define	KEYCODE_ENTER	0x05
 #define	KEYCODE_ESC		0x06
 
-#define	KEYGPIOID_RIGHT	DEVID_GPIO_D0
-#define	KEYGPIOID_LEFT	DEVID_GPIO_D1
-#define	KEYGPIOID_UP	DEVID_GPIO_D2
-#define	KEYGPIOID_DOWN	DEVID_GPIO_D3
-#define	KEYGPIOID_ENTER	DEVID_GPIO_D4
-#define	KEYGPIOID_ESC	DEVID_GPIO_D5
+//根据原理图来设置
+//#define	KEYGPIOID_RIGHT	DEVID_GPIO_D0
+//#define	KEYGPIOID_LEFT	DEVID_GPIO_D1
+//#define	KEYGPIOID_UP	DEVID_GPIO_D2
+//#define	KEYGPIOID_DOWN	DEVID_GPIO_D3
+//#define	KEYGPIOID_ENTER	DEVID_GPIO_D4
+//#define	KEYGPIOID_ESC	DEVID_GPIO_D5
+
+#define	KEYGPIOID_RIGHT	DEVID_GPIO_D2
+#define	KEYGPIOID_LEFT	DEVID_GPIO_D3
+#define	KEYGPIOID_UP	DEVID_GPIO_D5
+#define	KEYGPIOID_DOWN	DEVID_GPIO_D4
+#define	KEYGPIOID_ENTER	DEVID_GPIO_D0
+#define	KEYGPIOID_ESC	DEVID_GPIO_D1
 
 //原始事件
 #define KEY_PUSH			0x01
@@ -54,9 +65,6 @@ typedef struct {
 	uint8_t		keyCode;
 	uint8_t		eventCode;
 	uint8_t		none[2];
-
-	
-	
 }keyMsg_t;
 
 typedef int (*keyHdl)(  char num, keyMsg_t arr_msg[]);
@@ -77,7 +85,8 @@ typedef struct {
 	char		none[2];
 }keyObM_t;
 
-typedef struct {
+#if CONF_KEYSCAN_POLL == 0
+typedef struct{
 	
 	uint64_t	timestamp;
 	uint8_t		event;	
@@ -96,9 +105,6 @@ typedef struct {
 	
 }keyStatus_t;
 
-
-
-
 typedef struct {
 	
 	keyevent_t arr_ke[ NUM_KEFIFO];
@@ -106,30 +112,48 @@ typedef struct {
 	uint8_t		size;		//size 必须是2的幂
 	uint8_t		none;
 }KEFifo_t;
+#else 
+typedef struct {
+	uint8_t		key_code;
+	uint8_t		up_flag;			//用于记录： 单击是否已经被上报过了
+	uint16_t	sum_count;
+	uint32_t	last_pressed_count;
+}key_pin_info_t;
+
+#endif
+
+
+
+
 
 CLASS( Keyboard)
 {
-	keyObM_t 	arr_p_obm[MAX_OBS] ;
-	I_dev_Char	*arr_p_devGpio[ NUM_KEYS];
+	keyObM_t 		arr_p_obm[MAX_OBS] ;
+	I_dev_Char		*arr_p_devGpio[ NUM_KEYS];
+#if CONF_KEYSCAN_POLL == 0
 	keyStatus_t		arr_ks[ NUM_KEYS];
 	KEFifo_t		kef;
-	int (*init)( Keyboard *self, IN void *arg);
-	int (*addOb)( Keyboard *self, keyObservice *ob);
-	int	(*delOb)( Keyboard *self, char id);
-	void (*run)( Keyboard *self);
+#else
+	key_pin_info_t	arr_key_pins[NUM_KEYS];
+#endif
+	
+	uint32_t		run_count;			//run 运行的次数
+	uint32_t		cycle_ms;			//运行的周期
+	int (*init)(Keyboard *self, IN void *arg);
+	int (*addOb)(Keyboard *self, keyObservice *ob);
+	int	(*delOb)(Keyboard *self, char id);
+	void (*run)(Keyboard *self);
 	//privice
 	void	(*notify)( Keyboard *self, uint8_t num, keyMsg_t arr_msg[]);
-	
-	
-	
-	
+	void	(*scan_key_pins)(Keyboard *self);
+	void	(*identify_key_msg)(Keyboard *self, keyMsg_t *p_key_msg, int *num);
 };
 
-CLASS( KbTestOb)
+CLASS(KbTestOb)
 {
-	IMPLEMENTS( keyObservice);
+	IMPLEMENTS(keyObservice);
 	keyHdl hdl;
-	void (*setKeyHdl)( KbTestOb *self, keyHdl hdl);
+	void (*setKeyHdl)(KbTestOb *self, keyHdl hdl);
 };
 //------------------------------------------------------------------------------
 // Type definitions

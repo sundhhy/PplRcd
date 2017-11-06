@@ -179,7 +179,8 @@ int main (void) {
 	
 	
 	p_kb = GetKeyInsance();
-	p_kb->init( p_kb, NULL);
+	count = CONF_KEYSCAN_CYCLEMS;
+	p_kb->init( p_kb, &count);
 	tid_Thread_key = osThreadCreate (osThread(ThrdKeyRun), p_kb);
 	p_ctlkey = SUPER_PTR( Get_CtlKey(), Controller);
 	p_ctlkey->init( p_ctlkey, p_kb);
@@ -284,18 +285,19 @@ int main (void) {
 	
 #else
 #	if TDD_SHEET == 1
-	
+	count = 0;
 	while(1)
 	{
 		
 		
-		if(count == 4) {
+		if(count == 10) {
 			count = 0;
+			
 			p_mdl_test->getMdlData( p_mdl_test, 10000, NULL);
 			mTime->getMdlData( mTime, 0, NULL);
 		}
 		LCD_Run();
-		osDelay(250);
+		osDelay(100);
 		count ++;
 		
 	}
@@ -318,8 +320,11 @@ int main (void) {
 
 void ThrdKeyRun (void const *argument) {
 	Keyboard	*p_kb = ( Keyboard	*)argument ;
-	while (1) {    
-		p_kb->run( p_kb);	
+	while (1) { 
+
+		delay_ms(CONF_KEYSCAN_CYCLEMS);		
+		p_kb->run( p_kb);
+		
 		osThreadYield ();                                           // suspend thread
 	}
 }

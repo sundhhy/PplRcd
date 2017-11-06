@@ -45,8 +45,10 @@
 //#define  LONGPUSH_TIME_MS		2000
 //#define  REPORT_TIME_MS			500
 
-#define  DOUBLEHIT_TIME_MS		160
+
 #define  LONGPUSH_TIME_MS		1000
+
+#define  DOUBLEHIT_TIME_MS		160
 #define  REPORT_TIME_MS			200
 
 const uint32_t	arr_keyGpioID[ NUM_KEYS] = { KEYGPIOID_RIGHT, KEYGPIOID_LEFT, \
@@ -55,7 +57,9 @@ const uint32_t	arr_keyGpioID[ NUM_KEYS] = { KEYGPIOID_RIGHT, KEYGPIOID_LEFT, \
 const uint8_t	arr_keyCode[ NUM_KEYS] = { KEYCODE_RIGHT, KEYCODE_LEFT, \
 	KEYCODE_UP, KEYCODE_DOWN, KEYCODE_ENTER, KEYCODE_ESC};
 
+#if CONF_KEYSCAN_POLL == 0
 static keyMsg_t arr_keyMsg[ NUM_KEYS];
+#endif
 //------------------------------------------------------------------------------
 // local types
 //------------------------------------------------------------------------------
@@ -63,8 +67,9 @@ static keyMsg_t arr_keyMsg[ NUM_KEYS];
 //------------------------------------------------------------------------------
 // local vars
 //------------------------------------------------------------------------------
+#if CONF_KEYSCAN_POLL == 0
 static int first = 1;
-
+#endif
 //------------------------------------------------------------------------------
 // local function prototypes
 //------------------------------------------------------------------------------
@@ -75,22 +80,28 @@ static int Key_addOb( Keyboard *self, keyObservice *ob);
 static int Key_DelOb( Keyboard *self, char obId);
 static void	Key_Run( Keyboard *self);
 static void	Key_notify( Keyboard *self, uint8_t num, keyMsg_t arr_msg[]);
+static void Key_scan_pins(Keyboard *self);
+static void	Key_identify_key_msg(Keyboard *self, keyMsg_t *p_key_msg, int *num);
+
 	
 static int Key_TestUpdate( keyObservice *self,  uint8_t num, keyMsg_t arr_msg[]);
 static void KeyTest_setKeyHdl( KbTestOb *self, keyHdl hdl);
 
+#if CONF_KEYSCAN_POLL == 0
 static  void GpioIrqHdl( void *arg, int type, int encode);
-
 static keyStatus_t *findPks( keyStatus_t arrKs[], uint8_t keycode);
 static void KeyPush( keyStatus_t *p_ks, keyevent_t *p_ke);
 static void KeyRls( keyStatus_t *p_ks, keyevent_t *p_ke);
-static void KeyErr( Keyboard *self);
-
 static void KEFifo_Reset ( KEFifo_t *p_kef);
 static int PopKE( KEFifo_t *p_kef, keyevent_t *p_ke);
 static int PushKE( KEFifo_t *p_kef, keyevent_t *p_ke);
 static void KEFifo_Init ( KEFifo_t *p_kef, int size);
 static int	KEFifo_len( KEFifo_t *p_kef);
+static void KeyErr( Keyboard *self);
+
+#endif
+
+
 //============================================================================//
 //            P U B L I C   F U N C T I O N S                                 //
 //============================================================================//
@@ -165,17 +176,18 @@ void Keyevnet2Str( uint8_t eventCode, int buflen, char *buf)
 }
 
 CTOR( Keyboard)
-FUNCTION_SETTING( init, Keyboard_init);
-FUNCTION_SETTING( addOb, Key_addOb);
-FUNCTION_SETTING( delOb, Key_DelOb);
-FUNCTION_SETTING( run, Key_Run);
-FUNCTION_SETTING( notify, Key_notify);
-
+FUNCTION_SETTING(init, Keyboard_init);
+FUNCTION_SETTING(addOb, Key_addOb);
+FUNCTION_SETTING(delOb, Key_DelOb);
+FUNCTION_SETTING(run, Key_Run);
+FUNCTION_SETTING(notify, Key_notify);
+FUNCTION_SETTING(scan_key_pins, Key_scan_pins);
+FUNCTION_SETTING(identify_key_msg, Key_identify_key_msg);
 END_CTOR
 
 CTOR( KbTestOb)
-FUNCTION_SETTING( keyObservice.update, Key_TestUpdate);
-FUNCTION_SETTING( setKeyHdl, KeyTest_setKeyHdl);
+FUNCTION_SETTING(keyObservice.update, Key_TestUpdate);
+FUNCTION_SETTING(setKeyHdl, KeyTest_setKeyHdl);
 
 
 
@@ -188,13 +200,34 @@ END_CTOR
 /// \name Private Functions
 /// \{
 
-static int Keyboard_init( Keyboard *self, IN void *arg)
+static int Keyboard_init(Keyboard *self, IN void *arg)
 {
-	
 	int i ;
+	
+#if CONF_KEYSCAN_POLL == 1
+	int	cyc_ms = *((int *)arg);
+	self->run_count = 0;
+	self->cycle_ms = cyc_ms;
+	
+	for( i = 0; i < NUM_KEYS; i++)
+	{
+		if( Dev_open( arr_keyGpioID[ i], ( void *)&self->arr_p_devGpio[ i]))
+			goto err;
+		
+		self->arr_p_devGpio[ i]->ioctol( self->arr_p_devGpio[ i], DEVGPIOCMD_SET_ENCODE, arr_keyCode[i]);
+		
+		memset( self->arr_key_pins + i, 0, sizeof(key_pin_info_t));
+		self->arr_key_pins[i].key_code = arr_keyCode[i];
+		self->arr_key_pins[i].last_pressed_count = 0;
+		self->arr_key_pins[i].sum_count = 0;
+		self->arr_key_pins[i].up_flag = 0;
+	}
+	
+#else
+	
 	if( first == 0)
 		return ERR_BEEN_INSTALL;
-	
+
 	for( i = 0; i < NUM_KEYS; i++)
 	{
 		if( Dev_open( arr_keyGpioID[ i], ( void *)&self->arr_p_devGpio[ i]))
@@ -215,12 +248,15 @@ static int Keyboard_init( Keyboard *self, IN void *arg)
 	first = 0;
 	return RET_OK;
 	
+
+#endif
+	
 err:
 	return ERR_DEV_UNAVAILABLE;
 }
 //返回observice的编号
 //todo: 这个机制不是很好
-static int Key_addOb( Keyboard *self, keyObservice *ob)
+static int Key_addOb(Keyboard *self, keyObservice *ob)
 {
 	int i;
 	for( i = 0; i < MAX_OBS; i++)
@@ -237,11 +273,11 @@ static int Key_addOb( Keyboard *self, keyObservice *ob)
 	return i;
 }
 
-static int Key_DelOb( Keyboard *self, char obId)
+static int Key_DelOb(Keyboard *self, char obId)
 {
 	int i;
 	obId &= ~ 0x80;
-	for( i = 0; i < MAX_OBS; i++)
+	for(i = 0; i < MAX_OBS; i++)
 	{
 		if( self->arr_p_obm[i].flag == obId)
 			break;
@@ -255,13 +291,22 @@ static int Key_DelOb( Keyboard *self, char obId)
 	return i;
 }
 
-static void	Key_Run( Keyboard *self)
+static void	Key_Run(Keyboard *self)
 {
+	int  numEvent = 0;
+	
+#if CONF_KEYSCAN_POLL == 1
+	keyMsg_t arr_keyMsg[2] =  {{0}, {0}};		//一次最多就2个组合按键		
+	self->run_count ++;
+	self->scan_key_pins(self);
+	numEvent = 2;
+	self->identify_key_msg(self, arr_keyMsg, &numEvent);
+#else
 	keyStatus_t *p_ks;
 	keyevent_t ke;
 	uint64_t now_ms = 0;
 	short		i	= 0;
-	char reportflag = 0, numEvent =0;
+	char reportflag = 0;
 	if( PopKE( &self->kef, &ke) != RET_OK)
 		goto noevent;
 	
@@ -292,25 +337,25 @@ static void	Key_Run( Keyboard *self)
 	reportflag = 0;
 	for( i = 0; i < NUM_KEYS; i++)
 	{
-		if(   self->arr_ks[i].eventCode  == 0)
+		if(self->arr_ks[i].eventCode  == 0)
 			continue;
 		//将至今超过500的按键动作通知
 		now_ms = get_time_ms();
 		//每个按键都要暂存500ms后才能进行处理，主要是为了双击和组合按键的考虑
-		if( ( ( now_ms - self->arr_ks[i].timestamp) > REPORT_TIME_MS) || (reportflag > 0))
+		if(((now_ms - self->arr_ks[i].timestamp) > REPORT_TIME_MS) || (reportflag > 0))
 		{
 			reportflag = 1;
 			//识别出长按的按键
 			//按下超过3s认为是长按，并且强制认为改按键是长按，而不管它之前的动作是啥
-			if( (IS_KEYUP( self->arr_ks[i].eventCode) == 0) &&\
-				( now_ms - self->arr_ks[i].timestamp) > LONGPUSH_TIME_MS)
+			if((IS_KEYUP(self->arr_ks[i].eventCode) == 0) &&\
+				(now_ms - self->arr_ks[i].timestamp) > LONGPUSH_TIME_MS)
 			{
 				self->arr_ks[i].eventCode = KEYEVENT_LPUSH;
 
 			}
 			
 			//按键被抬起或者按键被认为是长按的时候，将该按键上报
-			if( IS_KEYUP( self->arr_ks[i].eventCode) || (self->arr_ks[i].eventCode == KEYEVENT_LPUSH))
+			if(IS_KEYUP(self->arr_ks[i].eventCode) || (self->arr_ks[i].eventCode == KEYEVENT_LPUSH))
 			{
 				//如果只有抬起事件，就不处理
 				if( self->arr_ks[i].eventCode & (~KEYEVENT_UP))
@@ -327,9 +372,10 @@ static void	Key_Run( Keyboard *self)
 					
 				}
 			}
+			//读取IO
 			
 			//按键被抬起以后就清除掉他的事件代码
-			if( IS_KEYUP( self->arr_ks[i].eventCode))
+			if(IS_KEYUP( self->arr_ks[i].eventCode))
 			{
 				self->arr_ks[i].eventCode = 0;
 				self->arr_ks[i].timestamp = 0;
@@ -342,7 +388,7 @@ static void	Key_Run( Keyboard *self)
 		 
 
 	}
-	
+#endif
 	self->notify( self, numEvent, arr_keyMsg);
 }
 
@@ -362,6 +408,78 @@ static void	Key_notify( Keyboard *self, uint8_t num, keyMsg_t arr_msg[])
 	
 }
 
+static void Key_scan_pins(Keyboard *self)
+{
+	char i;
+	char	pin_val = 0;
+	for( i = 0; i < NUM_KEYS; i++)
+	{
+		if(self->arr_p_devGpio[i]->read(self->arr_p_devGpio[i], &pin_val, 0) == RET_OK) 
+		{
+			if(pin_val == 0) {	//按下 
+				if(self->arr_key_pins[i].last_pressed_count == 0)
+					self->arr_key_pins[i].sum_count = 0;
+				else 
+					self->arr_key_pins[i].sum_count += self->run_count - self->arr_key_pins[i].last_pressed_count;
+				self->arr_key_pins[i].last_pressed_count = self->run_count;
+				continue;
+			}			
+			
+		}
+		
+		//读取失败或者没有按下，都当作抬起处理
+		self->arr_key_pins[i].up_flag = 0;
+		self->arr_key_pins[i].sum_count = 0;
+		self->arr_key_pins[i].last_pressed_count = 0;
+	}
+	
+	
+}
+static void	Key_identify_key_msg(Keyboard *self, keyMsg_t *p_key_msg, int *num)
+{
+	char 	i;
+	char	num_pressed = 0;
+	short	long_count = LONGPUSH_TIME_MS / self->cycle_ms;
+	keyMsg_t	*p_msg = NULL;
+	//优先检测长按
+	for( i = 0; i < NUM_KEYS; i++)
+	{
+		
+		
+		if(self->arr_key_pins[i].sum_count > long_count) 
+		{
+			p_key_msg->keyCode = self->arr_key_pins[i].key_code;
+			p_key_msg->eventCode = KEYEVENT_LPUSH;
+			num_pressed = 1;
+			
+			goto exit;
+		}
+	}
+	
+	//没有长按，在检测按下的按键
+	//如果按下的按键数量达到了输入的num数量，也直接退出
+	for( i = 0; i < NUM_KEYS; i++)
+	{
+		if(num_pressed >= *num)
+			goto exit;
+		if((self->arr_key_pins[i].last_pressed_count > 0) && \
+			(self->arr_key_pins[i].up_flag == 0)){		//要避免同一个按键不停的上报
+			
+			p_msg = p_key_msg + num_pressed;
+			p_msg->keyCode = self->arr_key_pins[i].key_code;
+			p_msg->eventCode = KEYEVENT_HIT;
+			self->arr_key_pins[i].up_flag = 1;
+			num_pressed ++;
+		}
+	}
+			
+	
+	exit:
+	*num = num_pressed;
+	return;
+}
+
+#if CONF_KEYSCAN_POLL == 0
 static keyStatus_t *findPks( keyStatus_t arrKs[], uint8_t keycode)
 {
 	if( keycode >= ( NUM_KEYS + 1))
@@ -485,7 +603,7 @@ static int PopKE( KEFifo_t *p_kef, keyevent_t *p_ke)
 	
 	return RET_OK;
 }
-
+#endif
 // keytestob
 
 static int Key_TestUpdate( keyObservice *self,  uint8_t num, keyMsg_t arr_msg[])
@@ -502,6 +620,8 @@ static void KeyTest_setKeyHdl( KbTestOb *self, keyHdl hdl)
 	
 	self->hdl = hdl;
 }
+
+#if CONF_KEYSCAN_POLL == 0
 static  void GpioIrqHdl( void *arg, int type, int encode)
 {
 	Keyboard *p_kb = ( Keyboard *)arg;
@@ -536,3 +656,5 @@ static  void GpioIrqHdl( void *arg, int type, int encode)
 	}
 	
 }
+#endif
+

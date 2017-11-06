@@ -30,6 +30,7 @@
 .\objects\ctlkey.o: .\device\dev_cmd.h
 .\objects\ctlkey.o: .\device\dev_char.h
 .\objects\ctlkey.o: .\device\dev_lcd.h
+.\objects\ctlkey.o: ..\PplRcd\system.h
 .\objects\ctlkey.o: ..\PplRcd\HMI/HMI.h
 .\objects\ctlkey.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
 .\objects\ctlkey.o: E:\mylib\sdhLib\inc\sdhDef.h
@@ -48,5 +49,4 @@
 .\objects\ctlkey.o: E:\mylib\sdhLib\inc\basis/assert.h
 .\objects\ctlkey.o: .\model\ModelTest.h
 .\objects\ctlkey.o: .\model\Model_channel.h
-.\objects\ctlkey.o: ..\PplRcd\system.h
 .\objects\ctlkey.o: ..\PplRcd\HMI/focus.h

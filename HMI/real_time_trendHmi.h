@@ -31,7 +31,7 @@ CLASS( RLT_trendHMI)
 	
 	
 //	char			flags;
-	uint8_t			div;
+	uint8_t			min_div;
 				
 	char 			str_div[3];
 	

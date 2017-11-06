@@ -303,7 +303,7 @@ static void	Setup_HMI_show_focus(HMI *self, uint8_t fouse_row, uint8_t fouse_col
 static void	Setup_HMI_hitHandle(HMI *self, char *s_key)
 {
 	
-	Setup_HMI		*cthis = SUB_PTR( self, HMI, Setup_HMI);
+//	Setup_HMI		*cthis = SUB_PTR( self, HMI, Setup_HMI);
 	sheet		*p_focus;
 //	shtCmd		*p_cmd;
 	uint8_t		focusRow = self->p_fcuu->focus_row;

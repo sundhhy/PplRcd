@@ -7,7 +7,7 @@
 #include "hardwareConfig.h"
 #include "stm32f10x_dma.h"
 #include "stm32f10x_iwdg.h"
-
+#include "system.h"
 /*! System NVIC Configuration */
 void NVIC_Configuration(void)
 {
@@ -75,6 +75,7 @@ void NVIC_Configuration(void)
 //    NVIC_Init(&NVIC_InitStructure);
 
 	/******** key exxi 	****************/
+#if CONF_KEYSCAN_POLL == 0	
 	NVIC_InitStructure.NVIC_IRQChannel = EXTI0_IRQn;     
 	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1; 
 	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 2;       
@@ -111,7 +112,7 @@ void NVIC_Configuration(void)
 	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 2;       
 	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;                                   //????
 	NVIC_Init(&NVIC_InitStructure);
-
+#endif
 }
 
 
