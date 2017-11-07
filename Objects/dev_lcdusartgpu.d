@@ -10,6 +10,7 @@
 .\objects\dev_lcdusartgpu.o: .\device\dev_lcd.h
 .\objects\dev_lcdusartgpu.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
 .\objects\dev_lcdusartgpu.o: d:\Keil_v5\ARM\PACK\ARM\CMSIS\4.4.0\CMSIS\RTOS\RTX\INC\cmsis_os.h
+.\objects\dev_lcdusartgpu.o: ..\PplRcd\system.h
 .\objects\dev_lcdusartgpu.o: .\device\dev_LCD/UsartGpu/dev_LcdUsartGpu.h
 .\objects\dev_lcdusartgpu.o: E:\mylib\sdhLib\inc\os/os_depend.h
 .\objects\dev_lcdusartgpu.o: ..\PplRcd\sdhlibConf.h

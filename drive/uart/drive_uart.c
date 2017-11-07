@@ -68,7 +68,7 @@ static int UartInit( driveUart *self, void *device, void *cfg)
 	self->ctl.rx_block = 1;
 	self->ctl.tx_block = 1;
 	self->ctl.rx_waittime_ms = 100;
-	self->ctl.tx_waittime_ms = 1000;
+	self->ctl.tx_waittime_ms = 100;
 	
 	return ERR_OK;
 	

@@ -3,7 +3,7 @@
 <title>Static Call Graph - [.\Objects\PplRcd.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image .\Objects\PplRcd.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5050106: Last Updated: Mon Nov 06 23:18:21 2017
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5050106: Last Updated: Tue Nov 07 22:40:55 2017
 <BR><P>
 <H3>Maximum Stack Usage =        248 bytes + Unknown(Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -765,7 +765,6 @@ Global Symbols
 <LI><a href="#[88]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MainHmi_Util_update
 <LI><a href="#[87]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MainHmi_Data_update
 <LI><a href="#[89]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MainHmi_Alarm_update
-<LI><a href="#[30]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Data_bacnup_Strategy_entry
 <LI><a href="#[2f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ViewStrategy_entry
 <LI><a href="#[2e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ArtStrategy_entry
 <LI><a href="#[19c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Als_modify
@@ -792,6 +791,7 @@ Global Symbols
 <LI><a href="#[33]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;AccMonth_Strategy_entry
 <LI><a href="#[32]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;AccDay_Strategy_entry
 <LI><a href="#[31]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Data_print_Strategy_entry
+<LI><a href="#[30]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Data_bacnup_Strategy_entry
 </UL>
 
 <P><STRONG><a name="[18b]"></a>strcmp</STRONG> (Thumb, 28 bytes, Stack size 8 bytes, strcmp.o(.text))
@@ -1394,12 +1394,12 @@ Global Symbols
 </UL>
 
 <P><STRONG><a name="[234]"></a>Expr_ctor</STRONG> (Thumb, 10 bytes, Stack size 0 bytes, expression.o(i.Expr_ctor))
-<BR><BR>[Called By]<UL><LI><a href="#[281]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;PicExpr_ctor
-<LI><a href="#[273]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;NtGrid_ctor
+<BR><BR>[Called By]<UL><LI><a href="#[273]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;NtGrid_ctor
 <LI><a href="#[233]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GmtrExpr_ctor
 <LI><a href="#[274]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;NtInput_ctor
 <LI><a href="#[26e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;NtButton_ctor
 <LI><a href="#[2af]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;TxtExpr_ctor
+<LI><a href="#[281]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;PicExpr_ctor
 </UL>
 
 <P><STRONG><a name="[1b2]"></a>Flush_LCD</STRONG> (Thumb, 8 bytes, Stack size 0 bytes, glyph.o(i.Flush_LCD))
@@ -2027,7 +2027,7 @@ Global Symbols
 </UL>
 
 <P><STRONG><a name="[6]"></a>GpuLabel</STRONG> (Thumb, 228 bytes, Stack size 64 bytes, dev_lcdusartgpu.o(i.GpuLabel))
-<BR><BR>[Stack]<UL><LI>Max Depth = 144<LI>Call Chain = GpuLabel &rArr; Cmdbuf_manager &rArr; GpuDone &rArr; Sem_post &rArr; osSemaphoreRelease &rArr; isrSemaphoreRelease &rArr; isr_sem_send &rArr; rt_psq_enq
+<BR><BR>[Stack]<UL><LI>Max Depth = 160<LI>Call Chain = GpuLabel &rArr; Cmdbuf_manager &rArr; GpuDone &rArr; Sem_post &rArr; osSemaphoreRelease &rArr; isrSemaphoreRelease &rArr; isr_sem_send &rArr; rt_psq_enq
 </UL>
 <BR>[Calls]<UL><LI><a href="#[1b6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GpuSend
 <LI><a href="#[1b5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Cmdbuf_manager
@@ -2040,11 +2040,10 @@ Global Symbols
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> dev_lcdusartgpu.o(.data)
 </UL>
-<P><STRONG><a name="[1b6]"></a>GpuSend</STRONG> (Thumb, 42 bytes, Stack size 16 bytes, dev_lcdusartgpu.o(i.GpuSend))
-<BR><BR>[Stack]<UL><LI>Max Depth = 16<LI>Call Chain = GpuSend
+<P><STRONG><a name="[1b6]"></a>GpuSend</STRONG> (Thumb, 52 bytes, Stack size 24 bytes, dev_lcdusartgpu.o(i.GpuSend))
+<BR><BR>[Stack]<UL><LI>Max Depth = 24<LI>Call Chain = GpuSend
 </UL>
-<BR>[Calls]<UL><LI><a href="#[1b9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osDelay
-<LI><a href="#[184]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strlen
+<BR>[Calls]<UL><LI><a href="#[184]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strlen
 </UL>
 <BR>[Called By]<UL><LI><a href="#[6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GpuLabel
 <LI><a href="#[5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GpuWrString
@@ -3653,7 +3652,6 @@ Global Symbols
 <P><STRONG><a name="[1b9]"></a>osDelay</STRONG> (Thumb, 18 bytes, Stack size 0 bytes, rt_cmsis.o(i.osDelay))
 <BR><BR>[Called By]<UL><LI><a href="#[2ad]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;delay_ms
 <LI><a href="#[34]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
-<LI><a href="#[1b6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GpuSend
 <LI><a href="#[1b5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Cmdbuf_manager
 </UL>
 
@@ -4319,7 +4317,7 @@ Local Symbols
 </UL>
 
 <P><STRONG><a name="[4]"></a>ClearLcd</STRONG> (Thumb, 46 bytes, Stack size 8 bytes, dev_lcdusartgpu.o(i.ClearLcd))
-<BR><BR>[Stack]<UL><LI>Max Depth = 88<LI>Call Chain = ClearLcd &rArr; Cmdbuf_manager &rArr; GpuDone &rArr; Sem_post &rArr; osSemaphoreRelease &rArr; isrSemaphoreRelease &rArr; isr_sem_send &rArr; rt_psq_enq
+<BR><BR>[Stack]<UL><LI>Max Depth = 104<LI>Call Chain = ClearLcd &rArr; Cmdbuf_manager &rArr; GpuDone &rArr; Sem_post &rArr; osSemaphoreRelease &rArr; isrSemaphoreRelease &rArr; isr_sem_send &rArr; rt_psq_enq
 </UL>
 <BR>[Calls]<UL><LI><a href="#[1b6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GpuSend
 <LI><a href="#[1b5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Cmdbuf_manager
@@ -4329,8 +4327,8 @@ Local Symbols
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> dev_lcdusartgpu.o(.data)
 </UL>
-<P><STRONG><a name="[1b5]"></a>Cmdbuf_manager</STRONG> (Thumb, 50 bytes, Stack size 16 bytes, dev_lcdusartgpu.o(i.Cmdbuf_manager))
-<BR><BR>[Stack]<UL><LI>Max Depth = 80<LI>Call Chain = Cmdbuf_manager &rArr; GpuDone &rArr; Sem_post &rArr; osSemaphoreRelease &rArr; isrSemaphoreRelease &rArr; isr_sem_send &rArr; rt_psq_enq
+<P><STRONG><a name="[1b5]"></a>Cmdbuf_manager</STRONG> (Thumb, 60 bytes, Stack size 32 bytes, dev_lcdusartgpu.o(i.Cmdbuf_manager))
+<BR><BR>[Stack]<UL><LI>Max Depth = 96<LI>Call Chain = Cmdbuf_manager &rArr; GpuDone &rArr; Sem_post &rArr; osSemaphoreRelease &rArr; isrSemaphoreRelease &rArr; isr_sem_send &rArr; rt_psq_enq
 </UL>
 <BR>[Calls]<UL><LI><a href="#[1b9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osDelay
 <LI><a href="#[e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GpuDone
@@ -4356,7 +4354,7 @@ Local Symbols
 <BR>[Address Reference Count : 1]<UL><LI> dev_lcdusartgpu.o(.data)
 </UL>
 <P><STRONG><a name="[7]"></a>GpuBKColor</STRONG> (Thumb, 50 bytes, Stack size 8 bytes, dev_lcdusartgpu.o(i.GpuBKColor))
-<BR><BR>[Stack]<UL><LI>Max Depth = 88<LI>Call Chain = GpuBKColor &rArr; Cmdbuf_manager &rArr; GpuDone &rArr; Sem_post &rArr; osSemaphoreRelease &rArr; isrSemaphoreRelease &rArr; isr_sem_send &rArr; rt_psq_enq
+<BR><BR>[Stack]<UL><LI>Max Depth = 104<LI>Call Chain = GpuBKColor &rArr; Cmdbuf_manager &rArr; GpuDone &rArr; Sem_post &rArr; osSemaphoreRelease &rArr; isrSemaphoreRelease &rArr; isr_sem_send &rArr; rt_psq_enq
 </UL>
 <BR>[Calls]<UL><LI><a href="#[1b6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GpuSend
 <LI><a href="#[1b5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Cmdbuf_manager
@@ -4367,7 +4365,7 @@ Local Symbols
 <BR>[Address Reference Count : 1]<UL><LI> dev_lcdusartgpu.o(.data)
 </UL>
 <P><STRONG><a name="[d]"></a>GpuBPic</STRONG> (Thumb, 60 bytes, Stack size 32 bytes, dev_lcdusartgpu.o(i.GpuBPic))
-<BR><BR>[Stack]<UL><LI>Max Depth = 112<LI>Call Chain = GpuBPic &rArr; Cmdbuf_manager &rArr; GpuDone &rArr; Sem_post &rArr; osSemaphoreRelease &rArr; isrSemaphoreRelease &rArr; isr_sem_send &rArr; rt_psq_enq
+<BR><BR>[Stack]<UL><LI>Max Depth = 128<LI>Call Chain = GpuBPic &rArr; Cmdbuf_manager &rArr; GpuDone &rArr; Sem_post &rArr; osSemaphoreRelease &rArr; isrSemaphoreRelease &rArr; isr_sem_send &rArr; rt_psq_enq
 </UL>
 <BR>[Calls]<UL><LI><a href="#[1b6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GpuSend
 <LI><a href="#[1b5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Cmdbuf_manager
@@ -4378,7 +4376,7 @@ Local Symbols
 <BR>[Address Reference Count : 1]<UL><LI> dev_lcdusartgpu.o(.data)
 </UL>
 <P><STRONG><a name="[8]"></a>GpuBox</STRONG> (Thumb, 112 bytes, Stack size 40 bytes, dev_lcdusartgpu.o(i.GpuBox))
-<BR><BR>[Stack]<UL><LI>Max Depth = 120<LI>Call Chain = GpuBox &rArr; Cmdbuf_manager &rArr; GpuDone &rArr; Sem_post &rArr; osSemaphoreRelease &rArr; isrSemaphoreRelease &rArr; isr_sem_send &rArr; rt_psq_enq
+<BR><BR>[Stack]<UL><LI>Max Depth = 136<LI>Call Chain = GpuBox &rArr; Cmdbuf_manager &rArr; GpuDone &rArr; Sem_post &rArr; osSemaphoreRelease &rArr; isrSemaphoreRelease &rArr; isr_sem_send &rArr; rt_psq_enq
 </UL>
 <BR>[Calls]<UL><LI><a href="#[1b6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GpuSend
 <LI><a href="#[1b5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Cmdbuf_manager
@@ -4389,7 +4387,7 @@ Local Symbols
 <BR>[Address Reference Count : 1]<UL><LI> dev_lcdusartgpu.o(.data)
 </UL>
 <P><STRONG><a name="[c]"></a>GpuCutPicture</STRONG> (Thumb, 72 bytes, Stack size 56 bytes, dev_lcdusartgpu.o(i.GpuCutPicture))
-<BR><BR>[Stack]<UL><LI>Max Depth = 136<LI>Call Chain = GpuCutPicture &rArr; Cmdbuf_manager &rArr; GpuDone &rArr; Sem_post &rArr; osSemaphoreRelease &rArr; isrSemaphoreRelease &rArr; isr_sem_send &rArr; rt_psq_enq
+<BR><BR>[Stack]<UL><LI>Max Depth = 152<LI>Call Chain = GpuCutPicture &rArr; Cmdbuf_manager &rArr; GpuDone &rArr; Sem_post &rArr; osSemaphoreRelease &rArr; isrSemaphoreRelease &rArr; isr_sem_send &rArr; rt_psq_enq
 </UL>
 <BR>[Calls]<UL><LI><a href="#[1b6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GpuSend
 <LI><a href="#[1b5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Cmdbuf_manager
@@ -4399,7 +4397,7 @@ Local Symbols
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> dev_lcdusartgpu.o(.data)
 </UL>
-<P><STRONG><a name="[e]"></a>GpuDone</STRONG> (Thumb, 98 bytes, Stack size 16 bytes, dev_lcdusartgpu.o(i.GpuDone))
+<P><STRONG><a name="[e]"></a>GpuDone</STRONG> (Thumb, 102 bytes, Stack size 16 bytes, dev_lcdusartgpu.o(i.GpuDone))
 <BR><BR>[Stack]<UL><LI>Max Depth = 64<LI>Call Chain = GpuDone &rArr; Sem_post &rArr; osSemaphoreRelease &rArr; isrSemaphoreRelease &rArr; isr_sem_send &rArr; rt_psq_enq
 </UL>
 <BR>[Calls]<UL><LI><a href="#[1b6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GpuSend
@@ -4412,7 +4410,7 @@ Local Symbols
 <BR>[Address Reference Count : 1]<UL><LI> dev_lcdusartgpu.o(.data)
 </UL>
 <P><STRONG><a name="[f]"></a>GpuIcon</STRONG> (Thumb, 64 bytes, Stack size 48 bytes, dev_lcdusartgpu.o(i.GpuIcon))
-<BR><BR>[Stack]<UL><LI>Max Depth = 128<LI>Call Chain = GpuIcon &rArr; Cmdbuf_manager &rArr; GpuDone &rArr; Sem_post &rArr; osSemaphoreRelease &rArr; isrSemaphoreRelease &rArr; isr_sem_send &rArr; rt_psq_enq
+<BR><BR>[Stack]<UL><LI>Max Depth = 144<LI>Call Chain = GpuIcon &rArr; Cmdbuf_manager &rArr; GpuDone &rArr; Sem_post &rArr; osSemaphoreRelease &rArr; isrSemaphoreRelease &rArr; isr_sem_send &rArr; rt_psq_enq
 </UL>
 <BR>[Calls]<UL><LI><a href="#[1b6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GpuSend
 <LI><a href="#[1b5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Cmdbuf_manager
@@ -4423,7 +4421,7 @@ Local Symbols
 <BR>[Address Reference Count : 1]<UL><LI> dev_lcdusartgpu.o(.data)
 </UL>
 <P><STRONG><a name="[b]"></a>GpuPic</STRONG> (Thumb, 52 bytes, Stack size 24 bytes, dev_lcdusartgpu.o(i.GpuPic))
-<BR><BR>[Stack]<UL><LI>Max Depth = 104<LI>Call Chain = GpuPic &rArr; Cmdbuf_manager &rArr; GpuDone &rArr; Sem_post &rArr; osSemaphoreRelease &rArr; isrSemaphoreRelease &rArr; isr_sem_send &rArr; rt_psq_enq
+<BR><BR>[Stack]<UL><LI>Max Depth = 120<LI>Call Chain = GpuPic &rArr; Cmdbuf_manager &rArr; GpuDone &rArr; Sem_post &rArr; osSemaphoreRelease &rArr; isrSemaphoreRelease &rArr; isr_sem_send &rArr; rt_psq_enq
 </UL>
 <BR>[Calls]<UL><LI><a href="#[1b6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GpuSend
 <LI><a href="#[1b5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Cmdbuf_manager
@@ -4439,7 +4437,7 @@ Local Symbols
 <BR>[Address Reference Count : 1]<UL><LI> dev_lcdusartgpu.o(.data)
 </UL>
 <P><STRONG><a name="[5]"></a>GpuWrString</STRONG> (Thumb, 178 bytes, Stack size 80 bytes, dev_lcdusartgpu.o(i.GpuWrString))
-<BR><BR>[Stack]<UL><LI>Max Depth = 160<LI>Call Chain = GpuWrString &rArr; Cmdbuf_manager &rArr; GpuDone &rArr; Sem_post &rArr; osSemaphoreRelease &rArr; isrSemaphoreRelease &rArr; isr_sem_send &rArr; rt_psq_enq
+<BR><BR>[Stack]<UL><LI>Max Depth = 176<LI>Call Chain = GpuWrString &rArr; Cmdbuf_manager &rArr; GpuDone &rArr; Sem_post &rArr; osSemaphoreRelease &rArr; isrSemaphoreRelease &rArr; isr_sem_send &rArr; rt_psq_enq
 </UL>
 <BR>[Calls]<UL><LI><a href="#[1b6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GpuSend
 <LI><a href="#[1b5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Cmdbuf_manager
@@ -4474,7 +4472,7 @@ Local Symbols
 <BR>[Called By]<UL><LI><a href="#[12d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UartInit
 </UL>
 
-<P><STRONG><a name="[12d]"></a>UartInit</STRONG> (Thumb, 184 bytes, Stack size 24 bytes, drive_uart.o(i.UartInit))
+<P><STRONG><a name="[12d]"></a>UartInit</STRONG> (Thumb, 180 bytes, Stack size 24 bytes, drive_uart.o(i.UartInit))
 <BR><BR>[Stack]<UL><LI>Max Depth = 108<LI>Call Chain = UartInit &rArr; UartDma_Init &rArr; switch_receivebuf
 </UL>
 <BR>[Calls]<UL><LI><a href="#[2bb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;init_pingponfbuf
@@ -5482,7 +5480,7 @@ Local Symbols
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> real_time_trendhmi.o(i.RLT_trendHMI_ctor)
 </UL>
-<P><STRONG><a name="[f4]"></a>RLT_trendHmi_MdlUpdata</STRONG> (Thumb, 318 bytes, Stack size 40 bytes, real_time_trendhmi.o(i.RLT_trendHmi_MdlUpdata))
+<P><STRONG><a name="[f4]"></a>RLT_trendHmi_MdlUpdata</STRONG> (Thumb, 304 bytes, Stack size 40 bytes, real_time_trendhmi.o(i.RLT_trendHmi_MdlUpdata))
 <BR><BR>[Stack]<UL><LI>Max Depth = 112<LI>Call Chain = RLT_trendHmi_MdlUpdata &rArr; Curve_draw &rArr; Curve_draw_left_to_right &rArr; RLE
 </UL>
 <BR>[Calls]<UL><LI><a href="#[1b2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Flush_LCD

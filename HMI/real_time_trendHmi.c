@@ -499,8 +499,8 @@ static int RLT_trendHmi_MdlUpdata( Observer *self, void *p_srcMdl)
 		return 0;
 	
 	cthis->count ++;
-	if(cthis->count < cthis->min_div)
-		return RET_OK;
+//	if(cthis->count < cthis->min_div)
+//		return RET_OK;
 	cthis->count = 0;
 	//刷新时间未到就直接退出
 	

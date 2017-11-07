@@ -2,6 +2,7 @@
 #include <stdint.h>
 #include <string.h>
 #include "cmsis_os.h"                                           // CMSIS RTOS header file
+#include "system.h"   
 #include "dev_LCD/UsartGpu/dev_LcdUsartGpu.h"
 #include "os/os_depend.h"
 
@@ -46,7 +47,7 @@ I_dev_Char *I_sendDev;
 // local vars
 //------------------------------------------------------------------------------
 
-static short 	cmd_count = 0;
+
 //给串口屏幕用的信号量, 值为6是因为6之前的信号量都被串口使用掉了。
 //todo: 当然，如此手动分配信号量是不合理，以后有时间改进
 static sem_t	gpu_sem = 6;	
@@ -369,13 +370,17 @@ static void GpuBKColor( char c)
 }
 static void Cmdbuf_manager(char *p_cmd)
 {
-
+	char	tmp_cmd_buf[15] = {0};
 	uint8_t cmd_len = strlen(p_cmd);
 	
 	
 	if((cmd_count +  cmd_len) > UGPU_CMDBUF_LEN) {
 		GpuDone();
-		osDelay(200);
+		osDelay(100);
+//		spg ++;
+//		sprintf(tmp_cmd_buf, "SPG(%d);", spg);
+//		GpuSend(tmp_cmd_buf);
+		
 	} 
 		
 	cmd_count += cmd_len;
@@ -404,6 +409,7 @@ static void GpuDone( void)
 	//todo:需要增加错误处理
 	err:
 //	osDelay(200);
+	spg = 0;
 	cmd_count = 0;
 	Sem_post(&gpu_sem);
 #endif
@@ -493,11 +499,18 @@ static int GpuStrSize( int font, uint16_t	*width, uint16_t	*heigh)
 void GpuSend(char * buf)
 {
 	int 	len = strlen( buf);
-	int ret = 0;
-	ret = I_sendDev->write( I_sendDev, buf, len);
+	int 	ret = 0;
+	int 	c = 0;
+	while(1) {
+		ret = I_sendDev->write( I_sendDev, buf, len);
+		if(ret == RET_OK)
+			break;
+		else 
+			c ++;
+	}
 	
-	if( ret )
-		osDelay(20);
+//	if( ret )
+//		osDelay(20);
 		
 	
 }
