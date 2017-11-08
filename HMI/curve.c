@@ -94,6 +94,20 @@ void Curve_visible(curve_ctl_t *p_cctl)
 	p_cctl->flags = CURVE_SHOW;
 }
 
+void Curve_clean_bkg(curve_ctl_t *p_cctl)
+{
+	if(p_cctl->direct == 0)
+		g_p_curve_bkg->p_gp->vdraw(g_p_curve_bkg->p_gp, &g_p_curve_bkg->cnt, &g_p_curve_bkg->area);
+	else  {
+		
+		if(p_cctl->current_idx == (p_cctl->num_points + 1))
+			g_p_curve_bkg->p_gp->vdraw(g_p_curve_bkg->p_gp, &g_p_curve_bkg->cnt, &g_p_curve_bkg->area);
+		
+		
+	}
+	
+}
+
 void Curve_clean(curve_ctl_t *p_cctl)
 {
 	p_cctl->start_idx = 0;
@@ -105,15 +119,28 @@ void Curve_clean(curve_ctl_t *p_cctl)
 //调用者负责Y坐标的调整
 void Curve_add_point(curve_ctl_t *p_cctl, int val)
 {
-	//如果曲线点数已经达到了num_points
-	if(Curve_end(p_cctl)) {
-		//要移除掉最早的那个曲线点
-		Curve_remove_earlist(p_cctl);
+	
+	if(p_cctl->direct == 0) {
+		//如果曲线点数已经达到了num_points
+		if(Curve_end(p_cctl)) {
+			//要移除掉最早的那个曲线点
+			Curve_remove_earlist(p_cctl);
+		}
+		
+		p_cctl->points[p_cctl->current_idx] = val;
+		p_cctl->current_idx += 1;
+		p_cctl->current_idx %= p_cctl->num_points;
+	} else {
+		
+		if(p_cctl->current_idx == (p_cctl->num_points + 1)) {
+			p_cctl->current_idx = 0;
+		}
+		
+		p_cctl->points[p_cctl->current_idx] = val;
+		p_cctl->current_idx ++;
+		
 	}
 	
-	p_cctl->points[p_cctl->current_idx] = val;
-	p_cctl->current_idx += 1;
-	p_cctl->current_idx %= p_cctl->num_points;
 }
 
 void Curve_draw(curve_ctl_t *p_cctl)
@@ -188,9 +215,13 @@ void Curve_draw(curve_ctl_t *p_cctl)
 static int Curve_len(curve_ctl_t *p_cctl)
 {
 	int len = 0;
-	
-	len = p_cctl->current_idx + p_cctl->num_points - p_cctl->start_idx;
-	len %= p_cctl->num_points;
+	if(p_cctl->direct == 0) {
+		len = p_cctl->current_idx + p_cctl->num_points - p_cctl->start_idx;
+		len %= p_cctl->num_points;
+	} else {
+		len = p_cctl->current_idx;
+		
+	}
 	return len;
 }
 
@@ -291,9 +322,19 @@ static void Curve_draw_left_to_right(curve_ctl_t *p_cctl)
 	}
 }
 
+
+//点数必须大于1点时才能调用，否则会出错
+//本函数不检查点数是否大于1
 static void Curve_draw_right_to_left(curve_ctl_t *p_cctl)
 {
+	p_sht_curve->cnt.colour = p_cctl->colour;
 	
+	p_sht_curve->area.x0 = p_cctl->start_x + p_cctl->step * ( p_cctl->current_idx - 2);
+	p_sht_curve->area.x1 = p_sht_curve->area.x0 + p_cctl->step;
+	
+	p_sht_curve->area.y0 = p_cctl->points[p_cctl->current_idx - 2];
+	p_sht_curve->area.y1 = p_cctl->points[p_cctl->current_idx - 1];
+	p_sht_curve->p_gp->vdraw(p_sht_curve->p_gp, &p_sht_curve->cnt, &p_sht_curve->area);	
 }
 
 

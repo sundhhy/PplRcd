@@ -17,7 +17,7 @@
 // const defines
 //------------------------------------------------------------------------------
 
-
+/********图层的ID	***********************************/
 #define	ICO_ID_MENU				0x20
 #define	ICO_ID_PGUP				0x21
 #define	ICO_ID_PGDN				0x22
@@ -32,6 +32,12 @@
 #define SHTID_CHECK(n)			(0x30 + n)
 
 #define	GET_CHN_FROM_ID(id)		(id & 0x0f)
+
+
+#define SHTID_RTL_MDIV				0x40
+
+/***************************************************************/
+
 
 //条纹背景图片的属性,这是从背景图片中得到的数据
 #define STRIPE_MAX_ROWS			11

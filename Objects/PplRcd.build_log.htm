@@ -26,13 +26,64 @@ Project File Date:  11/02/2017
 
 <h2>Output:</h2>
 Build target 'Target 1'
+compiling main.c...
+compiling system.c...
+compiling intrInit.c...
 compiling dev_LcdUsartGpu.c...
 device\dev_LCD\UsartGpu\dev_LcdUsartGpu.c(373): warning:  #177-D: variable "tmp_cmd_buf" was declared but never referenced
         char    tmp_cmd_buf[15] = {0};
 device\dev_LCD\UsartGpu\dev_LcdUsartGpu.c: 1 warning, 0 errors
+compiling expression.c...
+compiling TxtExpr.c...
+compiling ExpFactory.c...
+compiling NtButton.c...
+compiling BrExpr.c...
+compiling NtInput.c...
+compiling GeometricsExpr.c...
+compiling NtGrid.c...
+compiling PicExpr.c...
+compiling keyboard.c...
+compiling Storage.c...
+compiling sheet.c...
+compiling commHMI.c...
+compiling HMIFactory.c...
+compiling HMI.c...
+compiling mainHMI.c...
+compiling format.c...
+compiling keyboardHMI.c...
+compiling chnInfoPic.c...
+compiling menuHMI.c...
+compiling barGraphHmi.c...
+compiling dataHmi.c...
+compiling real_time_trendHmi.c...
+compiling curve.c...
+compiling focus.c...
+compiling news_select_HMI.c...
+compiling News_Alarm_HMI.c...
+compiling News_Power_down_HMI.c...
+compiling Accumulate_HMI .c...
+compiling Setup_HMI.c...
+compiling Setting_HMI.c...
+compiling Set_system_strategy.c...
+HMI\Set_system_strategy.c(411): warning:  #223-D: function "System_default" declared implicitly
+                System_default(NULL);
+HMI\Set_system_strategy.c: 1 warning, 0 errors
+compiling Set_channel_strategy.c...
+compiling Set_alarm_strategy.c...
+compiling Set_arithmetic_strategy.c...
+compiling Set_view_strategy.c...
+compiling Set_dataBackUp_strategy.c...
+compiling Set_dataPrint_strategy.c...
+compiling Acc_day.c...
+compiling Acc_month.c...
+compiling windownsHMI.c...
+compiling ModelFactory.c...
+compiling ModelTime.c...
+compiling Model_channel.c...
+compiling CtlKey.c...
 linking...
-Program Size: Code=63484 RO-data=4408 RW-data=1612 ZI-data=26900  
-".\Objects\PplRcd.axf" - 0 Error(s), 1 Warning(s).
+Program Size: Code=63864 RO-data=4408 RW-data=1612 ZI-data=26900  
+".\Objects\PplRcd.axf" - 0 Error(s), 2 Warning(s).
 
 <h2>Software Packages used:</h2>
 
@@ -46,17 +97,17 @@ Package Vendor: ARM
 
 Package Vendor: Keil
                 http://www.keil.com/pack/Keil.STM32F1xx_DFP.2.1.0.pack
-                Keil::Device:StdPeriph Drivers:EXTI:3.5.0
+                Keil::Device:StdPeriph Drivers:Framework:3.5.1
                 STMicroelectronics STM32F1 Series Device Support, Drivers and Examples
-   * Component: EXTI Version: 3.5.0
    * Component: Framework Version: 3.5.1
-   * Component: GPIO Version: 3.5.0
+   * Component: Startup Version: 1.0.0
+   * Component: TIM Version: 3.5.0
    * Component: USART Version: 3.5.0
    * Component: RCC Version: 3.5.0
-   * Component: TIM Version: 3.5.0
+   * Component: EXTI Version: 3.5.0
    * Component: DMA Version: 3.5.0
-   * Component: Startup Version: 1.0.0
    * Component: Flash Version: 3.5.0
+   * Component: GPIO Version: 3.5.0
 
 <h2>Collection of Component include folders:</h2>
   E:\PaperlessRecorder\myCode\PplRcd\RTE
@@ -72,36 +123,38 @@ Package Vendor: Keil
    * Component: ::CMSIS:RTOS:1.0 (API)
 
    * Component: ARM::CMSIS:RTOS:Keil RTX:4.79.0
-      Include file:  CMSIS\RTOS\RTX\INC\cmsis_os.h
-      Include file:  CMSIS\RTOS\RTX\UserCodeTemplates\osObjects.h
-      Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\main.c
-      Source file:   CMSIS\RTOS\RTX\Templates\RTX_Conf_CM.c
-      Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\Mutex.c
-      Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\MailQueue.c
       Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\MemPool.c
+      Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\Thread.c
+      Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\Mutex.c
       Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\Semaphore.c
       Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\Timer.c
+      Library file:  CMSIS\RTOS\RTX\LIB\ARM\RTX_CM3.lib
+      Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\MailQueue.c
       Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\MsgQueue.c
       Source file:   CMSIS\RTOS\RTX\SRC\ARM\SVC_Table.s
-      Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\Thread.c
-      Library file:  CMSIS\RTOS\RTX\LIB\ARM\RTX_CM3.lib
+      Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\main.c
+      Source file:   CMSIS\RTOS\RTX\Templates\RTX_Conf_CM.c
+      Include file:  CMSIS\RTOS\RTX\UserCodeTemplates\osObjects.h
+      Include file:  CMSIS\RTOS\RTX\INC\cmsis_os.h
 
    * Component: ARM::CMSIS:CORE:4.2.0
 
-   * Component: Keil::Device:StdPeriph Drivers:EXTI:3.5.0
-      Source file:   Device\StdPeriph_Driver\src\stm32f10x_exti.c
-      Include file:  Device\StdPeriph_Driver\inc\stm32f10x_exti.h
-
    * Component: Keil::Device:StdPeriph Drivers:Framework:3.5.1
-      Source file:   Device\StdPeriph_Driver\templates\stm32f10x_conf.h
-      Include file:  Device\StdPeriph_Driver\inc\misc.h
-      Source file:   Device\StdPeriph_Driver\templates\stm32f10x_it.c
       Source file:   Device\StdPeriph_Driver\src\misc.c
+      Source file:   Device\StdPeriph_Driver\templates\stm32f10x_conf.h
       Include file:  Device\StdPeriph_Driver\templates\stm32f10x_it.h
+      Source file:   Device\StdPeriph_Driver\templates\stm32f10x_it.c
+      Include file:  Device\StdPeriph_Driver\inc\misc.h
 
-   * Component: Keil::Device:StdPeriph Drivers:GPIO:3.5.0
-      Include file:  Device\StdPeriph_Driver\inc\stm32f10x_gpio.h
-      Source file:   Device\StdPeriph_Driver\src\stm32f10x_gpio.c
+   * Component: Keil::Device:Startup:1.0.0
+      Source file:   Device\Source\ARM\STM32F1xx_OPT.s
+      Include file:  RTE_Driver\Config\RTE_Device.h
+      Source file:   Device\Source\ARM\startup_stm32f10x_hd.s
+      Source file:   Device\Source\system_stm32f10x.c
+
+   * Component: Keil::Device:StdPeriph Drivers:TIM:3.5.0
+      Include file:  Device\StdPeriph_Driver\inc\stm32f10x_tim.h
+      Source file:   Device\StdPeriph_Driver\src\stm32f10x_tim.c
 
    * Component: Keil::Device:StdPeriph Drivers:USART:3.5.0
       Source file:   Device\StdPeriph_Driver\src\stm32f10x_usart.c
@@ -111,23 +164,21 @@ Package Vendor: Keil
       Include file:  Device\StdPeriph_Driver\inc\stm32f10x_rcc.h
       Source file:   Device\StdPeriph_Driver\src\stm32f10x_rcc.c
 
-   * Component: Keil::Device:StdPeriph Drivers:TIM:3.5.0
-      Include file:  Device\StdPeriph_Driver\inc\stm32f10x_tim.h
-      Source file:   Device\StdPeriph_Driver\src\stm32f10x_tim.c
+   * Component: Keil::Device:StdPeriph Drivers:EXTI:3.5.0
+      Source file:   Device\StdPeriph_Driver\src\stm32f10x_exti.c
+      Include file:  Device\StdPeriph_Driver\inc\stm32f10x_exti.h
 
    * Component: Keil::Device:StdPeriph Drivers:DMA:3.5.0
       Include file:  Device\StdPeriph_Driver\inc\stm32f10x_dma.h
       Source file:   Device\StdPeriph_Driver\src\stm32f10x_dma.c
 
-   * Component: Keil::Device:Startup:1.0.0
-      Source file:   Device\Source\ARM\STM32F1xx_OPT.s
-      Source file:   Device\Source\ARM\startup_stm32f10x_hd.s
-      Source file:   Device\Source\system_stm32f10x.c
-      Include file:  RTE_Driver\Config\RTE_Device.h
-
    * Component: Keil::Device:StdPeriph Drivers:Flash:3.5.0
       Include file:  Device\StdPeriph_Driver\inc\stm32f10x_flash.h
       Source file:   Device\StdPeriph_Driver\src\stm32f10x_flash.c
+
+   * Component: Keil::Device:StdPeriph Drivers:GPIO:3.5.0
+      Source file:   Device\StdPeriph_Driver\src\stm32f10x_gpio.c
+      Include file:  Device\StdPeriph_Driver\inc\stm32f10x_gpio.h
 </pre>
 </body>
 </html>
