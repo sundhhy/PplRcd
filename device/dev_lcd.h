@@ -2,6 +2,10 @@
 #define __DEV_LCD_H_
 #include <stdint.h>
 
+#define DUG_LOST_GPUCMD		1		//171110 串口屏的指令字节丢失问题查找
+
+
+
 #define IS_CHINESE( c) ( c & 0x80)
 #define IS_BR( c) ( c == '\n')
 #define IS_TAB( c) ( c == '\r')

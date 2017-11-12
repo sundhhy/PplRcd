@@ -60,6 +60,13 @@ void Flush_LCD(void)
 	
 }
 
+void Stop_flush_LCD(void)
+{
+	flush_flag = 0;
+	
+	
+}
+
 void LCD_Run(void)
 {
 	if(flush_flag) {

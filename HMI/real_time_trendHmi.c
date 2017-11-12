@@ -48,7 +48,7 @@ sheet  		*g_arr_p_check[NUM_CHANNEL]; 		//是否显示的指示图形
 
 #define 	HISTORY_TITLE		"历史趋势"
 
-#define 	DEFAULT_MIN_DIV		'2'
+#define 	DEFAULT_MIN_DIV		'1'
 
 static const char RT_hmi_code_chninfo[] =  {"<cpic vx0=260 vy0=30 vx1=320 vy1=240>23</>" };
 
@@ -366,7 +366,7 @@ static void	RT_trendHmi_HitHandle( HMI *self, char *s)
 		if(p_focus->id == SHTID_RTL_MDIV)
 		{
 			
-			Str_Calculations(p_focus->cnt.data, 2, OP_ADD, 1, 2, 60);
+			Str_Calculations(p_focus->cnt.data, 2, OP_ADD, 1, 1, 60);
 			p_focus->cnt.len = strlen(p_focus->cnt.data);
 			chgFouse = 1;
 		}
@@ -377,7 +377,7 @@ static void	RT_trendHmi_HitHandle( HMI *self, char *s)
 		if(p_focus->id == SHTID_RTL_MDIV)
 		{
 			
-			Str_Calculations(p_focus->cnt.data, 2, OP_SUB, 1, 2, 60);
+			Str_Calculations(p_focus->cnt.data, 2, OP_SUB, 1, 1, 60);
 			p_focus->cnt.len = strlen(p_focus->cnt.data);
 			chgFouse = 1;
 		}
@@ -527,8 +527,8 @@ static int RLT_trendHmi_MdlUpdata( Observer *self, void *p_srcMdl)
 		return 0;
 	
 	cthis->count ++;
-//	if(cthis->count < cthis->min_div)
-//		return RET_OK;
+	if(cthis->count < cthis->min_div)
+		return RET_OK;
 	cthis->count = 0;
 	//刷新时间未到就直接退出
 	
@@ -588,10 +588,10 @@ static void RLT_Init_curve(RLT_trendHMI *self)
 		Curve_clean(p_cctl);
 		self->count = 0;
 //		Curve_set(p_cctl, 240/self->min_div, arr_clrs[i], 239, self->min_div);
-		if(self->min_div == 1)
-			Curve_set(p_cctl, CURVE_POINT - 1, arr_clrs[i], 0, -self->min_div);
-		else
-			Curve_set(p_cctl, CURVE_POINT/self->min_div, arr_clrs[i], 0, -self->min_div);
+//		if(self->min_div == 1)
+			Curve_set(p_cctl, CURVE_POINT - 1, arr_clrs[i], 0, -1);
+//		else
+//			Curve_set(p_cctl, CURVE_POINT/self->min_div, arr_clrs[i], 0, -self->min_div);
 
 	}
 	

@@ -138,6 +138,7 @@ static void	SwitchHMI( HMI *self, HMI *p_hmi)
 	self->hide(self);
 	p_hmi->initSheet( p_hmi);
 	p_hmi->show( p_hmi);
+
 	Set_flag_show(&p_hmi->flag, 1);
 	
 }

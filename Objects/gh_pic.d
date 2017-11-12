@@ -11,3 +11,7 @@
 .\objects\gh_pic.o: .\device\dev_char.h
 .\objects\gh_pic.o: .\device\dev_lcd.h
 .\objects\gh_pic.o: E:\mylib\sdhLib\inc\arithmetic/cycQueue.h
+.\objects\gh_pic.o: E:\mylib\sdhLib\inc\os/os_depend.h
+.\objects\gh_pic.o: ..\PplRcd\sdhlibConf.h
+.\objects\gh_pic.o: E:\mylib\sdhLib\inc\os/rtx/rtx_depend.h
+.\objects\gh_pic.o: d:\Keil_v5\ARM\PACK\ARM\CMSIS\4.4.0\CMSIS\RTOS\RTX\INC\cmsis_os.h

@@ -158,7 +158,8 @@ int main (void) {
 	Model 		*mTime;
 	Model 		*p_mdl_test;
 	HMI 		*p_mainHmi;
-	int			count = 0;
+	short			count = 0;
+	short			hmi_count = 0;
 	osKernelInitialize ();                    // initialize CMSIS-RTOS
 
   // initialize peripherals here
@@ -191,12 +192,69 @@ int main (void) {
 	p_mainHmi->init( p_mainHmi, NULL);
 	
 #if TDD_ON == 0
+	p_mainHmi->show( p_mainHmi);
+	Set_flag_show(&p_mainHmi->flag, 1); 
+	
+	// create 'thread' functions that start executing,
+	// example: tid_name = osThreadCreate (osThread(name), NULL);
 
-//app code
+	osKernelStart ();                         // start thread execution 
+	count = 0;
+	while(1)
+	{
+		
+		
+		if(count == 10) {
+			count = 0;
+			
+			p_mdl_test->getMdlData( p_mdl_test, 10000, NULL);
+			mTime->getMdlData( mTime, 0, NULL);
+		}
+		if(hmi_count == 100)
+		{
+			hmi_count = 0;
+//			g_p_curHmi->show(g_p_curHmi);
+			
+		}
+		LCD_Run();
+		osDelay(100);
+		hmi_count ++;
+		count ++;
+		
+	}
+	
+
+
 #else
 #	if TDD_SHEET == 1
 	p_mainHmi->show( p_mainHmi);
 	Set_flag_show(&p_mainHmi->flag, 1); 
+	
+	osKernelStart ();                         // start thread execution 
+	count = 0;
+	while(1)
+	{
+		
+		
+		if(count == 10) {
+			count = 0;
+			
+			p_mdl_test->getMdlData( p_mdl_test, 10000, NULL);
+			mTime->getMdlData( mTime, 0, NULL);
+		}
+		if(hmi_count == 50)
+		{
+			hmi_count = 0;
+//			g_p_curHmi->show(g_p_curHmi);
+			
+		}
+		LCD_Run();
+		osDelay(100);
+		hmi_count ++;
+		count ++;
+		
+	}
+	
 #	elif TDD_KEYBOARD == 1
 	mytxt = ( Glyph *)Get_GhTxt();
 	Dev_open( LCD_DEVID, (void *)&lcd);
@@ -204,8 +262,13 @@ int main (void) {
 	p_kbTestOb = KbTestOb_new();
 	p_kbTestOb->setKeyHdl( p_kbTestOb, KeyEvent);
 	u8_tmp = p_kb->addOb( p_kb, ( keyObservice *)p_kbTestOb);
-	
-
+	osKernelStart ();                         // start thread execution 
+	while(1)
+	{
+		
+		p_kb->run( p_kb);
+		delay_ms( 200);
+	}
 #	elif TDD_GPIO == 1
 	
 	for( u8_tmp = 0; u8_tmp < 5; u8_tmp ++)
@@ -276,45 +339,9 @@ int main (void) {
 #	endif
 	
 #endif		//TDD_ON == 0
-  // create 'thread' functions that start executing,
-  // example: tid_name = osThreadCreate (osThread(name), NULL);
+  
 
-  osKernelStart ();                         // start thread execution 
 
-#if TDD_ON == 0
-	
-#else
-#	if TDD_SHEET == 1
-	count = 0;
-	while(1)
-	{
-		
-		
-		if(count == 10) {
-			count = 0;
-			
-			p_mdl_test->getMdlData( p_mdl_test, 10000, NULL);
-			mTime->getMdlData( mTime, 0, NULL);
-		}
-		LCD_Run();
-		osDelay(100);
-		count ++;
-		
-	}
-	
-#	elif TDD_KEYBOARD == 1
-	
-	while(1)
-	{
-		
-		p_kb->run( p_kb);
-		delay_ms( 200);
-	}
-
-#	endif	
-	
-	
-#endif
 	
 }
 

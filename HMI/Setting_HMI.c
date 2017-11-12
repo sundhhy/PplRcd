@@ -158,11 +158,12 @@ static void Show_Setting_HMI(HMI *self)
 //		}
 //		
 //	} 
+	Stop_flush_LCD();
 	Sheet_refresh(g_p_sht_bkpic);
 //	cthis->entry_start_row = 0;
 	Show_entry(self, cthis->p_sy);
 	Strategy_focus(cthis, &cthis->p_sy->sf, 1);
-	
+	Flush_LCD();
 	
 }
 static void	Setting_initSheet(HMI *self)

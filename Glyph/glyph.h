@@ -140,6 +140,7 @@ ABS_CLASS( Glyph)
 };
 
 void Flush_LCD(void);
+void Stop_flush_LCD(void);
 void LCD_Run(void);
 void CLR_LCD(void);
 void View_test(void);

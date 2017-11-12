@@ -158,6 +158,8 @@ static void GpuBPic( char m, int x1, int y1, char num)
 	sprintf( lcdBuf, "BPIC(%d,%d,%d,%d);",m,  x1, y1, num);
 	Cmdbuf_manager(lcdBuf);
 	GpuSend(lcdBuf);
+	GpuDone();
+	osDelay(200);
 	Sem_post(&gpu_sem);
 #else	
 	sprintf( lcdBuf, "BPIC(%d,%d,%d,%d);\r\n",m,  x1, y1, num);
@@ -501,8 +503,25 @@ void GpuSend(char * buf)
 	int 	len = strlen( buf);
 	int 	ret = 0;
 	int 	c = 0;
+#if DUG_LOST_GPUCMD == 1
+	
+	
+	//这里没有出现问题
+	int		err = 0;
+	//"/r/n" ");" 结尾都是正常的，否则都是不正常的
+	if((buf[len - 2] != '\r') && (buf[len - 2] != ')') ) {
+		err = 1;
+		
+	} else if((buf[len - 1] != '\n') && (buf[len - 1] != ';') ) {
+		err = 2;
+		
+		
+	}
+
+#endif	
+	
 	while(1) {
-		ret = I_sendDev->write( I_sendDev, buf, len);
+		ret = I_sendDev->write(I_sendDev, buf, len);
 		if(ret == RET_OK)
 			break;
 		else 

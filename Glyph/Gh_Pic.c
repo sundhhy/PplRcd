@@ -1,5 +1,6 @@
 #include "Gh_Pic.h"
 #include "device.h"
+#include "os/os_depend.h"
 
 //============================================================================//
 //            G L O B A L   D E F I N I T I O N S                             //
