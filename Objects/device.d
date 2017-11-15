@@ -8,6 +8,7 @@
 .\objects\device.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
 .\objects\device.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
 .\objects\device.o: device\dev_lcd.h
+.\objects\device.o: ..\PplRcd\TDD.h
 .\objects\device.o: E:\mylib\sdhLib\inc\basis/sdhDebug.h
 .\objects\device.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
 .\objects\device.o: E:\mylib\sdhLib\inc\sdhDef.h

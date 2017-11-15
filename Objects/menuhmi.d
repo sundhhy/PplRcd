@@ -22,6 +22,7 @@
 .\objects\menuhmi.o: .\device\dev_cmd.h
 .\objects\menuhmi.o: .\device\dev_char.h
 .\objects\menuhmi.o: .\device\dev_lcd.h
+.\objects\menuhmi.o: ..\PplRcd\TDD.h
 .\objects\menuhmi.o: .\model\ModelFactory.h
 .\objects\menuhmi.o: .\model\Model.h
 .\objects\menuhmi.o: E:\mylib\sdhLib\inc\arithmetic/list.h

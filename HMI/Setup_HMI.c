@@ -424,14 +424,17 @@ static int Setup_HMI_cmd(void *p_rcv, int cmd,  void *arg)
 				g_p_winHmi->arg[1] = WINFLAG_RETURN;
 				Win_content("ÃÜÂëÊäÈë³É¹¦");
 				Setup_HMI_unlock(cthis);
-				g_p_winHmi->switchHMI(g_p_winHmi, g_p_winHmi);
+				self->switchHMI(self, g_p_winHmi);
+
+//				g_p_winHmi->switchHMI(g_p_winHmi, g_p_winHmi);
 			} else {
 				g_p_winHmi->arg[0] = WINTYPE_ERROR;
 				g_p_winHmi->arg[1] = WINFLAG_RETURN;
 				sprintf(win_tips,"ÃÜÂë´íÎó");
 				Win_content(win_tips);
 				Setup_HMI_lock(cthis);
-				g_p_winHmi->switchHMI(g_p_winHmi, g_p_winHmi);
+//				g_p_winHmi->switchHMI(g_p_winHmi, g_p_winHmi);
+				self->switchHMI(self, g_p_winHmi);
 
 			}
 		

@@ -19,6 +19,7 @@
 .\objects\ntgrid.o: .\device\dev_cmd.h
 .\objects\ntgrid.o: .\device\dev_char.h
 .\objects\ntgrid.o: .\device\dev_lcd.h
+.\objects\ntgrid.o: ..\PplRcd\TDD.h
 .\objects\ntgrid.o: Expression\Reader.h
 .\objects\ntgrid.o: E:\mylib\sdhLib\inc\basis/assert.h
 .\objects\ntgrid.o: E:\mylib\sdhLib\inc\basis/except.h

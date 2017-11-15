@@ -19,6 +19,7 @@
 .\objects\txtexpr.o: .\device\dev_cmd.h
 .\objects\txtexpr.o: .\device\dev_char.h
 .\objects\txtexpr.o: .\device\dev_lcd.h
+.\objects\txtexpr.o: ..\PplRcd\TDD.h
 .\objects\txtexpr.o: Expression\Reader.h
 .\objects\txtexpr.o: E:\mylib\sdhLib\inc\basis/assert.h
 .\objects\txtexpr.o: E:\mylib\sdhLib\inc\basis/except.h

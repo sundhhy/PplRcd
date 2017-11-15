@@ -22,6 +22,7 @@
 .\objects\acc_month.o: .\device\dev_cmd.h
 .\objects\acc_month.o: .\device\dev_char.h
 .\objects\acc_month.o: .\device\dev_lcd.h
+.\objects\acc_month.o: ..\PplRcd\TDD.h
 .\objects\acc_month.o: .\model\ModelFactory.h
 .\objects\acc_month.o: .\model\Model.h
 .\objects\acc_month.o: E:\mylib\sdhLib\inc\arithmetic/list.h

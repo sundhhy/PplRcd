@@ -22,6 +22,7 @@
 .\objects\format.o: .\device\dev_cmd.h
 .\objects\format.o: .\device\dev_char.h
 .\objects\format.o: .\device\dev_lcd.h
+.\objects\format.o: ..\PplRcd\TDD.h
 .\objects\format.o: .\model\ModelFactory.h
 .\objects\format.o: .\model\Model.h
 .\objects\format.o: E:\mylib\sdhLib\inc\arithmetic/list.h

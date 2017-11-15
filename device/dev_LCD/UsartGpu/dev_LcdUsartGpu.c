@@ -17,7 +17,7 @@
 //------------------------------------------------------------------------------
 // const defines
 //------------------------------------------------------------------------------
-#define LCDBUF_MAX				128
+#define LCDBUF_MAX				64
 #define LCD_DELAY_MS  			20
 #define	UGPU_CMDBUF_LEN			1024
 
@@ -151,15 +151,22 @@ static void GpuIcon(int x1, int y1, char num, int xn, int yn, int n)
 #endif
 }
 
+//x1 == y1 == 0 的时候，说明是背景图片要覆盖整个屏幕
+//否则就是局部的背景，不能对全屏进行擦除了
 static void GpuBPic( char m, int x1, int y1, char num)
 {
 #if USE_CMD_BUF == 1
+//	if((x1 == 0) && (y1 == 0)) 
+//		ClearLcd(0);
 	Sem_wait(&gpu_sem, FOREVER);
 	sprintf( lcdBuf, "BPIC(%d,%d,%d,%d);",m,  x1, y1, num);
 	Cmdbuf_manager(lcdBuf);
 	GpuSend(lcdBuf);
-	GpuDone();
-	osDelay(200);
+	
+	if((x1 == 0) && (y1 == 0))  {
+		GpuDone();
+		osDelay(100);
+	}
 	Sem_post(&gpu_sem);
 #else	
 	sprintf( lcdBuf, "BPIC(%d,%d,%d,%d);\r\n",m,  x1, y1, num);
@@ -262,7 +269,9 @@ static int GpuWrString( char m ,char *string, int len, int x, int y, int font, c
 	if( CHECK_FONT(f) == 0) {
 		f = FONT_12;
 	}
-		
+#if USE_CMD_BUF == 1	
+	Sem_wait(&gpu_sem, FOREVER);
+#endif		
 	if( m < 0x80) {
 		
 		sprintf( lcdBuf, "PS%d(%d,%d,%d,'",f, m, x, y);
@@ -284,7 +293,6 @@ static int GpuWrString( char m ,char *string, int len, int x, int y, int font, c
 	strcat( lcdBuf,colour);
 	
 #if USE_CMD_BUF == 1
-	Sem_wait(&gpu_sem, FOREVER);
 	Cmdbuf_manager(lcdBuf);
 	GpuSend(lcdBuf);
 	Sem_post(&gpu_sem);
@@ -327,6 +335,11 @@ int GpuLabel( char *string,  int len, scArea_t *area, int font, char c, char ali
 			break;
 		
 	}
+	
+#if USE_CMD_BUF == 1	
+	Sem_wait(&gpu_sem, FOREVER);
+#endif	
+	
 	sprintf( lcdBuf, "LABL(%d,%d,%d,%d,'", m, area->x1, area->y1, area->x2);
 #if USE_CMD_BUF == 1
 	sprintf(tail, "',%d,%d);",c,ali);
@@ -341,7 +354,6 @@ int GpuLabel( char *string,  int len, scArea_t *area, int font, char c, char ali
 	strcat( lcdBuf,tail);
 	
 #if USE_CMD_BUF == 1
-	Sem_wait(&gpu_sem, FOREVER);
 	Cmdbuf_manager(lcdBuf);
 	GpuSend(lcdBuf);
 	Sem_post(&gpu_sem);
@@ -357,9 +369,11 @@ static void GpuBKColor( char c)
 {
 	if( c == ERR_COLOUR)
 		return;
+#if USE_CMD_BUF == 1	
+	Sem_wait(&gpu_sem, FOREVER);
+#endif
 	sprintf( lcdBuf, "SBC(%d);", c);
 #if USE_CMD_BUF == 1
-	Sem_wait(&gpu_sem, FOREVER);
 	Cmdbuf_manager(lcdBuf);
 	GpuSend(lcdBuf);
 	Sem_post(&gpu_sem);
@@ -372,7 +386,7 @@ static void GpuBKColor( char c)
 }
 static void Cmdbuf_manager(char *p_cmd)
 {
-	char	tmp_cmd_buf[15] = {0};
+//	char	tmp_cmd_buf[15] = {0};
 	uint8_t cmd_len = strlen(p_cmd);
 	
 	
@@ -390,30 +404,32 @@ static void Cmdbuf_manager(char *p_cmd)
 static void GpuDone( void)
 {
 #if USE_CMD_BUF == 1
-	char tmpbuf[8] = {0};
-	int		ret = 0;
-	Sem_wait(&gpu_sem, FOREVER);
-	while(1) {
-		strcpy(tmpbuf, "\r\n");
-		GpuSend(tmpbuf);
-		ret = I_sendDev->read(I_sendDev, tmpbuf, 8);
-		if(ret > 0) {
-			if(tmpbuf[0] == 'O' && tmpbuf[1] == 'K')
-				break; 
-			else
-				goto err;
-		} else
-			goto err;
-		
-			
-		
-	}
+	char tmpbuf[4] = {0};
+//	int		ret = 0;
+	
+	strcpy(tmpbuf, "\r\n");
+	GpuSend(tmpbuf);
+	
+//	while(1) {
+//		strcpy(tmpbuf, "\r\n");
+//		GpuSend(tmpbuf);
+//		ret = I_sendDev->read(I_sendDev, tmpbuf, 8);
+//		if(ret > 0) {
+//			if(tmpbuf[0] == 'O' && tmpbuf[1] == 'K')
+//				break; 
+//			else
+//				goto err;
+//		} else
+//			goto err;
+//		
+//			
+//		
+//	}
 	//todo:需要增加错误处理
-	err:
+//	err:
 //	osDelay(200);
 	spg = 0;
 	cmd_count = 0;
-	Sem_post(&gpu_sem);
 #endif
 }
 
@@ -502,12 +518,37 @@ void GpuSend(char * buf)
 {
 	int 	len = strlen( buf);
 	int 	ret = 0;
+	char 	tmpbuf[4] = {0};
 	int 	c = 0;
 #if DUG_LOST_GPUCMD == 1
 	
 	
 	//这里没有出现问题
 	int		err = 0;
+	int		ps_count = 0;
+	
+	char 	*p = NULL;
+	
+	//检查 PS16(0,112,PS16(0,112,82,'0',18, 0);		这种错误
+
+	p = strstr( buf, "PS");
+	if( p)
+	{
+		ps_count ++;
+		
+	}
+	p += 2;
+	p = strstr( p, "PS");
+	if( p)
+	{
+		ps_count ++;
+		
+	}
+	
+	if(ps_count == 2) {
+		err = 3;
+	}
+	
 	//"/r/n" ");" 结尾都是正常的，否则都是不正常的
 	if((buf[len - 2] != '\r') && (buf[len - 2] != ')') ) {
 		err = 1;
@@ -520,16 +561,42 @@ void GpuSend(char * buf)
 
 #endif	
 	
+	
+	
+	
+	
+	
 	while(1) {
 		ret = I_sendDev->write(I_sendDev, buf, len);
-		if(ret == RET_OK)
+		if(ret == RET_OK) {
+			if(buf[0] != '\r' || buf[1] != '\n')
+				break;
+			
+			ret = I_sendDev->read(I_sendDev, tmpbuf, 4);
+			if(ret > 0) {
+				if(tmpbuf[0] == 'O' && tmpbuf[1] == 'K')
+					break; 
+			
+			}
+		}  else if(ret == ERR_DEV_TIMEOUT) {
+			osDelay(100);
+			break; 
+		} else {
+			
+//			strcpy(tmpbuf, "\r\n");
+//			I_sendDev->write(I_sendDev, tmpbuf, 2);
+			osDelay(100);
+		}
+		//todo: 如果会在这里出现死机，还要加上退出机制	
+		c ++;
+		if(c > 20)
 			break;
-		else 
-			c ++;
 	}
+	
+	
 	
 //	if( ret )
 //		osDelay(20);
 		
-	
+//	osDelay(1);
 }

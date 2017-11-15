@@ -23,6 +23,7 @@
 .\objects\hmifactory.o: .\device\dev_cmd.h
 .\objects\hmifactory.o: .\device\dev_char.h
 .\objects\hmifactory.o: .\device\dev_lcd.h
+.\objects\hmifactory.o: ..\PplRcd\TDD.h
 .\objects\hmifactory.o: .\model\ModelFactory.h
 .\objects\hmifactory.o: .\model\Model.h
 .\objects\hmifactory.o: E:\mylib\sdhLib\inc\arithmetic/list.h

@@ -10,6 +10,7 @@
 .\objects\gh_pic.o: .\device\dev_cmd.h
 .\objects\gh_pic.o: .\device\dev_char.h
 .\objects\gh_pic.o: .\device\dev_lcd.h
+.\objects\gh_pic.o: ..\PplRcd\TDD.h
 .\objects\gh_pic.o: E:\mylib\sdhLib\inc\arithmetic/cycQueue.h
 .\objects\gh_pic.o: E:\mylib\sdhLib\inc\os/os_depend.h
 .\objects\gh_pic.o: ..\PplRcd\sdhlibConf.h

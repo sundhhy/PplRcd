@@ -10,3 +10,4 @@
 .\objects\gh_none.o: .\device\dev_cmd.h
 .\objects\gh_none.o: .\device\dev_char.h
 .\objects\gh_none.o: .\device\dev_lcd.h
+.\objects\gh_none.o: ..\PplRcd\TDD.h

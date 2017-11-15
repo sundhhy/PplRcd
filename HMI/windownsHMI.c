@@ -70,7 +70,7 @@ static int	Init_winHmi( HMI *self, void *arg);
 static void	winHmiShow( HMI *self);
 static void	WinHmi_hit( HMI *self, char *s);
 static void winHmiHide( HMI *self );
-static void MaininitSheet( HMI *self );
+static void Win_initSheet( HMI *self );
 
 
 static void winHmi_InitFouse( HMI *self );
@@ -140,7 +140,7 @@ CTOR(winHmi)
 SUPER_CTOR( HMI);
 FUNCTION_SETTING(HMI.init, Init_winHmi);
 FUNCTION_SETTING(HMI.hide, winHmiHide);
-FUNCTION_SETTING(HMI.initSheet, MaininitSheet);
+FUNCTION_SETTING(HMI.initSheet, Win_initSheet);
 
 FUNCTION_SETTING(HMI.show, winHmiShow);
 FUNCTION_SETTING(HMI.hitHandle, WinHmi_hit);
@@ -166,7 +166,7 @@ static int	Init_winHmi(HMI *self, void *arg)
 
 
 
-static void MaininitSheet(HMI *self )
+static void Win_initSheet(HMI *self )
 {
 	winHmi			*cthis = SUB_PTR( self, HMI, winHmi);
 	
@@ -348,21 +348,22 @@ static void	WinHmi_hit(HMI *self, char *s)
 			chgFouse = 1;
 		} else if((self->arg[1] &WINFLAG_RETURN) ){
 			
-			p_src_hmi = g_p_lastHmi;
+			p_src_hmi = g_p_win_last;
 			p_src_hmi->flag |= HMIFLAG_WIN;
-			self->switchBack(self);
+			self->switchHMI(self, p_src_hmi);
 			p_src_hmi->flag &= ~HMIFLAG_WIN;
 			
 		} else {
-//			g_p_lastHmi->arg[0] = cthis->f_row;
-//			g_p_lastHmi->arg[1] = cthis->f_col;
+//			g_p_win_last->arg[0] = cthis->f_row;
+//			g_p_win_last->arg[1] = cthis->f_col;
 			if(cthis->f_col == 0)		//确认按键
 				cthis->cmd_hdl(cthis->p_cmd_rcv, wincmd_commit, NULL);
 			else {
 				//取消则直接返回
-				p_src_hmi = g_p_lastHmi;
+				p_src_hmi = g_p_win_last;
 				p_src_hmi->flag |= HMIFLAG_WIN;
-				self->switchBack(self);
+//				self->switchBack(self);
+				self->switchHMI(self, p_src_hmi);
 				p_src_hmi->flag &= ~HMIFLAG_WIN;
 			}
 				
@@ -372,10 +373,10 @@ static void	WinHmi_hit(HMI *self, char *s)
 	if( !strcmp( s, HMIKEY_ESC))
 	{
 		
-		g_p_lastHmi->arg[0] = 0xff;
-		g_p_lastHmi->arg[1] = 0xff;
-		self->switchBack(self);
-		
+		g_p_win_last->arg[0] = 0xff;
+		g_p_win_last->arg[1] = 0xff;
+//		self->switchBack(self);
+		self->switchHMI(self, p_src_hmi);
 	}
 	
 	

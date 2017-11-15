@@ -19,6 +19,7 @@
 .\objects\ntbutton.o: .\device\dev_cmd.h
 .\objects\ntbutton.o: .\device\dev_char.h
 .\objects\ntbutton.o: .\device\dev_lcd.h
+.\objects\ntbutton.o: ..\PplRcd\TDD.h
 .\objects\ntbutton.o: Expression\Reader.h
 .\objects\ntbutton.o: E:\mylib\sdhLib\inc\basis/assert.h
 .\objects\ntbutton.o: E:\mylib\sdhLib\inc\basis/except.h

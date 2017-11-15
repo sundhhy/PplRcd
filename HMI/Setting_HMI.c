@@ -248,6 +248,11 @@ static void	Setting_HMI_init_focus(HMI *self)
 	cthis->p_sy->init(NULL);
 	SET_PG_FLAG(cthis->sub_flag, FOCUS_IN_STARTEGY);
 	
+	
+	g_p_ico_pgup->cnt.effects = GP_CLR_EFF(g_p_ico_pgup->cnt.effects, EFF_FOCUS);
+	g_p_ico_pgdn->cnt.effects = GP_CLR_EFF(g_p_ico_pgdn->cnt.effects, EFF_FOCUS);
+	g_p_ico_memu->cnt.effects = GP_CLR_EFF(g_p_ico_memu->cnt.effects, EFF_FOCUS);
+	
 //	self->p_fcuu = Focus_alloc(1, 2);
 //	Focus_Set_sht(self->p_fcuu, 0, 0, g_p_ico_pgup);
 //	Focus_Set_sht(self->p_fcuu, 0, 0, g_p_ico_pgdn);	
@@ -664,6 +669,10 @@ static int Show_more(HMI *self, int up_or_dn)
 	Clean_stripe(self);
 	Show_entry(self, cthis->p_sy);
 	SET_PG_FLAG(cthis->sub_flag, FOCUS_IN_STARTEGY);
+	
+	g_p_ico_pgup->cnt.effects = GP_CLR_EFF(g_p_ico_pgup->cnt.effects, EFF_FOCUS);
+	g_p_ico_pgdn->cnt.effects = GP_CLR_EFF(g_p_ico_pgdn->cnt.effects, EFF_FOCUS);
+	g_p_ico_memu->cnt.effects = GP_CLR_EFF(g_p_ico_memu->cnt.effects, EFF_FOCUS);
 //	self->show_focus(self, self->p_fcuu->focus_row, self->p_fcuu->focus_col);
 	Strategy_focus(cthis, &cthis->p_sy->sf, 1);
 	Flush_LCD();
@@ -805,15 +814,15 @@ static int Setting_Sy_cmd(void *p_rcv, int cmd,  void *arg)
 				g_p_winHmi->arg[0] = WINTYPE_TIPS;
 				g_p_winHmi->arg[1] = WINFLAG_RETURN;
 				Win_content("ÐÞ¸Ä³É¹¦");
-				g_p_winHmi->switchHMI(g_p_winHmi, g_p_winHmi);
-//				g_p_winHmi->show(g_p_winHmi);
+//				g_p_winHmi->switchHMI(g_p_winHmi, g_p_winHmi);
+				self->switchHMI(self, g_p_winHmi);
 			} else {
 				g_p_winHmi->arg[0] = WINTYPE_ERROR;
 				g_p_winHmi->arg[1] = WINFLAG_RETURN;
 				sprintf(win_tips,"´íÎóÂë:%d", ret);
 				Win_content(win_tips);
-				g_p_winHmi->switchHMI(g_p_winHmi, g_p_winHmi);
-//				self->switchHMI(self, g_p_winHmi);
+//				g_p_winHmi->switchHMI(g_p_winHmi, g_p_winHmi);
+				self->switchHMI(self, g_p_winHmi);
 //				g_p_winHmi->show(g_p_winHmi);
 			}
 		

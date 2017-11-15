@@ -22,6 +22,7 @@
 .\objects\set_system_strategy.o: .\device\dev_cmd.h
 .\objects\set_system_strategy.o: .\device\dev_char.h
 .\objects\set_system_strategy.o: .\device\dev_lcd.h
+.\objects\set_system_strategy.o: ..\PplRcd\TDD.h
 .\objects\set_system_strategy.o: .\model\ModelFactory.h
 .\objects\set_system_strategy.o: .\model\Model.h
 .\objects\set_system_strategy.o: E:\mylib\sdhLib\inc\arithmetic/list.h

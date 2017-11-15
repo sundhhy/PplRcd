@@ -134,14 +134,14 @@ void Focus_move_left(focus_user_t *p_fcuu)
 		p_fcuu->focus_col --;
 	else
 	{
-		p_fcuu->focus_col = p_fcuu->columns;
+		p_fcuu->focus_col = p_fcuu->columns - 1;
 	}
 	
 }
 void Focus_move_right(focus_user_t *p_fcuu)
 {
 	p_fcuu->focus_col ++;
-	if(p_fcuu->focus_col > p_fcuu->columns)
+	if(p_fcuu->focus_col >= p_fcuu->columns)
 		p_fcuu->focus_col = 0;
 }
 void Focus_move_up(focus_user_t *p_fcuu)

@@ -22,6 +22,7 @@
 .\objects\windownshmi.o: .\device\dev_cmd.h
 .\objects\windownshmi.o: .\device\dev_char.h
 .\objects\windownshmi.o: .\device\dev_lcd.h
+.\objects\windownshmi.o: ..\PplRcd\TDD.h
 .\objects\windownshmi.o: .\model\ModelFactory.h
 .\objects\windownshmi.o: .\model\Model.h
 .\objects\windownshmi.o: E:\mylib\sdhLib\inc\arithmetic/list.h

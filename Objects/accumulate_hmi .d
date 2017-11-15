@@ -22,6 +22,7 @@
 .\objects\accumulate_hmi .o: .\device\dev_cmd.h
 .\objects\accumulate_hmi .o: .\device\dev_char.h
 .\objects\accumulate_hmi .o: .\device\dev_lcd.h
+.\objects\accumulate_hmi .o: ..\PplRcd\TDD.h
 .\objects\accumulate_hmi .o: .\model\ModelFactory.h
 .\objects\accumulate_hmi .o: .\model\Model.h
 .\objects\accumulate_hmi .o: E:\mylib\sdhLib\inc\arithmetic/list.h

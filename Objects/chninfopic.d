@@ -22,6 +22,7 @@
 .\objects\chninfopic.o: .\device\dev_cmd.h
 .\objects\chninfopic.o: .\device\dev_char.h
 .\objects\chninfopic.o: .\device\dev_lcd.h
+.\objects\chninfopic.o: ..\PplRcd\TDD.h
 .\objects\chninfopic.o: .\model\ModelFactory.h
 .\objects\chninfopic.o: .\model\Model.h
 .\objects\chninfopic.o: E:\mylib\sdhLib\inc\arithmetic/list.h

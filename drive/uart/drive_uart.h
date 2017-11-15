@@ -16,7 +16,7 @@
 
 
 #define UART_RXCACHE_SIZE		512
-#define UART_TXCACHE_SIZE		256
+#define UART_TXCACHE_SIZE		64
 
 
 #define DRCT_RX				0

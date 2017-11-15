@@ -10,6 +10,7 @@
 .\objects\sheet.o: .\device\dev_cmd.h
 .\objects\sheet.o: .\device\dev_char.h
 .\objects\sheet.o: .\device\dev_lcd.h
+.\objects\sheet.o: ..\PplRcd\TDD.h
 .\objects\sheet.o: .\model\ModelFactory.h
 .\objects\sheet.o: .\model\Model.h
 .\objects\sheet.o: E:\mylib\sdhLib\inc\arithmetic/list.h

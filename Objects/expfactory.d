@@ -19,6 +19,7 @@
 .\objects\expfactory.o: .\device\dev_cmd.h
 .\objects\expfactory.o: .\device\dev_char.h
 .\objects\expfactory.o: .\device\dev_lcd.h
+.\objects\expfactory.o: ..\PplRcd\TDD.h
 .\objects\expfactory.o: Expression\Reader.h
 .\objects\expfactory.o: E:\mylib\sdhLib\inc\basis/assert.h
 .\objects\expfactory.o: E:\mylib\sdhLib\inc\basis/except.h

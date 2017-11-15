@@ -10,6 +10,7 @@
 .\objects\glyph.o: .\device\dev_cmd.h
 .\objects\glyph.o: .\device\dev_char.h
 .\objects\glyph.o: .\device\dev_lcd.h
+.\objects\glyph.o: ..\PplRcd\TDD.h
 .\objects\glyph.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
 .\objects\glyph.o: E:\mylib\sdhLib\inc\basis/sdhDebug.h
 .\objects\glyph.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h

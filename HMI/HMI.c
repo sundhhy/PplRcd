@@ -24,6 +24,7 @@ const Except_T Hmi_Failed = { "HMI Failed" };
 //------------------------------------------------------------------------------
 HMI *g_p_curHmi;
 HMI *g_p_lastHmi;
+HMI *g_p_win_last;
 //============================================================================//
 //            P R I V A T E   D E F I N I T I O N S                           //
 //============================================================================//
@@ -129,11 +130,16 @@ static void	SwitchHMI( HMI *self, HMI *p_hmi)
 {
 	if( p_hmi == NULL)
 		return;
-	if( self != p_hmi) {		//切换到不同的界面上，才更新
+	if(p_hmi ==  g_p_winHmi ) {
+		
+		g_p_win_last = self;
+	} else if((self != p_hmi) && (self != g_p_winHmi)) {		//切换到不同的界面上，才更新
 		
 		g_p_lastHmi = g_p_curHmi;
-		g_p_curHmi = p_hmi;
+		
 	}
+	
+	g_p_curHmi = p_hmi;
 	Set_flag_show(&self->flag, 0);
 	self->hide(self);
 	p_hmi->initSheet( p_hmi);

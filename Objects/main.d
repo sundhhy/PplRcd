@@ -37,7 +37,7 @@
 .\objects\main.o: E:\mylib\sdhLib\inc\lw_oopc.h
 .\objects\main.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
 .\objects\main.o: .\device\dev_lcd.h
-.\objects\main.o: TDD.h
+.\objects\main.o: ..\PplRcd\TDD.h
 .\objects\main.o: .\model\ModelFactory.h
 .\objects\main.o: .\model\Model.h
 .\objects\main.o: E:\mylib\sdhLib\inc\arithmetic/list.h

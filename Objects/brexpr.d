@@ -19,6 +19,7 @@
 .\objects\brexpr.o: .\device\dev_cmd.h
 .\objects\brexpr.o: .\device\dev_char.h
 .\objects\brexpr.o: .\device\dev_lcd.h
+.\objects\brexpr.o: ..\PplRcd\TDD.h
 .\objects\brexpr.o: Expression\Reader.h
 .\objects\brexpr.o: E:\mylib\sdhLib\inc\basis/assert.h
 .\objects\brexpr.o: E:\mylib\sdhLib\inc\basis/except.h

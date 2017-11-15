@@ -22,6 +22,7 @@
 .\objects\news_alarm_hmi.o: .\device\dev_cmd.h
 .\objects\news_alarm_hmi.o: .\device\dev_char.h
 .\objects\news_alarm_hmi.o: .\device\dev_lcd.h
+.\objects\news_alarm_hmi.o: ..\PplRcd\TDD.h
 .\objects\news_alarm_hmi.o: .\model\ModelFactory.h
 .\objects\news_alarm_hmi.o: .\model\Model.h
 .\objects\news_alarm_hmi.o: E:\mylib\sdhLib\inc\arithmetic/list.h

@@ -19,6 +19,7 @@
 .\objects\geometricsexpr.o: .\device\dev_cmd.h
 .\objects\geometricsexpr.o: .\device\dev_char.h
 .\objects\geometricsexpr.o: .\device\dev_lcd.h
+.\objects\geometricsexpr.o: ..\PplRcd\TDD.h
 .\objects\geometricsexpr.o: Expression\Reader.h
 .\objects\geometricsexpr.o: E:\mylib\sdhLib\inc\basis/assert.h
 .\objects\geometricsexpr.o: E:\mylib\sdhLib\inc\basis/except.h

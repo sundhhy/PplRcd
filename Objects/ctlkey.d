@@ -30,6 +30,7 @@
 .\objects\ctlkey.o: .\device\dev_cmd.h
 .\objects\ctlkey.o: .\device\dev_char.h
 .\objects\ctlkey.o: .\device\dev_lcd.h
+.\objects\ctlkey.o: ..\PplRcd\TDD.h
 .\objects\ctlkey.o: ..\PplRcd\system.h
 .\objects\ctlkey.o: ..\PplRcd\HMI/HMI.h
 .\objects\ctlkey.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h

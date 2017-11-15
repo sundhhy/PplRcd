@@ -22,6 +22,7 @@
 .\objects\keyboardhmi.o: .\device\dev_cmd.h
 .\objects\keyboardhmi.o: .\device\dev_char.h
 .\objects\keyboardhmi.o: .\device\dev_lcd.h
+.\objects\keyboardhmi.o: ..\PplRcd\TDD.h
 .\objects\keyboardhmi.o: .\model\ModelFactory.h
 .\objects\keyboardhmi.o: .\model\Model.h
 .\objects\keyboardhmi.o: E:\mylib\sdhLib\inc\arithmetic/list.h

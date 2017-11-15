@@ -157,7 +157,7 @@ typedef   const char  ro_char;
 extern const Except_T Hmi_Failed;
 //extern  ro_char str_endRow[];
 //extern	ro_char str_endCol[];
-extern HMI *g_p_curHmi, *g_p_lastHmi;
+extern HMI *g_p_curHmi, *g_p_lastHmi, *g_p_win_last;
 //------------------------------------------------------------------------------
 // function prototypes
 //------------------------------------------------------------------------------

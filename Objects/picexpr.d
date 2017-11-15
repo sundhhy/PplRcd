@@ -20,6 +20,7 @@
 .\objects\picexpr.o: .\device\dev_cmd.h
 .\objects\picexpr.o: .\device\dev_char.h
 .\objects\picexpr.o: .\device\dev_lcd.h
+.\objects\picexpr.o: ..\PplRcd\TDD.h
 .\objects\picexpr.o: Expression\Reader.h
 .\objects\picexpr.o: E:\mylib\sdhLib\inc\basis/assert.h
 .\objects\picexpr.o: E:\mylib\sdhLib\inc\basis/except.h

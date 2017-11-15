@@ -12,4 +12,7 @@
 #define TDD_DEV_UART2 			0		//170430
 
 
+#define DUG_LOST_GPUCMD		0		//171110 '??ϊ?αµ???α?Χ??ϊ?aκ§?κμa2ι?ς
+
+
 #endif

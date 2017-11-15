@@ -22,6 +22,7 @@
 .\objects\real_time_trendhmi.o: .\device\dev_cmd.h
 .\objects\real_time_trendhmi.o: .\device\dev_char.h
 .\objects\real_time_trendhmi.o: .\device\dev_lcd.h
+.\objects\real_time_trendhmi.o: ..\PplRcd\TDD.h
 .\objects\real_time_trendhmi.o: .\model\ModelFactory.h
 .\objects\real_time_trendhmi.o: .\model\Model.h
 .\objects\real_time_trendhmi.o: E:\mylib\sdhLib\inc\arithmetic/list.h

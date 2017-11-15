@@ -22,6 +22,7 @@
 .\objects\setting_hmi.o: .\device\dev_cmd.h
 .\objects\setting_hmi.o: .\device\dev_char.h
 .\objects\setting_hmi.o: .\device\dev_lcd.h
+.\objects\setting_hmi.o: ..\PplRcd\TDD.h
 .\objects\setting_hmi.o: .\model\ModelFactory.h
 .\objects\setting_hmi.o: .\model\Model.h
 .\objects\setting_hmi.o: E:\mylib\sdhLib\inc\arithmetic/list.h

@@ -114,14 +114,22 @@ static int UartWrite( driveUart *self, void *buf, int wrLen)
 #if ( SER485_SENDMODE == SENDMODE_INTR ) || ( SER485_SENDMODE == SENDMODE_DMA)
 	int ret;
 	char *sendbuf ;
+	
 #else
 	int count = 0;
 #endif
+	
+#if SER485_SENDMODE == SENDMODE_DMA
+//	uint32_t cndtr = 0;
+//	cndtr = myCfg->dma->dma_tx_base->CNDTR;
+	if(myCfg->dma->dma_tx_base->CNDTR > 0)
+		return ERR_BUSY;
+#endif	
+	
 	if( buf == NULL || wrLen == 0)
 		return ERR_BAD_PARAMETER;
 	if( self->status == UARTSTATUS_TXBUSY)
 		return ERR_BUSY;
-	
 	
 	self->ioctol( self, DRICMD_SET_DIR_TX);
 	
@@ -151,7 +159,7 @@ static int UartWrite( driveUart *self, void *buf, int wrLen)
 	
 	self->ctl.intrSendingBuf = sendbuf;
 	self->ctl.sendingCount = 1;
-	self->ctl.sendingLen = size;
+	self->ctl.sendingLen = wrLen;
 	USART_SendData( self->devUartBase, sendbuf[0]);
 	USART_ITConfig( self->devUartBase, USART_IT_TXE, ENABLE);
 
@@ -456,7 +464,7 @@ void UartDma_Init( driveUart *self)
     DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t)(&devUartBase->DR);// 外设地址
     DMA_InitStructure.DMA_MemoryBaseAddr = (uint32_t)self->txCache;        
     DMA_InitStructure.DMA_DIR = DMA_DIR_PeripheralDST;                      // 从内存到外设
-    DMA_InitStructure.DMA_BufferSize = UART_TXCACHE_SIZE;                    
+    DMA_InitStructure.DMA_BufferSize = 0;                 	//UART_TXCACHE_SIZE   
     DMA_InitStructure.DMA_PeripheralInc = DMA_PeripheralInc_Disable;        // 外设地址不增加
     DMA_InitStructure.DMA_MemoryInc = DMA_MemoryInc_Enable;                 // 内存地址增加
     DMA_InitStructure.DMA_PeripheralDataSize = DMA_PeripheralDataSize_Byte; // 外设数据宽度1B

@@ -11,6 +11,7 @@
 .\objects\focus.o: .\device\dev_cmd.h
 .\objects\focus.o: .\device\dev_char.h
 .\objects\focus.o: .\device\dev_lcd.h
+.\objects\focus.o: ..\PplRcd\TDD.h
 .\objects\focus.o: .\model\ModelFactory.h
 .\objects\focus.o: .\model\Model.h
 .\objects\focus.o: E:\mylib\sdhLib\inc\arithmetic/list.h

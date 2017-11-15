@@ -22,6 +22,7 @@
 .\objects\bargraphhmi.o: .\device\dev_cmd.h
 .\objects\bargraphhmi.o: .\device\dev_char.h
 .\objects\bargraphhmi.o: .\device\dev_lcd.h
+.\objects\bargraphhmi.o: ..\PplRcd\TDD.h
 .\objects\bargraphhmi.o: .\model\ModelFactory.h
 .\objects\bargraphhmi.o: .\model\Model.h
 .\objects\bargraphhmi.o: E:\mylib\sdhLib\inc\arithmetic/list.h

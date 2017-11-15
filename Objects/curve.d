@@ -22,6 +22,7 @@
 .\objects\curve.o: .\device\dev_cmd.h
 .\objects\curve.o: .\device\dev_char.h
 .\objects\curve.o: .\device\dev_lcd.h
+.\objects\curve.o: ..\PplRcd\TDD.h
 .\objects\curve.o: .\model\ModelFactory.h
 .\objects\curve.o: .\model\Model.h
 .\objects\curve.o: E:\mylib\sdhLib\inc\arithmetic/list.h
