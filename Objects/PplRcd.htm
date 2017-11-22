@@ -3,7 +3,7 @@
 <title>Static Call Graph - [.\Objects\PplRcd.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image .\Objects\PplRcd.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5050106: Last Updated: Wed Nov 15 23:10:29 2017
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5050106: Last Updated: Mon Nov 20 21:58:35 2017
 <BR><P>
 <H3>Maximum Stack Usage =        248 bytes + Unknown(Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -3101,14 +3101,14 @@ Global Symbols
 </UL>
 
 <P><STRONG><a name="[64]"></a>USART1_IRQHandler</STRONG> (Thumb, 14 bytes, Stack size 8 bytes, drive_uart.o(i.USART1_IRQHandler))
-<BR><BR>[Stack]<UL><LI>Max Depth = 60<LI>Call Chain = USART1_IRQHandler &rArr; Usart_irq &rArr; USART_ITConfig
+<BR><BR>[Stack]<UL><LI>Max Depth = 68<LI>Call Chain = USART1_IRQHandler &rArr; Usart_irq &rArr; USART_ITConfig
 </UL>
 <BR>[Calls]<UL><LI><a href="#[2b1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Usart_irq
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> startup_stm32f10x_hd.o(RESET)
 </UL>
 <P><STRONG><a name="[65]"></a>USART2_IRQHandler</STRONG> (Thumb, 14 bytes, Stack size 8 bytes, drive_uart.o(i.USART2_IRQHandler))
-<BR><BR>[Stack]<UL><LI>Max Depth = 60<LI>Call Chain = USART2_IRQHandler &rArr; Usart_irq &rArr; USART_ITConfig
+<BR><BR>[Stack]<UL><LI>Max Depth = 68<LI>Call Chain = USART2_IRQHandler &rArr; Usart_irq &rArr; USART_ITConfig
 </UL>
 <BR>[Calls]<UL><LI><a href="#[2b1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Usart_irq
 </UL>
@@ -3182,8 +3182,8 @@ Global Symbols
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> drive_uart.o(i.driveUart_ctor)
 </UL>
-<P><STRONG><a name="[2b1]"></a>Usart_irq</STRONG> (Thumb, 252 bytes, Stack size 32 bytes, drive_uart.o(i.Usart_irq))
-<BR><BR>[Stack]<UL><LI>Max Depth = 52<LI>Call Chain = Usart_irq &rArr; USART_ITConfig
+<P><STRONG><a name="[2b1]"></a>Usart_irq</STRONG> (Thumb, 278 bytes, Stack size 40 bytes, drive_uart.o(i.Usart_irq))
+<BR><BR>[Stack]<UL><LI>Max Depth = 60<LI>Call Chain = Usart_irq &rArr; USART_ITConfig
 </UL>
 <BR>[Calls]<UL><LI><a href="#[2ba]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;switch_receivebuf
 <LI><a href="#[2c3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;get_loadbuflen

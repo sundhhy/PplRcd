@@ -63,6 +63,20 @@ Dma_source g_DmaUart1 = {
 	DMA1_Channel4_IRQn,
 	
 };
+spi_conf_t conf_spi1 {
+    SPI1,
+    0,
+    0,
+    0,
+};
+
+spi_conf_t conf_spi2 {
+    SPI2,
+    0,
+    0,
+    0,
+};
+
 
 //串口的方向控制引脚，如果不需要的话就设置成0
 gpio_pins Dir_485_pin1 = {0,0};

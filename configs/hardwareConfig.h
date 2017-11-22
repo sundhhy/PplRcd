@@ -1,7 +1,7 @@
 #ifndef __HARDWARECONFIG_H__
 #define __HARDWARECONFIG_H__
-#include "stm32f10x_gpio.h"
-#include "stm32f10x_usart.h"
+#include "stm32f10x_conf.h"
+
 #define	DEBUG_COM			2
 #if DEBUG_COM == 1
 #define DEBUG_USART	USART1
@@ -100,6 +100,23 @@ typedef struct {
 	
 }CfgUart_t;
 
+typedef struct {
+    void 	                *spi_base;
+    char                    work_mode;  //0 Ö÷1 ´Ó
+    char                    mode; //0 - 3
+    /*
+        Mode 0 CPOL=0, CPHA=0 
+        Mode 1 CPOL=0, CPHA=1
+        Mode 2 CPOL=1, CPHA=0 
+        Mode 3 CPOL=1, CPHA=1
+    */
+    char                    use_dma;
+         
+    char                    none;
+
+
+}spi_conf_t;
+
 
 extern CfgUart_t g_confUart2, g_confUart1;
 
@@ -134,6 +151,6 @@ extern gpio_pins pin_keyUp;
 extern gpio_pins pin_keyDown;
 extern gpio_pins pin_keyEnter;
 extern gpio_pins pin_keyEsc;
-
+extern spi_conf_t conf_spi1, conf_spi2;
 
 #endif

@@ -511,12 +511,14 @@ void Usart_irq( driveUart *thisDev)
 {
 	short rxbuflen;
 	char *rxbuf;
-	uint8_t clear_idle = clear_idle;
 	USART_TypeDef *devUartBase = ( USART_TypeDef *)thisDev->devUartBase;
 	//这个500是在115200的波特率，CPU时钟是48M的情况下通过逐次逼近测得的
 //	int i = 500;
 	
-	CfgUart_t *myCfg = ( CfgUart_t *)thisDev->cfg;
+	CfgUart_t 	*myCfg = ( CfgUart_t *)thisDev->cfg;
+	uint8_t 	clear_idle = clear_idle;
+	uint16_t	cntdr = 0;
+	
 	if(USART_GetITStatus( thisDev->devUartBase, USART_IT_IDLE) != RESET)  // 空闲中断
 	{
 		
@@ -552,9 +554,15 @@ void Usart_irq( driveUart *thisDev)
 	//这个中断在DMA发送完成中断中开启
 	if(USART_GetITStatus( thisDev->devUartBase, USART_IT_TC) == SET) 
 	{
+		
+			
 		USART_ClearFlag( thisDev->devUartBase,USART_IT_TC );
 		USART_ITConfig( thisDev->devUartBase, USART_IT_TC, DISABLE);
 		
+		if(myCfg->dma->dma_tx_base->CNDTR > 0) {
+			cntdr = myCfg->dma->dma_tx_base->CNDTR;
+			return;
+		}
 		if( thisDev->txPost)
 			thisDev->txPost(thisDev);
 		if( thisDev->txIdp)
