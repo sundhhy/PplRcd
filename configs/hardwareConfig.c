@@ -63,19 +63,22 @@ Dma_source g_DmaUart1 = {
 	DMA1_Channel4_IRQn,
 	
 };
-spi_conf_t conf_spi1 {
-    SPI1,
+spi_conf_t arr_conf_spi[2] ={
+	{
     0,
     0,
     0,
+		8,
+	},
+	{
+    0,
+    0,
+    0,
+		8,
+	}
 };
 
-spi_conf_t conf_spi2 {
-    SPI2,
-    0,
-    0,
-    0,
-};
+
 
 
 //串口的方向控制引脚，如果不需要的话就设置成0

@@ -11,6 +11,8 @@
 #define DEBUG_USART	USART3
 #endif
 
+#define NUM_SPIS        2
+
 //各种外设的引脚配置
 #define RCC_UART1_TX                                    RCC_APB2Periph_GPIOB		 
 #define GPIO_PORT_UART1TX                               GPIOB    					 
@@ -101,20 +103,19 @@ typedef struct {
 }CfgUart_t;
 
 typedef struct {
-    void 	                *spi_base;
-    char                    work_mode;  //0 主1 从
-    char                    mode; //0 - 3
+    char                   work_mode;  //0 主1 从
+    char                   mode; //0 - 3
     /*
         Mode 0 CPOL=0, CPHA=0 
         Mode 1 CPOL=0, CPHA=1
         Mode 2 CPOL=1, CPHA=0 
         Mode 3 CPOL=1, CPHA=1
     */
-    char                    use_dma;
+//		char                    dri_mode;		//驱动模式:0 cpu轮询， 1 中断模式 2 DMA模式
          
-    char                    none;
-
-
+    char                    nss;			//0 软件nss模式 1 硬件nss 模式
+		char										datasize_bit;		// 8 or 16
+		int											baud;
 }spi_conf_t;
 
 
@@ -151,6 +152,6 @@ extern gpio_pins pin_keyUp;
 extern gpio_pins pin_keyDown;
 extern gpio_pins pin_keyEnter;
 extern gpio_pins pin_keyEsc;
-extern spi_conf_t conf_spi1, conf_spi2;
+extern spi_conf_t arr_conf_spi[2];
 
 #endif

@@ -4,7 +4,6 @@
 #ifndef __INC_drive_spi_H__
 #define __INC_drive_spi_H__
 #include "stdint.h"
-#include "stm32f10x_spi.h"
 #include "lw_oopc.h"
 #include "mem/Ping_PongBuf.h"
 #include "dri_cmd.h"
@@ -42,6 +41,10 @@ CLASS( driveSpi)
 //------------------------------------------------------------------------------
 // function prototypes
 //------------------------------------------------------------------------------
+int	Init_spi(int No, spi_conf_t *c);
+
+int Read_spi(int No, int data_size, void *buf, int rd_len);
+int Write_spi(int No, int data_size, void *buf, int len);
 
 
 #endif
