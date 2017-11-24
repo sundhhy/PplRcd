@@ -30,6 +30,7 @@
 .\objects\dev_char.o: E:\mylib\sdhLib\inc\mem/Ping_PongBuf.h
 .\objects\dev_char.o: .\drive\dri_cmd.h
 .\objects\dev_char.o: .\configs\hardwareConfig.h
+.\objects\dev_char.o: device\dev_spi/dev_spi.h
 .\objects\dev_char.o: device\dev_gpio/device_gpio.h
 .\objects\dev_char.o: .\drive\GPIO/drive_gpio.h
 .\objects\dev_char.o: E:\mylib\sdhLib\inc\basis/sdhDebug.h

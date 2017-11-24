@@ -3,7 +3,7 @@
 #ifndef __CH376INC_H__
 #define __CH376INC_H__
 
-
+#include <stdint.h>
 
 
 /* ********************************************************************************************************************* */
@@ -470,18 +470,18 @@
 
 /* FAT数据区中文件目录信息 */
 typedef struct _FAT_DIR_INFO {
-	uint8	DIR_Name[11];					/* 00H,文件名,共11字节,不足处填空格 */
-	uint8	DIR_Attr;						/* 0BH,文件属性,参考后面的说明 */
-	uint8	DIR_NTRes;						/* 0CH */
-	uint8	DIR_CrtTimeTenth;				/* 0DH,文件创建的时间,以0.1秒单位计数 */
-	uint16	DIR_CrtTime;					/* 0EH,文件创建的时间 */
-	uint16	DIR_CrtDate;					/* 10H,文件创建的日期 */
-	uint16	DIR_LstAccDate;					/* 12H,最近一次存取操作的日期 */
-	uint16	DIR_FstClusHI;					/* 14H */
-	uint16	DIR_WrtTime;					/* 16H,文件修改时间,参考前面的宏MAKE_FILE_TIME */
-	uint16	DIR_WrtDate;					/* 18H,文件修改日期,参考前面的宏MAKE_FILE_DATE */
-	uint16	DIR_FstClusLO;					/* 1AH */
-	uint32	DIR_FileSize;					/* 1CH,文件长度 */
+	uint8_t	DIR_Name[11];					/* 00H,文件名,共11字节,不足处填空格 */
+	uint8_t	DIR_Attr;						/* 0BH,文件属性,参考后面的说明 */
+	uint8_t	DIR_NTRes;						/* 0CH */
+	uint8_t	DIR_CrtTimeTenth;				/* 0DH,文件创建的时间,以0.1秒单位计数 */
+	uint16_t	DIR_CrtTime;					/* 0EH,文件创建的时间 */
+	uint16_t	DIR_CrtDate;					/* 10H,文件创建的日期 */
+	uint16_t	DIR_LstAccDate;					/* 12H,最近一次存取操作的日期 */
+	uint16_t	DIR_FstClusHI;					/* 14H */
+	uint16_t	DIR_WrtTime;					/* 16H,文件修改时间,参考前面的宏MAKE_FILE_TIME */
+	uint16_t	DIR_WrtDate;					/* 18H,文件修改日期,参考前面的宏MAKE_FILE_DATE */
+	uint16_t	DIR_FstClusLO;					/* 1AH */
+	uint32_t	DIR_FileSize;					/* 1CH,文件长度 */
 } FAT_DIR_INFO, *P_FAT_DIR_INFO;			/* 20H */
 
 /* 文件属性 */
@@ -493,14 +493,14 @@ typedef struct _FAT_DIR_INFO {
 #define ATTR_ARCHIVE			0x20		/* 文件为存档属性 */
 #define ATTR_LONG_NAME			( ATTR_READ_ONLY | ATTR_HIDDEN | ATTR_SYSTEM | ATTR_VOLUME_ID )	/* 长文件名属性 */
 #define ATTR_LONG_NAME_MASK		( ATTR_LONG_NAME | ATTR_DIRECTORY | ATTR_ARCHIVE )
-/* 文件属性 uint8 */
+/* 文件属性 uint8_t */
 /* bit0 bit1 bit2 bit3 bit4 bit5 bit6 bit7 */
 /*  只   隐   系   卷   目   存   未定义   */
 /*  读   藏   统   标   录   档            */
-/* 文件时间 uint16 */
+/* 文件时间 uint16_t */
 /* Time = (Hour<<11) + (Minute<<5) + (Second>>1) */
 #define MAKE_FILE_TIME( h, m, s )	( (h<<11) + (m<<5) + (s>>1) )	/* 生成指定时分秒的文件时间数据 */
-/* 文件日期 uint16 */
+/* 文件日期 uint16_t */
 /* Date = ((Year-1980)<<9) + (Month<<5) + Day */
 #define MAKE_FILE_DATE( y, m, d )	( ((y-1980)<<9) + (m<<5) + d )	/* 生成指定年月日的文件日期数据 */
 
@@ -527,47 +527,47 @@ typedef struct _FAT_DIR_INFO {
 
 /* BulkOnly协议的命令块 */
 typedef struct _BULK_ONLY_CBW {
-	uint32	CBW_Sig;
-	uint32	CBW_Tag;
-	uint8	CBW_DataLen0;					/* 08H,输入: 数据传输长度,对于输入数据其有效值是0到48,对于输出数据其有效值为0到33 */
-	uint8	CBW_DataLen1;
-	uint16	CBW_DataLen2;
-	uint8	CBW_Flag;						/* 0CH,输入: 传输方向等标志,位7为1则输入数据,位为0则输出数据或者没有数据 */
-	uint8	CBW_LUN;
-	uint8	CBW_CB_Len;						/* 0EH,输入: 命令块的长度,有效值是1到16 */
-	uint8	CBW_CB_Buf[16];					/* 0FH,输入: 命令块,该缓冲区最多为16个字节 */
+	uint32_t	CBW_Sig;
+	uint32_t	CBW_Tag;
+	uint8_t	CBW_DataLen0;					/* 08H,输入: 数据传输长度,对于输入数据其有效值是0到48,对于输出数据其有效值为0到33 */
+	uint8_t	CBW_DataLen1;
+	uint16_t	CBW_DataLen2;
+	uint8_t	CBW_Flag;						/* 0CH,输入: 传输方向等标志,位7为1则输入数据,位为0则输出数据或者没有数据 */
+	uint8_t	CBW_LUN;
+	uint8_t	CBW_CB_Len;						/* 0EH,输入: 命令块的长度,有效值是1到16 */
+	uint8_t	CBW_CB_Buf[16];					/* 0FH,输入: 命令块,该缓冲区最多为16个字节 */
 } BULK_ONLY_CBW, *P_BULK_ONLY_CBW;			/* BulkOnly协议的命令块, 输入CBW结构 */
 
 /* INQUIRY命令的返回数据 */
 typedef struct _INQUIRY_DATA {
-	uint8	DeviceType;					/* 00H, 设备类型 */
-	uint8	RemovableMedia;				/* 01H, 位7为1说明是移动存储 */
-	uint8	Versions;					/* 02H, 协议版本 */
-	uint8	DataFormatAndEtc;			/* 03H, 指定返回数据格式 */
-	uint8	AdditionalLength;			/* 04H, 后续数据的长度 */
-	uint8	Reserved1;
-	uint8	Reserved2;
-	uint8	MiscFlag;					/* 07H, 一些控制标志 */
-	uint8	VendorIdStr[8];				/* 08H, 厂商信息 */
-	uint8	ProductIdStr[16];			/* 10H, 产品信息 */
-	uint8	ProductRevStr[4];			/* 20H, 产品版本 */
+	uint8_t	DeviceType;					/* 00H, 设备类型 */
+	uint8_t	RemovableMedia;				/* 01H, 位7为1说明是移动存储 */
+	uint8_t	Versions;					/* 02H, 协议版本 */
+	uint8_t	DataFormatAndEtc;			/* 03H, 指定返回数据格式 */
+	uint8_t	AdditionalLength;			/* 04H, 后续数据的长度 */
+	uint8_t	Reserved1;
+	uint8_t	Reserved2;
+	uint8_t	MiscFlag;					/* 07H, 一些控制标志 */
+	uint8_t	VendorIdStr[8];				/* 08H, 厂商信息 */
+	uint8_t	ProductIdStr[16];			/* 10H, 产品信息 */
+	uint8_t	ProductRevStr[4];			/* 20H, 产品版本 */
 } INQUIRY_DATA, *P_INQUIRY_DATA;		/* 24H */
 
 /* REQUEST SENSE命令的返回数据 */
 typedef struct _SENSE_DATA {
-	uint8	ErrorCode;					/* 00H, 错误代码及有效位 */
-	uint8	SegmentNumber;
-	uint8	SenseKeyAndEtc;				/* 02H, 主键码 */
-	uint8	Information0;
-	uint8	Information1;
-	uint8	Information2;
-	uint8	Information3;
-	uint8	AdditSenseLen;				/* 07H, 后续数据的长度 */
-	uint8	CmdSpecInfo[4];
-	uint8	AdditSenseCode;				/* 0CH, 附加键码 */
-	uint8	AddSenCodeQual;				/* 0DH, 详细的附加键码 */
-	uint8	FieldReplaUnit;
-	uint8	SenseKeySpec[3];
+	uint8_t	ErrorCode;					/* 00H, 错误代码及有效位 */
+	uint8_t	SegmentNumber;
+	uint8_t	SenseKeyAndEtc;				/* 02H, 主键码 */
+	uint8_t	Information0;
+	uint8_t	Information1;
+	uint8_t	Information2;
+	uint8_t	Information3;
+	uint8_t	AdditSenseLen;				/* 07H, 后续数据的长度 */
+	uint8_t	CmdSpecInfo[4];
+	uint8_t	AdditSenseCode;				/* 0CH, 附加键码 */
+	uint8_t	AddSenCodeQual;				/* 0DH, 详细的附加键码 */
+	uint8_t	FieldReplaUnit;
+	uint8_t	SenseKeySpec[3];
 } SENSE_DATA, *P_SENSE_DATA;			/* 12H */
 
 #endif
@@ -582,7 +582,7 @@ typedef struct _SENSE_DATA {
 /* 命令的输入数据和输出数据 */
 typedef union _CH376_CMD_DATA {
 	struct {
-		uint8	mBuffer[ MAX_FILE_NAME_LEN ];
+		uint8_t	mBuffer[ MAX_FILE_NAME_LEN ];
 	} Default;
 
 	INQUIRY_DATA	DiskMountInq;			/* 返回: INQUIRY命令的返回数据 */
@@ -595,64 +595,64 @@ typedef union _CH376_CMD_DATA {
 											/* CMD0H_FILE_ENUM_GO: 继续枚举文件和目录(文件夹) */
 
 	struct {
-		uint8	mUpdateFileSz;				/* 输入参数: 是否允许更新文件长度, 0则禁止更新长度 */
+		uint8_t	mUpdateFileSz;				/* 输入参数: 是否允许更新文件长度, 0则禁止更新长度 */
 	} FileCLose;							/* CMD1H_FILE_CLOSE: 关闭当前已经打开的文件 */
 
 	struct {
-		uint8	mDirInfoIndex;				/* 输入参数: 指定需要读取的目录信息结构在扇区内的索引号, 0FFH则为当前已经打开的文件 */
+		uint8_t	mDirInfoIndex;				/* 输入参数: 指定需要读取的目录信息结构在扇区内的索引号, 0FFH则为当前已经打开的文件 */
 	} DirInfoRead;							/* CMD1H_DIR_INFO_READ: 读取文件的目录信息 */
 
 	union {
-		uint32	mByteOffset;				/* 输入参数: 偏移字节数,以字节为单位的偏移量(总长度32位,低字节在前) */
-		uint32	mSectorLba;					/* 返回: 当前文件指针对应的绝对线性扇区号,0FFFFFFFFH则已到文件尾(总长度32位,低字节在前) */
+		uint32_t	mByteOffset;				/* 输入参数: 偏移字节数,以字节为单位的偏移量(总长度32位,低字节在前) */
+		uint32_t	mSectorLba;					/* 返回: 当前文件指针对应的绝对线性扇区号,0FFFFFFFFH则已到文件尾(总长度32位,低字节在前) */
 	} ByteLocate;							/* CMD4H_BYTE_LOCATE: 以字节为单位移动当前文件指针 */
 
 	struct {
-		uint16	mByteCount;					/* 输入参数: 请求读取的字节数(总长度16位,低字节在前) */
+		uint16_t	mByteCount;					/* 输入参数: 请求读取的字节数(总长度16位,低字节在前) */
 	} ByteRead;								/* CMD2H_BYTE_READ: 以字节为单位从当前位置读取数据块 */
 
 	struct {
-		uint16	mByteCount;					/* 输入参数: 请求写入的字节数(总长度16位,低字节在前) */
+		uint16_t	mByteCount;					/* 输入参数: 请求写入的字节数(总长度16位,低字节在前) */
 	} ByteWrite;							/* CMD2H_BYTE_WRITE: 以字节为单位向当前位置写入数据块 */
 
 	union {
-		uint32	mSectorOffset;				/* 输入参数: 偏移扇区数,以扇区为单位的偏移量(总长度32位,低字节在前) */
-		uint32	mSectorLba;					/* 返回: 当前文件指针对应的绝对线性扇区号,0FFFFFFFFH则已到文件尾(总长度32位,低字节在前) */
+		uint32_t	mSectorOffset;				/* 输入参数: 偏移扇区数,以扇区为单位的偏移量(总长度32位,低字节在前) */
+		uint32_t	mSectorLba;					/* 返回: 当前文件指针对应的绝对线性扇区号,0FFFFFFFFH则已到文件尾(总长度32位,低字节在前) */
 	} SectorLocate;							/* CMD4H_SEC_LOCATE: 以扇区为单位移动当前文件指针 */
 
 	struct {
-		uint8	mSectorCount;				/* 输入参数: 请求读取的扇区数 */
+		uint8_t	mSectorCount;				/* 输入参数: 请求读取的扇区数 */
 											/* 返回: 允许读取的扇区数 */
-		uint8	mReserved1;
-		uint8	mReserved2;
-		uint8	mReserved3;
-		uint32	mStartSector;				/* 返回: 允许读取的扇区块的起始绝对线性扇区号(总长度32位,低字节在前) */
+		uint8_t	mReserved1;
+		uint8_t	mReserved2;
+		uint8_t	mReserved3;
+		uint32_t	mStartSector;				/* 返回: 允许读取的扇区块的起始绝对线性扇区号(总长度32位,低字节在前) */
 	} SectorRead;							/* CMD1H_SEC_READ: 以扇区为单位从当前位置读取数据块 */
 
 	struct {
-		uint8	mSectorCount;				/* 输入参数: 请求写入的扇区数 */
+		uint8_t	mSectorCount;				/* 输入参数: 请求写入的扇区数 */
 											/* 返回: 允许写入的扇区数 */
-		uint8	mReserved1;
-		uint8	mReserved2;
-		uint8	mReserved3;
-		uint32	mStartSector;				/* 返回: 允许写入的扇区块的起始绝对线性扇区号(总长度32位,低字节在前) */
+		uint8_t	mReserved1;
+		uint8_t	mReserved2;
+		uint8_t	mReserved3;
+		uint32_t	mStartSector;				/* 返回: 允许写入的扇区块的起始绝对线性扇区号(总长度32位,低字节在前) */
 	} SectorWrite;							/* CMD1H_SEC_WRITE: 以扇区为单位在当前位置写入数据块 */
 
 	struct {
-		uint32	mDiskSizeSec;				/* 返回: 整个物理磁盘的总扇区数(总长度32位,低字节在前) */
+		uint32_t	mDiskSizeSec;				/* 返回: 整个物理磁盘的总扇区数(总长度32位,低字节在前) */
 	} DiskCapacity;							/* CMD0H_DISK_CAPACITY: 查询磁盘物理容量 */
 
 	struct {
-		uint32	mTotalSector;				/* 返回: 当前逻辑盘的总扇区数(总长度32位,低字节在前) */
-		uint32	mFreeSector;				/* 返回: 当前逻辑盘的剩余扇区数(总长度32位,低字节在前) */
-		uint8	mDiskFat;					/* 返回: 当前逻辑盘的FAT类型,1-FAT12,2-FAT16,3-FAT32 */
+		uint32_t	mTotalSector;				/* 返回: 当前逻辑盘的总扇区数(总长度32位,低字节在前) */
+		uint32_t	mFreeSector;				/* 返回: 当前逻辑盘的剩余扇区数(总长度32位,低字节在前) */
+		uint8_t	mDiskFat;					/* 返回: 当前逻辑盘的FAT类型,1-FAT12,2-FAT16,3-FAT32 */
 	} DiskQuery;							/* CMD_DiskQuery, 查询磁盘信息 */
 
 	BULK_ONLY_CBW	DiskBocCbw;				/* 输入参数: CBW命令结构 */
 											/* CMD0H_DISK_BOC_CMD: 对USB存储器执行BulkOnly传输协议的命令 */
 
 	struct {
-		uint8	mMaxLogicUnit;				/* 返回: USB存储器的最大逻辑单元号 */
+		uint8_t	mMaxLogicUnit;				/* 返回: USB存储器的最大逻辑单元号 */
 	} DiskMaxLun;							/* CMD0H_DISK_MAX_LUN: 控制传输-获取USB存储器最大逻辑单元号 */
 
 	INQUIRY_DATA	DiskInitInq;			/* 返回: INQUIRY命令的返回数据 */
@@ -665,17 +665,17 @@ typedef union _CH376_CMD_DATA {
 											/* CMD0H_DISK_R_SENSE: 检查USB存储器错误 */
 
 	struct {
-		uint32	mDiskSizeSec;				/* 返回: 整个物理磁盘的总扇区数(总长度32位,高字节在前) */
+		uint32_t	mDiskSizeSec;				/* 返回: 整个物理磁盘的总扇区数(总长度32位,高字节在前) */
 	} DiskSize;								/* CMD0H_DISK_SIZE: 获取USB存储器的容量 */
 
 	struct {
-		uint32	mStartSector;				/* 输入参数: LBA扇区地址(总长度32位,低字节在前) */
-		uint8	mSectorCount;				/* 输入参数: 请求读取的扇区数 */
+		uint32_t	mStartSector;				/* 输入参数: LBA扇区地址(总长度32位,低字节在前) */
+		uint8_t	mSectorCount;				/* 输入参数: 请求读取的扇区数 */
 	} DiskRead;								/* CMD5H_DISK_READ: 从USB存储器读数据块(以扇区为单位) */
 
 	struct {
-		uint32	mStartSector;				/* 输入参数: LBA扇区地址(总长度32位,低字节在前) */
-		uint8	mSectorCount;				/* 输入参数: 请求写入的扇区数 */
+		uint32_t	mStartSector;				/* 输入参数: LBA扇区地址(总长度32位,低字节在前) */
+		uint8_t	mSectorCount;				/* 输入参数: 请求写入的扇区数 */
 	} DiskWrite;							/* CMD5H_DISK_WRITE: 向USB存储器写数据块(以扇区为单位) */
 } CH376_CMD_DATA, *P_CH376_CMD_DATA;
 

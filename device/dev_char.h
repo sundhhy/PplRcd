@@ -6,7 +6,7 @@
 //∞¸¿®uart…Ë±∏
 
 
-INTERFACE( I_dev_Char)
+INTERFACE(I_dev_Char)
 {
 	int ( *open)( I_dev_Char *self, void *conf);
 	int ( *close)( I_dev_Char *self);
