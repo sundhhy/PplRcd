@@ -7,7 +7,7 @@
 
 #	define DEVMAJOR_UART				1
 #	define DEVMAJOR_GPIO				2
-
+#	define DEVMAJOR_SPI					3
 
 //显示设备
 #define DEVTYPE_DISPLAY				2
@@ -38,6 +38,8 @@
 //#define DEVID_USARTGPULCD  	BUILD_DEVID( DEVTYPE_DISPLAY, DEVMAJOR_LCD, 1)
 #define DEVID_UART1			0x00010100
 #define DEVID_UART2			0x00010101
+#define DEVID_SPI1			BUILD_DEVID(DEVTYPE_CHAR, DEVMAJOR_SPI, 0)
+#define DEVID_SPI2			BUILD_DEVID(DEVTYPE_CHAR, DEVMAJOR_SPI, 0)
 
 
 //顺序要与dev_gpio.c中的arr_Gpiocfg 一致！

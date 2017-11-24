@@ -1330,6 +1330,18 @@
         </Group>
         <Group>
           <GroupName>USB</GroupName>
+          <Files>
+            <File>
+              <FileName>Ch376.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\USB\Ch376.c</FilePath>
+            </File>
+            <File>
+              <FileName>Ch376.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\USB\Ch376.h</FilePath>
+            </File>
+          </Files>
         </Group>
         <Group>
           <GroupName>::CMSIS</GroupName>
