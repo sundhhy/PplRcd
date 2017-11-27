@@ -78,11 +78,16 @@
 #define GPIO_PORT_SPI1                              	GPIOA    					 
 #define GPIO_PIN_SPI1_MOSI                               GPIO_Pin_7
 #define GPIO_PIN_SPI1_MISO                               GPIO_Pin_6
-#define GPIO_PIN_SPI1_SCK                               GPIO_Pin_5
+#define GPIO_PIN_SPI1_SCK                               	GPIO_Pin_5
 #define GPIO_PIN_SPI1_NSS                               GPIO_Pin_4
+
 #define GPIO_PORT_USBRESET                              GPIOD    					 
-#define GPIO_PIN_USBRESET                              GPIO_Pin_8
-#define GPIO_PORT_USBINT                              GPIOA    					 
+#define GPIO_PIN_USBRESET                              	GPIO_Pin_8
+
+#define GPIO_PORT_POWER                              GPIOE    					 
+#define GPIO_PIN_POWER                              	GPIO_Pin_14
+
+#define GPIO_PORT_USBINT                              	GPIOA    					 
 #define GPIO_PIN_USBINT                              GPIO_Pin_10
 #define GPIO_PORTSOURCE_USBINT                              GPIO_PortSourceGPIOA    					 
 #define GPIO_PINSOURCE_USBINT                               GPIO_PinSource10
@@ -161,7 +166,7 @@ extern gpio_pins pin_keyLeft;
 extern gpio_pins pin_keyUp;
 extern gpio_pins pin_keyDown;
 extern gpio_pins pin_keyEnter;
-extern gpio_pins pin_keyEsc,;
+extern gpio_pins pin_keyEsc;
 extern gpio_pins pin_UsbInt;
 extern spi_conf_t arr_conf_spi[2];
 

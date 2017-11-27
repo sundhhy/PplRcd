@@ -42,16 +42,19 @@ extern int	Init_Ch386(int dev_id);
 
 
 
-#define SET_CH376RST_LOW	GPIO_SetBits(GPIO_PORT_USBRESET, GPIO_PIN_USBRESET)
-#define SET_CH376RST_HIGH	GPIO_ResetBits(GPIO_PORT_USBRESET, GPIO_PIN_USBRESET)
+#define SET_CH376RST_HIGH	GPIO_SetBits(GPIO_PORT_USBRESET, GPIO_PIN_USBRESET)
+#define SET_CH376RST_LOW	GPIO_ResetBits(GPIO_PORT_USBRESET, GPIO_PIN_USBRESET)
 
 
 #define SET_CH376ENA_HIGH	GPIO_SetBits(GPIO_PORT_SPI1, GPIO_PIN_SPI1_NSS)
 #define SET_CH376ENA_LOW	GPIO_ResetBits(GPIO_PORT_SPI1, GPIO_PIN_SPI1_NSS)
 
+#define SET_CH376PWR_HIGH	GPIO_SetBits(GPIO_PORT_POWER, GPIO_PIN_POWER)
+#define SET_CH376PWR_LOW	GPIO_ResetBits(GPIO_PORT_POWER, GPIO_PIN_POWER)
 
 //extern	void	DelayMs(unsigned long time);
 extern	void	HRst_Ch376(void);
+extern void Power_Ch376(int on);
 //extern	void	Test_USBOCA(void);
 extern	uint8_t	mInitCH376Host(void);
 

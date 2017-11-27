@@ -35,7 +35,7 @@
 //------------------------------------------------------------------------------
 #define NUMPIN		7
 const gpio_pins *arr_Gpiocfg[NUMPIN] ={ &pin_keyRight, &pin_keyLeft, &pin_keyUp, \
-	&pin_keyDown, &pin_keyEnter, &pin_keyEsc, &gpio_pins pin_UsbInt};
+	&pin_keyDown, &pin_keyEnter, &pin_keyEsc, &pin_UsbInt};
 
 const GPIO_TypeDef *arr_Gpiobase[NUMPIN] ={ GPIO_PORT_KEY_RIGHT, GPIO_PORT_KEY_LEFT, GPIO_PORT_KEY_UP, \
 	GPIO_PORT_KEY_DOWN, GPIO_PORT_KEY_ENTER, GPIO_PORT_KEY_ESC};

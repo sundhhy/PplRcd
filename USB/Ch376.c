@@ -60,12 +60,30 @@ int	Init_Ch386(int dev_id)
 {
 	int ret = RET_OK;
 	ret = Dev_open(dev_id, (void *)&ch376_dev);
+	
+	Power_Ch376(1);
 	HRst_Ch376();
 
     SET_CH376ENA_LOW;
 	mInitCH376Host();
 	SET_CH376ENA_HIGH;
+	Power_Ch376(0);
 	return ret;
+	
+}
+
+void Power_Ch376(int on)
+{
+	if(on) 
+	{
+		SET_CH376PWR_LOW;
+	}
+	else 
+	{
+		
+		
+		SET_CH376PWR_HIGH;
+	}
 	
 }
 
@@ -86,7 +104,7 @@ void HRst_Ch376(void)
 //初始化CH376
 uint8_t mInitCH376Host(void)
 {
-	uint8_t res;
+	uint8_t res = 0;
 	uint8_t	usb_data;
 
 	//检测通讯接口

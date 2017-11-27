@@ -168,6 +168,7 @@ int main (void) {
 	System_init();
 	OpenPrpClock();
 	Pin_init();
+	Power_Ch376(0);
 	NVIC_Configuration();
 	
 	InitTimer( TIM2, 1000);

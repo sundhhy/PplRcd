@@ -13,27 +13,31 @@ void Pin_init(void)
 	GPIO_InitStructure.GPIO_Pin = GPIO_PIN_USBRESET;                   
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
     GPIO_Init(GPIO_PORT_USBRESET, &GPIO_InitStructure);
+	
+	GPIO_InitStructure.GPIO_Pin = GPIO_PIN_POWER;                   
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
+    GPIO_Init(GPIO_PORT_POWER, &GPIO_InitStructure);
 
-    	GPIO_InitStructure.GPIO_Pin = GPIO_PIN_USBINT;
+	GPIO_InitStructure.GPIO_Pin = GPIO_PIN_USBINT;
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU;
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
-    GPIO_Init( GPIO_PORT_KEY_USBINT, &GPIO_InitStructure);
+    GPIO_Init( GPIO_PORT_USBINT, &GPIO_InitStructure);
 	/*********** usb spi1	************************************/
 
 	GPIO_InitStructure.GPIO_Pin = GPIO_PIN_SPI1_MOSI;       
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_OD;
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
     GPIO_Init( GPIO_PORT_SPI1, &GPIO_InitStructure);
 	GPIO_PinRemapConfig(GPIO_Remap_SPI1,ENABLE);
 
     GPIO_InitStructure.GPIO_Pin = GPIO_PIN_SPI1_MISO;                   
-    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
     GPIO_Init( GPIO_PORT_SPI1, &GPIO_InitStructure);
 	GPIO_PinRemapConfig(GPIO_Remap_SPI1,ENABLE);
 	
 	GPIO_InitStructure.GPIO_Pin = GPIO_PIN_SPI1_SCK;        
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_OD;
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
     GPIO_Init( GPIO_PORT_SPI1, &GPIO_InitStructure);
 	GPIO_PinRemapConfig(GPIO_Remap_SPI1,ENABLE);
 
