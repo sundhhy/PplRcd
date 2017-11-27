@@ -428,7 +428,6 @@ static void GpuDone( void)
 	//todo:需要增加错误处理
 //	err:
 //	osDelay(200);
-	spg = 0;
 	cmd_count = 0;
 #endif
 }

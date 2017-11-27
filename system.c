@@ -20,11 +20,10 @@
 char 			*arr_p_vram[16];
 system_conf_t	g_system;
 
+uint16_t		next_record;
 short 			cmd_count = 0;
-char			spg = 0;
-char			g_setting_chn = 0;
-
-
+char				g_setting_chn = 0;
+char				g_system_none[3];
 //------------------------------------------------------------------------------
 // global function prototypes
 //------------------------------------------------------------------------------
@@ -260,6 +259,7 @@ void System_modify_string(char	*p_s, int aux, int op, int val)
 	{
 		case es_rcd_t_s:
 			g_system.record_gap_s = Operate_in_tange(g_system.record_gap_s, op, val, 0, 99);
+			next_record = g_system.record_gap_s;
 			sprintf(p_s, "%d", g_system.record_gap_s);
 			break;
 		case es_brk_cpl:

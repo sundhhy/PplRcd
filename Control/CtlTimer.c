@@ -1,6 +1,13 @@
 #include "CtlTimer.h"
 #include "cmsis_os.h"                                           // CMSIS RTOS header file
 #include "sdhDef.h"
+#include "system.h"
+
+#ifdef NO_ASSERT
+#include "basis/assert.h"
+#else
+#include "assert.h"
+#endif
 //============================================================================//
 //            G L O B A L   D E F I N I T I O N S                             //
 //============================================================================//
@@ -39,6 +46,9 @@
 //------------------------------------------------------------------------------
 // local function prototypes
 //------------------------------------------------------------------------------
+static void Init_ctime( Controller *self, void *arg);
+
+
 static void Ctime_periodic (void const *arg);
 
 static osTimerId ctime_id;                                           // timer id
@@ -47,6 +57,12 @@ static osTimerDef (ctime, Ctime_periodic);
 //            P U B L I C   F U N C T I O N S                                 //
 //============================================================================//
 
+
+
+CTOR( CtlTimer)
+SUPER_CTOR( Controller);
+FUNCTION_SETTING( Controller.init, Init_ctime);
+END_CTOR
 //=========================================================================//
 //                                                                         //
 //          P R I V A T E   D E F I N I T I O N S                          //
@@ -59,6 +75,7 @@ static void Init_ctime( Controller *self, void *arg)
 {
 	
 	int	ret = RET_OK;
+	CtlTimer	*cthis = SUB_PTR( self, Controller, CtlTimer);
 	osStatus status;                                              // function return status
 	ctime_id = osTimerCreate (osTimer(ctime), osTimerPeriodic, self);
   if (ctime_id != NULL) {    // Periodic timer created
@@ -76,8 +93,10 @@ static void Init_ctime( Controller *self, void *arg)
 	}
 	
 	
-	assert(ret == RET_OK);
 	
+	assert(ret == RET_OK);
+	cthis->time_count = 0;
+	next_record = g_system.record_gap_s;
 	
 }
 
@@ -85,4 +104,16 @@ static void Init_ctime( Controller *self, void *arg)
 static void Ctime_periodic (void const *arg) 
 {
   // add user code here
+	CtlTimer	*cthis = SUB_PTR( arg, Controller, CtlTimer);
+	
+	cthis->time_count ++;
+	
+	if(next_record)
+	{
+		next_record --;
+		return;
+	} 
+	next_record = g_system.record_gap_s;
+	
+	
 }
