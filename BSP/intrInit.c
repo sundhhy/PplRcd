@@ -51,7 +51,21 @@ void NVIC_Configuration(void)
     NVIC_InitStructure.NVIC_IRQChannelSubPriority=0;
     NVIC_InitStructure.NVIC_IRQChannelCmd=ENABLE;
     NVIC_Init(&NVIC_InitStructure);
+	
+	
+	/* Enable the SPI1 Interrupt*/
+    NVIC_InitStructure.NVIC_IRQChannel=SPI1_IRQn;
+    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority=1;
+    NVIC_InitStructure.NVIC_IRQChannelSubPriority=0;
+    NVIC_InitStructure.NVIC_IRQChannelCmd=ENABLE;
+    NVIC_Init(&NVIC_InitStructure);
 
+    /* Enable the Usb Interrupt*/
+    NVIC_InitStructure.NVIC_IRQChannel = EXTI15_10_IRQn;     
+	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0; 
+	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 3;       
+	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;                                   //????
+	NVIC_Init(&NVIC_InitStructure);
 
 
 /* Enable the DMA Interrupt */

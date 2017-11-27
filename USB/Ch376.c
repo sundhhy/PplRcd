@@ -21,15 +21,21 @@
 #include "Ch376.h"
 #include "os/os_depend.h"
 #include "device.h"
+#include "sdhDef.h"
+
 //------------------------------------------------------------------------------
 // const defines
 //------------------------------------------------------------------------------
 
-//#define	xReadCH376Status( )		( CH376_CMD_PORT )  // 从CH376读状态
-//#define xWriteCH376Data(d)		(CH376_DATA_PORT = d)
-//#define xReadCH376Data()		(CH376_DATA_PORT)
-//#define	xEndCH376Cmd( )			//结束CH376命令,仅用于SPI接口方式
+static	I_dev_Char	*ch376_dev;
 
+
+//#define	xReadCH376Status( )		( CH376_CMD_PORT )  // 从CH376读状态
+#define xWriteCH376Data(d)		(ch376_dev->write(ch376_dev, &d, 1))
+#define xReadCH376Data(d)		(ch376_dev->read(ch376_dev, &d, 1))
+//#define	xEndCH376Cmd( )			//结束CH376命令,仅用于SPI接口方式
+#define CH376_CMD_PORT	(ch376_dev->write(ch376_dev, &d, 1))
+//#define CH376_DATA_PORT	(*((volatile unsigned char *) 0x82000000))
 //------------------------------------------------------------------------------
 // local types
 //------------------------------------------------------------------------------
@@ -39,21 +45,88 @@
 //------------------------------------------------------------------------------
 
 uint8_t DataBuff[64];
-static	I_dev_Char	*ch376_dev;
 //------------------------------------------------------------------------------
 // local function prototypes
 //------------------------------------------------------------------------------
 
-static void DelayMs(unsigned long time);
-static void Delay10us(unsigned long time);
+//static void delay_ms(unsigned long time);
+//static void Delay10us(unsigned long time);
+
+static void xWriteCH376Cmd(uint8_t mCmd);
 //============================================================================//
 //            P U B L I C   F U N C T I O N S                                 //
 //============================================================================//
 int	Init_Ch386(int dev_id)
 {
+	int ret = RET_OK;
+	ret = Dev_open(dev_id, (void *)&ch376_dev);
+	HRst_Ch376();
+
+    SET_CH376ENA_LOW;
+	mInitCH376Host();
+	SET_CH376ENA_HIGH;
+	return ret;
 	
+}
+
+void HRst_Ch376(void)
+{
 	
+	SET_CH376RST_HIGH;
+	delay_ms(100);
 	
+	SET_CH376RST_LOW;
+	delay_ms(100);
+
+	SET_CH376ENA_HIGH;
+//	delay_ms(100);
+
+}
+
+//初始化CH376
+uint8_t mInitCH376Host(void)
+{
+	uint8_t res;
+	uint8_t	usb_data;
+
+	//检测通讯接口
+	xWriteCH376Cmd(CMD11_CHECK_EXIST);
+	delay_ms(100);
+	usb_data = 0x65;
+	xWriteCH376Data(usb_data);
+	delay_ms(100);
+	xReadCH376Data(res);
+	if (res != 0x9A)
+	{
+		return (ERR_USB_UNKNOWN);
+	}
+
+
+	//获取芯片及固件版本
+	xWriteCH376Cmd(CMD01_GET_IC_VER);
+	delay_ms(1000);
+	xReadCH376Data(res);
+	if (res != 0x41)
+	{
+//		return (ERR_USB_UNKNOWN);
+		res = 0x41;
+	}
+
+
+	//设置USB工作模式
+	xWriteCH376Cmd(CMD11_SET_USB_MODE);
+	usb_data = 0x06;
+	xWriteCH376Data(usb_data);	//已启用的主机方式并且自动产生SOF包
+	delay_ms(100);
+	xReadCH376Data(res);
+	if (res == CMD_RET_SUCCESS)
+	{
+		return USB_INT_SUCCESS;
+	}
+	else
+	{
+		return ERR_USB_UNKNOWN;
+	}
 }
 //=========================================================================//
 //                                                                         //
@@ -64,14 +137,28 @@ int	Init_Ch386(int dev_id)
 /// \{
 
 
+static void xWriteCH376Cmd(uint8_t mCmd)
+{
+//	uint8_t i,res;
 
+	ch376_dev->write(ch376_dev, &mCmd, 1);
+//	for (i=0;i<10;i++)
+//	{
+//		//检查状态端口的标志位，位4：忙标志，高有效
+//		res = xReadCH376Status();
+//		if (( res & PARA_STATE_BUSY) == 0)
+//		{
+//			break;
+//		}
+//	}
+}
 
 
 
 //time = 1，1ms的延时
 //time = 10，4.2ms的延时
 //time = 20，8.2ms的延时
-//static void DelayMs(unsigned long time)
+//static void delay_ms(unsigned long time)
 //{
 //	unsigned long i,j;
 //	
@@ -98,95 +185,21 @@ int	Init_Ch386(int dev_id)
 //	if(!(IO0PIN & USB_OCA))
 //	{
 //		SET_CH376ENA_LOW;
-//		DelayMs(100);
-//	}
-//}
-
-
-///*
-//**************************************************************************
-//* 函数名称：HRst_Ch376
-//* 输入参数：无
-//* 输出参数：无
-//* 功能描述：硬件复位
-//**************************************************************************
-//*/
-//void HRst_Ch376(void)
-//{
-//	
-//	SET_CH376RST_HIGH;
-//	DelayMs(100);
-//	
-//	SET_CH376RST_LOW;
-//	DelayMs(100);
-
-//	SET_CH376ENA_HIGH;
-//	DelayMs(100);
-
-//}
-
-
-
-//void xWriteCH376Cmd(uint8_t mCmd)
-//{
-//	uint8_t i,res;
-
-//	CH376_CMD_PORT = mCmd;
-//	for (i=0;i<10;i++)
-//	{
-//		//检查状态端口的标志位，位4：忙标志，高有效
-//		res = xReadCH376Status();
-//		if (( res & PARA_STATE_BUSY) == 0)
-//		{
-//			break;
-//		}
+//		delay_ms(100);
 //	}
 //}
 
 
 
-////初始化CH376
-//uint8_t mInitCH376Host(void)
-//{
-//	uint8_t res;
-
-//	//检测通讯接口
-//	xWriteCH376Cmd(CMD11_CHECK_EXIST);
-//	DelayMs(100);
-//	xWriteCH376Data(0x65);
-//	DelayMs(100);
-//	res = xReadCH376Data();
-//	if (res != 0x9A)
-//	{
-//		return (ERR_USB_UNKNOWN);
-//	}
 
 
-//	//获取芯片及固件版本
-//	xWriteCH376Cmd(CMD01_GET_IC_VER);
-//	DelayMs(1000);
-//	res = xReadCH376Data();
-//	if (res != 0x41)
-//	{
-////		return (ERR_USB_UNKNOWN);
-//		res = 0x41;
-//	}
 
 
-//	//设置USB工作模式
-//	xWriteCH376Cmd(CMD11_SET_USB_MODE);
-//	xWriteCH376Data(0x06);	//已启用的主机方式并且自动产生SOF包
-//	DelayMs(100);
-//	res = xReadCH376Data();
-//	if (res == CMD_RET_SUCCESS)
-//	{
-//		return USB_INT_SUCCESS;
-//	}
-//	else
-//	{
-//		return ERR_USB_UNKNOWN;
-//	}
-//}
+
+
+
+
+
 
 
 ////查询CH376中断(INT#低电平)
@@ -269,7 +282,7 @@ int	Init_Ch386(int dev_id)
 //	if ( l ) {
 //		do {
 //			*buf = xReadCH376Data( );
-//			DelayMs(5);
+//			delay_ms(5);
 //			buf ++;
 //		} while ( -- l );
 //	}
@@ -310,7 +323,7 @@ int	Init_Ch386(int dev_id)
 //		do
 //		{
 //			xWriteCH376Data( *buf );
-//			//DelayMs(2);
+//			//delay_ms(2);
 //			buf ++;
 //		} while ( -- len );
 //	}
@@ -322,9 +335,9 @@ int	Init_Ch386(int dev_id)
 //uint8_t	CH376DiskReqSense( void )  
 //{
 //	uint8_t	s;
-//	DelayMs( 50 );
+//	delay_ms( 50 );
 //	s = CH376SendCmdWaitInt( CMD0H_DISK_R_SENSE );
-//	DelayMs( 50 );
+//	delay_ms( 50 );
 //	return( s );
 //}
 
@@ -431,7 +444,7 @@ int	Init_Ch386(int dev_id)
 //	xWriteCH376Data( c );
 //	while ( c )
 //	{
-//		DelayMs(5);
+//		delay_ms(5);
 //		name ++;
 //		c = *name;
 //		if ( c == DEF_SEPAR_CHAR1 || c == DEF_SEPAR_CHAR2 ) c = 0;  // 强行将文件名截止 
@@ -633,3 +646,5 @@ int	Init_Ch386(int dev_id)
 //{
 //	return( CH376SendCmdDatWaitInt( CMD1H_FILE_CLOSE, UpdateSz ) );
 //}
+
+

@@ -168,5 +168,15 @@ gpio_pins pin_keyEsc = {
 	
 };
 
+gpio_pins pin_UsbInt = {
+	GPIO_PORT_USBINT,
+	GPIO_PIN_USBINT,
+	0,
+	6,
+	GPIO_IRQ_FAILING,
+	GPIO_PORTSOURCE_USBINT,
+	GPIO_PINSOURCE_USBINT
+	
+};
 
 

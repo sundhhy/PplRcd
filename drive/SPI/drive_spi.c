@@ -294,7 +294,7 @@ static int spi_read_word(SPI_TypeDef	*spi_reg)
 	}
 	 
 	/*!Send byte through the SPI1 peripheral */
-	SPI_I2S_SendData(spi_reg, 0xff);
+	SPI_I2S_SendData(spi_reg, 0);
  
 	/*! Wait to receive a byte */
 	safe_count =  SAFE_COUNT_VAL;

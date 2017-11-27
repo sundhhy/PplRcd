@@ -24,13 +24,13 @@
 #define DEVID_TYPE_BITS			8
 #define DEVID_MAJOR_BITS		8
 #define DEVID_MINOR_BITS		8
-#define DEVID_TYPE_MASK			( ( 1<< DEVID_TYPE_BITS) -1)
-#define DEVID_MAJOR_MASK		( ( 1<< DEVID_MAJOR_BITS) -1)
-#define DEVID_MINOR_MASK		( ( 1<< DEVID_MINOR_BITS) -1)
+#define DEVID_TYPE_MASK			0xff
+#define DEVID_MAJOR_MASK		0xff
+#define DEVID_MINOR_MASK		0xff
 
-#define	SET_TYPE( type) 				( ( ( type & DEVID_TYPE_MASK) << ( DEVID_MAJOR_BITS + DEVID_MINOR_BITS)) )
-#define	SET_MAJOR( major) 				( ( ( major & DEVID_MAJOR_MASK) << ( DEVID_MINOR_BITS)) & DEVID_MAJOR_MASK)
-#define	SET_MINOR( minor) 				(  ( minor & DEVID_MINOR_MASK))& DEVID_MINOR_MASK)
+#define	SET_TYPE( type) 				((type & DEVID_TYPE_MASK) << (DEVID_MAJOR_BITS + DEVID_MINOR_BITS)) 
+#define	SET_MAJOR( major) 				((major & DEVID_MAJOR_MASK) << (DEVID_MINOR_BITS))
+#define	SET_MINOR( minor) 				(minor & DEVID_MINOR_MASK)
 
 #define BUILD_DEVID( type, major, minor) ( SET_TYPE( type)  | SET_MAJOR( major)  | SET_MINOR( minor))
 

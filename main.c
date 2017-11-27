@@ -21,6 +21,7 @@
 #include "TDD.h"
 #include "ModelFactory.h"
 #include "HMI/HMIFactory.h"
+#include "Ch376.h"
 
 #include "control/CtlKey.h"
 #include "utils/time.h"
@@ -227,7 +228,10 @@ int main (void) {
 
 
 #else
-#	if TDD_SHEET == 1
+#	if TDD_USB == 1
+	Init_Ch386(DEVID_SPI1);
+	
+#	elif TDD_SHEET == 1
 	p_mainHmi->show( p_mainHmi);
 	Set_flag_show(&p_mainHmi->flag, 1); 
 	
