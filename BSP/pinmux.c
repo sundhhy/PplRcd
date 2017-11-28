@@ -28,18 +28,18 @@ void Pin_init(void)
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
     GPIO_Init( GPIO_PORT_SPI1, &GPIO_InitStructure);
-	GPIO_PinRemapConfig(GPIO_Remap_SPI1,ENABLE);
+//	GPIO_PinRemapConfig(GPIO_Remap_SPI1,ENABLE);
 
     GPIO_InitStructure.GPIO_Pin = GPIO_PIN_SPI1_MISO;                   
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
     GPIO_Init( GPIO_PORT_SPI1, &GPIO_InitStructure);
-	GPIO_PinRemapConfig(GPIO_Remap_SPI1,ENABLE);
+//	GPIO_PinRemapConfig(GPIO_Remap_SPI1,ENABLE);
 	
 	GPIO_InitStructure.GPIO_Pin = GPIO_PIN_SPI1_SCK;        
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
     GPIO_Init( GPIO_PORT_SPI1, &GPIO_InitStructure);
-	GPIO_PinRemapConfig(GPIO_Remap_SPI1,ENABLE);
+//	GPIO_PinRemapConfig(GPIO_Remap_SPI1,ENABLE);
 
     GPIO_InitStructure.GPIO_Pin = GPIO_PIN_SPI1_NSS;                   
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
