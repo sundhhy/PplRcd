@@ -86,6 +86,7 @@
 ".\objects\ctlkey.o"
 ".\objects\ctltimer.o"
 ".\objects\ch376.o"
+".\objects\usb.o"
 "D:\Keil_v5\ARM\PACK\ARM\CMSIS\4.5.0\CMSIS\RTOS\RTX\LIB\ARM\RTX_CM3.lib"
 ".\objects\rtx_conf_cm.o"
 ".\objects\misc.o"

@@ -29,7 +29,6 @@
 
 static	I_dev_Char	*ch376_dev;
 
-
 //#define	xReadCH376Status( )		( CH376_CMD_PORT )  // ´ÓCH376¶Á×´Ì¬
 #define xWriteCH376Data(d)		(ch376_dev->write(ch376_dev, &d, 1))
 #define xReadCH376Data(d)		(ch376_dev->read(ch376_dev, &d, 1))
@@ -61,13 +60,11 @@ int	Init_Ch386(int dev_id)
 	int ret = RET_OK;
 	ret = Dev_open(dev_id, (void *)&ch376_dev);
 	
-	Power_Ch376(1);
 	HRst_Ch376();
 
-    SET_CH376ENA_LOW;
-	mInitCH376Host();
+  SET_CH376ENA_LOW;
+	ret = mInitCH376Host();
 	SET_CH376ENA_HIGH;
-	Power_Ch376(0);
 	return ret;
 	
 }

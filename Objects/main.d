@@ -71,8 +71,7 @@
 .\objects\main.o: HMI/Setup_HMI.h
 .\objects\main.o: HMI/Setting_HMI.h
 .\objects\main.o: HMI/windowsHMI.h
-.\objects\main.o: .\usb\Ch376.h
-.\objects\main.o: .\usb\Ch376INC.h
+.\objects\main.o: .\usb\Usb.h
 .\objects\main.o: control/CtlKey.h
 .\objects\main.o: control/Controller.h
 .\objects\main.o: ..\PplRcd\utils/keyboard.h

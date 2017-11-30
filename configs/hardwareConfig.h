@@ -151,6 +151,7 @@ typedef struct
 	uint8_t			direction;
 
 	//etti
+	//中断线配置参考STM32中文手册 8.2.5
 	uint8_t			extiLine;
 	uint8_t			irqType;	
 	uint8_t			portSource;
