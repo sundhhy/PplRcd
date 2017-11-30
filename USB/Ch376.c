@@ -28,23 +28,25 @@
 //------------------------------------------------------------------------------
 
 static	I_dev_Char	*ch376_dev;
+static	I_dev_Char			*ch376_int;
 
 
 //#define	xReadCH376Status( )		( CH376_CMD_PORT )  // 从CH376读状态
 #define xWriteCH376Data(d)		(ch376_dev->write(ch376_dev, &d, 1))
 #define xReadCH376Data(d)		(ch376_dev->read(ch376_dev, &d, 1))
-//#define	xEndCH376Cmd( )			//结束CH376命令,仅用于SPI接口方式
+#define	xEndCH376Cmd( )			SET_CH376ENA_HIGH//结束CH376命令,仅用于SPI接口方式
 #define CH376_CMD_PORT	(ch376_dev->write(ch376_dev, &d, 1))
 //#define CH376_DATA_PORT	(*((volatile unsigned char *) 0x82000000))
 //------------------------------------------------------------------------------
 // local types
 //------------------------------------------------------------------------------
-
+typedef void (*uplevel_intr)(void);
 //------------------------------------------------------------------------------
 // local vars
 //------------------------------------------------------------------------------
 
 uint8_t DataBuff[64];
+static uplevel_intr ch376_up_irq = NULL;;
 //------------------------------------------------------------------------------
 // local function prototypes
 //------------------------------------------------------------------------------
@@ -53,21 +55,25 @@ uint8_t DataBuff[64];
 //static void Delay10us(unsigned long time);
 
 static void xWriteCH376Cmd(uint8_t mCmd);
+static uint8_t CH376GetIntStatus(void);
+static uint8_t	CH376SendCmdWaitInt( uint8_t mCmd );
+static uint8_t Wait376Interrupt( void )  ;
+
+static  void Ch376_intr( void *arg, int type, int encode);
 //============================================================================//
 //            P U B L I C   F U N C T I O N S                                 //
 //============================================================================//
-int	Init_Ch386(int dev_id)
+int	Init_Ch386(int dev_id, uplevel_intr up_irq)
 {
 	int ret = RET_OK;
 	ret = Dev_open(dev_id, (void *)&ch376_dev);
-	
-	Power_Ch376(1);
+	Dev_open(DEVID_GPIO_A10, (void *)&ch376_int);
+	ch376_int->ioctol(ch376_int, DEVCMD_SET_IRQHDL, Ch376_intr, (void *)NULL);
 	HRst_Ch376();
-
-    SET_CH376ENA_LOW;
-	mInitCH376Host();
-	SET_CH376ENA_HIGH;
-	Power_Ch376(0);
+	ch376_up_irq = up_irq;
+ 
+	ret = mInitCH376Host();
+	
 	return ret;
 	
 }
@@ -108,12 +114,14 @@ uint8_t mInitCH376Host(void)
 	uint8_t	usb_data;
 
 	//检测通讯接口
+	
 	xWriteCH376Cmd(CMD11_CHECK_EXIST);
 	delay_ms(100);
 	usb_data = 0x65;
 	xWriteCH376Data(usb_data);
 	delay_ms(100);
 	xReadCH376Data(res);
+	SET_CH376ENA_HIGH;
 	if (res != 0x9A)
 	{
 		return (ERR_USB_UNKNOWN);
@@ -122,8 +130,9 @@ uint8_t mInitCH376Host(void)
 
 	//获取芯片及固件版本
 	xWriteCH376Cmd(CMD01_GET_IC_VER);
-	delay_ms(1000);
+	delay_ms(10);
 	xReadCH376Data(res);
+	SET_CH376ENA_HIGH;
 	if (res != 0x41)
 	{
 //		return (ERR_USB_UNKNOWN);
@@ -135,8 +144,9 @@ uint8_t mInitCH376Host(void)
 	xWriteCH376Cmd(CMD11_SET_USB_MODE);
 	usb_data = 0x06;
 	xWriteCH376Data(usb_data);	//已启用的主机方式并且自动产生SOF包
-	delay_ms(100);
+	delay_ms(1);
 	xReadCH376Data(res);
+	SET_CH376ENA_HIGH;
 	if (res == CMD_RET_SUCCESS)
 	{
 		return USB_INT_SUCCESS;
@@ -145,6 +155,16 @@ uint8_t mInitCH376Host(void)
 	{
 		return ERR_USB_UNKNOWN;
 	}
+}
+
+// 检查U盘是否连接,不支持SD卡 
+//在usb_init中断中调用
+uint8_t Ch376DiskConnect(void)
+{
+	
+	CH376GetIntStatus( );  // 检测到中断 
+	return( CH376SendCmdWaitInt( CMD0H_DISK_CONNECT ) );
+	
 }
 //=========================================================================//
 //                                                                         //
@@ -159,6 +179,8 @@ static void xWriteCH376Cmd(uint8_t mCmd)
 {
 //	uint8_t i,res;
 
+	//ch376将SPI片选有效后第一个字节作为命令
+	SET_CH376ENA_LOW;
 	ch376_dev->write(ch376_dev, &mCmd, 1);
 //	for (i=0;i<10;i++)
 //	{
@@ -171,6 +193,62 @@ static void xWriteCH376Cmd(uint8_t mCmd)
 //	}
 }
 
+// 获取中断状态并取消中断请求 
+
+static uint8_t CH376GetIntStatus(void)
+{
+	uint8_t s;
+
+	xWriteCH376Cmd(CMD01_GET_STATUS);
+	xReadCH376Data(s);
+	xEndCH376Cmd();
+	return (s);
+}
+
+
+//发出命令码后,等待中断 
+static uint8_t	CH376SendCmdWaitInt( uint8_t mCmd )  
+{
+	xWriteCH376Cmd( mCmd );
+	xEndCH376Cmd( );
+	return( Wait376Interrupt( ) );
+}
+
+//??CH376??(INT#???)
+static int Query376Interrupt(void)
+{
+	char	pin_val = 0;
+	ch376_int->read(ch376_int, &pin_val, 1);
+	if(pin_val)
+	{
+		return 0;
+	}
+	else
+		return 1;
+}
+static uint8_t Wait376Interrupt( void )  
+{
+	uint32_t	i;
+	
+//	for ( i = 0; i < 1000000; i ++ )
+	while(1)
+	{
+		if (Query376Interrupt( ))
+			return( CH376GetIntStatus( ) );
+		delay_ms(1);
+		i ++;
+		if(i > 10000)
+			break;
+	}
+	return( ERR_USB_UNKNOWN );
+}
+
+static  void Ch376_intr( void *arg, int type, int encode)
+{
+	
+	if(ch376_up_irq)
+		ch376_up_irq();
+}
 
 
 //time = 1，1ms的延时
@@ -220,66 +298,18 @@ static void xWriteCH376Cmd(uint8_t mCmd)
 
 
 
-////查询CH376中断(INT#低电平)
-//uint8_t Query376Interrupt(void)
-//{
-//	//从命令端口读取接口状态，位7：中断标志，低有效
-//	//return (xReadCH376Status() & PARA_STATE_INTB ? FALSE : TRUE ); 
-//	//if ((IO0PIN >> 20) & 0x01 == 0)
-//	if(IO0PIN & 0x00100000)
-//	{
-//		return FALSE;
-//	}
-//	else
-//		return TRUE;
-//}
 
 
-//// 获取中断状态并取消中断请求 
-
-//uint8_t CH376GetIntStatus(void)
-//{
-//	uint8_t s;
-
-//	xWriteCH376Cmd(CMD01_GET_STATUS);
-//	s = xReadCH376Data();
-//	xEndCH376Cmd();
-//	return (s);
-//}
 
 
-//uint8_t Wait376Interrupt( void )  
-//{
-//	uint32	i;
-//	
-//	for ( i = 0; i < 1000000; i ++ )
-//	//while(1)
-//	{
-//		if ( Query376Interrupt( ) )
-//			return( CH376GetIntStatus( ) );
-
-//	}
-//	return( ERR_USB_UNKNOWN );
-//}
 
 
-////发出命令码后,等待中断 
-//uint8_t	CH376SendCmdWaitInt( uint8_t mCmd )  
-//{
-//	xWriteCH376Cmd( mCmd );
-//	xEndCH376Cmd( );
-//	return( Wait376Interrupt( ) );
-//}
 
-//// 检查U盘是否连接,不支持SD卡 
-//uint8_t Ch376DiskConnect(void)
-//{
-//	
-//	if ( Query376Interrupt( ) )
-//		CH376GetIntStatus( );  // 检测到中断 
-//	return( CH376SendCmdWaitInt( CMD0H_DISK_CONNECT ) );
-//	
-//}
+
+
+
+
+
 
 
 //// 初始化磁盘并测试磁盘是否就绪

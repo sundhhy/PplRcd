@@ -12,7 +12,7 @@
 //============================================================================//
 //            G L O B A L   D E F I N I T I O N S                             //
 //============================================================================//
-
+//只有输入引脚需要用这个驱动模块，输出的GPIO直接用STM32的库API就行了
 //------------------------------------------------------------------------------
 // const defines
 //------------------------------------------------------------------------------
@@ -38,7 +38,7 @@ const gpio_pins *arr_Gpiocfg[NUMPIN] ={ &pin_keyRight, &pin_keyLeft, &pin_keyUp,
 	&pin_keyDown, &pin_keyEnter, &pin_keyEsc, &pin_UsbInt};
 
 const GPIO_TypeDef *arr_Gpiobase[NUMPIN] ={ GPIO_PORT_KEY_RIGHT, GPIO_PORT_KEY_LEFT, GPIO_PORT_KEY_UP, \
-	GPIO_PORT_KEY_DOWN, GPIO_PORT_KEY_ENTER, GPIO_PORT_KEY_ESC};
+	GPIO_PORT_KEY_DOWN, GPIO_PORT_KEY_ENTER, GPIO_PORT_KEY_ESC, GPIO_PORT_USBINT};
 
 //------------------------------------------------------------------------------
 // local types

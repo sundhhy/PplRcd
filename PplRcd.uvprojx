@@ -1333,6 +1333,16 @@
               <FileType>5</FileType>
               <FilePath>.\USB\Ch376.h</FilePath>
             </File>
+            <File>
+              <FileName>Usb.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\USB\Usb.c</FilePath>
+            </File>
+            <File>
+              <FileName>Usb.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\USB\Usb.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

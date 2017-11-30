@@ -106,7 +106,7 @@ CfgUart_t g_confUart1 = {
 gpio_pins pin_keyRight = {
 	GPIO_PORT_KEY_RIGHT,
 	GPIO_PIN_KEY_RIGHT,
-	0,
+	GPIO_DIR_IN,
 	0,
 	GPIO_IRQ_BOTHEDGE,
 	GPIO_PORTSOURCE_RIGHT,
@@ -116,7 +116,7 @@ gpio_pins pin_keyRight = {
 gpio_pins pin_keyLeft = {
 	GPIO_PORT_KEY_LEFT,
 	GPIO_PIN_KEY_LEFT,
-	0,
+	GPIO_DIR_IN,
 	1,
 	GPIO_IRQ_BOTHEDGE,
 	GPIO_PORTSOURCE_LEFT,
@@ -127,7 +127,7 @@ gpio_pins pin_keyLeft = {
 gpio_pins pin_keyUp = {
 	GPIO_PORT_KEY_UP,
 	GPIO_PIN_KEY_UP,
-	0,
+	GPIO_DIR_IN,
 	2,
 	GPIO_IRQ_BOTHEDGE,
 	GPIO_PORTSOURCE_UP,
@@ -138,7 +138,7 @@ gpio_pins pin_keyUp = {
 gpio_pins pin_keyDown = {
 	GPIO_PORT_KEY_DOWN,
 	GPIO_PIN_KEY_DOWN,
-	0,
+	GPIO_DIR_IN,
 	3,
 	GPIO_IRQ_BOTHEDGE,
 	GPIO_PORTSOURCE_DOWN,
@@ -149,7 +149,7 @@ gpio_pins pin_keyDown = {
 gpio_pins pin_keyEnter = {
 	GPIO_PORT_KEY_ENTER,
 	GPIO_PIN_KEY_ENTER,
-	0,
+	GPIO_DIR_IN,
 	4,
 	GPIO_IRQ_BOTHEDGE,
 	GPIO_PORTSOURCE_ENTER,
@@ -160,7 +160,7 @@ gpio_pins pin_keyEnter = {
 gpio_pins pin_keyEsc = {
 	GPIO_PORT_KEY_ESC,
 	GPIO_PIN_KEY_ESC,
-	0,
+	GPIO_DIR_IN,
 	5,
 	GPIO_IRQ_BOTHEDGE,
 	GPIO_PORTSOURCE_ESC,
@@ -171,8 +171,8 @@ gpio_pins pin_keyEsc = {
 gpio_pins pin_UsbInt = {
 	GPIO_PORT_USBINT,
 	GPIO_PIN_USBINT,
-	0,
-	6,
+	GPIO_DIR_IN,
+	10,
 	GPIO_IRQ_FAILING,
 	GPIO_PORTSOURCE_USBINT,
 	GPIO_PINSOURCE_USBINT

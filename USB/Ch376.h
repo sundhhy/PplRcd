@@ -20,7 +20,7 @@
 //------------------------------------------------------------------------------
 // typedef
 //------------------------------------------------------------------------------
-
+typedef void (*uplevel_intr)(void);
 //------------------------------------------------------------------------------
 // global variable declarations
 //------------------------------------------------------------------------------
@@ -29,7 +29,7 @@
 // function prototypes
 //------------------------------------------------------------------------------
 
-extern int	Init_Ch386(int dev_id);
+extern int	Init_Ch386(int dev_id, uplevel_intr up_irq);
 
 
 
@@ -67,7 +67,7 @@ extern	uint8_t	mInitCH376Host(void);
 //extern	uint8_t	CH376FileClose( uint8_t UpdateSz );
 
 
-//extern	uint8_t	Ch376DiskConnect(void);
+extern	uint8_t	Ch376DiskConnect(void);
 //extern	uint8_t	Ch376GetDiskStatus(void);
 
 

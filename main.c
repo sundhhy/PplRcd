@@ -21,7 +21,7 @@
 #include "TDD.h"
 #include "ModelFactory.h"
 #include "HMI/HMIFactory.h"
-#include "Ch376.h"
+#include "Usb.h"
 
 #include "control/CtlKey.h"
 #include "utils/time.h"
@@ -110,7 +110,17 @@ osThreadDef (ThrdKeyRun, osPriorityNormal, 1, 0);                   // thread ob
 //tdd data
 #if TDD_ON == 1
 char	appBuf[ 64];
-uint8_t		u8_tmp;
+int		tdd_i, tdd_j;
+
+#	if TDD_USB == 1
+#define 	USB_TFILE	"./TDD_Usb_file1.txt"
+int						tdd_fd;
+char					udisk_buf[512];
+int						usb_cnt = 0;
+USB_file_info	usb_fin;
+	
+int	Usb_event(int type);
+#	endif
 
 #	if TDD_KEYBOARD == 1
 static int KeyEvent( char num, keyMsg_t arr_msg[]);
@@ -143,7 +153,7 @@ I_dev_Char *I_uart2;
 
 #	endif
 
-#endif
+#endif		//TDD_ON
 
 
 
@@ -160,16 +170,23 @@ int main (void) {
 	Model 		*mTime;
 	Model 		*p_mdl_test;
 	HMI 		*p_mainHmi;
+	int			ret = 0;
 	short			count = 0;
 	short			hmi_count = 0;
 	osKernelInitialize ();                    // initialize CMSIS-RTOS
 
   // initialize peripherals here
+	
+	//BSP的初始化
 	System_init();
 	OpenPrpClock();
 	Pin_init();
-	Power_Ch376(0);
 	NVIC_Configuration();
+	
+	//各个外设驱动模块初始化
+	
+	ret = USB_Init(NULL);
+	assert(ret == RET_OK);
 	
 	InitTimer( TIM2, 1000);
 	clean_time_flags();
@@ -181,7 +198,7 @@ int main (void) {
 	p_mdl_test->init( p_mdl_test, NULL);
 	
 	
-	
+	//按键初始化
 	p_kb = GetKeyInsance();
 	count = CONF_KEYSCAN_CYCLEMS;
 	p_kb->init( p_kb, &count);
@@ -191,6 +208,7 @@ int main (void) {
 
 	if (!tid_Thread_key) return(-1);
 	
+	//界面初始化
 	p_mainHmi = CreateHMI( HMI_MAIN);
 	p_mainHmi->init( p_mainHmi, NULL);
 	
@@ -226,13 +244,45 @@ int main (void) {
 		
 	}
 	
-
-
-#else
-#	if TDD_USB == 1
-	Init_Ch386(DEVID_SPI1);
+# elif TDD_USB == 1
 	
-#	elif TDD_SHEET == 1
+	
+	
+	memset(udisk_buf, '8', 512); 
+	
+	USB_Rgt_event_hdl(Usb_event);
+	while(usb_cnt == 0)
+		osDelay(100);
+	
+	tdd_fd = USB_Create_file(USB_TFILE, USB_FM_READ | USB_FM_WRITE);
+	for(tdd_i = 0; tdd_i < 255; tdd_i ++)
+	{
+		USB_Write_file(tdd_fd, udisk_buf, 512);
+		
+	}
+	USB_Get_file_info(USB_TFILE, &usb_fin);
+	USB_flush_file(tdd_fd);
+	USB_Get_file_info_f(tdd_fd, &usb_fin);
+	USB_Colse_file(tdd_fd);
+
+	tdd_fd = 0;
+	
+	tdd_fd = USB_Open_file(USB_TFILE, USB_FM_READ);
+	
+	for(tdd_i = 0; tdd_i < 255; tdd_i ++)
+	{
+		memset(udisk_buf, 0, 512); 
+		USB_Read_file(tdd_fd, udisk_buf, 512);
+		
+	}
+	
+	USB_Colse_file(tdd_fd);
+	
+	
+	
+	
+#else
+#if TDD_SHEET == 1
 	p_mainHmi->show( p_mainHmi);
 	Set_flag_show(&p_mainHmi->flag, 1); 
 	
@@ -246,7 +296,7 @@ int main (void) {
 			count = 0;
 			
 			p_mdl_test->getMdlData( p_mdl_test, 10000, NULL);
-			mTime->getMdlData( mTime, 0, NULL);
+			mTime->getMdlData(mTime, 0, NULL);
 		}
 		if(hmi_count == 50)
 		{
@@ -485,4 +535,13 @@ void HardFault_Handler()
 	}
 	
 }
+
+#if TDD_USB == 1
+int	Usb_event(int type)
+{
+	usb_cnt = 1;
+	
+}
+
+#endif
 
