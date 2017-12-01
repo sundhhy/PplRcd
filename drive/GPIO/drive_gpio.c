@@ -60,7 +60,7 @@ static int GpioRead( driveGpio *self,char *p_ch_val);
 static int GpioTest( driveGpio *self, void *buf, int size);
 static void GpioSetIrqHdl( driveGpio *self, irqHdl hdl);
 static void GpioSetEncode( driveGpio *self, int e);
-
+static int Gpio_control_irq( driveGpio *self, int en);
 static void ExtiIrq( driveGpio *p_gpio);
 //============================================================================//
 //            P U B L I C   F U N C T I O N S                                 //
@@ -74,6 +74,7 @@ FUNCTION_SETTING( read, GpioRead);
 FUNCTION_SETTING( write, GpioWrite);
 FUNCTION_SETTING( setIrqHdl, GpioSetIrqHdl);
 FUNCTION_SETTING( setEncode, GpioSetEncode);
+FUNCTION_SETTING(control_irq, Gpio_control_irq);
 
 FUNCTION_SETTING( test, GpioTest);
 END_CTOR
@@ -186,38 +187,40 @@ void EXTI15_10_IRQHandler(void)
 static int GpioInit( driveGpio *self, void *p_base, void *cfg)
 {
 	gpio_pins	*p_gpio = ( gpio_pins *)cfg;
-	EXTI_InitTypeDef		st_exti;
+//	EXTI_InitTypeDef		st_exti;
 	arr_driGpio[ p_gpio->extiLine] = self;
+	
 	self->p_cfg = cfg;
+	self->p_exit = malloc(sizeof(EXTI_InitTypeDef));
 	self->p_gpioBase = p_base;
 	
 	if( p_gpio->direction == GPIO_DIR_OUT)
 		return ERR_OK;
 	
 	
-	EXTI_StructInit( &st_exti);
+	EXTI_StructInit(self->p_exit);
 	
 	
-	st_exti.EXTI_Line = arr_extiLine[ p_gpio->extiLine];
-	st_exti.EXTI_LineCmd = ENABLE;
+	self->p_exit->EXTI_Line = arr_extiLine[ p_gpio->extiLine];
+	self->p_exit->EXTI_LineCmd = ENABLE;
 	
 	switch( p_gpio->irqType)
 	{
 		
 		case GPIO_IRQ_FAILING:
-			st_exti.EXTI_Trigger = EXTI_Trigger_Falling;
+			self->p_exit->EXTI_Trigger = EXTI_Trigger_Falling;
 			break;
 		case GPIO_IRQ_RISING:
-			st_exti.EXTI_Trigger = EXTI_Trigger_Rising;
+			self->p_exit->EXTI_Trigger = EXTI_Trigger_Rising;
 			break;
 		case GPIO_IRQ_BOTHEDGE:
-			st_exti.EXTI_Trigger = EXTI_Trigger_Rising_Falling;
+			self->p_exit->EXTI_Trigger = EXTI_Trigger_Rising_Falling;
 			break;
 		
 	}
 	GPIO_EXTILineConfig( p_gpio->portSource, p_gpio->pinSource);
 	EXTI_ClearITPendingBit( arr_extiLine[ p_gpio->extiLine]);
-	EXTI_Init( &st_exti);
+	EXTI_Init( self->p_exit);
 
 	
 	return ERR_OK;
@@ -232,6 +235,23 @@ static int GpioDeInit( driveGpio *self)
 	self->func_hdl = NULL;
 	
 	return ERR_OK;
+	
+}
+
+static int Gpio_control_irq( driveGpio *self, int en)
+{
+	gpio_pins	*p_gpio = self->p_cfg;
+	if(en)
+	{
+		self->p_exit->EXTI_LineCmd = ENABLE;
+	}
+	else 
+	{
+		self->p_exit->EXTI_LineCmd = DISABLE;
+	}
+	GPIO_EXTILineConfig( p_gpio->portSource, p_gpio->pinSource);
+	EXTI_ClearITPendingBit( arr_extiLine[ p_gpio->extiLine]);
+	EXTI_Init( self->p_exit);
 	
 }
 

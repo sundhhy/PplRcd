@@ -165,6 +165,14 @@ static int DevGpioIoctol( I_dev_Char *self ,int cmd, ...)
 			va_end(arg_ptr); 
 			cthis->dri->setEncode( cthis->dri, int_data);
 			break;
+		
+		case DEVCMD_DISABLE_IRQ:
+			
+			cthis->dri->control_irq( cthis->dri, 0);
+			break;
+		case DEVCMD_ENABLE_IRQ:
+			cthis->dri->control_irq( cthis->dri, 1);
+			break;
 			
 	}
 	return RET_OK; 

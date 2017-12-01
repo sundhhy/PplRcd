@@ -33,19 +33,23 @@ static	I_dev_Char			*ch376_int;
 
 //#define	xReadCH376Status( )		( CH376_CMD_PORT )  // 从CH376读状态
 #define xWriteCH376Data(d)		(ch376_dev->write(ch376_dev, &d, 1))
+#define xWriteCH376Data_p(ptr, n)		(ch376_dev->write(ch376_dev, ptr, n))
 #define xReadCH376Data(d)		(ch376_dev->read(ch376_dev, &d, 1))
+#define xReadCH376Data_p(ptr, n)		(ch376_dev->read(ch376_dev, ptr, n))
 #define	xEndCH376Cmd( )			SET_CH376ENA_HIGH//结束CH376命令,仅用于SPI接口方式
 #define CH376_CMD_PORT	(ch376_dev->write(ch376_dev, &d, 1))
 //#define CH376_DATA_PORT	(*((volatile unsigned char *) 0x82000000))
+
+#define CH376_DATABUF_SIZE			64
 //------------------------------------------------------------------------------
 // local types
 //------------------------------------------------------------------------------
-typedef void (*uplevel_intr)(void);
+
 //------------------------------------------------------------------------------
 // local vars
 //------------------------------------------------------------------------------
 
-uint8_t DataBuff[64];
+static uint8_t DataBuff[CH376_DATABUF_SIZE];
 static uplevel_intr ch376_up_irq = NULL;;
 //------------------------------------------------------------------------------
 // local function prototypes
@@ -58,12 +62,16 @@ static void xWriteCH376Cmd(uint8_t mCmd);
 static uint8_t CH376GetIntStatus(void);
 static uint8_t	CH376SendCmdWaitInt( uint8_t mCmd );
 static uint8_t Wait376Interrupt( void )  ;
+static uint8_t	CH376ReadVar8( uint8_t var );  /* 读CH376芯片内部的8位变量 */
+static void	CH376WriteHostBlock( uint8_t *buf, uint8_t len );
+static uint8_t	CH376DiskReqSense( void );  
+
 
 static  void Ch376_intr( void *arg, int type, int encode);
 //============================================================================//
 //            P U B L I C   F U N C T I O N S                                 //
 //============================================================================//
-int	Init_Ch386(int dev_id, uplevel_intr up_irq)
+int	Init_Ch376(int dev_id, uplevel_intr up_irq)
 {
 	int ret = RET_OK;
 	ret = Dev_open(dev_id, (void *)&ch376_dev);
@@ -90,6 +98,22 @@ void Power_Ch376(int on)
 		
 		SET_CH376PWR_HIGH;
 	}
+	
+}
+
+void Ch376_enbale_Irq(int ed)
+{
+	if(ed) 
+	{
+		ch376_int->ioctol(ch376_int,DEVCMD_ENABLE_IRQ);
+		
+	}
+	else 
+	{
+		
+		ch376_int->ioctol(ch376_int,DEVCMD_DISABLE_IRQ);
+	}
+	
 	
 }
 
@@ -158,13 +182,126 @@ uint8_t mInitCH376Host(void)
 }
 
 // 检查U盘是否连接,不支持SD卡 
-//在usb_init中断中调用
 uint8_t Ch376DiskConnect(void)
 {
 	
-	CH376GetIntStatus( );  // 检测到中断 
+	CH376GetIntStatus( );  // 清除中断
 	return( CH376SendCmdWaitInt( CMD0H_DISK_CONNECT ) );
 	
+}
+
+// 初始化磁盘并测试磁盘是否就绪
+uint8_t CH376DiskMount( void ) 
+{
+	return( CH376SendCmdWaitInt( CMD0H_DISK_MOUNT ) );
+}
+
+
+// 从当前主机端点的接收缓冲区读取数据块,返回长度 
+uint8_t	CH376ReadBlock( uint8_t *buf, int buf_size  )
+{
+	uint8_t	s, l;
+
+	xWriteCH376Cmd( CMD01_RD_USB_DATA0 );
+	xReadCH376Data(l);  /* 长度 */
+//	xReadCH376Data(s); /* 长度 */
+	
+	if ( l ) {
+		if(l > buf_size)
+			l = buf_size;
+		s = xReadCH376Data_p(buf, l);
+		
+	}
+	xEndCH376Cmd( );
+	return( s );
+}
+
+// 检查U盘是否写保护, 返回USB_INT_SUCCESS说明可以写,返回0xFF说明只读/写保护,返回其它值说明是错误代码 
+uint8_t	IsDiskWriteProtect( void )
+{
+	uint8_t	s, SysBaseInfo;
+	P_BULK_ONLY_CBW	pCbw;
+
+	SysBaseInfo = CH376ReadVar8( VAR_SYS_BASE_INFO );  // 当前系统的基本信息 
+	pCbw = (P_BULK_ONLY_CBW)DataBuff;
+	for ( s = 0; s != sizeof( pCbw -> CBW_CB_Buf ); s ++ )
+		pCbw -> CBW_CB_Buf[ s ] = 0;  // 默认清0 
+	pCbw -> CBW_DataLen0 = 0x10;  // 数据传输长度 
+	pCbw -> CBW_Flag = 0x80;  // 传输方向为输入 
+	if ( SysBaseInfo & 0x40 )
+	{  
+		// SubClass-Code子类别非6 
+		pCbw -> CBW_CB_Len = 10;  // 命令块的长度 
+		pCbw -> CBW_CB_Buf[0] = 0x5A;  // 命令块首字节, MODE SENSE(10) 
+		pCbw -> CBW_CB_Buf[2] = 0x3F;
+		pCbw -> CBW_CB_Buf[8] = 0x10;
+	}
+	else
+	{ 
+		// SubClass-Code子类别为6 
+		pCbw -> CBW_CB_Len = 6;  // 命令块的长度 
+		pCbw -> CBW_CB_Buf[0] = 0x1A;  // 命令块首字节, MODE SENSE(6) 
+		pCbw -> CBW_CB_Buf[2] = 0x3F;
+		pCbw -> CBW_CB_Buf[4] = 0x10;
+	}
+
+	// 向USB主机端点的发送缓冲区写入数据块,剩余部分CH376自动填补 
+	CH376WriteHostBlock( (uint8_t *)pCbw, sizeof( BULK_ONLY_CBW ) );
+	// 对U盘执行BulkOnly传输协议 
+	s = CH376SendCmdWaitInt( CMD0H_DISK_BOC_CMD );  
+	if ( s == USB_INT_SUCCESS )
+	{
+		// 从当前主机端点的接收缓冲区读取数据块,返回长度 
+		s = CH376ReadBlock( DataBuff, CH376_DATABUF_SIZE );  
+		if ( s > 3 )
+		{
+			// MODE SENSE命令返回数据的长度有效 
+			if ( SysBaseInfo & 0x40 )
+				s = DataBuff[3];  // MODE SENSE(10), device specific parameter 
+			else
+				s = DataBuff[2];  // MODE SENSE(6), device specific parameter 
+			if ( s & 0x80 )
+				return( 0xFF );  // U盘写保护 
+			else
+				return( USB_INT_SUCCESS );  // U盘没有写保护 
+		}
+		return( USB_INT_DISK_ERR );
+	}
+
+	CH376DiskReqSense( );  // 检查USB存储器错误 
+	return( s );
+}
+
+
+// 查询磁盘剩余空间信息,扇区数 
+uint8_t	CH376DiskQuery( uint32_t *DiskFre )  
+{
+	uint8_t	s,temp;
+	uint8_t	c0, c1, c2, c3;
+
+	s = CH376SendCmdWaitInt( CMD0H_DISK_QUERY );
+	if ( s == USB_INT_SUCCESS )
+	{
+		// 参考CH376INC.H文件中CH376_CMD_DATA结构的DiskQuery 
+		xWriteCH376Cmd( CMD01_RD_USB_DATA0 );
+		xReadCH376Data(temp );  // 长度总是sizeof(CH376_CMD_DATA.DiskQuery) 
+		xReadCH376Data(temp );  // CH376_CMD_DATA.DiskQuery.mTotalSector 
+		xReadCH376Data(temp );
+		xReadCH376Data(temp );
+		xReadCH376Data(temp );
+
+		xReadCH376Data(c0 );  // CH376_CMD_DATA.DiskQuery.mFreeSector 
+		xReadCH376Data(c1 );
+		xReadCH376Data(c2 );
+		xReadCH376Data(c3 );
+		*DiskFre = c0 | (uint16_t)c1 << 8 | (uint32_t)c2 << 16 | (uint32_t)c3 << 24;
+
+		xReadCH376Data(temp );  // CH376_CMD_DATA.DiskQuery.mDiskFat 
+		xEndCH376Cmd( );
+	}
+	else
+		*DiskFre = 0;
+	return( s );
 }
 //=========================================================================//
 //                                                                         //
@@ -246,8 +383,30 @@ static uint8_t Wait376Interrupt( void )
 static  void Ch376_intr( void *arg, int type, int encode)
 {
 	
+	uint8_t	s = CH376GetIntStatus();// 清除CH376中断
 	if(ch376_up_irq)
-		ch376_up_irq();
+		ch376_up_irq(s);
+	
+	
+	  
+}
+
+// 向USB主机端点的发送缓冲区写入数据块 
+static void	CH376WriteHostBlock( uint8_t *buf, uint8_t len )
+{
+	xWriteCH376Cmd( CMD10_WR_HOST_DATA );
+	xWriteCH376Data( len );  // 长度 
+	if ( len )
+	{
+		xWriteCH376Data_p(buf, len);
+//		do
+//		{
+//			xWriteCH376Data( *buf );
+//			//delay_ms(2);
+//			buf ++;
+//		} while ( -- len );
+	}
+	xEndCH376Cmd( );
 }
 
 
@@ -312,47 +471,35 @@ static  void Ch376_intr( void *arg, int type, int encode)
 
 
 
-//// 初始化磁盘并测试磁盘是否就绪
-//uint8_t CH376DiskMount( void ) 
-//{
-//	return( CH376SendCmdWaitInt( CMD0H_DISK_MOUNT ) );
-//}
-
-
-
-//// 从当前主机端点的接收缓冲区读取数据块,返回长度 
-//uint8_t	CH376ReadBlock( uint8_t *buf )
-//{
-//	uint8_t	s, l;
-
-//	xWriteCH376Cmd( CMD01_RD_USB_DATA0 );
-//	s = l = xReadCH376Data( );  /* 长度 */
-//	if ( l ) {
-//		do {
-//			*buf = xReadCH376Data( );
-//			delay_ms(5);
-//			buf ++;
-//		} while ( -- l );
-//	}
-//	xEndCH376Cmd( );
-//	return( s );
-//}
 
 
 
 
 
-//uint8_t	CH376ReadVar8( uint8_t var )  /* 读CH376芯片内部的8位变量 */
-//{
-//	uint8_t	c0;
 
-//	xWriteCH376Cmd( CMD11_READ_VAR8 );
-//	xWriteCH376Data( var );
-//	c0 = xReadCH376Data( );
-//	xEndCH376Cmd( );
-//	return( c0 );
-//}
 
+
+
+
+static uint8_t	CH376ReadVar8( uint8_t var )  /* 读CH376芯片内部的8位变量 */
+{
+	uint8_t	c0;
+
+	xWriteCH376Cmd( CMD11_READ_VAR8 );
+	xWriteCH376Data( var );
+	xReadCH376Data(c0);
+	xEndCH376Cmd( );
+	return( c0 );
+}
+// 检查USB存储器错误 
+static uint8_t	CH376DiskReqSense( void )  
+{
+	uint8_t	s;
+	delay_ms( 50 );
+	s = CH376SendCmdWaitInt( CMD0H_DISK_R_SENSE );
+	delay_ms( 50 );
+	return( s );
+}
 
 ////获取磁盘和文件系统的工作状态
 //uint8_t	Ch376GetDiskStatus(void)
@@ -361,123 +508,17 @@ static  void Ch376_intr( void *arg, int type, int encode)
 //}
 
 
-//// 向USB主机端点的发送缓冲区写入数据块 
-//void	CH376WriteHostBlock( uint8_t *buf, uint8_t len )
-//{
-//	xWriteCH376Cmd( CMD10_WR_HOST_DATA );
-//	xWriteCH376Data( len );  // 长度 
-//	if ( len )
-//	{
-//		do
-//		{
-//			xWriteCH376Data( *buf );
-//			//delay_ms(2);
-//			buf ++;
-//		} while ( -- len );
-//	}
-//	xEndCH376Cmd( );
-//}
-
-
-//// 检查USB存储器错误 
-//uint8_t	CH376DiskReqSense( void )  
-//{
-//	uint8_t	s;
-//	delay_ms( 50 );
-//	s = CH376SendCmdWaitInt( CMD0H_DISK_R_SENSE );
-//	delay_ms( 50 );
-//	return( s );
-//}
-
-
-//// 检查U盘是否写保护, 返回USB_INT_SUCCESS说明可以写,返回0xFF说明只读/写保护,返回其它值说明是错误代码 
-//uint8_t	IsDiskWriteProtect( void )
-//{
-//	uint8_t	s, SysBaseInfo;
-//	P_BULK_ONLY_CBW	pCbw;
-
-//	SysBaseInfo = CH376ReadVar8( VAR_SYS_BASE_INFO );  // 当前系统的基本信息 
-//	pCbw = (P_BULK_ONLY_CBW)DataBuff;
-//	for ( s = 0; s != sizeof( pCbw -> CBW_CB_Buf ); s ++ )
-//		pCbw -> CBW_CB_Buf[ s ] = 0;  // 默认清0 
-//	pCbw -> CBW_DataLen0 = 0x10;  // 数据传输长度 
-//	pCbw -> CBW_Flag = 0x80;  // 传输方向为输入 
-//	if ( SysBaseInfo & 0x40 )
-//	{  
-//		// SubClass-Code子类别非6 
-//		pCbw -> CBW_CB_Len = 10;  // 命令块的长度 
-//		pCbw -> CBW_CB_Buf[0] = 0x5A;  // 命令块首字节, MODE SENSE(10) 
-//		pCbw -> CBW_CB_Buf[2] = 0x3F;
-//		pCbw -> CBW_CB_Buf[8] = 0x10;
-//	}
-//	else
-//	{ 
-//		// SubClass-Code子类别为6 
-//		pCbw -> CBW_CB_Len = 6;  // 命令块的长度 
-//		pCbw -> CBW_CB_Buf[0] = 0x1A;  // 命令块首字节, MODE SENSE(6) 
-//		pCbw -> CBW_CB_Buf[2] = 0x3F;
-//		pCbw -> CBW_CB_Buf[4] = 0x10;
-//	}
-
-//	// 向USB主机端点的发送缓冲区写入数据块,剩余部分CH376自动填补 
-//	CH376WriteHostBlock( (uint8_t *)pCbw, sizeof( BULK_ONLY_CBW ) );
-//	// 对U盘执行BulkOnly传输协议 
-//	s = CH376SendCmdWaitInt( CMD0H_DISK_BOC_CMD );  
-//	if ( s == USB_INT_SUCCESS )
-//	{
-//		// 从当前主机端点的接收缓冲区读取数据块,返回长度 
-//		s = CH376ReadBlock( DataBuff );  
-//		if ( s > 3 )
-//		{
-//			// MODE SENSE命令返回数据的长度有效 
-//			if ( SysBaseInfo & 0x40 )
-//				s = DataBuff[3];  // MODE SENSE(10), device specific parameter 
-//			else
-//				s = DataBuff[2];  // MODE SENSE(6), device specific parameter 
-//			if ( s & 0x80 )
-//				return( 0xFF );  // U盘写保护 
-//			else
-//				return( USB_INT_SUCCESS );  // U盘没有写保护 
-//		}
-//		return( USB_INT_DISK_ERR );
-//	}
-
-//	CH376DiskReqSense( );  // 检查USB存储器错误 
-//	return( s );
-//}
 
 
 
-//// 查询磁盘剩余空间信息,扇区数 
-//uint8_t	CH376DiskQuery( uint32 *DiskFre )  
-//{
-//	uint8_t	s,temp;
-//	uint8_t	c0, c1, c2, c3;
 
-//	s = CH376SendCmdWaitInt( CMD0H_DISK_QUERY );
-//	if ( s == USB_INT_SUCCESS )
-//	{
-//		// 参考CH376INC.H文件中CH376_CMD_DATA结构的DiskQuery 
-//		xWriteCH376Cmd( CMD01_RD_USB_DATA0 );
-//		temp = xReadCH376Data( );  // 长度总是sizeof(CH376_CMD_DATA.DiskQuery) 
-//		temp = xReadCH376Data( );  // CH376_CMD_DATA.DiskQuery.mTotalSector 
-//		temp = xReadCH376Data( );
-//		temp = xReadCH376Data( );
-//		temp = xReadCH376Data( );
 
-//		c0 = xReadCH376Data( );  // CH376_CMD_DATA.DiskQuery.mFreeSector 
-//		c1 = xReadCH376Data( );
-//		c2 = xReadCH376Data( );
-//		c3 = xReadCH376Data( );
-//		*DiskFre = c0 | (uint16)c1 << 8 | (uint32)c2 << 16 | (uint32)c3 << 24;
 
-//		temp = xReadCH376Data( );  // CH376_CMD_DATA.DiskQuery.mDiskFat 
-//		xEndCH376Cmd( );
-//	}
-//	else
-//		*DiskFre = 0;
-//	return( s );
-//}
+
+
+
+
+
 
 
 
@@ -514,10 +555,10 @@ static  void Ch376_intr( void *arg, int type, int encode)
 
 
 //// 从CH376芯片读取32位的数据并结束命令
-//uint32	CH376Read32bitDat( void )  
+//uint32_t	CH376Read32bitDat( void )  
 //{
 //	uint8_t	c0, c1, c2, c3;
-//	uint32	res = 0;
+//	uint32_t	res = 0;
 
 //	c0 = xReadCH376Data( );
 //	c1 = xReadCH376Data( );
@@ -525,7 +566,7 @@ static  void Ch376_intr( void *arg, int type, int encode)
 //	c3 = xReadCH376Data( );
 //	xEndCH376Cmd( );
 
-//	res = c0 | (uint16)c1 << 8 | (uint32)c2 << 16 | (uint32)c3 << 24 ;
+//	res = c0 | (uint16_t)c1 << 8 | (uint32_t)c2 << 16 | (uint32_t)c3 << 24 ;
 //	return( res );
 //}
 
@@ -552,7 +593,7 @@ static  void Ch376_intr( void *arg, int type, int encode)
 
 
 ////以字节为单位向当前位置写入数据块 
-//uint8_t	CH376ByteWrite( uint8_t *buf, uint16 ReqCount, uint16 *RealCount )
+//uint8_t	CH376ByteWrite( uint8_t *buf, uint16_t ReqCount, uint16_t *RealCount )
 //{
 //	uint8_t	s;
 
@@ -587,17 +628,17 @@ static  void Ch376_intr( void *arg, int type, int encode)
 
 //// 将缓冲区中的多个扇区的数据块写入U盘,不支持SD卡 
 //// baStart 是写入的线起始性扇区号, iSectorCount 是写入的扇区数 
-//uint8_t	CH376DiskWriteSec( uint8_t *buf, uint32 iLbaStart, uint8_t iSectorCount )  
+//uint8_t	CH376DiskWriteSec( uint8_t *buf, uint32_t iLbaStart, uint8_t iSectorCount )  
 //{
 //	uint8_t	s, err;
-//	uint16	mBlockCount;
+//	uint16_t	mBlockCount;
 
 //	for ( err = 0; err != 3; ++ err )
 //	{
 //		// 出错重试 
 //		xWriteCH376Cmd( CMD5H_DISK_WRITE );  // 向USB存储器写扇区 
 //		xWriteCH376Data( (uint8_t)iLbaStart );  // LBA的最低8位 
-//		xWriteCH376Data( (uint8_t)( (uint16)iLbaStart >> 8 ) );
+//		xWriteCH376Data( (uint8_t)( (uint16_t)iLbaStart >> 8 ) );
 //		xWriteCH376Data( (uint8_t)( iLbaStart >> 16 ) );
 //		xWriteCH376Data( (uint8_t)( iLbaStart >> 24 ) );  // LBA的最高8位 
 //		xWriteCH376Data( iSectorCount );  // 扇区数 
@@ -640,7 +681,7 @@ static  void Ch376_intr( void *arg, int type, int encode)
 //{
 //	uint8_t	s;
 //	uint8_t	cnt,temp;
-//	uint32	StaSec;
+//	uint32_t	StaSec;
 
 //	if ( RealCount )
 //		*RealCount = 0;

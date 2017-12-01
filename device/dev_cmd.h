@@ -9,7 +9,7 @@
 #define DEVCMD_SET_RXWAITTIME_MS				6
 
 
-#define	DEVCMD_SET_IRQHDL							7
+#define	DEVCMD_SET_IRQHDL								7
 #define	DEVCMD_SET_RXIRQHDL							9
 #define	DEVCMD_SET_TXIRQHDL							10
 	
@@ -17,6 +17,9 @@
 
 #define	DEVCMD_GET_RXBUFPTR							11
 #define	DEVCMD_FREE_RXBUFPTR							12
+
+#define	DEVCMD_DISABLE_IRQ							13
+#define	DEVCMD_ENABLE_IRQ								14
 
 #define	DEVGPIOCMD_SET_ENCODE						0x100
 

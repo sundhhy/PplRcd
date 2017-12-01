@@ -33,13 +33,16 @@ CLASS( driveGpio)
 	uint8_t		encode[4];
 	void		*p_gpioBase;
 	void		*p_cfg;
+	EXTI_InitTypeDef		*p_exit;
 	irqHdl		func_hdl;
 	void		*hdl_arg;
+	
 	
 	int ( *init)( driveGpio *self, void *p_base, void *cfg);
 	int ( *deInit)( driveGpio *self);
 	int ( *read)( driveGpio *self,char *p_n_val);
 	int ( *write)( driveGpio *self, char n_val);
+	int ( *control_irq)( driveGpio *self, int en);
 //	int ( *ioctol)( driveGpio *self, int cmd, ...);
 	
 	void (*setIrqHdl)( driveGpio *self, irqHdl hdl);

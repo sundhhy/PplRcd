@@ -6,8 +6,9 @@
 #include "Usb.h"
 #include "Ch376.h"
 #include "os/os_depend.h"
-#include "device.h"
+#include "deviceId.h"
 #include "sdhDef.h"
+#include "arithmetic/cycQueue.h"
 //------------------------------------------------------------------------------
 // const defines
 //------------------------------------------------------------------------------
@@ -28,43 +29,98 @@
 //------------------------------------------------------------------------------
 // const defines
 //------------------------------------------------------------------------------
-#define NUM_EHDS			3
+#define NUM_EHDS					3
+#define LEN_USB_CQBUF			16
 //------------------------------------------------------------------------------
 // local types
 //------------------------------------------------------------------------------
 typedef struct {
+	
+	CycQueus_t	usb_cq;
+	
 	//USB的事件通知回调管理
 	usb_event_hdl	arr_event_hdl[3];
+	
+	uint16_t			buf_free_MB;
 	uint8_t			set_ehd;		//bit 为1说明该hdl可用
-
 	uint8_t			cur_state;
-	uint8_t			none[2];
+	uint8_t			err_status;
+	char				is_usb_exist;
+	char				is_protect;
+	uint8_t			none	;
 	
 	
 }usb_control_t;
+
+typedef int	(*usb_deal_msg)(void);
 //------------------------------------------------------------------------------
 // local vars
 //------------------------------------------------------------------------------
 
 static 	usb_control_t		usb_ctl;
+static	uint8_t 				usb_cq_buf[LEN_USB_CQBUF];
 //------------------------------------------------------------------------------
 // local function prototypes
 //------------------------------------------------------------------------------
 
-static  void Usb_intr(void);
-static void DetectUsb(void);
+static  void Usb_intr(int ch376_status);
+
+/***** deal msg ***************************/
+static int	Usb_deal_insert(void);
+static int	Usb_deal_remove(void);
+static int	Usb_deal_identify(void);
+
+static usb_deal_msg			arr_deal_msg[USB_MSG_INDEX(usb_msg_max)] = {Usb_deal_insert, Usb_deal_remove, Usb_deal_identify};
+
 //============================================================================//
 //            P U B L I C   F U N C T I O N S                                 //
 //============================================================================//
+int USB_Run(void* arg)
+{
+	int			ret = RET_OK;
+	uint8_t	msg = 0;
+	uint8_t	i = 0;
+	CQ_Read(&usb_ctl.usb_cq, &msg, 1);
+
+	if((msg < usb_msg_max) &&(msg > 0))
+	{
+		arr_deal_msg[USB_MSG_INDEX(msg)]();
+		
+	} 
+	else if((msg > 0))
+	{
+		//将事件报给外部
+		for(i = 0; i < NUM_EHDS; i++)
+		{
+			if(usb_ctl.arr_event_hdl[i])
+			{
+				
+				usb_ctl.arr_event_hdl[i](msg);
+			}
+			
+		}
+		
+	}
+	
+	//处理周期性的一些任务
+	
+	
+	
+	return ret;
+}
+
+
 int USB_Init(void* arg)
 {
 	int	ret = -1;
-	Power_Ch376(1);
-	
-	
+	//usb管理器初始化
 	usb_ctl.set_ehd = 0xff;
+	CQ_Init(&usb_ctl.usb_cq, usb_cq_buf, LEN_USB_CQBUF);
 	
-	ret = Init_Ch386(DEVID_SPI1, Usb_intr);
+	//ch376硬件初始化
+	
+	Power_Ch376(1);
+	ret = Init_Ch376(DEVID_SPI1, Usb_intr);
 	if( ret == USB_INT_SUCCESS)
 		ret = RET_OK;
 	return ret;
@@ -191,49 +247,255 @@ int	USB_Rgt_event_hdl(usb_event_hdl hdl)
 /// \{
 
 
-static  void Usb_intr(void)
+static  void Usb_intr(int ch376_status)
 {
 	//U盘插入的时候，会产生中断，但是SD卡插入是不会产生中断的
 	
-	int	i = 0;
-	for(i = 0; i < NUM_EHDS; i++)
+	uint8_t		msg = 0;
+	switch(ch376_status)
 	{
-		if(usb_ctl.arr_event_hdl[i])
-		{
+		case USB_INT_CONNECT:
+			//检测到U盘连接上了，接下来应该查询U盘的基本信息
+			msg = hd_storage_insert;
+			break;
+		case USB_INT_DISCONNECT:
+			//检测到U盘断开
+			msg = hd_storage_remove;
 			
-			usb_ctl.arr_event_hdl[i](0);
-		}
+			break;
+		
 		
 	}
+	
+	if(msg)
+		CQ_Write(&usb_ctl.usb_cq, &msg, 1);
+	
+//	for(i = 0; i < NUM_EHDS; i++)
+//	{
+//		if(usb_ctl.arr_event_hdl[i])
+//		{
+//			
+//			usb_ctl.arr_event_hdl[i](0);
+//		}
+//		
+//	}
 }
 
 
 //检测USB是否插入或拔出
-static void DetectUsb(void)
-{
-	int	g_status;
+//static void DetectUsb(void)
+//{
+//	int	g_status;
 
-	g_status = Ch376DiskConnect();
-//	if (UsbExist == 0)
-//	{
-//		if (g_status == USB_INT_SUCCESS)
-//		{
-//			InsertUdisk();
-//			UsbPara.ErrStatu = SUPPORTDEV;
-//			
-//		}
-//		else
-//		{
-//			UsbPara.ErrStatu = NOSUPPORTDEV;
-//		}
-//	}
-//	else
-//	{
-//		if (g_status != USB_INT_SUCCESS)
-//		{
-//			RemoveUdisk();
-//		}
-//	}
+//	g_status = Ch376DiskConnect();
+////	if (UsbExist == 0)
+////	{
+////		if (g_status == USB_INT_SUCCESS)
+////		{
+////			InsertUdisk();
+////			UsbPara.ErrStatu = SUPPORTDEV;
+////			
+////		}
+////		else
+////		{
+////			UsbPara.ErrStatu = NOSUPPORTDEV;
+////		}
+////	}
+////	else
+////	{
+////		if (g_status != USB_INT_SUCCESS)
+////		{
+////			RemoveUdisk();
+////		}
+////	}
+//}
+
+
+///*
+//**************************************************************************
+//* 函数名称：InsertUdisk
+//* 输入参数：无
+//* 输出参数：无
+//* 功能描述：插入中断的钩子函数
+//**************************************************************************
+//*/
+//void InsertUdisk(void)
+//{
+//	UsbPara.UsbIrq = 1;
+//	g_IsDiskWriteProtect = 0;
+//	UsbExist = TRUE;
+
+//}
+
+
+
+///*
+//*************************************************************************
+// 函数名称：RemoveUdisk
+// 输入参数：无
+// 输出参数：无
+// 功能描述：
+//*************************************************************************
+//*/
+//void RemoveUdisk(void)
+//{
+//	UsbExist = FALSE;
+//	UsbPara.ErrStatu = NOSUPPORTDEV;
+//	UsbPara.ProgressNum = 0;
+//	Buff_Free = 0;
+//	g_IsDiskWriteProtect = 0;
+//	g_PressCopy = 0;
+
+//	UsbPara.Step = 0;
+//	UsbPara.UsbIrq = 0;
+//	UsbPara.UsbStatu = 0;
+
+//	Reset_Ch376();
+//}
+
+
+static int	Usb_deal_insert(void)
+{
+	int	ret = RET_OK;
+	uint8_t		s = 0;
+	uint8_t		msg = 0;
+	uint16_t		safe_count = 1000;
+	uint8_t		usb_info[40] = {0};		//一般36个字节
+	Ch376_enbale_Irq(0);
+	while(1)
+	{
+		s = Ch376DiskConnect();
+		//如果返回的状态是USB_INT_SUCCESS，说明U盘或者设备连接
+		if(s == USB_INT_SUCCESS)
+		{
+			
+			
+			s = CH376DiskMount();
+			if(s == USB_INT_SUCCESS)
+			{
+				usb_ctl.is_usb_exist = 1;
+				
+ 				//获取U盘的厂商和产品信息，返回数据个数
+				//有些U盘可能不支持，因此就不作为判断U盘好坏的依据了，读取数据只是用于调试使用
+ 				s = CH376ReadBlock(usb_info, 40);
+
+				usb_ctl.cur_state = SUPPORTDEV;
+				msg = sf_identify_device;
+				CQ_Write(&usb_ctl.usb_cq, &msg, 1);
+				break;
+			}
+			else 
+			{
+				safe_count --;
+				
+			}
+			
+		}
+		else 
+		{
+			
+			msg = hd_storage_remove;
+			CQ_Write(&usb_ctl.usb_cq, &msg, 1);
+			break;
+		}
+		
+		if(safe_count == 0)
+		{
+			msg = et_unkow_device;
+			CQ_Write(&usb_ctl.usb_cq, &msg, 1);
+			break;
+			
+		}
+		delay_ms(10);
+	}
+	Ch376_enbale_Irq(1);
+	
+	
+	return ret;
+	
+	
+}
+static int	Usb_deal_remove(void)
+{
+	int	ret = RET_OK;
+	uint8_t	msg = 0;
+	
+	usb_ctl.cur_state = NOSUPPORTDEV;
+	msg = et_remove;
+	CQ_Write(&usb_ctl.usb_cq, &msg, 1);
+	return ret;	
+	
+}
+
+static int	Usb_deal_identify(void)
+{
+	int					ret = RET_OK;
+	uint32_t		sectornum = 0;
+	
+	uint8_t			s;
+	uint8_t			msg = 0;
+	uint16_t		i;
+	
+	if(usb_ctl.cur_state == NOSUPPORTDEV)		//已经被拔除就算了
+		return ret;
+	
+	Ch376_enbale_Irq(0);
+	
+	//检测U盘的写保护状态
+	//这个功能好像也不一定能支持
+	for (i=0;i<3;i++)
+	{
+		s = IsDiskWriteProtect();
+		if(s == USB_INT_SUCCESS)
+		{
+
+			usb_ctl.is_protect = 0;
+
+			break;
+		}
+		else if (s == 0xFF)	//说明被写保护了，应提示用户
+		{
+			usb_ctl.is_protect = 1;
+			msg = et_protect;
+			CQ_Write(&usb_ctl.usb_cq, &msg, 1);
+			goto exit;
+		}
+	}
+	if(i == 3)
+		usb_ctl.err_status = U_PROTECTERROR;
+	
+	//查询U盘可用空间
+	for (i=0;i<3;i++)
+	{
+
+		s = CH376DiskQuery(&sectornum);
+		if(s == USB_INT_SUCCESS)
+		{
+			if (sectornum)
+			{
+				usb_ctl.buf_free_MB = sectornum * DEF_SECTOR_SIZE / 1024 / 1024;
+			}
+
+			return;
+		}
+	}
+	
+	if(i == 3)
+	{
+		usb_ctl.err_status = U_NOQUREY;
+		usb_ctl.buf_free_MB = 0;
+		
+	}
+	
+	
+exit:
+	usb_ctl.cur_state = U_HAVEREADY;
+	msg = et_ready;
+	CQ_Write(&usb_ctl.usb_cq, &msg, 1);	
+
+	Ch376_enbale_Irq(1);
+	return ret;	
+	
 }
 
 
@@ -300,47 +562,7 @@ static void DetectUsb(void)
 
 
 
-///*
-//**************************************************************************
-//* 函数名称：InsertUdisk
-//* 输入参数：无
-//* 输出参数：无
-//* 功能描述：插入中断的钩子函数
-//**************************************************************************
-//*/
-//void InsertUdisk(void)
-//{
-//	UsbPara.UsbIrq = 1;
-//	g_IsDiskWriteProtect = 0;
-//	UsbExist = TRUE;
 
-//}
-
-
-
-///*
-//*************************************************************************
-// 函数名称：RemoveUdisk
-// 输入参数：无
-// 输出参数：无
-// 功能描述：
-//*************************************************************************
-//*/
-//void RemoveUdisk(void)
-//{
-//	UsbExist = FALSE;
-//	UsbPara.ErrStatu = NOSUPPORTDEV;
-//	UsbPara.ProgressNum = 0;
-//	Buff_Free = 0;
-//	g_IsDiskWriteProtect = 0;
-//	g_PressCopy = 0;
-
-//	UsbPara.Step = 0;
-//	UsbPara.UsbIrq = 0;
-//	UsbPara.UsbStatu = 0;
-
-//	Reset_Ch376();
-//}
 
 
 

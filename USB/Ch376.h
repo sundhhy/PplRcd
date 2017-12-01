@@ -20,7 +20,7 @@
 //------------------------------------------------------------------------------
 // typedef
 //------------------------------------------------------------------------------
-typedef void (*uplevel_intr)(void);
+typedef void (*uplevel_intr)(int	arg);
 //------------------------------------------------------------------------------
 // global variable declarations
 //------------------------------------------------------------------------------
@@ -29,7 +29,7 @@ typedef void (*uplevel_intr)(void);
 // function prototypes
 //------------------------------------------------------------------------------
 
-extern int	Init_Ch386(int dev_id, uplevel_intr up_irq);
+extern int	Init_Ch376(int dev_id, uplevel_intr up_irq);
 
 
 
@@ -55,13 +55,14 @@ extern int	Init_Ch386(int dev_id, uplevel_intr up_irq);
 //extern	void	DelayMs(unsigned long time);
 extern	void	HRst_Ch376(void);
 extern void Power_Ch376(int on);
+extern void Ch376_enbale_Irq(int ed);
 //extern	void	Test_USBOCA(void);
 extern	uint8_t	mInitCH376Host(void);
 
-//extern	uint8_t	CH376DiskMount( void );
-//extern	uint8_t	CH376ReadBlock( uint8_t *buf );
-//extern	uint8_t	IsDiskWriteProtect( void );
-//extern	uint8_t	CH376DiskQuery( uint32 *DiskFre );
+extern	uint8_t	CH376DiskMount( void );
+extern	uint8_t	CH376ReadBlock( uint8_t *buf, int buf_size );
+extern	uint8_t	IsDiskWriteProtect( void );
+extern	uint8_t	CH376DiskQuery( uint32_t *DiskFre );
 //extern	uint8_t	CH376FileCreate( uint8_t *name );
 //extern	uint8_t	CH376SecWrite( uint8_t *buf, uint8_t ReqCount, uint8_t *RealCount );
 //extern	uint8_t	CH376FileClose( uint8_t UpdateSz );

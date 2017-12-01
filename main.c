@@ -251,32 +251,38 @@ int main (void) {
 	memset(udisk_buf, '8', 512); 
 	
 	USB_Rgt_event_hdl(Usb_event);
-	while(usb_cnt == 0)
-		osDelay(100);
-	
-	tdd_fd = USB_Create_file(USB_TFILE, USB_FM_READ | USB_FM_WRITE);
-	for(tdd_i = 0; tdd_i < 255; tdd_i ++)
+	while(1)
 	{
-		USB_Write_file(tdd_fd, udisk_buf, 512);
-		
-	}
-	USB_Get_file_info(USB_TFILE, &usb_fin);
-	USB_flush_file(tdd_fd);
-	USB_Get_file_info_f(tdd_fd, &usb_fin);
-	USB_Colse_file(tdd_fd);
+//		osDelay(100);
+		USB_Run(NULL);
+		if(usb_cnt == 0)
+			continue;
+	
+		tdd_fd = USB_Create_file(USB_TFILE, USB_FM_READ | USB_FM_WRITE);
+		for(tdd_i = 0; tdd_i < 255; tdd_i ++)
+		{
+			USB_Write_file(tdd_fd, udisk_buf, 512);
+			
+		}
+		USB_Get_file_info(USB_TFILE, &usb_fin);
+		USB_flush_file(tdd_fd);
+		USB_Get_file_info_f(tdd_fd, &usb_fin);
+		USB_Colse_file(tdd_fd);
 
-	tdd_fd = 0;
-	
-	tdd_fd = USB_Open_file(USB_TFILE, USB_FM_READ);
-	
-	for(tdd_i = 0; tdd_i < 255; tdd_i ++)
-	{
-		memset(udisk_buf, 0, 512); 
-		USB_Read_file(tdd_fd, udisk_buf, 512);
+		tdd_fd = 0;
 		
+		tdd_fd = USB_Open_file(USB_TFILE, USB_FM_READ);
+		
+		for(tdd_i = 0; tdd_i < 255; tdd_i ++)
+		{
+			memset(udisk_buf, 0, 512); 
+			USB_Read_file(tdd_fd, udisk_buf, 512);
+			
+		}
+		
+		USB_Colse_file(tdd_fd);
 	}
 	
-	USB_Colse_file(tdd_fd);
 	
 	
 	
@@ -539,8 +545,10 @@ void HardFault_Handler()
 #if TDD_USB == 1
 int	Usb_event(int type)
 {
-	usb_cnt = 1;
+	if(type == et_ready)
+		usb_cnt = 1;
 	
+	return 0;
 }
 
 #endif
