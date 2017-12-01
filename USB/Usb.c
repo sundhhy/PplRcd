@@ -34,21 +34,30 @@
 //------------------------------------------------------------------------------
 // local types
 //------------------------------------------------------------------------------
+
+							/* CMD_DiskQuery, 查询磁盘信息 */
+
+
 typedef struct {
+	
+
 	
 	CycQueus_t	usb_cq;
 	
 	//USB的事件通知回调管理
 	usb_event_hdl	arr_event_hdl[3];
 	
-	uint16_t			buf_free_MB;
+	//u盘信息
+	uint16_t		buf_total_MB;
+	uint16_t		buf_free_MB;
+	uint8_t			fat	;		//1-FAT12,2-FAT16,3-FAT32 
+
 	uint8_t			set_ehd;		//bit 为1说明该hdl可用
 	uint8_t			cur_state;
 	uint8_t			err_status;
-	char				is_usb_exist;
-	char				is_protect;
-	uint8_t			none	;
-	
+	char			is_usb_exist;
+	char			is_protect;
+	uint8_t			none[2];
 	
 }usb_control_t;
 
@@ -69,8 +78,9 @@ static  void Usb_intr(int ch376_status);
 static int	Usb_deal_insert(void);
 static int	Usb_deal_remove(void);
 static int	Usb_deal_identify(void);
-
-static usb_deal_msg			arr_deal_msg[USB_MSG_INDEX(usb_msg_max)] = {Usb_deal_insert, Usb_deal_remove, Usb_deal_identify};
+static int	Usb_deal_fail(void);
+static usb_deal_msg			arr_deal_msg[USB_MSG_INDEX(usb_msg_max)] = {Usb_deal_insert, Usb_deal_remove,\
+Usb_deal_fail, Usb_deal_identify};
 
 //============================================================================//
 //            P U B L I C   F U N C T I O N S                                 //
@@ -263,7 +273,10 @@ static  void Usb_intr(int ch376_status)
 			msg = hd_storage_remove;
 			
 			break;
-		
+		default:
+			//USB主机通信失败
+			msg = hd_usb_comm_fail;
+			break;
 		
 	}
 	
@@ -369,7 +382,7 @@ static int	Usb_deal_insert(void)
 		if(s == USB_INT_SUCCESS)
 		{
 			
-			
+			delay_ms(1);
 			s = CH376DiskMount();
 			if(s == USB_INT_SUCCESS)
 			{
@@ -391,7 +404,7 @@ static int	Usb_deal_insert(void)
 			}
 			
 		}
-		else 
+		else if(s != 0x22)
 		{
 			
 			msg = hd_storage_remove;
@@ -427,15 +440,25 @@ static int	Usb_deal_remove(void)
 	
 }
 
+static int	Usb_deal_fail(void)
+{
+	
+	
+	HRst_Ch376();
+	mInitCH376Host();
+}
+
 static int	Usb_deal_identify(void)
 {
 	int					ret = RET_OK;
-	uint32_t		sectornum = 0;
+	uint32_t			all_sectornum = 0;
+	uint32_t			free_sectornum = 0;
 	
 	uint8_t			s;
 	uint8_t			msg = 0;
 	uint16_t		i;
 	
+	uint8_t			fat = 0;
 	if(usb_ctl.cur_state == NOSUPPORTDEV)		//已经被拔除就算了
 		return ret;
 	
@@ -468,15 +491,13 @@ static int	Usb_deal_identify(void)
 	for (i=0;i<3;i++)
 	{
 
-		s = CH376DiskQuery(&sectornum);
+		s = CH376DiskQuery(&all_sectornum, &free_sectornum, &fat);
 		if(s == USB_INT_SUCCESS)
 		{
-			if (sectornum)
-			{
-				usb_ctl.buf_free_MB = sectornum * DEF_SECTOR_SIZE / 1024 / 1024;
-			}
-
-			return;
+			usb_ctl.buf_total_MB = all_sectornum * DEF_SECTOR_SIZE / 1024 / 1024;
+			usb_ctl.buf_free_MB = free_sectornum * DEF_SECTOR_SIZE / 1024 / 1024;
+			usb_ctl.fat = fat;
+			break;
 		}
 	}
 	

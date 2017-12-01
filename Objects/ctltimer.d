@@ -5,7 +5,7 @@
 .\objects\ctltimer.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
 .\objects\ctltimer.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
 .\objects\ctltimer.o: Control\Controller.h
-.\objects\ctltimer.o: D:\Keil_v5\ARM\PACK\ARM\CMSIS\4.5.0\CMSIS\RTOS\RTX\INC\cmsis_os.h
+.\objects\ctltimer.o: d:\Keil_v5\ARM\PACK\ARM\CMSIS\4.4.0\CMSIS\RTOS\RTX\INC\cmsis_os.h
 .\objects\ctltimer.o: E:\mylib\sdhLib\inc\sdhDef.h
 .\objects\ctltimer.o: ..\PplRcd\sdhlibConf.h
 .\objects\ctltimer.o: E:\mylib\sdhLib\inc\basis/sdhDebug.h

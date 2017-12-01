@@ -75,7 +75,7 @@ typedef enum {
 	//硬件消息
 	hd_storage_insert	= 1,
 	hd_storage_remove,
-	
+	hd_usb_comm_fail,
 	//软件消息
 	sf_identify_device,		
 	usb_msg_max,

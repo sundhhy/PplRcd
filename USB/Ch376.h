@@ -62,7 +62,7 @@ extern	uint8_t	mInitCH376Host(void);
 extern	uint8_t	CH376DiskMount( void );
 extern	uint8_t	CH376ReadBlock( uint8_t *buf, int buf_size );
 extern	uint8_t	IsDiskWriteProtect( void );
-extern	uint8_t	CH376DiskQuery( uint32_t *DiskFre );
+extern	uint8_t	CH376DiskQuery(uint32_t *DiskAll, uint32_t *DiskFre, uint8_t *diskFat );
 //extern	uint8_t	CH376FileCreate( uint8_t *name );
 //extern	uint8_t	CH376SecWrite( uint8_t *buf, uint8_t ReqCount, uint8_t *RealCount );
 //extern	uint8_t	CH376FileClose( uint8_t UpdateSz );

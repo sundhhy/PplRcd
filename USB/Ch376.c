@@ -74,14 +74,18 @@ static  void Ch376_intr( void *arg, int type, int encode);
 int	Init_Ch376(int dev_id, uplevel_intr up_irq)
 {
 	int ret = RET_OK;
+	
+	ret = Dev_open(DEVID_GPIO_A10, (void *)&ch376_int);
+	Ch376_enbale_Irq(0);
+	
 	ret = Dev_open(dev_id, (void *)&ch376_dev);
-	Dev_open(DEVID_GPIO_A10, (void *)&ch376_int);
+	
 	ch376_int->ioctol(ch376_int, DEVCMD_SET_IRQHDL, Ch376_intr, (void *)NULL);
 	HRst_Ch376();
 	ch376_up_irq = up_irq;
  
 	ret = mInitCH376Host();
-	
+	Ch376_enbale_Irq(1);
 	return ret;
 	
 }
@@ -119,15 +123,17 @@ void Ch376_enbale_Irq(int ed)
 
 void HRst_Ch376(void)
 {
-	
+//	uint8_t	s = 0;
 	SET_CH376RST_HIGH;
 	delay_ms(100);
 	
 	SET_CH376RST_LOW;
 	delay_ms(100);
 
-	SET_CH376ENA_HIGH;
-//	delay_ms(100);
+//	SET_CH376ENA_HIGH;
+//	s = CH376SendCmdWaitInt(CMD00_RESET_ALL);
+//	xEndCH376Cmd();
+//	delay_ms(50);			//通常35ms内完成
 
 }
 
@@ -154,7 +160,7 @@ uint8_t mInitCH376Host(void)
 
 	//获取芯片及固件版本
 	xWriteCH376Cmd(CMD01_GET_IC_VER);
-	delay_ms(10);
+	delay_ms(1000);
 	xReadCH376Data(res);
 	SET_CH376ENA_HIGH;
 	if (res != 0x41)
@@ -168,7 +174,7 @@ uint8_t mInitCH376Host(void)
 	xWriteCH376Cmd(CMD11_SET_USB_MODE);
 	usb_data = 0x06;
 	xWriteCH376Data(usb_data);	//已启用的主机方式并且自动产生SOF包
-	delay_ms(1);
+	delay_ms(100);
 	xReadCH376Data(res);
 	SET_CH376ENA_HIGH;
 	if (res == CMD_RET_SUCCESS)
@@ -274,7 +280,7 @@ uint8_t	IsDiskWriteProtect( void )
 
 
 // 查询磁盘剩余空间信息,扇区数 
-uint8_t	CH376DiskQuery( uint32_t *DiskFre )  
+uint8_t	CH376DiskQuery(uint32_t *DiskAll, uint32_t *DiskFre, uint8_t *diskFat  )  
 {
 	uint8_t	s,temp;
 	uint8_t	c0, c1, c2, c3;
@@ -284,12 +290,11 @@ uint8_t	CH376DiskQuery( uint32_t *DiskFre )
 	{
 		// 参考CH376INC.H文件中CH376_CMD_DATA结构的DiskQuery 
 		xWriteCH376Cmd( CMD01_RD_USB_DATA0 );
-		xReadCH376Data(temp );  // 长度总是sizeof(CH376_CMD_DATA.DiskQuery) 
-		xReadCH376Data(temp );  // CH376_CMD_DATA.DiskQuery.mTotalSector 
-		xReadCH376Data(temp );
-		xReadCH376Data(temp );
-		xReadCH376Data(temp );
-
+		xReadCH376Data(c0 );  // 长度总是sizeof(CH376_CMD_DATA.DiskQuery) 
+		xReadCH376Data(c1 );  // CH376_CMD_DATA.DiskQuery.mTotalSector 
+		xReadCH376Data(c2 );
+		xReadCH376Data(c3 );
+		*DiskAll = c0 | (uint16_t)c1 << 8 | (uint32_t)c2 << 16 | (uint32_t)c3 << 24;
 		xReadCH376Data(c0 );  // CH376_CMD_DATA.DiskQuery.mFreeSector 
 		xReadCH376Data(c1 );
 		xReadCH376Data(c2 );
@@ -297,7 +302,9 @@ uint8_t	CH376DiskQuery( uint32_t *DiskFre )
 		*DiskFre = c0 | (uint16_t)c1 << 8 | (uint32_t)c2 << 16 | (uint32_t)c3 << 24;
 
 		xReadCH376Data(temp );  // CH376_CMD_DATA.DiskQuery.mDiskFat 
+		*diskFat = temp;
 		xEndCH376Cmd( );
+		
 	}
 	else
 		*DiskFre = 0;
@@ -347,6 +354,7 @@ static uint8_t CH376GetIntStatus(void)
 static uint8_t	CH376SendCmdWaitInt( uint8_t mCmd )  
 {
 	xWriteCH376Cmd( mCmd );
+	delay_ms(1);
 	xEndCH376Cmd( );
 	return( Wait376Interrupt( ) );
 }
