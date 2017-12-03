@@ -61,14 +61,20 @@ Dev_Uart *Get_DevUart( int minor)
 		if( minor == 0)
 		{
 			devUart[ minor]->dri->devUartBase = USART1;
-			devUart[ minor]->dri->dirPin = &Dir_485_pin1;
+			devUart[ minor]->dri->dirPin = NULL;
 			devChar->open(devChar, &g_confUart1);	
 		}
 		else if( minor == 1) 
 		{
 			devUart[ minor]->dri->devUartBase = USART2;
-			devUart[ minor]->dri->dirPin = &Dir_485_pin2;
+			devUart[ minor]->dri->dirPin = NULL;
 			devChar->open(devChar, &g_confUart2);	
+		}
+		else if( minor == 2) 
+		{
+			devUart[ minor]->dri->devUartBase = USART3;
+			devUart[ minor]->dri->dirPin = NULL;
+			devChar->open(devChar, &g_confUart3);	
 		}
 		
 	}

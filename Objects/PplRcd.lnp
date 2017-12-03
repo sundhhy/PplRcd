@@ -14,6 +14,7 @@
 ".\objects\assert.o"
 ".\objects\cycqueue.o"
 ".\objects\rtx_depend.o"
+".\objects\smart_bus.o"
 ".\objects\nokia_5110.o"
 ".\objects\dev_lcdusartgpu.o"
 ".\objects\drive_uart.o"

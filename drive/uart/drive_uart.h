@@ -9,10 +9,7 @@
 
 
 
-#define SENDMODE_CPU			0
-#define SENDMODE_INTR			1
-#define SENDMODE_DMA			2
-#define SER485_SENDMODE 		SENDMODE_DMA
+
 
 
 #define UART_RXCACHE_SIZE		512
@@ -44,19 +41,18 @@ typedef  struct usart_control_t {
 	short	rx_waittime_ms;
 	
 	PPBuf_t	 pingpong;
-#if SER485_SENDMODE == SENDMODE_INTR
-	//在中断发送的时候，要把正在发送的内存记录下来
+
 	uint8_t		*intrSendingBuf;
 	short 		sendingCount;
 	short 		sendingLen;
-#endif
+
 	
 } uartCtl_t;
 
 CLASS( driveUart)
 {
-	char *rxCache;
-	char *txCache;
+	uint8_t *rxCache;
+	uint8_t *txCache;
 	void 	*devUartBase;
 	void	*cfg;
 	void	*device;

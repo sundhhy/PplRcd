@@ -13,6 +13,9 @@
 
 #define NUM_SPIS        2
 
+#define UART_MODE_INTR		0
+#define UART_MODE_DMA		1
+#define UART_MODE_CPU		2
 //各种外设的引脚配置
 #define RCC_UART1_TX                                    RCC_APB2Periph_GPIOB		 
 #define GPIO_PORT_UART1TX                               GPIOB    					 
@@ -34,7 +37,7 @@
 #define GPIO_PORT_UART3TX                               GPIOB    					 
 #define GPIO_PIN_UART3TX                                GPIO_Pin_10					 
 
-#define RCC_UART3_RX                                    RCC_APB2Periph_GPIOB		 
+#define RCC_UART3_RX                                    RCC_APB2Periph_GPIOE		 
 #define GPIO_PORT_UART3RX                               GPIOB    					 
 #define GPIO_PIN_UART3RX                                GPIO_Pin_11
 
@@ -110,10 +113,13 @@ typedef struct
 }Dma_source;
 
 typedef struct {
-	//本串口属于芯片的第几个串口，从0开始
-	int						uartNum;
+	
 	USART_InitTypeDef		*cfguart;
 	Dma_source				*dma;
+	//本串口属于芯片的第几个串口，从0开始
+	char					uartNum;
+	char					opt_mode;		//0 中断收发， 1 DMA收发， 2 CPU收发
+	char					none[2];
 	
 }CfgUart_t;
 
@@ -134,7 +140,6 @@ typedef struct {
 }spi_conf_t;
 
 
-extern CfgUart_t g_confUart2, g_confUart1;
 
 #define GPIO_DIR_IN			0
 #define GPIO_DIR_OUT		1
@@ -160,7 +165,10 @@ typedef struct
 	uint8_t			none[2];
 }gpio_pins;
 
-extern gpio_pins Dir_485_pin1 , Dir_485_pin2;
+
+extern CfgUart_t g_confUart1, g_confUart2, g_confUart3;
+
+//extern gpio_pins Dir_485_pin1 , Dir_485_pin2;
 
 extern gpio_pins pin_keyRight;
 extern gpio_pins pin_keyLeft;

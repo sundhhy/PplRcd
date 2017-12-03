@@ -34,3 +34,14 @@
 .\objects\usb.o: E:\mylib\sdhLib\inc\basis/sdhError.h
 .\objects\usb.o: E:\mylib\sdhLib\inc\basis/macros.h
 .\objects\usb.o: E:\mylib\sdhLib\inc\arithmetic/cycQueue.h
+.\objects\usb.o: ..\PplRcd\model/ModelTime.h
+.\objects\usb.o: ..\PplRcd\model/Model.h
+.\objects\usb.o: E:\mylib\sdhLib\inc\arithmetic/list.h
+.\objects\usb.o: E:\mylib\sdhLib\inc\lw_oopc.h
+.\objects\usb.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
+.\objects\usb.o: E:\mylib\sdhLib\inc\basis/assert.h
+.\objects\usb.o: E:\mylib\sdhLib\inc\basis/except.h
+.\objects\usb.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\setjmp.h
+.\objects\usb.o: ..\PplRcd\utils/rtc_pcf8563.h
+.\objects\usb.o: ..\PplRcd\utils/time.h
+.\objects\usb.o: ..\PplRcd\utils/rtc.h

@@ -22,11 +22,6 @@
 
 
 
-#if ( SER485_SENDMODE == SENDMODE_INTR ) || ( SER485_SENDMODE == SENDMODE_DMA)
-		
-short		g_sendCount = 0;
-short		g_sendLen = 0;
-#endif
 //ÓÃÔÚÖÐ¶Ï³ÌÐòÖÐ£¬ÕÒµ½¶ÔÓ¦µÄÉè±¸
 static driveUart	*devArry[ 3];
 
@@ -40,17 +35,24 @@ static int UartInit( driveUart *self, void *device, void *cfg)
 	self->cfg = cfg;
 	self->devUartBase = device;
 	self->rxCache = calloc( 1, UART_RXCACHE_SIZE);
-#if ( SER485_SENDMODE == SENDMODE_INTR ) || ( SER485_SENDMODE == SENDMODE_DMA)
-	self->txCache = calloc( 1, UART_TXCACHE_SIZE);
-#endif
+	
+	if(myCfg->opt_mode != UART_MODE_CPU)
+		self->txCache = calloc( 1, UART_TXCACHE_SIZE);
+
 	
 	init_pingponfbuf( &self->ctl.pingpong, self->rxCache, UART_RXCACHE_SIZE, TURE);
+	
+	
 	USART_Cmd( self->devUartBase, DISABLE);
 	USART_DeInit( device);
 	
-	
 	USART_Init( device, myCfg->cfguart);
-	UartDma_Init( self);
+	if(myCfg->opt_mode == UART_MODE_DMA)
+	{
+		
+		UartDma_Init( self);
+		
+	}
 
 	
 	USART_ClearFlag( device,USART_IT_IDLE );
@@ -59,10 +61,10 @@ static int UartInit( driveUart *self, void *device, void *cfg)
 	USART_ITConfig( device, USART_IT_IDLE, ENABLE);
 	
 	
-#if SER485_SENDMODE == SENDMODE_DMA	
-	USART_DMACmd( device, USART_DMAReq_Tx, ENABLE);  // ¿ªÆôDMA·¢ËÍ
-#endif
-	USART_DMACmd( device, USART_DMAReq_Rx, ENABLE); // ¿ªÆôDMA½ÓÊÕ
+	if(myCfg->opt_mode == UART_MODE_DMA)
+		USART_DMACmd( device, USART_DMAReq_Tx, ENABLE);  // ¿ªÆôDMA·¢ËÍ
+	if(myCfg->opt_mode == UART_MODE_DMA)
+		USART_DMACmd( device, USART_DMAReq_Rx, ENABLE); // ¿ªÆôDMA½ÓÊÕ
 	
 	USART_Cmd( device, ENABLE);
 	self->ctl.rx_block = 1;
@@ -77,11 +79,11 @@ static int UartInit( driveUart *self, void *device, void *cfg)
 
 static int UartDeInit( driveUart *self)
 {
-	
+	CfgUart_t *myCfg = ( CfgUart_t *)self->cfg;
 	free( self->rxCache);
-#if ( SER485_SENDMODE == SENDMODE_INTR ) || ( SER485_SENDMODE == SENDMODE_DMA)
-	free( self->txCache);
-#endif
+	if(myCfg->opt_mode != UART_MODE_CPU)
+		free( self->txCache);
+
 	
 	USART_Cmd( self->devUartBase, DISABLE);
 	USART_DeInit( self->devUartBase);
@@ -111,20 +113,15 @@ static int UartDeInit( driveUart *self)
 static int UartWrite( driveUart *self, void *buf, int wrLen)
 {
 	CfgUart_t *myCfg = ( CfgUart_t *)self->cfg;
-#if ( SER485_SENDMODE == SENDMODE_INTR ) || ( SER485_SENDMODE == SENDMODE_DMA)
 	int ret;
-	char *sendbuf ;
-	
-#else
+	uint8_t *sendbuf ;
 	int count = 0;
-#endif
 	
-#if SER485_SENDMODE == SENDMODE_DMA
-//	uint32_t cndtr = 0;
-//	cndtr = myCfg->dma->dma_tx_base->CNDTR;
-	if(myCfg->dma->dma_tx_base->CNDTR > 0)
-		return ERR_BUSY;
-#endif	
+
+	if(myCfg->opt_mode == UART_MODE_DMA)
+		if(myCfg->dma->dma_tx_base->CNDTR > 0)
+			return ERR_BUSY;
+
 	
 	if( buf == NULL || wrLen == 0)
 		return ERR_BAD_PARAMETER;
@@ -133,68 +130,70 @@ static int UartWrite( driveUart *self, void *buf, int wrLen)
 	
 	self->ioctol( self, DRICMD_SET_DIR_TX);
 	
-	
-#if ( SER485_SENDMODE == SENDMODE_INTR ) || ( SER485_SENDMODE == SENDMODE_DMA)
-	if( wrLen  < UART_TXCACHE_SIZE)
+	if((myCfg->opt_mode != UART_MODE_CPU))
 	{
-		memset( self->txCache, 0, UART_TXCACHE_SIZE);
-		memcpy( self->txCache, buf, wrLen);
-		sendbuf = self->txCache;
-	
-	}
-	else
-	{
-		sendbuf = buf;
-		
-	}
-	
-	
-#	if SER485_SENDMODE == SENDMODE_DMA	
-	
-	myCfg->dma->dma_tx_base->CMAR = (uint32_t)sendbuf;
-	myCfg->dma->dma_tx_base->CNDTR = (uint16_t)wrLen; 
-	DMA_Cmd( myCfg->dma->dma_tx_base, ENABLE);        //¿ªÊ¼DMA·¢ËÍ
-//	USART_ITConfig( self->devUartBase, USART_IT_TXE, ENABLE);
-#	elif SER485_SENDMODE == SENDMODE_INTR		
-	
-	self->ctl.intrSendingBuf = sendbuf;
-	self->ctl.sendingCount = 1;
-	self->ctl.sendingLen = wrLen;
-	USART_SendData( self->devUartBase, sendbuf[0]);
-	USART_ITConfig( self->devUartBase, USART_IT_TXE, ENABLE);
-
-#	endif
-//	osDelay(1);
-	if( self->ctl.tx_block)
-	{
-		if( self->txWait)
+		if((wrLen  < UART_TXCACHE_SIZE))
 		{
+			memset( self->txCache, 0, UART_TXCACHE_SIZE);
+			memcpy( self->txCache, buf, wrLen);
+			sendbuf = self->txCache;
+		
+		}
+		else
+		{
+			sendbuf = buf;
 			
-			ret = self->txWait( self, self->ctl.tx_waittime_ms);
 		}
 		
 		
-		if ( ret > 0) 
+		if(myCfg->opt_mode == UART_MODE_DMA)
 		{
-
-			return ERR_OK;
+			myCfg->dma->dma_tx_base->CMAR = (uint32_t)sendbuf;
+			myCfg->dma->dma_tx_base->CNDTR = (uint16_t)wrLen; 
+			DMA_Cmd( myCfg->dma->dma_tx_base, ENABLE);        //¿ªÊ¼DMA·¢ËÍ
+		}
+		else	//intr
+		{
+			self->ctl.intrSendingBuf = sendbuf;
+			self->ctl.sendingCount = 1;
+			self->ctl.sendingLen = wrLen;
+			USART_SendData( self->devUartBase, sendbuf[0]);
+			USART_ITConfig( self->devUartBase, USART_IT_TXE, ENABLE);
+			
 		}
 		
-		return ERR_DEV_TIMEOUT;
+
+		if( self->ctl.tx_block)
+		{
+			if( self->txWait)
+			{
+				
+				ret = self->txWait( self, self->ctl.tx_waittime_ms);
+			}
+			
+			
+			if ( ret > 0) 
+			{
+
+				return ERR_OK;
+			}
+			
+			return ERR_DEV_TIMEOUT;
+			
+		}
+	
+	}	//intr or dma
+	else		//cpu
+	{
+		while( count < wrLen)
+		{
+			USART_SendData( self->devUartBase, sendbuf[count]);
+			while( USART_GetFlagStatus( self->devUartBase, USART_FLAG_TXE) == RESET){};
+			count ++;
+		}
 		
 	}
 	
-#endif	//( SER485_SENDMODE == SENDMODE_INTR ) || ( SER485_SENDMODE == SENDMODE_DMA)
-
-#if SER485_SENDMODE == SENDMODE_CPU		
-	while( count < size)
-	{
-		USART_SendData( self->devUartBase, data[count]);
-		while( USART_GetFlagStatus( self->devUartBase, USART_FLAG_TXE) == RESET){};
-		count ++;
-	}
-
-#endif	
 	return ERR_OK;
 }
 
@@ -317,14 +316,14 @@ static int  UartIoctol( driveUart *self, int cmd, ...)
 			self->ctl.rx_waittime_ms = int_data;
 			break;
 		case DRICMD_SET_DIR_RX:
-			if( self->dirPin->Port)
+			if((self->dirPin) && (self->dirPin->Port))
 			{
 				GPIO_ResetBits( self->dirPin->Port, self->dirPin->pin);
 				
 			}
 			break;
 		case DRICMD_SET_DIR_TX:
-			if( self->dirPin->Port)
+			if((self->dirPin) && (self->dirPin->Port))
 			{
 				GPIO_SetBits( self->dirPin->Port, self->dirPin->pin);
 				
@@ -457,7 +456,6 @@ void UartDma_Init( driveUart *self)
     
 //=DMA_Configuration==============================================================================//	
 /*--- UART_Tx_DMA_Channel DMA Config ---*/
-#if SER485_SENDMODE == SENDMODE_DMA	
 
     DMA_Cmd( myCfg->dma->dma_tx_base, DISABLE);                           // ¹Ø±ÕDMA
     DMA_DeInit( myCfg->dma->dma_tx_base);                                 // »Ö¸´³õÊ¼Öµ
@@ -478,7 +476,7 @@ void UartDma_Init( driveUart *self)
 	DMA_Cmd( myCfg->dma->dma_tx_base, DISABLE); 												// ¹Ø±ÕDMA
     DMA_ITConfig( myCfg->dma->dma_tx_base, DMA_IT_TC, ENABLE);            // ÔÊÐí´«ÊäÍê³ÉÖÐ¶Ï
 
- #endif  
+   
 
 /*--- UART_Rx_DMA_Channel DMA Config ---*/
 
@@ -572,29 +570,29 @@ void Usart_irq( driveUart *thisDev)
 		thisDev->status = UARTSTATUS_IDLE;
 		
 	}
-	
-#if SER485_SENDMODE == SENDMODE_INTR	
-	if(USART_GetITStatus( thisDev->devUartBase, USART_IT_TXE) == SET)  // ·¢ËÍÖÐ¶Ï
+	if(myCfg->opt_mode == UART_MODE_INTR)
 	{
-		
-
-		thisDev->ctl.sendingCount ++;
-			
-	
-		//·¢ËÍÍê³Éºó¹Ø±Õ·¢Õ¹ÖÐ¶Ï£¬±ÜÃâ·¢ËÍ¼Ä´æÆ÷¿ÕÁË¾Í»á²úÉúÖÐ¶Ï
-		if( thisDev->ctl.sendingCount >= thisDev->ctl.sendingLen)
+		if(USART_GetITStatus( thisDev->devUartBase, USART_IT_TXE) == SET)  // ·¢ËÍÖÐ¶Ï
 		{
-			USART_ITConfig( thisDev->devUartBase, USART_IT_TXE, DISABLE);
-			if( thisDev->txPost)
-				thisDev->txPost(thisDev);
-		}			
-		else
-			USART_SendData( thisDev->devUartBase, thisDev->ctl.intrSendingBuf[ thisDev->ctl.sendingCount] );
+			
+
+			thisDev->ctl.sendingCount ++;
+				
 		
-	
+			//·¢ËÍÍê³Éºó¹Ø±Õ·¢Õ¹ÖÐ¶Ï£¬±ÜÃâ·¢ËÍ¼Ä´æÆ÷¿ÕÁË¾Í»á²úÉúÖÐ¶Ï
+			if( thisDev->ctl.sendingCount >= thisDev->ctl.sendingLen)
+			{
+				USART_ITConfig( thisDev->devUartBase, USART_IT_TXE, DISABLE);
+				if( thisDev->txPost)
+					thisDev->txPost(thisDev);
+			}			
+			else
+				USART_SendData( thisDev->devUartBase, thisDev->ctl.intrSendingBuf[ thisDev->ctl.sendingCount] );
+			
 		
+			
+		}
 	}
-#endif	
 	
 
 	
@@ -659,6 +657,14 @@ void USART2_IRQHandler(void)
 
 }
 
+void USART3_IRQHandler(void)
+{
+	
+	driveUart	*thisDev = devArry[2];
+	
+	Usart_irq( thisDev);
+}
+
 
 //ÖÐ¶Ï´¦Àí³ÌÐò¸ù¾Ý×ÊÔ´Óë´®¿ÚµÄ°ó¶¨Çé¿öÀ´Ñ¡ÔñÉè±¸
 void DMA1_Channel7_IRQHandler(void)
@@ -686,6 +692,31 @@ void DMA1_Channel7_IRQHandler(void)
 	}
 }
 
+//?D??'|àí3ìDò?ù?Y×ê?'ó?'??úµ?°ó?¨?é??à'????éè±?
+void DMA1_Channel2_IRQHandler(void)
+{
+	driveUart	*thisDev = devArry[2];
+	CfgUart_t *myCfg = ( CfgUart_t *)thisDev->cfg;
+	if(DMA_GetITStatus(DMA1_FLAG_TC2))
+	{
+
+		DMA_ClearFlag( myCfg->dma->dma_tx_flag);         // ??3y±ê??
+		DMA_Cmd( myCfg->dma->dma_tx_base, DISABLE);   // 1?±?DMAí¨µà
+		
+		USART_ClearFlag( thisDev->devUartBase,USART_IT_TC );
+		USART_ITConfig( thisDev->devUartBase, USART_IT_TC, ENABLE);
+		
+//		while( USART_GetFlagStatus( thisDev->devUartBase, USART_FLAG_TXE) == RESET){};
+//		if( thisDev->txPost)
+//			thisDev->txPost(thisDev);
+
+//		if( thisDev->txIdp)
+//			thisDev->txIdp( thisDev->argTxIdp);
+//		thisDev->status = UARTSTATUS_IDLE;
+//		thisDev->ioctol( thisDev, DRICMD_SET_DIR_RX);
+		
+	}
+}
 
 CTOR( driveUart)
 FUNCTION_SETTING( init, UartInit);

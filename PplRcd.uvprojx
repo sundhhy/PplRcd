@@ -588,6 +588,16 @@
               <FileType>1</FileType>
               <FilePath>E:\mylib\sdhLib\src\os\RTX\rtx_depend.c</FilePath>
             </File>
+            <File>
+              <FileName>smart_bus.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>E:\mylib\sdhLib\inc\Communication\smart_bus.h</FilePath>
+            </File>
+            <File>
+              <FileName>smart_bus.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>E:\mylib\sdhLib\src\Communication\smart_bus.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -1342,6 +1352,11 @@
               <FileName>Usb.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\USB\Usb.h</FilePath>
+            </File>
+            <File>
+              <FileName>Ch376INC.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\USB\Ch376INC.h</FilePath>
             </File>
           </Files>
         </Group>

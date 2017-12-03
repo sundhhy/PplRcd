@@ -33,7 +33,16 @@ Dma_source g_DmaUart2 = {
 	
 };
 
-
+Dma_source g_DmaUart3 = {
+	DMA1_Channel3,
+	DMA1_FLAG_GL3,
+	DMA1_Channel3_IRQn,
+	
+	DMA1_Channel2,
+	DMA1_FLAG_GL2,
+	DMA1_Channel2_IRQn,
+	
+};
 
 USART_InitTypeDef g_Cfg_Uart2 = {
 		115200,
@@ -47,11 +56,7 @@ USART_InitTypeDef g_Cfg_Uart2 = {
 
 
 
-CfgUart_t g_confUart2 = {
-	1,
-	&g_Cfg_Uart2,
-	&g_DmaUart2
-};
+
 
 Dma_source g_DmaUart1 = {
 	DMA1_Channel5,
@@ -82,8 +87,8 @@ spi_conf_t arr_conf_spi[2] ={
 
 
 //串口的方向控制引脚，如果不需要的话就设置成0
-gpio_pins Dir_485_pin1 = {0,0};
-gpio_pins Dir_485_pin2 = {0,0};
+//gpio_pins Dir_485_pin1 = {0,0};
+//gpio_pins Dir_485_pin2 = {0,0};
 
 USART_InitTypeDef g_Cfg_Uart1 = {
 		115200,
@@ -94,10 +99,36 @@ USART_InitTypeDef g_Cfg_Uart1 = {
 		USART_HardwareFlowControl_None,
 };
 
+
+
+USART_InitTypeDef g_Cfg_Uart3 = {
+		19200,
+		USART_WordLength_8b,
+		USART_StopBits_1,
+		USART_Parity_No,
+		USART_Mode_Rx | USART_Mode_Tx,
+		USART_HardwareFlowControl_None,
+};
+
 CfgUart_t g_confUart1 = {
-	0,
 	&g_Cfg_Uart1,
-	&g_DmaUart1
+	&g_DmaUart1,
+	0,
+	UART_MODE_DMA,
+};
+CfgUart_t g_confUart2 = {
+	
+	&g_Cfg_Uart2,
+	&g_DmaUart2,
+	1,
+	UART_MODE_DMA,
+};
+CfgUart_t g_confUart3 = {
+	
+	&g_Cfg_Uart3,
+	&g_DmaUart3,
+	2,
+	UART_MODE_DMA,
 };
 
 

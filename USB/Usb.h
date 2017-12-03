@@ -55,7 +55,7 @@
 
 #define USB_FM_READ		1
 #define USB_FM_WRITE	2
-
+#define USB_FM_COVER	4		//创建文件时，如果设置该位则会覆盖已有文件
 
 #define USB_MSG_INDEX(msg)		(msg - 1)		//将e_usb_msg 转化成数组的索引
 //------------------------------------------------------------------------------
@@ -170,7 +170,7 @@ int	USB_Rgt_event_hdl(usb_event_hdl hdl);
 //extern	uint8  UsbReadyFlag;
 
 
-//extern	void	Reset_Ch376(void);
+
 //extern	void	InsertUdisk(void);
 //extern	void	RemoveUdisk(void);
 

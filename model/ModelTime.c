@@ -1,6 +1,5 @@
 #include "ModelTime.h"
 #include <string.h>
-#include "utils/rtc_pcf8563.h"
 #include "mem/CiiMem.h"
 #include "sdhDef.h"
 #include "system.h"

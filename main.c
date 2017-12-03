@@ -35,6 +35,10 @@
 
 #endif
 
+# if TDD_SMART_BUS == 1
+#include "Communication/smart_bus.h"
+#endif
+
 //@Deprecated
 #include "ViewFactory.h"
 
@@ -109,14 +113,25 @@ osThreadDef (ThrdKeyRun, osPriorityNormal, 1, 0);                   // thread ob
 
 //tdd data
 #if TDD_ON == 1
-char	appBuf[ 64];
-int		tdd_i, tdd_j;
+char		appBuf[ 64];
+short			tdd_i, tdd_j;
+char			line = 0;
+char			tdd_finish = 0;
 
+Glyph 		*mytxt ;
+I_dev_lcd 	*tdd_lcd;
+
+void 	Tdd_init(void);
+void	Tdd_disp_text(char	*text, int	line, int	row);
+void	Tdd_disp_clean();
+# if TDD_SMART_BUS == 1
+
+#	endif
 #	if TDD_USB == 1
-#define 	USB_TFILE	"./TDD_Usb_file1.txt"
+#define 	USB_TFILE	"/TDD3.TXT"
 int						tdd_fd;
 char					udisk_buf[512];
-int						usb_cnt = 0;
+short						usb_cnt = 0;
 USB_file_info	usb_fin;
 	
 int	Usb_event(int type);
@@ -125,9 +140,8 @@ int	Usb_event(int type);
 #	if TDD_KEYBOARD == 1
 static int KeyEvent( char num, keyMsg_t arr_msg[]);
 
-KbTestOb *p_kbTestOb;
-Glyph *mytxt ;
-I_dev_lcd *lcd;
+KbTestOb 	*p_kbTestOb;
+I_dev_lcd 	*lcd;
 	
 #	endif
 
@@ -153,6 +167,12 @@ I_dev_Char *I_uart2;
 
 #	endif
 
+#	if TDD_DEV_UART3 == 1 || TDD_SMART_BUS == 1
+
+I_dev_Char *I_uart3;
+
+#	endif
+
 #endif		//TDD_ON
 
 
@@ -173,6 +193,9 @@ int main (void) {
 	int			ret = 0;
 	short			count = 0;
 	short			hmi_count = 0;
+#if TDD_ON == 1
+	uint8_t			tmp_u8 = 0;
+#endif
 	osKernelInitialize ();                    // initialize CMSIS-RTOS
 
   // initialize peripherals here
@@ -207,12 +230,15 @@ int main (void) {
 	p_ctlkey->init( p_ctlkey, p_kb);
 
 	if (!tid_Thread_key) return(-1);
+#if TDD_ON == 1
+	Tdd_init();
+#endif
 	
+	
+#if TDD_ON == 0
 	//界面初始化
 	p_mainHmi = CreateHMI( HMI_MAIN);
 	p_mainHmi->init( p_mainHmi, NULL);
-	
-#if TDD_ON == 0
 	p_mainHmi->show( p_mainHmi);
 	Set_flag_show(&p_mainHmi->flag, 1); 
 	
@@ -243,6 +269,68 @@ int main (void) {
 		count ++;
 		
 	}
+#elif TDD_DEV_UART3 == 1
+	line = 0;
+	Tdd_disp_text("串口3测试",line++, 0);
+	LCD_Run();
+	Dev_open(DEVID_UART3, ( void *)&I_uart3);
+	
+	if( I_uart3->test(I_uart3, appBuf, 64) == RET_OK)
+	{
+		sprintf( appBuf, "succeed!");
+		Tdd_disp_text(appBuf,line++, 0);
+		
+	}
+	else 
+	{
+		sprintf( appBuf, "failed!");
+		Tdd_disp_text(appBuf,line++, 0);
+	}
+	LCD_Run();
+	while(1)
+	{
+		
+		LCD_Run();
+		
+	}
+# elif TDD_SMART_BUS == 1
+	
+	line = 0;
+	Tdd_disp_text("SmartBus 测试",line++, 0);
+	LCD_Run();
+	Dev_open(DEVID_UART3, ( void *)&I_uart3);
+	while(1)
+	{
+		LCD_Run();
+		Tdd_disp_text("发送查询命令",line, 0);
+		tdd_i = SmBus_build_query((uint8_t *)appBuf, 64, SMBUS_CHN_AI, 0);
+		tdd_j = I_uart3->write(I_uart3, appBuf, tdd_i);
+		if(tdd_j == tdd_i)
+		{
+			
+			Tdd_disp_text("成功",line++, 260);
+		}
+		else 
+		{
+			Tdd_disp_text("失败",line++, 260);
+			
+		}
+		LCD_Run();
+		Tdd_disp_text("等待返回...",line++, 0);
+		tdd_i = I_uart3->read(I_uart3, appBuf, 64);
+		
+		if(tdd_i)
+		{
+			Tdd_disp_text("解析豹纹",line, 0);
+			SmBus_decode(SMBUS_CMD_QUERY, (uint8_t *)appBuf, &tmp_u8, 1);
+			Tdd_disp_text("成功",line++, 260);
+		}
+		else 
+		{
+			Tdd_disp_text("失败",line++, 260);
+			
+		}
+	}
 	
 # elif TDD_USB == 1
 	
@@ -251,36 +339,88 @@ int main (void) {
 	memset(udisk_buf, '8', 512); 
 	
 	USB_Rgt_event_hdl(Usb_event);
+	Tdd_disp_text("U盘测试",line++, 0);
 	while(1)
 	{
 //		osDelay(100);
+		LCD_Run();
 		USB_Run(NULL);
+		if(tdd_finish)
+		{
+			continue;
+		}
 		if(usb_cnt == 0)
 			continue;
-	
-		tdd_fd = USB_Create_file(USB_TFILE, USB_FM_READ | USB_FM_WRITE);
+		
+		
+		sprintf(appBuf, "创建文件:%s", USB_TFILE); 
+		Tdd_disp_text(appBuf,2, 0);
+		tdd_fd = USB_Create_file(USB_TFILE, USB_FM_READ | USB_FM_WRITE | USB_FM_COVER);
+		if(tdd_fd > 0)
+		{
+			Tdd_disp_text("成功! ",2, 260);
+			
+		}
+		else if(tdd_fd == ERR_ALREADY_EXIST)
+		{
+			
+			Tdd_disp_text("已存在",2, 260);
+		}
+		else 
+		{
+			Tdd_disp_text("失败! ",2, 260);
+			
+		}
+		line = 3;
+		sprintf(appBuf, "写文件:每次写入512个[%c]", udisk_buf[0]); 
+		Tdd_disp_text(appBuf,line, 0);
 		for(tdd_i = 0; tdd_i < 255; tdd_i ++)
 		{
+//			if((tdd_i & 1) == 0)
+//				Tdd_disp_text("/",line, 260);	
+//			else
+//				Tdd_disp_text("\\",line, 260);
+			
+			sprintf(appBuf, "%03d", tdd_i); 
+			Tdd_disp_text(appBuf,line, 260);
+			
 			USB_Write_file(tdd_fd, udisk_buf, 512);
 			
 		}
-		USB_Get_file_info(USB_TFILE, &usb_fin);
-		USB_flush_file(tdd_fd);
-		USB_Get_file_info_f(tdd_fd, &usb_fin);
-		USB_Colse_file(tdd_fd);
+		
+		Tdd_disp_text("完成! ", line, 260);
+//		USB_Get_file_info(USB_TFILE, &usb_fin);
+//		USB_flush_file(tdd_fd);
+//		USB_Get_file_info_f(tdd_fd, &usb_fin);
+//		USB_Colse_file(tdd_fd);
 
-		tdd_fd = 0;
+//		tdd_fd = 0;
+//		
+//		tdd_fd = USB_Open_file(USB_TFILE, USB_FM_READ);
+//		
+//		for(tdd_i = 0; tdd_i < 255; tdd_i ++)
+//		{
+//			memset(udisk_buf, 0, 512); 
+//			USB_Read_file(tdd_fd, udisk_buf, 512);
+//			
+//		}
 		
-		tdd_fd = USB_Open_file(USB_TFILE, USB_FM_READ);
-		
-		for(tdd_i = 0; tdd_i < 255; tdd_i ++)
+		line = 4;
+		if(tdd_fd > 0)
 		{
-			memset(udisk_buf, 0, 512); 
-			USB_Read_file(tdd_fd, udisk_buf, 512);
-			
+			Tdd_disp_text("关闭文件",line, 0);
+			if(USB_Colse_file(tdd_fd) == RET_OK)
+			{
+				
+				Tdd_disp_text("成功!",line, 260);
+				tdd_finish = 1;
+			}
+			else
+			{
+				
+				Tdd_disp_text("失败",line, 260);
+			}
 		}
-		
-		USB_Colse_file(tdd_fd);
 	}
 	
 	
@@ -542,14 +682,54 @@ void HardFault_Handler()
 	
 }
 
-#if TDD_USB == 1
+#if TDD_ON == 1
+void 	Tdd_init(void)
+{
+	mytxt = ( Glyph *)Get_GhTxt();
+	Dev_open( LCD_DEVID, (void *)&tdd_lcd);
+	tdd_lcd->Clear( COLOUR_BLACK);
+	Flush_LCD();
+	LCD_Run();	//立即执行lcd指令
+}
+void	Tdd_disp_text(char	*text, int	line, int	row)
+{
+	dspContent_t cnt ={0};
+	vArea_t area  = {0};
+	
+	cnt.colour = COLOUR_WHITE;
+	cnt.font = FONT_16;
+	
+	cnt.data = text;
+	cnt.len = strlen( text);
+	area.x0 = row;
+	area.y0 = 16 * line;
+	mytxt->vdraw( mytxt, &cnt, &area);
+	Flush_LCD();
+}
+void	Tdd_disp_clean()
+{
+	tdd_lcd->Clear( COLOUR_BLACK);
+	Flush_LCD();
+}
+#	if TDD_USB == 1
 int	Usb_event(int type)
 {
 	if(type == et_ready)
+	{
 		usb_cnt = 1;
+		Tdd_disp_text("发现U盘",1, 0);
+		
+	}
+	else if(type == et_remove)
+	{
+		usb_cnt = 0;
+		Tdd_disp_text("拔除U盘",1, 0);
+		
+	}
 	
 	return 0;
 }
 
+#	endif
 #endif
 

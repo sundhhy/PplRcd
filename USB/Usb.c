@@ -2,17 +2,22 @@
 //            G L O B A L   D E F I N I T I O N S                             //
 //============================================================================//
 //提供对U盘或SD卡（SD卡功能没有在这里实现）的文件的CRUD功能
-//版本：V010
+//版本：V010 
+//限制
+//1 只支持在根目录下操作;
+//2 只支持对一个文件的操作
+//这来自ch376的限制:文件名长度不得超过11，主文件名不超过8，扩展名不超过3,必须是大写字母，数字
 #include "Usb.h"
 #include "Ch376.h"
 #include "os/os_depend.h"
 #include "deviceId.h"
 #include "sdhDef.h"
 #include "arithmetic/cycQueue.h"
+#include "model/ModelTime.h"
 //------------------------------------------------------------------------------
 // const defines
 //------------------------------------------------------------------------------
-
+#define		ONLY_ROOT_PATH		1
 //------------------------------------------------------------------------------
 // module global vars
 //------------------------------------------------------------------------------
@@ -34,7 +39,7 @@
 //------------------------------------------------------------------------------
 // local types
 //------------------------------------------------------------------------------
-
+typedef struct tm Time;
 							/* CMD_DiskQuery, 查询磁盘信息 */
 
 
@@ -67,12 +72,19 @@ typedef int	(*usb_deal_msg)(void);
 //------------------------------------------------------------------------------
 
 static 	usb_control_t		usb_ctl;
-static	uint8_t 				usb_cq_buf[LEN_USB_CQBUF];
+static	uint8_t 			usb_cq_buf[LEN_USB_CQBUF];
 //------------------------------------------------------------------------------
 // local function prototypes
 //------------------------------------------------------------------------------
 
-static  void Usb_intr(int ch376_status);
+static  void Deal_status(int ch376_status);
+static void  Reset_Ch376(void);
+
+/**文件操作相关  */
+static int	Last_name_offset(char *path ) ;
+//static void UsbCreatFileHead(void);
+
+/******************/
 
 /***** deal msg ***************************/
 static int	Usb_deal_insert(void);
@@ -130,9 +142,15 @@ int USB_Init(void* arg)
 	//ch376硬件初始化
 	
 	Power_Ch376(1);
-	ret = Init_Ch376(DEVID_SPI1, Usb_intr);
+	ret = Init_Ch376(DEVID_SPI1, Deal_status);
 	if( ret == USB_INT_SUCCESS)
 		ret = RET_OK;
+	else 
+	{
+		
+		Deal_status(ret);
+		ret = ERR_FAIL;
+	}
 	return ret;
 	
 }
@@ -140,14 +158,43 @@ int USB_Init(void* arg)
 int USB_Open_file(char *file_name, char mode)
 {
 	int	ret = RET_OK;
+	uint8_t	s;
+#if ONLY_ROOT_PATH == 1	
+	char	*p_name;
+	p_name = file_name + Last_name_offset(file_name);
 	
+	
+	
+	s = CH376FileOpen(p_name);
+	
+	if(s == USB_INT_SUCCESS)
+	{
+		ret = 1;
+	}
+	else 
+	{
+		
+		Deal_status(s);
+	}
+	
+#endif	
 	
 	return ret;
 }
 
 int USB_Colse_file(int fd)
 {
-	int	ret = RET_OK;
+	int	ret = ERR_OPT_FAILED;
+	uint8_t s = 0;
+	
+	s = CH376FileClose(1);
+	if(s == USB_INT_SUCCESS)
+		ret = RET_OK;
+	else 
+	{
+		
+		Deal_status(s);
+	}
 	
 	
 	return ret;
@@ -170,11 +217,63 @@ int USB_Get_file_info_f(int fd, USB_file_info *finfo)
 	return ret;
 }
 
+//成功返回大于0的句柄
+//失败返回0,或者负数的错误码
 int USB_Create_file(char *file_name, char mode)
 {
 	int	ret = RET_OK;
+	int	fd = 0;
+	char	*p_name;
+	uint8_t	s;
+//	uint8_t	i = 0;
+//	char	s_name[14] = {0};		
+	//文件已存在
+	//如果未设置覆盖位就直接返回已存在错误
+	//如果设置覆盖位，就直接进行创建
+#if ONLY_ROOT_PATH == 1	
+	p_name = file_name + Last_name_offset(file_name);
+//	s_name[0] = '/';
+
+//	//todo: 只考虑ch376
+//	for(i = 0; i < 13; i++)
+//	{
+//		if(p_name[i] == '\0')
+//			break;
+//		s_name[i + 1] = p_name[i];
+//		
+//	}
+//	p_name = s_name;
+//	Ch376_enbale_Irq(0);
+	fd = USB_Open_file(p_name, mode);
+	if(fd)
+	{
+		if((mode & USB_FM_COVER) == 0)
+		{
+			USB_Colse_file(fd);
+			ret = ERR_ALREADY_EXIST;
+			goto exit;
+		}
+		
+		
+		
+		
+	}
 	
 	
+		
+	s = CH376FileCreate(p_name);
+	if(s == USB_INT_SUCCESS)
+	{
+		ret = 1;
+	} 
+	else 
+	{
+		
+		Deal_status(s);
+	}
+	
+#endif
+	exit:
 	return ret;
 }
 
@@ -197,7 +296,21 @@ int USB_Read_file(int fd, char *buf, int len)
 int USB_Write_file(int fd, char *buf, int len)
 {
 	int	ret = RET_OK;
+	uint16_t	real_len = 0;
 	
+	CH376ByteWrite((uint8_t *)buf, len, &real_len);
+//	uint8_t		num_bkls = 0;
+
+//	uint8_t		real_num_bkls = 0;
+//	
+//	
+//	
+//	num_bkls =len/ DEF_SECTOR_SIZE;
+//	
+//	if(len % DEF_SECTOR_SIZE)
+//		num_bkls ++;
+//	
+//	CH376SecWrite((uint8_t *)buf, num_bkls, &real_num_bkls);
 	
 	return ret;
 }
@@ -248,6 +361,8 @@ int	USB_Rgt_event_hdl(usb_event_hdl hdl)
 }
 
 
+
+
 //=========================================================================//
 //                                                                         //
 //          P R I V A T E   D E F I N I T I O N S                          //
@@ -257,7 +372,7 @@ int	USB_Rgt_event_hdl(usb_event_hdl hdl)
 /// \{
 
 
-static  void Usb_intr(int ch376_status)
+static  void Deal_status(int ch376_status)
 {
 	//U盘插入的时候，会产生中断，但是SD卡插入是不会产生中断的
 	
@@ -269,30 +384,42 @@ static  void Usb_intr(int ch376_status)
 			msg = hd_storage_insert;
 			break;
 		case USB_INT_DISCONNECT:
+		case ERR_DISK_DISCON:
 			//检测到U盘断开
 			msg = hd_storage_remove;
 			
 			break;
-		default:
-			//USB主机通信失败
-			msg = hd_usb_comm_fail;
-			break;
+//		default:
+//			//USB主机通信失败
+//			msg = hd_usb_comm_fail;
+//			break;
 		
 	}
 	
 	if(msg)
 		CQ_Write(&usb_ctl.usb_cq, &msg, 1);
 	
-//	for(i = 0; i < NUM_EHDS; i++)
-//	{
-//		if(usb_ctl.arr_event_hdl[i])
-//		{
-//			
-//			usb_ctl.arr_event_hdl[i](0);
-//		}
-//		
-//	}
+
 }
+
+//从路径中分离出最后一级文件名或者目录（文件夹）名，返回其在路径字符串中的偏移
+
+static int	Last_name_offset(char *path )  
+{
+	char	*pName;
+	
+	//找到倒数第一个\或/
+	for ( pName = path; *pName != 0; ++ pName ); 
+	while ( *pName != DEF_SEPAR_CHAR1 && *pName != DEF_SEPAR_CHAR2 && pName != path ) 
+		pName --;  
+	
+	//若找到路径分隔符，跳过分隔符
+	if (pName != path ) 
+		pName ++; 
+	return(pName - path );
+}
+
+
 
 
 //检测USB是否插入或拔出
@@ -340,7 +467,21 @@ static  void Usb_intr(int ch376_status)
 
 //}
 
+/**************************************************************************
+* 函数名称：Reset_Ch376
+* 输入参数：无
+* 输出参数：无
+* 功能描述：复位ch376芯片
+**************************************************************************
+*/
 
+
+static void  Reset_Ch376(void)
+{
+	
+	HRst_Ch376();
+	mInitCH376Host();
+}
 
 ///*
 //*************************************************************************
@@ -443,9 +584,8 @@ static int	Usb_deal_remove(void)
 static int	Usb_deal_fail(void)
 {
 	
-	
-	HRst_Ch376();
-	mInitCH376Host();
+	Reset_Ch376();
+	return 0;
 }
 
 static int	Usb_deal_identify(void)
@@ -523,12 +663,12 @@ exit:
 //#include "Usb.h"
 
 
-//uint8	UsbExist;
-//uint16	Buff_Free;	//U 盘可用空间(MBytes)
-//uint32	Sectornum;	//总的空闲的扇区数，为了计算U盘可用空间
-//uint8	g_UsbBuff[16*1024];
-//uint8	g_IsDiskWriteProtect = 0;
-//uint8  UsbReadyFlag = 0;
+//uint8_t	UsbExist;
+//uint16_t	Buff_Free;	//U 盘可用空间(MBytes)
+//uint32_t	Sectornum;	//总的空闲的扇区数，为了计算U盘可用空间
+//uint8_t	g_UsbBuff[16*1024];
+//uint8_t	g_IsDiskWriteProtect = 0;
+//uint8_t  UsbReadyFlag = 0;
 
 
 ///*
@@ -539,11 +679,11 @@ exit:
 //* 功能描述：取得系统时间
 //**************************************************************************
 //*/
-//uint32  UsbCBGetSysTime(void)
+//uint32_t  UsbCBGetSysTime(void)
 //{
-//	uint32 year, month, data;
-//	uint32 hour, minute, second;
-//	uint32 value;
+//	uint32_t year, month, data;
+//	uint32_t hour, minute, second;
+//	uint32_t value;
 //	
 //	/* this is sample codes, users should get actual time from the system */
 //	year = SysTime.year;		//年的范围为0~99
@@ -563,90 +703,36 @@ exit:
 
 
 ///*
-//**************************************************************************
-//* 函数名称：Reset_Ch376
-//* 输入参数：无
-//* 输出参数：无
-//* 功能描述：复位ch376芯片
-//**************************************************************************
-//*/
 
-////DelayMs(50) : 关中断与开中断之间需8.4 ms
-////DelayMs(100) : 关中断与开中断之间需16 ms
-//void  Reset_Ch376(void)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+*************************************************************************
+ 函数名称：UsbCreatFileHead
+ 输入参数：无
+ 输出参数：无
+ 功能描述：建立USB文件信息段部分的数据
+*************************************************************************
+*/
+//static void UsbCreatFileHead(void)
 //{
-//	
-//	HRst_Ch376();
-//	mInitCH376Host();
-//}
-
-
-
-
-
-
-
-
-///*
-//*************************************************************************
-// 函数名称：ENTER_CRITICAL
-// 输入参数：无
-// 输出参数：无
-// 功能描述：关中断
-//*************************************************************************
-//*/
-//void ENTER_CRITICAL(void)
-//{
-//	unsigned short temp;
-//	
-//	__asm
-//	{
-//		mrs	temp,CPSR
-//		orr temp,temp,#0x80
-//		msr CPSR_c,temp
-//	}
-//}
-
-
-///*
-//*************************************************************************
-// 函数名称：EXIT_CRITICAL
-// 输入参数：无
-// 输出参数：无
-// 功能描述：全局中断使能
-//*************************************************************************
-//*/
-//void EXIT_CRITICAL(void)
-//{
-//	unsigned short temp;
-//	
-//	__asm
-//	{
-//		mrs	temp,CPSR
-//		bic temp,temp,#0x80
-//		msr CPSR_c,temp
-//	}
-//}
-
-
-
-
-///*
-//*************************************************************************
-// 函数名称：UsbCreatFileHead
-// 输入参数：无
-// 输出参数：无
-// 功能描述：建立USB文件信息段部分的数据
-//*************************************************************************
-//*/
-//void UsbCreatFileHead(void)
-//{
-//	uint16	i,j;
-//	uint8	*pt;
-//	Get_Batch_information(UsbPara.StarCh, UsbPara.EndCh, &UsbPara.StatTime, &UsbPara.EndTime);
+//	uint16_t	i,j;
+//	uint8_t	*pt;
 //	UsbPara.AddTimes=1;
-//	for(i=UsbPara.StarCh;i<=UsbPara.EndCh;i++)
-//			UsbPara.AddTimes+=BATCH_Achan_sta[i].Batch_blonum;
 //	UsbPara.ProgressNum=0;
 //	UsbPara.CurTimes=0;
 //	UsbPara.StarDptr=0;
@@ -657,18 +743,18 @@ exit:
 //	for(i=0;i<0x4000;i++)	g_UsbBuff[i]=0;
 //	for(i=0;i<12;i++)
 //		g_UsbBuff[i]=UsbPara.FileName[i];	/*文件名*/
-//	pt=(uint8 *)&SysTime;
+//	pt=(uint8_t *)&SysTime;
 //	for(i=0;i<6;i++)
 //		g_UsbBuff[12+i]=*pt++;			/*文件创建时间*/
 //	g_UsbBuff[18]=UsbPara.StarCh;			/*起始通道号*/
 //	g_UsbBuff[19]=UsbPara.EndCh;			/*结束通道号*/
-//	pt=(uint8 *)&UsbPara.StatTime;				/*用户设定的起始时间*/
+//	pt=(uint8_t *)&UsbPara.StatTime;				/*用户设定的起始时间*/
 //	for(i=20;i<26;i++)
 //		g_UsbBuff[i]=*pt++;
-//	pt=(uint8 *)&UsbPara.EndTime;				/*用户设定的结束时间*/
+//	pt=(uint8_t *)&UsbPara.EndTime;				/*用户设定的结束时间*/
 //	for(i=26;i<32;i++)
 //		g_UsbBuff[i]=*pt++;
-//	pt=(uint8 *)Sec_of_channo_para;
+//	pt=(uint8_t *)Sec_of_channo_para;
 //	for(i=UsbPara.StarCh;i<=UsbPara.EndCh;i++)/*各个通道所占用的记录块*/
 //	{
 //		for(j=0;j<96;j++)
@@ -676,16 +762,16 @@ exit:
 //		g_UsbBuff[32+i*98+96]=(BATCH_Achan_sta[i].Batch_blonum>>8)&0xff;
 //		g_UsbBuff[32+i*98+97]=BATCH_Achan_sta[i].Batch_blonum&0xff;
 //	}
-//	pt=(uint8 *)&SysPara;
+//	pt=(uint8_t *)&SysPara;
 //	for(i=SYSPARA_USB_ADDR;i<(SYSPARA_USB_ADDR+44);i++)
 //		g_UsbBuff[i]=*pt++;				/*系统参数*/
-//	pt=(uint8 *)&OutConfig;
+//	pt=(uint8_t *)&OutConfig;
 //	for(i=OUTPARA_USB_ADDR;i<(OUTPARA_USB_ADDR+16);i++)
 //		g_UsbBuff[i]=*pt++;				/*出厂组态参数*/
-//	pt=(uint8 *)&CurveGroup[0];
+//	pt=(uint8_t *)&CurveGroup[0];
 //	for(i=GROUP_USB_ADDR;i<(GROUP_USB_ADDR+72);i++)
 //		g_UsbBuff[i]=*pt++;				/*分组信息*/
-//	pt=(uint8 *)&ConfigPara;			
+//	pt=(uint8_t *)&ConfigPara;			
 //	for(i=CONFIGPARA_USB_ADDR;i<(CONFIGPARA_USB_ADDR+SIZE_OF_CONFIGURATION);i++)
 //		g_UsbBuff[i]=*pt++;				/*各组态参数*/
 
@@ -699,7 +785,7 @@ exit:
 //{
 //	int	g_status;
 //	int	i;
-//	uint8	FileName[] = "\\DAT01001.DAT\\";
+//	uint8_t	FileName[] = "\\DAT01001.DAT\\";
 
 
 //	if(UsbPara.UsbIrq && (UsbPara.InitWait>30))
