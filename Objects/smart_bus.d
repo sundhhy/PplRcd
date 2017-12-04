@@ -1,9 +1,0 @@
-.\objects\smart_bus.o: E:\mylib\sdhLib\src\Communication\smart_bus.c
-.\objects\smart_bus.o: E:\mylib\sdhLib\inc\Communication/smart_bus.h
-.\objects\smart_bus.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
-.\objects\smart_bus.o: E:\mylib\sdhLib\inc\sdhDef.h
-.\objects\smart_bus.o: ..\PplRcd\sdhlibConf.h
-.\objects\smart_bus.o: E:\mylib\sdhLib\inc\basis/sdhDebug.h
-.\objects\smart_bus.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
-.\objects\smart_bus.o: E:\mylib\sdhLib\inc\basis/sdhError.h
-.\objects\smart_bus.o: E:\mylib\sdhLib\inc\basis/macros.h

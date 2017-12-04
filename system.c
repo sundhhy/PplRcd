@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "sdhDef.h"
+#include "utils/rtc_pcf8563.h"
 //------------------------------------------------------------------------------
 // const defines
 //------------------------------------------------------------------------------
@@ -14,7 +15,7 @@
 // module global vars
 //------------------------------------------------------------------------------
 
-
+static UtlRtc *sys_rtc;	
 //为了能够紧凑的定义一些静态变量，所以都定义在一起
 //只有非4字节对齐的，需要放在这里定于
 char 			*arr_p_vram[16];
@@ -68,10 +69,16 @@ void System_default(system_conf_t *arg)
 
 void System_init(void)
 {
+	sys_rtc = ( UtlRtc *)Pcf8563_new();
+	sys_rtc->init(sys_rtc, NULL);
 	
 	System_default(NULL);
 }
-
+void System_time(struct  tm *stime)
+{
+	
+	sys_rtc->get(sys_rtc, stime);
+}
 
 //"** ** **"
 void Password_modify(char	*p_s_psd, int idx, int op)

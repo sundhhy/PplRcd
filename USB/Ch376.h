@@ -16,7 +16,10 @@
 //------------------------------------------------------------------------------
 // const defines
 //------------------------------------------------------------------------------
-
+#define DTM_CREATE_DATE		0
+#define DTM_CHANGE_DATE		1
+#define DTM_CREATE_TIME		2
+#define DTM_CHANGE_TIME		3
 //------------------------------------------------------------------------------
 // typedef
 //------------------------------------------------------------------------------
@@ -63,8 +66,10 @@ extern	uint8_t	CH376DiskMount( void );
 extern	uint8_t	CH376ReadBlock( uint8_t *buf, int buf_size );
 extern	uint8_t	IsDiskWriteProtect( void );
 extern	uint8_t	CH376DiskQuery(uint32_t *DiskAll, uint32_t *DiskFre, uint8_t *diskFat );
+
 extern	uint8_t	CH376FileCreate(char *name );
 extern uint8_t	CH376FileOpen(char* name );
+extern uint8_t	CH376_Set_Data_Time(int dtm_type, uint16_t	dtm);
 extern	uint8_t	CH376SecWrite( uint8_t *buf, uint8_t ReqCount, uint8_t *RealCount );
 extern	uint8_t	CH376FileClose( uint8_t is_update_size );
 

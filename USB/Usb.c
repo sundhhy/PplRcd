@@ -14,6 +14,7 @@
 #include "sdhDef.h"
 #include "arithmetic/cycQueue.h"
 #include "model/ModelTime.h"
+#include "system.h"
 //------------------------------------------------------------------------------
 // const defines
 //------------------------------------------------------------------------------
@@ -60,9 +61,10 @@ typedef struct {
 	uint8_t			set_ehd;		//bit 为1说明该hdl可用
 	uint8_t			cur_state;
 	uint8_t			err_status;
-	char			is_usb_exist;
-	char			is_protect;
-	uint8_t			none[2];
+	char				is_usb_exist;
+	char				is_protect;
+	uint8_t			is_file_changed;		//文件被修改
+	uint8_t			none;
 	
 }usb_control_t;
 
@@ -83,7 +85,7 @@ static void  Reset_Ch376(void);
 /**文件操作相关  */
 static int	Last_name_offset(char *path ) ;
 //static void UsbCreatFileHead(void);
-
+//static int	Open_dir(char* path);
 /******************/
 
 /***** deal msg ***************************/
@@ -185,7 +187,20 @@ int USB_Open_file(char *file_name, char mode)
 int USB_Colse_file(int fd)
 {
 	int	ret = ERR_OPT_FAILED;
-	uint8_t s = 0;
+	struct  	tm cur_time;
+	uint16_t	dtm_u16 = 0;
+	uint8_t 	s = 0;
+	
+	if(usb_ctl.is_file_changed = 1)
+	{
+		usb_ctl.is_file_changed = 0; 
+		System_time(&cur_time);
+		dtm_u16 = MAKE_FILE_DATE(cur_time.tm_year, cur_time.tm_mon, cur_time.tm_mday);
+		CH376_Set_Data_Time(DTM_CHANGE_DATE, dtm_u16);
+		dtm_u16 = MAKE_FILE_TIME(cur_time.tm_hour, cur_time.tm_min, cur_time.tm_sec);
+		CH376_Set_Data_Time(DTM_CHANGE_TIME, dtm_u16);
+
+	}		
 	
 	s = CH376FileClose(1);
 	if(s == USB_INT_SUCCESS)
@@ -221,9 +236,11 @@ int USB_Get_file_info_f(int fd, USB_file_info *finfo)
 //失败返回0,或者负数的错误码
 int USB_Create_file(char *file_name, char mode)
 {
-	int	ret = RET_OK;
-	int	fd = 0;
-	char	*p_name;
+	int				ret = RET_OK;
+	int				fd = 0;
+	struct  	tm cur_time;
+	char			*p_name;
+	uint8_t		dtm_u16 = 0;
 	uint8_t	s;
 //	uint8_t	i = 0;
 //	char	s_name[14] = {0};		
@@ -262,9 +279,17 @@ int USB_Create_file(char *file_name, char mode)
 	
 		
 	s = CH376FileCreate(p_name);
+	
+
 	if(s == USB_INT_SUCCESS)
 	{
+		System_time(&cur_time);
+		dtm_u16 = MAKE_FILE_DATE(cur_time.tm_year, cur_time.tm_mon, cur_time.tm_mday);
+		CH376_Set_Data_Time(DTM_CREATE_DATE, dtm_u16);
+		dtm_u16 = MAKE_FILE_TIME(cur_time.tm_hour, cur_time.tm_min, cur_time.tm_sec);
+		CH376_Set_Data_Time(DTM_CREATE_TIME, dtm_u16);
 		ret = 1;
+		usb_ctl.is_file_changed = 0; 
 	} 
 	else 
 	{
@@ -297,8 +322,10 @@ int USB_Write_file(int fd, char *buf, int len)
 {
 	int	ret = RET_OK;
 	uint16_t	real_len = 0;
+	uint8_t		s;
 	
 	CH376ByteWrite((uint8_t *)buf, len, &real_len);
+	usb_ctl.is_file_changed = 1; 
 //	uint8_t		num_bkls = 0;
 
 //	uint8_t		real_num_bkls = 0;
@@ -401,6 +428,8 @@ static  void Deal_status(int ch376_status)
 	
 
 }
+
+
 
 //从路径中分离出最后一级文件名或者目录（文件夹）名，返回其在路径字符串中的偏移
 

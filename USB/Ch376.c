@@ -72,6 +72,7 @@ static uint32_t	CH376Read32bitDat( void );
 static  void Ch376_intr( void *arg, int type, int encode);
 static uint8_t	CH376DiskWriteSec( uint8_t *buf, uint32_t iLbaStart, uint8_t iSectorCount );
 static  uint8_t	CH376WriteReqBlock( uint8_t *buf );
+static void	CH376WriteOfsBlock(uint8_t * buf, uint8_t ofs, uint8_t len );
 //============================================================================//
 //            P U B L I C   F U N C T I O N S                                 //
 //============================================================================//
@@ -424,6 +425,8 @@ uint8_t	CH376ByteWrite( uint8_t *buf, uint16_t ReqCount, uint16_t *RealCount )
 		else
 			return( s );  // ´íÎó
 	}
+	
+	return 0;
 }
 
 
@@ -472,6 +475,47 @@ static uint8_t	CH376DiskWriteSec( uint8_t *buf, uint32_t iLbaStart, uint8_t iSec
 		CH376DiskReqSense( );  // ¼ì²éUSB´æ´¢Æ÷´íÎó 
 	}
 	return( s );  // ²Ù×÷Ê§°Ü 
+}
+uint8_t	CH376_Set_Data_Time(int dtm_type, uint16_t	dtm)
+{
+	uint8_t s;
+	uint8_t offset = 0;
+	//1 ¶ÁÈ¡µ±Ç°ÎÄ¼şµÄFAT_DIR_INFO½á¹¹µ½ÄÚ´æ»º³åÇø
+	s = CH376SendCmdDatWaitInt( CMD1H_DIR_INFO_READ, 0xFF );
+	if ( s != USB_INT_SUCCESS ) 
+		return s;
+	//2 c´ÓÄÚ´æ»º³åÇø¶Á³öÊı¾İ
+	CH376ReadBlock(DataBuff, CH376_DATABUF_SIZE);
+	
+	//3 ÔÙ´Î¶ÁÈ¡µ±Ç°ÎÄ¼şµÄFAT_DIR_INFO½á¹¹µ½ÄÚ´æ»º³åÇø
+	s = CH376SendCmdDatWaitInt( CMD1H_DIR_INFO_READ, 0xFF );
+	if ( s != USB_INT_SUCCESS ) 
+		return s;
+	//4 ¸ù¾İÒªĞŞ¸ÄµÄ²ÎÊıÀàĞÍĞ´ÈëÄÚ´æ»º³åÆ«ÒÆµØÖ·
+	switch(dtm_type)
+	{
+		case DTM_CREATE_DATE:
+			offset = ((FAT_DIR_INFO *)0)->DIR_CrtDate;
+			break;
+		case DTM_CREATE_TIME:
+			offset = ((FAT_DIR_INFO *)0)->DIR_CrtTime;
+			break;		
+		case DTM_CHANGE_DATE:
+			offset = ((FAT_DIR_INFO *)0)->DIR_WrtDate;
+			break;
+		case DTM_CHANGE_TIME:
+			offset = ((FAT_DIR_INFO *)0)->DIR_WrtTime;
+			break;
+		default:
+			return USB_INT_BUF_OVER;		//Êı¾İ´íÎó
+		
+	}
+	
+	//5 Ğ´ÈëÒªĞŞ¸ÄµÄÊı¾İ
+	CH376WriteOfsBlock((uint8_t *)&dtm, offset, 2);
+	//6 ±£´æÎÄ¼şĞÅÏ¢
+	
+	return( CH376SendCmdWaitInt( CMD0H_DIR_INFO_SAVE ) );
 }
 //=========================================================================//
 //                                                                         //
@@ -643,7 +687,33 @@ static void	CH376WriteVar32(uint8_t var, uint32_t dat )  /* Ğ´CH376Ğ¾Æ¬ÄÚ²¿µÄ32Î
 	xEndCH376Cmd( );
 }
 
-
+/*******************************************************************************
+* º¯  Êı  Ãû      : CH376WriteOfsBlock
+* Ãè      Êö      : ÏòÄÚ²¿»º³åÇøÖ¸¶¨Æ«ÒÆµØÖ·Ğ´ÈëÊı¾İ¿é.
+* Êä      Èë      : PUINT8 buf£º
+*					Ö¸Ïò·¢ËÍÊı¾İ»º³åÇø.
+*					UINT8 ofs:
+*					Æ«ÒÆµØÖ·.
+*					UINT8 len:
+*					Êı¾İ³¤¶È.
+* ·µ      »Ø      : ÎŞ.
+*******************************************************************************/
+static void	CH376WriteOfsBlock(uint8_t * buf, uint8_t ofs, uint8_t len )
+{
+	xWriteCH376Cmd( CMD20_WR_OFS_DATA );
+	xWriteCH376Data( ofs );  															/* Æ«ÒÆµØÖ· */
+	xWriteCH376Data( len );  															/* Êı¾İ³¤¶È */
+	xWriteCH376Data_p(buf, len );
+//	if ( len ) 
+//	{
+//		do 
+//		{
+//			xWriteCH376Data( *buf );
+//			buf ++;
+//		} while ( -- len );
+//	}
+	xEndCH376Cmd( );
+}
 
 
 //¼ì²éusbµçÁ÷¹ıÔØ
@@ -742,6 +812,7 @@ static void	CH376SetFileName(char *name )
 	
 	xWriteCH376Cmd( CMD10_SET_FILE_NAME );
 
+	//Ö»ÓĞ0x43ÒÔÉÏµÄ°æ±¾²ÅÄÜÕâÃ´¸É£¬Ä¿Ç°ÓÃµÄÊÇ0x45°æ±¾µÄĞ¾Æ¬
 	c = *name;
 	xWriteCH376Data( c );
 	while ( c )

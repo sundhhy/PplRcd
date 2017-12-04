@@ -4,6 +4,7 @@
 #ifndef __INC_system_H_
 #define __INC_system_H_
 #include <stdint.h>
+#include "utils/time.h"
 //------------------------------------------------------------------------------
 // check for correct compilation options
 //------------------------------------------------------------------------------
@@ -77,6 +78,7 @@ extern void Str_Calculations(char *p_str, int len,  int op, int val, int rangel,
 extern int	Operate_in_tange(int	arg1, int op, int arg2, int rangel, int rangeh);
 
 extern void System_init(void);
+extern void System_time(struct  tm *stime);
 extern void Sys_default(system_conf_t *arg);
 void System_modify_string(char	*p_s, int aux, int op, int val);
 void System_to_string(void *p_data, char	*p_s, int len, int aux);
