@@ -191,17 +191,22 @@ int USB_Colse_file(int fd)
 	uint16_t	dtm_u16 = 0;
 	uint8_t 	s = 0;
 	
-	if(usb_ctl.is_file_changed = 1)
+	System_time(&cur_time);
+	if(usb_ctl.is_file_changed == 1)
 	{
 		usb_ctl.is_file_changed = 0; 
-		System_time(&cur_time);
+		
 		dtm_u16 = MAKE_FILE_DATE(cur_time.tm_year, cur_time.tm_mon, cur_time.tm_mday);
 		CH376_Set_Data_Time(DTM_CHANGE_DATE, dtm_u16);
 		dtm_u16 = MAKE_FILE_TIME(cur_time.tm_hour, cur_time.tm_min, cur_time.tm_sec);
 		CH376_Set_Data_Time(DTM_CHANGE_TIME, dtm_u16);
 
+
 	}		
 	
+	dtm_u16 = MAKE_FILE_DATE(cur_time.tm_year, cur_time.tm_mon, cur_time.tm_mday);
+	CH376_Set_Data_Time(DTM_LASTACC_DATE, dtm_u16);
+
 	s = CH376FileClose(1);
 	if(s == USB_INT_SUCCESS)
 		ret = RET_OK;
@@ -240,7 +245,7 @@ int USB_Create_file(char *file_name, char mode)
 	int				fd = 0;
 	struct  	tm cur_time;
 	char			*p_name;
-	uint8_t		dtm_u16 = 0;
+	uint16_t		dtm_u16 = 0;
 	uint8_t	s;
 //	uint8_t	i = 0;
 //	char	s_name[14] = {0};		
@@ -284,10 +289,14 @@ int USB_Create_file(char *file_name, char mode)
 	if(s == USB_INT_SUCCESS)
 	{
 		System_time(&cur_time);
+		
+		
 		dtm_u16 = MAKE_FILE_DATE(cur_time.tm_year, cur_time.tm_mon, cur_time.tm_mday);
 		CH376_Set_Data_Time(DTM_CREATE_DATE, dtm_u16);
+		CH376_Set_Data_Time(DTM_CHANGE_DATE, dtm_u16);
 		dtm_u16 = MAKE_FILE_TIME(cur_time.tm_hour, cur_time.tm_min, cur_time.tm_sec);
 		CH376_Set_Data_Time(DTM_CREATE_TIME, dtm_u16);
+		CH376_Set_Data_Time(DTM_CHANGE_TIME, dtm_u16);
 		ret = 1;
 		usb_ctl.is_file_changed = 0; 
 	} 

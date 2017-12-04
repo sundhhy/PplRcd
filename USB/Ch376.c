@@ -478,6 +478,7 @@ static uint8_t	CH376DiskWriteSec( uint8_t *buf, uint32_t iLbaStart, uint8_t iSec
 }
 uint8_t	CH376_Set_Data_Time(int dtm_type, uint16_t	dtm)
 {
+	FAT_DIR_INFO	*fat_info = (FAT_DIR_INFO	*)DataBuff;
 	uint8_t s;
 	uint8_t offset = 0;
 	//1 读取当前文件的FAT_DIR_INFO结构到内存缓冲区
@@ -495,17 +496,22 @@ uint8_t	CH376_Set_Data_Time(int dtm_type, uint16_t	dtm)
 	switch(dtm_type)
 	{
 		case DTM_CREATE_DATE:
-			offset = ((FAT_DIR_INFO *)0)->DIR_CrtDate;
+			offset = (uint32_t)(&((FAT_DIR_INFO *)0)->DIR_CrtDate);
 			break;
 		case DTM_CREATE_TIME:
-			offset = ((FAT_DIR_INFO *)0)->DIR_CrtTime;
+			offset = (uint32_t)(&((FAT_DIR_INFO *)0)->DIR_CrtTime);;
 			break;		
 		case DTM_CHANGE_DATE:
-			offset = ((FAT_DIR_INFO *)0)->DIR_WrtDate;
+			offset = (uint32_t)(&((FAT_DIR_INFO *)0)->DIR_WrtDate);;
 			break;
 		case DTM_CHANGE_TIME:
-			offset = ((FAT_DIR_INFO *)0)->DIR_WrtTime;
+			offset = (uint32_t)(&((FAT_DIR_INFO *)0)->DIR_WrtTime);;
 			break;
+		case DTM_LASTACC_DATE:
+			offset = (uint32_t)(&((FAT_DIR_INFO *)0)->DIR_LstAccDate);;
+			break;
+		
+		
 		default:
 			return USB_INT_BUF_OVER;		//数据错误
 		
@@ -854,8 +860,7 @@ static  uint8_t	CH376WriteReqBlock( uint8_t *buf )
 	uint8_t	s, l;
 
 	xWriteCH376Cmd( CMD01_WR_REQ_DATA );
-	l = xReadCH376Data(l);  // 长度
-	s = l;
+	xReadCH376Data(l);  // 长度
 	s = xWriteCH376Data_p(buf, l);
 	
 	xEndCH376Cmd( );

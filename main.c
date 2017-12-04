@@ -114,7 +114,7 @@ osThreadDef (ThrdKeyRun, osPriorityNormal, 1, 0);                   // thread ob
 //tdd data
 #if TDD_ON == 1
 char		appBuf[ 64];
-short			tdd_i, tdd_j;
+int			tdd_i, tdd_j;
 char			line = 0;
 char			tdd_finish = 0;
 
@@ -343,7 +343,7 @@ int main (void) {
 	while(1)
 	{
 //		osDelay(100);
-		LCD_Run();
+		
 		USB_Run(NULL);
 		if(tdd_finish)
 		{
@@ -372,23 +372,23 @@ int main (void) {
 			
 		}
 		line = 3;
-		sprintf(appBuf, "写文件:每次写入512个[%c]", udisk_buf[0]); 
+		sprintf(appBuf, "写文件:写入8M ... "); 
+		
 		Tdd_disp_text(appBuf,line, 0);
-		for(tdd_i = 0; tdd_i < 255; tdd_i ++)
+		for(tdd_i = 0; tdd_i < 5000; tdd_i ++)
 		{
-//			if((tdd_i & 1) == 0)
-//				Tdd_disp_text("/",line, 260);	
-//			else
-//				Tdd_disp_text("\\",line, 260);
-			
-			sprintf(appBuf, "%03d", tdd_i); 
-			Tdd_disp_text(appBuf,line, 260);
-			
-			USB_Write_file(tdd_fd, udisk_buf, 512);
-			
+
+			if(tdd_i % 1000 == 0)
+			{
+				sprintf(appBuf, "%03d", tdd_i); 
+				Tdd_disp_text(appBuf,line, 260);
+			}
+			sprintf(udisk_buf, "写文件测试:[%03d]\r\n", tdd_i);
+			USB_Write_file(tdd_fd, udisk_buf, strlen(udisk_buf));
+//			
 		}
 		
-		Tdd_disp_text("完成! ", line, 260);
+//		Tdd_disp_text("完成! ", line, 260);
 //		USB_Get_file_info(USB_TFILE, &usb_fin);
 //		USB_flush_file(tdd_fd);
 //		USB_Get_file_info_f(tdd_fd, &usb_fin);
@@ -705,6 +705,7 @@ void	Tdd_disp_text(char	*text, int	line, int	row)
 	area.y0 = 16 * line;
 	mytxt->vdraw( mytxt, &cnt, &area);
 	Flush_LCD();
+	LCD_Run();
 }
 void	Tdd_disp_clean()
 {
@@ -717,6 +718,7 @@ int	Usb_event(int type)
 	if(type == et_ready)
 	{
 		usb_cnt = 1;
+		tdd_finish = 0;
 		Tdd_disp_text("发现U盘",1, 0);
 		
 	}

@@ -361,10 +361,18 @@ static int spi_write_word(SPI_TypeDef	*spi_reg, uint16_t val)
 	
 	
 	SPI_I2S_SendData(spi_reg, val);
-	
+	safe_count = SAFE_COUNT_VAL;
 	while( SPI_I2S_GetFlagStatus(spi_reg, SPI_I2S_FLAG_RXNE) != SET)
 	{
-		;
+		if( safe_count)
+		{
+			safe_count --;
+			
+		}
+		else
+		{
+			return ERR_DEV_TIMEOUT;
+		}
 	}
 	tmp = SPI_I2S_ReceiveData(spi_reg); 
  

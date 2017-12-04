@@ -20,6 +20,8 @@
 #define DTM_CHANGE_DATE		1
 #define DTM_CREATE_TIME		2
 #define DTM_CHANGE_TIME		3
+#define DTM_LASTACC_DATE	4
+
 //------------------------------------------------------------------------------
 // typedef
 //------------------------------------------------------------------------------

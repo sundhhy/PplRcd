@@ -59,10 +59,14 @@ int UtlRtc_init( UtlRtc *self, IN void *arg)
 }
 int UtlRtc_get( UtlRtc *self, OUT struct  tm *tm)
 {
-
+	uint8_t	h,m,s;
+	tm->tm_year = GetCompileYear();
 	tm->tm_mon =  GetCompileMoth();
 	tm->tm_mday = GetCompileDay();
-	tm->tm_hour = 16;
+	GetCompileTime(&h, &m, &s);
+	tm->tm_hour = h;
+	tm->tm_min = m;
+	tm->tm_sec = h;
 	return RET_OK;
 }
 

@@ -69,8 +69,11 @@ void System_default(system_conf_t *arg)
 
 void System_init(void)
 {
+	struct  tm stm;
+	
 	sys_rtc = ( UtlRtc *)Pcf8563_new();
 	sys_rtc->init(sys_rtc, NULL);
+	sys_rtc->get(sys_rtc, &stm);
 	
 	System_default(NULL);
 }
