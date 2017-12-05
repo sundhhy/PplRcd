@@ -13,7 +13,7 @@
 */
 #include "stdint.h"
 #include "uart/drive_uart.h"
-
+#include "os/os_depend.h"
 #include "basis/sdhError.h"
 #include <stdarg.h>
 #include <string.h>
@@ -396,7 +396,7 @@ static int UartTest( driveUart *self, void *buf, int size)
 			strcpy( buf, "Serial 485 test\n" );
 			self->write( self, buf, strlen(buf));
 		}
-		
+		delay_ms(100);
 //		len = self->takeUpPlayloadBuf( self, ( void *)&pdata);
 //		pp = strstr((const char*)pdata,"OK");
 //		if(pp)

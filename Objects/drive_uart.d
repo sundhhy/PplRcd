@@ -26,11 +26,14 @@
 .\objects\drive_uart.o: E:\mylib\sdhLib\inc\mem/Ping_PongBuf.h
 .\objects\drive_uart.o: .\drive\dri_cmd.h
 .\objects\drive_uart.o: .\configs\hardwareConfig.h
+.\objects\drive_uart.o: E:\mylib\sdhLib\inc\os/os_depend.h
+.\objects\drive_uart.o: ..\PplRcd\sdhlibConf.h
+.\objects\drive_uart.o: E:\mylib\sdhLib\inc\os/rtx/rtx_depend.h
+.\objects\drive_uart.o: d:\Keil_v5\ARM\PACK\ARM\CMSIS\4.4.0\CMSIS\RTOS\RTX\INC\cmsis_os.h
 .\objects\drive_uart.o: E:\mylib\sdhLib\inc\basis/sdhError.h
 .\objects\drive_uart.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdarg.h
 .\objects\drive_uart.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
 .\objects\drive_uart.o: E:\mylib\sdhLib\inc\sdhDef.h
-.\objects\drive_uart.o: ..\PplRcd\sdhlibConf.h
 .\objects\drive_uart.o: E:\mylib\sdhLib\inc\basis/sdhDebug.h
 .\objects\drive_uart.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
 .\objects\drive_uart.o: E:\mylib\sdhLib\inc\basis/macros.h

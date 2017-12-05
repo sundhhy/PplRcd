@@ -130,7 +130,7 @@ CfgUart_t g_confUart3 = {
 	&g_Cfg_Uart3,
 	&g_DmaUart3,
 	2,
-	UART_MODE_CPU,
+	UART_MODE_DMA,
 };
 
 

@@ -3,7 +3,7 @@
 <title>Static Call Graph - [.\Objects\PplRcd.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image .\Objects\PplRcd.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5050106: Last Updated: Tue Dec 05 23:05:48 2017
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5050106: Last Updated: Tue Dec 05 23:46:25 2017
 <BR><P>
 <H3>Maximum Stack Usage =        240 bytes + Unknown(Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -2101,7 +2101,8 @@ Global Symbols
 </UL>
 <BR>[Calls]<UL><LI><a href="#[f3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osDelay
 </UL>
-<BR>[Called By]<UL><LI><a href="#[ca]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ThrdKeyRun
+<BR>[Called By]<UL><LI><a href="#[b9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UartTest
+<LI><a href="#[ca]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ThrdKeyRun
 <LI><a href="#[e7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CH376GetIntStatus
 <LI><a href="#[138]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mInitCH376Host
 <LI><a href="#[12e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HRst_Ch376
@@ -3151,10 +3152,11 @@ Local Symbols
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> drive_uart.o(i.driveUart_ctor)
 </UL>
-<P><STRONG><a name="[b9]"></a>UartTest</STRONG> (Thumb, 152 bytes, Stack size 32 bytes, drive_uart.o(i.UartTest))
+<P><STRONG><a name="[b9]"></a>UartTest</STRONG> (Thumb, 158 bytes, Stack size 32 bytes, drive_uart.o(i.UartTest))
 <BR><BR>[Stack]<UL><LI>Max Depth = 44<LI>Call Chain = UartTest &rArr; strstr
 </UL>
-<BR>[Calls]<UL><LI><a href="#[12b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strcpy
+<BR>[Calls]<UL><LI><a href="#[ea]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;delay_ms
+<LI><a href="#[12b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strcpy
 <LI><a href="#[f2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strlen
 <LI><a href="#[158]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strstr
 </UL>
