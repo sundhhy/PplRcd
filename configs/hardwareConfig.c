@@ -33,14 +33,15 @@ Dma_source g_DmaUart2 = {
 	
 };
 
-Dma_source g_DmaUart3 = {
-	DMA1_Channel3,
-	DMA1_FLAG_GL3,
-	DMA1_Channel3_IRQn,
+
+Dma_source g_DmaUart1 = {
+	DMA1_Channel5,
+	DMA1_FLAG_GL5,
+	DMA1_Channel5_IRQn,
 	
-	DMA1_Channel2,
-	DMA1_FLAG_GL2,
-	DMA1_Channel2_IRQn,
+	DMA1_Channel4,
+	DMA1_FLAG_GL4,
+	DMA1_Channel4_IRQn,
 	
 };
 
@@ -53,21 +54,22 @@ USART_InitTypeDef g_Cfg_Uart2 = {
 		USART_HardwareFlowControl_None,
 };
 
-
-
-
-
-
-Dma_source g_DmaUart1 = {
-	DMA1_Channel5,
-	DMA1_FLAG_GL5,
-	DMA1_Channel5_IRQn,
+Dma_source g_DmaUart3 = {
+	DMA1_Channel3,
+	DMA1_FLAG_GL3,
+	DMA1_Channel3_IRQn,
 	
-	DMA1_Channel4,
-	DMA1_FLAG_GL4,
-	DMA1_Channel4_IRQn,
+	DMA1_Channel2,
+	DMA1_FLAG_GL2,
+	DMA1_Channel2_IRQn,
 	
 };
+
+
+
+
+
+
 spi_conf_t arr_conf_spi[2] ={
 	{
     0,
@@ -128,7 +130,7 @@ CfgUart_t g_confUart3 = {
 	&g_Cfg_Uart3,
 	&g_DmaUart3,
 	2,
-	UART_MODE_DMA,
+	UART_MODE_CPU,
 };
 
 

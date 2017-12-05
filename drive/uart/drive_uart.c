@@ -37,10 +37,10 @@ static int UartInit( driveUart *self, void *device, void *cfg)
 	self->rxCache = calloc( 1, UART_RXCACHE_SIZE);
 	
 	if(myCfg->opt_mode != UART_MODE_CPU)
+	{
 		self->txCache = calloc( 1, UART_TXCACHE_SIZE);
-
-	
-	init_pingponfbuf( &self->ctl.pingpong, self->rxCache, UART_RXCACHE_SIZE, TURE);
+		init_pingponfbuf( &self->ctl.pingpong, self->rxCache, UART_RXCACHE_SIZE, TURE);
+	}
 	
 	
 	USART_Cmd( self->devUartBase, DISABLE);
@@ -54,12 +54,13 @@ static int UartInit( driveUart *self, void *device, void *cfg)
 		
 	}
 
-	
-	USART_ClearFlag( device,USART_IT_IDLE );
-	
-	USART_ITConfig( device, USART_IT_RXNE, ENABLE);
-	USART_ITConfig( device, USART_IT_IDLE, ENABLE);
-	
+	if(myCfg->opt_mode != UART_MODE_CPU)
+	{
+		USART_ClearFlag( device,USART_IT_IDLE );
+		
+		USART_ITConfig( device, USART_IT_RXNE, ENABLE);
+		USART_ITConfig( device, USART_IT_IDLE, ENABLE);
+	}
 	
 	if(myCfg->opt_mode == UART_MODE_DMA)
 		USART_DMACmd( device, USART_DMAReq_Tx, ENABLE);  // ¿ªÆôDMA·¢ËÍ
@@ -114,7 +115,7 @@ static int UartWrite( driveUart *self, void *buf, int wrLen)
 {
 	CfgUart_t *myCfg = ( CfgUart_t *)self->cfg;
 	int ret;
-	uint8_t *sendbuf ;
+	uint8_t *sendbuf = buf;
 	int count = 0;
 	
 
@@ -209,13 +210,35 @@ static int UartWrite( driveUart *self, void *buf, int wrLen)
 static int UartRead( driveUart *self, void *buf, int rdLen)
 {
 	int  ret = 1;
+	uint32_t	 safe_count = 0;
 	int len = rdLen;
-	char *playloadbuf ;
-	
+	uint8_t *playloadbuf ;
+	CfgUart_t *myCfg = ( CfgUart_t *)self->cfg;
 	if( buf == NULL)
 		return ERR_BAD_PARAMETER;
 	
-
+	if(myCfg->opt_mode == UART_MODE_CPU)
+	{
+		len = 0;
+		playloadbuf = (uint8_t *)buf;
+		safe_count = self->ctl.rx_waittime_ms * 1000;
+		if(safe_count == 0)
+			safe_count = 0xffffffff;
+		while(len < rdLen)
+		{
+			if(USART_GetITStatus( self->devUartBase, USART_IT_RXNE) == SET) 
+			{
+				playloadbuf[len] = USART_ReceiveData(self->devUartBase);
+				len ++;
+			}
+			if((safe_count != 0xffffffff) && (safe_count > 0))
+				safe_count --;
+			else
+				break;
+		}
+		
+		return len;
+	}
 	
 	if( self->rxWait)
 	{
@@ -351,7 +374,7 @@ static int UartTest( driveUart *self, void *buf, int size)
 	
 	strcpy( buf, "Serial 485 test\n" );
 	self->ioctol( self, DRICMD_SET_TXWAITTIME_MS, 10);
-	self->ioctol( self, DRICMD_SET_RXWAITTIME_MS, 10);
+	self->ioctol( self, DRICMD_SET_RXWAITTIME_MS, 1000);
 	
 	
 	self->write( self, buf, strlen(buf));
@@ -367,6 +390,11 @@ static int UartTest( driveUart *self, void *buf, int size)
 		if( len > 0)
 		{
 			self->write( self, buf, len);
+		}
+		else 
+		{
+			strcpy( buf, "Serial 485 test\n" );
+			self->write( self, buf, strlen(buf));
 		}
 		
 //		len = self->takeUpPlayloadBuf( self, ( void *)&pdata);

@@ -88,8 +88,10 @@
 ".\objects\ctltimer.o"
 ".\objects\ch376.o"
 ".\objects\usb.o"
-"D:\Keil_v5\ARM\PACK\ARM\CMSIS\4.5.0\CMSIS\RTOS\RTX\LIB\ARM\RTX_CM3.lib"
 ".\objects\rtx_conf_cm.o"
+"d:\Keil_v5\ARM\PACK\ARM\CMSIS\4.4.0\CMSIS\RTOS\RTX\LIB\ARM\RTX_CM3.lib"
+".\objects\startup_stm32f10x_hd.o"
+".\objects\system_stm32f10x.o"
 ".\objects\misc.o"
 ".\objects\stm32f10x_dma.o"
 ".\objects\stm32f10x_exti.o"
@@ -99,8 +101,6 @@
 ".\objects\stm32f10x_spi.o"
 ".\objects\stm32f10x_tim.o"
 ".\objects\stm32f10x_usart.o"
-".\objects\startup_stm32f10x_hd.o"
-".\objects\system_stm32f10x.o"
 --library_type=microlib --strict --scatter ".\Objects\PplRcd.sct"
 --summary_stderr --info summarysizes --map --xref --callgraph --symbols
 --info sizes --info totals --info unused --info veneers
