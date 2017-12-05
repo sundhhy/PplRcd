@@ -4,7 +4,8 @@
 #include "mem/CiiMem.h"
 #include "sdhDef.h"
 #include "utils/Storage.h"
-
+#include "Communication/smart_bus.h"
+#include "device.h"
 //通道模型:一个通道模型对应一个通道
 //因此该模型在系统中会存在多个,不能使用单例
 //============================================================================//
@@ -46,6 +47,7 @@ Model		*arr_p_mdl_chn[NUM_CHANNEL];
 //------------------------------------------------------------------------------
 /* Cycle/Sync Callback functions */
 static int MdlChn_init( Model *self, IN void *arg);
+static int MdlChn_self_check(Model *self);
 static int MdlChn_getData(  Model *self, IN int aux, void *arg) ;
 
 static char* MdlChn_to_string( Model *self, IN int aux, void *arg);
@@ -79,6 +81,7 @@ Model_chn *Get_Mode_chn(int n)
 CTOR( Model_chn)
 SUPER_CTOR( Model);
 FUNCTION_SETTING( Model.init, MdlChn_init);
+FUNCTION_SETTING( Model.self_check, MdlChn_self_check);
 FUNCTION_SETTING( Model.getMdlData, MdlChn_getData);
 FUNCTION_SETTING( Model.to_string, MdlChn_to_string);
 FUNCTION_SETTING( Model.to_percentage, MdlChn_to_percentage);
@@ -116,6 +119,29 @@ static int MdlChn_init(Model *self, IN void *arg)
 	return RET_OK;
 }
 
+static int MdlChn_self_check( Model *self)
+{
+	Model_chn		*cthis = SUB_PTR(self, Model, Model_chn);
+	uint8_t		chk_buf[32];
+	int 			i, j;
+	I_dev_Char *I_uart3 = NULL;
+	
+	Dev_open(DEVID_UART3, ( void *)&I_uart3);
+	i = SmBus_build_query(chk_buf, 32, SMBUS_CHN_AI, cthis->chni.chn_NO);
+	j = I_uart3->write(I_uart3, chk_buf, i);
+	if(i != j)
+		return ERR_OPT_FAILED;
+	i = I_uart3->read(I_uart3, chk_buf, 32);
+	if(i <= 0)
+		return ERR_OPT_FAILED;
+	SmBus_decode(SMBUS_CMD_QUERY, chk_buf, &j, 1);
+	if(j != cthis->chni.chn_NO)
+		return ERR_OPT_FAILED;
+	
+	return RET_OK;
+	
+}
+
 static int MdlChn_getData(  Model *self, IN int aux, void *arg) 
 {
 	Model_chn		*cthis = SUB_PTR( self, Model, Model_chn);
@@ -123,6 +149,9 @@ static int MdlChn_getData(  Model *self, IN int aux, void *arg)
 
 	
 	switch(aux) {
+		case AUX_DATA:
+			
+			return cthis->chni.value;
 		case AUX_PERCENTAGE:
 			
 			return self->to_percentage(self, arg); 

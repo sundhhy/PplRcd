@@ -65,6 +65,7 @@ extern void Ch376_enbale_Irq(int ed);
 extern	uint8_t	mInitCH376Host(void);
 
 extern	uint8_t	CH376DiskMount( void );
+extern  uint8_t	CH376ByteRead(uint8_t* buf, uint16_t ReqCount, uint16_t* RealCount );
 extern	uint8_t	CH376ReadBlock( uint8_t *buf, int buf_size );
 extern	uint8_t	IsDiskWriteProtect( void );
 extern	uint8_t	CH376DiskQuery(uint32_t *DiskAll, uint32_t *DiskFre, uint8_t *diskFat );

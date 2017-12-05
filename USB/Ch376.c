@@ -392,6 +392,50 @@ uint8_t	CH376SecWrite( uint8_t *buf, uint8_t ReqCount, uint8_t *RealCount )
 	return( s );
 }
 
+/*******************************************************************************
+* 函  数  名      : CH376ByteRead
+* 描      述      : 以字节为单位从当前位置读取数据块
+* 输      入      : PUINT8 buf:
+*					指向数据缓冲区.
+*                   UINT16 ReqCount：
+*                   请求读取的字节数.
+*                   PUINT16 RealCount:
+*                   实际读取的字节数.
+* 返      回      : 中断状态.
+*******************************************************************************/
+uint8_t	CH376ByteRead(uint8_t* buf, uint16_t ReqCount, uint16_t* RealCount )
+{
+	uint8_t	s;
+	
+	xWriteCH376Cmd( CMD2H_BYTE_READ );
+	xWriteCH376Data_p(&ReqCount, 2 );
+	xEndCH376Cmd( );
+	if ( RealCount ) 
+	{
+	    *RealCount = 0;
+	}
+	
+	while ( 1 ) 
+	{
+		s = Wait376Interrupt( );
+		if ( s == USB_INT_DISK_READ )                                                   /* 请求数据读出 */
+		{
+			s = CH376ReadBlock( buf, ReqCount );                                                  /* 从当前主机端点的接收缓冲区读取数据块,返回长度 */
+			xWriteCH376Cmd( CMD0H_BYTE_RD_GO );                                         /* 继续读 */
+			xEndCH376Cmd( );
+			buf += s;
+			if ( RealCount ) 
+			{
+			    *RealCount += s;
+			}
+		}
+		else 
+		{
+		    return( s );                                                                /* 错误 */
+		}
+	}
+}
+
 //以字节为单位向当前位置写入数据块 
 uint8_t	CH376ByteWrite( uint8_t *buf, uint16_t ReqCount, uint16_t *RealCount )
 {

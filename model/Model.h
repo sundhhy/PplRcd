@@ -97,6 +97,7 @@ ABS_CLASS( Model)
 	
 	abstract int (*init)( Model *self, IN void *arg);
 	
+	int (*self_check)( Model *self);
 	void (*attach)( Model *self, IN Observer *s);
 	void (*detach)( Model *self, IN Observer *s);
 	int	(*getMdlData)( Model *self, IN int aux, OUT void *arg);

@@ -98,19 +98,20 @@ int USB_Init(void* arg);
 int USB_Run(void* arg);
 int USB_Open_file(char *file_name, char mode);
 int USB_Colse_file(int fd);
+int USB_Write_file(int fd, char *buf, int len);
+int USB_Create_file(char *file_name, char mode);
+int	USB_Rgt_event_hdl(usb_event_hdl hdl);
 
+
+//以下接口未实现
 int USB_Get_file_info(char *file_name, USB_file_info *finfo);
 int USB_Get_file_info_f(int fd, USB_file_info *finfo);
-int USB_Create_file(char *file_name, char mode);
 int USB_Delete_file(char *file_name, char mode);
 
 int USB_Read_file(int fd, char *buf, int len);
-int USB_Write_file(int fd, char *buf, int len);
 int USB_flush_file(int fd);
-
 void	USB_Power_off(void);
 int	USB_Remove_disk(void );
-int	USB_Rgt_event_hdl(usb_event_hdl hdl);
 	
 
 

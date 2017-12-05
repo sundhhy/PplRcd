@@ -24,6 +24,7 @@
 #include "Usb.h"
 
 #include "control/CtlKey.h"
+#include "control/CtlTimer.h"
 #include "utils/time.h"
 #include "utils/keyboard.h"
 
@@ -186,10 +187,10 @@ int main (void) {
 //	USART_InitTypeDef USART_InitStructure;
 	Keyboard	*p_kb;
 	Controller	*p_ctlkey;
-
+	Controller	*p_ctlTime;
 	Model 		*mTime;
 	Model 		*p_mdl_test;
-	HMI 		*p_mainHmi;
+	HMI 			*p_mainHmi;
 	int			ret = 0;
 	short			count = 0;
 	short			hmi_count = 0;
@@ -220,8 +221,11 @@ int main (void) {
 	p_mdl_test =  ModelCreate("test");
 	p_mdl_test->init( p_mdl_test, NULL);
 	
+	//控制器初始化
 	
-	//按键初始化
+	p_ctlTime = SUPER_PTR(CtlTimer_new(), Controller);
+	p_ctlTime->init(p_ctlTime, NULL);
+		//按键初始化
 	p_kb = GetKeyInsance();
 	count = CONF_KEYSCAN_CYCLEMS;
 	p_kb->init( p_kb, &count);
@@ -269,10 +273,53 @@ int main (void) {
 		count ++;
 		
 	}
+	
+#elif TDD_MODCHANNEL == 1	
+	line = 0;
+	Tdd_disp_text("通道采样测试",line++, 0);
+	//检测通道是否正常
+	for(tdd_i = 0; tdd_i < NUM_CHANNEL; tdd_i++)
+	{
+		sprintf(appBuf,"chn_%d", tdd_i);
+		Tdd_disp_text(appBuf,line, 0);
+		p_mdl_test = ModelCreate(appBuf);
+		p_mdl_test->init(p_mdl_test, NULL);
+		if(p_mdl_test->self_check(p_mdl_test) == RET_OK)
+		{
+			Tdd_disp_text("自检成功!",line++, 200);
+		}
+		else 
+		{
+			Tdd_disp_text("自检失败!",line++, 200);
+		}
+	}
+	
+	Tdd_disp_text("采样测试...",line++, 0);
+	while(1)
+	{
+		line = 4;
+		for(tdd_i = 0; tdd_i < NUM_CHANNEL; tdd_i++)
+		{
+			sprintf(appBuf,"chn_%d", tdd_i);
+			Tdd_disp_text("采样测试...",line, 0);
+			p_mdl_test = ModelCreate(appBuf);
+			if(p_mdl_test->getMdlData(p_mdl_test, AUX_DATA, &tdd_j) == RET_OK)
+			{
+				sprintf(appBuf,"%d", tdd_j);
+				Tdd_disp_text(appBuf,line++, 200);
+			}
+			else
+			{
+				
+				Tdd_disp_text("失败",line++, 200);
+			}
+		}
+		osDelay(1000);
+		
+	}
 #elif TDD_DEV_UART3 == 1
 	line = 0;
 	Tdd_disp_text("串口3测试",line++, 0);
-	LCD_Run();
 	Dev_open(DEVID_UART3, ( void *)&I_uart3);
 	
 	if( I_uart3->test(I_uart3, appBuf, 64) == RET_OK)
@@ -301,7 +348,6 @@ int main (void) {
 	Dev_open(DEVID_UART3, ( void *)&I_uart3);
 	while(1)
 	{
-		LCD_Run();
 		Tdd_disp_text("发送查询命令",line, 0);
 		tdd_i = SmBus_build_query((uint8_t *)appBuf, 64, SMBUS_CHN_AI, 0);
 		tdd_j = I_uart3->write(I_uart3, appBuf, tdd_i);
@@ -321,7 +367,7 @@ int main (void) {
 		
 		if(tdd_i)
 		{
-			Tdd_disp_text("解析豹纹",line, 0);
+			Tdd_disp_text("解析报文",line, 0);
 			SmBus_decode(SMBUS_CMD_QUERY, (uint8_t *)appBuf, &tmp_u8, 1);
 			Tdd_disp_text("成功",line++, 260);
 		}
