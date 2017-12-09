@@ -47,6 +47,7 @@ Model		*arr_p_mdl_chn[NUM_CHANNEL];
 //------------------------------------------------------------------------------
 /* Cycle/Sync Callback functions */
 static int MdlChn_init( Model *self, IN void *arg);
+static void MdlChn_run(Model *self);
 static int MdlChn_self_check(Model *self);
 static int MdlChn_getData(  Model *self, IN int aux, void *arg) ;
 
@@ -81,6 +82,8 @@ Model_chn *Get_Mode_chn(int n)
 CTOR( Model_chn)
 SUPER_CTOR( Model);
 FUNCTION_SETTING( Model.init, MdlChn_init);
+FUNCTION_SETTING( Model.run, MdlChn_run);
+
 FUNCTION_SETTING( Model.self_check, MdlChn_self_check);
 FUNCTION_SETTING( Model.getMdlData, MdlChn_getData);
 FUNCTION_SETTING( Model.to_string, MdlChn_to_string);
@@ -122,14 +125,15 @@ static int MdlChn_init(Model *self, IN void *arg)
 static int MdlChn_self_check( Model *self)
 {
 	Model_chn		*cthis = SUB_PTR(self, Model, Model_chn);
-	uint8_t		chk_buf[32];
-	int 			i, j;
-	I_dev_Char *I_uart3 = NULL;
+	uint8_t			chk_buf[32];
+	I_dev_Char 		*I_uart3 = NULL;
+	uint16_t		tmp_u16[2];
+	uint8_t 			i, j;
+	uint8_t				tmp_u8;
 	
 	Dev_open(DEVID_UART3, ( void *)&I_uart3);
-	i = SmBus_build_query(chk_buf, 32, SMBUS_CHN_AI, cthis->chni.chn_NO);
-	j = I_uart3->write(I_uart3, chk_buf, i);
-	if(i != j)
+	i = SmBus_Query(SMBUS_MAKE_CHN(SMBUS_CHN_AI, cthis->chni.chn_NO), chk_buf, 32);
+	if( I_uart3->write(I_uart3, chk_buf, i) != RET_OK)
 		return ERR_OPT_FAILED;
 	i = I_uart3->read(I_uart3, chk_buf, 32);
 	if(i <= 0)
@@ -138,7 +142,59 @@ static int MdlChn_self_check( Model *self)
 	if(j != cthis->chni.chn_NO)
 		return ERR_OPT_FAILED;
 	
+	
+	i = SmBus_rd_signal_type(SMBUS_MAKE_CHN(SMBUS_CHN_AI, cthis->chni.chn_NO), chk_buf, 32);
+	if( I_uart3->write(I_uart3, chk_buf, i) != RET_OK)
+		return ERR_OPT_FAILED;
+	i = I_uart3->read(I_uart3, chk_buf, 32);
+	if(i <= 0)
+		return ERR_OPT_FAILED;
+	if(SmBus_decode(SMBUS_CMD_READ, chk_buf, &tmp_u8, 1) != RET_OK)
+		return ERR_OPT_FAILED;
+	cthis->chni.signal_type = tmp_u8;
+	
+	
+	i = SmBus_rd_h_l_limit(SMBUS_MAKE_CHN(SMBUS_CHN_AI, cthis->chni.chn_NO), chk_buf, 32);
+	if( I_uart3->write(I_uart3, chk_buf, i) != RET_OK)
+		return ERR_OPT_FAILED;
+	i = I_uart3->read(I_uart3, chk_buf, 32);
+	if(i <= 0)
+		return ERR_OPT_FAILED;
+	if(SmBus_decode(SMBUS_CMD_READ, chk_buf, tmp_u16, 4) != RET_OK)
+		return ERR_OPT_FAILED;
+	
+	//todo：这段代码受到IOM模块的数据结构定义影响
+	cthis->chni.upper_limit = tmp_u16[0];
+	cthis->chni.lower_limit = tmp_u16[1];
+	
 	return RET_OK;
+	
+}
+
+static void MdlChn_run(Model *self)
+{
+	Model_chn			*cthis = SUB_PTR(self, Model, Model_chn);
+	uint8_t				chk_buf[16];
+	SmBus_result_t		rst;
+	
+	
+	I_dev_Char 			*I_uart3 = NULL;
+	uint8_t 			i, j;
+	
+	
+	Dev_open(DEVID_UART3, ( void *)&I_uart3);
+	i = SmBus_AI_Read(SMBUS_MAKE_CHN(SMBUS_CHN_AI, cthis->chni.chn_NO), chk_buf, 16);
+	if( I_uart3->write(I_uart3, chk_buf, i) != RET_OK)
+		return;
+	i = I_uart3->read(I_uart3, chk_buf, 16);
+	if(i <= 0)
+		return;
+	SmBus_decode(SMBUS_AI_READ, chk_buf, &rst, sizeof(SmBus_result_t));
+	if(rst.chn_num != cthis->chni.chn_NO)
+		return;
+	cthis->chni.signal_type = rst.signal_type;
+	cthis->chni.value = rst.val;
+	
 	
 }
 
@@ -146,12 +202,12 @@ static int MdlChn_getData(  Model *self, IN int aux, void *arg)
 {
 	Model_chn		*cthis = SUB_PTR( self, Model, Model_chn);
 	
-
 	
 	switch(aux) {
 		case AUX_DATA:
-			
 			return cthis->chni.value;
+		case AUX_SIGNALTYPE:
+			return cthis->chni.signal_type;
 		case AUX_PERCENTAGE:
 			
 			return self->to_percentage(self, arg); 
@@ -160,7 +216,27 @@ static int MdlChn_getData(  Model *self, IN int aux, void *arg)
 	}
 		
 	
-	return cthis->chni.value;
+	return RET_OK;
+	
+}
+
+static int MdlChn_setData(  Model *self, IN int aux, void *arg) 
+{
+	Model_chn		*cthis = SUB_PTR( self, Model, Model_chn);
+	
+	
+	switch(aux) {
+		case AUX_SIGNALTYPE:
+			return cthis->chni.signal_type;
+		case AUX_PERCENTAGE:
+			
+			return self->to_percentage(self, arg); 
+		default:
+			break;
+	}
+		
+	
+	return ERR_OPT_ILLEGAL;
 	
 }
 

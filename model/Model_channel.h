@@ -37,20 +37,27 @@ typedef enum {
 	alarm_backlash
 }e_chn_aux_t;
 typedef enum {
-	AI_0_5_V = 0,
-	AI_0_10_mA,
-	AI_1_5_V,
-	AI_4_20_mA,
-	AI_0_20_mA,
-	AI_0_100_mA,
-	AI_Pt100,
-	AI_Cu50,
+	 
+	
+	
+	
+	
+	
 	AI_B,
 	AI_E,
 	AI_J,
 	AI_K,	
 	AI_S,
-	AI_T,	
+	AI_T,
+	AI_Pt100,
+	AI_Cu50,
+	AI_0_10_mA,
+	AI_4_20_mA,
+	AI_0_5_V,
+	AI_1_5_V,
+	AI_0_20_mA,
+	AI_0_100_mA,
+	
 	AI_0_400_ohm,
 	PI_0_30_kHz,
 	DI_8_30_V,

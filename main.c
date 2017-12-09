@@ -115,7 +115,7 @@ osThreadDef (ThrdKeyRun, osPriorityNormal, 1, 0);                   // thread ob
 //tdd data
 #if TDD_ON == 1
 char		appBuf[ 64];
-int			tdd_i, tdd_j;
+int			tdd_i, tdd_j, tdd_count = 0;
 char			line = 0;
 char			tdd_finish = 0;
 
@@ -190,7 +190,7 @@ int main (void) {
 	Controller	*p_ctlTime;
 	Model 		*mTime;
 	Model 		*p_mdl_test;
-	HMI 			*p_mainHmi;
+	HMI 		*p_mainHmi;
 	int			ret = 0;
 	short			count = 0;
 	short			hmi_count = 0;
@@ -274,7 +274,8 @@ int main (void) {
 		
 	}
 	
-#elif TDD_MODCHANNEL == 1	
+#elif TDD_MODCHANNEL == 1
+	osKernelStart (); 	
 	line = 0;
 	Tdd_disp_text("通道采样测试",line++, 0);
 	//检测通道是否正常
@@ -283,9 +284,11 @@ int main (void) {
 		sprintf(appBuf,"chn_%d", tdd_i);
 		Tdd_disp_text(appBuf,line, 0);
 		p_mdl_test = ModelCreate(appBuf);
-		p_mdl_test->init(p_mdl_test, NULL);
 		if(p_mdl_test->self_check(p_mdl_test) == RET_OK)
 		{
+			
+			p_mdl_test->to_string(p_mdl_test, AUX_SIGNALTYPE, appBuf);
+			Tdd_disp_text(appBuf,line, 100);
 			Tdd_disp_text("自检成功!",line++, 200);
 		}
 		else 
@@ -294,25 +297,33 @@ int main (void) {
 		}
 	}
 	
-	Tdd_disp_text("采样测试...",line++, 0);
+	Tdd_disp_text("通道采样",7, 100);
 	while(1)
 	{
-		line = 4;
+		line = 8;
+		tdd_count ++;
+		
 		for(tdd_i = 0; tdd_i < NUM_CHANNEL; tdd_i++)
 		{
+			
 			sprintf(appBuf,"chn_%d", tdd_i);
-			Tdd_disp_text("采样测试...",line, 0);
 			p_mdl_test = ModelCreate(appBuf);
-			if(p_mdl_test->getMdlData(p_mdl_test, AUX_DATA, &tdd_j) == RET_OK)
-			{
-				sprintf(appBuf,"%d", tdd_j);
-				Tdd_disp_text(appBuf,line++, 200);
-			}
-			else
-			{
-				
-				Tdd_disp_text("失败",line++, 200);
-			}
+			p_mdl_test->run(p_mdl_test);
+			
+			sprintf(appBuf,"[%04d] chn_%d", tdd_count, tdd_i);
+			Tdd_disp_text(appBuf,line, 0);
+			
+			tdd_j = p_mdl_test->getMdlData(p_mdl_test, AUX_SIGNALTYPE, NULL);
+			p_mdl_test->to_string(p_mdl_test, AUX_SIGNALTYPE, appBuf);
+			Tdd_disp_text(appBuf,line, 150);
+			tdd_j = p_mdl_test->getMdlData(p_mdl_test, AUX_DATA, NULL);
+			
+			
+			sprintf(appBuf,"%d", tdd_j);
+			Tdd_disp_text(appBuf,line++, 250);
+			
+			
+			
 		}
 		osDelay(1000);
 		
@@ -343,15 +354,18 @@ int main (void) {
 # elif TDD_SMART_BUS == 1
 	
 	line = 0;
+	osKernelStart (); 
 	Tdd_disp_text("SmartBus 测试",line++, 0);
-	LCD_Run();
 	Dev_open(DEVID_UART3, ( void *)&I_uart3);
+	tdd_j = 0;
 	while(1)
 	{
-		Tdd_disp_text("发送查询命令",line, 0);
-		tdd_i = SmBus_build_query((uint8_t *)appBuf, 64, SMBUS_CHN_AI, 0);
-		tdd_j = I_uart3->write(I_uart3, appBuf, tdd_i);
-		if(tdd_j == tdd_i)
+		line = 2;
+		
+		sprintf(appBuf,"[%04d]:发送查询通道%d", tdd_count++,tdd_j);
+		Tdd_disp_text(appBuf,line, 0);
+		tdd_i = SmBus_Query(SMBUS_MAKE_CHN(SMBUS_CHN_AI, tdd_j), (uint8_t *)appBuf, 64);
+		if(I_uart3->write(I_uart3, appBuf, tdd_i) == RET_OK)
 		{
 			
 			Tdd_disp_text("成功",line++, 260);
@@ -361,7 +375,7 @@ int main (void) {
 			Tdd_disp_text("失败",line++, 260);
 			
 		}
-		LCD_Run();
+//		LCD_Run();
 		Tdd_disp_text("等待返回...",line++, 0);
 		tdd_i = I_uart3->read(I_uart3, appBuf, 64);
 		
@@ -369,13 +383,26 @@ int main (void) {
 		{
 			Tdd_disp_text("解析报文",line, 0);
 			SmBus_decode(SMBUS_CMD_QUERY, (uint8_t *)appBuf, &tmp_u8, 1);
-			Tdd_disp_text("成功",line++, 260);
+			if(tdd_j == tmp_u8)
+				Tdd_disp_text("成功",line++, 160);
+			else
+			{
+				
+				sprintf(appBuf,"错误的通道%d", tmp_u8);
+				Tdd_disp_text(appBuf,line++, 160);
+			}
+				
 		}
 		else 
 		{
 			Tdd_disp_text("失败",line++, 260);
 			
 		}
+//		Tdd_disp_clean();
+		tdd_j ++;
+		if(tdd_j >= NUM_CHANNEL)
+			tdd_j = 0;
+		osDelay(1000);
 	}
 	
 # elif TDD_USB == 1
@@ -757,6 +784,7 @@ void	Tdd_disp_clean()
 {
 	tdd_lcd->Clear( COLOUR_BLACK);
 	Flush_LCD();
+	LCD_Run();
 }
 #	if TDD_USB == 1
 int	Usb_event(int type)

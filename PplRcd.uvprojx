@@ -175,7 +175,7 @@
           </Flash1>
           <bUseTDR>1</bUseTDR>
           <Flash2>BIN\UL2CM3.DLL</Flash2>
-          <Flash3></Flash3>
+          <Flash3>"" ()</Flash3>
           <Flash4></Flash4>
           <pFcarmOut></pFcarmOut>
           <pFcarmGrp></pFcarmGrp>
@@ -592,6 +592,11 @@
               <FileName>smart_bus.c</FileName>
               <FileType>1</FileType>
               <FilePath>E:\mylib\sdhLib\src\Communication\smart_bus.c</FilePath>
+            </File>
+            <File>
+              <FileName>smart_bus.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>E:\mylib\sdhLib\inc\Communication\smart_bus.h</FilePath>
             </File>
           </Files>
         </Group>

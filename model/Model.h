@@ -96,7 +96,7 @@ ABS_CLASS( Model)
 	uint8_t	mdl_id;
 	
 	abstract int (*init)( Model *self, IN void *arg);
-	
+	void	(*run)(Model *self);
 	int (*self_check)( Model *self);
 	void (*attach)( Model *self, IN Observer *s);
 	void (*detach)( Model *self, IN Observer *s);
