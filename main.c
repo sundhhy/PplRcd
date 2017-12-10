@@ -116,6 +116,7 @@ osThreadDef (ThrdKeyRun, osPriorityNormal, 1, 0);                   // thread ob
 #if TDD_ON == 1
 char		appBuf[ 64];
 int			tdd_i, tdd_j, tdd_count = 0;
+uint8_t		tdd_u8;
 char			line = 0;
 char			tdd_finish = 0;
 
@@ -209,8 +210,8 @@ int main (void) {
 	
 	//各个外设驱动模块初始化
 	
-	ret = USB_Init(NULL);
-	assert(ret == RET_OK);
+//	ret = USB_Init(NULL);
+//	assert(ret == RET_OK);
 	
 	InitTimer( TIM2, 1000);
 	clean_time_flags();
@@ -241,6 +242,7 @@ int main (void) {
 	
 #if TDD_ON == 0
 	//界面初始化
+	
 	p_mainHmi = CreateHMI( HMI_MAIN);
 	p_mainHmi->init( p_mainHmi, NULL);
 	p_mainHmi->show( p_mainHmi);
@@ -286,15 +288,22 @@ int main (void) {
 		p_mdl_test = ModelCreate(appBuf);
 		if(p_mdl_test->self_check(p_mdl_test) == RET_OK)
 		{
-			
+			//设置信号类型为pt100
+			tdd_u8 = AI_Pt100;
+			if(p_mdl_test->setMdlData(p_mdl_test,AUX_SIGNALTYPE, &tdd_u8) == RET_OK)
+			{
+				Tdd_disp_text("设置信号类型成功",line, 60);
+				
+			}
 			p_mdl_test->to_string(p_mdl_test, AUX_SIGNALTYPE, appBuf);
-			Tdd_disp_text(appBuf,line, 100);
-			Tdd_disp_text("自检成功!",line++, 200);
+			Tdd_disp_text(appBuf,line++, 220);
+			
 		}
 		else 
 		{
 			Tdd_disp_text("自检失败!",line++, 200);
 		}
+		osDelay(100);
 	}
 	
 	Tdd_disp_text("通道采样",7, 100);
@@ -319,7 +328,7 @@ int main (void) {
 			tdd_j = p_mdl_test->getMdlData(p_mdl_test, AUX_DATA, NULL);
 			
 			
-			sprintf(appBuf,"%d", tdd_j);
+			sprintf(appBuf,"%xh", tdd_j);
 			Tdd_disp_text(appBuf,line++, 250);
 			
 			

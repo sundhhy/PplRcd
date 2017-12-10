@@ -113,17 +113,34 @@ static int UartDeInit( driveUart *self)
 **/
 static int UartWrite( driveUart *self, void *buf, int wrLen)
 {
-	CfgUart_t *myCfg = ( CfgUart_t *)self->cfg;
-	int ret;
-	uint8_t *sendbuf = buf;
-	int count = 0;
-	
+	CfgUart_t 	*myCfg = ( CfgUart_t *)self->cfg;
+	int 		ret;
+	uint8_t 	*sendbuf = buf;
+	int 		count = 0;
+//	uint32_t	cndtr = 0;
 
-	if(myCfg->opt_mode == UART_MODE_DMA)
-		if(myCfg->dma->dma_tx_base->CNDTR > 0)
-			return ERR_BUSY;
+//	if(myCfg->opt_mode == UART_MODE_DMA)
+//	{
+//		cndtr = myCfg->dma->dma_tx_base->CNDTR;
+//		while(myCfg->dma->dma_tx_base->CNDTR)
+//			count ++;
+//		
+//	}
+//	else if(myCfg->opt_mode == UART_MODE_INTR)
+//	{
+//		while(self->ctl.sendingCount < self->ctl.sendingLen)
+//		{
+//			count ++;
+//		}
+//			
+//			
+//	}
 
-	
+//	if(count)
+//	{
+//		count = 0;
+// 		return ERR_BUSY;
+//	}
 	if( buf == NULL || wrLen == 0)
 		return ERR_BAD_PARAMETER;
 	if( self->status == UARTSTATUS_TXBUSY)
@@ -156,10 +173,10 @@ static int UartWrite( driveUart *self, void *buf, int wrLen)
 		else	//intr
 		{
 			self->ctl.intrSendingBuf = sendbuf;
-			self->ctl.sendingCount = 1;
+			self->ctl.sendingCount = 0;
 			self->ctl.sendingLen = wrLen;
-			USART_SendData( self->devUartBase, sendbuf[0]);
-			USART_ITConfig( self->devUartBase, USART_IT_TXE, ENABLE);
+			USART_SendData(self->devUartBase, sendbuf[0]);
+			USART_ITConfig(self->devUartBase, USART_IT_TXE, ENABLE);
 			
 		}
 		
@@ -615,7 +632,7 @@ void Usart_irq( driveUart *thisDev)
 					thisDev->txPost(thisDev);
 			}			
 			else
-				USART_SendData( thisDev->devUartBase, thisDev->ctl.intrSendingBuf[ thisDev->ctl.sendingCount] );
+				USART_SendData( thisDev->devUartBase, thisDev->ctl.intrSendingBuf[thisDev->ctl.sendingCount] );
 			
 		
 			

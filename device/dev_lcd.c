@@ -19,7 +19,7 @@ int DevLCD_open( int major, int minor, void **dev)
 			if( minor == 1)
 			{
 				pdev = (I_dev_lcd	*)( &g_IUsartGpu);
-				pdev->open();
+//				pdev->open();
 				*dev = pdev;
 			}
 			else

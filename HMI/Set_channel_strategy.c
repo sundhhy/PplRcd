@@ -312,7 +312,7 @@ static void Cns_update_content(int op, int weight)
 	switch(p_syf->f_row) 
 	{
 		case 0:
-			g_setting_chn = Operate_in_tange(g_setting_chn, op, 1, 0, NUM_CHANNEL);
+			g_setting_chn = Operate_in_tange(g_setting_chn, op, 1, 0, NUM_CHANNEL - 1);
 			g_chn_strategy.cmd_hdl(g_chn_strategy.p_cmd_rcv, sycmd_reflush, NULL);
 //			Str_Calculations(arr_p_vram[p_syf->f_row], 1,  op, weight, 0, NUM_CHANNEL);
 			break;

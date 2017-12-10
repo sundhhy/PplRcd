@@ -55,8 +55,8 @@ typedef enum {
 	AI_4_20_mA,
 	AI_0_5_V,
 	AI_1_5_V,
-	AI_0_20_mA,
-	AI_0_100_mA,
+	AI_0_20_mV,
+	AI_0_100_mV,
 	
 	AI_0_400_ohm,
 	PI_0_30_kHz,
@@ -73,14 +73,16 @@ typedef struct {
 	uint8_t			unit;
 	uint8_t			MB;			//记录容量，M
 	uint8_t			filter_time_s;
-	short				small_signal;
-	
+	uint8_t			decimal;
+	uint8_t			flag_err;		//0 无错误， 1 采样失败
+	short			small_signal;
+	int16_t			lower_limit, upper_limit;		//
 
 	/***************1位小数*******************/
-	int					lower_limit, upper_limit;		//
-	short				k,b;
+	
+	short			k,b;
 	/******************************************/
-	int					value;
+	int16_t			value;
 }chn_info_t;
 
 typedef struct {

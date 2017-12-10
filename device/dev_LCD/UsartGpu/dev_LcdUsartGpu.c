@@ -58,6 +58,7 @@ static char	lcdBuf[LCDBUF_MAX];
 //------------------------------------------------------------------------------
 // local function prototypes
 //------------------------------------------------------------------------------
+static int Dev_UsartInit( void);
 static int ClearLcd( int c);
 static int Dev_UsartdeInit( void);
 static int GpuWrString( char m, char *string,  int len, int x, int y, int font, char c);
@@ -70,6 +71,7 @@ static void GpuPic( int x1, int y1, char num);
 static void GpuCutPicture( short x1, short y1, short num, short px1, short py1, short w, short h);
 static void GpuBPic( char m, int x1, int y1, char num);
 static void GpuDone( void);
+static void Gpu_send_done(void);
 static void Cmdbuf_manager(char *p_cmd);
 static void GpuIcon(int x1, int y1, char num, int xn, int yn, int n);
 //============================================================================//
@@ -164,7 +166,7 @@ static void GpuBPic( char m, int x1, int y1, char num)
 	GpuSend(lcdBuf);
 	
 	if((x1 == 0) && (y1 == 0))  {
-		GpuDone();
+		Gpu_send_done();
 		osDelay(100);
 	}
 	Sem_post(&gpu_sem);
@@ -178,12 +180,20 @@ static void GpuBPic( char m, int x1, int y1, char num)
 
 
 
-int Dev_UsartInit( void)
+static int Dev_UsartInit( void)
 {
+	int	ret = 0;
+	int	tx_wait_ms = 10000;
 	Sem_init(&gpu_sem);
-	Sem_post(&gpu_sem);
-	return Dev_open( DEVID_UART1, ( void *)&I_sendDev);
+	ret = Sem_post(&gpu_sem);
+	ret =  Dev_open( DEVID_UART1, ( void *)&I_sendDev);
 	
+	if(ret == RET_OK)
+	{
+		I_sendDev->ioctol(I_sendDev, DEVCMD_SET_TXWAITTIME_MS, tx_wait_ms);
+		
+	}
+	return ret;
 }
 
 static int Dev_UsartdeInit( void)
@@ -384,6 +394,14 @@ static void GpuBKColor( char c)
 	
 
 }
+
+static void Gpu_send_done(void)
+{
+	char tmpbuf[4] = {0};
+	strcpy(tmpbuf, "\r\n");
+	GpuSend(tmpbuf);
+	cmd_count = 0;
+}
 static void Cmdbuf_manager(char *p_cmd)
 {
 //	char	tmp_cmd_buf[15] = {0};
@@ -391,7 +409,7 @@ static void Cmdbuf_manager(char *p_cmd)
 	
 	
 	if((cmd_count +  cmd_len) > UGPU_CMDBUF_LEN) {
-		GpuDone();
+		Gpu_send_done();
 		osDelay(100);
 //		spg ++;
 //		sprintf(tmp_cmd_buf, "SPG(%d);", spg);
@@ -404,12 +422,11 @@ static void Cmdbuf_manager(char *p_cmd)
 static void GpuDone( void)
 {
 #if USE_CMD_BUF == 1
-	char tmpbuf[4] = {0};
+	
 //	int		ret = 0;
+	Sem_wait(&gpu_sem, FOREVER);
 	
-	strcpy(tmpbuf, "\r\n");
-	GpuSend(tmpbuf);
-	
+	Gpu_send_done();
 //	while(1) {
 //		strcpy(tmpbuf, "\r\n");
 //		GpuSend(tmpbuf);
@@ -428,7 +445,8 @@ static void GpuDone( void)
 	//todo:需要增加错误处理
 //	err:
 //	osDelay(200);
-	cmd_count = 0;
+
+	Sem_post(&gpu_sem);
 #endif
 }
 
@@ -580,12 +598,13 @@ void GpuSend(char * buf)
 		}  else if(ret == ERR_DEV_TIMEOUT) {
 			osDelay(100);
 			break; 
-		} else {
-			
-//			strcpy(tmpbuf, "\r\n");
-//			I_sendDev->write(I_sendDev, tmpbuf, 2);
-			osDelay(100);
-		}
+		} 
+//		else {
+//			
+////			strcpy(tmpbuf, "\r\n");
+////			I_sendDev->write(I_sendDev, tmpbuf, 2);
+//			osDelay(50);
+//		}
 		//todo: 如果会在这里出现死机，还要加上退出机制	
 		c ++;
 		if(c > 20)

@@ -4,7 +4,7 @@
 #include "dev_lcd.h"
 
 
-int Dev_UsartInit( void);
+//
 void GpuSend(char * buf);
 
 extern I_dev_lcd g_IUsartGpu;

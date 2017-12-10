@@ -50,6 +50,7 @@ static int MdlChn_init( Model *self, IN void *arg);
 static void MdlChn_run(Model *self);
 static int MdlChn_self_check(Model *self);
 static int MdlChn_getData(  Model *self, IN int aux, void *arg) ;
+static int MdlChn_setData(  Model *self, IN int aux, void *arg) ;
 
 static char* MdlChn_to_string( Model *self, IN int aux, void *arg);
 static int  MdlChn_to_percentage( Model *self, void *arg);
@@ -86,6 +87,8 @@ FUNCTION_SETTING( Model.run, MdlChn_run);
 
 FUNCTION_SETTING( Model.self_check, MdlChn_self_check);
 FUNCTION_SETTING( Model.getMdlData, MdlChn_getData);
+FUNCTION_SETTING( Model.setMdlData, MdlChn_setData);
+
 FUNCTION_SETTING( Model.to_string, MdlChn_to_string);
 FUNCTION_SETTING( Model.to_percentage, MdlChn_to_percentage);
 FUNCTION_SETTING( Model.modify_str_conf, MdlChn_modify_sconf);
@@ -167,6 +170,7 @@ static int MdlChn_self_check( Model *self)
 	cthis->chni.upper_limit = tmp_u16[0];
 	cthis->chni.lower_limit = tmp_u16[1];
 	
+	cthis->chni.decimal = 1;		//目前的smartbus的 工程值小数点只有1位
 	return RET_OK;
 	
 }
@@ -191,7 +195,15 @@ static void MdlChn_run(Model *self)
 		return;
 	SmBus_decode(SMBUS_AI_READ, chk_buf, &rst, sizeof(SmBus_result_t));
 	if(rst.chn_num != cthis->chni.chn_NO)
+	{
+		cthis->chni.flag_err = 1;
 		return;
+	}
+	else
+	{
+		cthis->chni.flag_err = 0;
+	}
+		
 	cthis->chni.signal_type = rst.signal_type;
 	cthis->chni.value = rst.val;
 	
@@ -205,6 +217,8 @@ static int MdlChn_getData(  Model *self, IN int aux, void *arg)
 	
 	switch(aux) {
 		case AUX_DATA:
+			if(cthis->chni.flag_err)
+				return 0xffff;
 			return cthis->chni.value;
 		case AUX_SIGNALTYPE:
 			return cthis->chni.signal_type;
@@ -220,14 +234,56 @@ static int MdlChn_getData(  Model *self, IN int aux, void *arg)
 	
 }
 
+
+
 static int MdlChn_setData(  Model *self, IN int aux, void *arg) 
 {
 	Model_chn		*cthis = SUB_PTR( self, Model, Model_chn);
+	uint8_t			*p_u8;
+	SmBus_conf_t	sb_conf ;
+	uint8_t			sbub_buf[32];
+	I_dev_Char 			*I_uart3 = NULL;
+	uint8_t 			i, j, tmp_u8;
 	
 	
+	Dev_open(DEVID_UART3, ( void *)&I_uart3);
 	switch(aux) {
 		case AUX_SIGNALTYPE:
-			return cthis->chni.signal_type;
+			p_u8 = (uint8_t *)arg;
+			cthis->chni.signal_type = *p_u8;
+		
+
+		
+			sb_conf.decimal = cthis->chni.decimal;
+			sb_conf.lower_limit = cthis->chni.lower_limit;
+			sb_conf.upper_limit = cthis->chni.upper_limit;
+			i = SmBus_AI_config(SMBUS_MAKE_CHN(SMBUS_CHN_AI, cthis->chni.chn_NO), &sb_conf, sbub_buf, 32);
+			if( I_uart3->write(I_uart3, sbub_buf, i) != RET_OK)
+				return ERR_OPT_FAILED;
+			i = I_uart3->read(I_uart3, sbub_buf, 32);
+			if(i <= 0)
+				return ERR_OPT_FAILED;
+			if(SmBus_decode(SMBUS_AI_CONFIG, sbub_buf, &tmp_u8, 1) != RET_OK)
+				return ERR_OPT_FAILED;
+			if(tmp_u8 != cthis->chni.chn_NO)
+				return ERR_OPT_FAILED;
+			//回读检查
+			
+			i = SmBus_rd_signal_type(SMBUS_MAKE_CHN(SMBUS_CHN_AI, cthis->chni.chn_NO), sbub_buf, 32);
+			if( I_uart3->write(I_uart3, sbub_buf, i) != RET_OK)
+				return ERR_OPT_FAILED;
+			i = I_uart3->read(I_uart3, sbub_buf, 32);
+			if(i <= 0)
+				return ERR_OPT_FAILED;
+			if(SmBus_decode(SMBUS_CMD_READ, sbub_buf, &tmp_u8, 1) != RET_OK)
+				return ERR_OPT_FAILED;
+			if(cthis->chni.signal_type != tmp_u8)
+			{
+				cthis->chni.signal_type = tmp_u8;
+				return ERR_OPT_FAILED;
+			}
+			
+			return RET_OK;
 		case AUX_PERCENTAGE:
 			
 			return self->to_percentage(self, arg); 
@@ -577,11 +633,11 @@ static void Pe_singnaltype(e_signal_t sgt, char *str)
 		case AI_4_20_mA:
 			sprintf(str, "4~20mA");
 			break;	
-		case AI_0_20_mA:
-			sprintf(str, "0~20mA");
+		case AI_0_20_mV:
+			sprintf(str, "0~20mV");
 			break;
-		case AI_0_100_mA:
-			sprintf(str, "0~100mA");
+		case AI_0_100_mV:
+			sprintf(str, "0~100mV");
 			break;	
 		case AI_Pt100:
 			sprintf(str, "Pt100");
