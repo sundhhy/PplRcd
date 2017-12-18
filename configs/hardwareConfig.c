@@ -67,7 +67,10 @@ Dma_source g_DmaUart3 = {
 
 
 
-
+iic_conf_t arr_conf_IIC[2] ={
+	{0},
+	{0}
+};
 
 
 spi_conf_t arr_conf_spi[2] ={

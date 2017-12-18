@@ -1,9 +1,6 @@
 .\objects\drive_spi.o: drive\SPI\drive_spi.c
 .\objects\drive_spi.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
 .\objects\drive_spi.o: .\drive\SPI/drive_spi.h
-.\objects\drive_spi.o: E:\mylib\sdhLib\inc\lw_oopc.h
-.\objects\drive_spi.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
-.\objects\drive_spi.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
 .\objects\drive_spi.o: E:\mylib\sdhLib\inc\mem/Ping_PongBuf.h
 .\objects\drive_spi.o: .\drive\dri_cmd.h
 .\objects\drive_spi.o: .\configs\hardwareConfig.h
@@ -20,6 +17,7 @@
 .\objects\drive_spi.o: d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\StdPeriph_Driver\inc\stm32f10x_exti.h
 .\objects\drive_spi.o: d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\StdPeriph_Driver\inc\stm32f10x_flash.h
 .\objects\drive_spi.o: d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\StdPeriph_Driver\inc\stm32f10x_gpio.h
+.\objects\drive_spi.o: d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\StdPeriph_Driver\inc\stm32f10x_i2c.h
 .\objects\drive_spi.o: d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\StdPeriph_Driver\inc\stm32f10x_rcc.h
 .\objects\drive_spi.o: d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\StdPeriph_Driver\inc\stm32f10x_spi.h
 .\objects\drive_spi.o: d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\StdPeriph_Driver\inc\stm32f10x_tim.h

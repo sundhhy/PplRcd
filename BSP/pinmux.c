@@ -9,6 +9,17 @@ void Pin_init(void)
 {
 	GPIO_InitTypeDef GPIO_InitStructure;
 	
+	/******* IIC *******************************************/
+	GPIO_InitStructure.GPIO_Pin = GPIO_PIN_IIC_SDA;                   
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
+    GPIO_Init( GPIO_PORT_IIC_SDA, &GPIO_InitStructure);	
+	
+	GPIO_InitStructure.GPIO_Pin = GPIO_PIN_IIC_SCL;        
+    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
+    GPIO_Init( GPIO_PORT_IIC_SCL, &GPIO_InitStructure);
+	
+	GPIO_PinRemapConfig(GPIO_Remap_I2C1,ENABLE);
 	/*********** usb 	************************************/
 	GPIO_InitStructure.GPIO_Pin = GPIO_PIN_USBRESET;                   
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;

@@ -20,12 +20,14 @@
 ".\objects\drive_uart.o"
 ".\objects\drive_gpio.o"
 ".\objects\drive_spi.o"
+".\objects\drive_iic.o"
 ".\objects\device.o"
 ".\objects\dev_lcd.o"
 ".\objects\dev_char.o"
 ".\objects\dev_uart.o"
 ".\objects\device_gpio.o"
 ".\objects\dev_spi.o"
+".\objects\dev_iic.o"
 ".\objects\glyph.o"
 ".\objects\testglyph.o"
 ".\objects\gh_txt.o"
@@ -101,6 +103,7 @@
 ".\objects\stm32f10x_spi.o"
 ".\objects\stm32f10x_tim.o"
 ".\objects\stm32f10x_usart.o"
+".\objects\stm32f10x_i2c.o"
 --library_type=microlib --strict --scatter ".\Objects\PplRcd.sct"
 --summary_stderr --info summarysizes --map --xref --callgraph --symbols
 --info sizes --info totals --info unused --info veneers

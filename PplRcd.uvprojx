@@ -653,6 +653,16 @@
               <FileType>1</FileType>
               <FilePath>.\drive\SPI\drive_spi.c</FilePath>
             </File>
+            <File>
+              <FileName>drive_IIC.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\drive\IIC\drive_IIC.c</FilePath>
+            </File>
+            <File>
+              <FileName>drive_IIC.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\drive\IIC\drive_IIC.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -732,6 +742,16 @@
               <FileName>dev_spi.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\device\dev_spi\dev_spi.h</FilePath>
+            </File>
+            <File>
+              <FileName>dev_IIC.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\device\dev_IIC\dev_IIC.h</FilePath>
+            </File>
+            <File>
+              <FileName>dev_IIC.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\device\dev_IIC\dev_IIC.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -1423,6 +1443,12 @@
         </targetInfos>
       </component>
       <component Cclass="Device" Cgroup="StdPeriph Drivers" Csub="GPIO" Cvendor="Keil" Cversion="3.5.0" condition="STM32F1xx STDPERIPH RCC">
+        <package name="STM32F1xx_DFP" schemaVersion="1.2" url="http://www.keil.com/pack/" vendor="Keil" version="2.1.0"/>
+        <targetInfos>
+          <targetInfo name="Target 1"/>
+        </targetInfos>
+      </component>
+      <component Cclass="Device" Cgroup="StdPeriph Drivers" Csub="I2C" Cvendor="Keil" Cversion="3.5.0" condition="STM32F1xx STDPERIPH RCC">
         <package name="STM32F1xx_DFP" schemaVersion="1.2" url="http://www.keil.com/pack/" vendor="Keil" version="2.1.0"/>
         <targetInfos>
           <targetInfo name="Target 1"/>

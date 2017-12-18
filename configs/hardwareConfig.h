@@ -12,6 +12,7 @@
 #endif
 
 #define NUM_SPIS        2
+#define NUM_IICS        2
 
 #define UART_MODE_INTR		0
 #define UART_MODE_DMA		1
@@ -94,6 +95,19 @@
 #define GPIO_PIN_USBINT                              GPIO_Pin_10
 #define GPIO_PORTSOURCE_USBINT                              GPIO_PortSourceGPIOA    					 
 #define GPIO_PINSOURCE_USBINT                               GPIO_PinSource10
+
+//********************* PCF 8563 IIC *************************************************
+#define GPIO_PORT_IIC_SDA                              	GPIOB    					 
+#define GPIO_PIN_IIC_SDA                              GPIO_Pin_9
+#define GPIO_PORTSOURCE_IIC_SDA                              GPIO_PortSourceGPIOB   					 
+#define GPIO_PINSOURCE_IIC_SDA                              GPIO_PinSource9
+
+#define GPIO_PORT_IIC_SCL                              	GPIOB    					 
+#define GPIO_PIN_IIC_SCL                              GPIO_Pin_8
+#define GPIO_PORTSOURCE_IIC_SCL                              GPIO_PortSourceGPIOB   					 
+#define GPIO_PINSOURCE_IIC_SCL                             GPIO_PinSource8
+
+
 /////stm32的外设的DMA请求与DMA通道的对应关系是固定的，不是随便配置的。参考STM32的参考手册
 typedef struct 
 {
@@ -139,6 +153,19 @@ typedef struct {
 		int											baud;
 }spi_conf_t;
 
+typedef struct {
+				
+    char                   iic_mode;  
+	/*
+		0 	从发送器模式
+		1	从接收器模式
+		2	主发送器模式
+		3	主接收器模式
+	
+	*/
+    char		none[3];
+}iic_conf_t;
+
 
 
 #define GPIO_DIR_IN			0
@@ -167,7 +194,7 @@ typedef struct
 
 
 extern CfgUart_t g_confUart1, g_confUart2, g_confUart3;
-
+extern iic_conf_t arr_conf_IIC[2];
 //extern gpio_pins Dir_485_pin1 , Dir_485_pin2;
 
 extern gpio_pins pin_keyRight;
