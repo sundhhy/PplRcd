@@ -108,11 +108,12 @@ static int Close_dev_IIC(I_dev_Char *self)
 static int Read_dev_IIC(I_dev_Char *self, void *buf, int rd_len)
 {
 	Dev_IIC		*cthis = SUB_PTR( self, I_dev_Char, Dev_IIC);
+	I2C_slave_t 	*sl = cthis->p_i2c_slaver;
 	int				len = 0;
 	int				ret;
 	while(len < rd_len) 
 	{
-		ret = Read_IIC(cthis->minor, buf, cthis->slave_addr, rd_len);
+		ret = Read_IIC(cthis->minor, buf, sl->slave_addr, sl->reg_addr, rd_len);
 		if(ret >0)
 			len += ret;
 	}
@@ -123,11 +124,12 @@ static int Read_dev_IIC(I_dev_Char *self, void *buf, int rd_len)
 static int Write_dev_IIC(I_dev_Char *self, void *buf, int wr_len)
 {
 	Dev_IIC		*cthis = SUB_PTR( self, I_dev_Char, Dev_IIC);
+	I2C_slave_t 	*sl = cthis->p_i2c_slaver;
 	int				len = 0;
 	int 			ret = 0;
 	while(len < wr_len)
 	{
-		ret = Write_IIC(cthis->minor, buf, cthis->slave_addr, wr_len);
+		ret = Write_IIC(cthis->minor, buf, sl->slave_addr, sl->reg_addr, wr_len);
 		if(ret >0)
 			len += ret;
 		
@@ -142,7 +144,7 @@ static int Ioctol_dev_IIC(I_dev_Char *self, int cmd, ...)
 {
 	Dev_IIC		*cthis = SUB_PTR( self, I_dev_Char, Dev_IIC);
 	va_list 	arg_ptr; 
-	uint8_t 	data_u8;;
+	I2C_slave_t 	*sl;
 
 	
 	
@@ -152,10 +154,10 @@ static int Ioctol_dev_IIC(I_dev_Char *self, int cmd, ...)
 	switch(cmd)
 	{
 		
-		case DEVCMD_SET_SLAVEADDR:
-			data_u8 = va_arg(arg_ptr, uint8_t);
+		case DEVCMD_SET_ARGUMENT:
+			sl = va_arg(arg_ptr, I2C_slave_t *);
 			va_end(arg_ptr); 
-			cthis->slave_addr = data_u8£»
+			cthis->p_i2c_slaver = sl;
 			break;
 			
 	}

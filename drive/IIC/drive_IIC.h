@@ -26,9 +26,9 @@
 //------------------------------------------------------------------------------
 // function prototypes
 //------------------------------------------------------------------------------
-int	Init_IIC(int No, spi_conf_t *c);
+int	Init_IIC(int No, iic_conf_t *c);
 
-int Read_IIC(int No, int rd_addr,  void *buf, int rd_len);
+int Read_IIC(int No, void *buf, uint8_t slave_addr, uint8_t reg_addr, uint16_t rd_len);
 int Write_IIC(int No, void *buf, uint8_t slave_addr, uint8_t reg_addr, uint16_t len);
 
 

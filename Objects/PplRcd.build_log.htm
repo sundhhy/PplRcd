@@ -3,331 +3,138 @@
 <pre>
 <h1>µVision Build Log</h1>
 <h2>Tool Versions:</h2>
-IDE-Version: ¦ÌVision V5.17.0.0
-Copyright (C) 2015 ARM Ltd and ARM Germany GmbH. All rights reserved.
-License Information: sundh AutoBVT, Microsoft, LIC=CZLLQ-NU9UN-7RAX3-ASCBA-F98MF-K8GII
+IDE-Version: ¦ÌVision V5.13.0.0
+Copyright (C) 2014 ARM Ltd and ARM Germany GmbH. All rights reserved.
+License Information: sundh Administrator, ssss, LIC=NHY8T-R7SVS-59KGZ-J3A9Z-ZZPPP-9LWZP
  
 Tool Versions:
-Toolchain:       MDK-ARM Standard  Version: 5.17
+Toolchain:       MDK-ARM Professional  Version: 5.13.0.0
 Toolchain Path:  D:\Keil_v5\ARM\ARMCC\Bin
-C Compiler:      Armcc.exe V5.06 update 1 (build 61)
-Assembler:       Armasm.exe V5.06 update 1 (build 61)
-Linker/Locator:  ArmLink.exe V5.06 update 1 (build 61)
-Library Manager: ArmAr.exe V5.06 update 1 (build 61)
-Hex Converter:   FromElf.exe V5.06 update 1 (build 61)
-CPU DLL:         SARMCM3.DLL V5.17
-Dialog DLL:      DCM.DLL V1.13.4.0
-Target DLL:      UL2CM3.DLL V1.156.1.0
-Dialog DLL:      TCM.DLL V1.14.6.0
+C Compiler:      Armcc.exe V5.05 update 1 (build 106)
+Assembler:       Armasm.exe V5.05 update 1 (build 106)
+Linker/Locator:  ArmLink.exe V5.05 update 1 (build 106)
+Library Manager: ArmAr.exe V5.05 update 1 (build 106)
+Hex Converter:   FromElf.exe V5.05 update 1 (build 106)
+CPU DLL:         SARMCM3.DLL V5.13.0.0
+Dialog DLL:      DCM.DLL V1.13.1.0
+Target DLL:      UL2CM3.DLL V1.154.12.0
+Dialog DLL:      TCM.DLL V1.14.4.0
  
 <h2>Project:</h2>
-E:\PHN\mycode\PplRcd\PplRcd.uvprojx
+E:\PaperlessRecorder\myCode\PplRcd\PplRcd.uvprojx
 Project File Date:  12/19/2017
 
 <h2>Output:</h2>
-*** Using Compiler 'V5.06 update 1 (build 61)', folder: 'D:\Keil_v5\ARM\ARMCC\Bin'
-Rebuild target 'Target 1'
-compiling Semaphore.c...
-compiling system.c...
-compiling main.c...
-main.c(195): warning:  #177-D: variable "ret" was declared but never referenced
-  	int			ret = 0;
-main.c: 1 warning, 0 errors
-compiling hardwareConfig.c...
-configs\hardwareConfig.c(209): warning:  #69-D: integer conversion resulted in truncation
-  	GPIO_PIN_USBINT,
-configs\hardwareConfig.c: 1 warning, 0 errors
-compiling mySystemClock.c...
-compiling intrInit.c...
-compiling pinmux.c...
-compiling marco.c...
-E:\mylib\sdhLib\src\basis\marco.c(71): warning:  #550-D: variable "spacenum" was set but never used
-  	int spacenum, year;
-E:\mylib\sdhLib\src\basis\marco.c: 1 warning, 0 errors
-compiling Ping_PongBuf.c...
-compiling except.c...
-compiling list.c...
-E:\mylib\sdhLib\src\arithmetic\list.c(1): warning:  #177-D: variable "rcsid" was declared but never referenced
-  static char rcsid[] = "$Id: H:/drh/idioms/book/RCS/list.doc,v 1.11 1997/02/21 19:46:01 drh Exp $";
-E:\mylib\sdhLib\src\arithmetic\list.c: 1 warning, 0 errors
-compiling assert.c...
-E:\mylib\sdhLib\src\basis\assert.c(1): warning:  #177-D: variable "rcsid" was declared but never referenced
-  static char rcsid[] = "$Id: H:/drh/idioms/book/RCS/except.doc,v 1.10 1997/02/21 19:43:55 drh Exp $";
-E:\mylib\sdhLib\src\basis\assert.c: 1 warning, 0 errors
-compiling mem.c...
-E:\mylib\sdhLib\src\mem\mem.c(1): warning:  #177-D: variable "rcsid" was declared but never referenced
-  static char rcsid[] = "$Id: H:/drh/idioms/book/RCS/mem.doc,v 1.12 1997/10/27 23:08:05 drh Exp $";
-E:\mylib\sdhLib\src\mem\mem.c: 1 warning, 0 errors
-compiling rtx_depend.c...
-compiling cycQueue.c...
-compiling smart_bus.c...
-compiling dev_LcdUsartGpu.c...
-compiling nokia_5110.c...
-compiling drive_uart.c...
-drive\uart\drive_uart.c(42): warning:  #167-D: argument of type "uint8_t *" is incompatible with parameter of type "char *"
-  		init_pingponfbuf( &self->ctl.pingpong, self->rxCache, 
-ART_RXCACHE_SIZE, 
-URE);
-drive\uart\drive_uart.c(270): warning:  #513-D: a value of type "char *" cannot be assigned to an entity of type "uint8_t *"
-  		playloadbuf = get_playloadbuf( &self->ctl.pingpong);
-drive\uart\drive_uart.c(563): warning:  #550-D: variable "cntdr" was set but never used
-  	uint16_t	cntdr = 0;
-drive\uart\drive_uart.c: 3 warnings, 0 errors
-compiling drive_gpio.c...
-drive\GPIO\drive_gpio.c(256): warning:  #940-D: missing return statement at end of non-void function "Gpio_control_irq"
-  }
-drive\GPIO\drive_gpio.c: 1 warning, 0 errors
-compiling drive_IIC.c...
-drive\IIC\drive_IIC.c(93): warning:  #940-D: missing return statement at end of non-void function "Init_IIC"
-  }
-drive\IIC\drive_IIC.c(151): warning:  #940-D: missing return statement at end of non-void function "Read_IIC"
-  }
-drive\IIC\drive_IIC.c(214): warning:  #940-D: missing return statement at end of non-void function "Write_IIC"
-  }
-drive\IIC\drive_IIC.c: 3 warnings, 0 errors
-compiling drive_spi.c...
-drive\SPI\drive_spi.c(327): warning:  #550-D: variable "tmp" was set but never used
-  	uint16_t	tmp = 0;
-drive\SPI\drive_spi.c: 1 warning, 0 errors
-compiling device.c...
-compiling dev_lcd.c...
-compiling dev_uart.c...
-compiling dev_char.c...
-compiling device_gpio.c...
-compiling glyph.c...
-compiling testGlyph.c...
-compiling dev_IIC.c...
-compiling Gh_txt.c...
-compiling dev_spi.c...
-compiling Gh_None.c...
-compiling Gh_Pic.c...
-compiling Gh_Rectangle.c...
-compiling Reader.c...
-compiling expression.c...
-compiling TxtExpr.c...
-compiling ExpFactory.c...
-compiling BrExpr.c...
-compiling NtButton.c...
-compiling NtInput.c...
-compiling GeometricsExpr.c...
-compiling NtGrid.c...
-compiling PicExpr.c...
-compiling rtc.c...
+Build target 'Target 1'
 compiling rtc_pcf8563.c...
-compiling keyboard.c...
-compiling Storage.c...
-compiling sheet.c...
-compiling times.c...
-compiling sheetMemento.c...
-compiling HMIFactory.c...
-compiling commHMI.c...
-compiling HMI.c...
-compiling mainHMI.c...
-compiling format.c...
-compiling keyboardHMI.c...
-compiling menuHMI.c...
-compiling chnInfoPic.c...
-compiling barGraphHmi.c...
-compiling dataHmi.c...
-compiling real_time_trendHmi.c...
-compiling curve.c...
-compiling focus.c...
-compiling news_select_HMI.c...
-compiling News_Alarm_HMI.c...
-compiling News_Power_down_HMI.c...
-compiling Accumulate_HMI .c...
-compiling Setup_HMI.c...
-compiling Set_system_strategy.c...
-HMI\Set_system_strategy.c(411): warning:  #223-D: function "System_default" declared implicitly
-  		System_default(NULL);
-HMI\Set_system_strategy.c: 1 warning, 0 errors
-compiling Setting_HMI.c...
-compiling Set_channel_strategy.c...
-compiling Set_arithmetic_strategy.c...
-compiling Set_alarm_strategy.c...
-compiling Set_view_strategy.c...
-compiling Set_dataBackUp_strategy.c...
-compiling Set_dataPrint_strategy.c...
-compiling Acc_day.c...
-compiling Model.c...
-compiling windownsHMI.c...
-compiling Acc_month.c...
-compiling ModelTest.c...
-compiling ModelFactory.c...
-compiling Model_channel.c...
-model\Model_channel.c(138): warning:  #223-D: function "SmBus_Query" declared implicitly
-  	i = SmBus_Query(SMBUS_MAKE_CHN(SMBUS_CHN_AI, cthis->chni.chn_NO), chk_buf, 32);
-model\Model_channel.c(138): warning:  #223-D: function "SMBUS_MAKE_CHN" declared implicitly
-  	i = SmBus_Query(SMBUS_MAKE_CHN(SMBUS_CHN_AI, cthis->chni.chn_NO), chk_buf, 32);
-model\Model_channel.c(149): warning:  #223-D: function "SmBus_rd_signal_type" declared implicitly
-  	i = SmBus_rd_signal_type(SMBUS_MAKE_CHN(SMBUS_CHN_AI, cthis->chni.chn_NO), chk_buf, 32);
-model\Model_channel.c(155): error:  #20: identifier "SMBUS_CMD_READ" is undefined
-  	if(SmBus_decode(SMBUS_CMD_READ, chk_buf, &tmp_u8, 1) != RET_OK)
-model\Model_channel.c(160): warning:  #223-D: function "SmBus_rd_h_l_limit" declared implicitly
-  	i = SmBus_rd_h_l_limit(SMBUS_MAKE_CHN(SMBUS_CHN_AI, cthis->chni.chn_NO), chk_buf, 32);
-model\Model_channel.c(182): error:  #20: identifier "SmBus_result_t" is undefined
-  	SmBus_result_t		rst;
-model\Model_channel.c(190): warning:  #223-D: function "SmBus_AI_Read" declared implicitly
-  	i = SmBus_AI_Read(SMBUS_MAKE_CHN(SMBUS_CHN_AI, cthis->chni.chn_NO), chk_buf, 16);
-model\Model_channel.c(190): warning:  #223-D: function "SMBUS_MAKE_CHN" declared implicitly
-  	i = SmBus_AI_Read(SMBUS_MAKE_CHN(SMBUS_CHN_AI, cthis->chni.chn_NO), chk_buf, 16);
-model\Model_channel.c(196): error:  #20: identifier "SMBUS_AI_READ" is undefined
-  	SmBus_decode(SMBUS_AI_READ, chk_buf, &rst, sizeof(SmBus_result_t));
-model\Model_channel.c(196): error:  #20: identifier "SmBus_result_t" is undefined
-  	SmBus_decode(SMBUS_AI_READ, chk_buf, &rst, sizeof(SmBus_result_t));
-model\Model_channel.c(186): warning:  #177-D: variable "j" was declared but never referenced
-  	uint8_t 			i, j;
-model\Model_channel.c(243): error:  #20: identifier "SmBus_conf_t" is undefined
-  	SmBus_conf_t	sb_conf ;
-model\Model_channel.c(260): warning:  #223-D: function "SmBus_AI_config" declared implicitly
-  			i = SmBus_AI_config(SMBUS_MAKE_CHN(SMBUS_CHN_AI, cthis->chni.chn_NO), &sb_conf, sbub_buf, 32);
-model\Model_channel.c(260): warning:  #223-D: function "SMBUS_MAKE_CHN" declared implicitly
-  			i = SmBus_AI_config(SMBUS_MAKE_CHN(SMBUS_CHN_AI, cthis->chni.chn_NO), &sb_conf, sbub_buf, 32);
-model\Model_channel.c(266): error:  #20: identifier "SMBUS_AI_CONFIG" is undefined
-  			if(SmBus_decode(SMBUS_AI_CONFIG, sbub_buf, &tmp_u8, 1) != RET_OK)
-model\Model_channel.c(272): warning:  #223-D: function "SmBus_rd_signal_type" declared implicitly
-  			i = SmBus_rd_signal_type(SMBUS_MAKE_CHN(SMBUS_CHN_AI, cthis->chni.chn_NO), sbub_buf, 32);
-model\Model_channel.c(278): error:  #20: identifier "SMBUS_CMD_READ" is undefined
-  			if(SmBus_decode(SMBUS_CMD_READ, sbub_buf, &tmp_u8, 1) != RET_OK)
-model\Model_channel.c(295): error:  #20: identifier "ERR_OPT_ILLEGAL" is undefined
-  	return ERR_OPT_ILLEGAL;
-model\Model_channel.c(246): warning:  #177-D: variable "j" was declared but never referenced
-  	uint8_t 			i, j, tmp_u8;
-model\Model_channel.c: 11 warnings, 8 errors
-compiling Controller.c...
-compiling ModelTime.c...
-compiling CtlKey.c...
-compiling CtlTimer.c...
-compiling Ch376.c...
-USB\Ch376.c(473): warning:  #111-D: statement is unreachable
-  	return 0;
-USB\Ch376.c(525): warning:  #177-D: variable "fat_info" was declared but never referenced
-  	FAT_DIR_INFO	*fat_info = (FAT_DIR_INFO	*)DataBuff;
-USB\Ch376.c: 2 warnings, 0 errors
-compiling RTX_Conf_CM.c...
-compiling Usb.c...
-USB\Usb.c(334): warning:  #177-D: variable "s" was declared but never referenced
-  	uint8_t		s;
-USB\Usb.c: 1 warning, 0 errors
-compiling stm32f10x_dma.c...
-compiling stm32f10x_exti.c...
-compiling misc.c...
-compiling stm32f10x_flash.c...
-compiling stm32f10x_i2c.c...
-compiling stm32f10x_rcc.c...
-compiling stm32f10x_gpio.c...
-compiling stm32f10x_spi.c...
-assembling startup_stm32f10x_hd.s...
-compiling stm32f10x_tim.c...
-compiling stm32f10x_usart.c...
-compiling system_stm32f10x.c...
-".\Objects\PplRcd.axf" - 8 Error(s), 29 Warning(s).
+linking...
+Program Size: Code=72080 RO-data=4424 RW-data=1756 ZI-data=26844  
+".\Objects\PplRcd.axf" - 0 Error(s), 0 Warning(s).
 
 <h2>Software Packages used:</h2>
 
 Package Vendor: ARM
-                http://www.keil.com/pack/ARM.CMSIS.4.5.0.pack
+                http://www.keil.com/pack/ARM.CMSIS.4.4.0.pack
                 ::CMSIS:RTOS:1.0 (API)
                 CMSIS (Cortex Microcontroller Software Interface Standard)
    * Component: RTOS Version: 1.0
-   * Component: CORE Version: 4.3.0
-   * Component: Keil RTX Version: 4.80.0
+   * Component: Keil RTX Version: 4.79.0
+   * Component: CORE Version: 4.2.0
 
 Package Vendor: Keil
                 http://www.keil.com/pack/Keil.STM32F1xx_DFP.2.1.0.pack
-                Keil::Device:Startup:1.0.0
+                Keil::Device:StdPeriph Drivers:DMA:3.5.0
                 STMicroelectronics STM32F1 Series Device Support, Drivers and Examples
-   * Component: Startup Version: 1.0.0
-   * Component: Framework Version: 3.5.1
    * Component: DMA Version: 3.5.0
    * Component: EXTI Version: 3.5.0
-   * Component: Flash Version: 3.5.0
-   * Component: GPIO Version: 3.5.0
-   * Component: I2C Version: 3.5.0
-   * Component: RCC Version: 3.5.0
-   * Component: SPI Version: 3.5.0
    * Component: TIM Version: 3.5.0
    * Component: USART Version: 3.5.0
+   * Component: RCC Version: 3.5.0
+   * Component: GPIO Version: 3.5.0
+   * Component: Flash Version: 3.5.0
+   * Component: Framework Version: 3.5.1
+   * Component: I2C Version: 3.5.0
+   * Component: SPI Version: 3.5.0
+   * Component: Startup Version: 1.0.0
 
 <h2>Collection of Component include folders:</h2>
-  E:\PHN\mycode\PplRcd\RTE
-  E:\PHN\mycode\PplRcd\RTE\Device\STM32F103VC
-  D:\Keil_v5\ARM\PACK\ARM\CMSIS\4.5.0\CMSIS\Include
-  D:\Keil_v5\ARM\PACK\ARM\CMSIS\4.5.0\CMSIS\RTOS\RTX\INC
-  D:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\Include
-  D:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\StdPeriph_Driver\inc
+  E:\PaperlessRecorder\myCode\PplRcd\RTE
+  E:\PaperlessRecorder\myCode\PplRcd\RTE\Device\STM32F103VC
+  d:\Keil_v5\ARM\PACK\ARM\CMSIS\4.4.0\CMSIS\Include
+  d:\Keil_v5\ARM\PACK\ARM\CMSIS\4.4.0\CMSIS\RTOS\RTX\INC
+  d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0
+  d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\Include
+  d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\StdPeriph_Driver\inc
 
 <h2>Collection of Component Files used:</h2>
 
    * Component: ::CMSIS:RTOS:1.0 (API)
 
-   * Component: ARM::CMSIS:CORE:4.3.0
-
-   * Component: ARM::CMSIS:RTOS:Keil RTX:4.80.0
+   * Component: ARM::CMSIS:RTOS:Keil RTX:4.79.0
       Include file:  CMSIS\RTOS\RTX\INC\cmsis_os.h
       Source file:   CMSIS\RTOS\RTX\Templates\RTX_Conf_CM.c
       Include file:  CMSIS\RTOS\RTX\UserCodeTemplates\osObjects.h
       Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\main.c
-      Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\MailQueue.c
+      Library file:  CMSIS\RTOS\RTX\LIB\ARM\RTX_CM3.lib
       Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\MemPool.c
+      Source file:   CMSIS\RTOS\RTX\SRC\ARM\SVC_Table.s
+      Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\Thread.c
       Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\MsgQueue.c
       Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\Mutex.c
       Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\Semaphore.c
-      Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\Thread.c
+      Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\MailQueue.c
       Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\Timer.c
-      Source file:   CMSIS\RTOS\RTX\SRC\ARM\SVC_Table.s
-      Library file:  CMSIS\RTOS\RTX\LIB\ARM\RTX_CM3.lib
 
-   * Component: Keil::Device:Startup:1.0.0
-      Source file:   Device\Source\ARM\STM32F1xx_OPT.s
-      Source file:   Device\Source\ARM\startup_stm32f10x_hd.s
-      Source file:   Device\Source\system_stm32f10x.c
-      Include file:  RTE_Driver\Config\RTE_Device.h
-
-   * Component: Keil::Device:StdPeriph Drivers:Framework:3.5.1
-      Include file:  Device\StdPeriph_Driver\inc\misc.h
-      Source file:   Device\StdPeriph_Driver\src\misc.c
-      Source file:   Device\StdPeriph_Driver\templates\stm32f10x_conf.h
-      Include file:  Device\StdPeriph_Driver\templates\stm32f10x_it.h
-      Source file:   Device\StdPeriph_Driver\templates\stm32f10x_it.c
+   * Component: ARM::CMSIS:CORE:4.2.0
 
    * Component: Keil::Device:StdPeriph Drivers:DMA:3.5.0
       Include file:  Device\StdPeriph_Driver\inc\stm32f10x_dma.h
       Source file:   Device\StdPeriph_Driver\src\stm32f10x_dma.c
 
    * Component: Keil::Device:StdPeriph Drivers:EXTI:3.5.0
-      Include file:  Device\StdPeriph_Driver\inc\stm32f10x_exti.h
       Source file:   Device\StdPeriph_Driver\src\stm32f10x_exti.c
+      Include file:  Device\StdPeriph_Driver\inc\stm32f10x_exti.h
 
-   * Component: Keil::Device:StdPeriph Drivers:Flash:3.5.0
-      Include file:  Device\StdPeriph_Driver\inc\stm32f10x_flash.h
-      Source file:   Device\StdPeriph_Driver\src\stm32f10x_flash.c
+   * Component: Keil::Device:StdPeriph Drivers:TIM:3.5.0
+      Source file:   Device\StdPeriph_Driver\src\stm32f10x_tim.c
+      Include file:  Device\StdPeriph_Driver\inc\stm32f10x_tim.h
 
-   * Component: Keil::Device:StdPeriph Drivers:GPIO:3.5.0
-      Include file:  Device\StdPeriph_Driver\inc\stm32f10x_gpio.h
-      Source file:   Device\StdPeriph_Driver\src\stm32f10x_gpio.c
-
-   * Component: Keil::Device:StdPeriph Drivers:I2C:3.5.0
-      Include file:  Device\StdPeriph_Driver\inc\stm32f10x_i2c.h
-      Source file:   Device\StdPeriph_Driver\src\stm32f10x_i2c.c
+   * Component: Keil::Device:StdPeriph Drivers:USART:3.5.0
+      Source file:   Device\StdPeriph_Driver\src\stm32f10x_usart.c
+      Include file:  Device\StdPeriph_Driver\inc\stm32f10x_usart.h
 
    * Component: Keil::Device:StdPeriph Drivers:RCC:3.5.0
       Include file:  Device\StdPeriph_Driver\inc\stm32f10x_rcc.h
       Source file:   Device\StdPeriph_Driver\src\stm32f10x_rcc.c
 
+   * Component: Keil::Device:StdPeriph Drivers:GPIO:3.5.0
+      Source file:   Device\StdPeriph_Driver\src\stm32f10x_gpio.c
+      Include file:  Device\StdPeriph_Driver\inc\stm32f10x_gpio.h
+
+   * Component: Keil::Device:StdPeriph Drivers:Flash:3.5.0
+      Include file:  Device\StdPeriph_Driver\inc\stm32f10x_flash.h
+      Source file:   Device\StdPeriph_Driver\src\stm32f10x_flash.c
+
+   * Component: Keil::Device:StdPeriph Drivers:Framework:3.5.1
+      Include file:  Device\StdPeriph_Driver\inc\misc.h
+      Include file:  Device\StdPeriph_Driver\templates\stm32f10x_it.h
+      Source file:   Device\StdPeriph_Driver\templates\stm32f10x_it.c
+      Source file:   Device\StdPeriph_Driver\templates\stm32f10x_conf.h
+      Source file:   Device\StdPeriph_Driver\src\misc.c
+
+   * Component: Keil::Device:StdPeriph Drivers:I2C:3.5.0
+      Source file:   Device\StdPeriph_Driver\src\stm32f10x_i2c.c
+      Include file:  Device\StdPeriph_Driver\inc\stm32f10x_i2c.h
+
    * Component: Keil::Device:StdPeriph Drivers:SPI:3.5.0
       Include file:  Device\StdPeriph_Driver\inc\stm32f10x_spi.h
       Source file:   Device\StdPeriph_Driver\src\stm32f10x_spi.c
 
-   * Component: Keil::Device:StdPeriph Drivers:TIM:3.5.0
-      Include file:  Device\StdPeriph_Driver\inc\stm32f10x_tim.h
-      Source file:   Device\StdPeriph_Driver\src\stm32f10x_tim.c
-
-   * Component: Keil::Device:StdPeriph Drivers:USART:3.5.0
-      Include file:  Device\StdPeriph_Driver\inc\stm32f10x_usart.h
-      Source file:   Device\StdPeriph_Driver\src\stm32f10x_usart.c
-Target not created.
-Build Time Elapsed:  00:00:50
+   * Component: Keil::Device:Startup:1.0.0
+      Source file:   Device\Source\ARM\STM32F1xx_OPT.s
+      Include file:  RTE_Driver\Config\RTE_Device.h
+      Source file:   Device\Source\system_stm32f10x.c
+      Source file:   Device\Source\ARM\startup_stm32f10x_hd.s
 </pre>
 </body>
 </html>

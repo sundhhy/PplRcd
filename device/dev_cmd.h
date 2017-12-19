@@ -21,7 +21,7 @@
 #define	DEVCMD_DISABLE_IRQ							13
 #define	DEVCMD_ENABLE_IRQ								14
 
-#define DEVCMD_SET_SLAVEADDR						15
+#define DEVCMD_SET_ARGUMENT							15
 
 #define	DEVGPIOCMD_SET_ENCODE						0x100
 

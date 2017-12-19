@@ -41,7 +41,7 @@ static iic_conf_t *arr_p_conf[NUM_IICS];
 //------------------------------------------------------------------------------
 // local function prototypes
 //------------------------------------------------------------------------------
-static void I2C_wait_standby_state(void);
+static int I2C_wait_EV(I2C_TypeDef* I2Cx, uint32_t ev);
 
 //============================================================================//
 //            P U B L I C   F U N C T I O N S                                 //
@@ -84,20 +84,22 @@ int	Init_IIC(int No, iic_conf_t *c)
 		goto exit;
 	}
 	
+
 	I2C_Init(i2c_reg, &i2c_init);
 	I2C_Cmd(i2c_reg, ENABLE);
-	
+
 	arr_p_conf[No] = c;
 	exit:
 	return ret;
 
 }
 
-int Read_IIC(int No, void *buf, int rd_addr, int rd_len)
+int Read_IIC(int No, void *buf, uint8_t slave_addr, uint8_t reg_addr, uint16_t rd_len)
 {
-	I2C_TypeDef					*i2c_reg;
-	I2C_InitTypeDef			i2c_init;
-	int 							ret = RET_OK;	
+	I2C_TypeDef				*i2c_reg;
+	int 					ret = RET_OK;	
+	uint8_t					*p_u8 = (uint8_t *)buf;
+	uint16_t				bytes_to_read = rd_len;
 	
 	if(No >= NUM_IICS)
 		return ERR_BAD_PARAMETER;
@@ -108,19 +110,105 @@ int Read_IIC(int No, void *buf, int rd_addr, int rd_len)
 		i2c_reg = I2C2;
 	
 	
-//	while(
+    while(I2C_GetFlagStatus(i2c_reg, I2C_FLAG_BUSY)); 
 	
+	
+	  I2C_GenerateSTART(i2c_reg, ENABLE);
 
+	/* Test on EV5 and clear it */
+	if( I2C_wait_EV(i2c_reg, I2C_EVENT_MASTER_MODE_SELECT) < 0)
+	{
+		ret = ERR_DEV_TIMEOUT;	
+		goto err_exit;
+	}
+
+  /* Send EEPROM address for write */
+  I2C_Send7bitAddress(i2c_reg, slave_addr, I2C_Direction_Transmitter);
+
+  /* Test on EV6 and clear it */
+	if( I2C_wait_EV(i2c_reg, I2C_EVENT_MASTER_TRANSMITTER_MODE_SELECTED) < 0)
+	{
+		ret = ERR_DEV_TIMEOUT;	
+		goto err_exit;
+	}
+  
+  /* Clear EV6 by setting again the PE bit */
+  I2C_Cmd(i2c_reg, ENABLE);
+
+  /* Send the EEPROM's internal address to write to */
+  I2C_SendData(i2c_reg, reg_addr);  
+
+  /* Test on EV8 and clear it */
+	if( I2C_wait_EV(i2c_reg, I2C_EVENT_MASTER_BYTE_TRANSMITTED) < 0)
+	{
+		ret = ERR_DEV_TIMEOUT;	
+		goto err_exit;
+	}
+  
+  /* Send STRAT condition a second time */  
+    I2C_GenerateSTART(i2c_reg, ENABLE);
+	
+	/* Test on EV5 and clear it */
+	if( I2C_wait_EV(i2c_reg, I2C_EVENT_MASTER_MODE_SELECT) < 0)
+	{
+		ret = ERR_DEV_TIMEOUT;	
+		goto err_exit;
+	}
+
+	I2C_Send7bitAddress(I2C1, slave_addr, I2C_Direction_Receiver);
+  
+	/* Test on EV6 and clear it */
+	if( I2C_wait_EV(i2c_reg, I2C_EVENT_MASTER_RECEIVER_MODE_SELECTED) < 0)
+	{
+		ret = ERR_DEV_TIMEOUT;	
+		goto err_exit;
+	}
+	
+  /* While there is data to be read */
+  while(bytes_to_read)  
+  {
+    if(bytes_to_read == 1)
+    {
+      /* Disable Acknowledgement */
+      I2C_AcknowledgeConfig(i2c_reg, DISABLE);
+      
+      /* Send STOP Condition */
+      I2C_GenerateSTOP(i2c_reg, ENABLE);
+    }
+
+    /* Test on EV7 and clear it */
+    if(I2C_CheckEvent(i2c_reg, I2C_EVENT_MASTER_BYTE_RECEIVED))  
+    {      
+      /* Read a byte from the EEPROM */
+      *p_u8 = I2C_ReceiveData(i2c_reg);
+
+      /* Point to the next location where the byte read will be saved */
+      p_u8++; 
+      
+      /* Decrement the read bytes counter */
+      bytes_to_read--;        
+    }   
+  }
+
+  /* Enable Acknowledgement to be ready for another reception */
+  I2C_AcknowledgeConfig(i2c_reg, ENABLE);
+  return (rd_len - bytes_to_read);
+  
+err_exit:
+
+	/* Send STOP condition */
+	I2C_GenerateSTOP(i2c_reg, ENABLE);
+	return ret;
 	
 }
 
-int Write_IIC(int No, void *buf, uint8_t slave_addr, uint8_t reg_addr, uint16_t len)
+int Write_IIC(int No, void *buf, uint8_t slave_addr, uint8_t reg_addr, uint16_t wr_len)
 {
 	
 	I2C_TypeDef					*i2c_reg;
-	I2C_InitTypeDef			i2c_init;
-	int 							ret = RET_OK;	
-	
+	int 						ret = RET_OK;
+	uint8_t						*p_u8 = (uint8_t *)buf;
+	uint16_t					bytes_to_write = wr_len;
 	if(No >= NUM_IICS)
 		return ERR_BAD_PARAMETER;
 	
@@ -134,19 +222,63 @@ int Write_IIC(int No, void *buf, uint8_t slave_addr, uint8_t reg_addr, uint16_t 
 	I2C_GenerateSTART(i2c_reg, ENABLE);
 	
 	//等待EV5 然后清除它
-	while(!I2C_CheckEvent(i2c_reg, I2C_EVENT_MASTER_MODE_SELECT));
+	if( I2C_wait_EV(i2c_reg, I2C_EVENT_MASTER_MODE_SELECT) < 0)
+	{
+		ret = ERR_DEV_TIMEOUT;	
+		goto err_exit;
+	}
 	
 	if(arr_p_conf[No]->addr_bits == 7)
 	{
-		I2C_Send7bitAddress(i2c_reg, wr_addr, I2C_Direction_Transmitter);
+		I2C_Send7bitAddress(i2c_reg, slave_addr, I2C_Direction_Transmitter);
 	}
 	else
 	{
-		I2C_Send7bitAddress(i2c_reg, wr_addr, I2C_Direction_Transmitter);
+		I2C_Send7bitAddress(i2c_reg, slave_addr, I2C_Direction_Transmitter);
 	}
 	
 	//等待EV6 然后清除它
-	while(!I2C_CheckEvent(i2c_reg, I2C_EVENT_MASTER_TRANSMITTER_MODE_SELECTED));
+	if( I2C_wait_EV(i2c_reg, I2C_EVENT_MASTER_TRANSMITTER_MODE_SELECTED) < 0)
+	{
+		ret = ERR_DEV_TIMEOUT;	
+		goto err_exit;
+	}
+	
+	I2C_SendData(i2c_reg, reg_addr); 
+	
+	/* Test on EV8 and clear it */
+	if( I2C_wait_EV(i2c_reg, I2C_EVENT_MASTER_BYTE_TRANSMITTED) < 0)
+	{
+		ret = ERR_DEV_TIMEOUT;	
+		goto err_exit;
+	}
+	
+	 /* While there is data to be written */
+	while(bytes_to_write--)  
+	{
+		/* Send the current byte */
+		I2C_SendData(i2c_reg, *p_u8); 
+
+		/* Point to the next byte to be written */
+		p_u8++; 
+
+		/* Test on EV8 and clear it */
+		if( I2C_wait_EV(i2c_reg, I2C_EVENT_MASTER_BYTE_TRANSMITTED) < 0)
+		{
+//			ret = ERR_DEV_TIMEOUT;	
+			goto exit;
+		}
+	}
+
+	exit:
+	I2C_GenerateSTOP(i2c_reg, ENABLE);
+	return (wr_len - bytes_to_write);
+	err_exit:
+
+	/* Send STOP condition */
+	I2C_GenerateSTOP(i2c_reg, ENABLE);
+	return ret;
+	
 
 }
 
@@ -173,8 +305,23 @@ int Write_IIC(int No, void *buf, uint8_t slave_addr, uint8_t reg_addr, uint16_t 
 //=========================================================================//
 /// \name Private Functions
 /// \{
-static void I2C_wait_standby_state(void)
+
+
+static int I2C_wait_EV(I2C_TypeDef* I2Cx, uint32_t ev)
 {
+	int safe_count = 10000;
+	while(! I2C_CheckEvent(I2Cx, ev))
+	{
+		if(safe_count)
+			safe_count --;
+		else
+			break;
+		
+	}
+	
+	if(safe_count)
+		return 0;
+	else 
+		return -1;
 	
 }
-

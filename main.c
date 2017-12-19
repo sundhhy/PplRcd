@@ -203,13 +203,13 @@ int main (void) {
   // initialize peripherals here
 	
 	//BSP的初始化
-	System_init();
 	OpenPrpClock();
 	Pin_init();
 	NVIC_Configuration();
 	
 	//各个外设驱动模块初始化
-	
+	System_init();
+
 //	ret = USB_Init(NULL);
 //	assert(ret == RET_OK);
 	

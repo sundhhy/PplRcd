@@ -26,16 +26,16 @@
 typedef struct {
 	uint8_t			slave_addr;
 	uint8_t			reg_addr;
-	uint16_t		len;
-}I2C_addr_t;
+	uint8_t			none[2];
+}I2C_slave_t;
 
 CLASS(Dev_IIC)
 {
 	IMPLEMENTS( I_dev_Char);
 	void			*p_IIC;
+	I2C_slave_t		*p_i2c_slaver;
 	uint8_t		minor;
-	uint8_t		slave_addr;
-	uint8_t		none[2];
+	uint8_t		none[3];
 	
 };
 
