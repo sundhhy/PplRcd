@@ -112,7 +112,7 @@ static int Read_dev_IIC(I_dev_Char *self, void *buf, int rd_len)
 	int				ret;
 	while(len < rd_len) 
 	{
-		ret = Read_IIC(cthis->minor, buf, rd_len);
+		ret = Read_IIC(cthis->minor, buf, cthis->slave_addr, rd_len);
 		if(ret >0)
 			len += ret;
 	}
@@ -127,7 +127,7 @@ static int Write_dev_IIC(I_dev_Char *self, void *buf, int wr_len)
 	int 			ret = 0;
 	while(len < wr_len)
 	{
-		ret = Write_IIC(cthis->minor, buf, wr_len);
+		ret = Write_IIC(cthis->minor, buf, cthis->slave_addr, wr_len);
 		if(ret >0)
 			len += ret;
 		
@@ -140,7 +140,25 @@ static int Write_dev_IIC(I_dev_Char *self, void *buf, int wr_len)
 
 static int Ioctol_dev_IIC(I_dev_Char *self, int cmd, ...)
 {
+	Dev_IIC		*cthis = SUB_PTR( self, I_dev_Char, Dev_IIC);
+	va_list 	arg_ptr; 
+	uint8_t 	data_u8;;
 
+	
+	
+	
+	va_start(arg_ptr, cmd); 
+	
+	switch(cmd)
+	{
+		
+		case DEVCMD_SET_SLAVEADDR:
+			data_u8 = va_arg(arg_ptr, uint8_t);
+			va_end(arg_ptr); 
+			cthis->slave_addr = data_u8£»
+			break;
+			
+	}
 	return RET_OK;
 }
 static int Test_dev_IIC(I_dev_Char *self, void *testBuf, int len)

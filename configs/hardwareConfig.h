@@ -154,16 +154,21 @@ typedef struct {
 }spi_conf_t;
 
 typedef struct {
-				
-    char                   iic_mode;  
-	/*
+	
+//	char						i2c_mode;
+		/*
 		0 	从发送器模式
 		1	从接收器模式
 		2	主发送器模式
 		3	主接收器模式
 	
 	*/
-    char		none[3];
+	
+		uint32_t							speed;				// < 400K										
+    char                  own_addr;  
+		char									ack_enbale;
+		char									addr_bits;		//寻址模式,7 或10 
+	char									duty_cycle;		//SCL的占空比0 2:1  其他 69:9
 }iic_conf_t;
 
 

@@ -4,6 +4,7 @@
 
 #include "dev_uart/dev_uart.h"
 #include "dev_spi/dev_spi.h"
+#include "dev_IIC/dev_IIC.h"
 
 #include "dev_gpio/device_gpio.h"
 #include "basis/sdhDebug.h"
@@ -35,6 +36,15 @@ int DevChar_open( int major, int minor, void **dev)
 			break;
 		case DEVMAJOR_SPI:
 			*dev = Get_DevSpi( minor);
+			if( dev == NULL)
+			{
+				
+				ret = ERR_BAD_PARAMETER;
+			}
+		
+			break;
+		case DEVMAJOR_IIC:
+			*dev = Get_Dev_IIC( minor);
 			if( dev == NULL)
 			{
 				

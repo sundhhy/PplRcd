@@ -36,167 +36,119 @@
 //------------------------------------------------------------------------------
 // local vars
 //------------------------------------------------------------------------------
-
+static iic_conf_t *arr_p_conf[NUM_IICS];
 
 //------------------------------------------------------------------------------
 // local function prototypes
 //------------------------------------------------------------------------------
+static void I2C_wait_standby_state(void);
 
 //============================================================================//
 //            P U B L I C   F U N C T I O N S                                 //
 //============================================================================//
-int	Init_IIC(int No, spi_conf_t *c)
+int	Init_IIC(int No, iic_conf_t *c)
 {
-//	int 							ret = RET_OK;
-//	SPI_TypeDef				*spi_reg = NULL;
-//	SPI_InitTypeDef 	spi_init;
-//	
-//	if(No >= NUM_SPIS)
-//		return ERR_BAD_PARAMETER;
-//	
-//	if(No == 0)
-//		spi_reg = SPI1;
-//	else if(No == 1)
-//		spi_reg = SPI2;
-//	else if(No == 2)
-//		spi_reg = SPI3;
-//	
-//	SPI_StructInit(&spi_init);
-//	
-//	if(c->work_mode == 0)
-//	{
-//		spi_init.SPI_Mode = SPI_Mode_Master;
-//	} 
-//	else 
-//	{
-//		spi_init.SPI_Mode = SPI_Mode_Slave;
-//	}
+	
+	I2C_TypeDef					*i2c_reg;
+	I2C_InitTypeDef			i2c_init;
+	int 							ret = RET_OK;	
+	
+	if(No >= NUM_IICS)
+		return ERR_BAD_PARAMETER;
+	
+	if(No == 0)
+		i2c_reg = I2C1;
+	else if(No == 1)
+		i2c_reg = I2C2;
+	I2C_StructInit(&i2c_init);
+	
+	i2c_init.I2C_ClockSpeed = c->speed;
+	if(c->duty_cycle)
+		i2c_init.I2C_DutyCycle = I2C_DutyCycle_16_9;
+	else
+		i2c_init.I2C_DutyCycle = I2C_DutyCycle_2;
+	
+	i2c_init.I2C_OwnAddress1 = c->own_addr;
+	if(c->ack_enbale)
+		i2c_init.I2C_Ack = I2C_Ack_Enable;
+	else
+		i2c_init.I2C_Ack = I2C_Ack_Disable;
+	
+	if(c->addr_bits == 7)
+		i2c_init.I2C_AcknowledgedAddress = I2C_AcknowledgedAddress_7bit;
+	else if(c->addr_bits == 10)
+		i2c_init.I2C_AcknowledgedAddress = I2C_AcknowledgedAddress_10bit;
+	else 
+	{
+		ret = ERR_BAD_PARAMETER;
+		goto exit;
+	}
+	
+	I2C_Init(i2c_reg, &i2c_init);
+	I2C_Cmd(i2c_reg, ENABLE);
+	
+	arr_p_conf[No] = c;
+	exit:
+	return ret;
 
-//	Spi_mode_CP(c->mode, &spi_init);
-//	if(c->nss == 0)
-//		spi_init.SPI_NSS = SPI_NSS_Soft;
-//	else
-//		spi_init.SPI_NSS = SPI_NSS_Hard;
-//	
-//	if(c->datasize_bit == 8)
-//		spi_init.SPI_DataSize = SPI_DataSize_8b;
-//	else
-//		spi_init.SPI_DataSize = SPI_DataSize_16b;
-//	
-//	Spi_baud_Prescaler(c->baud, &spi_init);
-//	
-//	SPI_Init(spi_reg, &spi_init);
-//	SPI_I2S_ITConfig(spi_reg, SPI_I2S_IT_OVR, ENABLE);
-//	SPI_Cmd(spi_reg, ENABLE);
-//	
-//	return ret;
 }
 
-int Read_IIC(int No, void *buf, int rd_len)
+int Read_IIC(int No, void *buf, int rd_addr, int rd_len)
 {
-//	SPI_TypeDef	*spi_reg = NULL;
-//	int 				i = 0;
-//	int 				ret = 0;
-//	uint8_t			*data_u8 = (uint8_t			*)buf;
-//	uint16_t		*data_u16 = (uint16_t			*)buf;
-//	if(No >= NUM_SPIS)
-//		return ERR_BAD_PARAMETER;
-//	
-//	if(No == 0)
-//		spi_reg = SPI1;
-//	else if(No == 1)
-//		spi_reg = SPI2;
-//	else if(No == 2)
-//		spi_reg = SPI3;
-//	
-//	
-//	
-//	
-//	if(data_size == 8) 
-//	{
-//		for( i = 0; i < rd_len; i++)
-//		{
+	I2C_TypeDef					*i2c_reg;
+	I2C_InitTypeDef			i2c_init;
+	int 							ret = RET_OK;	
+	
+	if(No >= NUM_IICS)
+		return ERR_BAD_PARAMETER;
+	
+	if(No == 0)
+		i2c_reg = I2C1;
+	else if(No == 1)
+		i2c_reg = I2C2;
+	
+	
+//	while(
+	
 
-//			ret = spi_read_word(spi_reg);
-//			if( ret < 0)
-//				break;
-//			data_u8[i] = ret;
-
-//			
-//			
-//		}
-//	} 
-//	else if(data_size == 16) 
-//	{
-//		rd_len = rd_len >> 1;
-//		for( i = 0; i < rd_len; i++)
-//		{
-
-//			ret = spi_read_word(spi_reg);
-//			if(ret < 0) 
-//			{
-//				
-//				break;
-//				
-//			}
-//			data_u16[i] = ret;
-
-//			
-//			
-//		}
-//		i = i * 2;
-//	} 
-//	return i;	
 	
 }
 
-int Write_IIC(int No, void *buf, int len)
+int Write_IIC(int No, void *buf, uint8_t slave_addr, uint8_t reg_addr, uint16_t len)
 {
-//	SPI_TypeDef	*spi_reg = NULL;
-//	int 				i = 0;
-//	int 				ret = 0;
-//	uint8_t			*data_u8 = (uint8_t			*)buf;
-//	uint16_t		*data_u16 = (uint16_t			*)buf;
-//	
-//	if(No >= NUM_SPIS)
-//		return ERR_BAD_PARAMETER;
-//	
-//	if(No == 0)
-//		spi_reg = SPI1;
-//	else if(No == 1)
-//		spi_reg = SPI2;
-//	else if(No == 2)
-//		spi_reg = SPI3;
-//	
-//	if(data_size == 8)
-//	{
-//		for(i = 0; i < len; i++) {
-//			ret = spi_write_word(spi_reg, data_u8[i]);
-//			if(ret < 0)
-//				break;
-//			
-//		}
-//		
-//		
-//	}
-//	else if(data_size == 16) 
-//	{
-//		len = len >> 1;
-//		for(i = 0; i < len; i++) {
-//			ret = spi_write_word(spi_reg, data_u16[i]);
-//			if(ret < 0) 
-//			{
-//			
-//				break;
-//				
-//			}
-//			
-//		}
-//		i = i * 2;
-//	}
-//	
-//	return i;
-//}
+	
+	I2C_TypeDef					*i2c_reg;
+	I2C_InitTypeDef			i2c_init;
+	int 							ret = RET_OK;	
+	
+	if(No >= NUM_IICS)
+		return ERR_BAD_PARAMETER;
+	
+	if(No == 0)
+		i2c_reg = I2C1;
+	else if(No == 1)
+		i2c_reg = I2C2;
+	
+	while(I2C_GetFlagStatus(i2c_reg, I2C_FLAG_BUSY)) ;
+	
+	I2C_GenerateSTART(i2c_reg, ENABLE);
+	
+	//等待EV5 然后清除它
+	while(!I2C_CheckEvent(i2c_reg, I2C_EVENT_MASTER_MODE_SELECT));
+	
+	if(arr_p_conf[No]->addr_bits == 7)
+	{
+		I2C_Send7bitAddress(i2c_reg, wr_addr, I2C_Direction_Transmitter);
+	}
+	else
+	{
+		I2C_Send7bitAddress(i2c_reg, wr_addr, I2C_Direction_Transmitter);
+	}
+	
+	//等待EV6 然后清除它
+	while(!I2C_CheckEvent(i2c_reg, I2C_EVENT_MASTER_TRANSMITTER_MODE_SELECTED));
+
+}
 
 
 
@@ -211,7 +163,7 @@ int Write_IIC(int No, void *buf, int len)
 //		SPI_I2S_GetFlagStatus(SPI1, SPI_I2S_FLAG_OVR);
 //	}
 	
-}
+//}
 
 
 //=========================================================================//
@@ -221,5 +173,8 @@ int Write_IIC(int No, void *buf, int len)
 //=========================================================================//
 /// \name Private Functions
 /// \{
-
+static void I2C_wait_standby_state(void)
+{
+	
+}
 

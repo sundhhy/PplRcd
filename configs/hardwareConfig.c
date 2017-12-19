@@ -68,8 +68,8 @@ Dma_source g_DmaUart3 = {
 
 
 iic_conf_t arr_conf_IIC[2] ={
-	{0},
-	{0}
+	{400000, 1, 1, 7, 0},
+	{400000, 2, 1, 7, 0}
 };
 
 
