@@ -79,6 +79,7 @@ extern int	Operate_in_tange(int	arg1, int op, int arg2, int rangel, int rangeh);
 
 extern void System_init(void);
 extern void System_time(struct  tm *stime);
+extern int System_set_time(struct  tm *stime);
 extern void Sys_default(system_conf_t *arg);
 void System_modify_string(char	*p_s, int aux, int op, int val);
 void System_to_string(void *p_data, char	*p_s, int len, int aux);
@@ -87,4 +88,5 @@ void Password_set_by_str(char	*p_s_psd);
 int Str_Password_match(char *p_s_psd);
 void Password_modify(char	*p_s_psd, int idx, int op);
 int Password_iteartor(char	*p_time_text, int idx, int director);
+int Get_str_data(char *s_data, char* separator, int num, uint8_t	*err);
 #endif

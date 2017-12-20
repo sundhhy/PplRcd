@@ -2,6 +2,7 @@
 #include "sdhDef.h"
 #include "device.h"
 #include "dev_IIC/dev_IIC.h"
+#include "os/os_depend.h"
 
 //============================================================================//
 //            G L O B A L   D E F I N I T I O N S                             //
@@ -83,6 +84,7 @@ int Pcf8563_set( UtlRtc *self, IN struct  tm *tm)
 {
 	
 	uint8_t   date[7];
+	uint8_t	  retry = 100;
 	I2C_slave_t		pcf = {
 		PCF8563_ADDR,
 		PCF8563_SECONDS_REG,
@@ -90,17 +92,29 @@ int Pcf8563_set( UtlRtc *self, IN struct  tm *tm)
 		};
 	
 		
-	tm->tm_sec  = BCD2BIN(date[0] & 0x7f);
-    tm->tm_min  = BCD2BIN(date[1] & 0x7f);
-	tm->tm_hour  = BCD2BIN(date[2] & 0x3f);
-	tm->tm_mday  = BCD2BIN(date[3] & 0x3f);
-	tm->tm_wday  = BCD2BIN(date[4] & 0x07);
-	tm->tm_mon  = BCD2BIN(date[5] & 0x1f)-1;
-	tm->tm_year  = BCD2BIN(date[6] & 0xff)+100;
+	date[PCF8563_SECONDS_REG_OFFSET] = BIN2BCD(tm->tm_sec );
+	date[PCF8563_MINUTES_REG_OFFSET] = BIN2BCD(tm->tm_min );
+	date[PCF8563_HOURS_REG_OFFSET] = BIN2BCD(tm->tm_hour);
+	date[PCF8563_DAYS_REG_OFFSET] = BIN2BCD(tm->tm_mday);
+	date[PCF8563_WEEKS_REG_OFFSET] = BIN2BCD(tm->tm_wday);
+	date[PCF8563_MONTHS_REG_OFFSET] = BIN2BCD(tm->tm_mon + 1);
+	date[PCF8563_YEARS_REG_OFFSET] = BIN2BCD(tm->tm_year % 100);
 
 	pcf8563_i2c->ioctol(pcf8563_i2c, DEVCMD_SET_ARGUMENT, &pcf);
-	pcf8563_i2c->write(pcf8563_i2c, date, 7);
-	return RET_OK;
+	while( pcf8563_i2c->write(pcf8563_i2c, date, 7) != 7)
+	{
+		if(retry)
+		{
+			retry --;
+			delay_ms(100);
+		}
+		else
+			break;
+	}
+	if(retry)
+		return RET_OK;
+	else
+		return ERR_DEV_FAILED;
 }
 
 
@@ -114,14 +128,18 @@ int	Pcf8563_get( UtlRtc *self, OUT struct  tm *tm)
 		};
 	
 	pcf8563_i2c->ioctol(pcf8563_i2c, DEVCMD_SET_ARGUMENT, &pcf);
-	pcf8563_i2c->read(pcf8563_i2c, date, 7);	
-	date[PCF8563_SECONDS_REG_OFFSET] = BIN2BCD(tm->tm_sec );
-	date[PCF8563_MINUTES_REG_OFFSET] = BIN2BCD(tm->tm_min );
-	date[PCF8563_HOURS_REG_OFFSET] = BIN2BCD(tm->tm_hour);
-	date[PCF8563_DAYS_REG_OFFSET] = BIN2BCD(tm->tm_mday);
-	date[PCF8563_WEEKS_REG_OFFSET] = BIN2BCD(tm->tm_wday);
-	date[PCF8563_MONTHS_REG_OFFSET] = BIN2BCD(tm->tm_mon + 1);
-	date[PCF8563_YEARS_REG_OFFSET] = BIN2BCD(tm->tm_year % 100);
+	if(pcf8563_i2c->read(pcf8563_i2c, date, 7) != 7)
+		return ERR_OPT_FAILED;
+	
+	
+	
+	tm->tm_sec  = BCD2BIN(date[0] & 0x7f);
+    tm->tm_min  = BCD2BIN(date[1] & 0x7f);
+	tm->tm_hour  = BCD2BIN(date[2] & 0x3f);
+	tm->tm_mday  = BCD2BIN(date[3] & 0x3f);
+	tm->tm_wday  = BCD2BIN(date[4] & 0x07);
+	tm->tm_mon  = BCD2BIN(date[5] & 0x1f)-1;
+	tm->tm_year  = BCD2BIN(date[6] & 0xff)+2000;
 		
 	return RET_OK;
 	

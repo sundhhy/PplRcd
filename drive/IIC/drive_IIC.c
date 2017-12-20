@@ -133,7 +133,7 @@ int Read_IIC(int No, void *buf, uint8_t slave_addr, uint8_t reg_addr, uint16_t r
 	}
 
 	/* Clear EV6 by setting again the PE bit */
-	I2C_Cmd(i2c_reg, ENABLE);
+//	I2C_Cmd(i2c_reg, ENABLE);
 
 	/* Send the EEPROM's internal address to write to */
 	I2C_SendData(i2c_reg, reg_addr);  
@@ -155,7 +155,7 @@ int Read_IIC(int No, void *buf, uint8_t slave_addr, uint8_t reg_addr, uint16_t r
 		goto err_exit;
 	}
 
-	I2C_Send7bitAddress(I2C1, slave_addr, I2C_Direction_Receiver);
+	I2C_Send7bitAddress(i2c_reg, slave_addr, I2C_Direction_Receiver);
   
 	/* Test on EV6 and clear it */
 	if( I2C_wait_EV(i2c_reg, I2C_EVENT_MASTER_RECEIVER_MODE_SELECTED) < 0)
@@ -254,7 +254,8 @@ int Write_IIC(int No, void *buf, uint8_t slave_addr, uint8_t reg_addr, uint16_t 
 	}
 	
 	 /* While there is data to be written */
-	while(bytes_to_write--)  
+	bytes_to_write--;
+	while(1)  
 	{
 		/* Send the current byte */
 		I2C_SendData(i2c_reg, *p_u8); 
@@ -263,11 +264,20 @@ int Write_IIC(int No, void *buf, uint8_t slave_addr, uint8_t reg_addr, uint16_t 
 		p_u8++; 
 
 		/* Test on EV8 and clear it */
-		if( I2C_wait_EV(i2c_reg, I2C_EVENT_MASTER_BYTE_TRANSMITTED) < 0)
+		if( I2C_wait_EV(i2c_reg, I2C_EVENT_MASTER_BYTE_TRANSMITTED) == 0)
 		{
 //			ret = ERR_DEV_TIMEOUT;	
+			if(bytes_to_write)
+				bytes_to_write--;
+			else
+				goto exit;
+		}
+		else
+		{
 			goto exit;
 		}
+		
+			
 	}
 
 	exit:
@@ -285,19 +295,6 @@ int Write_IIC(int No, void *buf, uint8_t slave_addr, uint8_t reg_addr, uint16_t 
 
 
 
-//void SPI1_IRQHandler(void)
-//{
-
-//	if( SPI_I2S_GetFlagStatus(SPI1, SPI_I2S_FLAG_OVR))
-//	{
-//		//依次读取SPI_DR和SPI_SR来清除OVR
-//		SPI_I2S_ReceiveData(SPI1);
-//		SPI_I2S_GetFlagStatus(SPI1, SPI_I2S_FLAG_OVR);
-//	}
-	
-//}
-
-
 //=========================================================================//
 //                                                                         //
 //          P R I V A T E   D E F I N I T I O N S                          //
@@ -309,7 +306,10 @@ int Write_IIC(int No, void *buf, uint8_t slave_addr, uint8_t reg_addr, uint16_t 
 
 static int I2C_wait_EV(I2C_TypeDef* I2Cx, uint32_t ev)
 {
-	int safe_count = 10000;
+	int safe_count = 100000;
+	
+
+	
 	while(! I2C_CheckEvent(I2Cx, ev))
 	{
 		if(safe_count)
@@ -318,6 +318,8 @@ static int I2C_wait_EV(I2C_TypeDef* I2Cx, uint32_t ev)
 			break;
 		
 	}
+	
+//return 0;
 	
 	if(safe_count)
 		return 0;

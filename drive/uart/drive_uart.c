@@ -602,10 +602,10 @@ void Usart_irq( driveUart *thisDev)
 		USART_ClearFlag( thisDev->devUartBase,USART_IT_TC );
 		USART_ITConfig( thisDev->devUartBase, USART_IT_TC, DISABLE);
 		
-		if(myCfg->dma->dma_tx_base->CNDTR > 0) {
-			cntdr = myCfg->dma->dma_tx_base->CNDTR;
-			return;
-		}
+//		if(myCfg->dma->dma_tx_base->CNDTR > 0) {
+//			cntdr = myCfg->dma->dma_tx_base->CNDTR;
+//			return;
+//		}
 		if( thisDev->txPost)
 			thisDev->txPost(thisDev);
 		if( thisDev->txIdp)

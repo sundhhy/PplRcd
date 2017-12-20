@@ -49,7 +49,7 @@ static ro_char winHim_code_title[] =  {"<text m=1 f=16 clr=white vx0=88 vy0=62 >
 static ro_char winHim_code_tips[] =  {"<text m=1 f=16 clr=white vx0=88 vy0=80 > </>" };
 static ro_char winhmi_code_cur[] ={ "<icon vx0=96 vy0=160 xn=5 yn=1 n=0>19</>" };		//在按钮或者多选条目中的选中标识
 
-#define CONTENT_VX0						88									//内容区
+#define CONTENT_VX0						84									//内容区
 #define CONTENT_VY0						80
 #define POPUP_BU_VX0				96
 #define POPUP_BU_VY0				160

@@ -132,6 +132,8 @@ static int Write_dev_IIC(I_dev_Char *self, void *buf, int wr_len)
 		ret = Write_IIC(cthis->minor, buf, sl->slave_addr, sl->reg_addr, wr_len);
 		if(ret >0)
 			len += ret;
+		else
+			break;
 		
 		
 	}

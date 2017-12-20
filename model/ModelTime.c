@@ -71,20 +71,22 @@ int MdlTime_getData(  Model *self, IN int aux, void *arg)
 {
 	struct  tm	*tm = ( struct  tm	*) self->coreData;
 	struct  tm	*tm2 = NULL;
-	tm->tm_sec ++;
-	if( tm->tm_sec >59)
-	{
-		tm->tm_min ++;
-		tm->tm_sec = 0;
-		
-	}
+//	tm->tm_sec ++;
+//	if( tm->tm_sec >59)
+//	{
+//		tm->tm_min ++;
+//		tm->tm_sec = 0;
+//		
+//	}
+//	
+//	if( tm->tm_min >59)
+//	{
+//		tm->tm_hour ++;
+//		tm->tm_min = 0;
+//		
+//	}
 	
-	if( tm->tm_min >59)
-	{
-		tm->tm_hour ++;
-		tm->tm_min = 0;
-		
-	}
+	System_time(tm);
 	
 	if(arg != NULL) {
 		tm2 = ( struct  tm	*) arg;
@@ -103,31 +105,34 @@ void MdlTime_text_modify(char	*p_time_text, int idx, int op)
 	switch(idx) {
 		case 0:		//年
 		case 1:
+			break;
+		case 2:
+		case 3:
 			Str_Calculations(p_time_text + idx, 1, op, 1, 0, 9);
 			break;
 		
 		//月
-		case 3:
+		case 5:
 			Str_Calculations(p_time_text + idx, 1,  op, 1, 0, 1);
 			break;
-		case 4:
+		case 6:
 			if(p_time_text[3] == '1')
 				Str_Calculations(p_time_text + idx, 1,  op, 1, 0, 2);
 			else 
 				Str_Calculations(p_time_text + idx, 1,  op, 1, 0, 9);
 			break;
 			//日
-		case 6:
+		case 8:
 			Str_Calculations(p_time_text + idx, 1,  op, 1, 0, 3);
 			break;
-		case 7:
+		case 9:
 			Str_Calculations(p_time_text + idx, 1,  op, 1, 0, 9);
 			break;
 		//时
-		case 9:
+		case 11:
 			Str_Calculations(p_time_text + idx, 1,  op, 1, 0, 2);
 			break;
-		case 10:
+		case 12:
 			
 			if(p_time_text[9] == '2')
 				Str_Calculations(p_time_text + idx, 1,  op, 1, 0, 4);
@@ -136,17 +141,17 @@ void MdlTime_text_modify(char	*p_time_text, int idx, int op)
 //			Str_Calculations(p_time_text + idx, 1,  op, 1, 0, 9);
 			break;
 		//分
-		case 12:
+		case 14:
 			Str_Calculations(p_time_text + idx, 1,  op, 1, 0, 5);
 			break;
-		case 13:
+		case 15:
 			Str_Calculations(p_time_text + idx, 1,  op, 1, 0, 9);
 			break;
 		//秒
-		case 15:
+		case 17:
 			Str_Calculations(p_time_text + idx, 1,  op, 1, 0, 5);
 			break;
-		case 16:
+		case 18:
 			Str_Calculations(p_time_text + idx, 1,  op, 1, 0, 9);
 			break;
 		default:
@@ -218,7 +223,7 @@ static char* MdlTime_to_string( Model *self, IN int aux, void *arg)
 		case 1:
 			if(arg == NULL)
 				break;
-			sprintf(arg, "%02d/%02d/%02d %02d:%02d:%02d", p_tm->tm_year, p_tm->tm_mon, p_tm->tm_mday, \
+			sprintf(arg, "%04d/%02d/%02d %02d:%02d:%02d", p_tm->tm_year, p_tm->tm_mon, p_tm->tm_mday, \
 				p_tm->tm_hour, p_tm->tm_min, p_tm->tm_sec);
 			return arg;
 		default:break;
@@ -234,9 +239,11 @@ static int MdlTime_set_by_string( Model *self, IN int aux, void *arg)
 {
 	struct  tm	t = {0};
 	struct  tm	*p_tm= (struct  tm	*) self->coreData;
+	char		*p = (char *)arg;
 	short		i;
 	short		val;
-	char	s_data[4];
+	uint8_t		err;
+//	char	s_data[4];
 	switch(aux) {
 		case 0:
 			return RET_OK;
@@ -245,44 +252,71 @@ static int MdlTime_set_by_string( Model *self, IN int aux, void *arg)
 				p_tm->tm_hour, p_tm->tm_min, p_tm->tm_sec
 			if(arg == NULL)
 				break;
-			for(i = 0; i < 20; i+=3) {
-				
-				memcpy(s_data, (char *)arg + i, 2);
-				s_data[2] = 0;
-				val = atoi(s_data);
-				if(i == 0) {
-//					val += 2000;
-					t.tm_year = val;
-					
-				} else if(i == 1 * 3) {
-					if(val > 12)
-						return -1;
-					t.tm_mon = val;
-					
-				} else if(i == 2 * 3) {
-					if(val > g_moth_day[t.tm_mon])
-						return -1;
-					t.tm_mday = val;
-					
-				} else if(i == 3 * 3) {
-					if(val > 23)
-						return -1;
-					t.tm_hour = val;
-					
-				} else if(i == 4 * 3) {
-					if(val > 59)
-						return -1;
-					t.tm_min = val;
-					
-				} else if(i == 5 * 3) {
-					if(val > 59)
-						return -1;
-					t.tm_sec = val;
-					
-				}
-				
-				
-			}
+			
+			t.tm_year = Get_str_data(p, "/", 0, &err);
+			if(err)
+				return ERR_PARAM_BAD;
+			t.tm_mon = Get_str_data(p, "/", 1, &err);
+			if(err)
+				return ERR_PARAM_BAD;
+			t.tm_mday = Get_str_data(p, "/", 2, &err);
+			if(err)
+				return ERR_PARAM_BAD;
+			if(t.tm_mday > g_moth_day[t.tm_mon])
+				return ERR_PARAM_BAD;
+		
+			
+			i = strcspn(p, " ");
+			p += i;
+			
+			t.tm_hour = Get_str_data(p, ":", 0, &err);
+			if(err)
+				return ERR_PARAM_BAD;
+			t.tm_min = Get_str_data(p, ":", 1, &err);
+			if(err)
+				return ERR_PARAM_BAD;
+			t.tm_sec = Get_str_data(p, ":", 2, &err);
+			if(err)
+				return ERR_PARAM_BAD;
+			
+//			for(i = 5; i < 20; i+=3) {
+//				
+//				memcpy(s_data, (char *)arg + i, 2);
+//				s_data[2] = 0;
+//				val = atoi(s_data);
+//				if(i == 0) {
+////					val += 2000;
+//					t.tm_year = val;
+//					
+//				} else if(i == 1 * 3) {
+//					if(val > 12)
+//						return -1;
+//					t.tm_mon = val;
+//					
+//				} else if(i == 2 * 3) {
+//					if(val > g_moth_day[t.tm_mon])
+//						return -1;
+//					t.tm_mday = val;
+//					
+//				} else if(i == 3 * 3) {
+//					if(val > 23)
+//						return -1;
+//					t.tm_hour = val;
+//					
+//				} else if(i == 4 * 3) {
+//					if(val > 59)
+//						return -1;
+//					t.tm_min = val;
+//					
+//				} else if(i == 5 * 3) {
+//					if(val > 59)
+//						return -1;
+//					t.tm_sec = val;
+//					
+//				}
+//				
+//				
+//			}
 			
 			p_tm->tm_year = t.tm_year;
 			p_tm->tm_mon = t.tm_mon;
@@ -290,8 +324,7 @@ static int MdlTime_set_by_string( Model *self, IN int aux, void *arg)
 			p_tm->tm_hour = t.tm_hour;
 			p_tm->tm_min = t.tm_min;
 			p_tm->tm_sec = t.tm_sec;
-			
-			return RET_OK;
+			return System_set_time(p_tm);
 		default:break;
 				
 
