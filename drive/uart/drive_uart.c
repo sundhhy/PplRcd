@@ -560,7 +560,7 @@ void Usart_irq( driveUart *thisDev)
 	
 	CfgUart_t 	*myCfg = ( CfgUart_t *)thisDev->cfg;
 	uint8_t 	clear_idle = clear_idle;
-	uint16_t	cntdr = 0;
+//	uint16_t	cntdr = 0;
 	
 	if(USART_GetITStatus( thisDev->devUartBase, USART_IT_IDLE) != RESET)  // ø’œ–÷–∂œ
 	{

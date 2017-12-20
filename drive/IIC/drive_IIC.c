@@ -110,10 +110,10 @@ int Read_IIC(int No, void *buf, uint8_t slave_addr, uint8_t reg_addr, uint16_t r
 		i2c_reg = I2C2;
 	
 	
-    while(I2C_GetFlagStatus(i2c_reg, I2C_FLAG_BUSY)); 
-	
-	
-	  I2C_GenerateSTART(i2c_reg, ENABLE);
+	while(I2C_GetFlagStatus(i2c_reg, I2C_FLAG_BUSY)); 
+
+
+	I2C_GenerateSTART(i2c_reg, ENABLE);
 
 	/* Test on EV5 and clear it */
 	if( I2C_wait_EV(i2c_reg, I2C_EVENT_MASTER_MODE_SELECT) < 0)
@@ -122,24 +122,24 @@ int Read_IIC(int No, void *buf, uint8_t slave_addr, uint8_t reg_addr, uint16_t r
 		goto err_exit;
 	}
 
-  /* Send EEPROM address for write */
-  I2C_Send7bitAddress(i2c_reg, slave_addr, I2C_Direction_Transmitter);
+	/* Send EEPROM address for write */
+	I2C_Send7bitAddress(i2c_reg, slave_addr, I2C_Direction_Transmitter);
 
-  /* Test on EV6 and clear it */
-	if( I2C_wait_EV(i2c_reg, I2C_EVENT_MASTER_TRANSMITTER_MODE_SELECTED) < 0)
+	/* Test on EV6 and clear it */
+	if(I2C_wait_EV(i2c_reg, I2C_EVENT_MASTER_TRANSMITTER_MODE_SELECTED) < 0)
 	{
 		ret = ERR_DEV_TIMEOUT;	
 		goto err_exit;
 	}
-  
-  /* Clear EV6 by setting again the PE bit */
-  I2C_Cmd(i2c_reg, ENABLE);
 
-  /* Send the EEPROM's internal address to write to */
-  I2C_SendData(i2c_reg, reg_addr);  
+	/* Clear EV6 by setting again the PE bit */
+	I2C_Cmd(i2c_reg, ENABLE);
 
-  /* Test on EV8 and clear it */
-	if( I2C_wait_EV(i2c_reg, I2C_EVENT_MASTER_BYTE_TRANSMITTED) < 0)
+	/* Send the EEPROM's internal address to write to */
+	I2C_SendData(i2c_reg, reg_addr);  
+
+	/* Test on EV8 and clear it */
+	if(I2C_wait_EV(i2c_reg, I2C_EVENT_MASTER_BYTE_TRANSMITTED) < 0)
 	{
 		ret = ERR_DEV_TIMEOUT;	
 		goto err_exit;

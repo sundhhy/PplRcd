@@ -10,8 +10,7 @@
 //------------------------------------------------------------------------------
 // const defines
 //------------------------------------------------------------------------------
-#define PCF8563_WR_ADDR                     (0xA2>>1)
-#define PCF8563_RD_ADDR                     (0xA2>>1)
+#define PCF8563_ADDR                     (0xA2)
 #define PCF8563_RTC_CTRL_REG1              0x00
 #define PCF8563_RTC_CTRL_REG2              0x01
 #define PCF8563_RTC_CTRL_STOP_BIT         (1<<5)
@@ -85,7 +84,7 @@ int Pcf8563_set( UtlRtc *self, IN struct  tm *tm)
 	
 	uint8_t   date[7];
 	I2C_slave_t		pcf = {
-		PCF8563_WR_ADDR,
+		PCF8563_ADDR,
 		PCF8563_SECONDS_REG,
 		
 		};
@@ -109,7 +108,7 @@ int	Pcf8563_get( UtlRtc *self, OUT struct  tm *tm)
 {
 	uint8_t   date[7];
 	I2C_slave_t		pcf = {
-		PCF8563_RD_ADDR,
+		PCF8563_ADDR,
 		PCF8563_SECONDS_REG,
 		
 		};
