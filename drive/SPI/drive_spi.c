@@ -324,7 +324,7 @@ static int spi_write_word(SPI_TypeDef	*spi_reg, uint16_t val)
 {
 	
 	int	safe_count = SAFE_COUNT_VAL;
-	uint16_t	tmp = 0;
+//	uint16_t	tmp = 0;
 	
 	while( SPI_I2S_GetFlagStatus(spi_reg, SPI_I2S_FLAG_BSY))
 	{
@@ -374,7 +374,7 @@ static int spi_write_word(SPI_TypeDef	*spi_reg, uint16_t val)
 			return ERR_DEV_TIMEOUT;
 		}
 	}
-	tmp = SPI_I2S_ReceiveData(spi_reg); 
+	SPI_I2S_ReceiveData(spi_reg); 
  
 	
 	return RET_OK;

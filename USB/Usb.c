@@ -331,7 +331,7 @@ int USB_Write_file(int fd, char *buf, int len)
 {
 	int	ret = RET_OK;
 	uint16_t	real_len = 0;
-	uint8_t		s;
+//	uint8_t		s;
 	
 	CH376ByteWrite((uint8_t *)buf, len, &real_len);
 	usb_ctl.is_file_changed = 1; 

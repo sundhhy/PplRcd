@@ -39,7 +39,7 @@ static int UartInit( driveUart *self, void *device, void *cfg)
 	if(myCfg->opt_mode != UART_MODE_CPU)
 	{
 		self->txCache = calloc( 1, UART_TXCACHE_SIZE);
-		init_pingponfbuf( &self->ctl.pingpong, self->rxCache, UART_RXCACHE_SIZE, TURE);
+		init_pingponfbuf( &self->ctl.pingpong,(char *) self->rxCache, UART_RXCACHE_SIZE, TURE);
 	}
 	
 	
@@ -267,7 +267,7 @@ static int UartRead( driveUart *self, void *buf, int rdLen)
 	{
 		if( len > self->ctl.recv_size)
 			len = self->ctl.recv_size;
-		playloadbuf = get_playloadbuf( &self->ctl.pingpong);
+		playloadbuf = (uint8_t *)get_playloadbuf( &self->ctl.pingpong);
 		memset( buf, 0, rdLen);
 		memcpy( buf, playloadbuf, len);
 		memset( playloadbuf, 0, len);

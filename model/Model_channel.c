@@ -183,7 +183,7 @@ static void MdlChn_run(Model *self)
 	
 	
 	I_dev_Char 			*I_uart3 = NULL;
-	uint8_t 			i, j;
+	uint8_t 			i;
 	
 	
 	Dev_open(DEVID_UART3, ( void *)&I_uart3);
@@ -243,7 +243,7 @@ static int MdlChn_setData(  Model *self, IN int aux, void *arg)
 	SmBus_conf_t	sb_conf ;
 	uint8_t			sbub_buf[32];
 	I_dev_Char 			*I_uart3 = NULL;
-	uint8_t 			i, j, tmp_u8;
+	uint8_t 			i, tmp_u8;
 	
 	
 	Dev_open(DEVID_UART3, ( void *)&I_uart3);

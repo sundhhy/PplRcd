@@ -15,11 +15,10 @@
 
 #include "basis/macros.h"
 #include "basis/sdhError.h"
-#include "nokia_5110.h"
+//#include "nokia_5110.h"
 #include "device.h"
 
 #include "TDD.h"
-#include "ModelFactory.h"
 #include "HMI/HMIFactory.h"
 #include "Usb.h"
 
@@ -29,6 +28,12 @@
 #include "utils/keyboard.h"
 
 #include "os/os_depend.h"
+
+#if TDD_ON == 1
+#include "ModelFactory.h"
+
+
+#endif
 #if TDD_KEYBOARD == 1
 
 #include "Gh_txt.h"
@@ -187,12 +192,11 @@ I_dev_Char *I_uart3;
 int main (void) {
 //	USART_InitTypeDef USART_InitStructure;
 	Keyboard	*p_kb;
-	Controller	*p_ctlkey;
-	Controller	*p_ctlTime;
-	Model 		*mTime;
-	Model 		*p_mdl_test;
+	Controller	*p_control;
+//	Controller	*p_ctlTime;
+//	Model 		*p_mdl_test;
 	HMI 		*p_mainHmi;
-	int			ret = 0;
+//	int			ret = 0;
 	short			count = 0;
 	short			hmi_count = 0;
 #if TDD_ON == 1
@@ -216,23 +220,22 @@ int main (void) {
 	InitTimer( TIM2, 1000);
 	clean_time_flags();
 	
-	mTime = ModelCreate("time");
-	mTime->init( mTime, NULL);
+
 	
-	p_mdl_test =  ModelCreate("test");
-	p_mdl_test->init( p_mdl_test, NULL);
+//	p_mdl_test =  ModelCreate("test");
+//	p_mdl_test->init( p_mdl_test, NULL);
 	
 	//控制器初始化
 	
-	p_ctlTime = SUPER_PTR(CtlTimer_new(), Controller);
-	p_ctlTime->init(p_ctlTime, NULL);
+	p_control = SUPER_PTR(CtlTimer_new(), Controller);
+	p_control->init(p_control, NULL);
 		//按键初始化
 	p_kb = GetKeyInsance();
 	count = CONF_KEYSCAN_CYCLEMS;
 	p_kb->init( p_kb, &count);
 	tid_Thread_key = osThreadCreate (osThread(ThrdKeyRun), p_kb);
-	p_ctlkey = SUPER_PTR( Get_CtlKey(), Controller);
-	p_ctlkey->init( p_ctlkey, p_kb);
+	p_control = SUPER_PTR( Get_CtlKey(), Controller);
+	p_control->init( p_control, p_kb);
 
 	if (!tid_Thread_key) return(-1);
 #if TDD_ON == 1
@@ -260,8 +263,8 @@ int main (void) {
 		if(count == 10) {
 			count = 0;
 			
-			p_mdl_test->getMdlData( p_mdl_test, 10000, NULL);
-			mTime->getMdlData( mTime, 0, NULL);
+//			p_mdl_test->getMdlData( p_mdl_test, 10000, NULL);
+//			mTime->getMdlData( mTime, 0, NULL);
 		}
 		if(hmi_count == 100)
 		{

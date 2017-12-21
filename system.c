@@ -7,6 +7,8 @@
 #include <stdio.h>
 #include "sdhDef.h"
 #include "utils/rtc_pcf8563.h"
+#include "HMI/HMIFactory.h"
+
 //------------------------------------------------------------------------------
 // const defines
 //------------------------------------------------------------------------------
@@ -28,7 +30,7 @@ char				g_system_none[3];
 //------------------------------------------------------------------------------
 // global function prototypes
 //------------------------------------------------------------------------------
-
+system_t		phn_sys;
 //============================================================================//
 //            P R I V A T E   D E F I N I T I O N S                           //
 //============================================================================//
@@ -70,10 +72,17 @@ void System_default(system_conf_t *arg)
 void System_init(void)
 {
 	struct  tm stm;
+	Model 		*md_time;
+
+
 	
 	sys_rtc = ( UtlRtc *)Pcf8563_new();
 	sys_rtc->init(sys_rtc, NULL);
 	sys_rtc->get(sys_rtc, &stm);
+	
+	//md_time要系统时间初始化之后初始化
+	md_time = ModelCreate("time");
+	md_time->init(md_time, NULL);
 	
 	System_default(NULL);
 }

@@ -252,7 +252,8 @@ static int Gpio_control_irq( driveGpio *self, int en)
 	GPIO_EXTILineConfig( p_gpio->portSource, p_gpio->pinSource);
 	EXTI_ClearITPendingBit( arr_extiLine[ p_gpio->extiLine]);
 	EXTI_Init( self->p_exit);
-	
+	return ERR_OK;
+
 }
 
 /*!

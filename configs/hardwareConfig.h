@@ -184,7 +184,7 @@ typedef struct {
 typedef struct 
 {
 	GPIO_TypeDef	*Port;
-	uint8_t			pin;
+	uint16_t			pin;
 	uint8_t			direction;
 
 	//etti
@@ -194,7 +194,7 @@ typedef struct
 	uint8_t			portSource;
 	uint8_t			pinSource;
 	
-	uint8_t			none[2];
+	uint8_t			none;
 }gpio_pins;
 
 

@@ -241,7 +241,7 @@ static int MdlTime_set_by_string( Model *self, IN int aux, void *arg)
 	struct  tm	*p_tm= (struct  tm	*) self->coreData;
 	char		*p = (char *)arg;
 	short		i;
-	short		val;
+//	short		val;
 	uint8_t		err;
 //	char	s_data[4];
 	switch(aux) {

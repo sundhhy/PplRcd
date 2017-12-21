@@ -2,6 +2,7 @@
 #include "cmsis_os.h"                                           // CMSIS RTOS header file
 #include "sdhDef.h"
 #include "system.h"
+#include "ModelFactory.h"
 
 #ifdef NO_ASSERT
 #include "basis/assert.h"
@@ -105,6 +106,9 @@ static void Ctime_periodic (void const *arg)
 {
   // add user code here
 	CtlTimer	*cthis = SUB_PTR( arg, Controller, CtlTimer);
+	Model 		*p_md_chn;
+	char			chn_name[7];
+	char			i;
 	
 	cthis->time_count ++;
 	
@@ -114,6 +118,12 @@ static void Ctime_periodic (void const *arg)
 		return;
 	} 
 	next_record = g_system.record_gap_s;
-	
+	for(i = 0; i < NUM_CHANNEL; i++)
+	{
+		sprintf(chn_name,"chn_%d", i);
+		p_md_chn = ModelCreate(chn_name);
+		p_md_chn->run(p_md_chn);
+		
+	}
 	
 }

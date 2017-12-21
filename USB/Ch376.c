@@ -522,7 +522,7 @@ static uint8_t	CH376DiskWriteSec( uint8_t *buf, uint32_t iLbaStart, uint8_t iSec
 }
 uint8_t	CH376_Set_Data_Time(int dtm_type, uint16_t	dtm)
 {
-	FAT_DIR_INFO	*fat_info = (FAT_DIR_INFO	*)DataBuff;
+//	FAT_DIR_INFO	*fat_info = (FAT_DIR_INFO	*)DataBuff;
 	uint8_t s;
 	uint8_t offset = 0;
 	//1 读取当前文件的FAT_DIR_INFO结构到内存缓冲区

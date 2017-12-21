@@ -58,6 +58,12 @@ typedef struct {
 	uint8_t		disable_view_chn_status;					//禁止通道状态显示
 	uint8_t		enable_beep;											//按键声音允许
 }system_conf_t;
+
+
+typedef struct {
+	uint8_t		none[4];
+	
+}system_t;
 	
 //------------------------------------------------------------------------------
 // global variable declarations
@@ -71,6 +77,8 @@ extern	uint16_t		next_record;			//下次记录的时间
 
 extern 	char				g_setting_chn;
 extern 	char				g_system_none[3];
+
+extern system_t		phn_sys;
 //------------------------------------------------------------------------------
 // function prototypes
 //------------------------------------------------------------------------------
