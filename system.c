@@ -7,6 +7,7 @@
 #include <stdio.h>
 #include "sdhDef.h"
 #include "utils/rtc_pcf8563.h"
+#include "utils/hw_w25q.h"
 #include "HMI/HMIFactory.h"
 
 //------------------------------------------------------------------------------
@@ -83,6 +84,8 @@ void System_init(void)
 	//md_time要系统时间初始化之后初始化
 	md_time = ModelCreate("time");
 	md_time->init(md_time, NULL);
+	
+	w25q_init();
 	
 	System_default(NULL);
 }

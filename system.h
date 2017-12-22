@@ -22,6 +22,9 @@
 
 #define OP_ADD				0
 #define OP_SUB				1
+
+#define FSH_W25Q_NUM			0
+#define FSH_FM25_NUM			1
 //------------------------------------------------------------------------------
 // typedef
 //------------------------------------------------------------------------------
@@ -60,9 +63,34 @@ typedef struct {
 }system_conf_t;
 
 
+
 typedef struct {
-	uint8_t		none[4];
+	uint16_t		sector_pagenum;
+	uint16_t		block_pagenum;
+	uint32_t		total_pagenum;					///整个存储器的页数量
 	
+	uint16_t		page_size;						///一页的长度
+	uint8_t			none[2];
+}fsh_info_t;
+
+typedef struct {
+	
+	fsh_info_t	nf;
+	
+//	int (*fsh_init)(void);
+	void (*fsh_wp)(int p);
+	void (*fsh_info)(fsh_info_t *nf);
+
+
+	int	(*fsh_ers_sector)(uint32_t	sector_num);
+	int	(*fsh_wr_sector)(uint8_t *wr_buf, uint16_t num_sector);
+	int	(*fsh_rd_sector)(uint8_t *rd_buf, uint16_t num_sector);
+	int (*fsh_write)(uint8_t *wr_buf, uint32_t wr_addr, uint32_t num_bytes);
+	int (*fsh_read)(uint8_t *wr_buf, uint32_t rd_addr, uint32_t num_bytes);
+}flash_t;
+
+typedef struct {
+	flash_t		arr_fsh[2];
 }system_t;
 	
 //------------------------------------------------------------------------------

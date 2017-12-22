@@ -56,9 +56,9 @@ ARM Macro Assembler    Page 1
    32 00000000         ;   <o> Stack Size (in Bytes) <0x0-0xFFFFFFFF:8>
    33 00000000         ; </h>
    34 00000000         
-   35 00000000 00001000 
+   35 00000000 00001200 
                        Stack_Size
-                               EQU              0x00001000
+                               EQU              0x00001200
    36 00000000         
    37 00000000                 AREA             STACK, NOINIT, READWRITE, ALIGN
 =3
@@ -70,17 +70,17 @@ ARM Macro Assembler    Page 2
 
 
                                SPACE            Stack_Size
-   39 00001000         __initial_sp
-   40 00001000         
-   41 00001000         ; <h> Heap Configuration
-   42 00001000         ;   <o>  Heap Size (in Bytes) <0x0-0xFFFFFFFF:8>
-   43 00001000         ; </h>
-   44 00001000         
-   45 00001000 00004000 
+   39 00001200         __initial_sp
+   40 00001200         
+   41 00001200         ; <h> Heap Configuration
+   42 00001200         ;   <o>  Heap Size (in Bytes) <0x0-0xFFFFFFFF:8>
+   43 00001200         ; </h>
+   44 00001200         
+   45 00001200 00004000 
                        Heap_Size
                                EQU              0x00004000
-   46 00001000         
-   47 00001000                 AREA             HEAP, NOINIT, READWRITE, ALIGN=
+   46 00001200         
+   47 00001200                 AREA             HEAP, NOINIT, READWRITE, ALIGN=
 3
    48 00000000         __heap_base
    49 00000000         Heap_Mem
@@ -551,16 +551,16 @@ ARM Macro Assembler    Page 9
   356 0000001C                 END
               00000000 
               00000000 
-Command Line: --debug --xref --diag_suppress=9931 --cpu=Cortex-M3 --apcs=interw
-ork --depend=.\objects\startup_stm32f10x_hd.d -o.\objects\startup_stm32f10x_hd.
-o -IE:\PHN\mycode\PplRcd\RTE -IE:\PHN\mycode\PplRcd\RTE\Device\STM32F103VC -ID:
-\Keil_v5\ARM\PACK\ARM\CMSIS\4.5.0\CMSIS\Include -ID:\Keil_v5\ARM\PACK\ARM\CMSIS
-\4.5.0\CMSIS\RTOS\RTX\INC -ID:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device
-\Include -ID:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\StdPeriph_Driver
-\inc -ID:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0 --predefine="__RTX SETA 1" 
---predefine="__MICROLIB SETA 1" --predefine="__UVISION_VERSION SETA 517" --pred
-efine="_RTE_ SETA 1" --predefine="STM32F10X_HD SETA 1" --list=.\listings\startu
-p_stm32f10x_hd.lst RTE\Device\STM32F103VC\startup_stm32f10x_hd.s
+Command Line: --debug --xref --cpu=Cortex-M3 --apcs=interwork --depend=.\object
+s\startup_stm32f10x_hd.d -o.\objects\startup_stm32f10x_hd.o -IE:\PaperlessRecor
+der\myCode\PplRcd\RTE -IE:\PaperlessRecorder\myCode\PplRcd\RTE\Device\STM32F103
+VC -Id:\Keil_v5\ARM\PACK\ARM\CMSIS\4.4.0\CMSIS\Include -Id:\Keil_v5\ARM\PACK\AR
+M\CMSIS\4.4.0\CMSIS\RTOS\RTX\INC -Id:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0
+ -Id:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\Include -Id:\Keil_v5\ARM
+\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\StdPeriph_Driver\inc --predefine="__RTX S
+ETA 1" --predefine="__MICROLIB SETA 1" --predefine="__UVISION_VERSION SETA 513"
+ --predefine="_RTE_ SETA 1" --predefine="STM32F10X_HD SETA 1" --list=.\listings
+\startup_stm32f10x_hd.lst RTE\Device\STM32F103VC\startup_stm32f10x_hd.s
 
 
 
@@ -583,7 +583,7 @@ Symbol: Stack_Mem
    Uses
       None
 Comment: Stack_Mem unused
-__initial_sp 00001000
+__initial_sp 00001200
 
 Symbol: __initial_sp
    Definitions
@@ -1392,7 +1392,7 @@ Symbol: Heap_Size
    Uses
       At line 49 in file RTE\Device\STM32F103VC\startup_stm32f10x_hd.s
 Comment: Heap_Size used once
-Stack_Size 00001000
+Stack_Size 00001200
 
 Symbol: Stack_Size
    Definitions

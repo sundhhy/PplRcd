@@ -106,7 +106,7 @@ static void Ctime_periodic (void const *arg)
 {
   // add user code here
 	CtlTimer	*cthis = SUB_PTR( arg, Controller, CtlTimer);
-	Model 		*p_md_chn;
+	Model 		*p_md;
 	char			chn_name[7];
 	char			i;
 	
@@ -118,12 +118,15 @@ static void Ctime_periodic (void const *arg)
 		return;
 	} 
 	next_record = g_system.record_gap_s;
-	for(i = 0; i < NUM_CHANNEL; i++)
-	{
-		sprintf(chn_name,"chn_%d", i);
-		p_md_chn = ModelCreate(chn_name);
-		p_md_chn->run(p_md_chn);
-		
-	}
+	p_md = ModelCreate("time");
+	p_md->getMdlData(p_md, 0, NULL);
+	
+//	for(i = 0; i < NUM_CHANNEL; i++)
+//	{
+//		sprintf(chn_name,"chn_%d", i);
+//		p_md = ModelCreate(chn_name);
+//		p_md->run(p_md);
+//		
+//	}
 	
 }

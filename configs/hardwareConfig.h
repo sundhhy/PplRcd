@@ -11,34 +11,57 @@
 #define DEBUG_USART	USART3
 #endif
 
-#define NUM_SPIS        2
+#define NUM_SPIS        3
 #define NUM_IICS        2
 
 #define UART_MODE_INTR		0
 #define UART_MODE_DMA		1
 #define UART_MODE_CPU		2
 //各种外设的引脚配置
-#define RCC_UART1_TX                                    RCC_APB2Periph_GPIOB		 
+
+/************* spi flash ****************************************/
+#define PORT_FSH_nWP                               GPIOD    					 
+#define PIN_FSH_nWP                                GPIO_Pin_10	
+
+#define PORT_W25Q_nCS                               GPIOB    					 
+#define PIN_W25Q_nCS                                GPIO_Pin_12	
+#define PORT_W25Q_SO                               	GPIOB    					 
+#define PIN_W25Q_SO                                	GPIO_Pin_14	
+#define PORT_W25Q_SI                               	GPIOB    					 
+#define PIN_W25Q_SI                                	GPIO_Pin_15	
+#define PORT_W25Q_SCK                               GPIOB    					 
+#define PIN_W25Q_SCK                                GPIO_Pin_13	
+
+
+
+#define PORT_FM25_nCS                               GPIOA    					 
+#define PIN_FM25_nCS                                GPIO_Pin_8	
+#define PORT_FM25_SO                               	GPIOB    					 
+#define PIN_FM25_SO                                	GPIO_Pin_14	
+#define PORT_FM25_SI                               	GPIOB    					 
+#define PIN_FM25_SI                                	GPIO_Pin_15	
+#define PORT_FM25_SCK                               GPIOB    					 
+#define PIN_FM25_SCK                                GPIO_Pin_13
+
+
+
+/*************************************************************************/
+
 #define GPIO_PORT_UART1TX                               GPIOB    					 
 #define GPIO_PIN_UART1TX                                GPIO_Pin_6					 
 
-#define RCC_UART1_RX                                    RCC_APB2Periph_GPIOB		 
 #define GPIO_PORT_UART1RX                               GPIOB    					 
 #define GPIO_PIN_UART1RX                                GPIO_Pin_7	
 
-#define RCC_UART2_TX                                    RCC_APB2Periph_GPIOA		 
 #define GPIO_PORT_UART2TX                               GPIOA    					 
 #define GPIO_PIN_UART2TX                                GPIO_Pin_2					 
 
-#define RCC_UART2_RX                                    RCC_APB2Periph_GPIOA		 
 #define GPIO_PORT_UART2RX                               GPIOA    					 
 #define GPIO_PIN_UART2RX                                GPIO_Pin_3
 
-#define RCC_UART3_TX                                    RCC_APB2Periph_GPIOB		 
 #define GPIO_PORT_UART3TX                               GPIOB    					 
 #define GPIO_PIN_UART3TX                                GPIO_Pin_10					 
 
-#define RCC_UART3_RX                                    RCC_APB2Periph_GPIOE		 
 #define GPIO_PORT_UART3RX                               GPIOB    					 
 #define GPIO_PIN_UART3RX                                GPIO_Pin_11
 
@@ -99,13 +122,11 @@
 //********************* PCF 8563 IIC *************************************************
 #define GPIO_PORT_IIC_SDA                              	GPIOB    					 
 #define GPIO_PIN_IIC_SDA                              GPIO_Pin_9
-#define GPIO_PORTSOURCE_IIC_SDA                              GPIO_PortSourceGPIOB   					 
-#define GPIO_PINSOURCE_IIC_SDA                              GPIO_PinSource9
+//#define GPIO_PORTSOURCE_IIC_SDA                              GPIO_PortSourceGPIOB   					 
+//#define GPIO_PINSOURCE_IIC_SDA                              GPIO_PinSource9
 
 #define GPIO_PORT_IIC_SCL                              	GPIOB    					 
 #define GPIO_PIN_IIC_SCL                              GPIO_Pin_8
-#define GPIO_PORTSOURCE_IIC_SCL                              GPIO_PortSourceGPIOB   					 
-#define GPIO_PINSOURCE_IIC_SCL                             GPIO_PinSource8
 
 
 /////stm32的外设的DMA请求与DMA通道的对应关系是固定的，不是随便配置的。参考STM32的参考手册
@@ -209,6 +230,6 @@ extern gpio_pins pin_keyDown;
 extern gpio_pins pin_keyEnter;
 extern gpio_pins pin_keyEsc;
 extern gpio_pins pin_UsbInt;
-extern spi_conf_t arr_conf_spi[2];
+extern spi_conf_t arr_conf_spi[NUM_SPIS];
 
 #endif

@@ -9,6 +9,48 @@ void Pin_init(void)
 {
 	GPIO_InitTypeDef GPIO_InitStructure;
 	
+	/******* flash spi pin	************************************/
+	
+	GPIO_InitStructure.GPIO_Pin = PIN_FSH_nWP;                   
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
+    GPIO_Init(PORT_FSH_nWP, &GPIO_InitStructure);
+	
+	GPIO_InitStructure.GPIO_Pin = PIN_W25Q_nCS;                   
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
+    GPIO_Init(PORT_W25Q_nCS, &GPIO_InitStructure);
+	
+	GPIO_InitStructure.GPIO_Pin = PIN_FM25_nCS;                   
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
+    GPIO_Init(PORT_FM25_nCS, &GPIO_InitStructure);
+	
+	GPIO_InitStructure.GPIO_Pin = PIN_W25Q_SO;       
+    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
+    GPIO_Init(PORT_W25Q_SO, &GPIO_InitStructure);
+
+    GPIO_InitStructure.GPIO_Pin = PIN_W25Q_SI;                   
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
+    GPIO_Init(PORT_W25Q_SI, &GPIO_InitStructure);
+	
+	GPIO_InitStructure.GPIO_Pin = PIN_W25Q_SCK;        
+    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
+    GPIO_Init(PORT_W25Q_SCK, &GPIO_InitStructure);
+
+
+	GPIO_InitStructure.GPIO_Pin = PIN_FM25_SO;       
+    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
+    GPIO_Init(PORT_FM25_SO, &GPIO_InitStructure);
+
+    GPIO_InitStructure.GPIO_Pin = PIN_FM25_SI;                   
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
+    GPIO_Init(PORT_FM25_SI, &GPIO_InitStructure);
+	
+	GPIO_InitStructure.GPIO_Pin = PIN_FM25_SCK;        
+    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
+    GPIO_Init(PORT_FM25_SCK, &GPIO_InitStructure);
 	/******* IIC *******************************************/
 	GPIO_InitStructure.GPIO_Pin = GPIO_PIN_IIC_SDA;                   
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_OD;
