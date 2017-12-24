@@ -26,8 +26,9 @@ system_conf_t	g_system;
 
 uint16_t		next_record;
 short 			cmd_count = 0;
-char				g_setting_chn = 0;
-char				g_system_none[3];
+char			g_setting_chn = 0;
+char			flush_flag = 0;
+char			g_system_none[2];
 //------------------------------------------------------------------------------
 // global function prototypes
 //------------------------------------------------------------------------------

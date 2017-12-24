@@ -104,7 +104,8 @@ extern	short 			cmd_count;
 extern	uint16_t		next_record;			//下次记录的时间
 
 extern 	char				g_setting_chn;
-extern 	char				g_system_none[3];
+extern	char				flush_flag;
+extern 	char				g_system_none[2];
 
 extern system_t		phn_sys;
 //------------------------------------------------------------------------------

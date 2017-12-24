@@ -194,7 +194,7 @@ int main (void) {
 	Keyboard	*p_kb;
 	Controller	*p_control;
 //	Controller	*p_ctlTime;
-//	Model 		*p_mdl_test;
+//	Model 		*mTime;
 	HMI 		*p_mainHmi;
 //	int			ret = 0;
 	short			count = 0;
@@ -224,18 +224,17 @@ int main (void) {
 	
 //	p_mdl_test =  ModelCreate("test");
 //	p_mdl_test->init( p_mdl_test, NULL);
-	
+//	mTime = ModelCreate("time");
 	//控制器初始化
 	
-	p_control = SUPER_PTR(CtlTimer_new(), Controller);
-	p_control->init(p_control, NULL);
+	
 		//按键初始化
 	p_kb = GetKeyInsance();
 	count = CONF_KEYSCAN_CYCLEMS;
 	p_kb->init( p_kb, &count);
 	tid_Thread_key = osThreadCreate (osThread(ThrdKeyRun), p_kb);
 	p_control = SUPER_PTR( Get_CtlKey(), Controller);
-	p_control->init( p_control, p_kb);
+	p_control->init(p_control, p_kb);
 
 	if (!tid_Thread_key) return(-1);
 #if TDD_ON == 1
@@ -250,6 +249,10 @@ int main (void) {
 	p_mainHmi->init( p_mainHmi, NULL);
 	p_mainHmi->show( p_mainHmi);
 	Set_flag_show(&p_mainHmi->flag, 1); 
+	
+	
+	p_control = SUPER_PTR(CtlTimer_new(), Controller);
+	p_control->init(p_control, NULL);
 	
 	// create 'thread' functions that start executing,
 	// example: tid_name = osThreadCreate (osThread(name), NULL);
@@ -527,7 +530,7 @@ int main (void) {
 			count = 0;
 			
 			p_mdl_test->getMdlData( p_mdl_test, 10000, NULL);
-			mTime->getMdlData(mTime, 0, NULL);
+//			mTime->getMdlData(mTime, 0, NULL);
 		}
 		if(hmi_count == 50)
 		{
@@ -634,11 +637,12 @@ int main (void) {
 
 void ThrdKeyRun (void const *argument) {
 	Keyboard	*p_kb = ( Keyboard	*)argument ;
+//	Model 		*mTime  = ModelCreate("time");
 	while (1) { 
 
 		delay_ms(CONF_KEYSCAN_CYCLEMS);		
 		p_kb->run( p_kb);
-		
+//		mTime->getMdlData(mTime, 0, NULL);
 		osThreadYield ();                                           // suspend thread
 	}
 }
