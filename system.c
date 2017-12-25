@@ -8,6 +8,8 @@
 #include "sdhDef.h"
 #include "utils/rtc_pcf8563.h"
 #include "utils/hw_w25q.h"
+#include "utils/FM25.h"
+
 #include "HMI/HMIFactory.h"
 
 //------------------------------------------------------------------------------
@@ -87,7 +89,7 @@ void System_init(void)
 	md_time->init(md_time, NULL);
 	
 	w25q_init();
-	
+	FM25_init();
 	System_default(NULL);
 }
 void System_time(struct  tm *stime)

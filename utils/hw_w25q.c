@@ -83,7 +83,11 @@ static	I_dev_Char	*w25q_spi;
 
 #define W25Q_DELAY_MS(ms)			delay_ms(ms)	
 #define W25Q_Enable_CS          	GPIO_ResetBits(PORT_W25Q_nCS, PIN_W25Q_nCS)
-#define W25Q_Disable_CS         	GPIO_SetBits(PORT_W25Q_nCS, PIN_W25Q_nCS)      	
+#define W25Q_Disable_CS         	GPIO_SetBits(PORT_W25Q_nCS, PIN_W25Q_nCS)  
+
+#define W25Q_Enable_WP          	GPIO_ResetBits(PORT_FSH_nWP, PIN_FSH_nWP)
+#define W25Q_Disable_WP         	GPIO_SetBits(PORT_FSH_nWP, PIN_FSH_nWP) 
+
 #define SPI_WRITE(data, len)		w25q_spi->write(w25q_spi, data, len)
 #define SPI_READ(buf, len)			w25q_spi->read(w25q_spi, buf, len)
 //------------------------------------------------------------------------------
@@ -146,7 +150,8 @@ int w25q_init(void)
 	phn_sys.arr_fsh[FSH_W25Q_NUM].fsh_rd_sector = w25q_Read_Sector_Data;
 	phn_sys.arr_fsh[FSH_W25Q_NUM].fsh_write = w25q_Write;
 	phn_sys.arr_fsh[FSH_W25Q_NUM].fsh_read = w25q_rd_data;
-		
+	
+	W25Q_Enable_WP;
 	return w25q_read_id();
 
 
@@ -168,7 +173,10 @@ void w25q_info(fsh_info_t *info)
 void W25Q_WP(int protect)
 {
 	
-	
+	if(protect)
+		W25Q_Enable_WP;
+	else
+		W25Q_Disable_WP;
 }
 
 

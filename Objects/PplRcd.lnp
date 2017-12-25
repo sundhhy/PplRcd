@@ -50,6 +50,7 @@
 ".\objects\times.o"
 ".\objects\storage.o"
 ".\objects\hw_w25q.o"
+".\objects\fm25.o"
 ".\objects\sheet.o"
 ".\objects\sheetmemento.o"
 ".\objects\commhmi.o"

@@ -35,6 +35,7 @@
 .\objects\system.o: utils/rtc.h
 .\objects\system.o: utils/hw_w25q.h
 .\objects\system.o: .\configs\hardwareConfig.h
+.\objects\system.o: utils/FM25.h
 .\objects\system.o: HMI/HMIFactory.h
 .\objects\system.o: HMI/commHMI.h
 .\objects\system.o: HMI/HMI.h

@@ -66,7 +66,7 @@ shtctl *GetShtctl(void)
 	uint16_t	vxsize, vysize;
 	if( p_signalShtctl == NULL)
 	{
-		Dev_open( LCD_DEVID, (void *)&lcd);
+		Dev_open(LCD_DEVID, (void *)&lcd);
 		lcd->open();
 		lcd->getScrnSize( &vxsize, &vysize);
 		p_signalShtctl = Shtctl_init( vxsize, vysize);

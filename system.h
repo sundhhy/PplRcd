@@ -70,12 +70,15 @@ typedef struct {
 	uint32_t		total_pagenum;					///整个存储器的页数量
 	
 	uint16_t		page_size;						///一页的长度
-	uint8_t			none[2];
+	
+	
+	uint8_t			fnf_flag;
+	uint8_t			none;
 }fsh_info_t;
 
 typedef struct {
 	
-	fsh_info_t	nf;
+	fsh_info_t	fnf;
 	
 //	int (*fsh_init)(void);
 	void (*fsh_wp)(int p);
