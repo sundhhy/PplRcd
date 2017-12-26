@@ -343,7 +343,69 @@ int main (void) {
 	
 	Tdd_disp_text("FM25 读写测试 结束",line++, 0);
 	while(1);
+
+#elif TDD_w25q == 1
+	tdd_fsh = &phn_sys.arr_fsh[FSH_W25Q_NUM];
+	osKernelStart (); 	
+	line = 0;
+	tdd_fsh->fsh_info(&tdd_fsh->fnf);
+	Tdd_disp_text("W25Q 读写测试",line++, 0);
 	
+	for(tdd_j = 0; tdd_j <= 0xff; tdd_j ++)
+	{
+		line = 1;
+		sprintf(appBuf,"test[%d]", tdd_j);
+		Tdd_disp_text(appBuf,line, 0);
+		
+		//写入测试数据
+		memset(appBuf, tdd_j, sizeof(appBuf));
+		for(tdd_i = 0; tdd_i < tdd_fsh->fnf.total_pagenum; tdd_i++)
+		{
+			
+			 if( tdd_fsh->fsh_write((uint8_t *)appBuf, tdd_i * tdd_fsh->fnf.page_size,tdd_fsh->fnf.page_size) != tdd_fsh->fnf.page_size)
+			 {
+				sprintf(appBuf,"wr P[%d] err!", tdd_i);
+				Tdd_disp_text(appBuf,tdd_i + 2, 0);
+			 }
+			 
+			 
+			
+		}
+		
+		//读取数据并与写入数据进行对比
+		for(tdd_i = 0; tdd_i < tdd_fsh->fnf.total_pagenum; tdd_i++)
+		{
+			memset(appBuf, ~tdd_j, sizeof(appBuf));
+			if( tdd_fsh->fsh_read((uint8_t *)appBuf, tdd_i * tdd_fsh->fnf.page_size,tdd_fsh->fnf.page_size) != tdd_fsh->fnf.page_size)
+			{
+				sprintf(appBuf,"rd P[%d] err!", tdd_i);
+				Tdd_disp_text(appBuf,tdd_i + 2, 80);
+				break;
+			}
+			
+			//逐个字节比较读取与写入的值是否一样
+			for(tdd_count = 0; tdd_count < tdd_fsh->fnf.page_size; tdd_count ++)
+			{
+				if(appBuf[tdd_count] != tdd_j)
+				{
+					
+					sprintf(appBuf,"P[%d][%d]=%xh != %xh", tdd_i, tdd_count, appBuf[tdd_count], tdd_j);
+					Tdd_disp_text(appBuf,tdd_i + 2, 160);
+					break;
+				}
+				
+			}
+			
+			
+			
+			
+		}
+//		Tdd_disp_text("done!",line, 280);
+		line ++;
+	}
+	
+	Tdd_disp_text("W25Q 读写测试 结束",line++, 0);
+	while(1);	
 #elif TDD_MODCHANNEL == 1
 	osKernelStart (); 	
 	line = 0;

@@ -158,6 +158,11 @@ void FM25_info(fsh_info_t *info)
 void FM25_WP(int protect)
 {
 	uint8_t		fm25_cmd;
+	
+	
+	FM25_Enable_CS;
+	fm25_cmd = FM25CL64_WRSR;
+	FM25_SPI_WRITE(&fm25_cmd, 1);
 	if(protect)
 	{
 		fm25_cmd = FM25CL64_PROTECT;
@@ -167,6 +172,9 @@ void FM25_WP(int protect)
 		fm25_cmd = FM25CL64_UNPROTECT;
 	}
 	FM25_SPI_WRITE(&fm25_cmd, 1);
+	FM25_Disable_CS;
+
+	
 }
 
 int FM25_Erase_Sector(uint32_t Sector_Number)
@@ -206,7 +214,7 @@ int FM25_Read_Sector_Data(uint8_t *pBuffer, uint16_t Sector_Num)
 /// \{
 
 
-static int FM25_Read_statis(void)
+static int FM25_Read_status(void)
 {
 	uint8_t tmp_u8 = FM25CL64_RDSR;
   FM25_Enable_CS;
@@ -225,14 +233,14 @@ static int FM25_wr_enable(void)
 	int ret = ERR_DEV_FAILED;
 	uint8_t cmd = FM25CL64_WREN;
 	
-	ret = FM25_Read_statis();
+	ret = FM25_Read_status();
 	
 	FM25_Enable_CS;
 	if(FM25_SPI_WRITE(&cmd, 1) == 1)
 		ret = RET_OK;
 	FM25_Disable_CS;
 	
-	ret = FM25_Read_statis();
+	ret = FM25_Read_status();
 	if(ret & FM25_STATUS_WEL)
 		return RET_OK;
 	return ERR_DEV_FAILED;
