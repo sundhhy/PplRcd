@@ -81,7 +81,7 @@ int FM25_rd_data(uint8_t *pBuffer, uint32_t rd_add, uint32_t len);
 
 static void FM25_cmd_addr(uint8_t cmd, uint16_t addr);
 static int FM25_wr_enable(void);
-
+static int FM25_Write_status(uint8_t s);
 //============================================================================//
 //            P U B L I C   F U N C T I O N S                                 //
 //============================================================================//
@@ -122,7 +122,10 @@ int FM25_Write(uint8_t *pBuffer, uint32_t WriteAddr, uint32_t WriteBytesNum)
 {
 	int ret = 0;
 	
-	FM25_wr_enable();
+//	FM25_Write_status(0x80);
+	
+	if(FM25_wr_enable() != RET_OK)
+		return 0;
 	FM25_Enable_CS;
 	
 	FM25_cmd_addr(FM25CL64_WRITE,  WriteAddr);
@@ -150,7 +153,7 @@ void FM25_info(fsh_info_t *info)
 {
 	//FM25L64 4KB = 512 * 8
 	info->page_size = 512;
-	info->total_pagenum = 8;
+	info->total_pagenum = 1;
 	info->block_pagenum = 0;
 	info->sector_pagenum = 0;
 }
@@ -160,19 +163,17 @@ void FM25_WP(int protect)
 	uint8_t		fm25_cmd;
 	
 	
-	FM25_Enable_CS;
-	fm25_cmd = FM25CL64_WRSR;
-	FM25_SPI_WRITE(&fm25_cmd, 1);
+	
 	if(protect)
 	{
+		
 		fm25_cmd = FM25CL64_PROTECT;
 	}
 	else
 	{
 		fm25_cmd = FM25CL64_UNPROTECT;
 	}
-	FM25_SPI_WRITE(&fm25_cmd, 1);
-	FM25_Disable_CS;
+	FM25_Write_status(fm25_cmd);
 
 	
 }
@@ -228,20 +229,40 @@ static int FM25_Read_status(void)
   return tmp_u8;
 }
 
+static int FM25_Write_status(uint8_t s)
+{
+	uint8_t		cmd[2] = {FM25CL64_WRSR, 0};
+	uint8_t		rd_s = 0;
+	uint8_t		n = 0;
+	
+	cmd[1] = s;
+	FM25_Enable_CS;
+	n = FM25_SPI_WRITE(cmd, 2);
+	FM25_Disable_CS;
+	
+	rd_s = FM25_Read_status();
+	
+	if(n == 2)
+		return RET_OK;
+	else
+		return ERR_DEV_FAILED;
+
+}
+
 static int FM25_wr_enable(void)
 {
 	int ret = ERR_DEV_FAILED;
 	uint8_t cmd = FM25CL64_WREN;
 	
-	ret = FM25_Read_status();
+//	ret = FM25_Read_status();
 	
 	FM25_Enable_CS;
 	if(FM25_SPI_WRITE(&cmd, 1) == 1)
 		ret = RET_OK;
 	FM25_Disable_CS;
 	
-	ret = FM25_Read_status();
-	if(ret & FM25_STATUS_WEL)
+//	ret = FM25_Read_status();
+//	if(ret & FM25_STATUS_WEL)
 		return RET_OK;
 	return ERR_DEV_FAILED;
 }
@@ -250,10 +271,13 @@ static void FM25_cmd_addr(uint8_t cmd, uint16_t addr)
 {
 	uint8_t	tmp_u8;
 	
+	
 	tmp_u8 = FM25CL64_WRITE;
 	FM25_SPI_WRITE(&tmp_u8, 1);
 	
-	tmp_u8 = (addr & 0xff00) >> 8;
+	
+	
+	tmp_u8 = (addr & 0x100) >> 5;
 	FM25_SPI_WRITE(&tmp_u8, 1);
 	
 	tmp_u8 = addr & 0x00ff;

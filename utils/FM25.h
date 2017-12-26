@@ -20,6 +20,8 @@
 #define FM25CL64_WRSR				0x01
 #define FM25CL64_READ				0x03
 #define FM25CL64_WRITE				0x02
+
+
 #define FM25CL64_PROTECT 			0x0c
 #define FM25CL64_UNPROTECT			0x00
 

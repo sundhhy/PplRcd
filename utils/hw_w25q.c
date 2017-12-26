@@ -151,7 +151,7 @@ int w25q_init(void)
 	phn_sys.arr_fsh[FSH_W25Q_NUM].fsh_write = w25q_Write;
 	phn_sys.arr_fsh[FSH_W25Q_NUM].fsh_read = w25q_rd_data;
 	
-	W25Q_Enable_WP;
+	W25Q_Disable_WP;
 	return w25q_read_id();
 
 

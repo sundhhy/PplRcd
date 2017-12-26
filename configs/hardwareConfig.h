@@ -35,7 +35,7 @@
 
 
 #define PORT_FM25_nCS                               GPIOA    					 
-#define PIN_FM25_nCS                                GPIO_Pin_8	
+#define PIN_FM25_nCS                                GPIO_Pin_8
 #define PORT_FM25_SO                               	GPIOB    					 
 #define PIN_FM25_SO                                	GPIO_Pin_14	
 #define PORT_FM25_SI                               	GPIOB    					 

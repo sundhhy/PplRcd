@@ -304,6 +304,7 @@ int main (void) {
 				sprintf(appBuf,"wr P[%d] err!", tdd_i);
 				Tdd_disp_text(appBuf,tdd_i + 2, 0);
 			 }
+			 osDelay(10);
 			 
 			 
 			
@@ -319,6 +320,8 @@ int main (void) {
 				Tdd_disp_text(appBuf,tdd_i + 2, 80);
 				break;
 			}
+			
+			osDelay(10);
 			
 			//逐个字节比较读取与写入的值是否一样
 			for(tdd_count = 0; tdd_count < tdd_fsh->fnf.page_size; tdd_count ++)
