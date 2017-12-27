@@ -25,6 +25,8 @@
 
 #define FSH_W25Q_NUM			0
 #define FSH_FM25_NUM			1
+#define NUM_FSH						2
+
 //------------------------------------------------------------------------------
 // typedef
 //------------------------------------------------------------------------------
@@ -62,7 +64,7 @@ typedef struct {
 	uint8_t		enable_beep;											//按键声音允许
 }system_conf_t;
 
-
+//---------- flash驱动的定义 --------------------------------------
 
 typedef struct {
 	uint16_t		sector_pagenum;
@@ -92,10 +94,49 @@ typedef struct {
 	int (*fsh_read)(uint8_t *wr_buf, uint32_t rd_addr, uint32_t num_bytes);
 }flash_t;
 
+//----------------文件系统的定义 --------------------------------
 typedef struct {
-	flash_t		arr_fsh[2];
+	uint8_t			fsh_No;				//对应的存储器编号
+	uint8_t			opt_mode;			//0  只读  1 读写
+	uint8_t			none[2];
+	
+	uint16_t		start_page;
+	uint16_t		num_page;
+	
+	uint32_t		file_size;
+	uint32_t		read_position;
+	uint32_t		write_position;
+
+	
+}file_info_t;
+
+typedef struct {
+	uint8_t		num_partitions;
+	
+	//可靠性等级, 0 一般，在写文件时不回读判断 1 高，写文件时，要回读判断
+	uint8_t		reliable_level;		
+	uint16_t	err_code;
+	
+	//file_size在文件不存在时，需要创建时使用
+	int		(*fs_open)(uint8_t		prt, char *path, char *mode, int	file_size);	
+	int		(*fs_close)(int fd);
+	int		(*fs_delete)(int fd);
+	int		(*fs_write)(int fd, uint8_t *p, int len);
+	int		(*fs_read)(int fd, uint8_t *p, int len);
+	int		(*fs_resize)(int fd, int new_size);
+	int		(*fs_file_info)(int fd, file_info_t *p);
+			
+	
+}fs_t;
+
+//--------------------------------------------------------------------------
+
+typedef struct {
+	flash_t		arr_fsh[NUM_FSH];
+	fs_t			fs;
 }system_t;
 	
+
 //------------------------------------------------------------------------------
 // global variable declarations
 //------------------------------------------------------------------------------

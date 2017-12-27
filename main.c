@@ -124,7 +124,7 @@ int			tdd_i, tdd_j, tdd_count = 0;
 uint8_t		tdd_u8;
 char			line = 0;
 char			tdd_finish = 0;
-
+uint8_t		tdd_err;
 Glyph 		*mytxt ;
 I_dev_lcd 	*tdd_lcd;
 flash_t		*tdd_fsh;
@@ -288,11 +288,24 @@ int main (void) {
 	line = 0;
 	Tdd_disp_text("FM25 读写测试",line++, 0);
 	
+	//单个字节读写测试
+	appBuf[0] = 0x12;
+	tdd_fsh->fsh_write((uint8_t *)appBuf, 0, 1);
+	appBuf[0] = 0xff;
+	tdd_fsh->fsh_read((uint8_t *)appBuf, 0, 1);
+	if(appBuf[0] == 0x12)
+		Tdd_disp_text("单字节测试成功",0, 100);
+	else
+		Tdd_disp_text("单字节测试失败",0, 100);
+	
 	for(tdd_j = 0; tdd_j <= 0xff; tdd_j ++)
 	{
 		line = 1;
 		sprintf(appBuf,"test[%d]", tdd_j);
 		Tdd_disp_text(appBuf,line, 0);
+		
+		
+	
 		
 		//写入测试数据
 		memset(appBuf, tdd_j, sizeof(appBuf));
@@ -351,6 +364,7 @@ int main (void) {
 	tdd_fsh = &phn_sys.arr_fsh[FSH_W25Q_NUM];
 	osKernelStart (); 	
 	line = 0;
+	
 	tdd_fsh->fsh_info(&tdd_fsh->fnf);
 	Tdd_disp_text("W25Q 读写测试",line++, 0);
 	
@@ -358,7 +372,16 @@ int main (void) {
 	{
 		line = 1;
 		sprintf(appBuf,"test[%d]", tdd_j);
-		Tdd_disp_text(appBuf,line, 0);
+		Tdd_disp_text(appBuf,1, 0);
+		tdd_err = 0;
+		tdd_j = tdd_fsh->fnf.total_pagenum / tdd_fsh->fnf.sector_pagenum;
+		
+		Tdd_disp_text("擦除W25Q",2, 0);
+		for(tdd_i = 0; tdd_i < tdd_j; tdd_i++)
+		{
+			tdd_fsh->fsh_ers_sector(tdd_i);
+			
+		}
 		
 		//写入测试数据
 		memset(appBuf, tdd_j, sizeof(appBuf));
@@ -367,8 +390,10 @@ int main (void) {
 			
 			 if( tdd_fsh->fsh_write((uint8_t *)appBuf, tdd_i * tdd_fsh->fnf.page_size,tdd_fsh->fnf.page_size) != tdd_fsh->fnf.page_size)
 			 {
-				sprintf(appBuf,"wr P[%d] err!", tdd_i);
-				Tdd_disp_text(appBuf,tdd_i + 2, 0);
+					sprintf(appBuf,"写页%d失败", tdd_i);
+					tdd_err = 1;
+					Tdd_disp_text(appBuf,3, 0);
+					goto w25q_err;
 			 }
 			 
 			 
@@ -381,9 +406,10 @@ int main (void) {
 			memset(appBuf, ~tdd_j, sizeof(appBuf));
 			if( tdd_fsh->fsh_read((uint8_t *)appBuf, tdd_i * tdd_fsh->fnf.page_size,tdd_fsh->fnf.page_size) != tdd_fsh->fnf.page_size)
 			{
-				sprintf(appBuf,"rd P[%d] err!", tdd_i);
-				Tdd_disp_text(appBuf,tdd_i + 2, 80);
-				break;
+					sprintf(appBuf,"读页%d失败", tdd_i);
+					tdd_err = 1;
+					Tdd_disp_text(appBuf, 3, 0);
+					goto w25q_err;
 			}
 			
 			//逐个字节比较读取与写入的值是否一样
@@ -392,14 +418,22 @@ int main (void) {
 				if(appBuf[tdd_count] != tdd_j)
 				{
 					
-					sprintf(appBuf,"P[%d][%d]=%xh != %xh", tdd_i, tdd_count, appBuf[tdd_count], tdd_j);
-					Tdd_disp_text(appBuf,tdd_i + 2, 160);
-					break;
+						sprintf(appBuf,"P[%d][%d]=%xh != %xh", tdd_i, tdd_count, appBuf[tdd_count], tdd_j);
+						Tdd_disp_text(appBuf,3, 0);
+						tdd_err = 1;
+						break;
 				}
 				
 			}
-			
-			
+			w25q_err:
+			if(tdd_err)
+			{
+				Tdd_disp_text("失败",1, 160);
+			}
+			else
+			{
+				Tdd_disp_text("成功",1, 160);
+			}
 			
 			
 		}

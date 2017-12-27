@@ -11,7 +11,7 @@
 #include "utils/FM25.h"
 
 #include "HMI/HMIFactory.h"
-
+#include "fs/easy_fs.h"
 //------------------------------------------------------------------------------
 // const defines
 //------------------------------------------------------------------------------
@@ -90,6 +90,7 @@ void System_init(void)
 	
 	w25q_init();
 	FM25_init();
+	EFS_init(NUM_FSH);
 	System_default(NULL);
 }
 void System_time(struct  tm *stime)
