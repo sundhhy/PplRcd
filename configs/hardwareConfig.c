@@ -84,8 +84,8 @@ spi_conf_t arr_conf_spi[NUM_SPIS] ={
     0,
     3,
     0,
-		8,
-	20000000
+	8,
+	0
 	},
 	{
     0,

@@ -21,7 +21,7 @@ V010 171226 :
 //------------------------------------------------------------------------------
 #define FS_RLB_LEVEL					1				
 
-#defien EFS_FS								phn_sys.fs
+#define EFS_FS								phn_sys.fs
 //------------------------------------------------------------------------------
 // module global vars
 //------------------------------------------------------------------------------
@@ -81,32 +81,32 @@ int 	EFS_init(int arg)
 
 
 
-int		EFS_open(uint8_t		prt, char *path, char *mode, int	file_size)
+int	EFS_open(uint8_t		prt, char *path, char *mode, int	file_size)
 {
 	
 }
-int		EFS_close(int fd)
+int	EFS_close(int fd)
 {
 	
 	
 }
-int		EFS_delete(int fd)
+int	EFS_delete(int fd)
 {
 	
 }
-int		EFS_write(int fd, uint8_t *p, int len)
+int	EFS_write(int fd, uint8_t *p, int len)
 {
 	
 }
-int		EFS_read(int fd, uint8_t *p, int len)
+int	EFS_read(int fd, uint8_t *p, int len)
 {
 	
 }
-int		EFS_resize(int fd, int new_size)
+int	EFS_resize(int fd, int new_size)
 {
 	
 }
-int		EFS_file_info(int fd, file_info_t *p)
+int	EFS_file_info(int fd, file_info_t *p)
 {
 	
 }

@@ -25,7 +25,10 @@
 
 #define FSH_W25Q_NUM			0
 #define FSH_FM25_NUM			1
-#define NUM_FSH						2
+#define FSH_OPT_SECTOR			0
+#define FSH_OPT_BLOCK			1
+#define FSH_OPT_CHIP			2
+#define NUM_FSH					2
 
 //------------------------------------------------------------------------------
 // typedef
@@ -87,7 +90,7 @@ typedef struct {
 	void (*fsh_info)(fsh_info_t *nf);
 
 
-	int	(*fsh_ers_sector)(uint32_t	sector_num);
+	int	(*fsh_ersse)(int opt, uint32_t	num);
 	int	(*fsh_wr_sector)(uint8_t *wr_buf, uint16_t num_sector);
 	int	(*fsh_rd_sector)(uint8_t *rd_buf, uint16_t num_sector);
 	int (*fsh_write)(uint8_t *wr_buf, uint32_t wr_addr, uint32_t num_bytes);

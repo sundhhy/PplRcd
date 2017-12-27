@@ -74,7 +74,7 @@ void FM25_WP(int protect);
 void FM25_info(fsh_info_t *info);
 int FM25_Write_Sector_Data(uint8_t *pBuffer, uint16_t Sector_Num);
 int FM25_Read_Sector_Data(uint8_t *pBuffer, uint16_t Sector_Num);
-int FM25_Erase_Sector(uint32_t Sector_Number);
+int FM25_Erase_Sector(int opt, uint32_t Sector_Number);
 int FM25_Write(uint8_t *pBuffer, uint32_t WriteAddr, uint32_t WriteBytesNum);
 int FM25_rd_data(uint8_t *pBuffer, uint32_t rd_add, uint32_t len);
 
@@ -103,7 +103,7 @@ int FM25_init(void)
 	phn_sys.arr_fsh[FM25_SPI_NO].fsh_info = FM25_info;
 	phn_sys.arr_fsh[FM25_SPI_NO].fsh_wp = FM25_WP;
 
-	phn_sys.arr_fsh[FM25_SPI_NO].fsh_ers_sector = FM25_Erase_Sector;
+	phn_sys.arr_fsh[FM25_SPI_NO].fsh_ersse = FM25_Erase_Sector;
 	phn_sys.arr_fsh[FM25_SPI_NO].fsh_wr_sector = FM25_Write_Sector_Data;
 	phn_sys.arr_fsh[FM25_SPI_NO].fsh_rd_sector = FM25_Read_Sector_Data;
 	phn_sys.arr_fsh[FM25_SPI_NO].fsh_write = FM25_Write;
@@ -152,10 +152,16 @@ int FM25_rd_data(uint8_t *pBuffer, uint32_t rd_add, uint32_t len)
 void FM25_info(fsh_info_t *info)
 {
 	//FM25L64 4KB = 512 * 8
+#if FM25_DEVTYPE == FM25L04B
 	info->page_size = 512;
-	info->total_pagenum = 1;
+	info->total_pagenum = 8;
+#else
+	info->page_size = 512;
+	info->total_pagenum = 8;
+#endif
 	info->block_pagenum = 0;
 	info->sector_pagenum = 0;
+
 }
 
 void FM25_WP(int protect)
@@ -178,7 +184,7 @@ void FM25_WP(int protect)
 	
 }
 
-int FM25_Erase_Sector(uint32_t Sector_Number)
+int FM25_Erase_Sector(int opt, uint32_t Sector_Number)
 {
 
 	return RET_OK;
@@ -271,19 +277,26 @@ static void FM25_cmd_addr(uint8_t cmd, uint16_t addr)
 {
 	uint8_t	tmp_u8;
 	
-	
-	tmp_u8 = FM25CL64_WRITE;
+#if FM25_DEVTYPE == FM25L04B
+	//在读写的时候，地址是9bit，其中最高的Bit放在命令的Bit3传输		
+	tmp_u8 = cmd;
+	if(addr & 0x100)
+		tmp_u8 |= 0x8;
 	FM25_SPI_WRITE(&tmp_u8, 1);
 	
+	tmp_u8 = addr & 0x00ff;
+	FM25_SPI_WRITE(&tmp_u8, 1);
 	
+#else
+	tmp_u8 = cmd;
+	FM25_SPI_WRITE(&tmp_u8, 1);
 	
 	tmp_u8 = (addr & 0x100) >> 5;
 	FM25_SPI_WRITE(&tmp_u8, 1);
 	
 	tmp_u8 = addr & 0x00ff;
 	FM25_SPI_WRITE(&tmp_u8, 1);
-	
-
+#endif
 }
 
 
