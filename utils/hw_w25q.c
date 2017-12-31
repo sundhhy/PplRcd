@@ -132,6 +132,7 @@ int w25q_close(void);
 //============================================================================//
 int w25q_init(void)
 {
+	int  ret = 0;
 	if(W25Q_flash.w25q_flag == 0)
 	{
 		
@@ -155,9 +156,10 @@ int w25q_init(void)
 	phn_sys.arr_fsh[FSH_W25Q_NUM].fsh_read = w25q_rd_data;
 	
 	W25Q_Disable_WP;
-	return w25q_read_id();
+	ret = w25q_read_id();
 
-
+	w25q_info(&phn_sys.arr_fsh[FSH_W25Q_NUM].fnf);
+	return ret;
 }
 
 ///这个函数要在w25q_init成功之后调用才有用

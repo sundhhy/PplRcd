@@ -23,13 +23,15 @@
 #define OP_ADD				0
 #define OP_SUB				1
 
-#define FSH_W25Q_NUM			0
-#define FSH_FM25_NUM			1
+#define FSH_FM25_NUM			0
+#define FSH_W25Q_NUM			1
 #define FSH_OPT_SECTOR			0
 #define FSH_OPT_BLOCK			1
 #define FSH_OPT_CHIP			2
 #define NUM_FSH					2
 
+
+#define FS_ALARM_LOWSPACE		1
 //------------------------------------------------------------------------------
 // typedef
 //------------------------------------------------------------------------------
@@ -101,7 +103,8 @@ typedef struct {
 typedef struct {
 	uint8_t			fsh_No;				//¶ÔÓ¦µÄ´æ´¢Æ÷±àºÅ
 	uint8_t			opt_mode;			//0  Ö»¶Á  1 ¶ÁÐ´
-	uint8_t			none[2];
+	uint8_t			file_flag;
+	uint8_t			low_pg;
 	
 	uint16_t		start_page;
 	uint16_t		num_page;
@@ -110,7 +113,7 @@ typedef struct {
 	uint32_t		read_position;
 	uint32_t		write_position;
 
-	
+	char			*p_name;
 }file_info_t;
 
 typedef struct {
@@ -135,8 +138,11 @@ typedef struct {
 //--------------------------------------------------------------------------
 
 typedef struct {
+	uint8_t		major_ver;
+	uint8_t		minor_ver;
+	uint8_t		none[2];
 	flash_t		arr_fsh[NUM_FSH];
-	fs_t			fs;
+	fs_t		fs;
 }system_t;
 	
 

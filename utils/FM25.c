@@ -74,7 +74,7 @@ void FM25_WP(int protect);
 void FM25_info(fsh_info_t *info);
 int FM25_Write_Sector_Data(uint8_t *pBuffer, uint16_t Sector_Num);
 int FM25_Read_Sector_Data(uint8_t *pBuffer, uint16_t Sector_Num);
-int FM25_Erase_Sector(int opt, uint32_t Sector_Number);
+int FM25_Erase(int opt, uint32_t Sector_Number);
 int FM25_Write(uint8_t *pBuffer, uint32_t WriteAddr, uint32_t WriteBytesNum);
 int FM25_rd_data(uint8_t *pBuffer, uint32_t rd_add, uint32_t len);
 
@@ -103,7 +103,7 @@ int FM25_init(void)
 	phn_sys.arr_fsh[FM25_SPI_NO].fsh_info = FM25_info;
 	phn_sys.arr_fsh[FM25_SPI_NO].fsh_wp = FM25_WP;
 
-	phn_sys.arr_fsh[FM25_SPI_NO].fsh_ersse = FM25_Erase_Sector;
+	phn_sys.arr_fsh[FM25_SPI_NO].fsh_ersse = FM25_Erase;
 	phn_sys.arr_fsh[FM25_SPI_NO].fsh_wr_sector = FM25_Write_Sector_Data;
 	phn_sys.arr_fsh[FM25_SPI_NO].fsh_rd_sector = FM25_Read_Sector_Data;
 	phn_sys.arr_fsh[FM25_SPI_NO].fsh_write = FM25_Write;
@@ -153,7 +153,7 @@ void FM25_info(fsh_info_t *info)
 {
 	//FM25L64 4KB = 512 * 8
 #if FM25_DEVTYPE == FM25L04B
-	info->page_size = 512;
+	info->page_size = 64;
 	info->total_pagenum = 8;
 #else
 	info->page_size = 512;
@@ -184,10 +184,41 @@ void FM25_WP(int protect)
 	
 }
 
-int FM25_Erase_Sector(int opt, uint32_t Sector_Number)
+int FM25_Erase(int opt, uint32_t num)
 {
 
-	return RET_OK;
+	int ret = ERR_DEV_FAILED;
+	uint8_t		*tmp_buf;
+	fsh_info_t 	info;
+	int 		pg = 0;
+	switch(opt)
+	{
+		
+		case FSH_OPT_SECTOR:
+			
+			break;
+		case FSH_OPT_BLOCK:
+			
+			break;
+		case FSH_OPT_CHIP:
+			FM25_info(&info);
+			tmp_buf = malloc(info.page_size);
+			memset(tmp_buf, 0xff, info.page_size);
+			ret = RET_OK;
+			for(pg = 0; pg < info.total_pagenum; pg ++)
+			{
+				if( FM25_Write(tmp_buf, info.page_size * pg, info.page_size)!= info.page_size)
+					ret = ERR_DEV_FAILED;
+				
+			}
+			
+			break;
+		default:
+			break;
+		
+	}
+	
+	return ret;
 	
 }
 

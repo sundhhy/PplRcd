@@ -286,6 +286,50 @@ int main (void) {
 		count ++;
 		
 	}
+#elif TDD_EFS == 1	
+	Tdd_disp_text("[TDD] Easy file system ",0, 0);
+	
+	Tdd_disp_text("[TDD_EFS] open file:sys.cfg",1, 0);
+	tdd_j = phn_sys.fs.fs_open(0, "sys.cfg", "rw", 256);
+	for(tdd_i = 0; tdd_i < sizeof(appBuf); tdd_i ++)
+		appBuf[tdd_i] = tdd_i + 1;
+	sprintf(lcd_buf, "[TDD_EFS] write data,size %d", 256);
+	Tdd_disp_text(lcd_buf,2, 0);
+	if( phn_sys.fs.fs_write(tdd_j, (uint8_t *)appBuf, 256) == 256)
+	{
+		Tdd_disp_text("成功", 2, 260);
+	}
+	else
+	{
+		Tdd_disp_text("失败", 2, 260);
+	}
+	memset(appBuf, 0, sizeof(appBuf));
+	
+	sprintf(lcd_buf, "[TDD_EFS] read data,size %d", 256);
+	Tdd_disp_text(lcd_buf, 3, 0);
+	if( phn_sys.fs.fs_read(tdd_j, (uint8_t *)appBuf,256) == 256)
+	{
+		Tdd_disp_text("成功", 3, 260);
+	}
+	else
+	{
+		Tdd_disp_text("失败", 3, 260);
+	}
+	
+	Tdd_disp_text("检查数据", 4, 0);
+	
+	for(tdd_i = 0; tdd_i < 256; tdd_i ++)
+	{
+		if(appBuf[tdd_i] != ((tdd_i + 1) & 0xff))
+			break;
+		
+	}
+	if(tdd_i == 256)
+		Tdd_disp_text("成功", 4, 160);
+	else
+		Tdd_disp_text("失败", 4, 160);
+	
+	while(1);
 #elif TDD_FM25 == 1
 	tdd_fsh = &phn_sys.arr_fsh[FSH_FM25_NUM];
 	osKernelStart (); 	
@@ -416,26 +460,36 @@ int main (void) {
 	tdd_j = tdd_fsh->fnf.total_pagenum * tdd_fsh->fnf.page_size;
 	
 	tdd_fsh->fsh_ersse(FSH_OPT_CHIP, 0);
+	tdd_u8 = 0;
 	
-	for(tdd_i = 65536; tdd_i <= tdd_j; tdd_i += 4)
+	//字节读写测试，非常耗时，运行一次就够了
+//	for(tdd_i = 65536; tdd_i <= tdd_j; tdd_i += 4)
+//	{
+//		//对每个寄存器写入地址一样的值
+//		tdd_u32 = tdd_i;
+//		tdd_fsh->fsh_write((uint8_t *)&tdd_u32, tdd_i, 4);
+//		tdd_u32 = ~tdd_i;
+//		tdd_fsh->fsh_read((uint8_t *)&tdd_u32, tdd_i, 4);
+//		
+//		if(tdd_u32 != tdd_i)
+//		{
+//			Tdd_disp_text("失败", 1, 160);
+//			
+//			break;
+//		}
+//		if(tdd_i % 10000 == 0)
+//		{
+//			sprintf(lcd_buf, "check addr %d", tdd_i);
+//			Tdd_disp_text(lcd_buf,1, 0);
+//			
+//		}
+//	}
+	
+	if(tdd_i > tdd_j)
 	{
-		//对每个寄存器写入地址一样的值
-		tdd_u32 = tdd_i;
-		tdd_fsh->fsh_write((uint8_t *)&tdd_u32, tdd_i, 4);
-		tdd_u32 = ~tdd_i;
-		tdd_fsh->fsh_read((uint8_t *)&tdd_u32, tdd_i, 4);
 		sprintf(lcd_buf, "check addr %d", tdd_i);
 		Tdd_disp_text(lcd_buf,1, 0);
-		if(tdd_u32 == tdd_i)
-		{
-			Tdd_disp_text("成功", 1, 160);
-			
-		}
-		else
-		{
-			Tdd_disp_text("失败", 1, 160);
-			break;
-		}
+		Tdd_disp_text("成功", 1, 160);
 	}
 
 	for(tdd_j = 0; tdd_j <= 0xff; tdd_j ++)

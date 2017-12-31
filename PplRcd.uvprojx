@@ -438,6 +438,11 @@
               <FileType>1</FileType>
               <FilePath>.\system.c</FilePath>
             </File>
+            <File>
+              <FileName>app_conf.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\APP\app_conf.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

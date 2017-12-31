@@ -15,7 +15,8 @@
 //------------------------------------------------------------------------------
 // const defines
 //------------------------------------------------------------------------------
-
+#define 	PHN_MAJOR_VER				0
+#define 	PHN_MINOR_VER				24
 //------------------------------------------------------------------------------
 // module global vars
 //------------------------------------------------------------------------------
@@ -79,6 +80,8 @@ void System_init(void)
 	Model 		*md_time;
 
 
+	phn_sys.major_ver = PHN_MAJOR_VER;
+	phn_sys.minor_ver = PHN_MINOR_VER;
 	
 	sys_rtc = ( UtlRtc *)Pcf8563_new();
 	sys_rtc->init(sys_rtc, NULL);
