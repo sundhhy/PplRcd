@@ -72,12 +72,10 @@ static I_dev_Char *p_fm25_spi;
 
 void FM25_WP(int protect);
 void FM25_info(fsh_info_t *info);
-int FM25_Write_Sector_Data(uint8_t *pBuffer, uint16_t Sector_Num);
-int FM25_Read_Sector_Data(uint8_t *pBuffer, uint16_t Sector_Num);
 int FM25_Erase(int opt, uint32_t Sector_Number);
 int FM25_Write(uint8_t *pBuffer, uint32_t WriteAddr, uint32_t WriteBytesNum);
 int FM25_rd_data(uint8_t *pBuffer, uint32_t rd_add, uint32_t len);
-
+void FM25_Flush(void);
 
 static void FM25_cmd_addr(uint8_t cmd, uint16_t addr);
 static int FM25_wr_enable(void);
@@ -104,11 +102,9 @@ int FM25_init(void)
 	phn_sys.arr_fsh[FM25_SPI_NO].fsh_wp = FM25_WP;
 
 	phn_sys.arr_fsh[FM25_SPI_NO].fsh_ersse = FM25_Erase;
-	phn_sys.arr_fsh[FM25_SPI_NO].fsh_wr_sector = FM25_Write_Sector_Data;
-	phn_sys.arr_fsh[FM25_SPI_NO].fsh_rd_sector = FM25_Read_Sector_Data;
 	phn_sys.arr_fsh[FM25_SPI_NO].fsh_write = FM25_Write;
 	phn_sys.arr_fsh[FM25_SPI_NO].fsh_read = FM25_rd_data;
-	
+	phn_sys.arr_fsh[FM25_SPI_NO].fsh_flush = FM25_Flush;
 	
 	FM25_info(&phn_sys.arr_fsh[FM25_SPI_NO].fnf);
 		
@@ -159,8 +155,8 @@ void FM25_info(fsh_info_t *info)
 	info->page_size = 512;
 	info->total_pagenum = 8;
 #endif
-	info->block_pagenum = 0;
-	info->sector_pagenum = 0;
+	info->num_sct = 0;
+	info->num_blk = 0;
 
 }
 
@@ -181,6 +177,11 @@ void FM25_WP(int protect)
 	}
 	FM25_Write_status(fm25_cmd);
 
+	
+}
+
+void FM25_Flush(void)
+{
 	
 }
 
@@ -226,18 +227,7 @@ int FM25_Erase(int opt, uint32_t num)
 
 
 
-int FM25_Write_Sector_Data(uint8_t *pBuffer, uint16_t Sector_Num)
-{
-	return 0;
-   
-}
 
-
-int FM25_Read_Sector_Data(uint8_t *pBuffer, uint16_t Sector_Num)
-{
-	
-	return 0;
-}
 
 
 

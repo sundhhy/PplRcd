@@ -29,7 +29,7 @@
 #define FSH_OPT_BLOCK			1
 #define FSH_OPT_CHIP			2
 #define NUM_FSH					2
-
+#define FSH_FLAG_READBACK_CHECK		2			//
 
 #define FS_ALARM_LOWSPACE		1
 //------------------------------------------------------------------------------
@@ -72,8 +72,8 @@ typedef struct {
 //---------- flash驱动的定义 --------------------------------------
 
 typedef struct {
-	uint16_t		sector_pagenum;
-	uint16_t		block_pagenum;
+	uint16_t		num_sct;
+	uint16_t		num_blk;
 	uint32_t		total_pagenum;					///整个存储器的页数量
 	
 	uint16_t		page_size;						///一页的长度
@@ -93,10 +93,11 @@ typedef struct {
 
 
 	int	(*fsh_ersse)(int opt, uint32_t	num);
-	int	(*fsh_wr_sector)(uint8_t *wr_buf, uint16_t num_sector);
-	int	(*fsh_rd_sector)(uint8_t *rd_buf, uint16_t num_sector);
+//	int	(*fsh_wr_sector)(uint8_t *wr_buf, uint16_t num_sector);
+//	int	(*fsh_rd_sector)(uint8_t *rd_buf, uint16_t num_sector);
 	int (*fsh_write)(uint8_t *wr_buf, uint32_t wr_addr, uint32_t num_bytes);
 	int (*fsh_read)(uint8_t *wr_buf, uint32_t rd_addr, uint32_t num_bytes);
+	void (*fsh_flush)(void);
 }flash_t;
 
 //----------------文件系统的定义 --------------------------------
@@ -130,7 +131,7 @@ typedef struct {
 	int		(*fs_write)(int fd, uint8_t *p, int len);
 	int		(*fs_read)(int fd, uint8_t *p, int len);
 	int		(*fs_resize)(int fd, int new_size);
-	int		(*fs_file_info)(int fd, file_info_t *p);
+	file_info_t*		(*fs_file_info)(int fd);
 			
 	
 }fs_t;

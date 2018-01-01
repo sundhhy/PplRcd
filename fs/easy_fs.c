@@ -17,6 +17,7 @@ V010 171226 :
 
 #include "fs/easy_fs.h"
 #include <string.h>
+#include "sdhDef.h"
 //------------------------------------------------------------------------------
 // const defines
 //------------------------------------------------------------------------------
@@ -65,7 +66,7 @@ typedef struct {
 	char		efile_name[EFS_NAME_LEN];
 	uint16_t	efile_start_pg;
 	uint16_t	efile_num_pg;
-	uint16_t	efile_wr_position;
+	uint32_t	efile_wr_position;
 //	uint16_t	efile_space_low_bytes;		//文件容量小于这个值的时候，报警
 }efs_file_mgt_t;
 
@@ -93,7 +94,7 @@ int		EFS_close(int fd);
 int		EFS_write(int fd, uint8_t *p, int len);
 int		EFS_read(int fd, uint8_t *p, int len);
 int		EFS_resize(int fd, int new_size);
-int		EFS_file_info(int fd, file_info_t *p);
+file_info_t		*EFS_file_info(int fd);
 int		EFS_delete(int fd);
 
 
@@ -111,9 +112,16 @@ static void	EFS_flush_mgr(int No);
 //============================================================================//
 int 	EFS_init(int arg)
 {
-	
+	int	i;
 	EFS_FS.num_partitions = arg;
 	EFS_FS.reliable_level = FS_RLB_LEVEL;
+	if(EFS_FS.reliable_level == 1)
+	{
+		for(i = 0; i < NUM_FSH; i ++)
+			EFS_FSH(i).fnf.fnf_flag |= FSH_FLAG_READBACK_CHECK;
+		
+	}
+	
 	
 	EFS_FS.fs_open = EFS_open;
 	EFS_FS.fs_close = EFS_close;
@@ -207,9 +215,9 @@ int	EFS_resize(int fd, int new_size)
 {
 	
 }
-int	EFS_file_info(int fd, file_info_t *p)
+file_info_t		*EFS_file_info(int fd)
 {
-	
+	return efs_mgr.arr_file_info + fd;
 }
 
 //=========================================================================//
@@ -241,7 +249,7 @@ static int EFS_format(void)
 	
 	EFS_FSH(EFS_MGR_FSH_NO).fsh_read((uint8_t *)efs_mgr.arr_efiles, 2, sizeof(efs_mgr));
 //	memset(efs_mgr.arr_file_info, 0 ,sizeof(efs_mgr.arr_file_info));
-	
+	return RET_OK;
 }
 
 static void	EFS_flush_mgr(int No)
@@ -279,10 +287,10 @@ static int EFS_search_file(char *path)
 }
 
  
-static int EFS_free_space(uint8_t prt, space_t *fsp)
+static int EFS_Cal_free_space(uint8_t prt, space_t *fsp)
 {
 	
-	short i,j;
+	short i;
 	uint32_t	usd_addr_1, usd_addr_2, use_size = 0;
 	
 	//找到第一个使用的空间
@@ -298,6 +306,9 @@ static int EFS_free_space(uint8_t prt, space_t *fsp)
 	for(i = 0; i < EFS_MAX_NUM_FILES; i++)
 	{
 		if((efs_mgr.arr_efiles[i].efs_flag & EFS_FLAG_USED) == 0)
+			continue;
+		
+		if(efs_mgr.arr_efiles[i].efile_fsh_NO != prt)
 			continue;
 		
 		if(efs_mgr.arr_efiles[i].efs_flag & EFS_FLAG_SEARCHED)
@@ -316,6 +327,8 @@ static int EFS_free_space(uint8_t prt, space_t *fsp)
 	for(; i < EFS_MAX_NUM_FILES; i++)
 	{
 		if((efs_mgr.arr_efiles[i].efs_flag & EFS_FLAG_USED) == 0)
+			continue;
+		if(efs_mgr.arr_efiles[i].efile_fsh_NO != prt)
 			continue;
 		
 		if(efs_mgr.arr_efiles[i].efs_flag & EFS_FLAG_SEARCHED)
@@ -382,7 +395,7 @@ static int EFS_create_file(uint8_t	prt, char *path, int size)
 	while(1)
 	{
 		
-		ret = EFS_free_space(prt, &space);
+		ret = EFS_Cal_free_space(prt, &space);
 		if(ret < 0)
 			break;
 		if(space.free_bytes >= size)
@@ -420,24 +433,24 @@ static int EFS_create_file(uint8_t	prt, char *path, int size)
 	
 }
 
-static int EFS_malloc_file_info(void)
-{
-	
-	int i;
-	
-	for(i = 0; i < EFS_MAX_NUM_FILES; i++)
-	{
-		if(efs_mgr.arr_file_info[i].file_flag == 0)
-		{
-			efs_mgr.arr_file_info[i].file_flag = 1;
-			return i;
-		}
-		
-		
-	}
-	
-	return -1;
-}
+//static int EFS_malloc_file_info(void)
+//{
+//	
+//	int i;
+//	
+//	for(i = 0; i < EFS_MAX_NUM_FILES; i++)
+//	{
+//		if(efs_mgr.arr_file_info[i].file_flag == 0)
+//		{
+//			efs_mgr.arr_file_info[i].file_flag = 1;
+//			return i;
+//		}
+//		
+//		
+//	}
+//	
+//	return -1;
+//}
 
 static int EFS_malloc_file_mgr(void)
 {
