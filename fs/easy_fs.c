@@ -18,6 +18,8 @@ V010 171226 :
 #include "fs/easy_fs.h"
 #include <string.h>
 #include "sdhDef.h"
+#include "mem/CiiMem.h"
+
 //------------------------------------------------------------------------------
 // const defines
 //------------------------------------------------------------------------------
@@ -37,9 +39,9 @@ V010 171226 :
 
 
 #define EFS_FLAG_ALLOCED					1
-#define EFS_FLAG_USED						2
+#define EFS_FLAG_USED							2
 #define EFS_FLAG_SEARCHED					4		//用来在一次分配flash时，标记已经被查找过的文件管理
-
+#define EFS_FLAG_RECYCLE					8
 //------------------------------------------------------------------------------
 // module global vars
 //------------------------------------------------------------------------------
@@ -100,13 +102,14 @@ int		EFS_delete(int fd);
 
 static int EFS_format(void);
 static int EFS_search_file(char *path);
-static int EFS_create_file(uint8_t	prt, char *path, int size);
+static int EFS_create_file(uint8_t	fd, uint8_t	prt, char *path, int size);
 
 
 static void EFS_file_mgr_info(efs_file_mgt_t	*file_mgr, file_info_t *file_info);
 //static int EFS_malloc_file_info(void);
 static int EFS_malloc_file_mgr(void);
 static void	EFS_flush_mgr(int No);
+static void EFS_Change_file_size(int fd, uint32_t new_size);
 //============================================================================//
 //            P U B L I C   F U N C T I O N S                                 //
 //============================================================================//
@@ -141,19 +144,20 @@ int 	EFS_init(int arg)
 
 int	EFS_open(uint8_t prt, char *path, char *mode, int	file_size)
 {
-	short i = 0, j = 0;
+	int new_fd = 0;
 	
 	//先看看有没有已经存在
-	i = EFS_search_file(path);
+	new_fd = EFS_search_file(path);
 	
 	
 	//创建新的文件
-	if(i < 0)
+	if(new_fd < 0)
 	{
-		i = EFS_create_file(prt, path, file_size);
+		new_fd = EFS_malloc_file_mgr();
+		new_fd = EFS_create_file(new_fd, prt, path, file_size);
 	}
 	
-	return i;
+	return new_fd;
 }
 int	EFS_close(int fd)
 {
@@ -213,7 +217,78 @@ int	EFS_read(int fd, uint8_t *p, int len)
 }
 int	EFS_resize(int fd, int new_size)
 {
+	file_info_t 		*f = &efs_mgr.arr_file_info[fd];
+	file_info_t			tmp_file_info;
+	uint32_t				start_addr = f->start_page * EFS_FSH(f->fsh_No).fnf.page_size;
+	uint32_t				new_start_addr;
+	uint32_t				end_pg;
+	uint32_t				pg_size = EFS_FSH(f->fsh_No).fnf.page_size;
+	uint32_t			old_size;
+	int						ret;
+	int						i;
+
+	uint8_t				*tmp_buf;
+	//对比原大小，来判断空间变大还是变小
+	old_size = f->file_size;
 	
+	//变小则直接将原大小变小即可
+	if(new_size <= old_size)
+	{
+		EFS_Change_file_size(fd, new_size);
+		return  fd;
+		
+	}
+	//变大要重新创建该文件
+		//标记原区域为待回收
+	efs_mgr.arr_efiles[fd].efs_flag |= EFS_FLAG_RECYCLE;
+	EFS_file_mgr_info(&efs_mgr.arr_efiles[fd], &tmp_file_info);
+	tmp_file_info.write_position = f->write_position;
+	tmp_file_info.read_position = f->read_position;
+	
+		//重新创建该文件
+	ret = EFS_create_file(fd, f->fsh_No, efs_mgr.arr_efiles[fd].efile_name, new_size);
+	
+	if(ret == fd)
+			//找到了就拷贝到新的空间上去
+	{
+		
+		//把原来的读写位置复制给新的文件区
+		tmp_buf = ALLOC(pg_size);
+		new_start_addr = efs_mgr.arr_efiles[fd].efile_start_pg * pg_size;
+		end_pg = tmp_file_info.write_position / pg_size + 1;		 //只复制已经被写入的部分
+		for(i = 0; i < end_pg; i ++)
+		{
+			ret = EFS_FSH(f->fsh_No).fsh_read(tmp_buf, start_addr + pg_size * i, pg_size);
+			if(ret != pg_size)
+			{
+				
+				free(tmp_buf);
+				goto ERR_RECOVER;
+			}
+			ret = EFS_FSH(f->fsh_No).fsh_write(tmp_buf, new_start_addr + pg_size * i, pg_size);
+			
+		}
+		
+		
+		efs_mgr.arr_efiles[fd].efile_wr_position = tmp_file_info.write_position;
+		EFS_flush_mgr(fd);
+		f->write_position = tmp_file_info.write_position;
+		f->read_position = tmp_file_info.read_position;
+		
+		efs_mgr.arr_efiles[fd].efs_flag &= ~EFS_FLAG_RECYCLE;
+		free(tmp_buf);
+		return fd;
+		
+	}
+			//找不到则去除待回收标志，返回错误
+	
+	
+	else
+	{
+		ERR_RECOVER:	
+		efs_mgr.arr_efiles[fd].efs_flag &= ~EFS_FLAG_RECYCLE;
+		return -1;
+	}
 }
 file_info_t		*EFS_file_info(int fd)
 {
@@ -307,6 +382,8 @@ static int EFS_Cal_free_space(uint8_t prt, space_t *fsp)
 	{
 		if((efs_mgr.arr_efiles[i].efs_flag & EFS_FLAG_USED) == 0)
 			continue;
+		if(efs_mgr.arr_efiles[i].efs_flag & EFS_FLAG_RECYCLE)
+			continue;
 		
 		if(efs_mgr.arr_efiles[i].efile_fsh_NO != prt)
 			continue;
@@ -327,6 +404,8 @@ static int EFS_Cal_free_space(uint8_t prt, space_t *fsp)
 	for(; i < EFS_MAX_NUM_FILES; i++)
 	{
 		if((efs_mgr.arr_efiles[i].efs_flag & EFS_FLAG_USED) == 0)
+			continue;
+		if(efs_mgr.arr_efiles[i].efs_flag & EFS_FLAG_RECYCLE)
 			continue;
 		if(efs_mgr.arr_efiles[i].efile_fsh_NO != prt)
 			continue;
@@ -355,6 +434,17 @@ static int EFS_Cal_free_space(uint8_t prt, space_t *fsp)
 	}
 }
 
+static void EFS_Change_file_size(int fd, uint32_t new_size)
+{
+	
+	efs_mgr.arr_efiles[fd].efile_num_pg = new_size / EFS_FSH(efs_mgr.arr_efiles[fd].efile_fsh_NO).fnf.page_size + 1;
+	efs_mgr.arr_file_info[fd].num_page = efs_mgr.arr_efiles[fd].efile_num_pg;
+	efs_mgr.arr_file_info[fd].file_size = EFS_FSH(efs_mgr.arr_efiles[fd].efile_fsh_NO).fnf.page_size * efs_mgr.arr_efiles[fd].efile_num_pg;
+	
+	return ;
+	
+}
+
 static void EFS_set_flag(uint8_t  num, uint8_t	flag, char val)
 {
 	int i = 0;
@@ -377,18 +467,18 @@ static void EFS_set_flag(uint8_t  num, uint8_t	flag, char val)
 		
 	
 }
-static int EFS_create_file(uint8_t	prt, char *path, int size)
+static int EFS_create_file(uint8_t	fd, uint8_t	prt, char *path, int size)
 {
 	space_t  space;
 	int 		ret = 0;
 	int			safe_count = 100;
-	int			i = 0;
+	int			i = fd;
 	
 //	j = EFS_malloc_file_info();
 //	if(j < 0)
 //		return -1;
 	
-	i = EFS_malloc_file_mgr();
+	
 	if(i < 0)
 		return -1;
 	
@@ -480,5 +570,6 @@ static void EFS_file_mgr_info(efs_file_mgt_t	*file_mgr, file_info_t *file_info)
 	file_info->num_page = file_mgr->efile_num_pg;
 	file_info->write_position = file_mgr->efile_wr_position;
 	
+	file_info->file_size = file_info->num_page * EFS_FSH(file_info->fsh_No).fnf.page_size;
 }
 
