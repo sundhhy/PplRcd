@@ -121,7 +121,7 @@ osThreadDef (ThrdKeyRun, osPriorityNormal, 1, 0);                   // thread ob
 #if TDD_ON == 1
 char		lcd_buf[64];
 char		appBuf[512];
-int			tdd_i, tdd_j, tdd_k, tdd_count = 0;
+int			tdd_i, tdd_j, tdd_k, tdd_len, tdd_count = 0;
 uint32_t		tdd_u32;
 uint16_t		tdd_u16;
 
@@ -291,7 +291,10 @@ int main (void) {
 		count ++;
 		
 	}
-#elif TDD_EFS == 1	
+#elif TDD_EFS == 1
+
+#define TEST_FILE_SIZE		64 * 1024
+#define TEST_NUM_FILE		2	
 	Tdd_disp_text("[TDD] Easy file system ",0, 0);
 	
 	Tdd_disp_text("test sys.cfg 256B",1, 0);
@@ -312,46 +315,46 @@ int main (void) {
 	else
 		Tdd_disp_text("Ê§°Ü", 1, 260);
 	
-	for(tdd_j = 0 ; tdd_j < 6; tdd_j ++)
+	for(tdd_j = 0 ; tdd_j < TEST_NUM_FILE; tdd_j ++)
 	{
 		sprintf(lcd_buf, "mod_chn_%d, 2MB", tdd_j);
 		Tdd_disp_text(lcd_buf,2 + tdd_j, 0);
 		
 		sprintf(appBuf, "mod_chn_%d", tdd_j);
-		tdd_fd = phn_sys.fs.fs_open(1, appBuf, "rw", 2 * 1024 * 1024);
+		tdd_fd = phn_sys.fs.fs_open(1, appBuf, "rw", TEST_FILE_SIZE);
 		for(tdd_i = 0; tdd_i < sizeof(appBuf); tdd_i ++)
 			appBuf[tdd_i] = tdd_j + 1;
 		
-		for(tdd_count = 0; tdd_count < 2 * 1024 * 1024 / sizeof(appBuf); tdd_count++)
+		for(tdd_count = 0; tdd_count < TEST_FILE_SIZE / sizeof(appBuf); tdd_count++)
 			phn_sys.fs.fs_write(tdd_fd, (uint8_t *)appBuf, sizeof(appBuf));
 		Tdd_disp_text("wr ok", 2 + tdd_j, 160);
 	}
 	
-	for(tdd_j = 0 ; tdd_j < 6; tdd_j ++)
+	for(tdd_j = 0 ; tdd_j < TEST_NUM_FILE; tdd_j ++)
 	{
 		
 		chk_next_file:
 		sprintf(appBuf, "mod_chn_%d", tdd_j);
-		tdd_fd = phn_sys.fs.fs_open(1, appBuf, "rw", 2 * 1024 * 1024);
-		for(tdd_i = 0; tdd_i < sizeof(appBuf); tdd_i ++)
-			appBuf[tdd_i] = tdd_j + 1;
+		tdd_fd = phn_sys.fs.fs_open(1, appBuf, "rw", TEST_FILE_SIZE);
 		
-		for(tdd_count = 0; tdd_count < 2 * 1024 * 1024 / sizeof(appBuf); tdd_count++)
+		
+		for(tdd_count = 0; tdd_count < TEST_FILE_SIZE / sizeof(appBuf); tdd_count++)
 		{
-			phn_sys.fs.fs_write(tdd_fd, (uint8_t *)appBuf, sizeof(appBuf));
-			for(tdd_k = 0; tdd_k < sizeof(appBuf); tdd_k ++)
+			memset(appBuf, 0xff, sizeof(appBuf));
+			tdd_len = phn_sys.fs.fs_read(tdd_fd, (uint8_t *)appBuf, sizeof(appBuf));
+			for(tdd_k = 0; tdd_k < tdd_len; tdd_k ++)
 			{
-				if(appBuf[tdd_i] != tdd_j + 1)
+				if(appBuf[tdd_k] != (tdd_j + 1))
 				{
 					Tdd_disp_text("chk err", 2 + tdd_j, 260);
-					goto chk_next_file;
+					break;
 				}
 				
 			}
 			
 		}
-		
-		Tdd_disp_text("chk ok", 1 + tdd_j, 260);
+		if(tdd_k == sizeof(appBuf))
+			Tdd_disp_text("chk ok", 2 + tdd_j, 260);
 	}
 		
 	

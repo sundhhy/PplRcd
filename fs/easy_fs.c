@@ -156,6 +156,8 @@ int	EFS_open(uint8_t prt, char *path, char *mode, int	file_size)
 		new_fd = EFS_malloc_file_mgr();
 		new_fd = EFS_create_file(new_fd, prt, path, file_size);
 	}
+	if(new_fd >= 0)
+		efs_mgr.arr_file_info[new_fd].read_position = 0;
 	
 	return new_fd;
 }

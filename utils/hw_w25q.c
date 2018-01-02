@@ -361,7 +361,7 @@ int w25q_Write(uint8_t *pBuffer, uint32_t WriteAddr, uint32_t WriteBytesNum)
 int w25q_rd_data(uint8_t *pBuffer, uint32_t rd_add, uint32_t len)
 {
 	
-	int 			ret = -1;
+	int 			ret = 0;
 	uint16_t		sct_num;
 	uint16_t		rd_len;
 	uint16_t		sum = 0;
@@ -375,6 +375,7 @@ int w25q_rd_data(uint8_t *pBuffer, uint32_t rd_add, uint32_t len)
 	}
 	
 	//要考虑写数据跨扇区的情况
+	ret = 0;
 	while(len)
 	{
 		if(w25q_mgr.cur_sct != sct_num)
