@@ -132,6 +132,8 @@ uint8_t		tdd_err;
 Glyph 		*mytxt ;
 I_dev_lcd 	*tdd_lcd;
 flash_t		*tdd_fsh;
+uint16_t	*p_tdd_u16;
+uint32_t	*p_tdd_u32;
 
 void 	Tdd_init(void);
 void	Tdd_disp_text(char	*text, int	line, int	row);
@@ -294,7 +296,7 @@ int main (void) {
 #elif TDD_EFS == 1
 
 #define TEST_FILE_SIZE		64 * 1024
-#define TEST_NUM_FILE		2	
+#define TEST_NUM_FILE		6	
 	Tdd_disp_text("[TDD] Easy file system ",0, 0);
 	
 	Tdd_disp_text("test sys.cfg 256B",1, 0);
@@ -322,13 +324,17 @@ int main (void) {
 		
 		sprintf(appBuf, "mod_chn_%d", tdd_j);
 		tdd_fd = phn_sys.fs.fs_open(1, appBuf, "rw", TEST_FILE_SIZE);
-		for(tdd_i = 0; tdd_i < sizeof(appBuf); tdd_i ++)
-			appBuf[tdd_i] = tdd_j + 1;
+		p_tdd_u16 = (uint16_t *)appBuf;
+		for(tdd_i = 0; tdd_i < sizeof(appBuf) / 2; tdd_i ++)
+			p_tdd_u16[tdd_i] = tdd_i + tdd_j * 256;
 		
 		for(tdd_count = 0; tdd_count < TEST_FILE_SIZE / sizeof(appBuf); tdd_count++)
 			phn_sys.fs.fs_write(tdd_fd, (uint8_t *)appBuf, sizeof(appBuf));
 		Tdd_disp_text("wr ok", 2 + tdd_j, 160);
 	}
+	
+	sprintf(appBuf, "mod_chn_%d", 0);
+	tdd_fd = phn_sys.fs.fs_resize(tdd_fd, 2 * 1024 * 1024);
 	
 	for(tdd_j = 0 ; tdd_j < TEST_NUM_FILE; tdd_j ++)
 	{
@@ -340,50 +346,22 @@ int main (void) {
 		
 		for(tdd_count = 0; tdd_count < TEST_FILE_SIZE / sizeof(appBuf); tdd_count++)
 		{
-			memset(appBuf, 0xff, sizeof(appBuf));
+			memset(appBuf, 0xcc, sizeof(appBuf));
 			tdd_len = phn_sys.fs.fs_read(tdd_fd, (uint8_t *)appBuf, sizeof(appBuf));
-			for(tdd_k = 0; tdd_k < tdd_len; tdd_k ++)
+			p_tdd_u16 = (uint16_t *)appBuf;
+			for(tdd_k = 0; tdd_k < tdd_len / 2; tdd_k ++)
 			{
-				if(appBuf[tdd_k] != (tdd_j + 1))
+				if(p_tdd_u16[tdd_k] != (tdd_j * 256 + tdd_k))
 				{
 					Tdd_disp_text("chk err", 2 + tdd_j, 260);
 					break;
-				}
-				
-			}
-			
+				}			
+			}		
 		}
-		if(tdd_k == sizeof(appBuf))
+		if(tdd_k == sizeof(appBuf) / 2)
 			Tdd_disp_text("chk ok", 2 + tdd_j, 260);
 	}
 		
-	
-//	sprintf(lcd_buf, "[TDD_EFS] write data,size %d", 256);
-//	Tdd_disp_text(lcd_buf,2, 0);
-	
-//	if(  == 256)
-//	{
-//		Tdd_disp_text("成功", 2, 260);
-//	}
-//	else
-//	{
-//		Tdd_disp_text("失败", 2, 260);
-//	}
-	
-//	sprintf(lcd_buf, "[TDD_EFS] read data,size %d", 256);
-//	Tdd_disp_text(lcd_buf, 3, 0);
-//	if( phn_sys.fs.fs_read(tdd_j, (uint8_t *)appBuf,256) == 256)
-//	{
-//		Tdd_disp_text("成功", 3, 260);
-//	}
-//	else
-//	{
-//		Tdd_disp_text("失败", 3, 260);
-//	}
-//	
-//	Tdd_disp_text("检查数据", 4, 0);
-	
-	
 	
 	while(1);
 #elif TDD_FM25 == 1

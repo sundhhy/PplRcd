@@ -337,6 +337,7 @@ int w25q_Write(uint8_t *pBuffer, uint32_t WriteAddr, uint32_t WriteBytesNum)
 			WriteAddr += len;
 			sct_num = W25Q_Addr_2_sct(WriteAddr);
 			sum += len;
+			pBuffer += len;
 		}
 	
 		
@@ -392,6 +393,7 @@ int w25q_rd_data(uint8_t *pBuffer, uint32_t rd_add, uint32_t len)
 		rd_add += rd_len;
 		sct_num = W25Q_Addr_2_sct(rd_add);
 		sum += rd_len;
+		pBuffer += rd_len;
 	}
 	return sum;
 //	int  ret = ERR_DEV_FAILED;
@@ -660,6 +662,7 @@ static uint16_t W25Q_rd_cache(uint32_t addr, uint8_t *rd_buf, uint16_t	rd_len)
 	if(rd_len <= len)
 		len = rd_len;
 	memcpy(rd_buf, w25q_mgr.p_sct_buf + offset,  len);
+	
 	return len;
 }
 	

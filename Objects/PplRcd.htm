@@ -3,7 +3,7 @@
 <title>Static Call Graph - [.\Objects\PplRcd.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image .\Objects\PplRcd.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5050106: Last Updated: Tue Jan 02 23:05:13 2018
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5050106: Last Updated: Wed Jan 03 22:24:01 2018
 <BR><P>
 <H3>Maximum Stack Usage =        240 bytes + Unknown(Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -720,33 +720,33 @@ Global Symbols
 <P><STRONG><a name="[27]"></a>DMA1_Channel2_IRQHandler</STRONG> (Thumb, 58 bytes, Stack size 16 bytes, drive_uart.o(i.DMA1_Channel2_IRQHandler))
 <BR><BR>[Stack]<UL><LI>Max Depth = 36<LI>Call Chain = DMA1_Channel2_IRQHandler &rArr; USART_ITConfig
 </UL>
-<BR>[Calls]<UL><LI><a href="#[10c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART_ClearFlag
-<LI><a href="#[109]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;DMA_GetITStatus
+<BR>[Calls]<UL><LI><a href="#[109]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;DMA_GetITStatus
 <LI><a href="#[10b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;DMA_Cmd
 <LI><a href="#[10a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;DMA_ClearFlag
 <LI><a href="#[10d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART_ITConfig
+<LI><a href="#[10c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART_ClearFlag
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> startup_stm32f10x_hd.o(RESET)
 </UL>
 <P><STRONG><a name="[29]"></a>DMA1_Channel4_IRQHandler</STRONG> (Thumb, 60 bytes, Stack size 16 bytes, drive_uart.o(i.DMA1_Channel4_IRQHandler))
 <BR><BR>[Stack]<UL><LI>Max Depth = 36<LI>Call Chain = DMA1_Channel4_IRQHandler &rArr; USART_ITConfig
 </UL>
-<BR>[Calls]<UL><LI><a href="#[10c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART_ClearFlag
-<LI><a href="#[109]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;DMA_GetITStatus
+<BR>[Calls]<UL><LI><a href="#[109]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;DMA_GetITStatus
 <LI><a href="#[10b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;DMA_Cmd
 <LI><a href="#[10a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;DMA_ClearFlag
 <LI><a href="#[10d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART_ITConfig
+<LI><a href="#[10c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART_ClearFlag
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> startup_stm32f10x_hd.o(RESET)
 </UL>
 <P><STRONG><a name="[2c]"></a>DMA1_Channel7_IRQHandler</STRONG> (Thumb, 60 bytes, Stack size 16 bytes, drive_uart.o(i.DMA1_Channel7_IRQHandler))
 <BR><BR>[Stack]<UL><LI>Max Depth = 36<LI>Call Chain = DMA1_Channel7_IRQHandler &rArr; USART_ITConfig
 </UL>
-<BR>[Calls]<UL><LI><a href="#[10c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART_ClearFlag
-<LI><a href="#[109]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;DMA_GetITStatus
+<BR>[Calls]<UL><LI><a href="#[109]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;DMA_GetITStatus
 <LI><a href="#[10b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;DMA_Cmd
 <LI><a href="#[10a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;DMA_ClearFlag
 <LI><a href="#[10d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART_ITConfig
+<LI><a href="#[10c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART_ClearFlag
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> startup_stm32f10x_hd.o(RESET)
 </UL>
@@ -2195,8 +2195,7 @@ Global Symbols
 <P><STRONG><a name="[1c0]"></a>Usart_irq</STRONG> (Thumb, 332 bytes, Stack size 32 bytes, drive_uart.o(i.Usart_irq))
 <BR><BR>[Stack]<UL><LI>Max Depth = 52<LI>Call Chain = Usart_irq &rArr; USART_ITConfig
 </UL>
-<BR>[Calls]<UL><LI><a href="#[10c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART_ClearFlag
-<LI><a href="#[1d2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;DMA_GetCurrDataCounter
+<BR>[Calls]<UL><LI><a href="#[1d2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;DMA_GetCurrDataCounter
 <LI><a href="#[10b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;DMA_Cmd
 <LI><a href="#[10a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;DMA_ClearFlag
 <LI><a href="#[1c8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;switch_receivebuf
@@ -2205,6 +2204,7 @@ Global Symbols
 <LI><a href="#[1cd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART_ReceiveData
 <LI><a href="#[10d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART_ITConfig
 <LI><a href="#[1cc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART_GetITStatus
+<LI><a href="#[10c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART_ClearFlag
 </UL>
 <BR>[Called By]<UL><LI><a href="#[42]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART3_IRQHandler
 <LI><a href="#[41]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART2_IRQHandler
@@ -2550,7 +2550,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[1f4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;isrSemaphoreRelease
 </UL>
 
-<P><STRONG><a name="[10]"></a>main</STRONG> (Thumb, 712 bytes, Stack size 32 bytes, main.o(i.main))
+<P><STRONG><a name="[10]"></a>main</STRONG> (Thumb, 776 bytes, Stack size 32 bytes, main.o(i.main))
 <BR><BR>[Stack]<UL><LI>Max Depth = 240<LI>Call Chain = main &rArr; System_init &rArr; w25q_init &rArr; Dev_open &rArr; DevChar_open &rArr; Get_DevUart &rArr; driveUart_new &rArr; malloc &rArr; internal_alloc
 </UL>
 <BR>[Calls]<UL><LI><a href="#[e8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osThreadCreate
@@ -3187,7 +3187,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[ec]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_systick
 </UL>
 
-<P><STRONG><a name="[df]"></a>w25q_Write</STRONG> (Thumb, 126 bytes, Stack size 32 bytes, hw_w25q.o(i.w25q_Write))
+<P><STRONG><a name="[df]"></a>w25q_Write</STRONG> (Thumb, 128 bytes, Stack size 32 bytes, hw_w25q.o(i.w25q_Write))
 <BR><BR>[Stack]<UL><LI>Max Depth = 144<LI>Call Chain = w25q_Write &rArr; W25Q_Change_cache_sct &rArr; W25Q_ReadBack_check &rArr; malloc &rArr; internal_alloc
 </UL>
 <BR>[Calls]<UL><LI><a href="#[1d7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;w25q_Read_Sector_Data
@@ -3217,7 +3217,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[1b6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;System_init
 </UL>
 
-<P><STRONG><a name="[e0]"></a>w25q_rd_data</STRONG> (Thumb, 130 bytes, Stack size 32 bytes, hw_w25q.o(i.w25q_rd_data))
+<P><STRONG><a name="[e0]"></a>w25q_rd_data</STRONG> (Thumb, 132 bytes, Stack size 32 bytes, hw_w25q.o(i.w25q_rd_data))
 <BR><BR>[Stack]<UL><LI>Max Depth = 144<LI>Call Chain = w25q_rd_data &rArr; W25Q_Change_cache_sct &rArr; W25Q_ReadBack_check &rArr; malloc &rArr; internal_alloc
 </UL>
 <BR>[Calls]<UL><LI><a href="#[1d7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;w25q_Read_Sector_Data
@@ -3468,8 +3468,8 @@ Local Symbols
 <P><STRONG><a name="[c3]"></a>UartDeInit</STRONG> (Thumb, 58 bytes, Stack size 16 bytes, drive_uart.o(i.UartDeInit))
 <BR><BR>[Stack]<UL><LI>Max Depth = 28<LI>Call Chain = UartDeInit &rArr; free
 </UL>
-<BR>[Calls]<UL><LI><a href="#[1c3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART_Cmd
-<LI><a href="#[1c1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART_DeInit
+<BR>[Calls]<UL><LI><a href="#[1c1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART_DeInit
+<LI><a href="#[1c3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART_Cmd
 <LI><a href="#[115]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;free
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> drive_uart.o(i.driveUart_ctor)
@@ -3490,14 +3490,14 @@ Local Symbols
 <P><STRONG><a name="[c2]"></a>UartInit</STRONG> (Thumb, 208 bytes, Stack size 24 bytes, drive_uart.o(i.UartInit))
 <BR><BR>[Stack]<UL><LI>Max Depth = 108<LI>Call Chain = UartInit &rArr; UartDma_Init &rArr; switch_receivebuf
 </UL>
-<BR>[Calls]<UL><LI><a href="#[1c3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART_Cmd
-<LI><a href="#[10c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART_ClearFlag
-<LI><a href="#[1c4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UartDma_Init
+<BR>[Calls]<UL><LI><a href="#[1c4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UartDma_Init
 <LI><a href="#[1ca]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;init_pingponfbuf
 <LI><a href="#[1c2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART_Init
 <LI><a href="#[10d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART_ITConfig
 <LI><a href="#[1c1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART_DeInit
 <LI><a href="#[1cb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART_DMACmd
+<LI><a href="#[1c3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART_Cmd
+<LI><a href="#[10c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART_ClearFlag
 <LI><a href="#[f5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;calloc
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> drive_uart.o(i.driveUart_ctor)
