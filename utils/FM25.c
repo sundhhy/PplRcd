@@ -259,7 +259,6 @@ static int FM25_Read_status(void)
 static int FM25_Write_status(uint8_t s)
 {
 	uint8_t		cmd[2] = {FM25CL64_WRSR, 0};
-	uint8_t		rd_s = 0;
 	uint8_t		n = 0;
 	
 	cmd[1] = s;
@@ -267,7 +266,7 @@ static int FM25_Write_status(uint8_t s)
 	n = FM25_SPI_WRITE(cmd, 2);
 	FM25_Disable_CS;
 	
-	rd_s = FM25_Read_status();
+//	FM25_Read_status();
 	
 	if(n == 2)
 		return RET_OK;
@@ -290,8 +289,8 @@ static int FM25_wr_enable(void)
 	
 //	ret = FM25_Read_status();
 //	if(ret & FM25_STATUS_WEL)
-		return RET_OK;
-	return ERR_DEV_FAILED;
+	return ret;
+//	return ERR_DEV_FAILED;
 }
 
 static void FM25_cmd_addr(uint8_t cmd, uint16_t addr)

@@ -470,7 +470,7 @@ uint8_t	CH376ByteWrite( uint8_t *buf, uint16_t ReqCount, uint16_t *RealCount )
 			return( s );  // ´íÎó
 	}
 	
-	return 0;
+//	return 0;
 }
 
 

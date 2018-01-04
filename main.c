@@ -31,7 +31,7 @@
 
 #if TDD_ON == 1
 #include "ModelFactory.h"
-
+#include "Gh_txt.h"
 
 #endif
 #if TDD_KEYBOARD == 1
@@ -332,14 +332,15 @@ int main (void) {
 			phn_sys.fs.fs_write(tdd_fd, (uint8_t *)appBuf, sizeof(appBuf));
 		Tdd_disp_text("wr ok", 2 + tdd_j, 160);
 	}
-	
-	sprintf(appBuf, "mod_chn_%d", 0);
-	tdd_fd = phn_sys.fs.fs_resize(tdd_fd, 2 * 1024 * 1024);
+	for(tdd_j = 0 ; tdd_j < TEST_NUM_FILE; tdd_j ++)
+	{
+		sprintf(appBuf, "mod_chn_%d", tdd_j);
+		tdd_fd = phn_sys.fs.fs_resize(tdd_fd, 2 * 1024 * 1024);
+	}
 	
 	for(tdd_j = 0 ; tdd_j < TEST_NUM_FILE; tdd_j ++)
 	{
 		
-		chk_next_file:
 		sprintf(appBuf, "mod_chn_%d", tdd_j);
 		tdd_fd = phn_sys.fs.fs_open(1, appBuf, "rw", TEST_FILE_SIZE);
 		

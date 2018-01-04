@@ -40,7 +40,7 @@ V010 171226 :
 
 #define EFS_FLAG_ALLOCED					1
 #define EFS_FLAG_USED							2
-#define EFS_FLAG_SEARCHED					4		//用来在一次分配flash时，标记已经被查找过的文件管理
+//#define EFS_FLAG_SEARCHED					4		//用来在一次分配flash时，标记已经被查找过的文件管理
 #define EFS_FLAG_RECYCLE					8
 //------------------------------------------------------------------------------
 // module global vars
@@ -80,8 +80,11 @@ typedef struct {
 }space_t;
 	
 typedef struct {
+	uint8_t					free_spac_num;
+	uint8_t					none[3];
+	uint8_t					*pg_buf;
 	efs_file_mgt_t  arr_efiles[EFS_MAX_NUM_FILES + EFS_NUM_IDLE_FILES];			//文件管理要留一点空间
-	file_info_t		arr_file_info[EFS_MAX_NUM_FILES];
+	file_info_t			arr_file_info[EFS_MAX_NUM_FILES];
 }efs_mgr_t;
 //------------------------------------------------------------------------------
 // local vars
@@ -110,20 +113,29 @@ static void EFS_file_mgr_info(efs_file_mgt_t	*file_mgr, file_info_t *file_info);
 static int EFS_malloc_file_mgr(void);
 static void	EFS_flush_mgr(int No);
 static void EFS_Change_file_size(int fd, uint32_t new_size);
+static void	EFS_Regain_space(void);
 //============================================================================//
 //            P U B L I C   F U N C T I O N S                                 //
 //============================================================================//
 int 	EFS_init(int arg)
 {
-	int	i;
+	short	i, pg_size = 0;
 	EFS_FS.num_partitions = arg;
 	EFS_FS.reliable_level = FS_RLB_LEVEL;
 	if(EFS_FS.reliable_level == 1)
 	{
-		for(i = 0; i < NUM_FSH; i ++)
+		for(i = 0; i < arg; i ++)
 			EFS_FSH(i).fnf.fnf_flag |= FSH_FLAG_READBACK_CHECK;
 		
 	}
+	
+	for(i = 0; i < arg; i ++)
+	{
+		if(EFS_FSH(i).fnf.page_size > pg_size)
+			EFS_FSH(i).fnf.page_size = pg_size;
+		
+	}
+	efs_mgr.pg_buf = ALLOC(pg_size);
 	
 	
 	EFS_FS.fs_open = EFS_open;
@@ -177,7 +189,7 @@ int	EFS_close(int fd)
 }
 int	EFS_delete(int fd)
 {
-	
+	return 0;
 }
 int	EFS_write(int fd, uint8_t *p, int len)
 {
@@ -229,7 +241,6 @@ int	EFS_resize(int fd, int new_size)
 	int						ret;
 	int						i;
 
-	uint8_t				*tmp_buf;
 	//对比原大小，来判断空间变大还是变小
 	old_size = f->file_size;
 	
@@ -255,19 +266,17 @@ int	EFS_resize(int fd, int new_size)
 	{
 		
 		//把原来的读写位置复制给新的文件区
-		tmp_buf = ALLOC(pg_size);
 		new_start_addr = efs_mgr.arr_efiles[fd].efile_start_pg * pg_size;
 		end_pg = tmp_file_info.write_position / pg_size + 1;		 //只复制已经被写入的部分
 		for(i = 0; i < end_pg; i ++)
 		{
-			ret = EFS_FSH(f->fsh_No).fsh_read(tmp_buf, start_addr + pg_size * i, pg_size);
+			ret = EFS_FSH(f->fsh_No).fsh_read(efs_mgr.pg_buf, start_addr + pg_size * i, pg_size);
 			if(ret != pg_size)
 			{
 				
-				free(tmp_buf);
 				goto ERR_RECOVER;
 			}
-			ret = EFS_FSH(f->fsh_No).fsh_write(tmp_buf, new_start_addr + pg_size * i, pg_size);
+			ret = EFS_FSH(f->fsh_No).fsh_write(efs_mgr.pg_buf, new_start_addr + pg_size * i, pg_size);
 			
 		}
 		
@@ -278,7 +287,6 @@ int	EFS_resize(int fd, int new_size)
 		f->read_position = tmp_file_info.read_position;
 		
 		efs_mgr.arr_efiles[fd].efs_flag &= ~EFS_FLAG_RECYCLE;
-		free(tmp_buf);
 		return fd;
 		
 	}
@@ -363,12 +371,21 @@ static int EFS_search_file(char *path)
 	
 }
 
+static void EFS_Regain_space(void)
+{
+	
+	efs_mgr.free_spac_num = 0;
+}
  
 static int EFS_Cal_free_space(uint8_t prt, space_t *fsp)
 {
 	
 	short i;
-	uint32_t	usd_addr_1, usd_addr_2, use_size = 0;
+	uint32_t	usd_addr_1 = 0, usd_addr_2 = 0, use_size = 0;
+	short				fsp_num = efs_mgr.free_spac_num ++;		//获得第n个空闲空间
+	short				count = 0;
+	
+	
 	
 	//找到第一个使用的空间
 	usd_addr_1 = 0;
@@ -379,9 +396,13 @@ static int EFS_Cal_free_space(uint8_t prt, space_t *fsp)
 		usd_addr_1 = 0;
 		
 	}
+	count = 0;
 	
 	for(i = 0; i < EFS_MAX_NUM_FILES; i++)
 	{
+		if(count == fsp_num)
+			break;
+		
 		if((efs_mgr.arr_efiles[i].efs_flag & EFS_FLAG_USED) == 0)
 			continue;
 		if(efs_mgr.arr_efiles[i].efs_flag & EFS_FLAG_RECYCLE)
@@ -390,21 +411,37 @@ static int EFS_Cal_free_space(uint8_t prt, space_t *fsp)
 		if(efs_mgr.arr_efiles[i].efile_fsh_NO != prt)
 			continue;
 		
-		if(efs_mgr.arr_efiles[i].efs_flag & EFS_FLAG_SEARCHED)
-		{
-			
-			continue;
-		}
+//		if(efs_mgr.arr_efiles[i].efs_flag & EFS_FLAG_SEARCHED)
+//		{
+//			
+//			continue;
+//		}
 		
-		usd_addr_1 = efs_mgr.arr_efiles[i].efile_start_pg * EFS_FSH(prt).fnf.page_size;;
-		use_size += efs_mgr.arr_efiles[i].efile_num_pg * EFS_FSH(prt).fnf.page_size;
-		efs_mgr.arr_efiles[i].efs_flag |= EFS_FLAG_SEARCHED;
+		count ++;
+		
+		if(count == fsp_num)
+		{
+			usd_addr_1 = efs_mgr.arr_efiles[i].efile_start_pg * EFS_FSH(prt).fnf.page_size;;
+			use_size += efs_mgr.arr_efiles[i].efile_num_pg * EFS_FSH(prt).fnf.page_size;
+		}
+//		efs_mgr.arr_efiles[i].efs_flag |= EFS_FLAG_SEARCHED;
+		
+	}
+	if(i == EFS_MAX_NUM_FILES)
+	{
+		
+		//指定序号的空闲空间已经找不到了
+		return -1;
 	}
 	
-	//找到第二个使用的
+	//找到下一个使用的
 	usd_addr_2 = EFS_FSH(prt).fnf.page_size *  EFS_FSH(prt).fnf.total_pagenum;
+	count = 0;
 	for(; i < EFS_MAX_NUM_FILES; i++)
 	{
+		if(count == (fsp_num + 1))
+			break;
+	
 		if((efs_mgr.arr_efiles[i].efs_flag & EFS_FLAG_USED) == 0)
 			continue;
 		if(efs_mgr.arr_efiles[i].efs_flag & EFS_FLAG_RECYCLE)
@@ -412,28 +449,26 @@ static int EFS_Cal_free_space(uint8_t prt, space_t *fsp)
 		if(efs_mgr.arr_efiles[i].efile_fsh_NO != prt)
 			continue;
 		
-		if(efs_mgr.arr_efiles[i].efs_flag & EFS_FLAG_SEARCHED)
-			continue;
+//		if(efs_mgr.arr_efiles[i].efs_flag & EFS_FLAG_SEARCHED)
+//			continue;
 		
-		usd_addr_2 = efs_mgr.arr_efiles[i].efile_start_pg * EFS_FSH(prt).fnf.page_size;
-		efs_mgr.arr_efiles[i].efs_flag |= EFS_FLAG_SEARCHED;
-		
+		count ++;
+		if(count == (fsp_num + 1))
+		{
+			usd_addr_2 = efs_mgr.arr_efiles[i].efile_start_pg * EFS_FSH(prt).fnf.page_size;
+//			efs_mgr.arr_efiles[i].efs_flag |= EFS_FLAG_SEARCHED;
+		}
 	}
+
 	
 	//计算两个空间之间的空闲空间
 	fsp->start_addr = usd_addr_1 + use_size;
 	fsp->free_bytes = usd_addr_2 - fsp->start_addr;
 	
-	if(usd_addr_1 + use_size < usd_addr_2)
-	{
+	
 		
-		return 0;
-	}
-	else 
-	{
-		
-		return -1;
-	}
+	return 0;
+
 }
 
 static void EFS_Change_file_size(int fd, uint32_t new_size)
@@ -483,7 +518,7 @@ static int EFS_create_file(uint8_t	fd, uint8_t	prt, char *path, int size)
 	
 	if(i < 0)
 		return -1;
-	
+	EFS_Regain_space();
 	while(1)
 	{
 		
@@ -520,7 +555,7 @@ static int EFS_create_file(uint8_t	fd, uint8_t	prt, char *path, int size)
 			
 		}
 	}
-	EFS_set_flag(EFS_MAX_NUM_FILES, EFS_FLAG_SEARCHED, 0);
+//	EFS_set_flag(EFS_MAX_NUM_FILES, EFS_FLAG_SEARCHED, 0);
 	return ret;
 	
 }

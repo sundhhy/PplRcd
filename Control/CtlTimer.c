@@ -121,12 +121,12 @@ static void Ctime_periodic (void const *arg)
 	p_md = ModelCreate("time");
 	p_md->getMdlData(p_md, 0, NULL);
 	
-//	for(i = 0; i < NUM_CHANNEL; i++)
-//	{
-//		sprintf(chn_name,"chn_%d", i);
-//		p_md = ModelCreate(chn_name);
-//		p_md->run(p_md);
-//		
-//	}
+	for(i = 0; i < NUM_CHANNEL; i++)
+	{
+		sprintf(chn_name,"chn_%d", i);
+		p_md = ModelCreate(chn_name);
+		p_md->run(p_md);
+		
+	}
 	
 }

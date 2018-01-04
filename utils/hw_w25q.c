@@ -108,7 +108,7 @@ typedef struct {
 	uint8_t			none[3];
 
 	uint8_t			*p_sct_buf;
-	
+	uint8_t			*p_chk_buf;
 	
 }w25q_mgr_t;
 //------------------------------------------------------------------------------
@@ -144,7 +144,7 @@ void W25Q_Flush(void);
 
 
 static int w25q_Read_Sector_Data(uint8_t *pBuffer, uint16_t Sector_Num);
-static int w25q_Read_page_Data(uint8_t *pBuffer, uint16_t num_page);
+//static int w25q_Read_page_Data(uint8_t *pBuffer, uint16_t num_page);
 static uint16_t W25Q_Addr_2_sct(uint32_t addr);
 static uint16_t	W25Q_wr_cache(uint32_t addr, uint8_t *wr_buf, uint16_t wr_len);
 static uint16_t W25Q_rd_cache(uint32_t addr, uint8_t *rd_buf, uint16_t	rd_len);
@@ -342,7 +342,6 @@ int w25q_Write(uint8_t *pBuffer, uint32_t WriteAddr, uint32_t WriteBytesNum)
 	
 		
 
-		exit:
 		
 		
 		return sum;
@@ -811,13 +810,17 @@ int w25q_Erase_chip_60(void)
 static int W25Q_ReadBack_check(uint16_t sct_num, uint8_t *chk_buf)
 {
 	
-	uint8_t *tmp_buf = malloc(w25q_mgr.sct_size);
 	uint32_t	*p1, *p2;
 	short			i = 0, max;
-	int				ret = 0;
-	w25q_Read_Sector_Data(tmp_buf, sct_num);
 	
-	p1 = (uint32_t *)tmp_buf;
+	if(w25q_mgr.p_chk_buf == NULL)
+	{
+		w25q_mgr.p_chk_buf = (uint8_t *)malloc(w25q_mgr.sct_size);
+		
+	}
+	w25q_Read_Sector_Data(w25q_mgr.p_chk_buf, sct_num);
+	
+	p1 = (uint32_t *)w25q_mgr.p_chk_buf;
 	p2 = (uint32_t *)chk_buf;
 
 	max = w25q_mgr.sct_size / 4;
@@ -826,14 +829,11 @@ static int W25Q_ReadBack_check(uint16_t sct_num, uint8_t *chk_buf)
 	{
 		if(p1[i] != p2[i])
 		{
-			ret = 1;
-			break;
+			return 1;
 		}
 		
 	}
-	free(tmp_buf);
 	
-	exit:
 	return 0;
 	
 }
