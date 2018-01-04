@@ -240,21 +240,24 @@ int main (void) {
 	//控制器初始化
 	
 	
-		//按键初始化
-	p_kb = GetKeyInsance();
-	count = CONF_KEYSCAN_CYCLEMS;
-	p_kb->init( p_kb, &count);
-	tid_Thread_key = osThreadCreate (osThread(ThrdKeyRun), p_kb);
-	p_control = SUPER_PTR( Get_CtlKey(), Controller);
-	p_control->init(p_control, p_kb);
+		
+	
 
-	if (!tid_Thread_key) return(-1);
+	
 #if TDD_ON == 1
 	Tdd_init();
 #endif
 	
 	
 #if TDD_ON == 0
+	//按键初始化
+	p_kb = GetKeyInsance();
+	count = CONF_KEYSCAN_CYCLEMS;
+	p_kb->init( p_kb, &count);
+	tid_Thread_key = osThreadCreate (osThread(ThrdKeyRun), p_kb);
+	p_control = SUPER_PTR( Get_CtlKey(), Controller);
+	p_control->init(p_control, p_kb);
+	if (!tid_Thread_key) return(-1);
 	//界面初始化
 	
 	p_mainHmi = CreateHMI( HMI_MAIN);
@@ -325,17 +328,18 @@ int main (void) {
 		sprintf(appBuf, "mod_chn_%d", tdd_j);
 		tdd_fd = phn_sys.fs.fs_open(1, appBuf, "rw", TEST_FILE_SIZE);
 		p_tdd_u16 = (uint16_t *)appBuf;
-		for(tdd_i = 0; tdd_i < sizeof(appBuf) / 2; tdd_i ++)
-			p_tdd_u16[tdd_i] = tdd_i + tdd_j * 256;
+		for(tdd_i = 0; tdd_i < sizeof(appBuf) ; tdd_i ++)
+			appBuf[tdd_i] = tdd_j + 1;
 		
 		for(tdd_count = 0; tdd_count < TEST_FILE_SIZE / sizeof(appBuf); tdd_count++)
 			phn_sys.fs.fs_write(tdd_fd, (uint8_t *)appBuf, sizeof(appBuf));
 		Tdd_disp_text("wr ok", 2 + tdd_j, 160);
+		phn_sys.fs.fs_close(tdd_fd);
 	}
 	for(tdd_j = 0 ; tdd_j < TEST_NUM_FILE; tdd_j ++)
 	{
 		sprintf(appBuf, "mod_chn_%d", tdd_j);
-		tdd_fd = phn_sys.fs.fs_resize(tdd_fd, 2 * 1024 * 1024);
+		tdd_fd = phn_sys.fs.fs_resize(-1, appBuf, 2 * 1024 * 1024);
 	}
 	
 	for(tdd_j = 0 ; tdd_j < TEST_NUM_FILE; tdd_j ++)
@@ -350,9 +354,9 @@ int main (void) {
 			memset(appBuf, 0xcc, sizeof(appBuf));
 			tdd_len = phn_sys.fs.fs_read(tdd_fd, (uint8_t *)appBuf, sizeof(appBuf));
 			p_tdd_u16 = (uint16_t *)appBuf;
-			for(tdd_k = 0; tdd_k < tdd_len / 2; tdd_k ++)
+			for(tdd_k = 0; tdd_k < tdd_len ; tdd_k ++)
 			{
-				if(p_tdd_u16[tdd_k] != (tdd_j * 256 + tdd_k))
+				if(appBuf[tdd_k] != (tdd_j + 1))
 				{
 					Tdd_disp_text("chk err", 2 + tdd_j, 260);
 					break;

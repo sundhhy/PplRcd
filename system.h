@@ -130,7 +130,7 @@ typedef struct {
 	int		(*fs_delete)(int fd);
 	int		(*fs_write)(int fd, uint8_t *p, int len);
 	int		(*fs_read)(int fd, uint8_t *p, int len);
-	int		(*fs_resize)(int fd, int new_size);
+	int		(*fs_resize)(int fd, char *name, int new_size);
 	file_info_t*		(*fs_file_info)(int fd);
 			
 	

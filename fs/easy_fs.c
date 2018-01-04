@@ -98,7 +98,7 @@ int		EFS_open(uint8_t		prt, char *path, char *mode, int	file_size);
 int		EFS_close(int fd);
 int		EFS_write(int fd, uint8_t *p, int len);
 int		EFS_read(int fd, uint8_t *p, int len);
-int		EFS_resize(int fd, int new_size);
+int		EFS_resize(int fd, char *path, int new_size);
 file_info_t		*EFS_file_info(int fd);
 int		EFS_delete(int fd);
 
@@ -132,7 +132,7 @@ int 	EFS_init(int arg)
 	for(i = 0; i < arg; i ++)
 	{
 		if(EFS_FSH(i).fnf.page_size > pg_size)
-			EFS_FSH(i).fnf.page_size = pg_size;
+			pg_size = EFS_FSH(i).fnf.page_size;
 		
 	}
 	efs_mgr.pg_buf = ALLOC(pg_size);
@@ -229,17 +229,32 @@ int	EFS_read(int fd, uint8_t *p, int len)
 	
 	return ret;
 }
-int	EFS_resize(int fd, int new_size)
+
+//用fd或者path来指定文件
+int	EFS_resize(int fd, char *path, int new_size)
 {
-	file_info_t 		*f = &efs_mgr.arr_file_info[fd];
-	file_info_t			tmp_file_info;
-	uint32_t				start_addr = f->start_page * EFS_FSH(f->fsh_No).fnf.page_size;
+	file_info_t 			*f = NULL;
+	file_info_t				tmp_file_info;
+	uint32_t				start_addr = 0;
 	uint32_t				new_start_addr;
 	uint32_t				end_pg;
-	uint32_t				pg_size = EFS_FSH(f->fsh_No).fnf.page_size;
-	uint32_t			old_size;
+	uint32_t				pg_size = 0;
+	uint32_t				old_size;
 	int						ret;
 	int						i;
+	
+	if(fd < 0)
+	{
+		
+		fd = EFS_search_file(path);
+	}
+	
+	if(fd < 0)
+		return -1;
+	
+	f = &efs_mgr.arr_file_info[fd];
+	pg_size = EFS_FSH(f->fsh_No).fnf.page_size;
+	start_addr = f->start_page * EFS_FSH(f->fsh_No).fnf.page_size;
 
 	//对比原大小，来判断空间变大还是变小
 	old_size = f->file_size;
