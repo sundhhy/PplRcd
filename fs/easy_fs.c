@@ -141,6 +141,7 @@ int 	EFS_init(int arg)
 	
 	EFS_FS.fs_open = EFS_open;
 	EFS_FS.fs_close = EFS_close;
+	EFS_FS.fs_lseek = EFS_Lseek;
 	
 	EFS_FS.fs_read = EFS_read;
 	EFS_FS.fs_write = EFS_write;
@@ -463,23 +464,24 @@ static int EFS_Cal_free_space(uint8_t prt, space_t *fsp)
 {
 	
 	short i;
-	uint32_t	usd_addr_1 = 0, usd_addr_2 = 0, use_size = 0;
+	uint32_t	usd_addr_1 = 0, usd_addr_2 = 0, use_size_1 = 0, tmp_addr = 0;
 	short				fsp_num = efs_mgr.free_spac_num ++;		//获得第n个空闲空间
 	short				count = 0;
 	
-	
+	if(efs_mgr.free_spac_num > EFS_MAX_NUM_FILES + 2)
+		return -1;
 	
 	//找到第一个使用的空间
 	usd_addr_1 = 0;
-	use_size = 0;
+	use_size_1 = 0;
 	if(prt == EFS_MGR_FSH_NO)
 	{
-		use_size = sizeof(efs_mgr.arr_efiles) + EFS_FSH(prt).fnf.page_size;
+		use_size_1 = sizeof(efs_mgr.arr_efiles) + EFS_FSH(prt).fnf.page_size;
 		usd_addr_1 = 0;
 		
 	}
 	count = 0;
-	
+	tmp_addr = use_size_1;
 	for(i = 0; i < EFS_MAX_NUM_FILES; i++)
 	{
 		if(count == fsp_num)
@@ -499,27 +501,32 @@ static int EFS_Cal_free_space(uint8_t prt, space_t *fsp)
 //			continue;
 //		}
 		
-		count ++;
-		
+		if(efs_mgr.arr_efiles[i].efile_start_pg * EFS_FSH(prt).fnf.page_size > tmp_addr)
+		{
+			count ++;
+			tmp_addr = efs_mgr.arr_efiles[i].efile_start_pg * EFS_FSH(prt).fnf.page_size;
+		}
 		if(count == fsp_num)
 		{
-			usd_addr_1 = efs_mgr.arr_efiles[i].efile_start_pg * EFS_FSH(prt).fnf.page_size;;
-			use_size += efs_mgr.arr_efiles[i].efile_num_pg * EFS_FSH(prt).fnf.page_size;
+			usd_addr_1 = efs_mgr.arr_efiles[i].efile_start_pg * EFS_FSH(prt).fnf.page_size;
+			use_size_1 = efs_mgr.arr_efiles[i].efile_num_pg * EFS_FSH(prt).fnf.page_size;
 		}
+		
 //		efs_mgr.arr_efiles[i].efs_flag |= EFS_FLAG_SEARCHED;
 		
 	}
-	if(i == EFS_MAX_NUM_FILES)
-	{
-		
-		//指定序号的空闲空间已经找不到了
-		return -1;
-	}
+//	if(i == EFS_MAX_NUM_FILES)
+//	{
+//		
+//		//指定序号的空闲空间已经找不到了
+//		return -1;
+//	}
 	
 	//找到下一个使用的
 	usd_addr_2 = EFS_FSH(prt).fnf.page_size *  EFS_FSH(prt).fnf.total_pagenum;
 	count = 0;
-	for(; i < EFS_MAX_NUM_FILES; i++)
+	tmp_addr = 0;
+	for(i = 0 ; i < EFS_MAX_NUM_FILES; i++)
 	{
 		if(count == (fsp_num + 1))
 			break;
@@ -534,18 +541,26 @@ static int EFS_Cal_free_space(uint8_t prt, space_t *fsp)
 //		if(efs_mgr.arr_efiles[i].efs_flag & EFS_FLAG_SEARCHED)
 //			continue;
 		
-		count ++;
+		if(efs_mgr.arr_efiles[i].efile_start_pg * EFS_FSH(prt).fnf.page_size > tmp_addr)
+		{
+			count ++;
+			tmp_addr = efs_mgr.arr_efiles[i].efile_start_pg * EFS_FSH(prt).fnf.page_size;
+		}
 		if(count == (fsp_num + 1))
 		{
 			usd_addr_2 = efs_mgr.arr_efiles[i].efile_start_pg * EFS_FSH(prt).fnf.page_size;
 //			efs_mgr.arr_efiles[i].efs_flag |= EFS_FLAG_SEARCHED;
 		}
+		break;
 	}
 
 	
 	//计算两个空间之间的空闲空间
-	fsp->start_addr = usd_addr_1 + use_size;
+
+	fsp->start_addr = usd_addr_1 + use_size_1;
 	fsp->free_bytes = usd_addr_2 - fsp->start_addr;
+	
+	
 	
 	
 		

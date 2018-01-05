@@ -670,6 +670,7 @@ static int W25Q_rd_cache(uint32_t addr, uint8_t *rd_buf, uint16_t	rd_len)
 		len = rd_len;
 	memcpy(rd_buf, w25q_mgr.p_sct_buf + offset,  len);
 	
+	
 	return len;
 }
 	

@@ -327,6 +327,7 @@ int main (void) {
 		
 		sprintf(appBuf, "mod_chn_%d", tdd_j);
 		tdd_fd = phn_sys.fs.fs_open(1, appBuf, "rw", TEST_FILE_SIZE);
+		phn_sys.fs.fs_lseek(tdd_fd, WR_SEEK_SET, 0);
 		p_tdd_u16 = (uint16_t *)appBuf;
 		for(tdd_i = 0; tdd_i < sizeof(appBuf) ; tdd_i ++)
 			appBuf[tdd_i] = tdd_j + 1;
