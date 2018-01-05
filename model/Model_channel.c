@@ -116,7 +116,8 @@ static int MdlChn_init(Model *self, IN void *arg)
 	self->mdl_id = MDLID_CHN(chn_num);
 	cthis->chni.chn_NO = chn_num;
 	
-	if(Strg_rd_chnConf(&cthis->chni, chn_num) != RET_OK) {
+//	if(Strg_rd_chnConf(&cthis->chni, chn_num) != RET_OK) 
+	{
 
 		Read_default_conf(&cthis->chni, chn_num);
 	}		
@@ -210,21 +211,30 @@ static void MdlChn_run(Model *self)
 	
 }
 
-static int MdlChn_getData(  Model *self, IN int aux, void *arg) 
+static int MdlChn_getData(Model *self, IN int aux, void *arg) 
 {
 	Model_chn		*cthis = SUB_PTR( self, Model, Model_chn);
-	
+	int16_t			*p_s16;
+	uint8_t			*p_u8;
 	
 	switch(aux) {
 		case AUX_DATA:
 			if(cthis->chni.flag_err)
-				return 0xffff;
-			return cthis->chni.value;
+				return -1;
+			p_s16 = (int16_t *)arg;
+			*p_s16 = cthis->chni.value;
+			break;
 		case AUX_SIGNALTYPE:
-			return cthis->chni.signal_type;
+			p_u8 = (uint8_t *)arg;
+			*p_u8 = cthis->chni.signal_type;
+			break;
 		case AUX_PERCENTAGE:
 			
 			return self->to_percentage(self, arg); 
+		case MDHCHN_CHN_NUM:
+			p_u8 = (uint8_t *)arg;
+			*p_u8 = cthis->chni.chn_NO;
+			break;
 		default:
 			break;
 	}
@@ -604,10 +614,11 @@ static int MdlChn_set_by_string(Model *self, IN int aux, void *arg)
 static int  MdlChn_to_percentage( Model *self, void *arg)
 {
 	Model_chn		*cthis = SUB_PTR( self, Model, Model_chn);
+	uint8_t			*p = (uint8_t *)arg;
 	
+	*p = cthis->chni.value;
 	
-	
-	return cthis->chni.value ;
+	return RET_OK;
 }
 
 

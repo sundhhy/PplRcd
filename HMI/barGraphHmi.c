@@ -535,8 +535,8 @@ static int BarHmi_Data_update(void *p_data, void *p_mdl)
 
 	if(IS_HMI_KEYHANDLE(g_p_barGhHmi->flag))
 		return 0;
-	
-	prcn = p_sht->p_mdl->getMdlData( p_sht->p_mdl, p_sht->cnt.mdl_aux,  &j);
+	prcn = j;
+	p_sht->p_mdl->getMdlData( p_sht->p_mdl, p_sht->cnt.mdl_aux,  &prcn);
 	height = max_height * prcn / 1000;
 		
 	self->arr_p_barshts[i]->area.x0 = bar_vx0[i];

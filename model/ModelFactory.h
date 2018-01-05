@@ -5,6 +5,7 @@
 #include "Model.h"
 #include "ModelTest.h"
 #include "Model_channel.h"
+#include "ModelTime.h"
 // type : time
 //
 Model *ModelCreate( char *type);

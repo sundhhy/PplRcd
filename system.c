@@ -102,6 +102,17 @@ void System_time(struct  tm *stime)
 	sys_rtc->get(sys_rtc, stime);
 }
 
+extern uint32_t System_tm_2_u32(struct  tm *stime)
+{
+	
+	return 0;
+}
+extern int System_u32_2_tm(uint32_t time_u32, struct  tm *stime)
+{
+	
+	return RET_OK;
+}
+
 int  System_set_time(struct  tm *stime)
 {
 	int ret;

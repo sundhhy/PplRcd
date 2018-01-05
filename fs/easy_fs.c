@@ -40,7 +40,7 @@ V010 171226 :
 
 #define EFS_FLAG_ALLOCED					1
 #define EFS_FLAG_USED							2
-//#define EFS_FLAG_SEARCHED					4		//用来在一次分配flash时，标记已经被查找过的文件管理
+#define EFS_FLAG_OPENED						4		
 #define EFS_FLAG_RECYCLE					8
 //------------------------------------------------------------------------------
 // module global vars
@@ -98,10 +98,11 @@ int		EFS_open(uint8_t		prt, char *path, char *mode, int	file_size);
 int		EFS_close(int fd);
 int		EFS_write(int fd, uint8_t *p, int len);
 int		EFS_read(int fd, uint8_t *p, int len);
-int		EFS_resize(int fd, char *path, int new_size);
+int 	EFS_Lseek(int fd, uint32_t offset, int whence);
+int	EFS_resize(int fd, char *path, int new_size);
 file_info_t		*EFS_file_info(int fd);
 int		EFS_delete(int fd);
-
+void 	EFS_Shutdown(void);
 
 static int EFS_format(void);
 static int EFS_search_file(char *path);
@@ -145,6 +146,7 @@ int 	EFS_init(int arg)
 	EFS_FS.fs_write = EFS_write;
 	EFS_FS.fs_delete = EFS_delete;
 	EFS_FS.fs_resize = EFS_resize;
+	EFS_FS.fs_shutdown = EFS_Shutdown;
 	EFS_FS.fs_file_info = EFS_file_info;
 	
 	return EFS_format();
@@ -152,6 +154,21 @@ int 	EFS_init(int arg)
 	
 }
 
+void 	EFS_Shutdown(void)
+{
+	int i;
+	for(i = 0; i < EFS_MAX_NUM_FILES; i++)
+	{
+		if(efs_mgr.arr_file_info[i].file_flag & EFS_FLAG_OPENED)
+		{
+			EFS_close(i);
+			
+		}
+		
+	}
+	
+	
+}
 
 
 int	EFS_open(uint8_t prt, char *path, char *mode, int	file_size)
@@ -169,7 +186,11 @@ int	EFS_open(uint8_t prt, char *path, char *mode, int	file_size)
 		new_fd = EFS_create_file(new_fd, prt, path, file_size);
 	}
 	if(new_fd >= 0)
+	{
 		efs_mgr.arr_file_info[new_fd].read_position = 0;
+		efs_mgr.arr_file_info[new_fd].file_flag |= EFS_FLAG_OPENED;
+		
+	}
 	
 	return new_fd;
 }
@@ -184,8 +205,54 @@ int	EFS_close(int fd)
 		f_mgr->efile_wr_position = f->write_position;
 		EFS_flush_mgr(fd);
 	}
+	efs_mgr.arr_file_info[fd].file_flag &= ~EFS_FLAG_OPENED;
 
 	return 0;
+}
+
+int 	EFS_Lseek(int fd, uint32_t offset, int whence)
+{
+	file_info_t *f = &efs_mgr.arr_file_info[fd];
+	efs_file_mgt_t	*f_mgr = &efs_mgr.arr_efiles[fd];
+	switch( whence)
+	{
+		case WR_SEEK_SET:
+			f->write_position = offset;
+			f_mgr->efile_wr_position = offset;
+			break;
+		case WR_SEEK_CUR:
+			f->write_position += offset;
+			f_mgr->efile_wr_position += offset;
+			break;
+		
+		
+		case WR_SEEK_END:			//连续5个0xff作为结尾
+
+		
+			break;
+		
+		case RD_SEEK_SET:
+			f->read_position = offset;
+			break;
+		case RD_SEEK_CUR:
+			f->read_position += offset;
+			break;
+		
+		
+		case RD_SEEK_END:
+			
+		
+			break;
+		case GET_WR_END:
+			return f->file_size;
+		
+		default:
+			break;
+		
+	}
+	
+	return ERR_OK;
+	
 }
 int	EFS_delete(int fd)
 {
@@ -546,7 +613,10 @@ static int EFS_create_file(uint8_t	fd, uint8_t	prt, char *path, int size)
 			efs_mgr.arr_efiles[i].efile_fsh_NO = prt;
 			efs_mgr.arr_efiles[i].efs_flag = 1;
 			efs_mgr.arr_efiles[i].efile_start_pg = space.start_addr / EFS_FSH(prt).fnf.page_size;
-			efs_mgr.arr_efiles[i].efile_num_pg = size / EFS_FSH(prt).fnf.page_size + 1;
+			efs_mgr.arr_efiles[i].efile_num_pg = size / EFS_FSH(prt).fnf.page_size;
+			if(size > efs_mgr.arr_efiles[i].efile_num_pg * EFS_FSH(prt).fnf.page_size)
+				efs_mgr.arr_efiles[i].efile_num_pg += 1;
+			
 			if(prt == 0)
 				efs_mgr.arr_file_info[i].low_pg = EFS_LOWSPACE_ALARM_0;
 			else

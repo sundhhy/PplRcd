@@ -15,6 +15,8 @@
 //#define AUX_CHN_small_signal  				0x12
 //#define AUX_CHN_K							0x13
 //#define AUX_CHN_B							0x14
+
+#define MDHCHN_CHN_NUM		0x20
 //------------------------------------------------------------------------------
 // typedef
 //------------------------------------------------------------------------------
@@ -75,7 +77,7 @@ typedef struct {
 	uint8_t			filter_time_s;
 	uint8_t			decimal;
 	uint8_t			flag_err;		//0 无错误， 1 采样失败
-	short			small_signal;
+	short				small_signal;
 	int16_t			lower_limit, upper_limit;		//
 
 	/***************1位小数*******************/

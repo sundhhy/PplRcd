@@ -67,36 +67,44 @@ int MdlTime_init( Model *self, IN void *arg)
 	return RET_OK;
 }
 
+void MdlTime_run(Model *self)
+{
+	struct  tm	*tm = ( struct  tm	*) self->coreData;
+
+	
+	System_time(tm);
+	
+	self->notify( self);
+	
+	
+}
+
 int MdlTime_getData(  Model *self, IN int aux, void *arg) 
 {
 	struct  tm	*tm = ( struct  tm	*) self->coreData;
 	struct  tm	*tm2 = NULL;
-//	tm->tm_sec ++;
-//	if( tm->tm_sec >59)
-//	{
-//		tm->tm_min ++;
-//		tm->tm_sec = 0;
-//		
-//	}
-//	
-//	if( tm->tm_min >59)
-//	{
-//		tm->tm_hour ++;
-//		tm->tm_min = 0;
-//		
-//	}
+	uint32_t	*p_u32;
+	
+	if(arg == NULL)
+		return ERR_PARAM_BAD;
 	
 	System_time(tm);
 	
-	if(arg != NULL) {
+	if(aux == TIME_TM)
+	{
+		
 		tm2 = ( struct  tm	*) arg;
 		tm2->tm_hour = tm->tm_hour;
 		tm2->tm_min = tm->tm_min;
 		tm2->tm_sec = tm->tm_sec;
+		
+	}
+	else if(aux == TIME_U32)
+	{
+		p_u32 = (uint32_t *)arg;
+		*p_u32 = System_tm_2_u32(tm);
 	}
 	
-//	memcpy( self->coreData, arg, self->crDt_len);
-	self->notify( self);
 	return RET_OK;
 }
 //"YY/MM/DD HH:MM:SS"

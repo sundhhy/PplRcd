@@ -551,7 +551,8 @@ static int RLT_trendHmi_MdlUpdata( Observer *self, void *p_srcMdl)
 		}
 		
 		p_mdl = g_arr_p_chnData[i]->p_mdl;
-		y = p_mdl->getMdlData(p_mdl, g_arr_p_chnData[i]->cnt.mdl_aux, &range);
+		y = range;
+		p_mdl->getMdlData(p_mdl, g_arr_p_chnData[i]->cnt.mdl_aux, &y);
 		y = vy0 - height * y / 100;
 		
 		if(y < (vy0 - height))

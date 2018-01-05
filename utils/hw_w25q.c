@@ -146,8 +146,8 @@ void W25Q_Flush(void);
 static int w25q_Read_Sector_Data(uint8_t *pBuffer, uint16_t Sector_Num);
 //static int w25q_Read_page_Data(uint8_t *pBuffer, uint16_t num_page);
 static uint16_t W25Q_Addr_2_sct(uint32_t addr);
-static uint16_t	W25Q_wr_cache(uint32_t addr, uint8_t *wr_buf, uint16_t wr_len);
-static uint16_t W25Q_rd_cache(uint32_t addr, uint8_t *rd_buf, uint16_t	rd_len);
+static int	W25Q_wr_cache(uint32_t addr, uint8_t *wr_buf, uint16_t wr_len);
+static int W25Q_rd_cache(uint32_t addr, uint8_t *rd_buf, uint16_t	rd_len);
 static int W25Q_sct_offset(uint16_t	sct_num, uint32_t	addr);
 static int W25Q_Change_cache_sct(uint16_t	sct_num);
 //============================================================================//
@@ -307,9 +307,9 @@ int w25q_Write(uint8_t *pBuffer, uint32_t WriteAddr, uint32_t WriteBytesNum)
 
 //		short 			step = 0;
 //		short 			count = 1000;
-		int 			ret = 0;
+		int 				ret = 0;
+		int					len;
 		uint16_t		sct_num;
-		uint16_t		len;
 		uint16_t		sum = 0;
 		sct_num = W25Q_Addr_2_sct(WriteAddr);
 		
@@ -332,6 +332,8 @@ int w25q_Write(uint8_t *pBuffer, uint32_t WriteAddr, uint32_t WriteBytesNum)
 			if(ret < 0)
 				return ret;
 			len = W25Q_wr_cache(WriteAddr, pBuffer, WriteBytesNum);
+			if(len < 0)
+				return -1;
 			
 			WriteBytesNum -= len;
 			WriteAddr += len;
@@ -362,8 +364,8 @@ int w25q_rd_data(uint8_t *pBuffer, uint32_t rd_add, uint32_t len)
 {
 	
 	int 			ret = 0;
+	int 			rd_len;
 	uint16_t		sct_num;
-	uint16_t		rd_len;
 	uint16_t		sum = 0;
 	sct_num = W25Q_Addr_2_sct(rd_add);
 	
@@ -387,7 +389,8 @@ int w25q_rd_data(uint8_t *pBuffer, uint32_t rd_add, uint32_t len)
 		if(ret < 0)
 			return ret;
 		rd_len = W25Q_rd_cache(rd_add, pBuffer, len);
-		
+		if(rd_len < 0)
+			return -1;
 		len -= rd_len;
 		rd_add += rd_len;
 		sct_num = W25Q_Addr_2_sct(rd_add);
@@ -637,12 +640,15 @@ static int W25Q_sct_offset(uint16_t	sct_num, uint32_t	addr)
 	}
 }
 
-static uint16_t W25Q_wr_cache(uint32_t addr, uint8_t *wr_buf, uint16_t	wr_len)
+static int W25Q_wr_cache(uint32_t addr, uint8_t *wr_buf, uint16_t	wr_len)
 {
 	uint16_t	offset;
 	uint16_t	len;
 	
 	offset = W25Q_sct_offset(w25q_mgr.cur_sct, addr);
+	if(offset < 0)
+		return -1;
+		
 	len = w25q_mgr.sct_size - offset;
 	if(wr_len <= len)
 		len = wr_len;
@@ -651,12 +657,14 @@ static uint16_t W25Q_wr_cache(uint32_t addr, uint8_t *wr_buf, uint16_t	wr_len)
 	return len;
 }
 
-static uint16_t W25Q_rd_cache(uint32_t addr, uint8_t *rd_buf, uint16_t	rd_len)
+static int W25Q_rd_cache(uint32_t addr, uint8_t *rd_buf, uint16_t	rd_len)
 {
 	uint16_t	offset;
 	uint16_t	len;
 	
 	offset = W25Q_sct_offset(w25q_mgr.cur_sct, addr);
+	if(offset < 0)
+		return -1;
 	len = w25q_mgr.sct_size - offset;
 	if(rd_len <= len)
 		len = rd_len;

@@ -331,9 +331,17 @@ int main (void) {
 		for(tdd_i = 0; tdd_i < sizeof(appBuf) ; tdd_i ++)
 			appBuf[tdd_i] = tdd_j + 1;
 		
+		tdd_err = 0;
 		for(tdd_count = 0; tdd_count < TEST_FILE_SIZE / sizeof(appBuf); tdd_count++)
-			phn_sys.fs.fs_write(tdd_fd, (uint8_t *)appBuf, sizeof(appBuf));
-		Tdd_disp_text("wr ok", 2 + tdd_j, 160);
+			if(phn_sys.fs.fs_write(tdd_fd, (uint8_t *)appBuf, sizeof(appBuf)) < 0)
+			{
+				Tdd_disp_text("wr failed", 2 + tdd_j, 160);
+				tdd_err = 1;
+				break;
+			}
+			
+		if(tdd_err == 0)
+			Tdd_disp_text("wr ok", 2 + tdd_j, 160);
 		phn_sys.fs.fs_close(tdd_fd);
 	}
 	for(tdd_j = 0 ; tdd_j < TEST_NUM_FILE; tdd_j ++)
@@ -348,7 +356,7 @@ int main (void) {
 		sprintf(appBuf, "mod_chn_%d", tdd_j);
 		tdd_fd = phn_sys.fs.fs_open(1, appBuf, "rw", TEST_FILE_SIZE);
 		
-		
+		tdd_err = 0;
 		for(tdd_count = 0; tdd_count < TEST_FILE_SIZE / sizeof(appBuf); tdd_count++)
 		{
 			memset(appBuf, 0xcc, sizeof(appBuf));
@@ -359,11 +367,12 @@ int main (void) {
 				if(appBuf[tdd_k] != (tdd_j + 1))
 				{
 					Tdd_disp_text("chk err", 2 + tdd_j, 260);
+					tdd_err = 1;
 					break;
 				}			
 			}		
 		}
-		if(tdd_k == sizeof(appBuf) / 2)
+		if(tdd_err == 0)
 			Tdd_disp_text("chk ok", 2 + tdd_j, 260);
 	}
 		
@@ -672,10 +681,10 @@ int main (void) {
 			sprintf(appBuf,"[%04d] chn_%d", tdd_count, tdd_i);
 			Tdd_disp_text(appBuf,line, 0);
 			
-			tdd_j = p_mdl_test->getMdlData(p_mdl_test, AUX_SIGNALTYPE, NULL);
+			p_mdl_test->getMdlData(p_mdl_test, AUX_SIGNALTYPE, &tdd_j);
 			p_mdl_test->to_string(p_mdl_test, AUX_SIGNALTYPE, appBuf);
 			Tdd_disp_text(appBuf,line, 150);
-			tdd_j = p_mdl_test->getMdlData(p_mdl_test, AUX_DATA, NULL);
+			p_mdl_test->getMdlData(p_mdl_test, AUX_DATA, &tdd_j);
 			
 			
 			sprintf(appBuf,"%xh", tdd_j);

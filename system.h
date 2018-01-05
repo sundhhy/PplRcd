@@ -32,6 +32,8 @@
 #define FSH_FLAG_READBACK_CHECK		2			//
 
 #define FS_ALARM_LOWSPACE		1
+
+
 //------------------------------------------------------------------------------
 // typedef
 //------------------------------------------------------------------------------
@@ -97,10 +99,22 @@ typedef struct {
 //	int	(*fsh_rd_sector)(uint8_t *rd_buf, uint16_t num_sector);
 	int (*fsh_write)(uint8_t *wr_buf, uint32_t wr_addr, uint32_t num_bytes);
 	int (*fsh_read)(uint8_t *wr_buf, uint32_t rd_addr, uint32_t num_bytes);
+	
 	void (*fsh_flush)(void);
 }flash_t;
 
 //----------------文件系统的定义 --------------------------------
+
+typedef enum {
+	WR_SEEK_SET = 0,
+	WR_SEEK_CUR = 1,
+	WR_SEEK_END = 2,
+	RD_SEEK_SET = 3,
+	RD_SEEK_CUR = 4,
+	RD_SEEK_END = 5,
+	GET_WR_END = 6,
+	GET_RD_END = 7,
+}lseek_whence_t;
 typedef struct {
 	uint8_t			fsh_No;				//对应的存储器编号
 	uint8_t			opt_mode;			//0  只读  1 读写
@@ -131,6 +145,8 @@ typedef struct {
 	int		(*fs_write)(int fd, uint8_t *p, int len);
 	int		(*fs_read)(int fd, uint8_t *p, int len);
 	int		(*fs_resize)(int fd, char *name, int new_size);
+	int 	(*fs_lseek)(int fd, uint32_t offset, int whence);
+	void 	(*fs_shutdown)(void);
 	file_info_t*		(*fs_file_info)(int fd);
 			
 	
@@ -170,6 +186,8 @@ extern int	Operate_in_tange(int	arg1, int op, int arg2, int rangel, int rangeh);
 
 extern void System_init(void);
 extern void System_time(struct  tm *stime);
+extern uint32_t System_tm_2_u32(struct  tm *stime);
+extern int System_u32_2_tm(uint32_t time_u32, struct  tm *stime);
 extern int System_set_time(struct  tm *stime);
 extern void System_default(system_conf_t *arg);
 void System_modify_string(char	*p_s, int aux, int op, int val);
