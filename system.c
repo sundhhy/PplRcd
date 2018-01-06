@@ -12,6 +12,8 @@
 
 #include "HMI/HMIFactory.h"
 #include "fs/easy_fs.h"
+#include "utils/Storage.h"
+
 //------------------------------------------------------------------------------
 // const defines
 //------------------------------------------------------------------------------
@@ -68,7 +70,13 @@ static void Disable_string(char *p, int able);
 void System_default(system_conf_t *arg)
 {
 	system_conf_t *p_sc = &g_system;
-	memset(p_sc, 0, sizeof(system_conf_t));
+	Storage					*stg = Get_storage();
+	if(p_sc->sys_flag != 1)
+	{
+		memset(p_sc, 0, sizeof(system_conf_t));
+		p_sc->sys_flag = 1;
+		stg->wr_stored_data(stg, CFG_TYPE_SYSTEM, &g_system);
+	}
 //	p_sc->baud_idx = 0;
 //	p_sc->baud_rate = arr_baud[0];
 //	p_sc->disable_view_chn_status = 0;
@@ -78,6 +86,7 @@ void System_init(void)
 {
 	struct  tm stm;
 	Model 		*md_time;
+	Storage					*stg = Get_storage();
 
 
 	phn_sys.major_ver = PHN_MAJOR_VER;
@@ -94,7 +103,13 @@ void System_init(void)
 	w25q_init();
 	FM25_init();
 	EFS_init(NUM_FSH);
+	stg->init(stg);
+	
+	stg->rd_stored_data(stg, CFG_TYPE_SYSTEM, &g_system);
+	
 	System_default(NULL);
+		
+	
 }
 void System_time(struct  tm *stime)
 {

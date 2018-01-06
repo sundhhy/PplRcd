@@ -59,6 +59,10 @@ static int MdlChn_modify_sconf(Model *self, IN int aux, char *s, int op, int val
 static void Read_default_conf(chn_info_t *p_ci, int chnnum);
 static void Pe_singnaltype(e_signal_t sgt, char *str);
 static void Pe_touch_spot(int spot, char *str);
+
+static void MdlChn_Save_2_conf(mdl_chn_save_t *p_mcs, chn_info_t *p_cnf, uint8_t direct);
+
+static void MdlChn_Save_2_alarm(mdl_chn_save_t *p_mcs, chn_alarm_t *p_alr, uint8_t direct);
 //static int Str_to_data(char *str, int prec);
 //============================================================================//
 //            P U B L I C   F U N C T I O N S                                 //
@@ -109,6 +113,8 @@ static int MdlChn_init(Model *self, IN void *arg)
 {
 	int					chn_num = *((int *)arg);
 	Model_chn		*cthis = SUB_PTR(self, Model, Model_chn);
+	Storage			*stg = Get_storage();
+	mdl_chn_save_t		save;
 	
 	cthis->str_buf = CALLOC(1,8);
 	cthis->unit_buf = CALLOC(1,8);
@@ -116,11 +122,17 @@ static int MdlChn_init(Model *self, IN void *arg)
 	self->mdl_id = MDLID_CHN(chn_num);
 	cthis->chni.chn_NO = chn_num;
 	
-//	if(Strg_rd_chnConf(&cthis->chni, chn_num) != RET_OK) 
+	if(stg->rd_stored_data(stg, CFG_CHN_CONF(cthis->chni.chn_NO), &save) != RET_OK) 
 	{
 
 		Read_default_conf(&cthis->chni, chn_num);
 	}		
+	else
+	{
+		MdlChn_Save_2_conf(&save, &cthis->chni, 0);
+		MdlChn_Save_2_alarm(&save, &cthis->alarm, 0);
+		
+	}
 
 	
 	return RET_OK;
@@ -699,6 +711,81 @@ static void Pe_touch_spot(int spot, char *str)
 		sprintf(str, "%d", spot);
 	else
 		sprintf(str, "нч");
+}
+
+static void MdlChn_Save_2_conf(mdl_chn_save_t *p_mcs, chn_info_t *p_cnf, uint8_t direct)
+{
+	
+	if(direct == 0)
+	{
+		p_cnf->b = p_mcs->b;
+		p_cnf->decimal = p_mcs->decimal;
+		p_cnf->filter_time_s = p_mcs->filter_time_s;
+		p_cnf->k = p_mcs->k;
+		p_cnf->lower_limit = p_mcs->lower_limit;
+		p_cnf->MB = p_mcs->MB;
+		p_cnf->signal_type = p_mcs->signal_type;
+		p_cnf->small_signal = p_mcs->small_signal;
+		p_cnf->tag_NO = p_mcs->tag_NO;
+		p_cnf->unit = p_mcs->unit;
+		p_cnf->upper_limit = p_mcs->upper_limit;
+		
+		
+		
+		
+	}
+	else
+	{
+		p_mcs->b = p_cnf->b;
+		p_mcs->decimal = p_cnf->decimal;
+		p_mcs->filter_time_s = p_cnf->filter_time_s;
+		p_mcs->k = p_cnf->k;
+		p_mcs->lower_limit = p_cnf->lower_limit;
+		p_mcs->MB = p_cnf->MB;
+		p_mcs->signal_type = p_cnf->signal_type;
+		p_mcs->small_signal = p_cnf->small_signal;
+		p_mcs->tag_NO = p_cnf->tag_NO;
+		p_mcs->unit = p_cnf->unit;
+		p_mcs->upper_limit = p_cnf->upper_limit;
+		
+	}
+	
+}
+
+static void MdlChn_Save_2_alarm(mdl_chn_save_t *p_mcs, chn_alarm_t *p_alr, uint8_t direct)
+{
+	if(direct == 0)
+	{
+		p_alr->alarm_backlash = p_mcs->alarm_backlash;
+		p_alr->alarm_hh = p_mcs->alarm_hh;
+		p_alr->alarm_hi = p_mcs->alarm_hi;
+		p_alr->alarm_ll = p_mcs->alarm_ll;
+		p_alr->alarm_lo = p_mcs->alarm_lo;
+		p_alr->touch_spot_hh = p_mcs->touch_spot_hh;
+		p_alr->touch_spot_hi = p_mcs->touch_spot_hi;
+		p_alr->touch_spot_ll = p_mcs->touch_spot_ll;
+		p_alr->touch_spot_lo = p_mcs->touch_spot_lo;
+		
+		
+		
+		
+		
+	}
+	else
+	{
+		p_mcs->alarm_backlash = p_alr->alarm_backlash;
+		p_mcs->alarm_hh = p_alr->alarm_hh;
+		p_mcs->alarm_hi = p_alr->alarm_hi;
+		p_mcs->alarm_ll = p_alr->alarm_ll;
+		p_mcs->alarm_lo = p_alr->alarm_lo;
+		p_mcs->touch_spot_hh = p_alr->touch_spot_hh;
+		p_mcs->touch_spot_hi = p_alr->touch_spot_hi;
+		p_mcs->touch_spot_ll = p_alr->touch_spot_ll;
+		p_mcs->touch_spot_lo = p_alr->touch_spot_lo;
+		
+	}
+	
+	
 }
 
 //static int Str_float_to_int(char *str, int prec)

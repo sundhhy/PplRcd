@@ -501,11 +501,9 @@ static int EFS_Cal_free_space(uint8_t prt, space_t *fsp)
 //			continue;
 //		}
 		
-		if(efs_mgr.arr_efiles[i].efile_start_pg * EFS_FSH(prt).fnf.page_size > tmp_addr)
-		{
-			count ++;
-			tmp_addr = efs_mgr.arr_efiles[i].efile_start_pg * EFS_FSH(prt).fnf.page_size;
-		}
+	
+		count ++;
+			
 		if(count == fsp_num)
 		{
 			usd_addr_1 = efs_mgr.arr_efiles[i].efile_start_pg * EFS_FSH(prt).fnf.page_size;
@@ -522,14 +520,16 @@ static int EFS_Cal_free_space(uint8_t prt, space_t *fsp)
 //		return -1;
 //	}
 	
-	//找到下一个使用的
+	//找到比usd_addr_1右侧的第一个使用区域
 	usd_addr_2 = EFS_FSH(prt).fnf.page_size *  EFS_FSH(prt).fnf.total_pagenum;
 	count = 0;
-	tmp_addr = 0;
+	
+	
+	fsp->start_addr = usd_addr_1 + use_size_1;
+	tmp_addr = usd_addr_2;
 	for(i = 0 ; i < EFS_MAX_NUM_FILES; i++)
 	{
-		if(count == (fsp_num + 1))
-			break;
+		
 	
 		if((efs_mgr.arr_efiles[i].efs_flag & EFS_FLAG_USED) == 0)
 			continue;
@@ -538,22 +538,16 @@ static int EFS_Cal_free_space(uint8_t prt, space_t *fsp)
 		if(efs_mgr.arr_efiles[i].efile_fsh_NO != prt)
 			continue;
 		
-//		if(efs_mgr.arr_efiles[i].efs_flag & EFS_FLAG_SEARCHED)
-//			continue;
 		
-		if(efs_mgr.arr_efiles[i].efile_start_pg * EFS_FSH(prt).fnf.page_size > tmp_addr)
+		if(efs_mgr.arr_efiles[i].efile_start_pg * EFS_FSH(prt).fnf.page_size >= fsp->start_addr)
 		{
-			count ++;
-			tmp_addr = efs_mgr.arr_efiles[i].efile_start_pg * EFS_FSH(prt).fnf.page_size;
+			if(tmp_addr > efs_mgr.arr_efiles[i].efile_start_pg * EFS_FSH(prt).fnf.page_size)
+				tmp_addr = efs_mgr.arr_efiles[i].efile_start_pg * EFS_FSH(prt).fnf.page_size;
 		}
-		if(count == (fsp_num + 1))
-		{
-			usd_addr_2 = efs_mgr.arr_efiles[i].efile_start_pg * EFS_FSH(prt).fnf.page_size;
-//			efs_mgr.arr_efiles[i].efs_flag |= EFS_FLAG_SEARCHED;
-		}
+		
 		break;
 	}
-
+	usd_addr_2 = tmp_addr;
 	
 	//计算两个空间之间的空闲空间
 

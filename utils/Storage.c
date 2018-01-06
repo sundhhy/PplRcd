@@ -54,8 +54,10 @@ Observer		strg_mdl_ob;
 // local function prototypes
 //------------------------------------------------------------------------------
 /* Cycle/Sync Callback functions */
-static int	Strg_rd_chnConf(chn_info_t *p_ci, int chnnum);
-
+static int	Strg_RD_chn_conf(uint8_t type, void *p);
+static int	Strg_RD_sys_conf(uint8_t type, void *p);
+static int	Strg_WR_chn_conf(uint8_t type, void *p);
+static int	Strg_WR_sys_conf(uint8_t type, void *p);
 //============================================================================//
 //            P U B L I C   F U N C T I O N S                                 //
 //============================================================================//
@@ -107,6 +109,10 @@ int Strg_init(Storage *self)
 int			Strg_rd_stored_data(Storage *self, uint8_t	cfg_type, void *cfg_buf)
 {
 	
+		Strg_RD_chn_conf(cfg_type, cfg_buf);
+		Strg_RD_sys_conf(cfg_type, cfg_buf);
+		
+	
 	
 //	self->chn_cfg_fd = STRG_SYS.fs.fs_open(STRG_CFG_FSH_NUM, "mdl_chn.cfg", "rw", (sizeof(chn_info_t) + sizeof(chn_alarm_t)) * NUM_CHANNEL);
 //	if(self.chn_cfg_fd < 0)
@@ -116,8 +122,15 @@ int			Strg_rd_stored_data(Storage *self, uint8_t	cfg_type, void *cfg_buf)
 //		
 //	}
 	
+	return RET_OK;
 	
-	
+}
+
+int		Strg_WR_stored_data(Storage *self, uint8_t	cfg_type, void *buf)
+{
+	Strg_WR_chn_conf(cfg_type, buf);
+	Strg_WR_sys_conf(cfg_type, buf);
+	return RET_OK;
 }
 
 int Save_channel_data( Observer *self, void *p_srcMdl)
@@ -152,6 +165,8 @@ int Save_channel_data( Observer *self, void *p_srcMdl)
 CTOR(Storage)
 FUNCTION_SETTING(init, Strg_init);
 FUNCTION_SETTING(rd_stored_data, Strg_rd_stored_data);
+FUNCTION_SETTING(wr_stored_data, Strg_WR_stored_data);
+
 FUNCTION_SETTING(Observer.update, Save_channel_data);
 
 
@@ -163,9 +178,111 @@ END_CTOR
 //=========================================================================//
 /// \name Private Functions
 /// \{
-
-static int	Strg_rd_chnConf(chn_info_t *p_ci, int chnnum)
+static void Strg_Updata_rcd_mgr(uint8_t	num, mdl_chn_save_t *p)
 {
+	mdl_chn_save_t	*p_save = (mdl_chn_save_t *)p;
+//	file_info_t			*fnf ;
+	Storage					*stg = Get_storage();
+	if(p == NULL)
+		return;
+//	fnf = STRG_SYS.fs.fs_file_info(stg->rcd_fd);
+	stg->arr_rcd_mgr[num].rcd_maxcount = p_save->MB * 1024 * 1024 / sizeof(rcd_channel_t);
+//	stg->arr_rcd_mgr[num].rcd_count = fnf->write_position / sizeof(rcd_channel_t);
+	
+}
+static int	Strg_RD_chn_conf(uint8_t type, void *p)
+{
+	int fd;
+	int	num = 0;
+	int	ret = -1;
+	
+	
+	if(type < NUM_CHANNEL)
+		num = type;
+	else
+		num = -1;
+	
+	if(num < 0)
+		return -1;
+	
+	fd = STRG_SYS.fs.fs_open(STRG_CFG_FSH_NUM, "phn.cfg", "r", 256);
+	STRG_SYS.fs.fs_lseek(fd, RD_SEEK_SET, num * sizeof(mdl_chn_save_t));
+	if(STRG_SYS.fs.fs_read(fd,p, sizeof(mdl_chn_save_t)) == sizeof(mdl_chn_save_t))
+	{
+		Strg_Updata_rcd_mgr(num, p);
+		
+		ret = RET_OK;
+	}
+	STRG_SYS.fs.fs_close(fd);
+	
+	return ret;
+}
+static int	Strg_RD_sys_conf(uint8_t type, void *p)
+{
+	int fd;
+	int	num = 0;
+	int	ret = -1;
+	if(!IS_SYS_CONF(type))
+		return -1;
+	
+	fd = STRG_SYS.fs.fs_open(STRG_CFG_FSH_NUM, "phn.cfg", "r", 256);
+	STRG_SYS.fs.fs_lseek(fd, RD_SEEK_SET, NUM_CHANNEL * sizeof(mdl_chn_save_t));
+	STRG_SYS.fs.fs_lseek(fd, RD_SEEK_SET, num * sizeof(mdl_chn_save_t));
+	if(STRG_SYS.fs.fs_read(fd, p, sizeof(system_conf_t)) == sizeof(system_conf_t))
+	{
+		
+		ret = RET_OK;
+	}
+	STRG_SYS.fs.fs_close(fd);
+	
+	return ret;
+}
 
-	return -1;
-}	
+
+static int	Strg_WR_chn_conf(uint8_t type, void *p)
+{
+	int fd;
+	int	num = 0;
+	int	ret = -1;
+	
+	
+	if(type < NUM_CHANNEL)
+		num = type;
+	else
+		num = -1;
+	
+	if(num < 0)
+		return -1;
+	
+	fd = STRG_SYS.fs.fs_open(STRG_CFG_FSH_NUM, "phn.cfg", "r", 256);
+	STRG_SYS.fs.fs_lseek(fd, RD_SEEK_SET, num * sizeof(mdl_chn_save_t));
+	if(STRG_SYS.fs.fs_write(fd,p, sizeof(mdl_chn_save_t)) == sizeof(mdl_chn_save_t))
+	{
+		Strg_Updata_rcd_mgr(num, p);
+		
+		ret = RET_OK;
+	}
+	STRG_SYS.fs.fs_close(fd);
+	
+	return ret;
+}
+static int	Strg_WR_sys_conf(uint8_t type, void *p)
+{
+	int fd;
+	int	num = 0;
+	int	ret = -1;
+	if(!IS_SYS_CONF(type))
+		return -1;
+	
+	fd = STRG_SYS.fs.fs_open(STRG_CFG_FSH_NUM, "phn.cfg", "r", 256);
+	STRG_SYS.fs.fs_lseek(fd, RD_SEEK_SET, NUM_CHANNEL * sizeof(mdl_chn_save_t));
+	STRG_SYS.fs.fs_lseek(fd, RD_SEEK_SET, num * sizeof(mdl_chn_save_t));
+	if(STRG_SYS.fs.fs_write(fd, p, sizeof(system_conf_t)) == sizeof(system_conf_t))
+	{
+		
+		ret = RET_OK;
+	}
+	STRG_SYS.fs.fs_close(fd);
+	
+	return ret;
+}

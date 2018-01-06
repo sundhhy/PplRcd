@@ -62,7 +62,7 @@ typedef struct {
 	uint8_t		communication_mode;			//仪表与pc连接： 通讯； 仪表与打印机连接: 打印
 	uint8_t		id;											// 1 - 63
 	uint8_t		baud_idx;
-	uint8_t		none;
+	uint8_t		sys_flag;
 	int 			baud_rate;
 	
 	uint8_t		CJC;								//冷端补偿 0-99 为设定模式， 100为外部，通过冷端补偿器温度进行补偿
