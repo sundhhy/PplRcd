@@ -223,8 +223,14 @@ int main (void) {
 	Pin_init();
 	NVIC_Configuration();
 	
+	
+	
+	
 	//各个外设驱动模块初始化
 	System_init();
+	
+	
+	
 
 //	ret = USB_Init(NULL);
 //	assert(ret == RET_OK);
@@ -255,10 +261,12 @@ int main (void) {
 	count = CONF_KEYSCAN_CYCLEMS;
 	p_kb->init( p_kb, &count);
 	tid_Thread_key = osThreadCreate (osThread(ThrdKeyRun), p_kb);
-	p_control = SUPER_PTR( Get_CtlKey(), Controller);
-	p_control->init(p_control, p_kb);
+	
 	if (!tid_Thread_key) return(-1);
 	//界面初始化
+	
+	p_control = SUPER_PTR( Get_CtlKey(), Controller);
+	p_control->init(p_control, p_kb);
 	
 	p_mainHmi = CreateHMI( HMI_MAIN);
 	p_mainHmi->init( p_mainHmi, NULL);

@@ -26,7 +26,7 @@ V010 171226 :
 #define FS_RLB_LEVEL					1	
 #define	EFS_MGR_FSH_NO					0
 #define	EFS_MGR_NUM_FSH					2
-#define EFS_NAME_LEN					12
+#define EFS_NAME_LEN					14
 #define EFS_MAX_NUM_FILES				7
 #define EFS_NUM_IDLE_FILES				0		//空闲区域
 
@@ -83,7 +83,7 @@ typedef struct {
 	uint8_t					free_spac_num;
 	uint8_t					none[3];
 	uint8_t					*pg_buf;
-	efs_file_mgt_t  arr_efiles[EFS_MAX_NUM_FILES + EFS_NUM_IDLE_FILES];			//文件管理要留一点空间
+	efs_file_mgt_t  	arr_efiles[EFS_MAX_NUM_FILES + EFS_NUM_IDLE_FILES];			//文件管理要留一点空间
 	file_info_t			arr_file_info[EFS_MAX_NUM_FILES];
 }efs_mgr_t;
 //------------------------------------------------------------------------------
@@ -399,10 +399,10 @@ static int EFS_format(void)
 {
 	
 	uint8_t		ver[2];
-	uint8_t		i = 0;
+	uint8_t		i = 0, j;
 	
 	EFS_FSH(EFS_MGR_FSH_NO).fsh_read(ver, 0, 2);
-	
+//	
 	if(ver[0] != EFS_SYS.major_ver || ver[1] != EFS_SYS.minor_ver)
 	{
 //		for(i = 0; i < EFS_MGR_NUM_FSH; i++)
@@ -413,10 +413,9 @@ static int EFS_format(void)
 		memset((uint8_t *)efs_mgr.arr_efiles, 0, sizeof(efs_mgr));
 		EFS_FSH(EFS_MGR_FSH_NO).fsh_write((uint8_t *)efs_mgr.arr_efiles, 2, sizeof(efs_mgr));
 	}
-	
-	
-	EFS_FSH(EFS_MGR_FSH_NO).fsh_read((uint8_t *)efs_mgr.arr_efiles, 2, sizeof(efs_mgr));
-//	memset(efs_mgr.arr_file_info, 0 ,sizeof(efs_mgr.arr_file_info));
+//	
+//	
+	EFS_FSH(EFS_MGR_FSH_NO).fsh_read((uint8_t *)efs_mgr.arr_efiles, 2, sizeof(efs_mgr.arr_efiles));
 	return RET_OK;
 }
 
@@ -545,7 +544,6 @@ static int EFS_Cal_free_space(uint8_t prt, space_t *fsp)
 				tmp_addr = efs_mgr.arr_efiles[i].efile_start_pg * EFS_FSH(prt).fnf.page_size;
 		}
 		
-		break;
 	}
 	usd_addr_2 = tmp_addr;
 	

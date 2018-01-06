@@ -97,7 +97,7 @@ static void Init_ctime( Controller *self, void *arg)
 	
 	assert(ret == RET_OK);
 	cthis->time_count = 0;
-	next_record = g_system.record_gap_s;
+	next_record = phn_sys.sys_conf.record_gap_s;
 	
 }
 
@@ -117,7 +117,7 @@ static void Ctime_periodic (void const *arg)
 		next_record --;
 		return;
 	} 
-	next_record = g_system.record_gap_s;
+	next_record = phn_sys.sys_conf.record_gap_s;
 	p_md = ModelCreate("time");
 	p_md->run(p_md);
 	
@@ -125,7 +125,7 @@ static void Ctime_periodic (void const *arg)
 	{
 		sprintf(chn_name,"chn_%d", i);
 		p_md = ModelCreate(chn_name);
-		p_md->run(p_md);
+//		p_md->run(p_md);
 		
 	}
 	

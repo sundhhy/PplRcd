@@ -204,6 +204,8 @@ int MdlTime_text_iteartor(char	*p_time_text, int idx, int director)
 CTOR( ModelTime)
 SUPER_CTOR( Model);
 FUNCTION_SETTING( Model.init, MdlTime_init);
+FUNCTION_SETTING( Model.run, MdlTime_run);
+
 FUNCTION_SETTING( Model.getMdlData, MdlTime_getData);
 FUNCTION_SETTING( Model.set_by_string, MdlTime_set_by_string);
 

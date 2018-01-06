@@ -18,7 +18,7 @@
 // const defines
 //------------------------------------------------------------------------------
 #define 	PHN_MAJOR_VER				0
-#define 	PHN_MINOR_VER				13
+#define 	PHN_MINOR_VER				11
 //------------------------------------------------------------------------------
 // module global vars
 //------------------------------------------------------------------------------
@@ -27,7 +27,7 @@ static UtlRtc *sys_rtc;
 //为了能够紧凑的定义一些静态变量，所以都定义在一起
 //只有非4字节对齐的，需要放在这里定于
 char 			*arr_p_vram[16];
-system_conf_t	g_system;
+//system_conf_t	phn_sys.sys_conf;
 
 uint16_t		next_record;
 short 			cmd_count = 0;
@@ -69,13 +69,13 @@ static void Disable_string(char *p, int able);
 
 void System_default(system_conf_t *arg)
 {
-	system_conf_t *p_sc = &g_system;
+	system_conf_t *p_sc = &phn_sys.sys_conf;
 	Storage					*stg = Get_storage();
 	if(p_sc->sys_flag != 1)
 	{
 		memset(p_sc, 0, sizeof(system_conf_t));
 		p_sc->sys_flag = 1;
-		stg->wr_stored_data(stg, CFG_TYPE_SYSTEM, &g_system);
+		stg->wr_stored_data(stg, CFG_TYPE_SYSTEM, &phn_sys.sys_conf);
 	}
 //	p_sc->baud_idx = 0;
 //	p_sc->baud_rate = arr_baud[0];
@@ -105,7 +105,7 @@ void System_init(void)
 	EFS_init(NUM_FSH);
 	stg->init(stg);
 	
-	stg->rd_stored_data(stg, CFG_TYPE_SYSTEM, &g_system);
+	stg->rd_stored_data(stg, CFG_TYPE_SYSTEM, &phn_sys.sys_conf);
 	
 	System_default(NULL);
 		
@@ -169,7 +169,7 @@ int Str_Password_match(char *p_s_psd)
 	for(i = 0; i < 3; i++) {
 		data = atoi(p_s_psd);
 	
-		if( g_system.password[i] != data) {
+		if( phn_sys.sys_conf.password[i] != data) {
 			ret = 1;
 			break;
 		}
@@ -189,7 +189,7 @@ void Password_set_by_str(char	*p_s_psd)
 	for(i = 0; i < 3; i++) {
 		data = atoi(p_s_psd);
 	
-		g_system.password[i] = data;
+		phn_sys.sys_conf.password[i] = data;
 		
 		p_s_psd += 3;
 	}
@@ -239,7 +239,7 @@ void System_to_string(void *p_data, char	*p_s, int len, int aux)
 			if(p_data)
 				p_u8 = (uint8_t *)p_data;
 			else 
-				p_u8 = g_system.password;
+				p_u8 = phn_sys.sys_conf.password;
 			
 			sprintf(p_s, "%02d %02d %02d", p_u8[0], p_u8[1], p_u8[2]);
 			break;
@@ -248,7 +248,7 @@ void System_to_string(void *p_data, char	*p_s, int len, int aux)
 			if(p_data)
 				p_u8 = (uint8_t *)p_data;
 			else 
-				p_u8 = &g_system.break_couple;
+				p_u8 = &phn_sys.sys_conf.break_couple;
 			
 			Break_deal_string(p_s, *p_u8);
 			break;
@@ -256,7 +256,7 @@ void System_to_string(void *p_data, char	*p_s, int len, int aux)
 			if(p_data)
 				p_u8 = (uint8_t *)p_data;
 			else 
-				p_u8 = &g_system.break_resistor;
+				p_u8 = &phn_sys.sys_conf.break_resistor;
 			
 			Break_deal_string(p_s, *p_u8);
 			break;
@@ -267,7 +267,7 @@ void System_to_string(void *p_data, char	*p_s, int len, int aux)
 			if(p_data)
 				p_u8 = (uint8_t *)p_data;
 			else 
-				p_u8 = &g_system.communication_mode;
+				p_u8 = &phn_sys.sys_conf.communication_mode;
 			
 			if(*p_u8 == 0)
 				sprintf(p_s, "通讯");
@@ -278,7 +278,7 @@ void System_to_string(void *p_data, char	*p_s, int len, int aux)
 			if(p_data)
 				p_u8 = (uint8_t *)p_data;
 			else 
-				p_u8 = &g_system.disable_modify_adjust_paramter;
+				p_u8 = &phn_sys.sys_conf.disable_modify_adjust_paramter;
 			
 			Disable_string(p_s, *p_u8);
 			break;
@@ -287,7 +287,7 @@ void System_to_string(void *p_data, char	*p_s, int len, int aux)
 			if(p_data)
 				p_u8 = (uint8_t *)p_data;
 			else 
-				p_u8 = &g_system.CJC;
+				p_u8 = &phn_sys.sys_conf.CJC;
 			if(*p_u8 < 100) {
 				
 				sprintf(p_s, "设定: %d", *p_u8);
@@ -300,7 +300,7 @@ void System_to_string(void *p_data, char	*p_s, int len, int aux)
 			if(p_data)
 				p_u8 = (uint8_t *)p_data;
 			else 
-				p_u8 = &g_system.disable_view_chn_status;
+				p_u8 = &phn_sys.sys_conf.disable_view_chn_status;
 			
 			Disable_string(p_s, *p_u8);
 			break;
@@ -308,7 +308,7 @@ void System_to_string(void *p_data, char	*p_s, int len, int aux)
 			if(p_data)
 				p_u8 = (uint8_t *)p_data;
 			else 
-				p_u8 = &g_system.enable_beep;
+				p_u8 = &phn_sys.sys_conf.enable_beep;
 			
 			Disable_string(p_s, *p_u8);
 			break;
@@ -324,47 +324,47 @@ void System_modify_string(char	*p_s, int aux, int op, int val)
 	switch(aux)
 	{
 		case es_rcd_t_s:
-			g_system.record_gap_s = Operate_in_tange(g_system.record_gap_s, op, val, 0, 99);
-			next_record = g_system.record_gap_s;
-			sprintf(p_s, "%d", g_system.record_gap_s);
+			phn_sys.sys_conf.record_gap_s = Operate_in_tange(phn_sys.sys_conf.record_gap_s, op, val, 0, 99);
+			next_record = phn_sys.sys_conf.record_gap_s;
+			sprintf(p_s, "%d", phn_sys.sys_conf.record_gap_s);
 			break;
 		case es_brk_cpl:
 			
-			g_system.break_couple = Operate_in_tange(g_system.break_couple, op, val, 0, 2);
-			Break_deal_string(p_s, g_system.break_couple);
+			phn_sys.sys_conf.break_couple = Operate_in_tange(phn_sys.sys_conf.break_couple, op, val, 0, 2);
+			Break_deal_string(p_s, phn_sys.sys_conf.break_couple);
 			break;
 		case es_brk_rss:
-			g_system.break_resistor = Operate_in_tange(g_system.break_resistor, op, val, 0, 2);
-			Break_deal_string(p_s, g_system.break_resistor);
+			phn_sys.sys_conf.break_resistor = Operate_in_tange(phn_sys.sys_conf.break_resistor, op, val, 0, 2);
+			Break_deal_string(p_s, phn_sys.sys_conf.break_resistor);
 			break;
 		case es_baud:
-			g_system.baud_idx = Operate_in_tange(g_system.baud_idx, op, val, 0, 6);
-			g_system.baud_rate = arr_baud[g_system.baud_idx];
-			sprintf(p_s, "%d", g_system.baud_rate);
+			phn_sys.sys_conf.baud_idx = Operate_in_tange(phn_sys.sys_conf.baud_idx, op, val, 0, 6);
+			phn_sys.sys_conf.baud_rate = arr_baud[phn_sys.sys_conf.baud_idx];
+			sprintf(p_s, "%d", phn_sys.sys_conf.baud_rate);
 			break;
 		case es_id:
-			g_system.id = Operate_in_tange(g_system.id, op, val, 1, 63);
-			sprintf(p_s, "%d", g_system.id);
+			phn_sys.sys_conf.id = Operate_in_tange(phn_sys.sys_conf.id, op, val, 1, 63);
+			sprintf(p_s, "%d", phn_sys.sys_conf.id);
 			break;
 		case es_cmn_md:
-			g_system.communication_mode = Operate_in_tange(g_system.communication_mode, op, val, 0, 1);
-			if(g_system.communication_mode == 0)
+			phn_sys.sys_conf.communication_mode = Operate_in_tange(phn_sys.sys_conf.communication_mode, op, val, 0, 1);
+			if(phn_sys.sys_conf.communication_mode == 0)
 				sprintf(p_s, "通讯");
 			else 
 				sprintf(p_s, "打印");
 			break;
 		case es_mdfy_prm:
 		
-			g_system.disable_modify_adjust_paramter = Operate_in_tange(g_system.disable_modify_adjust_paramter, op, val, 0, 1);
-			Disable_string(p_s, g_system.disable_modify_adjust_paramter );
+			phn_sys.sys_conf.disable_modify_adjust_paramter = Operate_in_tange(phn_sys.sys_conf.disable_modify_adjust_paramter, op, val, 0, 1);
+			Disable_string(p_s, phn_sys.sys_conf.disable_modify_adjust_paramter );
 			break;
 			
 		case es_CJC:
-			g_system.CJC = Operate_in_tange(g_system.CJC, op, val, 0, 100);
+			phn_sys.sys_conf.CJC = Operate_in_tange(phn_sys.sys_conf.CJC, op, val, 0, 100);
 			System_to_string(NULL, p_s, 0xff, es_CJC);
-//			if(g_system.CJC < 100) {
+//			if(phn_sys.sys_conf.CJC < 100) {
 //				
-//				sprintf(p_s, "设定 %d", g_system.CJC);
+//				sprintf(p_s, "设定 %d", phn_sys.sys_conf.CJC);
 //			} else {
 //				sprintf(p_s, "外部    ");
 //			}
@@ -372,12 +372,12 @@ void System_modify_string(char	*p_s, int aux, int op, int val)
 			
 			
 		case es_vcs:
-			g_system.disable_view_chn_status = Operate_in_tange(g_system.disable_view_chn_status, op, val, 0, 1);
-			Disable_string(p_s, g_system.disable_view_chn_status);
+			phn_sys.sys_conf.disable_view_chn_status = Operate_in_tange(phn_sys.sys_conf.disable_view_chn_status, op, val, 0, 1);
+			Disable_string(p_s, phn_sys.sys_conf.disable_view_chn_status);
 			break;
 		case es_beep:
-			g_system.enable_beep = Operate_in_tange(g_system.enable_beep, op, val, 0, 1);
-			Disable_string(p_s, g_system.enable_beep);
+			phn_sys.sys_conf.enable_beep = Operate_in_tange(phn_sys.sys_conf.enable_beep, op, val, 0, 1);
+			Disable_string(p_s, phn_sys.sys_conf.enable_beep);
 			break;
 	}
 	

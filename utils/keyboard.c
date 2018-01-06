@@ -222,7 +222,7 @@ static int Keyboard_init(Keyboard *self, IN void *arg)
 		self->arr_key_pins[i].sum_count = 0;
 		self->arr_key_pins[i].up_flag = 0;
 	}
-	
+	return RET_OK;
 #else
 	
 	if( first == 0)

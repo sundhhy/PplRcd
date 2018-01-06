@@ -102,10 +102,10 @@ static int SysStrategy_entry(int row, int col, void *pp_text)
 				System_to_string(NULL, arr_p_vram[row], 48, es_psd);
 				break;
 			case 2:
-				sprintf(arr_p_vram[row], "%d", g_system.num_chn);
+				sprintf(arr_p_vram[row], "%d", phn_sys.sys_conf.num_chn);
 				break;
 			case 3:
-				sprintf(arr_p_vram[row], "%d", g_system.record_gap_s);
+				sprintf(arr_p_vram[row], "%d", phn_sys.sys_conf.record_gap_s);
 				break;
 			case 4:
 				System_to_string(NULL, arr_p_vram[row], 48, es_brk_cpl);
@@ -117,10 +117,10 @@ static int SysStrategy_entry(int row, int col, void *pp_text)
 				System_to_string(NULL, arr_p_vram[row], 48, es_cmn_md);
 				break;
 			case 7:
-				sprintf(arr_p_vram[row], "%d", g_system.baud_rate);
+				sprintf(arr_p_vram[row], "%d", phn_sys.sys_conf.baud_rate);
 				break;
 			case 8:
-				sprintf(arr_p_vram[row], "%d", g_system.id);
+				sprintf(arr_p_vram[row], "%d", phn_sys.sys_conf.id);
 				break;
 			case 9:
 				System_to_string(NULL, arr_p_vram[row], 48, es_mdfy_prm);

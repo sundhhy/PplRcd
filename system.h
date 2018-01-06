@@ -158,15 +158,16 @@ typedef struct {
 	uint8_t		major_ver;
 	uint8_t		minor_ver;
 	uint8_t		none[2];
-	flash_t		arr_fsh[NUM_FSH];
-	fs_t		fs;
+	system_conf_t		sys_conf;
+	flash_t				arr_fsh[NUM_FSH];
+	fs_t				fs;
 }system_t;
 	
 
 //------------------------------------------------------------------------------
 // global variable declarations
 //------------------------------------------------------------------------------
-extern 	system_conf_t		g_system;
+//extern 	system_conf_t		phn_sys.sys_conf;
 extern	char 				*arr_p_vram[16];
 extern 	int 				g_set_weight;
 

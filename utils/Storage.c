@@ -58,6 +58,7 @@ static int	Strg_RD_chn_conf(uint8_t type, void *p);
 static int	Strg_RD_sys_conf(uint8_t type, void *p);
 static int	Strg_WR_chn_conf(uint8_t type, void *p);
 static int	Strg_WR_sys_conf(uint8_t type, void *p);
+static void Strg_Updata_rcd_mgr(uint8_t	num, mdl_chn_save_t *p);
 //============================================================================//
 //            P U B L I C   F U N C T I O N S                                 //
 //============================================================================//
@@ -95,9 +96,10 @@ int Strg_init(Storage *self)
 	
 	
 	self->rcd_mgr_fd = STRG_SYS.fs.fs_open(STRG_FSH_NUM, "mdl_chn.mgr", "rw", sizeof(rcd_mgr_t) * NUM_CHANNEL);
-	num_pg --;
-	//为了减少w25q的擦写次数，把所有通道都记录在一个文件里面，这样在切换记录通的时候，能够尽量在同一个扇区内
+//	num_pg --;
+//	//为了减少w25q的擦写次数，把所有通道都记录在一个文件里面，这样在切换记录通的时候，能够尽量在同一个扇区内
 	self->rcd_fd = STRG_SYS.fs.fs_open(STRG_FSH_NUM, "mdl_chn.rcd", "rw",pg_size * num_pg - sizeof(self->arr_rcd_mgr));
+	Strg_Updata_rcd_mgr(0, NULL);
 	if((self->rcd_fd >= 0) && (self->rcd_mgr_fd >= 0))
 		return RET_OK;
 	else
@@ -106,21 +108,12 @@ int Strg_init(Storage *self)
 	
 }
 
-int			Strg_rd_stored_data(Storage *self, uint8_t	cfg_type, void *cfg_buf)
+int	Strg_rd_stored_data(Storage *self, uint8_t	cfg_type, void *cfg_buf)
 {
 	
 		Strg_RD_chn_conf(cfg_type, cfg_buf);
 		Strg_RD_sys_conf(cfg_type, cfg_buf);
 		
-	
-	
-//	self->chn_cfg_fd = STRG_SYS.fs.fs_open(STRG_CFG_FSH_NUM, "mdl_chn.cfg", "rw", (sizeof(chn_info_t) + sizeof(chn_alarm_t)) * NUM_CHANNEL);
-//	if(self.chn_cfg_fd < 0)
-//	{
-//		
-//		return ERR_FS_OPEN_FAIL;
-//		
-//	}
 	
 	return RET_OK;
 	
@@ -180,14 +173,23 @@ END_CTOR
 /// \{
 static void Strg_Updata_rcd_mgr(uint8_t	num, mdl_chn_save_t *p)
 {
-	mdl_chn_save_t	*p_save = (mdl_chn_save_t *)p;
-//	file_info_t			*fnf ;
-	Storage					*stg = Get_storage();
+	mdl_chn_save_t		*p_save = (mdl_chn_save_t *)p;
+	file_info_t			*fnf ;
+	Storage				*stg = Get_storage();
+	int					i;
+	
+	fnf = STRG_SYS.fs.fs_file_info(stg->rcd_fd);
+	if(fnf->write_position == 0)		//第一次创建记录文件时，所有的记录数量都是0
+	{
+		for(i = 0; i < NUM_CHANNEL; i++)
+			stg->arr_rcd_mgr[i].rcd_count = 0;
+		
+	}
+	
 	if(p == NULL)
 		return;
-//	fnf = STRG_SYS.fs.fs_file_info(stg->rcd_fd);
 	stg->arr_rcd_mgr[num].rcd_maxcount = p_save->MB * 1024 * 1024 / sizeof(rcd_channel_t);
-//	stg->arr_rcd_mgr[num].rcd_count = fnf->write_position / sizeof(rcd_channel_t);
+
 	
 }
 static int	Strg_RD_chn_conf(uint8_t type, void *p)
