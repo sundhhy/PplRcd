@@ -3,7 +3,7 @@
 #include "sdhDef.h"
 #include "system.h"
 #include "ModelFactory.h"
-
+#include "utils/Storage.h"
 #ifdef NO_ASSERT
 #include "basis/assert.h"
 #else
@@ -107,10 +107,33 @@ static void Ctime_periodic (void const *arg)
   // add user code here
 	CtlTimer	*cthis = SUB_PTR( arg, Controller, CtlTimer);
 	Model 		*p_md;
+	Storage		*stg = Get_storage();
 	char			chn_name[7];
 	char			i;
 	
 	cthis->time_count ++;
+	p_md = ModelCreate("time");
+	p_md->run(p_md);
+	
+	if(phn_sys.save_chg_flga & CHG_SYSTEM_CONF)
+	{
+		stg->wr_stored_data(stg, CFG_TYPE_SYSTEM, &phn_sys.sys_conf);
+		
+		phn_sys.save_chg_flga &= ~CHG_SYSTEM_CONF;
+	}
+	for(i = 0; i < NUM_CHANNEL; i++)
+	{
+		if(phn_sys.save_chg_flga & CHG_MODCHN_CONF(i))
+		{
+			stg->wr_stored_data(stg, CFG_CHN_CONF(i), NULL);
+			
+			phn_sys.save_chg_flga &= ~CHG_MODCHN_CONF(i);
+		}
+		
+		
+	}
+	
+	
 	
 	if(next_record)
 	{
@@ -118,8 +141,10 @@ static void Ctime_periodic (void const *arg)
 		return;
 	} 
 	next_record = phn_sys.sys_conf.record_gap_s;
-	p_md = ModelCreate("time");
-	p_md->run(p_md);
+	
+	
+	
+	
 	
 	for(i = 0; i < NUM_CHANNEL; i++)
 	{

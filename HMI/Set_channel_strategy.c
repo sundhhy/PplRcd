@@ -317,7 +317,8 @@ static void Cns_update_content(int op, int weight)
 //			Str_Calculations(arr_p_vram[p_syf->f_row], 1,  op, weight, 0, NUM_CHANNEL);
 			break;
 		case 1:		//位号
-			Str_Calculations(arr_p_vram[p_syf->f_row], 1,  op, weight, 0, 9);
+//			Str_Calculations(arr_p_vram[p_syf->f_row], 1,  op, weight, 0, 9);
+			p_md->modify_str_conf(p_md, chnaux_tag_NO, arr_p_vram[p_syf->f_row], op, weight);
 			break;
 		case 2:		//信号类型
 			p_md->modify_str_conf(p_md, AUX_SIGNALTYPE, arr_p_vram[p_syf->f_row], op, weight);

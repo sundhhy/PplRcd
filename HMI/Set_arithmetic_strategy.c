@@ -14,8 +14,26 @@
 //------------------------------------------------------------------------------
 
 static int ArtStrategy_entry(int row, int col, void *pp_text);
+static int ART_init(void *arg);
+static int ART_key_up(void *arg);
+static int ART_key_dn(void *arg);
+static int ART_key_lt(void *arg);
+static int ART_key_rt(void *arg);
+static int ART_key_er(void *arg);
+static int ART_get_focusdata(void *pp_data,  strategy_focus_t *p_in_syf);
+static int ART_commit(void *arg);
+
 strategy_t	g_art_strategy = {
 	ArtStrategy_entry,
+	
+	ART_init,
+	ART_key_up,
+	ART_key_dn,
+	ART_key_lt,
+	ART_key_rt,
+	ART_key_er,
+	ART_get_focusdata,
+	ART_commit,
 };
 //------------------------------------------------------------------------------
 // global function prototypes
@@ -65,6 +83,40 @@ static int ArtStrategy_entry(int row, int col, void *pp_text)
 	} 
 	
 	return 0;
+}
+
+static int ART_init(void *arg)
+{
+	return RET_OK;
+}
+static int ART_key_up(void *arg)
+{
+	return RET_OK;
+}
+static int ART_key_dn(void *arg)
+{
+	return RET_OK;
+}
+static int ART_key_lt(void *arg)
+{
+	return RET_OK;
+}
+static int ART_key_rt(void *arg)
+{
+	return RET_OK;
+}
+static int ART_key_er(void *arg)
+{
+	return RET_OK;
+}
+
+static int ART_get_focusdata(void *pp_data,  strategy_focus_t *p_in_syf)
+{
+	return RET_OK;
+}
+static int ART_commit(void *arg)
+{
+	return RET_OK;
 }
 
 

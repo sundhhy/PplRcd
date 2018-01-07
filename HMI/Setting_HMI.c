@@ -519,7 +519,10 @@ static void	Setting_HMI_hitHandle(HMI *self, char *s_key)
 			p_focus = Setting_HMI_get_focus(cthis, -1);
 			if(Show_more(self, p_focus->id) == ERR_OPT_FAILED) {
 				if(p_focus->id == ICO_ID_MENU)
+				{
+					cthis->entry_start_row = 0;
 					self->switchHMI(self, g_p_HMI_menu);
+				}
 				
 			}
 		}
@@ -539,7 +542,7 @@ static void	Setting_HMI_hitHandle(HMI *self, char *s_key)
 			cthis->f_col = 0;
 		} else {
 			
-			
+			cthis->entry_start_row = 0;
 			self->switchHMI(self, g_p_Setup_HMI);
 			
 		}
@@ -784,6 +787,7 @@ static int Setting_Sy_cmd(void *p_rcv, int cmd,  void *arg)
 		case sycmd_win_tips:
 			
 			g_p_winHmi->arg[0] = WINTYPE_TIPS;
+			g_p_winHmi->arg[1] |= WINFLAG_RETURN | WINFLAG_COMMIT;
 			p_win = Get_winHmi();
 			p_win->p_cmd_rcv = self;
 			p_win->cmd_hdl = Setting_Sy_cmd;

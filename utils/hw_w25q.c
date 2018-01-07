@@ -642,7 +642,7 @@ static int W25Q_sct_offset(uint16_t	sct_num, uint32_t	addr)
 
 static int W25Q_wr_cache(uint32_t addr, uint8_t *wr_buf, uint16_t	wr_len)
 {
-	uint16_t	offset;
+	int	offset;
 	uint16_t	len;
 	
 	offset = W25Q_sct_offset(w25q_mgr.cur_sct, addr);
@@ -659,7 +659,7 @@ static int W25Q_wr_cache(uint32_t addr, uint8_t *wr_buf, uint16_t	wr_len)
 
 static int W25Q_rd_cache(uint32_t addr, uint8_t *rd_buf, uint16_t	rd_len)
 {
-	uint16_t	offset;
+	int	offset;
 	uint16_t	len;
 	
 	offset = W25Q_sct_offset(w25q_mgr.cur_sct, addr);

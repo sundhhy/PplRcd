@@ -408,7 +408,7 @@ static int Sys_commit(void *arg)
 		Password_set_by_str(arr_p_vram[p_syf->f_row]);
 		break;
 	case 13:
-		System_default(NULL);
+		System_default();
 		break;
 	default:
 		ret = ERR_OPT_FAILED;

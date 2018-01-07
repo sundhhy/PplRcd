@@ -169,6 +169,56 @@ void MdlTime_text_modify(char	*p_time_text, int idx, int op)
 	
 }
 
+
+
+//--------------------------------------------------------------------------------
+//计算从2000年1月1号0时0分0秒到现在的秒数
+//----------------------------------------------------------------------------------
+const unsigned short daytab[13]={0,31,59,90,120,151,181,212,243,273,304,334,365};//非闰年月份累积天数
+const unsigned short daytab1[13]={0,31,60,91,121,152,182,213,244,274,305,335,366};//闰年月份累积天数
+
+#define    xMINUTE     (60)					/*1 ????*/
+#define    xHOUR         (60*xMINUTE)			/*1 ?????*/
+#define    xDAY           (24*xHOUR)			/*1 ????*/
+#define    xYEAR         (365*xDAY)			/*1 ???? */
+
+
+#define	CYCLE_TIMES		(10000) 
+uint32_t    Tm_to_Seconds(struct  tm	*tm_2_sec)
+{
+
+	unsigned char a;
+	unsigned short b;
+	unsigned long seconds;
+
+	a=tm_2_sec->tm_yday/4;
+	seconds=(unsigned long)1461*a*xDAY;	//过去的整年秒数
+	a=tm_2_sec->tm_yday%4;
+	if(a==0)
+	{
+		a = tm_2_sec->tm_mon - 1;
+		b = daytab1[a];
+	}
+	else
+	{
+		b=366;
+		while(--a)
+		{
+			b=b+365;
+		}
+		a = tm_2_sec->tm_mon - 1;
+		b=b+daytab[a];
+	}
+	seconds +=xDAY*(b+tm_2_sec->tm_mday-1);//加上本月已过的天数的秒数
+	seconds += xHOUR*tm_2_sec->tm_hour;				//加上本日已过的小时
+	seconds += xMINUTE*tm_2_sec->tm_min;			//加上本分钟已经过去的秒数
+	seconds += tm_2_sec->tm_sec;					//??????
+	return seconds;
+
+	
+	
+}
+
 //对时间显示的字符上移动
 //返回新的位置
 int MdlTime_text_iteartor(char	*p_time_text, int idx, int director)

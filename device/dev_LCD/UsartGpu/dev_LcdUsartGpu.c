@@ -167,7 +167,7 @@ static void GpuBPic( char m, int x1, int y1, char num)
 	
 	if((x1 == 0) && (y1 == 0))  {
 		Gpu_send_done();
-		osDelay(100);
+//		osDelay(100);
 	}
 	Sem_post(&gpu_sem);
 #else	

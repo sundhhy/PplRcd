@@ -56,7 +56,6 @@ static char* MdlChn_to_string( Model *self, IN int aux, void *arg);
 static int  MdlChn_to_percentage( Model *self, void *arg);
 static int MdlChn_set_by_string( Model *self, IN int aux, void *arg);
 static int MdlChn_modify_sconf(Model *self, IN int aux, char *s, int op, int val);
-static void Read_default_conf(chn_info_t *p_ci, int chnnum);
 static void Pe_singnaltype(e_signal_t sgt, char *str);
 static void Pe_touch_spot(int spot, char *str);
 
@@ -125,7 +124,8 @@ static int MdlChn_init(Model *self, IN void *arg)
 	if(stg->rd_stored_data(stg, CFG_CHN_CONF(cthis->chni.chn_NO), &save) != RET_OK) 
 	{
 
-		Read_default_conf(&cthis->chni, chn_num);
+		MdlChn_default_conf(chn_num);
+		MdlChn_default_alarm(chn_num);
 	}		
 	else
 	{
@@ -136,6 +136,42 @@ static int MdlChn_init(Model *self, IN void *arg)
 
 	
 	return RET_OK;
+}
+
+int	MdlChn_save_data(uint8_t chn_num, mdl_chn_save_t *p)
+{
+	
+	Model_chn *p_mdl= Get_Mode_chn(chn_num);
+	
+	if(p_mdl == NULL)
+		return 0;
+	
+	MdlChn_Save_2_conf(p, &p_mdl->chni, 1);
+	MdlChn_Save_2_alarm(p, &p_mdl->alarm, 1);
+	
+	return (sizeof(p_mdl->chni) + sizeof(p_mdl->alarm));
+}
+
+void MdlChn_default_conf(int chn_num)
+{
+	Model_chn *p_mdl= Get_Mode_chn(chn_num);
+	
+	memset(&p_mdl->chni, 0, sizeof(p_mdl->chni));
+	p_mdl->chni.signal_type = AI_0_400_ohm;
+	p_mdl->chni.tag_NO = chn_num;
+	p_mdl->chni.MB = 2;
+}
+
+
+void MdlChn_default_alarm(int chn_num)
+{
+	Model_chn *p_mdl= Get_Mode_chn(chn_num);
+	
+	memset(&p_mdl->alarm, 0, sizeof(p_mdl->alarm));
+	p_mdl->alarm.alarm_hh = 0x7fff;
+	p_mdl->alarm.alarm_hi = 0x7fff;
+	
+	
 }
 
 static int MdlChn_self_check( Model *self)
@@ -339,6 +375,8 @@ static char* MdlChn_to_string( Model *self, IN int aux, void *arg)
 
 			sprintf( p, "%3d.%d", cthis->chni.value/10, cthis->chni.value%10);
 			return p;
+			
+
 		case AUX_UNIT:
 			if( arg) {
 				p = (char *)arg;		
@@ -453,10 +491,15 @@ static char* MdlChn_to_string( Model *self, IN int aux, void *arg)
 static int MdlChn_modify_sconf(Model *self, IN int aux, char *s, int op, int val)
 {
 	Model_chn		*cthis = SUB_PTR( self, Model, Model_chn);
+	phn_sys.save_chg_flga |= CHG_MODCHN_CONF(cthis->chni.chn_NO);
 	switch(aux) {
 		case AUX_UNIT:
 			cthis->chni.unit = Operate_in_tange(cthis->chni.unit, op, 1, 0, eu_max - 1);
 			self->to_string(self, AUX_UNIT, s);
+			break;
+		case chnaux_tag_NO:
+			cthis->chni.tag_NO = Operate_in_tange(cthis->chni.tag_NO, op, 1, 0, 9);
+			sprintf(s, "%d", cthis->chni.tag_NO);
 			break;
 		case AUX_SIGNALTYPE:
 			cthis->chni.signal_type = Operate_in_tange(cthis->chni.signal_type, op, 1, 0, es_max - 1);
@@ -529,7 +572,10 @@ static int MdlChn_modify_sconf(Model *self, IN int aux, char *s, int op, int val
 			cthis->alarm.alarm_backlash = Operate_in_tange(cthis->alarm.alarm_backlash, op, val, 0, 100);
 			Pe_float(cthis->alarm.alarm_backlash, 1, (char *)s);
 			break;
-		
+		default:
+			
+			phn_sys.save_chg_flga &= ~CHG_MODCHN_CONF(cthis->chni.chn_NO);
+			break;
 		
 		
 	}
@@ -634,11 +680,7 @@ static int  MdlChn_to_percentage( Model *self, void *arg)
 }
 
 
-static void Read_default_conf(chn_info_t *p_ci, int chnnum)
-{
-	
-	p_ci->signal_type = AI_0_400_ohm;
-}
+
 
 static void Pe_singnaltype(e_signal_t sgt, char *str)
 {

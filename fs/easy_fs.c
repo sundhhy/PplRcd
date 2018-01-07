@@ -98,7 +98,7 @@ int		EFS_open(uint8_t		prt, char *path, char *mode, int	file_size);
 int		EFS_close(int fd);
 int		EFS_write(int fd, uint8_t *p, int len);
 int		EFS_read(int fd, uint8_t *p, int len);
-int 	EFS_Lseek(int fd, uint32_t offset, int whence);
+int 	EFS_Lseek(int fd, int whence, uint32_t offset);
 int	EFS_resize(int fd, char *path, int new_size);
 file_info_t		*EFS_file_info(int fd);
 int		EFS_delete(int fd);
@@ -211,7 +211,7 @@ int	EFS_close(int fd)
 	return 0;
 }
 
-int 	EFS_Lseek(int fd, uint32_t offset, int whence)
+int 	EFS_Lseek(int fd, int whence, uint32_t offset)
 {
 	file_info_t *f = &efs_mgr.arr_file_info[fd];
 	efs_file_mgt_t	*f_mgr = &efs_mgr.arr_efiles[fd];
@@ -399,7 +399,7 @@ static int EFS_format(void)
 {
 	
 	uint8_t		ver[2];
-	uint8_t		i = 0, j;
+	uint8_t		i = 0;
 	
 	EFS_FSH(EFS_MGR_FSH_NO).fsh_read(ver, 0, 2);
 //	

@@ -14,8 +14,25 @@
 //------------------------------------------------------------------------------
 
 static int Data_bacnup_Strategy_entry(int row, int col, void *pp_text);
+static int DBP_init(void *arg);
+static int DBP_key_up(void *arg);
+static int DBP_key_dn(void *arg);
+static int DBP_key_lt(void *arg);
+static int DBP_key_rt(void *arg);
+static int DBP_key_er(void *arg);
+static int DBP_get_focusdata(void *pp_data,  strategy_focus_t *p_in_syf);
+static int DBP_commit(void *arg);
+
 strategy_t	g_DBU_strategy = {
 	Data_bacnup_Strategy_entry,
+	DBP_init,
+	DBP_key_up,
+	DBP_key_dn,
+	DBP_key_lt,
+	DBP_key_rt,
+	DBP_key_er,
+	DBP_get_focusdata,
+	DBP_commit,
 };
 //------------------------------------------------------------------------------
 // global function prototypes
@@ -66,6 +83,40 @@ static int Data_bacnup_Strategy_entry(int row, int col, void *pp_text)
 	} 
 	
 	return 0;
+}
+
+static int DBP_init(void *arg)
+{
+	return RET_OK;
+}
+static int DBP_key_up(void *arg)
+{
+	return RET_OK;
+}
+static int DBP_key_dn(void *arg)
+{
+	return RET_OK;
+}
+static int DBP_key_lt(void *arg)
+{
+	return RET_OK;
+}
+static int DBP_key_rt(void *arg)
+{
+	return RET_OK;
+}
+static int DBP_key_er(void *arg)
+{
+	return RET_OK;
+}
+
+static int DBP_get_focusdata(void *pp_data,  strategy_focus_t *p_in_syf)
+{
+	return RET_OK;
+}
+static int DBP_commit(void *arg)
+{
+	return RET_OK;
 }
 
 

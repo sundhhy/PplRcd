@@ -44,4 +44,5 @@
 .\objects\ctltimer.o: .\model\ModelTime.h
 .\objects\ctltimer.o: ..\PplRcd\utils/rtc_pcf8563.h
 .\objects\ctltimer.o: ..\PplRcd\utils/rtc.h
+.\objects\ctltimer.o: ..\PplRcd\utils/Storage.h
 .\objects\ctltimer.o: E:\mylib\sdhLib\inc\basis/assert.h

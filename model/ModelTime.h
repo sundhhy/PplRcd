@@ -36,7 +36,7 @@ CLASS( ModelTime)
 
 extern int MdlTime_text_iteartor(char	*p_time_text, int idx, int director);
 extern void MdlTime_text_modify(char	*p_time_text, int idx, int op);
-
+extern uint32_t    Tm_to_Seconds(struct  tm	*tm_2_sec);
 
 
 

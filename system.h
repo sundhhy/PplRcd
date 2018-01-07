@@ -5,6 +5,8 @@
 #define __INC_system_H_
 #include <stdint.h>
 #include "utils/time.h"
+
+
 //------------------------------------------------------------------------------
 // check for correct compilation options
 //------------------------------------------------------------------------------
@@ -32,6 +34,9 @@
 #define FSH_FLAG_READBACK_CHECK		2			//
 
 #define FS_ALARM_LOWSPACE		1
+
+#define	CHG_SYSTEM_CONF				1	
+#define	CHG_MODCHN_CONF(n)			(1 << (n + 1))
 
 
 //------------------------------------------------------------------------------
@@ -63,7 +68,7 @@ typedef struct {
 	uint8_t		id;											// 1 - 63
 	uint8_t		baud_idx;
 	uint8_t		sys_flag;
-	int 			baud_rate;
+	int 		baud_rate;
 	
 	uint8_t		CJC;								//冷端补偿 0-99 为设定模式， 100为外部，通过冷端补偿器温度进行补偿
 	uint8_t		disable_modify_adjust_paramter;		//禁止修改调节参数
@@ -145,7 +150,7 @@ typedef struct {
 	int		(*fs_write)(int fd, uint8_t *p, int len);
 	int		(*fs_read)(int fd, uint8_t *p, int len);
 	int		(*fs_resize)(int fd, char *name, int new_size);
-	int 	(*fs_lseek)(int fd, uint32_t offset, int whence);
+	int 	(*fs_lseek)(int fd, int whence, uint32_t offset);
 	void 	(*fs_shutdown)(void);
 	file_info_t*		(*fs_file_info)(int fd);
 			
@@ -155,9 +160,10 @@ typedef struct {
 //--------------------------------------------------------------------------
 
 typedef struct {
-	uint8_t		major_ver;
-	uint8_t		minor_ver;
-	uint8_t		none[2];
+	uint8_t				major_ver;
+	uint8_t				minor_ver;
+	uint8_t				save_chg_flga;		//可存储的配置信息的变化标志
+	uint8_t				none;
 	system_conf_t		sys_conf;
 	flash_t				arr_fsh[NUM_FSH];
 	fs_t				fs;
@@ -190,7 +196,7 @@ extern void System_time(struct  tm *stime);
 extern uint32_t System_tm_2_u32(struct  tm *stime);
 extern int System_u32_2_tm(uint32_t time_u32, struct  tm *stime);
 extern int System_set_time(struct  tm *stime);
-extern void System_default(system_conf_t *arg);
+extern void System_default(void);
 void System_modify_string(char	*p_s, int aux, int op, int val);
 void System_to_string(void *p_data, char	*p_s, int len, int aux);
 void Password_set_by_str(char	*p_s_psd);

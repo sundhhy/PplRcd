@@ -151,7 +151,7 @@ int Save_channel_data( Observer *self, void *p_srcMdl)
 		
 	}
 	
-	
+	return RET_OK;
 }
 
 
@@ -222,14 +222,12 @@ static int	Strg_RD_chn_conf(uint8_t type, void *p)
 static int	Strg_RD_sys_conf(uint8_t type, void *p)
 {
 	int fd;
-	int	num = 0;
 	int	ret = -1;
 	if(!IS_SYS_CONF(type))
 		return -1;
 	
 	fd = STRG_SYS.fs.fs_open(STRG_CFG_FSH_NUM, "phn.cfg", "r", 256);
 	STRG_SYS.fs.fs_lseek(fd, RD_SEEK_SET, NUM_CHANNEL * sizeof(mdl_chn_save_t));
-	STRG_SYS.fs.fs_lseek(fd, RD_SEEK_SET, num * sizeof(mdl_chn_save_t));
 	if(STRG_SYS.fs.fs_read(fd, p, sizeof(system_conf_t)) == sizeof(system_conf_t))
 	{
 		
@@ -246,7 +244,7 @@ static int	Strg_WR_chn_conf(uint8_t type, void *p)
 	int fd;
 	int	num = 0;
 	int	ret = -1;
-	
+	mdl_chn_save_t	save;
 	
 	if(type < NUM_CHANNEL)
 		num = type;
@@ -255,10 +253,14 @@ static int	Strg_WR_chn_conf(uint8_t type, void *p)
 	
 	if(num < 0)
 		return -1;
-	
+	if(p == NULL)
+	{
+		p = &save;
+		MdlChn_save_data(num, p);
+	}
 	fd = STRG_SYS.fs.fs_open(STRG_CFG_FSH_NUM, "phn.cfg", "r", 256);
-	STRG_SYS.fs.fs_lseek(fd, RD_SEEK_SET, num * sizeof(mdl_chn_save_t));
-	if(STRG_SYS.fs.fs_write(fd,p, sizeof(mdl_chn_save_t)) == sizeof(mdl_chn_save_t))
+	STRG_SYS.fs.fs_lseek(fd, WR_SEEK_SET, num * sizeof(mdl_chn_save_t));
+	if(STRG_SYS.fs.fs_write(fd, p, sizeof(mdl_chn_save_t)) == sizeof(mdl_chn_save_t))
 	{
 		Strg_Updata_rcd_mgr(num, p);
 		
@@ -271,14 +273,12 @@ static int	Strg_WR_chn_conf(uint8_t type, void *p)
 static int	Strg_WR_sys_conf(uint8_t type, void *p)
 {
 	int fd;
-	int	num = 0;
 	int	ret = -1;
 	if(!IS_SYS_CONF(type))
 		return -1;
 	
 	fd = STRG_SYS.fs.fs_open(STRG_CFG_FSH_NUM, "phn.cfg", "r", 256);
-	STRG_SYS.fs.fs_lseek(fd, RD_SEEK_SET, NUM_CHANNEL * sizeof(mdl_chn_save_t));
-	STRG_SYS.fs.fs_lseek(fd, RD_SEEK_SET, num * sizeof(mdl_chn_save_t));
+	STRG_SYS.fs.fs_lseek(fd, WR_SEEK_SET, NUM_CHANNEL * sizeof(mdl_chn_save_t));
 	if(STRG_SYS.fs.fs_write(fd, p, sizeof(system_conf_t)) == sizeof(system_conf_t))
 	{
 		

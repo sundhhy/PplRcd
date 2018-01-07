@@ -14,8 +14,25 @@
 //------------------------------------------------------------------------------
 
 static int ViewStrategy_entry(int row, int col, void *pp_text);
+static int VIEW_init(void *arg);
+static int VIEW_key_up(void *arg);
+static int VIEW_key_dn(void *arg);
+static int VIEW_key_lt(void *arg);
+static int VIEW_key_rt(void *arg);
+static int VIEW_key_er(void *arg);
+static int VIEW_get_focusdata(void *pp_data,  strategy_focus_t *p_in_syf);
+static int VIEW_commit(void *arg);
+
 strategy_t	g_view_strategy = {
 	ViewStrategy_entry,
+	VIEW_init,
+	VIEW_key_up,
+	VIEW_key_dn,
+	VIEW_key_lt,
+	VIEW_key_rt,
+	VIEW_key_er,
+	VIEW_get_focusdata,
+	VIEW_commit,
 };
 //------------------------------------------------------------------------------
 // global function prototypes
@@ -65,6 +82,40 @@ static int ViewStrategy_entry(int row, int col, void *pp_text)
 	} 
 	
 	return 0;
+}
+
+static int VIEW_init(void *arg)
+{
+	return RET_OK;
+}
+static int VIEW_key_up(void *arg)
+{
+	return RET_OK;
+}
+static int VIEW_key_dn(void *arg)
+{
+	return RET_OK;
+}
+static int VIEW_key_lt(void *arg)
+{
+	return RET_OK;
+}
+static int VIEW_key_rt(void *arg)
+{
+	return RET_OK;
+}
+static int VIEW_key_er(void *arg)
+{
+	return RET_OK;
+}
+
+static int VIEW_get_focusdata(void *pp_data,  strategy_focus_t *p_in_syf)
+{
+	return RET_OK;
+}
+static int VIEW_commit(void *arg)
+{
+	return RET_OK;
 }
 
 

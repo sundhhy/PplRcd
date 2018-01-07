@@ -13,7 +13,6 @@
 #include "HMI/HMIFactory.h"
 #include "fs/easy_fs.h"
 #include "utils/Storage.h"
-
 //------------------------------------------------------------------------------
 // const defines
 //------------------------------------------------------------------------------
@@ -67,16 +66,25 @@ static void Disable_string(char *p, int able);
 
 
 
-void System_default(system_conf_t *arg)
+void System_default(void)
 {
-	system_conf_t *p_sc = &phn_sys.sys_conf;
-	Storage					*stg = Get_storage();
-	if(p_sc->sys_flag != 1)
+	system_conf_t 	*p_sc = &phn_sys.sys_conf;
+	Storage			*stg = Get_storage();
+	int				i = 0;
+	
+	memset(p_sc, 0, sizeof(system_conf_t));
+	p_sc->sys_flag = 0;
+	p_sc->num_chn = NUM_CHANNEL;
+	stg->wr_stored_data(stg, CFG_TYPE_SYSTEM, &phn_sys.sys_conf);
+	
+	for(i = 0; i < NUM_CHANNEL; i++)
 	{
-		memset(p_sc, 0, sizeof(system_conf_t));
-		p_sc->sys_flag = 1;
-		stg->wr_stored_data(stg, CFG_TYPE_SYSTEM, &phn_sys.sys_conf);
+		
+		MdlChn_default_conf(i);
+		MdlChn_default_alarm(i);
+		stg->wr_stored_data(stg, CFG_CHN_CONF(i), NULL);
 	}
+	
 //	p_sc->baud_idx = 0;
 //	p_sc->baud_rate = arr_baud[0];
 //	p_sc->disable_view_chn_status = 0;
@@ -106,8 +114,8 @@ void System_init(void)
 	stg->init(stg);
 	
 	stg->rd_stored_data(stg, CFG_TYPE_SYSTEM, &phn_sys.sys_conf);
-	
-	System_default(NULL);
+	if(phn_sys.sys_conf.num_chn != NUM_CHANNEL)
+		System_default();
 		
 	
 }
@@ -193,6 +201,8 @@ void Password_set_by_str(char	*p_s_psd)
 		
 		p_s_psd += 3;
 	}
+	phn_sys.save_chg_flga |= CHG_SYSTEM_CONF;
+	
 	
 }
 
@@ -321,6 +331,7 @@ void System_to_string(void *p_data, char	*p_s, int len, int aux)
 
 void System_modify_string(char	*p_s, int aux, int op, int val)
 {
+	phn_sys.save_chg_flga |= CHG_SYSTEM_CONF;
 	switch(aux)
 	{
 		case es_rcd_t_s:
@@ -378,6 +389,9 @@ void System_modify_string(char	*p_s, int aux, int op, int val)
 		case es_beep:
 			phn_sys.sys_conf.enable_beep = Operate_in_tange(phn_sys.sys_conf.enable_beep, op, val, 0, 1);
 			Disable_string(p_s, phn_sys.sys_conf.enable_beep);
+			break;
+		default:
+			phn_sys.save_chg_flga &= ~CHG_SYSTEM_CONF;
 			break;
 	}
 	
