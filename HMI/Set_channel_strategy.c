@@ -22,6 +22,9 @@ static int Cns_key_rt(void *arg);
 static int Cns_key_er(void *arg);
 static int Cns_init(void *arg);
 static int Cns_get_focusdata(void *pp_data, strategy_focus_t *p_in_syf);
+static int CNS_commit(void *arg);
+static void CNS_Exit(void);
+
 strategy_t	g_chn_strategy = {
 	ChnStrategy_entry,
 	Cns_init,
@@ -31,6 +34,9 @@ strategy_t	g_chn_strategy = {
 	Cns_key_rt,
 	Cns_key_er,
 	Cns_get_focusdata,
+	CNS_commit,
+	CNS_Exit,
+	
 };
 //------------------------------------------------------------------------------
 // global function prototypes
@@ -154,6 +160,10 @@ static int Cns_init(void *arg)
 	
 	g_set_weight = 1;
 	return RET_OK;
+}
+static void CNS_Exit(void)
+{
+	
 }
 static int Cns_get_focusdata(void *pp_data, strategy_focus_t *p_in_syf)
 {
@@ -279,6 +289,12 @@ static int Cns_key_er(void *arg)
 {
 	
 	return -1;
+}
+
+static int CNS_commit(void *arg)
+{
+	return -1;
+	
 }
 
 

@@ -1,6 +1,8 @@
 //============================================================================//
 //            G L O B A L   D E F I N I T I O N S                             //
 //============================================================================//
+#include "HMI/HMIFactory.h"
+
 #include "system.h"
 #include <string.h>
 #include <stdlib.h>
@@ -10,7 +12,7 @@
 #include "utils/hw_w25q.h"
 #include "utils/FM25.h"
 
-#include "HMI/HMIFactory.h"
+
 #include "fs/easy_fs.h"
 #include "utils/Storage.h"
 //------------------------------------------------------------------------------

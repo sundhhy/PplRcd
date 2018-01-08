@@ -5,8 +5,7 @@
 #define __INC_system_H_
 #include <stdint.h>
 #include "utils/time.h"
-
-
+//#include "HMI/HMI.h"
 //------------------------------------------------------------------------------
 // check for correct compilation options
 //------------------------------------------------------------------------------
@@ -76,6 +75,11 @@ typedef struct {
 	uint8_t		enable_beep;											//按键声音允许
 }system_conf_t;
 
+//-----------HMI -----------------------------------------------
+typedef struct {
+	uint8_t			set_strategy;
+	uint8_t			none[3];
+}hmi_mgr_t;
 //---------- flash驱动的定义 --------------------------------------
 
 typedef struct {
@@ -163,7 +167,8 @@ typedef struct {
 	uint8_t				major_ver;
 	uint8_t				minor_ver;
 	uint8_t				save_chg_flga;		//可存储的配置信息的变化标志
-	uint8_t				none;
+	uint8_t				usb_device;		//0 无usb设备 1 有usb设备
+	hmi_mgr_t			hmi_mgr;
 	system_conf_t		sys_conf;
 	flash_t				arr_fsh[NUM_FSH];
 	fs_t				fs;

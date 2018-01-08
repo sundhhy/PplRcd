@@ -21,6 +21,9 @@ static int Als_key_lt(void *arg);
 static int Als_key_rt(void *arg);
 static int Als_key_er(void *arg);
 static int Als_get_focusdata(void *pp_data, strategy_focus_t *p_in_syf);
+static int ALS_commit(void *arg);
+static void ALS_Exit(void);
+
 strategy_t	g_alarm_strategy = {
 	Als_entry,
 	Als_init,
@@ -30,6 +33,8 @@ strategy_t	g_alarm_strategy = {
 	Als_key_rt,
 	Als_key_er,
 	Als_get_focusdata,	
+	ALS_commit,
+	ALS_Exit,
 };
 
 
@@ -131,6 +136,15 @@ static int Als_init(void *arg)
 	
 	g_set_weight = 1;
 	return RET_OK;
+}
+static void ALS_Exit(void)
+{
+	
+}
+static int ALS_commit(void *arg)
+{
+	return RET_OK;
+	
 }
 
 static int Als_get_focusdata(void *pp_data, strategy_focus_t *p_in_syf)

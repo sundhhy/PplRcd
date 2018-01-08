@@ -365,6 +365,7 @@ static void	Setup_HMI_hitHandle(HMI *self, char *s_key)
 			} else {
 				g_p_Setting_HMI->arg[0] = self->p_fcuu->focus_row - 0;
 				g_p_Setting_HMI->arg[1] = self->p_fcuu->focus_col;
+				
 				self->switchHMI(self, g_p_Setting_HMI);
 			}
 		}

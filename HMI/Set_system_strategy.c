@@ -24,6 +24,8 @@ static int Sys_key_er(void *arg);
 static int Sys_init(void *arg);
 static int Sys_get_focusdata(void *pp_data,  strategy_focus_t *p_in_syf);
 static int Sys_commit(void *arg);
+static void SYS_Exit(void);
+
 strategy_t	g_sys_strategy = {
 	SysStrategy_entry,
 	Sys_init,
@@ -34,6 +36,7 @@ strategy_t	g_sys_strategy = {
 	Sys_key_er,
 	Sys_get_focusdata,
 	Sys_commit,
+	SYS_Exit,
 
 };
 //------------------------------------------------------------------------------
@@ -170,6 +173,10 @@ static int Sys_init(void *arg)
 	}
 	
 	return RET_OK;
+}
+static void SYS_Exit(void)
+{
+	
 }
 static int Sys_get_focusdata(void *pp_data, strategy_focus_t *p_in_syf)
 {

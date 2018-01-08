@@ -232,8 +232,7 @@ int main (void) {
 	
 	
 
-//	ret = USB_Init(NULL);
-//	assert(ret == RET_OK);
+	assert(USB_Init(NULL) == RET_OK);
 	
 	InitTimer( TIM2, 1000);
 	clean_time_flags();
@@ -298,6 +297,7 @@ int main (void) {
 //			g_p_curHmi->show(g_p_curHmi);
 			
 		}
+		USB_Run(NULL);
 		LCD_Run();
 		osDelay(100);
 		hmi_count ++;

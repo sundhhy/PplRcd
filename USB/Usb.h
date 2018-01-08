@@ -101,7 +101,7 @@ int USB_Colse_file(int fd);
 int USB_Write_file(int fd, char *buf, int len);
 int USB_Create_file(char *file_name, char mode);
 int	USB_Rgt_event_hdl(usb_event_hdl hdl);
-
+void USB_Del_event_hdl(int hdl_id);
 
 //以下接口未实现
 int USB_Get_file_info(char *file_name, USB_file_info *finfo);

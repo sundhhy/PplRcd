@@ -22,6 +22,7 @@ static int VIEW_key_rt(void *arg);
 static int VIEW_key_er(void *arg);
 static int VIEW_get_focusdata(void *pp_data,  strategy_focus_t *p_in_syf);
 static int VIEW_commit(void *arg);
+static void VIEW_Exit(void);
 
 strategy_t	g_view_strategy = {
 	ViewStrategy_entry,
@@ -33,6 +34,7 @@ strategy_t	g_view_strategy = {
 	VIEW_key_er,
 	VIEW_get_focusdata,
 	VIEW_commit,
+	VIEW_Exit,
 };
 //------------------------------------------------------------------------------
 // global function prototypes
@@ -87,6 +89,10 @@ static int ViewStrategy_entry(int row, int col, void *pp_text)
 static int VIEW_init(void *arg)
 {
 	return RET_OK;
+}
+static void VIEW_Exit(void)
+{
+	
 }
 static int VIEW_key_up(void *arg)
 {

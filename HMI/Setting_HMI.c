@@ -124,6 +124,7 @@ static int	Init_Setting_HMI(HMI *self, void *arg)
 //	p_exp = ExpCreate( "pic");
 	
 	cthis->entry_start_row = 0;	
+	phn_sys.hmi_mgr.set_strategy = 0xff;
 	return RET_OK;
 }
 
@@ -169,9 +170,10 @@ static void Show_Setting_HMI(HMI *self)
 static void	Setting_initSheet(HMI *self)
 {
 	Setting_HMI		*cthis = SUB_PTR( self, HMI, Setting_HMI);
-	int  		 			h = 0;
-	Expr 					*p_exp ;
+	int  		 		h = 0;
+	Expr 				*p_exp ;
 	shtctl 				*p_shtctl = NULL;
+	strategy_t			*old_sty;
 	p_shtctl = GetShtctl();
 
 //	if(self->flag & HMIFLAG_WIN) {
@@ -181,7 +183,13 @@ static void	Setting_initSheet(HMI *self)
 //	}
 //	
 	if((self->flag & HMIFLAG_WIN) == 0) {
+		old_sty = cthis->p_sy;
 		cthis->p_sy = arr_p_setting_strategy[self->arg[0]][self->arg[1]];
+		
+		
+		if(old_sty && old_sty != cthis->p_sy)
+			old_sty->exit();
+		
 		cthis->p_sy->p_cmd_rcv = self;
 		cthis->p_sy->cmd_hdl = Setting_Sy_cmd;
 		
@@ -236,6 +244,8 @@ static void	Setting_HMI_hide(HMI *self)
 	Sheet_free(cthis->p_sht_text);
 	Sheet_free(cthis->p_sht_CUR);
 	Sheet_free(cthis->p_sht_clean);
+	
+	phn_sys.hmi_mgr.set_strategy = 0xff;
 }
 
 
@@ -246,6 +256,7 @@ static void	Setting_HMI_init_focus(HMI *self)
 	cthis->sub_flag &= 0xf0;
 	cthis->col_max = 1;
 	cthis->p_sy->init(NULL);
+	phn_sys.hmi_mgr.set_strategy = cthis->p_sy->sty_id;
 	SET_PG_FLAG(cthis->sub_flag, FOCUS_IN_STARTEGY);
 	
 	

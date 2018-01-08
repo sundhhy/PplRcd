@@ -22,7 +22,7 @@ static int DPT_key_er(void *arg);
 static int DPT_init(void *arg);
 static int DPT_get_focusdata(void *pp_data,  strategy_focus_t *p_in_syf);
 static int DPT_commit(void *arg);
-
+static void DBT_Exit(void);
 strategy_t	g_dataPrint_strategy = {
 	Data_print_Strategy_entry,
 	DPT_init,
@@ -33,6 +33,7 @@ strategy_t	g_dataPrint_strategy = {
 	DPT_key_er,
 	DPT_get_focusdata,
 	DPT_commit,
+	DBT_Exit,
 };
 //------------------------------------------------------------------------------
 // global function prototypes
@@ -88,6 +89,10 @@ static int Data_print_Strategy_entry(int row, int col, void *pp_text)
 static int DPT_init(void *arg)
 {
 	return RET_OK;
+}
+static void DBT_Exit(void)
+{
+	
 }
 static int DPT_key_up(void *arg)
 {

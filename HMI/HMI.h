@@ -106,10 +106,13 @@ typedef struct {
 	int	(*key_hit_er)(void	*arg);
 	int	(*get_focus_data)(void *pp_data,  strategy_focus_t *p_in_syf);		//成功返回大于0，失败返回-1
 	int	(*commit)(void	*arg);
-
+	void	(*exit)(void);
 	strategy_focus_t	sf;
 	void				*p_cmd_rcv;
 	stategy_cmd			cmd_hdl;
+	uint8_t				sty_id;
+	uint8_t				sty_some_fd;
+	uint8_t				none[2];
 }strategy_t;
 
 

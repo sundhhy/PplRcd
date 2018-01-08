@@ -22,6 +22,7 @@ static int ART_key_rt(void *arg);
 static int ART_key_er(void *arg);
 static int ART_get_focusdata(void *pp_data,  strategy_focus_t *p_in_syf);
 static int ART_commit(void *arg);
+static void ART_Exit(void);
 
 strategy_t	g_art_strategy = {
 	ArtStrategy_entry,
@@ -34,6 +35,7 @@ strategy_t	g_art_strategy = {
 	ART_key_er,
 	ART_get_focusdata,
 	ART_commit,
+	ART_Exit,
 };
 //------------------------------------------------------------------------------
 // global function prototypes
@@ -88,6 +90,10 @@ static int ArtStrategy_entry(int row, int col, void *pp_text)
 static int ART_init(void *arg)
 {
 	return RET_OK;
+}
+static void ART_Exit(void)
+{
+	
 }
 static int ART_key_up(void *arg)
 {
