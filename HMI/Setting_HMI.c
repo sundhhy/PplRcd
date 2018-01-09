@@ -256,7 +256,8 @@ static void	Setting_HMI_init_focus(HMI *self)
 	cthis->f_col = 0;
 	cthis->sub_flag &= 0xf0;
 	cthis->col_max = 1;
-	cthis->p_sy->init(NULL);
+	if(((self->flag & HMIFLAG_WIN) == 0) && ((self->flag & HMIFLAG_KEYBOARD) == 0))
+		cthis->p_sy->init(NULL);
 	phn_sys.hmi_mgr.set_strategy = cthis->p_sy->sty_id;
 	SET_PG_FLAG(cthis->sub_flag, FOCUS_IN_STARTEGY);
 	
@@ -375,7 +376,8 @@ static void Strategy_focus(Setting_HMI *self, strategy_focus_t *p_syf, int opt)
 //	int f_data_len = 0;
 	uint16_t	txt_xsize, txt_ysize;
 	self->p_sht_text->p_gp->getSize(self->p_sht_text->p_gp, self->p_sht_text->cnt.font, &txt_xsize, &txt_ysize);
-	
+	//180109 刷新一下焦点的长度，因为焦点的数据可能被修改
+	self->p_sy->get_focus_data(&self->p_sht_text->cnt.data, p_syf);		
 	if(opt == 2) {
 		//擦除整行
 		self->p_sht_clean->area.x0 = self->col_vx0[p_syf->f_col] + txt_xsize * p_syf->start_byte - 4;
@@ -800,7 +802,10 @@ static int Setting_Sy_cmd(void *p_rcv, int cmd,  void *arg)
 			break;
 		case sycmd_reflush_position:
 			p_pos = (strategy_focus_t		*)arg;
-			if(cthis->p_sy->entry_txt(p_pos->f_row, p_pos->f_col, &cthis->p_sht_text->cnt.data) == 0)
+		
+			cthis->p_sht_text->cnt.len = \
+			cthis->p_sy->entry_txt(p_pos->f_row, p_pos->f_col, &cthis->p_sht_text->cnt.data);
+			if(cthis->p_sht_text->cnt.len == 0)
 				break;
 			cthis->p_sht_text->cnt.colour = COLOUR_WHITE;
 			cthis->p_sht_text->area.x0 = cthis->col_vx0[p_pos->f_col];

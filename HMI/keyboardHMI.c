@@ -526,7 +526,7 @@ static void KeyboardEnterCmdHdl( shtCmd *self, struct SHEET *p_sht, void *arg)
 static int	Default_input(void *self, void *data, int len)
 {
 	sheet		*p = (sheet *)self;
-	
+	memset(p->cnt.data, 0, strlen(p->cnt.data));
 	memcpy(p->cnt.data, data, len);
 	
 	return RET_OK;

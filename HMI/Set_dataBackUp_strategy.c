@@ -100,6 +100,8 @@ static int Data_bacnup_Strategy_entry(int row, int col, void *pp_text)
 				break;
 			case 2:	
 			case 3:		//单位
+				if(arr_p_vram[row][0] != '\0')
+					break;		//这种情况是从设置窗口返回，所以就不要再赋值原始值了，下面的部分也是一样
 				model = ModelCreate("time");
 				model->to_string(model, 1, arr_p_vram[row]);
 				break;
@@ -201,13 +203,17 @@ static int DBP_key_lt(void *arg)
 	strategy_focus_t *p_syf = &g_DBP_strategy.sf;
 	int ret = RET_OK;
 	
-	if(p_syf->f_row )
+	if(p_syf->f_row > 1)
 		p_syf->f_row --;
 	else {
 		p_syf->f_row = 4;
 		ret = -1;
 		
 	}
+	
+	p_syf->num_byte = strlen(arr_p_vram[p_syf->f_row]);
+	if(p_syf->f_row == 4)
+		p_syf->num_byte -= strlen(".csv");	//后缀不允许修改
 	return ret;
 }
 static int DBP_key_rt(void *arg)
@@ -219,10 +225,14 @@ static int DBP_key_rt(void *arg)
 	if(p_syf->f_row < 4)
 		p_syf->f_row ++;
 	else {
-		p_syf->f_row = 0;
+		p_syf->f_row = 1;
 		p_syf->f_col = 1;
 		ret = -1;
 	}
+	
+	p_syf->num_byte = strlen(arr_p_vram[p_syf->f_row]);
+	if(p_syf->f_row == 4)
+		p_syf->num_byte -= strlen(".csv");	//后缀不允许修改
 	return ret;
 }
 static int DBP_key_er(void *arg)
@@ -244,13 +254,15 @@ static int DBP_get_focusdata(void *pp_data,  strategy_focus_t *p_in_syf)
 	if(p_in_syf)
 		p_syf = p_in_syf;
 	
+	
+	
+	
+	
 	p_syf->num_byte = strlen(arr_p_vram[p_syf->f_row]);
 	if(p_syf->f_row == 4)
 		p_syf->num_byte -= strlen(".csv");	//后缀不允许修改
+	
 	ret = p_syf->num_byte;
-	
-	
-	
 	*pp_vram = arr_p_vram[p_syf->f_row] + p_syf->start_byte;
 	return ret;
 }
@@ -292,17 +304,18 @@ static int DBP_update_content(int op, int weight)
 	switch(p_syf->f_row) {
 		case 1:
 			g_setting_chn = Operate_in_tange(g_setting_chn, op, 1, 0, NUM_CHANNEL - 1);
+			sprintf(arr_p_vram[1], "%d", g_setting_chn);
 			break;
 		case 2:		
 //			g_DBP_strategy.cmd_hdl(g_sys_strategy.p_cmd_rcv, sycmd_win_time, arr_p_vram[p_syf->f_row]);
 //			ret = 1;
 //			break;
 		case 3:
-			g_DBP_strategy.cmd_hdl(g_sys_strategy.p_cmd_rcv, sycmd_win_time, arr_p_vram[p_syf->f_row]);
+			g_DBP_strategy.cmd_hdl(g_DBP_strategy.p_cmd_rcv, sycmd_win_time, arr_p_vram[p_syf->f_row]);
 			ret = 1;
 			break;
 		case 4:
-			g_DBP_strategy.cmd_hdl(g_sys_strategy.p_cmd_rcv, sycmd_keyboard, arr_p_vram[p_syf->f_row]);
+			g_DBP_strategy.cmd_hdl(g_DBP_strategy.p_cmd_rcv, sycmd_keyboard, arr_p_vram[p_syf->f_row]);
 			ret = 1;
 			break;
 	default:
