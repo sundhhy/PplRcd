@@ -52,7 +52,8 @@
 //窗口界面来负责对该位的操作
 //表示界面接下来要跟窗口进行交互，因此在窗口切换回界面的时候，会处理一些额外的交互信息
 //故每个需要与窗口交互的界面，在其show方法中，都应该有与窗口界面交互的处理 
-#define	HMIFLAG_WIN				0x10			
+#define	HMIFLAG_WIN							0x10		
+#define	HMIFLAG_KEYBOARD				0x20
 #define IS_HMI_HIDE(flag)	((flag&1) == 0)
 #define IS_HMI_KEYHANDLE(flag)	((flag&2))
 
@@ -86,9 +87,11 @@ typedef int (*stategy_cmd)(void *p_rcv, int cmd, void *arg);
 
 typedef enum {
 	sycmd_reflush = 0,
+	sycmd_reflush_position,  //指定位置的刷新
 	sycmd_win_tips,
 	sycmd_win_time,
 	sycmd_win_psd,
+	sycmd_keyboard,
 	wincmd_commit,
 }e_sycmd_r;
 

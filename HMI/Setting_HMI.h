@@ -53,7 +53,7 @@ CLASS(Setting_HMI)
 // global variable declarations
 //------------------------------------------------------------------------------
 extern strategy_t	g_sys_strategy, g_dataPrint_strategy;
-extern strategy_t	g_chn_strategy, g_alarm_strategy, g_art_strategy, g_view_strategy, g_DBU_strategy;
+extern strategy_t	g_chn_strategy, g_alarm_strategy, g_art_strategy, g_view_strategy, g_DBP_strategy;
 //------------------------------------------------------------------------------
 // function prototypes
 //------------------------------------------------------------------------------

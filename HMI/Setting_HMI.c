@@ -48,7 +48,7 @@ HMI 	*g_p_Setting_HMI;
 //------------------------------------------------------------------------------
 
  static strategy_t	*arr_p_setting_strategy[4][2] = {{&g_sys_strategy, &g_chn_strategy}, {&g_alarm_strategy, &g_art_strategy}, \
- {&g_view_strategy, &g_DBU_strategy},{&g_dataPrint_strategy, NULL}};
+ {&g_view_strategy, &g_DBP_strategy},{&g_dataPrint_strategy, NULL}};
 //------------------------------------------------------------------------------
 // local function prototypes
 //------------------------------------------------------------------------------
@@ -182,7 +182,7 @@ static void	Setting_initSheet(HMI *self)
 //		}
 //	}
 //	
-	if((self->flag & HMIFLAG_WIN) == 0) {
+	if(((self->flag & HMIFLAG_WIN) == 0) && ((self->flag & HMIFLAG_KEYBOARD) == 0)) {
 		old_sty = cthis->p_sy;
 		cthis->p_sy = arr_p_setting_strategy[self->arg[0]][self->arg[1]];
 		
@@ -200,6 +200,7 @@ static void	Setting_initSheet(HMI *self)
 	p_exp = ExpCreate( "text");
 	cthis->p_sht_text = Sheet_alloc(p_shtctl);
 	p_exp->inptSht( p_exp, (void *)setting_hmi_code_text, cthis->p_sht_text) ;
+	cthis->p_sht_text->input = NULL;
 	
 	p_exp = ExpCreate( "box");
 	cthis->p_sht_CUR = Sheet_alloc(p_shtctl);
@@ -782,11 +783,13 @@ static void	Show_entry(HMI *self, strategy_t *p_st)
 
 static int Setting_Sy_cmd(void *p_rcv, int cmd,  void *arg)
 {
-	HMI				*self = (HMI *)p_rcv;
-	Setting_HMI		*cthis = SUB_PTR( self, HMI, Setting_HMI);
-	winHmi			*p_win;
-	int 			ret = RET_OK;
-	char			win_tips[32];
+	HMI								*self = (HMI *)p_rcv;
+	Setting_HMI				*cthis = SUB_PTR( self, HMI, Setting_HMI);
+	winHmi						*p_win;
+	strategy_focus_t	*p_pos;
+	int 							ret = RET_OK;
+	char							win_tips[32];
+	
 	switch(cmd) {
 		case sycmd_reflush:
 			cthis->p_sht_text->cnt.colour = COLOUR_WHITE;
@@ -794,6 +797,18 @@ static int Setting_Sy_cmd(void *p_rcv, int cmd,  void *arg)
 			self->show(self);
 //			Strategy_focus(cthis, &cthis->p_sy->sf, 1);
 //			Flush_LCD();
+			break;
+		case sycmd_reflush_position:
+			p_pos = (strategy_focus_t		*)arg;
+			if(cthis->p_sy->entry_txt(p_pos->f_row, p_pos->f_col, &cthis->p_sht_text->cnt.data) == 0)
+				break;
+			cthis->p_sht_text->cnt.colour = COLOUR_WHITE;
+			cthis->p_sht_text->area.x0 = cthis->col_vx0[p_pos->f_col];
+			cthis->p_sht_text->area.y0 = Stripe_vy(p_pos->f_row);
+			
+			cthis->p_sht_text->p_gp->vdraw(cthis->p_sht_text->p_gp, &cthis->p_sht_text->cnt, &cthis->p_sht_text->area);
+		
+		
 			break;
 		case sycmd_win_tips:
 			
@@ -821,6 +836,11 @@ static int Setting_Sy_cmd(void *p_rcv, int cmd,  void *arg)
 			p_win->p_cmd_rcv = self;
 			p_win->cmd_hdl = Setting_Sy_cmd;
 			self->switchHMI(self, g_p_winHmi);
+			break;
+		case sycmd_keyboard:
+			cthis->p_sht_text->cnt.data = arg;
+			g_keyHmi->p_shtInput = cthis->p_sht_text;
+			self->switchHMI(self, SUPER_PTR(g_keyHmi, HMI));
 			break;
 		case wincmd_commit:
 			

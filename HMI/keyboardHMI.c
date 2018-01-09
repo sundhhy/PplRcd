@@ -193,6 +193,7 @@ static void CleanFocus( char vkeytype, virKeyInfo_t *p_focus);
 void Edit_init( edit_t *p_ed, sheet	*p_shtInput);
 void Edit_push( edit_t *p_ed, virKeyInfo_t *p_kinfo);
 void Edit_pop( edit_t *p_ed);
+static int	Default_input(void *self, void *data, int len);
 //============================================================================//
 //            P U B L I C   F U N C T I O N S                                 //
 //============================================================================//
@@ -317,7 +318,11 @@ static void KBInitSheet( HMI *self )
 		
 //		FormatSheetSub( cthis->p_shtInput);
 //		Sheet_updown( cthis->p_shtInput, 0);
+
+		shtInputSave.input = cthis->p_shtInput->input;
 		Edit_init(&keyEdit, cthis->p_shtInput);
+		if(cthis->p_shtInput->input == NULL)
+			cthis->p_shtInput->input = Default_input;
 		Sheet_updown( keyEdit.p_shtNotify, 0);
 		Sheet_updown(keyEdit.p_shtTxt, 1);
 
@@ -340,6 +345,8 @@ static void KBHide( HMI *self )
 //		cthis->p_shtInput->cnt.bkc = shtInputSave.cnt.bkc;
 //				
 //		FormatSheetSub( cthis->p_shtInput);
+		 cthis->p_shtInput->input = shtInputSave.input;
+		
 		Sheet_updown(keyEdit.p_shtTxt, -1);
 		Sheet_updown( keyEdit.p_shtNotify, -1);
 
@@ -429,7 +436,7 @@ static void	KeyboardHitHandle( HMI *self, char *s)
 {
 	keyboardHMI		*cthis = SUB_PTR( self, HMI, keyboardHMI);
 	virKeyOp_t	*p_op;
-	
+	HMI						*src_hmi;
 	
 	
 	if( !strcmp( s, HMIKEY_UP) )
@@ -488,7 +495,10 @@ static void	KeyboardHitHandle( HMI *self, char *s)
 			DrawFocus( 0, &actKeyBlk.vkenCenter);
 		} else if( actKeyBlk.vkenCenter.val == KEY_GO) {
 			if( cthis->p_shtInput->input(cthis->p_shtInput, keyEdit.keybrdbuf, keyEdit.bufidx) == RET_OK) {
+				src_hmi = g_p_lastHmi;
+				src_hmi->flag |= HMIFLAG_KEYBOARD;
 				self->switchBack(self);
+				src_hmi->flag &= ~HMIFLAG_KEYBOARD;
 			} else {
 				//todo: ÌáÊ¾´íÎó
 			}
@@ -513,6 +523,15 @@ static void KeyboardEnterCmdHdl( shtCmd *self, struct SHEET *p_sht, void *arg)
 	
 }
 
+static int	Default_input(void *self, void *data, int len)
+{
+	sheet		*p = (sheet *)self;
+	
+	memcpy(p->cnt.data, data, len);
+	
+	return RET_OK;
+	
+}
 
 
 /*********** vir key *****************************************/
@@ -836,6 +855,7 @@ void Edit_init( edit_t *p_ed, sheet	*p_shtInput)
 	p_ed->bufidx = p_shtInput->cnt.len;
 	p_ed->maxidx = KEYBBUFLEN;
 	p_ed->p_shtTxt->cnt.len = KEYBBUFLEN;
+	
 //	p_ed->maxidx = ( p_ed->vsizex - SAVE_SPACE)/ p_ed->p_shtTxt->bxsize;
 //	if( p_ed->maxidx > KEYBBUFLEN) {
 //		p_ed->maxidx = KEYBBUFLEN ;
