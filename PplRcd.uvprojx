@@ -1283,6 +1283,11 @@
               <FileType>5</FileType>
               <FilePath>.\HMI\windowsHMI.h</FilePath>
             </File>
+            <File>
+              <FileName>Component_Button.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\HMI\Component_Button.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

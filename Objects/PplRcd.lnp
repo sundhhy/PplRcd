@@ -82,6 +82,7 @@
 ".\objects\acc_day.o"
 ".\objects\acc_month.o"
 ".\objects\windownshmi.o"
+".\objects\component_button.o"
 ".\objects\model.o"
 ".\objects\modelfactory.o"
 ".\objects\modeltime.o"

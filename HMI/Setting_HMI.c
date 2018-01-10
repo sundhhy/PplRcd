@@ -64,7 +64,7 @@ static void	Setting_HMI_dhit( HMI *self, char *s_key);
 
 
 static void	Show_entry(HMI *self, strategy_t *p_st);
-static int Show_more(HMI *self, int up_or_dn);
+static int STING_Show_Button(HMI *self, int up_or_dn);
  
  
 static sheet* Setting_HMI_get_focus(Setting_HMI *self, int arg);
@@ -531,7 +531,7 @@ static void	Setting_HMI_hitHandle(HMI *self, char *s_key)
 			
 		} else {
 			p_focus = Setting_HMI_get_focus(cthis, -1);
-			if(Show_more(self, p_focus->id) == ERR_OPT_FAILED) {
+			if(STING_Show_Button(self, p_focus->id) == ERR_OPT_FAILED) {
 				if(p_focus->id == ICO_ID_MENU)
 				{
 					cthis->entry_start_row = 0;
@@ -672,7 +672,7 @@ static void Clean_stripe(HMI *self)
 }
 
 //切换页面时，将光标重新至于编辑区
-static int Show_more(HMI *self, int up_or_dn)
+static int STING_Show_Button(HMI *self, int up_or_dn)
 {
 	Setting_HMI		*cthis = SUB_PTR( self, HMI, Setting_HMI);
 	if(up_or_dn == ICO_ID_PGDN) {
