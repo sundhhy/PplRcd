@@ -54,6 +54,7 @@
 .\objects\real_time_trendhmi.o: ..\PplRcd\utils/rtc_pcf8563.h
 .\objects\real_time_trendhmi.o: ..\PplRcd\utils/rtc.h
 .\objects\real_time_trendhmi.o: HMI\focus.h
+.\objects\real_time_trendhmi.o: HMI\Component_Button.h
 .\objects\real_time_trendhmi.o: HMI\commHMI.h
 .\objects\real_time_trendhmi.o: HMI\keyboardHMI.h
 .\objects\real_time_trendhmi.o: HMI\menuHMI.h

@@ -1,2 +1,13 @@
 .\objects\component_button.o: HMI\Component_Button.c
 .\objects\component_button.o: HMI\Component_Button.h
+.\objects\component_button.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+.\objects\component_button.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
+.\objects\component_button.o: E:\mylib\sdhLib\inc\lw_oopc.h
+.\objects\component_button.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
+.\objects\component_button.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
+.\objects\component_button.o: E:\mylib\sdhLib\inc\sdhDef.h
+.\objects\component_button.o: ..\PplRcd\sdhlibConf.h
+.\objects\component_button.o: E:\mylib\sdhLib\inc\basis/sdhDebug.h
+.\objects\component_button.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
+.\objects\component_button.o: E:\mylib\sdhLib\inc\basis/sdhError.h
+.\objects\component_button.o: E:\mylib\sdhLib\inc\basis/macros.h

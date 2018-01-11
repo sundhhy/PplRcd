@@ -54,4 +54,5 @@
 .\objects\format.o: ..\PplRcd\utils/rtc_pcf8563.h
 .\objects\format.o: ..\PplRcd\utils/rtc.h
 .\objects\format.o: HMI\focus.h
+.\objects\format.o: HMI\Component_Button.h
 .\objects\format.o: E:\mylib\sdhLib\inc\basis/assert.h

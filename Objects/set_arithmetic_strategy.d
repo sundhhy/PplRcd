@@ -54,5 +54,6 @@
 .\objects\set_arithmetic_strategy.o: ..\PplRcd\utils/rtc_pcf8563.h
 .\objects\set_arithmetic_strategy.o: ..\PplRcd\utils/rtc.h
 .\objects\set_arithmetic_strategy.o: HMI\focus.h
+.\objects\set_arithmetic_strategy.o: HMI\Component_Button.h
 .\objects\set_arithmetic_strategy.o: HMI\commHMI.h
 .\objects\set_arithmetic_strategy.o: HMI\keyboardHMI.h

@@ -56,3 +56,4 @@
 .\objects\ctlkey.o: ..\PplRcd\utils/rtc_pcf8563.h
 .\objects\ctlkey.o: ..\PplRcd\utils/rtc.h
 .\objects\ctlkey.o: ..\PplRcd\HMI/focus.h
+.\objects\ctlkey.o: ..\PplRcd\HMI/Component_Button.h

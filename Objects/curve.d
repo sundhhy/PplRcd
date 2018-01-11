@@ -54,6 +54,7 @@
 .\objects\curve.o: ..\PplRcd\utils/rtc_pcf8563.h
 .\objects\curve.o: ..\PplRcd\utils/rtc.h
 .\objects\curve.o: HMI\focus.h
+.\objects\curve.o: HMI\Component_Button.h
 .\objects\curve.o: HMI\commHMI.h
 .\objects\curve.o: HMI\keyboardHMI.h
 .\objects\curve.o: .\Expression\ExpFactory.h

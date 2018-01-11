@@ -1288,6 +1288,11 @@
               <FileType>1</FileType>
               <FilePath>.\HMI\Component_Button.c</FilePath>
             </File>
+            <File>
+              <FileName>Component_Button.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\HMI\Component_Button.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

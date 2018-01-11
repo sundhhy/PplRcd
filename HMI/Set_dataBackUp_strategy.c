@@ -51,23 +51,40 @@ strategy_t	g_DBP_strategy = {
 //------------------------------------------------------------------------------
 // local types
 //------------------------------------------------------------------------------
-
+CLASS(DBP_btn_recv)
+{
+	IMPLEMENTS(Button_receive);
+	
+};
 //------------------------------------------------------------------------------
 // local vars
 //------------------------------------------------------------------------------
  static char *const arr_p_DBU_entry[6] = {"设备当前状态：", "备份数据通道：", "起始时间：", "终止时间：",\
 	 "文件名：", "备份进程"
  };
+ 
+ static Button_receive	*dbp_btn_rcv;
 	
 //------------------------------------------------------------------------------
 // local function prototypes
 //------------------------------------------------------------------------------
 static int	DBP_Usb_event(int type);
 static int DBP_update_content(int op, int weight);
+ 
+ static void	DBP_Btn_recv(Button_receive *self, uint8_t	btn_id);
 //============================================================================//
 //            P U B L I C   F U N C T I O N S                                 //
 //============================================================================//
 
+ 
+
+ 
+ 
+CTOR(DBP_btn_recv)
+FUNCTION_SETTING(Button_receive.btn_recv, DBP_Btn_recv);
+
+END_CTOR
+ 
 //=========================================================================//
 //                                                                         //
 //          P R I V A T E   D E F I N I T I O N S                          //
@@ -132,6 +149,10 @@ static int Data_bacnup_Strategy_entry(int row, int col, void *pp_text)
 static int DBP_init(void *arg)
 {
 	int			i;
+	
+	if(dbp_btn_rcv == NULL)
+		dbp_btn_rcv = SUPER_PTR(DBP_btn_recv_new(), Button_receive);
+	
 	g_DBP_strategy.sty_id = DBP_ID;
 	memset(&g_DBP_strategy.sf, 0, sizeof(g_DBP_strategy.sf));
 	g_DBP_strategy.sf.f_col = 1;
@@ -148,6 +169,14 @@ static int DBP_init(void *arg)
 	g_DBP_strategy.sty_some_fd = USB_Rgt_event_hdl(DBP_Usb_event);
 //	g_set_weight = 1;
 	return RET_OK;
+}
+
+static void DBP_Init_button(void)
+{
+	Button	*p_btn = BTN_Get_Sington();
+	p_btn->build_each_btn(0, BTN_TYPE_MENU, dbp_btn_rcv);
+	p_btn->build_each_btn(1, BTN_TYPE_COPY, dbp_btn_rcv);
+	
 }
 static void DBP_Exit(void)
 {
@@ -325,4 +354,10 @@ static int DBP_update_content(int op, int weight)
 	}
 	return ret;
 }
+
+ static void	DBP_Btn_recv(Button_receive *self, uint8_t	btn_id)
+ {
+	 
+	 
+ }
 

@@ -55,6 +55,7 @@
 .\objects\system.o: ..\PplRcd\utils/rtc_pcf8563.h
 .\objects\system.o: ..\PplRcd\utils/rtc.h
 .\objects\system.o: HMI/focus.h
+.\objects\system.o: HMI/Component_Button.h
 .\objects\system.o: HMI/keyboardHMI.h
 .\objects\system.o: HMI/mainHMI.h
 .\objects\system.o: HMI/menuHMI.h

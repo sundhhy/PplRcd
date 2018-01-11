@@ -54,6 +54,7 @@
 .\objects\bargraphhmi.o: ..\PplRcd\utils/rtc_pcf8563.h
 .\objects\bargraphhmi.o: ..\PplRcd\utils/rtc.h
 .\objects\bargraphhmi.o: HMI\focus.h
+.\objects\bargraphhmi.o: HMI\Component_Button.h
 .\objects\bargraphhmi.o: HMI\commHMI.h
 .\objects\bargraphhmi.o: HMI\keyboardHMI.h
 .\objects\bargraphhmi.o: HMI\HMIFactory.h

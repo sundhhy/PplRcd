@@ -18,7 +18,7 @@
 #include "sheet.h"
 #include "focus.h"
 
-
+#include "Component_Button.h"
 
 //------------------------------------------------------------------------------
 // check for correct compilation options

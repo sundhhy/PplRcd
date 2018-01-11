@@ -54,6 +54,7 @@
 .\objects\chninfopic.o: ..\PplRcd\utils/rtc_pcf8563.h
 .\objects\chninfopic.o: ..\PplRcd\utils/rtc.h
 .\objects\chninfopic.o: HMI\focus.h
+.\objects\chninfopic.o: HMI\Component_Button.h
 .\objects\chninfopic.o: HMI\HMIFactory.h
 .\objects\chninfopic.o: HMI\commHMI.h
 .\objects\chninfopic.o: HMI\keyboardHMI.h

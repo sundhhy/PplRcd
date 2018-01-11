@@ -54,6 +54,7 @@
 .\objects\news_select_hmi.o: ..\PplRcd\utils/rtc_pcf8563.h
 .\objects\news_select_hmi.o: ..\PplRcd\utils/rtc.h
 .\objects\news_select_hmi.o: HMI\focus.h
+.\objects\news_select_hmi.o: HMI\Component_Button.h
 .\objects\news_select_hmi.o: HMI\commHMI.h
 .\objects\news_select_hmi.o: HMI\keyboardHMI.h
 .\objects\news_select_hmi.o: .\Expression\ExpFactory.h

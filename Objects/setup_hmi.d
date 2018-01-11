@@ -54,6 +54,7 @@
 .\objects\setup_hmi.o: ..\PplRcd\utils/rtc_pcf8563.h
 .\objects\setup_hmi.o: ..\PplRcd\utils/rtc.h
 .\objects\setup_hmi.o: HMI\focus.h
+.\objects\setup_hmi.o: HMI\Component_Button.h
 .\objects\setup_hmi.o: HMI\commHMI.h
 .\objects\setup_hmi.o: HMI\keyboardHMI.h
 .\objects\setup_hmi.o: .\Expression\ExpFactory.h

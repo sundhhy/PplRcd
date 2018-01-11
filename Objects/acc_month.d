@@ -54,5 +54,6 @@
 .\objects\acc_month.o: ..\PplRcd\utils/rtc_pcf8563.h
 .\objects\acc_month.o: ..\PplRcd\utils/rtc.h
 .\objects\acc_month.o: HMI\focus.h
+.\objects\acc_month.o: HMI\Component_Button.h
 .\objects\acc_month.o: HMI\commHMI.h
 .\objects\acc_month.o: HMI\keyboardHMI.h
