@@ -6,6 +6,7 @@
 #include "utils/Storage.h"
 #include "Communication/smart_bus.h"
 #include "device.h"
+#include "os/os_depend.h"
 //通道模型:一个通道模型对应一个通道
 //因此该模型在系统中会存在多个,不能使用单例
 //============================================================================//
@@ -177,8 +178,9 @@ void MdlChn_default_alarm(int chn_num)
 static int MdlChn_self_check( Model *self)
 {
 	Model_chn		*cthis = SUB_PTR(self, Model, Model_chn);
-	uint8_t			chk_buf[32];
+	uint8_t			chk_buf[32] = {0};
 	I_dev_Char 		*I_uart3 = NULL;
+	int				ret  = RET_OK;
 	uint16_t		tmp_u16[2];
 	uint8_t 			i, j;
 	uint8_t				tmp_u8;
@@ -186,42 +188,99 @@ static int MdlChn_self_check( Model *self)
 	Dev_open(DEVID_UART3, ( void *)&I_uart3);
 	i = SmBus_Query(SMBUS_MAKE_CHN(SMBUS_CHN_AI, cthis->chni.chn_NO), chk_buf, 32);
 	if( I_uart3->write(I_uart3, chk_buf, i) != RET_OK)
-		return ERR_OPT_FAILED;
+	{
+		ret = -1;
+		goto err;
+	}
 	i = I_uart3->read(I_uart3, chk_buf, 32);
 	if(i <= 0)
-		return ERR_OPT_FAILED;
+	{
+		ret = -2;
+		goto err;
+	}
 	SmBus_decode(SMBUS_CMD_QUERY, chk_buf, &j, 1);
 	if(j != cthis->chni.chn_NO)
-		return ERR_OPT_FAILED;
+	{
+		ret = -3;
+		goto err;
+	}
 	
-	
+	delay_ms(100);
 	i = SmBus_rd_signal_type(SMBUS_MAKE_CHN(SMBUS_CHN_AI, cthis->chni.chn_NO), chk_buf, 32);
 	if( I_uart3->write(I_uart3, chk_buf, i) != RET_OK)
-		return ERR_OPT_FAILED;
+	{
+		ret = 4;
+		goto err;
+	}
 	i = I_uart3->read(I_uart3, chk_buf, 32);
 	if(i <= 0)
-		return ERR_OPT_FAILED;
+	{
+		ret = -5;
+		goto err;
+	}
 	if(SmBus_decode(SMBUS_CMD_READ, chk_buf, &tmp_u8, 1) != RET_OK)
-		return ERR_OPT_FAILED;
+	{
+		ret = -6;
+		goto err;
+	}
 	cthis->chni.signal_type = tmp_u8;
 	
+	delay_ms(100);
+	self->getMdlData(self, chnaux_lower_limit, NULL);
+	delay_ms(100);
+	self->getMdlData(self, chnaux_upper_limit, NULL);
 	
-	i = SmBus_rd_h_l_limit(SMBUS_MAKE_CHN(SMBUS_CHN_AI, cthis->chni.chn_NO), chk_buf, 32);
-	if( I_uart3->write(I_uart3, chk_buf, i) != RET_OK)
-		return ERR_OPT_FAILED;
-	i = I_uart3->read(I_uart3, chk_buf, 32);
-	if(i <= 0)
-		return ERR_OPT_FAILED;
-	if(SmBus_decode(SMBUS_CMD_READ, chk_buf, tmp_u16, 4) != RET_OK)
-		return ERR_OPT_FAILED;
+//	delay_ms(100);
+//	i = SmBus_RD_hig_limit(SMBUS_MAKE_CHN(SMBUS_CHN_AI, cthis->chni.chn_NO), chk_buf, 32);
+//	if( I_uart3->write(I_uart3, chk_buf, i) != RET_OK)
+//	{
+//		ret = 7;
+//		goto err;
+//	}
+//	i = I_uart3->read(I_uart3, chk_buf, 32);
+//	if(i <= 0)
+//	{
+//		ret = -8;
+//		goto err;
+//	}
+//	if(SmBus_decode(SMBUS_CMD_READ, chk_buf, tmp_u16, 4) != RET_OK)
+//	{
+//		ret = -9;
+//		goto err;
+//	}
+//	
+//	cthis->chni.upper_limit = tmp_u16[0];
+//	
+//	
+//	delay_ms(100);
+//	i = SmBus_RD_low_limit(SMBUS_MAKE_CHN(SMBUS_CHN_AI, cthis->chni.chn_NO), chk_buf, 32);
+//	if( I_uart3->write(I_uart3, chk_buf, i) != RET_OK)
+//	{
+//		ret = 7;
+//		goto err;
+//	}
+//	i = I_uart3->read(I_uart3, chk_buf, 32);
+//	if(i <= 0)
+//	{
+//		ret = -8;
+//		goto err;
+//	}
+//	if(SmBus_decode(SMBUS_CMD_READ, chk_buf, tmp_u16, 4) != RET_OK)
+//	{
+//		ret = -9;
+//		goto err;
+//	}
 	
 	//todo：这段代码受到IOM模块的数据结构定义影响
 	cthis->chni.upper_limit = tmp_u16[0];
+	
+	
 	cthis->chni.lower_limit = tmp_u16[1];
 	
 	cthis->chni.decimal = 1;		//目前的smartbus的 工程值小数点只有1位
 	return RET_OK;
-	
+	err:
+		return ret;
 }
 
 static void MdlChn_run(Model *self)
@@ -236,13 +295,35 @@ static void MdlChn_run(Model *self)
 	
 	
 	Dev_open(DEVID_UART3, ( void *)&I_uart3);
-	i = SmBus_AI_Read(SMBUS_MAKE_CHN(SMBUS_CHN_AI, cthis->chni.chn_NO), chk_buf, 16);
+	
+	//读取采样值
+	cthis->chni.smp_flag = 0;
+	i = SmBus_AI_Read(cthis->chni.chn_NO, AI_READ_SMPVAL, chk_buf, 16);
+	if( I_uart3->write(I_uart3, chk_buf, i) != RET_OK)
+		goto rd_engval;
+	i = I_uart3->read(I_uart3, chk_buf, 16);
+	if(i <= 0)
+		goto rd_engval;
+	if(SmBus_decode(SMBUS_AI_READ, chk_buf, &rst, sizeof(SmBus_result_t)) != RET_OK)
+		goto rd_engval;
+	cthis->chni.smp_flag = 1;
+	cthis->chni.sample_value = rst.val;
+	
+	//读取工程值
+	rd_engval:	
+	i = SmBus_AI_Read(cthis->chni.chn_NO, AI_READ_ENGVAL, chk_buf, 16);
 	if( I_uart3->write(I_uart3, chk_buf, i) != RET_OK)
 		return;
 	i = I_uart3->read(I_uart3, chk_buf, 16);
 	if(i <= 0)
 		return;
-	SmBus_decode(SMBUS_AI_READ, chk_buf, &rst, sizeof(SmBus_result_t));
+	if(SmBus_decode(SMBUS_AI_READ, chk_buf, &rst, sizeof(SmBus_result_t)) != RET_OK)
+		return;
+	if(rst.val < 1900 && cthis->chni.chn_NO == 0)
+	{
+		
+		i = 0;
+	}
 	if(rst.chn_num != cthis->chni.chn_NO)
 	{
 		cthis->chni.flag_err = 1;
@@ -264,6 +345,9 @@ static int MdlChn_getData(Model *self, IN int aux, void *arg)
 	Model_chn		*cthis = SUB_PTR( self, Model, Model_chn);
 	int16_t			*p_s16;
 	uint8_t			*p_u8;
+	I_dev_Char 			*I_uart3 = NULL;	
+	uint8_t			sbus_buf[32];
+	uint16_t		tmp_u16, i;
 	
 	switch(aux) {
 		case AUX_DATA:
@@ -276,6 +360,41 @@ static int MdlChn_getData(Model *self, IN int aux, void *arg)
 			p_u8 = (uint8_t *)arg;
 			*p_u8 = cthis->chni.signal_type;
 			break;
+		
+		case chnaux_lower_limit:
+		case chnaux_upper_limit:
+
+			Dev_open(DEVID_UART3, ( void *)&I_uart3);
+			if(arg)
+				p_s16 = (int16_t *)arg;
+		
+			if(aux == chnaux_upper_limit)
+				i = SmBus_RD_hig_limit(SMBUS_MAKE_CHN(SMBUS_CHN_AI, cthis->chni.chn_NO), sbus_buf, 32);
+			else
+				i = SmBus_RD_low_limit(SMBUS_MAKE_CHN(SMBUS_CHN_AI, cthis->chni.chn_NO), sbus_buf, 32);
+			
+			if( I_uart3->write(I_uart3, sbus_buf, i) != RET_OK)
+			{
+				return -1;
+			}
+			i = I_uart3->read(I_uart3, sbus_buf, 32);
+			if(i <= 0)
+			{
+				return -1;
+			}
+			if(SmBus_decode(SMBUS_CMD_READ, sbus_buf, &tmp_u16, 2) != RET_OK)
+			{
+				return -1;
+			}
+			
+			if(aux == chnaux_upper_limit)
+				cthis->chni.upper_limit = tmp_u16;
+			else
+				cthis->chni.lower_limit = tmp_u16;
+			if(arg)
+				*p_s16 = tmp_u16;
+			break;
+			
 		case AUX_PERCENTAGE:
 			
 			return self->to_percentage(self, arg); 
@@ -299,7 +418,7 @@ static int MdlChn_setData(  Model *self, IN int aux, void *arg)
 	Model_chn		*cthis = SUB_PTR( self, Model, Model_chn);
 	uint8_t			*p_u8;
 	SmBus_conf_t	sb_conf ;
-	uint8_t			sbub_buf[32];
+	uint8_t			sbub_buf[32] = {0};
 	I_dev_Char 			*I_uart3 = NULL;
 	uint8_t 			i, tmp_u8;
 	
@@ -311,11 +430,13 @@ static int MdlChn_setData(  Model *self, IN int aux, void *arg)
 			cthis->chni.signal_type = *p_u8;
 		
 
-		
+			sb_conf.signal_type = *p_u8;
 			sb_conf.decimal = cthis->chni.decimal;
-			sb_conf.lower_limit = cthis->chni.lower_limit;
-			sb_conf.upper_limit = cthis->chni.upper_limit;
-			i = SmBus_AI_config(SMBUS_MAKE_CHN(SMBUS_CHN_AI, cthis->chni.chn_NO), &sb_conf, sbub_buf, 32);
+		
+			//180113 smart bus的组态命令中对上下限的设置是无效的，因此填充0即可
+			sb_conf.lower_limit = 0;
+			sb_conf.upper_limit = 0;
+			i = SmBus_AI_config(cthis->chni.chn_NO, &sb_conf, sbub_buf, 32);
 			if( I_uart3->write(I_uart3, sbub_buf, i) != RET_OK)
 				return ERR_OPT_FAILED;
 			i = I_uart3->read(I_uart3, sbub_buf, 32);
@@ -342,6 +463,54 @@ static int MdlChn_setData(  Model *self, IN int aux, void *arg)
 			}
 			
 			return RET_OK;
+		case chnaux_lower_limit:
+		case chnaux_upper_limit:
+
+			if(aux == chnaux_upper_limit)
+			{
+//				cthis->chni.upper_limit = *(uint16_t *)arg; 
+				i = SmBus_WR_hig_limit(SMBUS_MAKE_CHN(SMBUS_CHN_AI, cthis->chni.chn_NO), arg, sbub_buf, 32);
+				
+			}
+			else
+			{
+//				cthis->chni.lower_limit = *(uint16_t *)arg; 
+				i = SmBus_WR_low_limit(SMBUS_MAKE_CHN(SMBUS_CHN_AI, cthis->chni.chn_NO), arg, sbub_buf, 32);
+				
+			}
+			
+			if(I_uart3->write(I_uart3, sbub_buf, i) != RET_OK)
+				return ERR_OPT_FAILED;
+			
+			if(i <= 0)
+				return ERR_OPT_FAILED;
+			i = I_uart3->read(I_uart3, sbub_buf, 32);
+			if(i <= 0)
+				return ERR_OPT_FAILED;
+			if(SmBus_decode(SMBUS_CMD_WRITE, sbub_buf, &tmp_u8, 1) != RET_OK)
+				return ERR_OPT_FAILED;
+			if(tmp_u8 != cthis->chni.chn_NO)
+				return ERR_OPT_FAILED;
+			
+			self->getMdlData(self, aux, NULL);
+			
+			if(aux == chnaux_upper_limit)
+			{
+				
+				if( cthis->chni.upper_limit == *(uint16_t *)arg)
+					return RET_OK;
+				
+			}
+			else 
+			{
+				
+				if(cthis->chni.lower_limit == *(uint16_t *)arg)
+					return RET_OK;
+				
+			}
+			return ERR_OPT_FAILED;
+		
+			
 		case AUX_PERCENTAGE:
 			
 			return self->to_percentage(self, arg); 
@@ -373,7 +542,7 @@ static char* MdlChn_to_string( Model *self, IN int aux, void *arg)
 				p = cthis->str_buf;
 			}
 
-			sprintf( p, "%3d.%d", cthis->chni.value/10, cthis->chni.value%10);
+			sprintf( p, "%03d.%d", cthis->chni.value/10, cthis->chni.value%10);
 			return p;
 			
 
@@ -436,10 +605,12 @@ static char* MdlChn_to_string( Model *self, IN int aux, void *arg)
 			sprintf(arg, "%d S", cthis->chni.filter_time_s);
 			break;
 		case chnaux_lower_limit:
-			Pe_float(cthis->chni.lower_limit, 1, (char *)arg);
+			sprintf(arg, "%d", cthis->chni.lower_limit);
+//			Pe_float(cthis->chni.lower_limit, 1, (char *)arg);
 			break;
 		case chnaux_upper_limit:
-			Pe_float(cthis->chni.upper_limit, 1, (char *)arg);
+			sprintf(arg, "%d", cthis->chni.upper_limit);
+//			Pe_float(cthis->chni.upper_limit, 1, (char *)arg);
 			break;
 		case chnaux_small_signal:
 			Pe_float(cthis->chni.small_signal, 1, (char *)arg);
@@ -491,10 +662,17 @@ static char* MdlChn_to_string( Model *self, IN int aux, void *arg)
 static int MdlChn_modify_sconf(Model *self, IN int aux, char *s, int op, int val)
 {
 	Model_chn		*cthis = SUB_PTR( self, Model, Model_chn);
+	uint8_t			tmp_u8 = 0;
 	phn_sys.save_chg_flga |= CHG_MODCHN_CONF(cthis->chni.chn_NO);
 	switch(aux) {
 		case AUX_UNIT:
-			cthis->chni.unit = Operate_in_tange(cthis->chni.unit, op, 1, 0, eu_max - 1);
+			tmp_u8 = Operate_in_tange(cthis->chni.unit, op, 1, 0, eu_max - 1);
+			if(tmp_u8 != cthis->chni.unit)
+			{
+				cthis->chni.unit = tmp_u8;
+				
+			}
+//			cthis->chni.unit = Operate_in_tange(cthis->chni.unit, op, 1, 0, eu_max - 1);
 			self->to_string(self, AUX_UNIT, s);
 			break;
 		case chnaux_tag_NO:

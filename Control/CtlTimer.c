@@ -125,9 +125,12 @@ static void Ctime_periodic (void const *arg)
 	{
 		if(phn_sys.save_chg_flga & CHG_MODCHN_CONF(i))
 		{
-			stg->wr_stored_data(stg, CFG_CHN_CONF(i), NULL);
 			
+			
+			
+			stg->wr_stored_data(stg, CFG_CHN_CONF(i), NULL);
 			phn_sys.save_chg_flga &= ~CHG_MODCHN_CONF(i);
+			
 		}
 		
 		

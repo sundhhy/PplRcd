@@ -77,15 +77,18 @@ typedef struct {
 	uint8_t			MB;			//记录容量，M
 	uint8_t			filter_time_s;
 	uint8_t			decimal;
-	uint8_t			flag_err;		//0 无错误， 1 采样失败
-	short				small_signal;
-	int16_t			lower_limit, upper_limit;		//
+	uint8_t			flag_err;		//0 无错误， 1 采样失败    8
+	short			small_signal;					//10
+	int16_t			lower_limit, upper_limit;		//	14
 
 	/***************1位小数*******************/
 	
-	short			k,b;
+	short			k,b;				//18
 	/******************************************/
-	int16_t			value;
+	int16_t			value;					//20
+	int16_t			sample_value;				//	22
+	uint8_t			smp_flag;				//23	0 采样值无效  1 采样值有效
+	uint8_t			none;
 }chn_info_t;
 
 typedef struct {

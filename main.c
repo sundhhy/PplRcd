@@ -124,7 +124,7 @@ char		appBuf[512];
 int			tdd_i, tdd_j, tdd_k, tdd_len, tdd_count = 0;
 uint32_t		tdd_u32;
 uint16_t		tdd_u16;
-
+uint16_t		arr_u16[2];
 uint8_t		tdd_u8;
 char			line = 0;
 char			tdd_finish = 0;
@@ -138,7 +138,10 @@ uint32_t	*p_tdd_u32;
 void 	Tdd_init(void);
 void	Tdd_disp_text(char	*text, int	line, int	row);
 void	Tdd_disp_clean();
+Model	*p_mdl_test;
 
+#define TDD_MDLCHN_SINGAL AI_Pt100
+#define TDD_MDLCHN_NUM_CHN 6
 # if TDD_EFS == 1
 int		tdd_fd;
 #	endif
@@ -230,7 +233,9 @@ int main (void) {
 	System_init();
 	
 	
-	
+#if TDD_ON == 1
+	Tdd_init();
+#endif		
 
 	assert(USB_Init(NULL) == RET_OK);
 	
@@ -243,15 +248,13 @@ int main (void) {
 //	p_mdl_test->init( p_mdl_test, NULL);
 //	mTime = ModelCreate("time");
 	//控制器初始化
-	
+
 	
 		
 	
 
 	
-#if TDD_ON == 1
-	Tdd_init();
-#endif
+
 	
 	
 #if TDD_ON == 0
@@ -649,30 +652,53 @@ int main (void) {
 	line = 0;
 	Tdd_disp_text("通道采样测试",line++, 0);
 	//检测通道是否正常
-	for(tdd_i = 0; tdd_i < NUM_CHANNEL; tdd_i++)
+	for(tdd_i = 0; tdd_i < TDD_MDLCHN_NUM_CHN; tdd_i++)
 	{
 		sprintf(appBuf,"chn_%d", tdd_i);
 		Tdd_disp_text(appBuf,line, 0);
 		p_mdl_test = ModelCreate(appBuf);
-		if(p_mdl_test->self_check(p_mdl_test) == RET_OK)
+//		if(p_mdl_test->self_check(p_mdl_test) == RET_OK)
 		{
+//			Tdd_disp_text("自检成功!",line++, 200);
+			
 			//设置信号类型为pt100
-			tdd_u8 = AI_Pt100;
-			if(p_mdl_test->setMdlData(p_mdl_test,AUX_SIGNALTYPE, &tdd_u8) == RET_OK)
-			{
-				Tdd_disp_text("设置信号类型成功",line, 60);
-				
-			}
-			p_mdl_test->to_string(p_mdl_test, AUX_SIGNALTYPE, appBuf);
-			Tdd_disp_text(appBuf,line++, 220);
+//			tdd_u8 = TDD_MDLCHN_SINGAL;
+			
+//			p_mdl_test->setMdlData(p_mdl_test,AUX_SIGNALTYPE, &tdd_u8);
+//			if(p_mdl_test->setMdlData(p_mdl_test,AUX_SIGNALTYPE, &tdd_u8) != RET_OK)
+//			{
+//				Tdd_disp_text("设置信号类型失败",line, 60);
+//				
+//			}
+			
+			tdd_u16 = 0x1;
+			p_mdl_test->setMdlData(p_mdl_test,chnaux_lower_limit, &tdd_u16);
+			tdd_u16 = 0x5000;
+			p_mdl_test->setMdlData(p_mdl_test,chnaux_upper_limit, &tdd_u16);
+			
+			p_mdl_test->getMdlData(p_mdl_test,chnaux_lower_limit, NULL);
+			p_mdl_test->getMdlData(p_mdl_test,chnaux_upper_limit, NULL);
+			
+			p_mdl_test->to_string(p_mdl_test, chnaux_lower_limit, lcd_buf);
+			Tdd_disp_text(lcd_buf,line, 60);
+			
+			p_mdl_test->to_string(p_mdl_test, chnaux_upper_limit, lcd_buf);
+			Tdd_disp_text(lcd_buf,line++, 160);
+			
+//			p_mdl_test->to_string(p_mdl_test, AUX_SIGNALTYPE, appBuf);
+//			Tdd_disp_text(appBuf,line++, 220);
 			
 		}
-		else 
-		{
-			Tdd_disp_text("自检失败!",line++, 200);
-		}
+//		else 
+//		{
+//			Tdd_disp_text("自检失败!",line++, 200);
+//		}
 		osDelay(100);
+		
+		
+		
 	}
+	
 	
 	Tdd_disp_text("通道采样",7, 100);
 	while(1)
@@ -680,7 +706,7 @@ int main (void) {
 		line = 8;
 		tdd_count ++;
 		
-		for(tdd_i = 0; tdd_i < NUM_CHANNEL; tdd_i++)
+		for(tdd_i = 0; tdd_i < TDD_MDLCHN_NUM_CHN; tdd_i++)
 		{
 			
 			sprintf(appBuf,"chn_%d", tdd_i);
@@ -696,7 +722,7 @@ int main (void) {
 			p_mdl_test->getMdlData(p_mdl_test, AUX_DATA, &tdd_j);
 			
 			
-			sprintf(appBuf,"%xh", tdd_j);
+			sprintf(appBuf,"%04d", tdd_j);
 			Tdd_disp_text(appBuf,line++, 250);
 			
 			
@@ -1136,6 +1162,11 @@ void HardFault_Handler()
 #if TDD_ON == 1
 void 	Tdd_init(void)
 {
+	
+//	Keyboard	*p_kb;
+//	p_kb = GetKeyInsance();
+//	p_kb->init( p_kb, &count);
+	
 	mytxt = ( Glyph *)Get_GhTxt();
 	Dev_open( LCD_DEVID, (void *)&tdd_lcd);
 	tdd_lcd->open();

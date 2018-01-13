@@ -104,6 +104,8 @@ static int ChnStrategy_entry(int row, int col, void *pp_text)
 				break;
 			case 3:		//单位
 				p_md->to_string(p_md, AUX_UNIT, arr_p_vram[row]);
+				
+			
 				break;
 			case 4:		//下限
 				p_md->to_string(p_md, chnaux_lower_limit, arr_p_vram[row]);
