@@ -39,7 +39,7 @@ static const char *su_L_s = "L/s";
 static const char *su_kg_h = "kg/h";
 static const char *su_kg_min = "kg/min";
 static const char *su_kg_s = "kg/s";
-static const char *su_oC = "?";
+static const char *su_oC = "¡æ";
 static const char *su_Pa = "Pa";
 static const char *su_MPa = "MPa";
 static const char *su_kgf_cm2 = "kgf/cm2";
@@ -67,7 +67,7 @@ static const char *su_MVar = "MVar";
 static const char *su_J = "J";
 static const char *su_kJ = "kJ";
 static const char *su_uS_cm = "uS/cm";
-static const char *su_J_kgoC = "J/kg?";
+static const char *su_J_kgoC = "J/kg¡æ";
 static const char *su_kWh = "kWh";
 static const char *su_ug_L = "ug/L";
 //------------------------------------------------------------------------------

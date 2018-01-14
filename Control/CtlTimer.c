@@ -108,6 +108,7 @@ static void Ctime_periodic (void const *arg)
 	CtlTimer	*cthis = SUB_PTR( arg, Controller, CtlTimer);
 	Model 		*p_md;
 	Storage		*stg = Get_storage();
+	do_out_t		d;
 	char			chn_name[7];
 	char			i;
 	
@@ -148,13 +149,32 @@ static void Ctime_periodic (void const *arg)
 	
 	
 	
-	
+
 	for(i = 0; i < NUM_CHANNEL; i++)
 	{
 		sprintf(chn_name,"chn_%d", i);
 		p_md = ModelCreate(chn_name);
-//		p_md->run(p_md);
+		p_md->run(p_md);
 		
 	}
+	
+	for(i = 0; i < MAX_TOUCHSPOT; i++)
+	{
+		d.do_chn = i;
+		if(phn_sys.DO_err & (1 << i))
+		{
+			
+			d.val = 1;
+			p_md->setMdlData(p_md, DO_output, &d);
+		}
+		else if(phn_sys.DO_val & (1 << i))		//Çå³ý±¨¾¯
+		{
+			d.val = 0;
+			p_md->setMdlData(p_md, DO_output, &d);
+		}
+		
+	}
+	phn_sys.DO_err = 0;
+	
 	
 }

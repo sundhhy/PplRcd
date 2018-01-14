@@ -37,7 +37,7 @@
 #define	CHG_SYSTEM_CONF				1	
 #define	CHG_MODCHN_CONF(n)			(1 << (n + 1))
 
-
+#define SYSFLAG_SETTING				1
 //------------------------------------------------------------------------------
 // typedef
 //------------------------------------------------------------------------------
@@ -167,7 +167,21 @@ typedef struct {
 	uint8_t				major_ver;
 	uint8_t				minor_ver;
 	uint8_t				save_chg_flga;		//¿É´æ´¢µÄÅäÖÃÐÅÏ¢µÄ±ä»¯±êÖ¾
-	uint8_t				usb_device;		//0 ÎÞusbÉè±¸ 1 ÓÐusbÉè±¸
+	uint8_t				usb_device;		//0 ÎÞusbÉè±¸ 1 ÓÐusbÉè±
+	uint8_t				sys_flag;
+	uint8_t				none[3];
+	
+	//Í¨µÀ°å×ÓÉÏµÄÐÅÏ¢
+	uint16_t			code_end_temperature;
+	uint8_t				DO_val;				//DOµÄÊµÊ±Öµ
+	uint8_t				DO_err;
+	
+	
+	
+	//°´¼ü
+	uint16_t			key_weight;
+	uint16_t			long_hit_count;
+	
 	hmi_mgr_t			hmi_mgr;
 	system_conf_t		sys_conf;
 	flash_t				arr_fsh[NUM_FSH];
@@ -180,7 +194,7 @@ typedef struct {
 //------------------------------------------------------------------------------
 //extern 	system_conf_t		phn_sys.sys_conf;
 extern	char 				*arr_p_vram[16];
-extern 	int 				g_set_weight;
+//extern 	int 				phn_sys.key_weight;
 
 extern	short 			cmd_count;
 extern	uint16_t		next_record;			//ÏÂ´Î¼ÇÂ¼µÄÊ±¼ä

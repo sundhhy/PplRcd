@@ -116,7 +116,8 @@ typedef struct {
 typedef struct {
 	uint8_t		key_code;
 	uint8_t		up_flag;			//用于记录： 单击是否已经被上报过了
-	uint16_t	sum_count;
+	uint16_t	long_push_delay;		//长按一次以后，下一次上报要延迟一段时间
+	uint32_t	sum_count;
 	uint32_t	last_pressed_count;
 }key_pin_info_t;
 

@@ -178,6 +178,7 @@ void MdlChn_default_alarm(int chn_num)
 static int MdlChn_self_check( Model *self)
 {
 	Model_chn		*cthis = SUB_PTR(self, Model, Model_chn);
+	
 	uint8_t			chk_buf[32] = {0};
 	I_dev_Char 		*I_uart3 = NULL;
 	int				ret  = RET_OK;
@@ -206,25 +207,29 @@ static int MdlChn_self_check( Model *self)
 	}
 	
 	delay_ms(100);
-	i = SmBus_rd_signal_type(SMBUS_MAKE_CHN(SMBUS_CHN_AI, cthis->chni.chn_NO), chk_buf, 32);
-	if( I_uart3->write(I_uart3, chk_buf, i) != RET_OK)
+//	i = SmBus_rd_signal_type(SMBUS_MAKE_CHN(SMBUS_CHN_AI, cthis->chni.chn_NO), chk_buf, 32);
+//	if( I_uart3->write(I_uart3, chk_buf, i) != RET_OK)
+//	{
+//		ret = 4;
+//		goto err;
+//	}
+//	i = I_uart3->read(I_uart3, chk_buf, 32);
+//	if(i <= 0)
+//	{
+//		ret = -5;
+//		goto err;
+//	}
+//	if(SmBus_decode(SMBUS_CMD_READ, chk_buf, &tmp_u8, 1) != RET_OK)
+//	{
+//		ret = -6;
+//		goto err;
+//	}
+//	cthis->chni.signal_type = tmp_u8;
+	if(self->getMdlData(self, AUX_SIGNALTYPE, NULL) != RET_OK)
 	{
-		ret = 4;
+		ret = -1;
 		goto err;
 	}
-	i = I_uart3->read(I_uart3, chk_buf, 32);
-	if(i <= 0)
-	{
-		ret = -5;
-		goto err;
-	}
-	if(SmBus_decode(SMBUS_CMD_READ, chk_buf, &tmp_u8, 1) != RET_OK)
-	{
-		ret = -6;
-		goto err;
-	}
-	cthis->chni.signal_type = tmp_u8;
-	
 	delay_ms(100);
 	self->getMdlData(self, chnaux_lower_limit, NULL);
 	delay_ms(100);
@@ -288,55 +293,126 @@ static void MdlChn_run(Model *self)
 	Model_chn			*cthis = SUB_PTR(self, Model, Model_chn);
 	uint8_t				chk_buf[16];
 	SmBus_result_t		rst;
-	
+//	do_out_t			d = {0};
 	
 	I_dev_Char 			*I_uart3 = NULL;
 	uint8_t 			i;
-	
+	uint8_t				alarm[4] = {0};
+//	uint8_t				old_do;
 	
 	Dev_open(DEVID_UART3, ( void *)&I_uart3);
 	
-	//读取采样值
-	cthis->chni.smp_flag = 0;
-	i = SmBus_AI_Read(cthis->chni.chn_NO, AI_READ_SMPVAL, chk_buf, 16);
-	if( I_uart3->write(I_uart3, chk_buf, i) != RET_OK)
-		goto rd_engval;
-	i = I_uart3->read(I_uart3, chk_buf, 16);
-	if(i <= 0)
-		goto rd_engval;
-	if(SmBus_decode(SMBUS_AI_READ, chk_buf, &rst, sizeof(SmBus_result_t)) != RET_OK)
-		goto rd_engval;
-	cthis->chni.smp_flag = 1;
-	cthis->chni.sample_value = rst.val;
+	//在通道0上要采集冷端温度
+	if(cthis->chni.chn_NO == 0)
+	{
+		i = SmBus_AI_Read(CDT_CHN, AI_READ_ENGVAL, chk_buf, 16);
+		if( I_uart3->write(I_uart3, chk_buf, i) != RET_OK)
+			goto rd_smpval;
+		i = I_uart3->read(I_uart3, chk_buf, 16);
+		if(i <= 0)
+			goto rd_smpval;
+		if(SmBus_decode(SMBUS_AI_READ, chk_buf, &rst, sizeof(SmBus_result_t)) != RET_OK)
+			goto rd_smpval;
+		
+		phn_sys.code_end_temperature = rst.val;
+			
+	}
+//	
+//	//读取采样值
+	rd_smpval:
+//	cthis->chni.smp_flag = 0;
+//	i = SmBus_AI_Read(cthis->chni.chn_NO, AI_READ_SMPVAL, chk_buf, 16);
+//	if( I_uart3->write(I_uart3, chk_buf, i) != RET_OK)
+//		goto rd_engval;
+//	i = I_uart3->read(I_uart3, chk_buf, 16);
+//	if(i <= 0)
+//		goto rd_engval;
+//	if(SmBus_decode(SMBUS_AI_READ, chk_buf, &rst, sizeof(SmBus_result_t)) != RET_OK)
+//		goto rd_engval;
+//	cthis->chni.smp_flag = 1;
+//	cthis->chni.sample_value = rst.val;
 	
 	//读取工程值
 	rd_engval:	
-	i = SmBus_AI_Read(cthis->chni.chn_NO, AI_READ_ENGVAL, chk_buf, 16);
+	i = SmBus_AI_Read(SMBUS_MAKE_CHN(SMBUS_CHN_AI, cthis->chni.chn_NO), AI_READ_ENGVAL, chk_buf, 16);
 	if( I_uart3->write(I_uart3, chk_buf, i) != RET_OK)
-		return;
+		goto err;
 	i = I_uart3->read(I_uart3, chk_buf, 16);
 	if(i <= 0)
-		return;
+		goto err;
 	if(SmBus_decode(SMBUS_AI_READ, chk_buf, &rst, sizeof(SmBus_result_t)) != RET_OK)
-		return;
-	if(rst.val < 1900 && cthis->chni.chn_NO == 0)
-	{
-		
-		i = 0;
-	}
+		goto err;
+//	if(rst.val < 1900 && cthis->chni.chn_NO == 0)
+//	{
+//		
+//		i = 0;
+//	}
 	if(rst.chn_num != cthis->chni.chn_NO)
 	{
-		cthis->chni.flag_err = 1;
-		return;
+		goto err;
 	}
 	else
 	{
 		cthis->chni.flag_err = 0;
 	}
-		
-	cthis->chni.signal_type = rst.signal_type;
-	cthis->chni.value = rst.val;
 	
+	if(rst.val != cthis->chni.value)
+	{
+		
+		cthis->chni.signal_type = rst.signal_type;
+		cthis->chni.value = rst.val;
+//		if((phn_sys.sys_flag & SYSFLAG_SETTING) == 0)
+			self->notify(self);
+		
+	}
+	
+	
+//	return;
+	
+	//报警处理
+		//有报警的话就输出报警
+		//无报警就把之前的报警清除掉
+	
+	if(rst.val > cthis->alarm.alarm_hh)
+	{
+
+		
+		
+		phn_sys.DO_err |= 1 << cthis->alarm.touch_spot_hh;
+	}
+	
+	if(rst.val > cthis->alarm.alarm_hi)
+	{
+		
+		phn_sys.DO_err |= 1 << cthis->alarm.alarm_hi;
+
+	}
+	
+	
+	if(rst.val < cthis->alarm.alarm_lo)
+	{
+
+		
+		phn_sys.DO_err |= 1 << cthis->alarm.touch_spot_lo;
+	}
+	
+	
+	if(rst.val < cthis->alarm.alarm_ll)
+	{
+
+		
+		phn_sys.DO_err |= 1 << cthis->alarm.touch_spot_ll;
+	}
+	
+	
+	
+	
+	
+	
+	
+	return;
+	err:
+		cthis->chni.flag_err = 1;
 	
 }
 
@@ -347,8 +423,10 @@ static int MdlChn_getData(Model *self, IN int aux, void *arg)
 	uint8_t			*p_u8;
 	I_dev_Char 			*I_uart3 = NULL;	
 	uint8_t			sbus_buf[32];
-	uint16_t		tmp_u16, i;
+	uint16_t		tmp_u16;
+	uint8_t			tmp_u8, i;
 	
+	Dev_open(DEVID_UART3, ( void *)&I_uart3);
 	switch(aux) {
 		case AUX_DATA:
 			if(cthis->chni.flag_err)
@@ -357,14 +435,37 @@ static int MdlChn_getData(Model *self, IN int aux, void *arg)
 			*p_s16 = cthis->chni.value;
 			break;
 		case AUX_SIGNALTYPE:
-			p_u8 = (uint8_t *)arg;
-			*p_u8 = cthis->chni.signal_type;
+			i = SmBus_rd_signal_type(SMBUS_MAKE_CHN(SMBUS_CHN_AI, cthis->chni.chn_NO), sbus_buf, 32);
+			if( I_uart3->write(I_uart3, sbus_buf, i) != RET_OK)
+			{
+				return -1;
+			}
+			i = I_uart3->read(I_uart3, sbus_buf, 32);
+			if(i <= 0)
+			{
+				return -1;
+			}
+			if(SmBus_decode(SMBUS_CMD_READ, sbus_buf, &tmp_u8, 1) != RET_OK)
+			{
+				return -1;
+			}
+			cthis->chni.signal_type = tmp_u8;
+		
+			if(arg)
+			{
+				p_u8 = (uint8_t *)arg;
+				*p_u8 = cthis->chni.signal_type;
+			}
+		
+		
+		
+		
 			break;
 		
 		case chnaux_lower_limit:
 		case chnaux_upper_limit:
 
-			Dev_open(DEVID_UART3, ( void *)&I_uart3);
+			
 			if(arg)
 				p_s16 = (int16_t *)arg;
 		
@@ -394,10 +495,38 @@ static int MdlChn_getData(Model *self, IN int aux, void *arg)
 			if(arg)
 				*p_s16 = tmp_u16;
 			break;
+		case DO_output:
+			if(*(uint8_t *)arg)
+				phn_sys.DO_val |= 1 << cthis->chni.chn_NO;
+			else
+				phn_sys.DO_val &=~(1 << cthis->chni.chn_NO);
+			i = SmBus_Read_DO(phn_sys.DO_val, sbus_buf, 32);
+			if(I_uart3->write(I_uart3, sbus_buf, i) != RET_OK)
+				return ERR_OPT_FAILED;
+			
+			if(i <= 0)
+				return ERR_OPT_FAILED;
+			i = I_uart3->read(I_uart3, sbus_buf, 32);
+			if(i <= 0)
+				return ERR_OPT_FAILED;
+			if(SmBus_decode(SMBUS_CMD_READ, sbus_buf, &tmp_u8, 1) != RET_OK)
+				return ERR_OPT_FAILED;
+			
+			phn_sys.DO_val = tmp_u8;
+			if(arg)
+			{
+				if(tmp_u8 & (1 << cthis->chni.chn_NO))
+					*(uint8_t *)arg = 1;
+				else
+					*(uint8_t *)arg = 0;
+			}
+			break;
 			
 		case AUX_PERCENTAGE:
 			
 			return self->to_percentage(self, arg); 
+		
+		
 		case MDHCHN_CHN_NUM:
 			p_u8 = (uint8_t *)arg;
 			*p_u8 = cthis->chni.chn_NO;
@@ -417,6 +546,8 @@ static int MdlChn_setData(  Model *self, IN int aux, void *arg)
 {
 	Model_chn		*cthis = SUB_PTR( self, Model, Model_chn);
 	uint8_t			*p_u8;
+	uint16_t		*p_u16;
+	do_out_t		*p_d;
 	SmBus_conf_t	sb_conf ;
 	uint8_t			sbub_buf[32] = {0};
 	I_dev_Char 			*I_uart3 = NULL;
@@ -426,8 +557,11 @@ static int MdlChn_setData(  Model *self, IN int aux, void *arg)
 	Dev_open(DEVID_UART3, ( void *)&I_uart3);
 	switch(aux) {
 		case AUX_SIGNALTYPE:
-			p_u8 = (uint8_t *)arg;
-			cthis->chni.signal_type = *p_u8;
+			if(arg)
+				p_u8 = (uint8_t *)arg;
+			else
+				p_u8 = &cthis->chni.signal_type;
+			
 		
 
 			sb_conf.signal_type = *p_u8;
@@ -465,17 +599,26 @@ static int MdlChn_setData(  Model *self, IN int aux, void *arg)
 			return RET_OK;
 		case chnaux_lower_limit:
 		case chnaux_upper_limit:
-
+			
+			
 			if(aux == chnaux_upper_limit)
 			{
+				if(arg == NULL)
+					p_u16 = &cthis->chni.upper_limit;
+				else
+					p_u16 = arg;
 //				cthis->chni.upper_limit = *(uint16_t *)arg; 
-				i = SmBus_WR_hig_limit(SMBUS_MAKE_CHN(SMBUS_CHN_AI, cthis->chni.chn_NO), arg, sbub_buf, 32);
+				i = SmBus_WR_hig_limit(SMBUS_MAKE_CHN(SMBUS_CHN_AI, cthis->chni.chn_NO), p_u16, sbub_buf, 32);
 				
 			}
 			else
 			{
+				if(arg == NULL)
+					p_u16 = &cthis->chni.lower_limit;
+				else
+					p_u16 = arg;
 //				cthis->chni.lower_limit = *(uint16_t *)arg; 
-				i = SmBus_WR_low_limit(SMBUS_MAKE_CHN(SMBUS_CHN_AI, cthis->chni.chn_NO), arg, sbub_buf, 32);
+				i = SmBus_WR_low_limit(SMBUS_MAKE_CHN(SMBUS_CHN_AI, cthis->chni.chn_NO),  p_u16, sbub_buf, 32);
 				
 			}
 			
@@ -510,7 +653,31 @@ static int MdlChn_setData(  Model *self, IN int aux, void *arg)
 			}
 			return ERR_OPT_FAILED;
 		
+		case DO_output:
+			if(arg == NULL)
+				break;
+			p_d = (do_out_t *)arg;
+			if(p_d->do_chn >= MAX_TOUCHSPOT)
+				break;
+			tmp_u8 = phn_sys.DO_val;
+			if(p_d->val)
+				tmp_u8 |= 1 << p_d->do_chn;
+			else
+				tmp_u8 &=~(1 << p_d->do_chn);
+			i = SmBus_DO_output(p_d->do_chn, tmp_u8, sbub_buf, 32);
+			if(I_uart3->write(I_uart3, sbub_buf, i) != RET_OK)
+				return ERR_OPT_FAILED;
 			
+			if(i <= 0)
+				return ERR_OPT_FAILED;
+			i = I_uart3->read(I_uart3, sbub_buf, 32);
+			if(i <= 0)
+				return ERR_OPT_FAILED;
+			if(SmBus_decode(SMBUS_CMD_WRITE, sbub_buf, NULL, 0) != RET_OK)
+				return ERR_OPT_FAILED;
+			phn_sys.DO_val = tmp_u8;
+			
+			break;
 		case AUX_PERCENTAGE:
 			
 			return self->to_percentage(self, arg); 
@@ -527,11 +694,11 @@ static char* MdlChn_to_string( Model *self, IN int aux, void *arg)
 {
 	Model_chn		*cthis = SUB_PTR( self, Model, Model_chn);
 	char		*p = (char *)arg;
-	int 			hh = cthis->chni.upper_limit;
-	int 			hi = cthis->chni.upper_limit ;
-	int 			li = cthis->chni.lower_limit ;
-	int 			ll = 0;
-	
+	int 			hh = cthis->alarm.alarm_hh;
+	int 			hi = cthis->alarm.alarm_hi;
+	int 			li = cthis->alarm.alarm_lo;
+	int 			ll = cthis->alarm.alarm_ll;
+	int				i;
 	
 	
 	switch(aux) {
@@ -542,7 +709,7 @@ static char* MdlChn_to_string( Model *self, IN int aux, void *arg)
 				p = cthis->str_buf;
 			}
 
-			sprintf( p, "%03d.%d", cthis->chni.value/10, cthis->chni.value%10);
+			sprintf( p, "%4d.%d", cthis->chni.value/10, cthis->chni.value%10);
 			return p;
 			
 
@@ -567,7 +734,7 @@ static char* MdlChn_to_string( Model *self, IN int aux, void *arg)
 			}
 			
 			if(cthis->chni.value > hi) {
-				strcat(p, "Hi ");
+				strcat(p, "Hi");
 			}
 			
 			if(cthis->chni.value < li) {
@@ -575,13 +742,18 @@ static char* MdlChn_to_string( Model *self, IN int aux, void *arg)
 			}
 			
 			if(cthis->chni.value < ll) {
-				strcat(p, "LL ");
+				strcat(p, "LL");
 			}
 			
 			//把空间填满，来达到清除掉上一次的显示的目的
-			if( strlen( p) < 4) {
-				strcat(p, "   ");
+			for(i = strlen(p); i < 5; i++)
+			{
+				
+				p[i] = ' ';
+				
 			}
+			
+			
 			return p;
 //		case AUX_PERCENTAGE:
 //			if( arg) {
@@ -605,11 +777,11 @@ static char* MdlChn_to_string( Model *self, IN int aux, void *arg)
 			sprintf(arg, "%d S", cthis->chni.filter_time_s);
 			break;
 		case chnaux_lower_limit:
-			sprintf(arg, "%d", cthis->chni.lower_limit);
+			sprintf(arg, "%-5d", cthis->chni.lower_limit);
 //			Pe_float(cthis->chni.lower_limit, 1, (char *)arg);
 			break;
 		case chnaux_upper_limit:
-			sprintf(arg, "%d", cthis->chni.upper_limit);
+			sprintf(arg, "%-5d", cthis->chni.upper_limit);
 //			Pe_float(cthis->chni.upper_limit, 1, (char *)arg);
 			break;
 		case chnaux_small_signal:
@@ -626,16 +798,20 @@ static char* MdlChn_to_string( Model *self, IN int aux, void *arg)
 			break;	
 	
 		case alarm_hh:
-			Pe_float(cthis->alarm.alarm_hh, 1, (char *)arg);
+			sprintf(arg, "%-5d", cthis->alarm.alarm_hh);
+//			Pe_float(cthis->alarm.alarm_hh, 1, (char *)arg);
 			break;
 		case alarm_hi:
-			Pe_float(cthis->alarm.alarm_hi, 1, (char *)arg);
+			sprintf(arg, "%-5d", cthis->alarm.alarm_hi);
+//			Pe_float(cthis->alarm.alarm_hi, 1, (char *)arg);
 			break;
 		case alarm_lo:
-			Pe_float(cthis->alarm.alarm_lo, 1, (char *)arg);
+			sprintf(arg, "%-5d", cthis->alarm.alarm_lo);
+//			Pe_float(cthis->alarm.alarm_lo, 1, (char *)arg);
 			break;
 		case alarm_ll:
-			Pe_float(cthis->alarm.alarm_ll, 1, (char *)arg);
+			sprintf(arg, "%-5d", cthis->alarm.alarm_ll);
+//			Pe_float(cthis->alarm.alarm_ll, 1, (char *)arg);
 			break;
 		case tchspt_hh:
 			Pe_touch_spot(cthis->alarm.touch_spot_hh, (char *)arg);
@@ -662,6 +838,7 @@ static char* MdlChn_to_string( Model *self, IN int aux, void *arg)
 static int MdlChn_modify_sconf(Model *self, IN int aux, char *s, int op, int val)
 {
 	Model_chn		*cthis = SUB_PTR( self, Model, Model_chn);
+	
 	uint8_t			tmp_u8 = 0;
 	phn_sys.save_chg_flga |= CHG_MODCHN_CONF(cthis->chni.chn_NO);
 	switch(aux) {
@@ -696,6 +873,7 @@ static int MdlChn_modify_sconf(Model *self, IN int aux, char *s, int op, int val
 		case chnaux_lower_limit:
 			cthis->chni.lower_limit = Operate_in_tange(cthis->chni.lower_limit, op, val, -999999, 999999);
 			self->to_string(self, chnaux_lower_limit, s);
+			
 			break;
 		case chnaux_upper_limit:
 			cthis->chni.upper_limit = Operate_in_tange(cthis->chni.upper_limit, op, val, -999999, 999999);
@@ -715,35 +893,39 @@ static int MdlChn_modify_sconf(Model *self, IN int aux, char *s, int op, int val
 			break;
 		
 		case alarm_hh:
-			cthis->alarm.alarm_hh = Operate_in_tange(cthis->alarm.alarm_hh, op, val, -100, 100);
-			Pe_float(cthis->alarm.alarm_hh, 1, s);
+			cthis->alarm.alarm_hh = Operate_in_tange(cthis->alarm.alarm_hh, op, val, 0, 0xffff);
+			self->to_string(self, aux, s);
+//			Pe_float(cthis->alarm.alarm_hh, 1, s);
 			break;
 		case alarm_hi:
-			cthis->alarm.alarm_hi = Operate_in_tange(cthis->alarm.alarm_hi, op, val, -100, 100);
-			Pe_float(cthis->alarm.alarm_hi, 1, s);
+			cthis->alarm.alarm_hi = Operate_in_tange(cthis->alarm.alarm_hi, op, val, 0, 0xffff);
+//			Pe_float(cthis->alarm.alarm_hi, 1, s);
+			self->to_string(self, aux, s);
 			break;
 		case alarm_lo:
-			cthis->alarm.alarm_lo = Operate_in_tange(cthis->alarm.alarm_lo, op, val, -100, 100);
-			Pe_float(cthis->alarm.alarm_lo, 1, s);
+			cthis->alarm.alarm_lo = Operate_in_tange(cthis->alarm.alarm_lo, op, val, 0, 0xffff);
+//			Pe_float(cthis->alarm.alarm_lo, 1, s);
+			self->to_string(self, aux, s);
 			break;
 		case alarm_ll:
-			cthis->alarm.alarm_ll = Operate_in_tange(cthis->alarm.alarm_ll, op, val, -100, 100);
-			Pe_float(cthis->alarm.alarm_ll, 1, (char *)s);
+			cthis->alarm.alarm_ll = Operate_in_tange(cthis->alarm.alarm_ll, op, val, 0, 0xffff);
+//			Pe_float(cthis->alarm.alarm_ll, 1, (char *)s);
+			self->to_string(self, aux, s);
 			break;
 		case tchspt_hh:
-			cthis->alarm.touch_spot_hh = Operate_in_tange(cthis->alarm.touch_spot_hh, op, val, 1, 13);
+			cthis->alarm.touch_spot_hh = Operate_in_tange(cthis->alarm.touch_spot_hh, op, val, 1, MAX_TOUCHSPOT - 1);
 			Pe_touch_spot(cthis->alarm.touch_spot_hh, (char *)s);
 			break;
 		case tchspt_hi:
-			cthis->alarm.touch_spot_hi = Operate_in_tange(cthis->alarm.touch_spot_hi, op, val, 1, 13);
+			cthis->alarm.touch_spot_hi = Operate_in_tange(cthis->alarm.touch_spot_hi, op, val, 1, MAX_TOUCHSPOT - 1);
 			Pe_touch_spot(cthis->alarm.touch_spot_hi, (char *)s);
 			break;
 		case tchspt_lo:
-			cthis->alarm.touch_spot_lo = Operate_in_tange(cthis->alarm.touch_spot_lo, op, val, 1, 13);
+			cthis->alarm.touch_spot_lo = Operate_in_tange(cthis->alarm.touch_spot_lo, op, val, 1, MAX_TOUCHSPOT - 1);
 			Pe_touch_spot(cthis->alarm.touch_spot_lo, (char *)s);	
 			break;
 		case tchspt_ll:
-			cthis->alarm.touch_spot_ll = Operate_in_tange(cthis->alarm.touch_spot_ll, op, val, 1, 13);
+			cthis->alarm.touch_spot_ll = Operate_in_tange(cthis->alarm.touch_spot_ll, op, val, 1, MAX_TOUCHSPOT - 1);
 			Pe_touch_spot(cthis->alarm.touch_spot_ll, (char *)s);	
 			break;	
 		case alarm_backlash:
@@ -757,6 +939,7 @@ static int MdlChn_modify_sconf(Model *self, IN int aux, char *s, int op, int val
 		
 		
 	}
+	self->setMdlData(self, aux, NULL);
 	return RET_OK;
 }
 static int MdlChn_set_by_string(Model *self, IN int aux, void *arg)
@@ -927,7 +1110,7 @@ static void Pe_singnaltype(e_signal_t sgt, char *str)
 static void Pe_touch_spot(int spot, char *str)
 {
 	
-	if(spot < 12 && spot > 0)
+	if(spot < MAX_TOUCHSPOT && spot >= 0)
 		sprintf(str, "%d", spot);
 	else
 		sprintf(str, "无");

@@ -17,6 +17,7 @@
 //#define AUX_CHN_B							0x14
 
 #define MDHCHN_CHN_NUM		0x20
+#define MAX_TOUCHSPOT		3
 //------------------------------------------------------------------------------
 // typedef
 //------------------------------------------------------------------------------
@@ -37,7 +38,8 @@ typedef enum {
 	tchspt_hi,
 	tchspt_lo,
 	tchspt_ll,
-	alarm_backlash
+	alarm_backlash,
+	DO_output
 }e_chn_aux_t;
 typedef enum {
 	 
@@ -79,23 +81,23 @@ typedef struct {
 	uint8_t			decimal;
 	uint8_t			flag_err;		//0 无错误， 1 采样失败    8
 	short			small_signal;					//10
-	int16_t			lower_limit, upper_limit;		//	14
+	uint16_t			lower_limit, upper_limit;		//	14
 
 	/***************1位小数*******************/
 	
 	short			k,b;				//18
 	/******************************************/
-	int16_t			value;					//20
-	int16_t			sample_value;				//	22
+	uint16_t			value;					//20
+	uint16_t			sample_value;				//	22
 	uint8_t			smp_flag;				//23	0 采样值无效  1 采样值有效
 	uint8_t			none;
 }chn_info_t;
 
 typedef struct {
-	short				alarm_hh;
-	short				alarm_hi;
-	short				alarm_lo;
-	short				alarm_ll;
+	uint16_t				alarm_hh;
+	uint16_t				alarm_hi;
+	uint16_t				alarm_lo;
+	uint16_t				alarm_ll;
 	
 	//报警输出触点
 	uint8_t				touch_spot_hh;
@@ -106,6 +108,12 @@ typedef struct {
 	uint8_t				alarm_backlash;		//报警回差  0 - 10.0%
 	uint8_t				none[3];
 }chn_alarm_t;
+	
+typedef struct {
+	uint8_t			do_chn;
+	uint8_t			val;
+	uint8_t			none[2];
+}do_out_t;
 	
 
 typedef struct

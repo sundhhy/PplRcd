@@ -138,6 +138,7 @@ static void	SwitchHMI( HMI *self, HMI *p_hmi)
 		g_p_lastHmi = g_p_curHmi;
 		
 	}
+	phn_sys.key_weight = 1;
 	
 	g_p_curHmi = p_hmi;
 	Set_flag_show(&self->flag, 0);
@@ -154,6 +155,8 @@ static void	SwitchBack( HMI *self)
 	HMI *nowHmi = g_p_lastHmi;
 	g_p_lastHmi = g_p_curHmi;
 	g_p_curHmi = nowHmi;
+	
+	phn_sys.key_weight = 1;
 	Set_flag_show(&self->flag, 0);
 	self->hide( self);
 	nowHmi->initSheet( nowHmi);
@@ -183,10 +186,10 @@ static void ConposeKeyHandle(HMI *self, char *s_key1, char *s_key2)
 	if( !strcmp( s_key1, HMIKEY_LEFT) && !strcmp( s_key2, HMIKEY_RIGHT))
 	{
 
-		
+		phn_sys.sys_flag |= SYSFLAG_SETTING;
 		self->switchHMI(self, g_p_Setup_HMI);
 	} else if( !strcmp( s_key1, HMIKEY_RIGHT) && !strcmp( s_key2, HMIKEY_LEFT)) {
-		
+		phn_sys.sys_flag |= SYSFLAG_SETTING;
 		self->switchHMI(self, g_p_Setup_HMI);
 	}
 	

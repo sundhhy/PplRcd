@@ -88,7 +88,7 @@ int MdlTime_getData(  Model *self, IN int aux, void *arg)
 	if(arg == NULL)
 		return ERR_PARAM_BAD;
 	
-	System_time(tm);
+//	System_time(tm);
 	
 	if(aux == TIME_TM)
 	{

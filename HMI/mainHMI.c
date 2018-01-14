@@ -46,10 +46,10 @@ HMI *g_p_mainHmi;
 
 
 //每个通道的单位
-static ro_char MAIN_hmi_code_data[] = { "<text f=32 m=0 mdl=test aux=0>100</>" };
-static ro_char MAIN_hmi_code_unit[] = { "<text f=16 m=0 mdl=test aux=1>m3/h</>" };
+static ro_char MAIN_hmi_code_data[] = { "<text f=32 m=0 aux=0>100</>" };
+static ro_char MAIN_hmi_code_unit[] = { "<text f=16 m=0 aux=1>m3/h</>" };
 //通道报警:HH HI LI LL
-static ro_char MAIN_hmi_code_alarm[] = { "<text f=16 m=0 mdl=test aux=2> </>" };
+static ro_char MAIN_hmi_code_alarm[] = { "<text f=16 m=0 aux=2> </>" };
 
 //static ro_char p_input1[] = { "<input cg=2 xali=l f=24> <text f=16  yali=m clr=blue >test1</>\
 //<box clr=blue bx=126 by=30></></gr>" };
@@ -112,7 +112,7 @@ void Build_ChnSheets(void)
 	shtctl 		*p_shtctl = NULL;
 	Expr 		*p_exp ;
 	Model			*p_mdl = NULL;
-	
+	char		mdl_code[16] = {0};
 	p_shtctl = GetShtctl();
 	
 //	Bulid_ChnData(g_arr_p_chnData, (void *)MAIN_hmi_code_data, MainHmi_Data_update);
@@ -121,6 +121,9 @@ void Build_ChnSheets(void)
 	for(i = 0; i < NUM_CHANNEL; i++) {
 		g_arr_p_chnData[i] = Sheet_alloc( p_shtctl);
 		p_exp->inptSht( p_exp, (void *)MAIN_hmi_code_data, g_arr_p_chnData[i]) ;
+		sprintf(mdl_code,"chn_%d", i);
+
+		g_arr_p_chnData[i]->p_mdl = ModelCreate(mdl_code);
 		g_arr_p_chnData[i]->update = MainHmi_Data_update;
 		g_arr_p_chnData[i]->id = i;
 		p_mdl = g_arr_p_chnData[i]->p_mdl;
@@ -129,6 +132,7 @@ void Build_ChnSheets(void)
 		g_arr_p_chnUtil[i] = Sheet_alloc( p_shtctl);
 		p_exp->inptSht( p_exp, (void *)MAIN_hmi_code_unit, g_arr_p_chnUtil[i]) ;
 		g_arr_p_chnUtil[i]->id = i;
+		g_arr_p_chnUtil[i]->p_mdl = ModelCreate(mdl_code);
 		g_arr_p_chnUtil[i]->update = MainHmi_Util_update;
 		g_arr_p_chnUtil[i]->cnt.subType = TEXT_ST_UNTIL;
 		p_mdl = g_arr_p_chnUtil[i]->p_mdl;
@@ -137,6 +141,7 @@ void Build_ChnSheets(void)
 		g_arr_p_chnAlarm[i] = Sheet_alloc( p_shtctl);
 		p_exp->inptSht( p_exp, (void *)MAIN_hmi_code_alarm, g_arr_p_chnAlarm[i]) ;
 		g_arr_p_chnAlarm[i]->id = i;
+		g_arr_p_chnAlarm[i]->p_mdl = ModelCreate(mdl_code);
 		g_arr_p_chnAlarm[i]->update = MainHmi_Alarm_update;
 		p_mdl = g_arr_p_chnAlarm[i]->p_mdl;
 		p_mdl->attach(p_mdl, (Observer *)g_arr_p_chnAlarm[i]);

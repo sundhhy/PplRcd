@@ -45,7 +45,7 @@ HMI *g_p_barGhHmi;
 
 static const char barhmi_code_clean[] = { "<cpic vx0=0 vy0=0 >12</>" };
 static const char barhmi_code_bar[] = { "<box bx=35 ></>" };
-static const char barhmi_code_textPrcn[] = { "<text f=16 m=0 mdl=test aux=3>100</>" };
+static const char barhmi_code_textPrcn[] = { "<text f=16 m=0 mdl=chn_0 aux=3>100</>" };
 
 
 

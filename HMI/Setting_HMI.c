@@ -61,7 +61,7 @@ static void	Setting_HMI_clear_focus(HMI *self, uint8_t fouse_row, uint8_t fouse_
 static void	Setting_HMI_show_focus(HMI *self, uint8_t fouse_row, uint8_t fouse_col);
 static void	Setting_HMI_hitHandle( HMI *self, char *s_key);
 static void	Setting_HMI_dhit( HMI *self, char *s_key);
-
+static void	Setting_HMI_long_hit( HMI *self, char *s_key);
 
 static void	Show_entry(HMI *self, strategy_t *p_st);
 static int STING_Show_Button(HMI *self, int up_or_dn);
@@ -99,6 +99,8 @@ FUNCTION_SETTING(HMI.show, Show_Setting_HMI);
 
 FUNCTION_SETTING(HMI.hitHandle, Setting_HMI_hitHandle);
 FUNCTION_SETTING(HMI.dhitHandle, Setting_HMI_dhit);
+FUNCTION_SETTING(HMI.longpushHandle, Setting_HMI_long_hit);
+
 
 FUNCTION_SETTING(HMI.init_focus, Setting_HMI_init_focus);
 FUNCTION_SETTING(HMI.clear_focus, Setting_HMI_clear_focus);
@@ -482,7 +484,12 @@ static void	Setting_HMI_hitHandle(HMI *self, char *s_key)
 	}
 	if( !strcmp( s_key, HMIKEY_UP) )
 	{
-		
+//		if(phn_sys.key_weight == 0)
+			phn_sys.key_weight = 1;
+		if(phn_sys.long_hit_count < 10)
+			phn_sys.long_hit_count = 0;
+		else
+			phn_sys.long_hit_count = 0;
 		if(cthis->sub_flag & FOCUS_IN_STARTEGY) {
 			
 			if(p_sy->key_hit_up(NULL) == RET_OK) {
@@ -505,6 +512,14 @@ static void	Setting_HMI_hitHandle(HMI *self, char *s_key)
 	
 	if( !strcmp( s_key, HMIKEY_DOWN) )
 	{
+//		if(phn_sys.key_weight == 0)
+			phn_sys.key_weight = 1;
+//		phn_sys.long_hit_count = 0;
+		if(phn_sys.long_hit_count < 10)
+			phn_sys.long_hit_count = 0;
+		else
+			phn_sys.long_hit_count = 0;
+		
 		if(cthis->sub_flag & FOCUS_IN_STARTEGY) {
 			
 			if(p_sy->key_hit_dn(NULL) == RET_OK) {
@@ -575,7 +590,7 @@ static void	Setting_HMI_hitHandle(HMI *self, char *s_key)
 		//擦除掉原来这一行
 		Strategy_focus(cthis, &old_sf, 2);
 		//重新显示改行文本
-		Strategy_focus_text(cthis, &cthis->p_sy->sf, 2);
+//		Strategy_focus_text(cthis, &cthis->p_sy->sf, 2);
 		//显示新的选中效果
 		Strategy_focus(cthis, &cthis->p_sy->sf, 1);
 	}
@@ -590,77 +605,105 @@ static void	Setting_HMI_hitHandle(HMI *self, char *s_key)
 		return;
 }
 
+
+static void	Setting_HMI_long_hit( HMI *self, char *s_key)
+{
+	Setting_HMI			*cthis = SUB_PTR( self, HMI, Setting_HMI);
+	strategy_keyval_t	skt = {SY_KEYTYPE_LONGPUSH};
+	strategy_t			*p_sy = cthis->p_sy;
+	strategy_focus_t	old_sf;
+	
+
+
+	old_sf.f_col = p_sy->sf.f_col;
+	old_sf.f_row = p_sy->sf.f_row;
+	old_sf.start_byte = p_sy->sf.start_byte;
+	old_sf.num_byte = p_sy->sf.num_byte;
+	
+	if((cthis->sub_flag & FOCUS_IN_STARTEGY) == 0)
+		return;
+	if(phn_sys.long_hit_count == 10)
+	{
+		if(phn_sys.key_weight < 10000)
+			phn_sys.key_weight *= 10;
+//		else
+//			phn_sys.key_weight = 1;
+		phn_sys.long_hit_count = 0;
+	}
+	else
+	{
+		phn_sys.long_hit_count ++;
+//		return;
+	}
+	
+	if( !strcmp( s_key, HMIKEY_UP) )
+	{
+		p_sy->key_hit_up(&skt);
+		
+		
+	}
+	
+	if( !strcmp( s_key, HMIKEY_DOWN) )
+	{
+		p_sy->key_hit_dn(&skt);
+		
+	}
+	
+	
+//	Strategy_focus(cthis, &old_sf, 2);
+	//重新显示改行文本
+//	Strategy_focus_text(cthis, &cthis->p_sy->sf, 2);
+	//显示新的选中效果
+	Strategy_focus(cthis, &cthis->p_sy->sf, 1);
+	//180114 长按的时候尽快刷新
+	Flush_LCD();
+}
 //长按按键:up,dn 来对光标的行进行切换
 //切换有两种情况:编辑区内的行切换, 编辑区内外之间的切换
 static void	Setting_HMI_dhit( HMI *self, char *s_key)
 {
-//	Setting_HMI		*cthis = SUB_PTR( self, HMI, Setting_HMI);
-//	strategy_keyval_t	skt = {SY_KEYTYPE_DHIT};
+//	Setting_HMI			*cthis = SUB_PTR( self, HMI, Setting_HMI);
+//	strategy_keyval_t	skt = {SY_KEYTYPE_LONGPUSH};
+//	strategy_t			*p_sy = cthis->p_sy;
 //	strategy_focus_t	old_sf;
-//	uint8_t		focusCol = cthis->f_col;
-//	uint8_t		sy_chgFouse = 0;
-
-//	old_sf.f_col = cthis->p_sy->sf.f_col;
-//	old_sf.f_row = cthis->p_sy->sf.f_row;
-//	old_sf.start_byte = cthis->p_sy->sf.start_byte;
-//	old_sf.num_byte =cthis->p_sy->sf.num_byte;
 //	
+
+
+//	old_sf.f_col = p_sy->sf.f_col;
+//	old_sf.f_row = p_sy->sf.f_row;
+//	old_sf.start_byte = p_sy->sf.start_byte;
+//	old_sf.num_byte = p_sy->sf.num_byte;
+//	
+//	if((cthis->sub_flag & FOCUS_IN_STARTEGY) == 0)
+//		return;
+//	if(strcmp( s_key, HMIKEY_UP) && strcmp( s_key, HMIKEY_DOWN))
+//		return;
+//	
+//	
+//	if(phn_sys.key_weight < 10000)
+//		phn_sys.key_weight *= 10;
+//	else
+//		phn_sys.key_weight = 1;
 //	
 //	if( !strcmp( s_key, HMIKEY_UP) )
 //	{
+//		p_sy->key_hit_up(&skt);
 //		
-//		if(cthis->sub_flag & FOCUS_IN_STARTEGY) {
-//			//光标位于编辑区，则用编辑区的处理函数处理
-//			
-//			if(cthis->p_sy->key_hit_up(&skt) == RET_OK) {
-//				
-//				sy_chgFouse = 1;
-//			} else {
-//				//如果在编辑区内部切换产生了错误，则认为行已经超出了编辑区的范围了，将光标切换到编辑区外
-//				sy_chgFouse = 2;
-//				
-//				CLR_PG_FLAG(cthis->sub_flag, FOCUS_IN_STARTEGY);
-//				
-//			}  
-//		} else {
-//			//在界面中，只有一行，因此任何的行切换操作，都意味将光标切到编辑区内
-//			//吧光标切回编辑区之前，先将编辑区之外的光标清除掉
-//			self->clear_focus(self, 0, focusCol);
-//			Strategy_focus(cthis, &cthis->p_sy->sf, 1);
-//			SET_PG_FLAG(cthis->sub_flag, FOCUS_IN_STARTEGY);
-//			
-//		}
 //		
 //	}
 //	
 //	if( !strcmp( s_key, HMIKEY_DOWN) )
 //	{
-//		if(cthis->sub_flag & FOCUS_IN_STARTEGY) {
-//			
-//			if(cthis->p_sy->key_hit_dn(&skt) == RET_OK) {
-//				
-//				sy_chgFouse = 1;
-//			} else {
-//				sy_chgFouse = 2;
-//				CLR_PG_FLAG(cthis->sub_flag, FOCUS_IN_STARTEGY);
-//				
-//			}  
-//		} else {
-//			self->clear_focus(self, 0, focusCol);
-//			Strategy_focus(cthis, &cthis->p_sy->sf, 1);
-//			SET_PG_FLAG(cthis->sub_flag, FOCUS_IN_STARTEGY);
-//			
-//		}
+//		p_sy->key_hit_dn(&skt);
+//		
 //	}
-//	if(sy_chgFouse == 1) {
-//		Strategy_focus(cthis, &old_sf, 0);
-//		Strategy_focus(cthis, &cthis->p_sy->sf, 1);
-//	} else if(sy_chgFouse == 2){
-//		//光标从编辑区跳出
-//		Strategy_focus(cthis, &cthis->p_sy->sf, 0);
-//		self->show_focus(self, 0, 0);
-//	}
-	
+//	
+//	
+//	Strategy_focus(cthis, &old_sf, 2);
+//	//重新显示改行文本
+//	Strategy_focus_text(cthis, &cthis->p_sy->sf, 2);
+//	//显示新的选中效果
+//	Strategy_focus(cthis, &cthis->p_sy->sf, 1);	
 }
 static void Clean_stripe(HMI *self)
 {

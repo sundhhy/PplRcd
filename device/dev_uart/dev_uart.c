@@ -18,9 +18,13 @@ static void UartLedTxHdl(void *self);
 static Dev_Uart *devUart[DEV_UART_MAX];
 
 
+static uint8_t	arr_rx_sem_val[6];
+static uint8_t	arr_tx_sem_val[6];
+
+
 Dev_Uart *Get_DevUart( int minor)
 {
-	uint8_t	*prxSem, *ptxSem;
+//	uint8_t	*prxSem, *ptxSem;
 //	uint8_t	*p_lock;
 	I_dev_Char *devChar;
 	if( ( minor +1) > DEV_UART_MAX)
@@ -33,25 +37,27 @@ Dev_Uart *Get_DevUart( int minor)
 		
 		devUart[ minor]->dri = driveUart_new();
 		devUart[ minor]->minor = minor;
-		prxSem =  malloc( 1);
-		ptxSem =  malloc( 1);
-//		p_lock =  malloc( 1);
 		
-		*prxSem = minor * 2;
-		*ptxSem = minor * 2 + 1;
-//		*p_lock = minor * 3 + 2;
-		if( Sem_init( prxSem))
-			goto errExit0;
-		if( Sem_init( ptxSem))
-			goto errExit1;
-//		if( Sem_init( p_lock))
+		
+		
+//		prxSem =  malloc(1);
+//		ptxSem = malloc(1);
+//		*prxSem = minor * 2;
+//		*ptxSem = minor * 2 + 1;
+//		if( Sem_init(prxSem))
+//			goto errExit0;
+//		if( Sem_init(ptxSem))
 //			goto errExit1;
+//		devUart[ minor]->rxsem = prxSem;
+//		devUart[ minor]->txsem = ptxSem;
 		
-//		Sem_post(p_lock);
+		devUart[ minor]->txsem = Alloc_sem();
+		devUart[ minor]->rxsem = Alloc_sem();
 		
-		devUart[ minor]->rxsem = prxSem;
-		devUart[ minor]->txsem = ptxSem;
-//		devUart[ minor]->p_lock = p_lock;
+		if( Sem_init(&devUart[ minor]->txsem))
+			goto errExit0;
+		if( Sem_init(&devUart[ minor]->rxsem))
+			goto errExit1;
 		
 		devUart[ minor]->dri->device = devUart[ minor];
 		
@@ -233,26 +239,67 @@ int Dev_Uart_test( I_dev_Char *self, void *testBuf, int len)
 static int UartWaitTxSem( void *self, int ms)
 {
 	Dev_Uart *cthis = ( Dev_Uart *)( ( ( driveUart*)self)->device);
+	return Sem_wait(&cthis->txsem, ms);
 	
-	return Sem_wait( cthis->txsem, ms);
+	
+//	int	ret;
+//	Dev_Uart *cthis = ( Dev_Uart *)( ( ( driveUart*)self)->device);
+//	while(1)
+//	{
+//		if(arr_tx_sem_val[cthis->minor])
+//			break;
+//		delay_ms(1);
+//		if(ms)
+//			ms --;
+//		else
+//			break;
+//		
+//	}
+//	ret = arr_tx_sem_val[cthis->minor];
+//	
+//	if(arr_tx_sem_val[cthis->minor])
+//		arr_tx_sem_val[cthis->minor] --;
+//	return ret;
 
 }
 static int UartWaitRxSem( void *self, int ms)
 {
+	int	ret;
 	Dev_Uart *cthis = ( Dev_Uart *)( ( ( driveUart*)self)->device);
-	return Sem_wait( cthis->rxsem, ms);
+	return Sem_wait(&cthis->rxsem, ms);
+//	while(1)
+//	{
+//		if(arr_rx_sem_val[cthis->minor])
+//			break;
+//		delay_ms(1);
+//		if(ms)
+//			ms --;
+//		else
+//			break;
+//		
+//	}
+//	ret = arr_rx_sem_val[cthis->minor];
+//	
+//	if(arr_rx_sem_val[cthis->minor])
+//		arr_rx_sem_val[cthis->minor] --;
+//	return ret;
+	
 }
 
 static void UartPostTxSem(void *self)
 {
 	Dev_Uart *cthis = ( Dev_Uart *)( ( ( driveUart*)self)->device);
-	Sem_post( cthis->txsem);
+	Sem_post(&cthis->txsem);
+	
+//	arr_tx_sem_val[cthis->minor] = 1;
+	
 
 }
 static void UartPostRxSem( void *self)
 {
 	Dev_Uart *cthis = ( Dev_Uart *)( ( ( driveUart*)self)->device);
-	Sem_post( cthis->rxsem);
+	Sem_post(&cthis->rxsem);
+//	arr_rx_sem_val[cthis->minor] = 1;
 
 }
 

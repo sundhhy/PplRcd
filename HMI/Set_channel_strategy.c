@@ -41,7 +41,7 @@ strategy_t	g_chn_strategy = {
 //------------------------------------------------------------------------------
 // global function prototypes
 //------------------------------------------------------------------------------
-int g_set_weight = 1;			//该值会根据按键的动作而变化
+//int phn_sys.key_weight = 1;			//该值会根据按键的动作而变化
 //============================================================================//
 //            P R I V A T E   D E F I N I T I O N S                           //
 //============================================================================//
@@ -160,7 +160,7 @@ static int Cns_init(void *arg)
 		memset(arr_p_vram[i], 0, 48);
 	}
 	
-	g_set_weight = 1;
+//	phn_sys.key_weight = 1;
 	return RET_OK;
 }
 static void CNS_Exit(void)
@@ -212,13 +212,13 @@ static int Cns_key_up(void *arg)
 	}
 	
 	//
-	if(kt.key_type == SY_KEYTYPE_LONGPUSH) {
-		g_set_weight += 10;
-		
-	} else {
-		g_set_weight = 1;
-	}
-	Cns_update_content(OP_ADD, g_set_weight);
+//	if(kt.key_type == SY_KEYTYPE_LONGPUSH) {
+//		phn_sys.key_weight += 10;
+//		
+//	} else {
+//		phn_sys.key_weight = 1;
+//	}
+	Cns_update_content(OP_ADD, phn_sys.key_weight);
 	
 	
 	return ret;
@@ -237,14 +237,14 @@ static int Cns_key_dn(void *arg)
 	}
 	
 
-	if(kt.key_type == SY_KEYTYPE_LONGPUSH) {
-		g_set_weight += 10;
-		
-	} else {
-		g_set_weight = 1;
-	}
+//	if(kt.key_type == SY_KEYTYPE_LONGPUSH) {
+//		phn_sys.key_weight += 10;
+//		
+//	} else {
+//		phn_sys.key_weight = 1;
+//	}
 	
-	Cns_update_content(OP_SUB, g_set_weight);
+	Cns_update_content(OP_SUB, phn_sys.key_weight);
 	
 		
 	return ret;

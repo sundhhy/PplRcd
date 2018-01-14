@@ -134,7 +134,7 @@ static int Als_init(void *arg)
 		memset(arr_p_vram[i], 0, 48);
 	}
 	
-	g_set_weight = 1;
+	phn_sys.key_weight = 1;
 	return RET_OK;
 }
 static void ALS_Exit(void)
@@ -259,33 +259,28 @@ static int Als_modify(void *arg, int op)
 	int					a_aux = 0;
 	Model_chn			*p_mc = Get_Mode_chn(g_setting_chn);
 	Model				*p_md = SUPER_PTR(p_mc, Model);
-	strategy_keyval_t	kt = {SY_KEYTYPE_HIT};
+//	strategy_keyval_t	kt = {SY_KEYTYPE_HIT};
 	strategy_focus_t 	*p_syf = &g_alarm_strategy.sf;
 	int 				ret = RET_OK;
 	
-	if(arg) {
-		kt.key_type = ((strategy_keyval_t *)arg)->key_type;
-		
-	}
+//	if(arg) {
+//		kt.key_type = ((strategy_keyval_t *)arg)->key_type;
+//		
+//	}
 	
 
-	if(kt.key_type == SY_KEYTYPE_LONGPUSH) {
-		g_set_weight += 10;
-		
-	} else {
-		g_set_weight = 1;
-	}
+
 	
 	
 	if(p_syf->f_row == 0) {
-		g_setting_chn = Operate_in_tange(g_setting_chn, op, 1, 0, NUM_CHANNEL);
+		g_setting_chn = Operate_in_tange(g_setting_chn, op, 1, 0, NUM_CHANNEL - 1);
 		g_alarm_strategy.cmd_hdl(g_alarm_strategy.p_cmd_rcv, sycmd_reflush, NULL);
 		
 	} else {
 		a_aux = Als_row_aux(p_syf->f_row);
 		if(a_aux < 0)
 			goto exit;
-		p_md->modify_str_conf(p_md, a_aux, arr_p_vram[p_syf->f_row], op, g_set_weight);
+		p_md->modify_str_conf(p_md, a_aux, arr_p_vram[p_syf->f_row], op, phn_sys.key_weight);
 		p_syf->num_byte = strlen(arr_p_vram[p_syf->f_row]);
 	}
 	

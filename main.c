@@ -140,10 +140,15 @@ void	Tdd_disp_text(char	*text, int	line, int	row);
 void	Tdd_disp_clean();
 Model	*p_mdl_test;
 
-#define TDD_MDLCHN_SINGAL AI_Pt100
-#define TDD_MDLCHN_NUM_CHN 6
+
 # if TDD_EFS == 1
 int		tdd_fd;
+#	endif
+
+# if TDD_MODCHANNEL == 1
+#define TDD_MDLCHN_SINGAL AI_Pt100
+#define TDD_MDLCHN_NUM_CHN 6
+do_out_t		tdd_do;
 #	endif
 
 # if TDD_SMART_BUS == 1
@@ -663,7 +668,7 @@ int main (void) {
 			
 			//设置信号类型为pt100
 //			tdd_u8 = TDD_MDLCHN_SINGAL;
-			
+//			
 //			p_mdl_test->setMdlData(p_mdl_test,AUX_SIGNALTYPE, &tdd_u8);
 //			if(p_mdl_test->setMdlData(p_mdl_test,AUX_SIGNALTYPE, &tdd_u8) != RET_OK)
 //			{
@@ -683,10 +688,11 @@ int main (void) {
 			Tdd_disp_text(lcd_buf,line, 60);
 			
 			p_mdl_test->to_string(p_mdl_test, chnaux_upper_limit, lcd_buf);
-			Tdd_disp_text(lcd_buf,line++, 160);
+			Tdd_disp_text(lcd_buf,line, 160);
 			
-//			p_mdl_test->to_string(p_mdl_test, AUX_SIGNALTYPE, appBuf);
-//			Tdd_disp_text(appBuf,line++, 220);
+			p_mdl_test->getMdlData(p_mdl_test,AUX_SIGNALTYPE, NULL);
+			p_mdl_test->to_string(p_mdl_test, AUX_SIGNALTYPE, appBuf);
+			Tdd_disp_text(appBuf,line++, 220);
 			
 		}
 //		else 
@@ -716,19 +722,43 @@ int main (void) {
 			sprintf(appBuf,"[%04d] chn_%d", tdd_count, tdd_i);
 			Tdd_disp_text(appBuf,line, 0);
 			
-			p_mdl_test->getMdlData(p_mdl_test, AUX_SIGNALTYPE, &tdd_j);
-			p_mdl_test->to_string(p_mdl_test, AUX_SIGNALTYPE, appBuf);
-			Tdd_disp_text(appBuf,line, 150);
-			p_mdl_test->getMdlData(p_mdl_test, AUX_DATA, &tdd_j);
+//			p_mdl_test->getMdlData(p_mdl_test, AUX_SIGNALTYPE, &tdd_j);
+//			p_mdl_test->to_string(p_mdl_test, AUX_SIGNALTYPE, appBuf);
+//			Tdd_disp_text(appBuf,line, 150);
 			
 			
-			sprintf(appBuf,"%04d", tdd_j);
-			Tdd_disp_text(appBuf,line++, 250);
+			
+			if(p_mdl_test->getMdlData(p_mdl_test, AUX_DATA, &tdd_j) == RET_OK)
+			{
+				sprintf(appBuf,"%05d", tdd_j);
+				Tdd_disp_text(appBuf,line, 120);
+			}
+			else
+			{
+				Tdd_disp_text("err",line, 120);
+			}
+			
+			tdd_do.do_chn = tdd_i;
+			tdd_do.val = tdd_count & 1;
+			p_mdl_test->setMdlData(p_mdl_test, DO_output, &tdd_do);
+			
+			if(tdd_i == 0)
+			{
+				
+				
+				sprintf(appBuf,"CET:%05d", phn_sys.code_end_temperature);
+				Tdd_disp_text(appBuf,line, 180);
+				
+			}
+			
+			line ++;
+			
+			
 			
 			
 			
 		}
-		osDelay(1000);
+		osDelay(3000);
 		
 	}
 #elif TDD_DEV_UART3 == 1

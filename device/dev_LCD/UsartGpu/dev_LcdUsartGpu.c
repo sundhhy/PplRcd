@@ -48,9 +48,8 @@ I_dev_Char *I_sendDev;
 //------------------------------------------------------------------------------
 
 
-//给串口屏幕用的信号量, 值为6是因为6之前的信号量都被串口使用掉了。
-//todo: 当然，如此手动分配信号量是不合理，以后有时间改进
-static sem_t	gpu_sem = 6;	
+
+static sem_t	gpu_sem;	
 
 static char	lcdBuf[LCDBUF_MAX];
 
@@ -184,6 +183,12 @@ static int Dev_UsartInit( void)
 {
 	int	ret = 0;
 	int	tx_wait_ms = 10000;
+	
+	gpu_sem = Alloc_sem();
+	
+	if(gpu_sem < 0)
+		return ERR_RSU_UNAVAILABLE;
+	
 	Sem_init(&gpu_sem);
 	ret = Sem_post(&gpu_sem);
 	ret =  Dev_open( DEVID_UART1, ( void *)&I_sendDev);

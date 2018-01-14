@@ -448,10 +448,14 @@ static void	Key_identify_key_msg(Keyboard *self, keyMsg_t *p_key_msg, int *num)
 		
 		if(self->arr_key_pins[i].sum_count > long_count) 
 		{
-			p_key_msg->keyCode = self->arr_key_pins[i].key_code;
-			p_key_msg->eventCode = KEYEVENT_LPUSH;
-			num_pressed = 1;
+			if((self->arr_key_pins[i].long_push_delay % 3) == 0)
+			{
+				p_key_msg->keyCode = self->arr_key_pins[i].key_code;
+				p_key_msg->eventCode = KEYEVENT_LPUSH;
+				num_pressed = 1;
+			}
 			
+			self->arr_key_pins[i].long_push_delay ++;
 			goto exit;
 		}
 	}
@@ -469,6 +473,7 @@ static void	Key_identify_key_msg(Keyboard *self, keyMsg_t *p_key_msg, int *num)
 			p_msg->keyCode = self->arr_key_pins[i].key_code;
 			p_msg->eventCode = KEYEVENT_HIT;
 			self->arr_key_pins[i].up_flag = 1;
+			self->arr_key_pins[i].long_push_delay = 0;
 			num_pressed ++;
 		}
 	}

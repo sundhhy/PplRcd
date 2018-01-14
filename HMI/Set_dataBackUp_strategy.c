@@ -167,7 +167,7 @@ static int DBP_init(void *arg)
 	}
 	g_setting_chn = 0;
 	g_DBP_strategy.sty_some_fd = USB_Rgt_event_hdl(DBP_Usb_event);
-//	g_set_weight = 1;
+//	phn_sys.key_weight = 1;
 	return RET_OK;
 }
 
@@ -192,17 +192,17 @@ static int DBP_key_up(void *arg)
 		kt.key_type = ((strategy_keyval_t *)arg)->key_type;
 		
 	}
-	if(kt.key_type == SY_KEYTYPE_LONGPUSH) {
-		g_set_weight += 10;
-		
-	} else {
-		g_set_weight = 1;
-	}
+//	if(kt.key_type == SY_KEYTYPE_LONGPUSH) {
+//		phn_sys.key_weight += 10;
+//		
+//	} else {
+//		phn_sys.key_weight = 1;
+//	}
 
 	
 
 
-	ret = DBP_update_content(OP_ADD, g_set_weight);
+	ret = DBP_update_content(OP_ADD, phn_sys.key_weight);
 	return ret;
 }
 static int DBP_key_dn(void *arg)
@@ -216,14 +216,14 @@ static int DBP_key_dn(void *arg)
 		kt.key_type = ((strategy_keyval_t *)arg)->key_type;
 		
 	}
-	if(kt.key_type == SY_KEYTYPE_LONGPUSH) {
-		g_set_weight += 10;
-		
-	} else {
-		g_set_weight = 1;
-	}
+//	if(kt.key_type == SY_KEYTYPE_LONGPUSH) {
+//		phn_sys.key_weight += 10;
+//		
+//	} else {
+//		phn_sys.key_weight = 1;
+//	}
 	
-	ret = DBP_update_content(OP_SUB, g_set_weight);
+	ret = DBP_update_content(OP_SUB, phn_sys.key_weight);
 	return ret;
 }
 static int DBP_key_lt(void *arg)

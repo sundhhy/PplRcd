@@ -8,3 +8,4 @@
 .\objects\rtx_depend.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\assert.h
 .\objects\rtx_depend.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
 .\objects\rtx_depend.o: E:\mylib\sdhLib\inc\basis/sdhError.h
+.\objects\rtx_depend.o: E:\mylib\sdhLib\inc\basis/macros.h

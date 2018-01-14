@@ -83,7 +83,6 @@
 .\objects\main.o: control/CtlTimer.h
 .\objects\main.o: E:\mylib\sdhLib\inc\os/os_depend.h
 .\objects\main.o: E:\mylib\sdhLib\inc\os/rtx/rtx_depend.h
-.\objects\main.o: .\Glyph\Gh_txt.h
 .\objects\main.o: .\MVC\ViewFactory.h
 .\objects\main.o: .\MVC\view.h
 .\objects\main.o: .\MVC\View.h
