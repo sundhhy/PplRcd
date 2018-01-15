@@ -15,11 +15,13 @@
 
 #include "fs/easy_fs.h"
 #include "utils/Storage.h"
+
+#include "TDD.h"
 //------------------------------------------------------------------------------
 // const defines
 //------------------------------------------------------------------------------
 #define 	PHN_MAJOR_VER				0
-#define 	PHN_MINOR_VER				11
+#define 	PHN_MINOR_VER				2
 //------------------------------------------------------------------------------
 // module global vars
 //------------------------------------------------------------------------------
@@ -109,12 +111,15 @@ void System_init(void)
 	w25q_init();
 	FM25_init();
 	EFS_init(NUM_FSH);
+	
+#if TDD_ON	== 0
 	stg->init(stg);
 	
 	stg->rd_stored_data(stg, CFG_TYPE_SYSTEM, &phn_sys.sys_conf);
 	if(phn_sys.sys_conf.num_chn != NUM_CHANNEL)
 		System_default();
-		
+
+#endif	
 	
 }
 void System_time(struct  tm *stime)

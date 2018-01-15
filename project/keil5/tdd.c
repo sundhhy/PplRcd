@@ -178,22 +178,22 @@ void TDD_Efs(void)
 
 		tdd_err = 0;
 		for(tdd_count = 0; tdd_count < TEST_FILE_SIZE / sizeof(appBuf); tdd_count++)
-		if(phn_sys.fs.fs_write(tdd_fd, (uint8_t *)appBuf, sizeof(appBuf)) < 0)
-		{
-			Tdd_disp_text("wr failed", 2 + tdd_j, 160);
-			tdd_err = 1;
-			break;
-		}
+			if(phn_sys.fs.fs_write(tdd_fd, (uint8_t *)appBuf, sizeof(appBuf)) < 0)
+			{
+				Tdd_disp_text("wr failed", 2 + tdd_j, 160);
+				tdd_err = 1;
+				break;
+			}
 
 		if(tdd_err == 0)
 			Tdd_disp_text("wr ok", 2 + tdd_j, 160);
 		phn_sys.fs.fs_close(tdd_fd);
 	}
-	for(tdd_j = 0 ; tdd_j < TEST_NUM_FILE; tdd_j ++)
-	{
-		sprintf(appBuf, "mod_chn_%d", tdd_j);
-		tdd_fd = phn_sys.fs.fs_resize(-1, appBuf, 2 * 1024 * 1024);
-	}
+//	for(tdd_j = 0 ; tdd_j < TEST_NUM_FILE; tdd_j ++)
+//	{
+//		sprintf(appBuf, "mod_chn_%d", tdd_j);
+//		tdd_fd = phn_sys.fs.fs_resize(-1, appBuf, 2 * 1024 * 1024);
+//	}
 
 	for(tdd_j = 0 ; tdd_j < TEST_NUM_FILE; tdd_j ++)
 	{

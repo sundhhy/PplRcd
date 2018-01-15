@@ -41,7 +41,30 @@
 #define HMI_KEYCODE_ER		4
 #define HMI_KEYCODE_ESC		5
 
+
+/********图层的ID	***********************************/
+#define	ICO_ID_MENU				0x20
+#define	ICO_ID_PGUP				0x21
+#define	ICO_ID_PGDN				0x22
+#define	ICO_ID_ERASETOOL		0x23
+#define	ICO_ID_SEARCH			0x24
+#define	ICO_ID_COPY				0x25
+
+#define	SHEET_BOXLIST				0x2a
+#define	SHEET_G_TEXT				0x2b
+#define	SHEET_PSD_TEXT				0x2c
+
+#define IS_CHECK(n)				((n&0xf0) == 0x30)
+#define SHTID_CHECK(n)			(0x30 + n)
+
+#define	GET_CHN_FROM_ID(id)		(id & 0x0f)
+
+
+#define SHTID_RTL_MDIV				0x40
+
 #define SHT_BTN_ID(n)			(0x30 | n)
+
+/***************************************************************/
 
 
 #define	HMI_FLAG_HIDE	0
@@ -104,7 +127,7 @@ typedef struct {
 	//所有的显示应该是对齐的，不考虑出现空洞的情况
 	int (*entry_txt)(int row, int col,void *pp_text);	
 	int	(*init)(void	*arg);
-	void (*build_button)(void);
+	void (*build_button)(void *arg);
 	int	(*key_hit_up)(void	*arg);
 	int	(*key_hit_dn)(void	*arg);
 	int	(*key_hit_lt)(void	*arg);
@@ -179,5 +202,5 @@ extern HMI *g_p_curHmi, *g_p_lastHmi, *g_p_win_last;
 //------------------------------------------------------------------------------
 extern void Set_flag_show(uint8_t	*p_flag, int val);
 extern void Set_flag_keyhandle(uint8_t	*p_flag, int val);
-void STY_Duild_button(void);
+void STY_Duild_button(void *arg);
 #endif

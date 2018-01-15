@@ -199,6 +199,10 @@ int	EFS_close(int fd)
 {
 	file_info_t *f = &efs_mgr.arr_file_info[fd];
 	efs_file_mgt_t	*f_mgr = &efs_mgr.arr_efiles[fd];
+	
+	if(fd > EFS_MAX_NUM_FILES)
+		return -1;
+	
 	//¸üÐÂÐ´Î»ÖÃ
 	if(f_mgr->efile_wr_position != f->write_position)
 	{
@@ -265,6 +269,9 @@ int	EFS_write(int fd, uint8_t *p, int len)
 	file_info_t *f = &efs_mgr.arr_file_info[fd];
 	int			start_addr = f->start_page * EFS_FSH(f->fsh_No).fnf.page_size;
 
+	if(fd > EFS_MAX_NUM_FILES)
+		return -1;
+	
 	if(len > f->num_page * EFS_FSH(f->fsh_No).fnf.page_size)
 		len = f->num_page * EFS_FSH(f->fsh_No).fnf.page_size;
 	
@@ -288,6 +295,8 @@ int	EFS_read(int fd, uint8_t *p, int len)
 	file_info_t *f = &efs_mgr.arr_file_info[fd];
 	int			start_addr = f->start_page * EFS_FSH(f->fsh_No).fnf.page_size;
 
+	if(fd > EFS_MAX_NUM_FILES)
+		return -1;
 	if(len > f->num_page * EFS_FSH(f->fsh_No).fnf.page_size)
 		len = f->num_page * EFS_FSH(f->fsh_No).fnf.page_size;
 	
@@ -410,8 +419,8 @@ static int EFS_format(void)
 		ver[0] = EFS_SYS.major_ver ;
 		ver[1] = EFS_SYS.minor_ver;
 		EFS_FSH(EFS_MGR_FSH_NO).fsh_write(ver, 0, 2);
-		memset((uint8_t *)efs_mgr.arr_efiles, 0, sizeof(efs_mgr));
-		EFS_FSH(EFS_MGR_FSH_NO).fsh_write((uint8_t *)efs_mgr.arr_efiles, 2, sizeof(efs_mgr));
+		memset((uint8_t *)efs_mgr.arr_efiles, 0, sizeof(efs_mgr.arr_efiles));
+		EFS_FSH(EFS_MGR_FSH_NO).fsh_write((uint8_t *)efs_mgr.arr_efiles, 2, sizeof(efs_mgr.arr_efiles));
 	}
 //	
 //	

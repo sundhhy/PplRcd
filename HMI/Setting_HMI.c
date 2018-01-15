@@ -49,6 +49,7 @@ HMI 	*g_p_Setting_HMI;
 
  static strategy_t	*arr_p_setting_strategy[4][2] = {{&g_sys_strategy, &g_chn_strategy}, {&g_alarm_strategy, &g_art_strategy}, \
  {&g_view_strategy, &g_DBP_strategy},{&g_dataPrint_strategy, NULL}};
+ 
 //------------------------------------------------------------------------------
 // local function prototypes
 //------------------------------------------------------------------------------
@@ -62,6 +63,7 @@ static void	Setting_HMI_show_focus(HMI *self, uint8_t fouse_row, uint8_t fouse_c
 static void	Setting_HMI_hitHandle( HMI *self, char *s_key);
 static void	Setting_HMI_dhit( HMI *self, char *s_key);
 static void	Setting_HMI_long_hit( HMI *self, char *s_key);
+static void	Setting_HMI_build_button(HMI *self);
 
 static void	Show_entry(HMI *self, strategy_t *p_st);
 static int STING_Show_Button(HMI *self, int up_or_dn);
@@ -71,6 +73,7 @@ static sheet* Setting_HMI_get_focus(Setting_HMI *self, int arg);
 static void Strategy_focus(Setting_HMI *self, strategy_focus_t *p_syf, int opt);
 static int Setting_Sy_cmd(void *p_rcv, int cmd,  void *arg);
  
+static void Setting_btn_hdl(void *arg, uint8_t btn_id);
 
 //============================================================================//
 //            P U B L I C   F U N C T I O N S                                 //
@@ -90,6 +93,14 @@ Setting_HMI *Get_Setting_HMI(void)
 	
 }
 
+//设置策略的默认函数
+void STY_Duild_button(void *arg)
+{
+	Button	*p_btn = BTN_Get_Sington();
+	p_btn->build_each_btn(0, BTN_TYPE_MENU, Setting_btn_hdl, arg);
+	
+}
+
 CTOR(Setting_HMI)
 SUPER_CTOR( HMI);
 FUNCTION_SETTING(HMI.init, Init_Setting_HMI);
@@ -106,8 +117,11 @@ FUNCTION_SETTING(HMI.init_focus, Setting_HMI_init_focus);
 FUNCTION_SETTING(HMI.clear_focus, Setting_HMI_clear_focus);
 FUNCTION_SETTING(HMI.show_focus, Setting_HMI_show_focus);
 
-
+FUNCTION_SETTING(HMI.build_button, Setting_HMI_build_button);
 END_CTOR
+
+
+
 //=========================================================================//
 //                                                                         //
 //          P R I V A T E   D E F I N I T I O N S                          //
@@ -222,7 +236,7 @@ static void	Setting_initSheet(HMI *self)
 	Sheet_updown(g_p_sht_bkpic, h++);
 	Sheet_updown(g_p_sht_title, h++);
 	Sheet_updown(g_p_shtTime, h++);
-	Sheet_updown(g_p_ico_memu, h++);
+//	Sheet_updown(g_p_ico_memu, h++);
 	
 
 	self->init_focus(self);
@@ -272,6 +286,13 @@ static void	Setting_HMI_init_focus(HMI *self)
 //	Focus_Set_sht(self->p_fcuu, 0, 0, g_p_ico_pgup);
 //	Focus_Set_sht(self->p_fcuu, 0, 0, g_p_ico_pgdn);	
 //	Focus_Set_focus(self->p_fcuu, 0, 2);
+}
+
+static void	Setting_HMI_build_button(HMI *self)
+{
+	Setting_HMI		*cthis = SUB_PTR( self, HMI, Setting_HMI);
+	
+	cthis->p_sy->build_button(self);
 }
 
 static void	Setting_HMI_clear_focus(HMI *self, uint8_t fouse_row, uint8_t fouse_col)
@@ -605,6 +626,19 @@ static void	Setting_HMI_hitHandle(HMI *self, char *s_key)
 		return;
 }
 
+static void Setting_btn_hdl(void *arg, uint8_t btn_id)
+{
+	HMI					*self	= (HMI *)arg;		
+	Setting_HMI			*cthis = SUB_PTR(self, HMI, Setting_HMI);
+	
+	if(btn_id == ICO_ID_MENU)
+	{
+		
+		cthis->entry_start_row = 0;
+		self->switchHMI(self, g_p_HMI_menu);
+	}
+}
+
 
 static void	Setting_HMI_long_hit( HMI *self, char *s_key)
 {
@@ -711,25 +745,25 @@ static void Clean_stripe(HMI *self)
 //切换页面时，将光标重新至于编辑区
 static int STING_Show_Button(HMI *self, int up_or_dn)
 {
-	Setting_HMI		*cthis = SUB_PTR( self, HMI, Setting_HMI);
-	if(up_or_dn == ICO_ID_PGDN) {
-		cthis->entry_start_row += STRIPE_MAX_ROWS;
-	} else if(up_or_dn == ICO_ID_PGUP) {
-		cthis->entry_start_row -= STRIPE_MAX_ROWS;
-	} else {
-		return ERR_OPT_FAILED;
-	}
+//	Setting_HMI		*cthis = SUB_PTR( self, HMI, Setting_HMI);
+//	if(up_or_dn == ICO_ID_PGDN) {
+//		cthis->entry_start_row += STRIPE_MAX_ROWS;
+//	} else if(up_or_dn == ICO_ID_PGUP) {
+//		cthis->entry_start_row -= STRIPE_MAX_ROWS;
+//	} else {
+//		return ERR_OPT_FAILED;
+//	}
 
-	Clean_stripe(self);
-	Show_entry(self, cthis->p_sy);
-	SET_PG_FLAG(cthis->sub_flag, FOCUS_IN_STARTEGY);
-	
-	g_p_ico_pgup->cnt.effects = GP_CLR_EFF(g_p_ico_pgup->cnt.effects, EFF_FOCUS);
-	g_p_ico_pgdn->cnt.effects = GP_CLR_EFF(g_p_ico_pgdn->cnt.effects, EFF_FOCUS);
-	g_p_ico_memu->cnt.effects = GP_CLR_EFF(g_p_ico_memu->cnt.effects, EFF_FOCUS);
-//	self->show_focus(self, self->p_fcuu->focus_row, self->p_fcuu->focus_col);
-	Strategy_focus(cthis, &cthis->p_sy->sf, 1);
-	Flush_LCD();
+//	Clean_stripe(self);
+//	Show_entry(self, cthis->p_sy);
+//	SET_PG_FLAG(cthis->sub_flag, FOCUS_IN_STARTEGY);
+//	
+//	g_p_ico_pgup->cnt.effects = GP_CLR_EFF(g_p_ico_pgup->cnt.effects, EFF_FOCUS);
+//	g_p_ico_pgdn->cnt.effects = GP_CLR_EFF(g_p_ico_pgdn->cnt.effects, EFF_FOCUS);
+//	g_p_ico_memu->cnt.effects = GP_CLR_EFF(g_p_ico_memu->cnt.effects, EFF_FOCUS);
+////	self->show_focus(self, self->p_fcuu->focus_row, self->p_fcuu->focus_col);
+//	Strategy_focus(cthis, &cthis->p_sy->sf, 1);
+//	Flush_LCD();
 	
 	return RET_OK;
 }

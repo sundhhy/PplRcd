@@ -17,26 +17,7 @@
 // const defines
 //------------------------------------------------------------------------------
 
-/********图层的ID	***********************************/
-#define	ICO_ID_MENU				0x20
-#define	ICO_ID_PGUP				0x21
-#define	ICO_ID_PGDN				0x22
-#define	ICO_ID_ERASETOOL		0x23
-#define	ICO_ID_SEARCH			0x24
 
-#define	SHEET_BOXLIST				0x2a
-#define	SHEET_G_TEXT				0x2b
-#define	SHEET_PSD_TEXT				0x2c
-
-#define IS_CHECK(n)				((n&0xf0) == 0x30)
-#define SHTID_CHECK(n)			(0x30 + n)
-
-#define	GET_CHN_FROM_ID(id)		(id & 0x0f)
-
-
-#define SHTID_RTL_MDIV				0x40
-
-/***************************************************************/
 
 
 //条纹背景图片的属性,这是从背景图片中得到的数据

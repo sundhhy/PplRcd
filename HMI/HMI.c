@@ -79,12 +79,7 @@ void Set_flag_keyhandle(uint8_t	*p_flag, int val)
 	*p_flag |= val;
 }
 
-//设置策略的默认函数
-void STY_Duild_button(void)
-{
-	
-	
-}
+
 
 
 
@@ -231,7 +226,7 @@ static void		HMI_Build_button(HMI *self)
 	int		i;
 	for(i = 0; i < NUM_BUTTON; i++)
 	{
-		p->build_each_btn(i, BTN_TYPE_NONE, NULL);
+		p->build_each_btn(i, BTN_TYPE_NONE, NULL, NULL);
 
 
 	}
@@ -246,7 +241,9 @@ static void		HMI_Clean_button(HMI *self)
 }
 static void		HMI_Show_button(HMI *self)
 {
-
+	Button	*p = BTN_Get_Sington();
+	
+	p->show_vaild_btn();
 
 }
 

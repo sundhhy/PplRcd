@@ -5,19 +5,22 @@
 #include "ExpFactory.h"
 #include "HMI.h"
 #include "format.h"
-//#include "sdhDef.h"
+#include "sdhDef.h"
 #include "arithmetic/bit.h"
 //#include "basis/assert.h"
 //------------------------------------------------------------------------------
 // const defines
 //------------------------------------------------------------------------------
+#define BTN_ICO_MENU			"20"
+#define BTN_ICO_COPY			"27"
+
 
 //4个按钮的图形代码
 static ro_char *arr_btn_code[NUM_BUTTON] ={ \
-	{"<bu vx0=10 vy0=212 bx=49 by=25 bkc=black clr=black><pic bx=48  by=24 >20</></bu>" } , \
-	{"<bu vx0=80 vy0=212 bx=49 by=25 bkc=black clr=black><pic  bx=48  by=24 >21</></bu>" },\
-	{"<bu vx0=160 vy0=212 bx=49 by=25 bkc=black clr=black><pic  bx=48  by=24 >22</></bu>" },\
-	{"<bu vx0=240 vy0=212 bx=49 by=25 bkc=black clr=black><pic  bx=48  by=24 >23</></bu>" }\
+	"<bu vx0=10 vy0=212 bx=49 by=25 bkc=black clr=black><pic bx=48  by=24 >20</></bu>" , \
+	"<bu vx0=80 vy0=212 bx=49 by=25 bkc=black clr=black><pic  bx=48  by=24 >21</></bu>" ,\
+	"<bu vx0=160 vy0=212 bx=49 by=25 bkc=black clr=black><pic  bx=48  by=24 >22</></bu>" ,\
+	"<bu vx0=240 vy0=212 bx=49 by=25 bkc=black clr=black><pic  bx=48  by=24 >23</></bu>" \
 };
 
 //------------------------------------------------------------------------------
@@ -50,13 +53,13 @@ static Button	*p_self;
 // local function prototypes
 //------------------------------------------------------------------------------
 static void 	BTN_Init(Button *self);
-static int		BTN_Build_each_btn(uint8_t	seq, uint8_t btn_type, Button_receive *br);
+static int		BTN_Build_each_btn(uint8_t	seq, uint8_t btn_type, btn_hdl bh, void *hdl_arg);
 static void		BTN_Clean_btn(void);
 static void		BTN_Clean_focus(void);
 static void		BTN_Show_focus(void);
 static int		BTN_Move_focus(uint8_t	position);		
 static void		BTN_Deal_enter(void);
-
+static void		BTN_Show_vaild_btn(void);
 
 //============================================================================//
 //            P U B L I C   F U N C T I O N S                                 //
@@ -77,6 +80,7 @@ FUNCTION_SETTING(init, BTN_Init);
 FUNCTION_SETTING(build_each_btn, BTN_Build_each_btn);
 FUNCTION_SETTING(clean_btn, BTN_Clean_btn);
 FUNCTION_SETTING(clean_focus, BTN_Clean_focus);
+FUNCTION_SETTING(show_vaild_btn, BTN_Show_vaild_btn);
 FUNCTION_SETTING(show_focus, BTN_Show_focus);
 FUNCTION_SETTING(move_focus, BTN_Move_focus);
 FUNCTION_SETTING(deal_enter, BTN_Deal_enter);
@@ -111,6 +115,7 @@ static void 	BTN_Init(Button *self)
 		arr_p_btn_sht[i]->area.x1 = arr_p_btn_sht[i]->area.x0 + arr_p_btn_sht[i]->bxsize;
 		arr_p_btn_sht[i]->area.y1 = arr_p_btn_sht[i]->area.y0 + arr_p_btn_sht[i]->bysize;
 		arr_p_btn_sht[i]->id = SHT_BTN_ID(i);
+		arr_p_btn_sht[i]->height = -1;
 		FormatSheetSub(arr_p_btn_sht[i]);
 		
 
@@ -121,24 +126,33 @@ static void 	BTN_Init(Button *self)
 	
 	
 }
-static int		BTN_Build_each_btn(uint8_t	seq, uint8_t btn_type, Button_receive *br)
+static int		BTN_Build_each_btn(uint8_t	seq, uint8_t btn_type, btn_hdl bh, void *hdl_arg)
 {
+	uint8_t		*p_set = &p_self->set_vaild_btn;
+//	void		*old_arg = p_self->arr_p_arg[seq];
+//	btn_hdl		old_hdl = p_self->arr_hdl[seq];
 	if(seq >= NUM_BUTTON)
-		return ;
+		return -1;
 //	assert(p_self != NULL);
 	
-//	Set_bit(p_self->
+	Set_bit(p_set, seq);
+	p_self->arr_p_arg[seq] = hdl_arg;
+	p_self->arr_hdl[seq] = bh;
+	
 	switch(btn_type)
 	{
 		
 		case BTN_TYPE_MENU:
-			
+			arr_p_btn_sht[seq]->cnt.data = BTN_ICO_MENU;
+			arr_p_btn_sht[seq]->id = ICO_ID_MENU;
 			break;
 	
 		case BTN_TYPE_COPY:
-			
+			arr_p_btn_sht[seq]->cnt.data = BTN_ICO_COPY;
+			arr_p_btn_sht[seq]->id = ICO_ID_COPY;
 			break;
-		defualt:
+		default:
+			Clear_bit(p_set, seq);
 			
 			break;
 		
@@ -154,12 +168,32 @@ static void		BTN_Clean_btn(void)
 }
 static void		BTN_Clean_focus(void)
 {
-	
+	p_self->set_vaild_btn = 0;
 	
 }
+
 static void		BTN_Show_focus(void)
 {
 	
+	
+}
+static void		BTN_Show_vaild_btn(void)
+{
+	uint8_t		*p_set = &p_self->set_vaild_btn;
+	int			i = 0;
+	
+	for(i = 0; i < NUM_BUTTON; i++)
+	{
+		if(Check_bit(p_set, i))
+		{
+			
+			arr_p_btn_sht[i]->e_heifht = 1;
+			Sheet_slide(arr_p_btn_sht[i]);
+			arr_p_btn_sht[i]->e_heifht = 0;
+		}
+		
+		
+	}
 	
 }
 static int		BTN_Move_focus(uint8_t	position)

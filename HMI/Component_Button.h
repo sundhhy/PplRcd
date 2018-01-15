@@ -26,23 +26,29 @@
 //------------------------------------------------------------------------------
 // typedef
 //------------------------------------------------------------------------------
-INTERFACE(Button_receive)
-{
-	void	(*btn_recv)(Button_receive *self, uint8_t	btn_id);
-	
-};
+//INTERFACE(Button_receive)
+//{
+//	void	(*btn_recv)(Button_receive *self, uint8_t	btn_id);
+//	
+//};
 
+
+typedef void (*btn_hdl)(void *arg, uint8_t btn_id);
 
 CLASS(Button)
 {
 	uint8_t		btn_id;
-	uint8_t		set_act_btn;
+	uint8_t		set_vaild_btn;
 	uint8_t		cur_focush_btn;
 	uint8_t		none;
+	void		*arr_p_arg[NUM_BUTTON];
+	btn_hdl		arr_hdl[NUM_BUTTON];
+	
 	void 		(*init)(Button *self);
-	int			(*build_each_btn)(uint8_t	seq, uint8_t btn_type, Button_receive *br);
+	int			(*build_each_btn)(uint8_t	seq, uint8_t btn_type, btn_hdl bh, void *hdl_arg);
 	void		(*clean_btn)(void);
 	void		(*clean_focus)(void);
+	void		(*show_vaild_btn)(void);	
 	void		(*show_focus)(void);
 	int			(*move_focus)(uint8_t	position);		//direct 0显示在第一个活跃按钮 1 显示在下一个 2 显示在前一个
 	void		(*deal_enter)(void);
