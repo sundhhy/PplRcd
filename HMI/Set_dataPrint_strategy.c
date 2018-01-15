@@ -26,6 +26,7 @@ static void DBT_Exit(void);
 strategy_t	g_dataPrint_strategy = {
 	Data_print_Strategy_entry,
 	DPT_init,
+	STY_Duild_button,
 	DPT_key_up,
 	DPT_key_dn,
 	DPT_key_lt,

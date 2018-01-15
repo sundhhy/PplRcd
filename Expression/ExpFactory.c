@@ -2,11 +2,8 @@
 #include <string.h>
 #include "TxtExpr.h"
 #include "NtButton.h"
-#include "BrExpr.h"
 #include "NtInput.h"
 #include "GeometricsExpr.h"
-#include "NtGrid.h"
-#include "Dyn_TimeExpr.h"
 #include "PicExpr.h"
 
 
@@ -53,11 +50,7 @@ Expr *ExpCreate( char *type)
 	{
 		return (Expr *)GetGmtrExpr();
 	}
-	p = strstr( type, "gr");
-	if( p)
-	{
-		return (Expr *)GetNtGrid();
-	}
+
 	p = strstr( type, "pic");
 	if( p)
 	{
@@ -65,25 +58,13 @@ Expr *ExpCreate( char *type)
 	}
 	
 	
-	//不注意大小写
-	//动态显示图元
-//	p = strstr( type, "time");
-//	if( p)
-//	{
-//		return (Expr *)GetTimeExpr();
-//	}
+
 	
 	if( !strcasecmp( type, "bu"))
 	{
 		return (Expr *)GetNtButton();
 	}
-//	
-//	p = strstr( type, "br");
-//	if( p)
-//	{
-//		return (Expr *)GetBrExpr();
-//	}
-	
+
 	
 
 //	err:		

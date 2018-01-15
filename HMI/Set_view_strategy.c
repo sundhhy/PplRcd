@@ -27,6 +27,7 @@ static void VIEW_Exit(void);
 strategy_t	g_view_strategy = {
 	ViewStrategy_entry,
 	VIEW_init,
+	STY_Duild_button,
 	VIEW_key_up,
 	VIEW_key_dn,
 	VIEW_key_lt,

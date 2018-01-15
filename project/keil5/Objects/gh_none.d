@@ -1,0 +1,13 @@
+.\objects\gh_none.o: ..\..\Glyph\Gh_None.c
+.\objects\gh_none.o: ..\..\Glyph\Gh_none.h
+.\objects\gh_none.o: ..\..\Glyph\Glyph.h
+.\objects\gh_none.o: E:\sdhLib\inc\lw_oopc.h
+.\objects\gh_none.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
+.\objects\gh_none.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
+.\objects\gh_none.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+.\objects\gh_none.o: ..\..\device\device.h
+.\objects\gh_none.o: ..\..\device\deviceId.h
+.\objects\gh_none.o: ..\..\device\dev_cmd.h
+.\objects\gh_none.o: ..\..\device\dev_char.h
+.\objects\gh_none.o: ..\..\device\dev_lcd.h
+.\objects\gh_none.o: ..\..\APP\TDD.h

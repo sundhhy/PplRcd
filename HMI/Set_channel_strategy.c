@@ -28,6 +28,7 @@ static void CNS_Exit(void);
 strategy_t	g_chn_strategy = {
 	ChnStrategy_entry,
 	Cns_init,
+	STY_Duild_button,
 	Cns_key_up,
 	Cns_key_dn,
 	Cns_key_lt,
@@ -201,15 +202,15 @@ static int Cns_key_up(void *arg)
 	
 //	Model_chn			*p_mc = Get_Mode_chn(g_setting_chn);
 //	Model				*p_md = SUPER_PTR(p_mc, Model);
-	strategy_keyval_t	kt = {SY_KEYTYPE_HIT};
+//	strategy_keyval_t	kt = {SY_KEYTYPE_HIT};
 //	strategy_focus_t 	*p_syf = &g_chn_strategy.sf;
 //	char			*p;
 	int 			ret = RET_OK;
 	
-	if(arg) {
-		kt.key_type = ((strategy_keyval_t *)arg)->key_type;
-		
-	}
+//	if(arg) {
+//		kt.key_type = ((strategy_keyval_t *)arg)->key_type;
+//		
+//	}
 	
 	//
 //	if(kt.key_type == SY_KEYTYPE_LONGPUSH) {
@@ -228,13 +229,13 @@ static int Cns_key_dn(void *arg)
 {
 	
 
-	strategy_keyval_t	kt = {SY_KEYTYPE_HIT};
+//	strategy_keyval_t	kt = {SY_KEYTYPE_HIT};
 	int 				ret = RET_OK;
 	
-	if(arg) {
-		kt.key_type = ((strategy_keyval_t *)arg)->key_type;
-		
-	}
+//	if(arg) {
+//		kt.key_type = ((strategy_keyval_t *)arg)->key_type;
+//		
+//	}
 	
 
 //	if(kt.key_type == SY_KEYTYPE_LONGPUSH) {

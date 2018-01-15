@@ -41,6 +41,8 @@
 #define HMI_KEYCODE_ER		4
 #define HMI_KEYCODE_ESC		5
 
+#define SHT_BTN_ID(n)			(0x30 | n)
+
 
 #define	HMI_FLAG_HIDE	0
 #define	HMI_FLAG_SHOW	1
@@ -102,6 +104,7 @@ typedef struct {
 	//所有的显示应该是对齐的，不考虑出现空洞的情况
 	int (*entry_txt)(int row, int col,void *pp_text);	
 	int	(*init)(void	*arg);
+	void (*build_button)(void);
 	int	(*key_hit_up)(void	*arg);
 	int	(*key_hit_dn)(void	*arg);
 	int	(*key_hit_lt)(void	*arg);
@@ -152,6 +155,13 @@ ABS_CLASS(HMI)
 	void		(*init_focus)(HMI *self);
 	void		(*clear_focus)(HMI *self, uint8_t fouse_row, uint8_t fouse_col);
 	void		(*show_focus)( HMI *self, uint8_t fouse_row, uint8_t fouse_col);
+	
+	
+		//屏幕上的按钮
+	void		(*build_button)(HMI *self);
+	void		(*clean_button)(HMI *self);
+	void		(*show_button)(HMI *self);
+	
 };
 
 typedef   const char  ro_char;
@@ -167,8 +177,7 @@ extern HMI *g_p_curHmi, *g_p_lastHmi, *g_p_win_last;
 //------------------------------------------------------------------------------
 // function prototypes
 //------------------------------------------------------------------------------
-int Is_rowEnd( const char *str);
-int Is_colEnd( const char *str);
 extern void Set_flag_show(uint8_t	*p_flag, int val);
 extern void Set_flag_keyhandle(uint8_t	*p_flag, int val);
+void STY_Duild_button(void);
 #endif

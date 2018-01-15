@@ -1,0 +1,15 @@
+.\objects\testglyph.o: ..\..\Glyph\testGlyph.c
+.\objects\testglyph.o: ..\..\Glyph\testGlyph.h
+.\objects\testglyph.o: ..\..\device\dev_LCD/UsartGpu/dev_LcdUsartGpu.h
+.\objects\testglyph.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+.\objects\testglyph.o: ..\..\device\dev_lcd.h
+.\objects\testglyph.o: ..\..\APP\TDD.h
+.\objects\testglyph.o: D:\Keil_v5\ARM\PACK\ARM\CMSIS\4.5.0\CMSIS\RTOS\RTX\INC\cmsis_os.h
+.\objects\testglyph.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
+.\objects\testglyph.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
+.\objects\testglyph.o: ..\..\device\device.h
+.\objects\testglyph.o: ..\..\device\deviceId.h
+.\objects\testglyph.o: ..\..\device\dev_cmd.h
+.\objects\testglyph.o: ..\..\device\dev_char.h
+.\objects\testglyph.o: E:\sdhLib\inc\lw_oopc.h
+.\objects\testglyph.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h

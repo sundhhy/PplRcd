@@ -16,6 +16,7 @@
 
 static int Data_bacnup_Strategy_entry(int row, int col, void *pp_text);
 static int DBP_init(void *arg);
+static void DBP_Init_button(void);
 static int DBP_key_up(void *arg);
 static int DBP_key_dn(void *arg);
 static int DBP_key_lt(void *arg);
@@ -27,6 +28,7 @@ static void DBP_Exit(void);
 strategy_t	g_DBP_strategy = {
 	Data_bacnup_Strategy_entry,
 	DBP_init,
+	DBP_Init_button,
 	DBP_key_up,
 	DBP_key_dn,
 	DBP_key_lt,
@@ -185,13 +187,13 @@ static void DBP_Exit(void)
 }
 static int DBP_key_up(void *arg)
 {
-	strategy_keyval_t	kt = {SY_KEYTYPE_HIT};
+//	strategy_keyval_t	kt = {SY_KEYTYPE_HIT};
 	int 			ret = RET_OK;
 	
-	if(arg) {
-		kt.key_type = ((strategy_keyval_t *)arg)->key_type;
-		
-	}
+//	if(arg) {
+//		kt.key_type = ((strategy_keyval_t *)arg)->key_type;
+//		
+//	}
 //	if(kt.key_type == SY_KEYTYPE_LONGPUSH) {
 //		phn_sys.key_weight += 10;
 //		
@@ -208,14 +210,14 @@ static int DBP_key_up(void *arg)
 static int DBP_key_dn(void *arg)
 {
 	
-	strategy_keyval_t	kt = {SY_KEYTYPE_HIT};
+//	strategy_keyval_t	kt = {SY_KEYTYPE_HIT};
 //	strategy_focus_t *p_syf = &g_sys_strategy.sf;
 	int 			ret = RET_OK;
 	
-	if(arg) {
-		kt.key_type = ((strategy_keyval_t *)arg)->key_type;
-		
-	}
+//	if(arg) {
+//		kt.key_type = ((strategy_keyval_t *)arg)->key_type;
+//		
+//	}
 //	if(kt.key_type == SY_KEYTYPE_LONGPUSH) {
 //		phn_sys.key_weight += 10;
 //		

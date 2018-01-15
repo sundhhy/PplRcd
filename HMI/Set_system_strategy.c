@@ -29,6 +29,7 @@ static void SYS_Exit(void);
 strategy_t	g_sys_strategy = {
 	SysStrategy_entry,
 	Sys_init,
+	STY_Duild_button,
 	Sys_key_up,
 	Sys_key_dn,
 	Sys_key_lt,
@@ -205,14 +206,14 @@ static int Sys_get_focusdata(void *pp_data, strategy_focus_t *p_in_syf)
 
 static int Sys_key_up(void *arg)
 {
-	strategy_keyval_t	kt = {SY_KEYTYPE_HIT};
+//	strategy_keyval_t	kt = {SY_KEYTYPE_HIT};
 //	strategy_focus_t *p_syf = &g_sys_strategy.sf;
 	int 			ret = RET_OK;
-	
-	if(arg) {
-		kt.key_type = ((strategy_keyval_t *)arg)->key_type;
-		
-	}
+//	
+//	if(arg) {
+//		kt.key_type = ((strategy_keyval_t *)arg)->key_type;
+//		
+//	}
 //	if(kt.key_type == SY_KEYTYPE_LONGPUSH) {
 //		phn_sys.key_weight += 10;
 //		
@@ -230,14 +231,14 @@ static int Sys_key_up(void *arg)
 static int Sys_key_dn(void *arg)
 {
 	
-	strategy_keyval_t	kt = {SY_KEYTYPE_HIT};
+//	strategy_keyval_t	kt = {SY_KEYTYPE_HIT};
 //	strategy_focus_t *p_syf = &g_sys_strategy.sf;
 	int 			ret = RET_OK;
-	
-	if(arg) {
-		kt.key_type = ((strategy_keyval_t *)arg)->key_type;
-		
-	}
+//	
+//	if(arg) {
+//		kt.key_type = ((strategy_keyval_t *)arg)->key_type;
+//		
+//	}
 //	if(kt.key_type == SY_KEYTYPE_LONGPUSH) {
 //		phn_sys.key_weight += 10;
 //		

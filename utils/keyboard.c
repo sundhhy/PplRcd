@@ -205,7 +205,7 @@ static int Keyboard_init(Keyboard *self, IN void *arg)
 	int i ;
 	
 #if CONF_KEYSCAN_POLL == 1
-	int	cyc_ms = *((int *)arg);
+	uint16_t	cyc_ms = *((uint16_t *)arg);
 	self->run_count = 0;
 	self->cycle_ms = cyc_ms;
 	

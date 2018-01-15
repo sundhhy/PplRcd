@@ -169,9 +169,7 @@ static void GhTxt_vDraw( Glyph *self, dspContent_t *cnt, vArea_t *area)
 //	}
 //	else
 	{
-#if DUG_LOST_GPUCMD == 1
 		
-#endif		
 		lcd->wrString(m, cnt->data, cnt->len, area->x0, area->y0, cnt->font,c);
 		
 	}

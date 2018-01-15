@@ -18,6 +18,11 @@
 
 #define MDHCHN_CHN_NUM		0x20
 #define MAX_TOUCHSPOT		3
+
+#define ALM_HH					0x40
+#define ALM_HI					0x20
+#define ALM_LO					0x10
+#define ALM_LL					0x08
 //------------------------------------------------------------------------------
 // typedef
 //------------------------------------------------------------------------------
@@ -80,15 +85,14 @@ typedef struct {
 	uint8_t			filter_time_s;
 	uint8_t			decimal;
 	uint8_t			flag_err;		//0 无错误， 1 采样失败    8
-	short			small_signal;					//10
-	uint16_t			lower_limit, upper_limit;		//	14
+	short				small_signal;					//10
+	uint16_t		lower_limit, upper_limit;		//	14
 
-	/***************1位小数*******************/
-	
-	short			k,b;				//18
+	//K的小数点固定为2，B的小数点与采样信号类型的小数点一致
+	short				k,b;				//18
 	/******************************************/
-	uint16_t			value;					//20
-	uint16_t			sample_value;				//	22
+	int16_t			value;					//20
+	uint16_t		sample_value;				//	22
 	uint8_t			smp_flag;				//23	0 采样值无效  1 采样值有效
 	uint8_t			none;
 }chn_info_t;
@@ -106,7 +110,17 @@ typedef struct {
 	uint8_t				touch_spot_ll;
 	
 	uint8_t				alarm_backlash;		//报警回差  0 - 10.0%
-	uint8_t				none[3];
+	
+	uint8_t				alm_flag;
+	/*
+	0x40:高高报
+	0x20:高报
+	0x10:低报
+	0x08:低低报
+	*/
+	
+	
+	uint8_t				none[2];
 }chn_alarm_t;
 	
 typedef struct {
@@ -118,7 +132,7 @@ typedef struct {
 
 typedef struct
 {
-	uint8_t				alarm_backlash;		//报警回差  0 - 10.0%			29
+	uint8_t			alarm_backlash;		//报警回差  0 - 10.0%			29
 	uint8_t			tag_NO;
 	uint8_t			signal_type;
 	uint8_t			unit;

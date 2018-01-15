@@ -27,6 +27,7 @@ static void ALS_Exit(void);
 strategy_t	g_alarm_strategy = {
 	Als_entry,
 	Als_init,
+	STY_Duild_button,
 	Als_key_up,
 	Als_key_dn,
 	Als_key_lt,

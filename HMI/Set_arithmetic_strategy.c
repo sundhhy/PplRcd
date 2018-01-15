@@ -28,6 +28,7 @@ strategy_t	g_art_strategy = {
 	ArtStrategy_entry,
 	
 	ART_init,
+	STY_Duild_button,
 	ART_key_up,
 	ART_key_dn,
 	ART_key_lt,

@@ -1,5 +1,0 @@
----- extiLine Matches (4 in 2 files) ----
-Drive_gpio.c (drive\gpio):	arr_driGpio[ p_gpio->extiLine] = self;
-Drive_gpio.c (drive\gpio):	st_exti.EXTI_Line = arr_extiLine[ p_gpio->extiLine];
-Drive_gpio.c (drive\gpio):	EXTI_ClearITPendingBit( arr_extiLine[ p_gpio->extiLine]);
-hardwareConfig.h (configs):	uint8_t			extiLine;

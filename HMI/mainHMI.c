@@ -5,7 +5,7 @@
 #include "format.h"
 #include "chnInfoPic.h"
 #include "focus.h"
-
+#include "Component_Button.h"
 
 //提供 按键，事件，消息，窗口，报警，时间，复选框的图层
 //这些图层可能会被其他界面所使用
@@ -175,108 +175,24 @@ END_CTOR
 static int	Init_mainHmi( HMI *self, void *arg)
 {
 	HMI 			*p_cmm;
+	Button		*p_btn;
 	
-//	HMI 			*p_kb;
-//	keyboardHMI		*keyHmi ;
-//	mainHmi			*cthis = SUB_PTR( self, HMI, mainHmi);
-//	ro_char 		*p_txtCnt;
-//	Expr 			*p_exp ;
-//	shtctl 			*p_shtctl = NULL;
-//	struct SHEET 	**pp_sht;
 
-//	short i,j;
 	
 	p_cmm = CreateHMI( HMI_CMM);
 	p_cmm->init( p_cmm, NULL);
 	self->flag = 0;
 	//初始化
-//	p_kb = CreateHMI( HMI_KYBRD);
-//	p_kb->init( p_kb, NULL);
-//	keyHmi = SUB_PTR( p_kb, HMI, keyboardHMI);
-	
-	
-//	p_shtctl = GetShtctl();
-	
-//	cthis->pp_shts = &p_sheets[0][0];
-
-	//初始化背景图片
-//	p_exp = ExpCreate( "pic");
-//	cthis->p_bkg = Sheet_alloc( p_shtctl);
-//	p_exp->inptSht( p_exp, (void *)MAIN_hmi_code_bkPic, cthis->p_bkg) ;
-	
-	
-	
-	
-	
-	//timer
-//	g_p_shtTime->cnt.bkc = p_sheets[0][0]->cnt.bkc;
-	
-
-	//chn info
-	
-	
-	
-//	BuildChnInfoPic( &cthis->arr_p_sht_data[0], 6);
-	
-	//input
-//	pp_inpname = &p_sheets[1][0];
-//	*pp_inpname = Sheet_alloc( p_shtctl);
-//	p_txtCnt = p_input1;
-//	p_exp = ExpCreate( "input");
-//	p_exp->inptSht( p_exp, (void *)p_txtCnt, *pp_inpname) ;
-//	( *pp_inpname)->cnt.bkc = mainHmiAtt.bkc;
-//	
-//	
-//	
-//	//input
-//	p_sheets[2][0] = Sheet_alloc( p_shtctl);
-//	p_txtCnt = p_input2;
-//	p_exp = ExpCreate( "input");
-//	p_exp->inptSht( p_exp, (void *)p_txtCnt, p_sheets[2][0]) ;
-//	p_sheets[2][0]->cnt.bkc = mainHmiAtt.bkc;
-//	
-//	
-//	
-//	
-//	pp_sht = &p_sheets[3][0];
-//	*pp_sht = Sheet_alloc( p_shtctl);
-//	p_txtCnt = p_input3;
-//	p_exp = ExpCreate( "input");
-//	p_exp->inptSht( p_exp, (void *)p_txtCnt, *pp_sht) ;
+		//初始化按键要在公共部分之后
+	p_btn = BTN_Get_Sington();
+	p_btn->init(p_btn);
 	
 	self->initSheet( self);
-	//进行排版
-//	FormatSheet( &mainHmiAtt, &p_shtctl->v,cthis->pp_shts);
-//	FormatSheetSub( p_sheets[1][0]);
-//	FormatSheetSub( p_sheets[2][0]);
-//	FormatSheetSub( p_sheets[3][0]);
-	
-//	p_sheets[1][0]->p_enterCmd = &keyHmi->shtCmd;
-//	p_sheets[2][0]->p_enterCmd = &keyHmi->shtCmd;
-//	p_sheets[3][0]->p_enterCmd = &keyHmi->shtCmd;
-	
-//	p_sheets[1][0]->cnt.effects = EFF_FOCUS;
 
-
-
-
-
-
-//	for( i = 1; i < CHN_ROW + 1; i++) {
-//		for( j = 0; j < CHN_COL; j ++) {
-//			FormatSheetSub( p_sheets[i][j]);
-//		}
-//		
-//	}
-	
-	//初始化焦点
-//	self->init_focus(self);
 	
 	return RET_OK;
 	
-//	err:
-//	Sheet_free( p_sheets[i][j]);
-//	return RET_OK;
+
 }
 
 //static void BuildChnInfoPic( sheet *arr_p_sheets[ CHN_ROW + 2][CHN_COL], char total)

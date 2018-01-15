@@ -486,10 +486,10 @@ static void	Setting_HMI_hitHandle(HMI *self, char *s_key)
 	{
 //		if(phn_sys.key_weight == 0)
 			phn_sys.key_weight = 1;
-		if(phn_sys.long_hit_count < 10)
-			phn_sys.long_hit_count = 0;
+		if(phn_sys.hit_count < 10)
+			phn_sys.hit_count ++;
 		else
-			phn_sys.long_hit_count = 0;
+			phn_sys.hit_count = 0;
 		if(cthis->sub_flag & FOCUS_IN_STARTEGY) {
 			
 			if(p_sy->key_hit_up(NULL) == RET_OK) {
@@ -514,11 +514,11 @@ static void	Setting_HMI_hitHandle(HMI *self, char *s_key)
 	{
 //		if(phn_sys.key_weight == 0)
 			phn_sys.key_weight = 1;
-//		phn_sys.long_hit_count = 0;
-		if(phn_sys.long_hit_count < 10)
-			phn_sys.long_hit_count = 0;
+//		phn_sys.hit_count = 0;
+		if(phn_sys.hit_count < 10)
+			phn_sys.hit_count ++;
 		else
-			phn_sys.long_hit_count = 0;
+			phn_sys.hit_count = 0;
 		
 		if(cthis->sub_flag & FOCUS_IN_STARTEGY) {
 			
@@ -611,28 +611,24 @@ static void	Setting_HMI_long_hit( HMI *self, char *s_key)
 	Setting_HMI			*cthis = SUB_PTR( self, HMI, Setting_HMI);
 	strategy_keyval_t	skt = {SY_KEYTYPE_LONGPUSH};
 	strategy_t			*p_sy = cthis->p_sy;
-	strategy_focus_t	old_sf;
 	
 
 
-	old_sf.f_col = p_sy->sf.f_col;
-	old_sf.f_row = p_sy->sf.f_row;
-	old_sf.start_byte = p_sy->sf.start_byte;
-	old_sf.num_byte = p_sy->sf.num_byte;
+
 	
 	if((cthis->sub_flag & FOCUS_IN_STARTEGY) == 0)
 		return;
-	if(phn_sys.long_hit_count == 10)
+	if(phn_sys.hit_count == 10)
 	{
 		if(phn_sys.key_weight < 10000)
 			phn_sys.key_weight *= 10;
 //		else
 //			phn_sys.key_weight = 1;
-		phn_sys.long_hit_count = 0;
+		phn_sys.hit_count = 0;
 	}
 	else
 	{
-		phn_sys.long_hit_count ++;
+		phn_sys.hit_count ++;
 //		return;
 	}
 	
@@ -650,9 +646,7 @@ static void	Setting_HMI_long_hit( HMI *self, char *s_key)
 	}
 	
 	
-//	Strategy_focus(cthis, &old_sf, 2);
-	//重新显示改行文本
-//	Strategy_focus_text(cthis, &cthis->p_sy->sf, 2);
+
 	//显示新的选中效果
 	Strategy_focus(cthis, &cthis->p_sy->sf, 1);
 	//180114 长按的时候尽快刷新

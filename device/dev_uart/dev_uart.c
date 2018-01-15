@@ -18,9 +18,6 @@ static void UartLedTxHdl(void *self);
 static Dev_Uart *devUart[DEV_UART_MAX];
 
 
-static uint8_t	arr_rx_sem_val[6];
-static uint8_t	arr_tx_sem_val[6];
-
 
 Dev_Uart *Get_DevUart( int minor)
 {
@@ -264,7 +261,7 @@ static int UartWaitTxSem( void *self, int ms)
 }
 static int UartWaitRxSem( void *self, int ms)
 {
-	int	ret;
+//	int	ret;
 	Dev_Uart *cthis = ( Dev_Uart *)( ( ( driveUart*)self)->device);
 	return Sem_wait(&cthis->rxsem, ms);
 //	while(1)

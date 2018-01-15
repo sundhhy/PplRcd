@@ -22,6 +22,7 @@
 
 #define		BTN_TYPE_MENU		0
 #define		BTN_TYPE_COPY		1
+#define 	BTN_TYPE_NONE		0xff
 //------------------------------------------------------------------------------
 // typedef
 //------------------------------------------------------------------------------
@@ -34,7 +35,6 @@ INTERFACE(Button_receive)
 
 CLASS(Button)
 {
-	void 		*p_self;
 	uint8_t		btn_id;
 	uint8_t		set_act_btn;
 	uint8_t		cur_focush_btn;

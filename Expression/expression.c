@@ -109,8 +109,6 @@ char expTempBUf[TEMPBUF_LEN];
 //------------------------------------------------------------------------------
 // local function prototypes
 //------------------------------------------------------------------------------
-static void SetVar( Expr *self, char *variable);
-static void SetCtion( Expr *self, Composition *ct);
 
 //============================================================================//
 //            P U B L I C   F U N C T I O N S                                 //
@@ -264,15 +262,7 @@ int Set_shtAreaAtt( char *p_att, sheet *p_sht)
 }
 
 ABS_CTOR( Expr)
-FUNCTION_SETTING( setVar, SetVar);
-FUNCTION_SETTING( setCtion, SetCtion);
-//FUNCTION_SETTING( setFather, SetFather);
-//FUNCTION_SETTING( getBgc, ExpGetBackgroudColor);
 
-
-
-//FUNCTION_SETTING( str2colour, ExpStr2colour);
-//FUNCTION_SETTING( str2font, ExpStr2font);
 
 END_ABS_CTOR
 //=========================================================================//
@@ -282,20 +272,7 @@ END_ABS_CTOR
 //=========================================================================//
 /// \name Private Functions
 /// \{
-static void SetVar( Expr *self, char *variable)
-{
-	//½Ø¶Ï
-	if( strlen( variable) > VAR_LEN)
-		variable[ VAR_LEN] = 0;
-		
-	strcpy( self->variable, variable);
-}
 
-static void SetCtion( Expr *self, Composition *ct)
-{
-	self->ction = ct;
-	
-}
 
 
 

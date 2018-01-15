@@ -63,6 +63,10 @@ static void Pe_touch_spot(int spot, char *str);
 static void MdlChn_Save_2_conf(mdl_chn_save_t *p_mcs, chn_info_t *p_cnf, uint8_t direct);
 
 static void MdlChn_Save_2_alarm(mdl_chn_save_t *p_mcs, chn_alarm_t *p_alr, uint8_t direct);
+
+static	uint16_t Zero_shift_K_B(chn_info_t *p, uint16_t	d);
+static	uint16_t Cut_small_signal(chn_info_t *p, uint16_t	d);
+static void Signal_Alarm(chn_info_t *p, chn_alarm_t *p_alm);
 //static int Str_to_data(char *str, int prec);
 //============================================================================//
 //            P U B L I C   F U N C T I O N S                                 //
@@ -107,6 +111,127 @@ END_CTOR
 //=========================================================================//
 /// \name Private Functions
 /// \{
+
+//
+static int16_t	Percent_to_data(chn_info_t *p,uint16_t prc, char	point)
+{	
+	int16_t j;
+	int16_t fct = 100;
+	
+	if(point == 1)
+		fct = 1000;
+	else if(fct == 2)
+		fct = 10000;
+	
+	j = (long)prc * (p->upper_limit - p->lower_limit) / fct;
+	return(j);	
+}
+
+static void Signal_Alarm(chn_info_t *p, chn_alarm_t *p_alm)
+{
+	uint8_t flag, new_flag = 0;
+	int16_t tempS2,tempS3,bjhc, prc_data;
+	int32_t temps4;
+
+	flag = p_alm->alm_flag;
+	
+	temps4 = p_alm->alarm_backlash * 0x10000;
+	bjhc = temps4 / 1000;
+	prc_data = Percent_to_data(p, bjhc, 2);	
+	
+	tempS2 = p_alm->alarm_ll;				//低低报时加上回差
+	if(flag & ALM_LL)
+		tempS2 += prc_data;	
+
+	tempS3 = p_alm->alarm_lo;		//低报时加上回差
+	if(flag & ALM_LO)
+		tempS3 += prc_data;	
+	
+	p->value = p->value;
+	//报警判断及处理
+	if(p->value < tempS3)		
+	{
+		if(p->value<tempS2)
+		{	//低低报
+			phn_sys.DO_err |= 1 << p_alm->touch_spot_ll;
+			new_flag |= ALM_LL;
+		}
+		else
+		{	//低报
+			phn_sys.DO_err |= 1 << p_alm->touch_spot_lo;
+			new_flag |= ALM_LO;
+		}
+	}
+	else
+	{
+		tempS2 = p_alm->alarm_hh;
+		if(flag & ALM_HH)
+			tempS2 -= prc_data;	
+
+		tempS3 = p_alm->alarm_hi;
+		if(flag & ALM_HI)
+			tempS3 -= prc_data;	
+		
+		if(p->value>tempS3)
+		{
+				if(p->value>tempS2)
+				{		//高高报
+					phn_sys.DO_err |= 1 << p_alm->touch_spot_hh;
+					new_flag |= ALM_HH;
+				}
+				else
+				{
+					//高报
+					phn_sys.DO_err |= 1 << p_alm->alarm_hi;
+					new_flag |= ALM_HI;
+				}
+				
+			}		
+	}
+	//todo: 180115  产生新报警或者消除旧的报警的时候，是需要进行报警的记录处理
+	p_alm->alm_flag = new_flag;
+}
+
+static	uint16_t Zero_shift_K_B(chn_info_t *p, uint16_t	d)
+{
+	uint32_t	tmp_u32;
+	uint16_t 	rst = d;
+	
+	if(p->k == 0)
+		goto exit;
+	
+	
+		tmp_u32 = p->k*(long)d/100 + p->b;
+		if( tmp_u32 > p->upper_limit) 	
+			tmp_u32 = p->upper_limit;
+		
+		if( tmp_u32 < p->lower_limit) 	
+			tmp_u32 = p->lower_limit;
+	
+	
+	rst = tmp_u32;
+	exit:
+	return rst;
+}
+
+static	uint16_t Cut_small_signal(chn_info_t *p, uint16_t	d)
+{
+	
+	uint32_t	tmp_u32;
+	uint16_t 	rst = d;
+	
+	if(p->small_signal == 0)
+		goto exit;
+	
+	tmp_u32 = p->upper_limit - p->lower_limit;
+	tmp_u32 = tmp_u32 * p->small_signal / 1000;
+	if(rst < tmp_u32)
+		rst = p->lower_limit;
+	
+	exit:
+	return rst;
+}
+
 
 
 static int MdlChn_init(Model *self, IN void *arg)
@@ -184,7 +309,7 @@ static int MdlChn_self_check( Model *self)
 	int				ret  = RET_OK;
 	uint16_t		tmp_u16[2];
 	uint8_t 			i, j;
-	uint8_t				tmp_u8;
+//	uint8_t				tmp_u8;
 	
 	Dev_open(DEVID_UART3, ( void *)&I_uart3);
 	i = SmBus_Query(SMBUS_MAKE_CHN(SMBUS_CHN_AI, cthis->chni.chn_NO), chk_buf, 32);
@@ -297,7 +422,6 @@ static void MdlChn_run(Model *self)
 	
 	I_dev_Char 			*I_uart3 = NULL;
 	uint8_t 			i;
-	uint8_t				alarm[4] = {0};
 //	uint8_t				old_do;
 	
 	Dev_open(DEVID_UART3, ( void *)&I_uart3);
@@ -333,7 +457,7 @@ static void MdlChn_run(Model *self)
 //	cthis->chni.sample_value = rst.val;
 	
 	//读取工程值
-	rd_engval:	
+//	rd_engval:	
 	i = SmBus_AI_Read(SMBUS_MAKE_CHN(SMBUS_CHN_AI, cthis->chni.chn_NO), AI_READ_ENGVAL, chk_buf, 16);
 	if( I_uart3->write(I_uart3, chk_buf, i) != RET_OK)
 		goto err;
@@ -342,11 +466,7 @@ static void MdlChn_run(Model *self)
 		goto err;
 	if(SmBus_decode(SMBUS_AI_READ, chk_buf, &rst, sizeof(SmBus_result_t)) != RET_OK)
 		goto err;
-//	if(rst.val < 1900 && cthis->chni.chn_NO == 0)
-//	{
-//		
-//		i = 0;
-//	}
+
 	if(rst.chn_num != cthis->chni.chn_NO)
 	{
 		goto err;
@@ -356,60 +476,25 @@ static void MdlChn_run(Model *self)
 		cthis->chni.flag_err = 0;
 	}
 	
+	rst.val = Zero_shift_K_B(&cthis->chni, rst.val);
+	rst.val = Cut_small_signal(&cthis->chni, rst.val);
+	
 	if(rst.val != cthis->chni.value)
 	{
+		
 		
 		cthis->chni.signal_type = rst.signal_type;
 		cthis->chni.value = rst.val;
 //		if((phn_sys.sys_flag & SYSFLAG_SETTING) == 0)
 			self->notify(self);
 		
+		Signal_Alarm(&cthis->chni, &cthis->alarm);
+		
 	}
 	
 	
-//	return;
 	
-	//报警处理
-		//有报警的话就输出报警
-		//无报警就把之前的报警清除掉
-	
-	if(rst.val > cthis->alarm.alarm_hh)
-	{
 
-		
-		
-		phn_sys.DO_err |= 1 << cthis->alarm.touch_spot_hh;
-	}
-	
-	if(rst.val > cthis->alarm.alarm_hi)
-	{
-		
-		phn_sys.DO_err |= 1 << cthis->alarm.alarm_hi;
-
-	}
-	
-	
-	if(rst.val < cthis->alarm.alarm_lo)
-	{
-
-		
-		phn_sys.DO_err |= 1 << cthis->alarm.touch_spot_lo;
-	}
-	
-	
-	if(rst.val < cthis->alarm.alarm_ll)
-	{
-
-		
-		phn_sys.DO_err |= 1 << cthis->alarm.touch_spot_ll;
-	}
-	
-	
-	
-	
-	
-	
-	
 	return;
 	err:
 		cthis->chni.flag_err = 1;
@@ -534,8 +619,6 @@ static int MdlChn_getData(Model *self, IN int aux, void *arg)
 		default:
 			break;
 	}
-		
-	
 	return RET_OK;
 	
 }

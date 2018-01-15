@@ -12,8 +12,7 @@
 //------------------------------------------------------------------------------
 const Except_T Hmi_Failed = { "HMI Failed" };
 
-//ro_char str_endRow[] = "</row>" ;
-//ro_char str_endCol[] = "</col>" ;
+
 //------------------------------------------------------------------------------
 // module global vars
 //------------------------------------------------------------------------------
@@ -58,27 +57,14 @@ static void ConposeKeyHandle(HMI *self, char *s_key1, char *s_key2);
 void	Init_focus(HMI *self);
 void	Clear_focus(HMI *self, uint8_t fouse_row, uint8_t fouse_col);
 void	Show_focus( HMI *self, uint8_t fouse_row, uint8_t fouse_col);
+
+static void		HMI_Build_button(HMI *self);
+static void		HMI_Clean_button(HMI *self);
+static void		HMI_Show_button(HMI *self);
+
 //============================================================================//
 //            P U B L I C   F U N C T I O N S                                 //
 //============================================================================//
-//int Is_rowEnd( const char *str)
-//{
-//	if( strcmp( str, str_endRow) == 0)
-//		return 1;
-//	
-//	return 0;
-//	
-//}
-//int Is_colEnd( const char *str)
-//{
-//	if( strcmp( str, str_endCol) == 0)
-//		return 1;
-//	
-//	return 0;
-//	
-//}
-
-
 void Set_flag_show(uint8_t	*p_flag, int val)
 {
 	val &= 1;
@@ -91,6 +77,13 @@ void Set_flag_keyhandle(uint8_t	*p_flag, int val)
 	val &= 2;
 	*p_flag &= 0xfd;
 	*p_flag |= val;
+}
+
+//设置策略的默认函数
+void STY_Duild_button(void)
+{
+	
+	
 }
 
 
@@ -109,6 +102,11 @@ FUNCTION_SETTING( conposeKeyHandle, ConposeKeyHandle);
 FUNCTION_SETTING( init_focus, Init_focus);
 FUNCTION_SETTING( clear_focus, Clear_focus);
 FUNCTION_SETTING( show_focus, Show_focus);
+
+FUNCTION_SETTING(build_button, HMI_Build_button);
+FUNCTION_SETTING(clean_button, HMI_Clean_button);
+FUNCTION_SETTING(show_button, HMI_Show_button);
+
 END_ABS_CTOR
 //=========================================================================//
 //                                                                         //
@@ -143,9 +141,13 @@ static void	SwitchHMI( HMI *self, HMI *p_hmi)
 	g_p_curHmi = p_hmi;
 	Set_flag_show(&self->flag, 0);
 	self->hide(self);
+	self->clean_button(self);
+	
 	p_hmi->initSheet( p_hmi);
+	p_hmi->build_button(p_hmi);
 	p_hmi->show( p_hmi);
-
+	p_hmi->show_button(p_hmi);
+	
 	Set_flag_show(&p_hmi->flag, 1);
 	
 }
@@ -159,8 +161,13 @@ static void	SwitchBack( HMI *self)
 	phn_sys.key_weight = 1;
 	Set_flag_show(&self->flag, 0);
 	self->hide( self);
+	self->clean_button(self);
+	
+	
 	nowHmi->initSheet( nowHmi);
+	nowHmi->build_button(nowHmi);
 	nowHmi->show( nowHmi);
+	nowHmi->show_button(nowHmi);
 	Set_flag_show(&nowHmi->flag, 1);
 	
 }
@@ -215,6 +222,32 @@ void	Show_focus( HMI *self, uint8_t fouse_row, uint8_t fouse_col)
 		return;
 	p_sht->cnt.effects = GP_SET_EFF( p_sht->cnt.effects, EFF_FOCUS);
 	Sheet_slide( p_sht);
+}
+
+
+static void		HMI_Build_button(HMI *self)
+{
+	Button	*p = BTN_Get_Sington();
+	int		i;
+	for(i = 0; i < NUM_BUTTON; i++)
+	{
+		p->build_each_btn(i, BTN_TYPE_NONE, NULL);
+
+
+	}
+
+}
+
+static void		HMI_Clean_button(HMI *self)
+{
+
+	Button	*p = BTN_Get_Sington();
+	p->clean_btn();
+}
+static void		HMI_Show_button(HMI *self)
+{
+
+
 }
 
 

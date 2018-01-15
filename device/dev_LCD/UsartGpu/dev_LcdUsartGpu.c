@@ -38,7 +38,7 @@ I_dev_Char *I_sendDev;
 //------------------------------------------------------------------------------
 // const defines
 //------------------------------------------------------------------------------
-
+#define	LCD_CMD_BYTES			phn_sys.lcd_cmd_bytes 
 //------------------------------------------------------------------------------
 // local types
 //------------------------------------------------------------------------------
@@ -405,7 +405,7 @@ static void Gpu_send_done(void)
 	char tmpbuf[4] = {0};
 	strcpy(tmpbuf, "\r\n");
 	GpuSend(tmpbuf);
-	cmd_count = 0;
+	LCD_CMD_BYTES = 0;
 }
 static void Cmdbuf_manager(char *p_cmd)
 {
@@ -413,7 +413,7 @@ static void Cmdbuf_manager(char *p_cmd)
 	uint8_t cmd_len = strlen(p_cmd);
 	
 	
-	if((cmd_count +  cmd_len) > UGPU_CMDBUF_LEN) {
+	if((LCD_CMD_BYTES +  cmd_len) > UGPU_CMDBUF_LEN) {
 		Gpu_send_done();
 		osDelay(100);
 //		spg ++;
@@ -422,7 +422,7 @@ static void Cmdbuf_manager(char *p_cmd)
 		
 	} 
 		
-	cmd_count += cmd_len;
+	LCD_CMD_BYTES += cmd_len;
 }
 static void GpuDone( void)
 {
@@ -542,52 +542,7 @@ void GpuSend(char * buf)
 	int 	ret = 0;
 	char 	tmpbuf[4] = {0};
 	int 	c = 0;
-#if DUG_LOST_GPUCMD == 1
-	
-	
-	//这里没有出现问题
-	int		err = 0;
-	int		ps_count = 0;
-	
-	char 	*p = NULL;
-	
-	//检查 PS16(0,112,PS16(0,112,82,'0',18, 0);		这种错误
 
-	p = strstr( buf, "PS");
-	if( p)
-	{
-		ps_count ++;
-		
-	}
-	p += 2;
-	p = strstr( p, "PS");
-	if( p)
-	{
-		ps_count ++;
-		
-	}
-	
-	if(ps_count == 2) {
-		err = 3;
-	}
-	
-	//"/r/n" ");" 结尾都是正常的，否则都是不正常的
-	if((buf[len - 2] != '\r') && (buf[len - 2] != ')') ) {
-		err = 1;
-		
-	} else if((buf[len - 1] != '\n') && (buf[len - 1] != ';') ) {
-		err = 2;
-		
-		
-	}
-
-#endif	
-	
-	
-	
-	
-	
-	
 	while(1) {
 		ret = I_sendDev->write(I_sendDev, buf, len);
 		if(ret == RET_OK) {
