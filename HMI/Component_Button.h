@@ -18,11 +18,17 @@
 //------------------------------------------------------------------------------
 // const defines
 //------------------------------------------------------------------------------
-#define		NUM_BUTTON			4
+#define		NUM_BUTTON				4
 
-#define		BTN_TYPE_MENU		0
-#define		BTN_TYPE_COPY		1
-#define 	BTN_TYPE_NONE		0xff
+#define		BTN_TYPE_MENU			0
+#define		BTN_TYPE_COPY			1
+#define		BTN_TYPE_PGUP			2
+#define		BTN_TYPE_PGDN			3
+#define 	BTN_TYPE_NONE			0xff
+
+#define BTN_MOVE_FORWARD		0
+#define BTN_MOVE_BACKWARD		1
+#define BTN_MOVE_JUMPOUT		2
 //------------------------------------------------------------------------------
 // typedef
 //------------------------------------------------------------------------------
@@ -40,18 +46,18 @@ CLASS(Button)
 	uint8_t		btn_id;
 	uint8_t		set_vaild_btn;
 	uint8_t		cur_focush_btn;
-	uint8_t		none;
+	uint8_t		focus_btn_num;
 	void		*arr_p_arg[NUM_BUTTON];
 	btn_hdl		arr_hdl[NUM_BUTTON];
 	
 	void 		(*init)(Button *self);
 	int			(*build_each_btn)(uint8_t	seq, uint8_t btn_type, btn_hdl bh, void *hdl_arg);
 	void		(*clean_btn)(void);
-	void		(*clean_focus)(void);
+//	void		(*clean_focus)(void);
 	void		(*show_vaild_btn)(void);	
-	void		(*show_focus)(void);
-	int			(*move_focus)(uint8_t	position);		//direct 0显示在第一个活跃按钮 1 显示在下一个 2 显示在前一个
-	void		(*deal_enter)(void);
+//	void		(*show_focus)(void);
+	int			(*move_focus)(uint8_t	direction);		//direct 0显示在第一个活跃按钮 1 显示在下一个 2 显示在前一个
+	void		(*hit)(void);
 };
 //------------------------------------------------------------------------------
 // global variable declarations

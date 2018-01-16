@@ -73,7 +73,7 @@ static sheet* Setting_HMI_get_focus(Setting_HMI *self, int arg);
 static void Strategy_focus(Setting_HMI *self, strategy_focus_t *p_syf, int opt);
 static int Setting_Sy_cmd(void *p_rcv, int cmd,  void *arg);
  
-static void Setting_btn_hdl(void *arg, uint8_t btn_id);
+
 
 //============================================================================//
 //            P U B L I C   F U N C T I O N S                                 //
@@ -99,6 +99,22 @@ void STY_Duild_button(void *arg)
 	Button	*p_btn = BTN_Get_Sington();
 	p_btn->build_each_btn(0, BTN_TYPE_MENU, Setting_btn_hdl, arg);
 	
+}
+void Setting_btn_hdl(void *arg, uint8_t btn_id)
+{
+	HMI					*self	= (HMI *)arg;		
+	Setting_HMI			*cthis = SUB_PTR(self, HMI, Setting_HMI);
+	
+	if(btn_id == ICO_ID_MENU)
+	{
+		
+		cthis->entry_start_row = 0;
+		self->switchHMI(self, g_p_HMI_menu);
+	}
+	else if((btn_id == ICO_ID_PGUP) || (btn_id == ICO_ID_PGDN))
+	{
+		STING_Show_Button(self, btn_id);
+	}
 }
 
 CTOR(Setting_HMI)
@@ -147,37 +163,9 @@ static int	Init_Setting_HMI(HMI *self, void *arg)
 static void Show_Setting_HMI(HMI *self)
 {
 	Setting_HMI		*cthis = SUB_PTR( self, HMI, Setting_HMI);
-//	int						flag_win ;
-//	int 					ret = 0;
-//	char					win_tips[32];
-	
-	
-//	if(self->flag & HMIFLAG_WIN) {
-//		if((self->arg[1] == 0) &&  (cthis->sub_flag & DO_NOTHING) == 0) { 		//窗口画面传递过来的检点列位置为“确定”
-//			//然后根据选择进行处理
-//			flag_win = 1;
-//			ret = cthis->p_sy->key_hit_er(&flag_win) ;
-//			if(ret == RET_OK) {
-//				SET_PG_FLAG(cthis->sub_flag, DO_NOTHING);		//下次从窗口界面切回的时候，就不处理了
-//				g_p_winHmi->arg[0] = WINTYPE_TIPS;
-//				Win_content("修改成功");
-//				self->switchHMI(self, g_p_winHmi);
-//			} else {
-//				SET_PG_FLAG(cthis->sub_flag, DO_NOTHING);		//
-//				g_p_winHmi->arg[0] = WINTYPE_ERROR;
-//				sprintf(win_tips,"错误码:%d", ret);
-//				Win_content(win_tips);
-//				self->switchHMI(self, g_p_winHmi);
-//			}
-//			
-//			return;
-//			
-//		}
-//		
-//	} 
+
 	Stop_flush_LCD();
 	Sheet_refresh(g_p_sht_bkpic);
-//	cthis->entry_start_row = 0;
 	Show_entry(self, cthis->p_sy);
 	Strategy_focus(cthis, &cthis->p_sy->sf, 1);
 	Flush_LCD();
@@ -191,13 +179,7 @@ static void	Setting_initSheet(HMI *self)
 	shtctl 				*p_shtctl = NULL;
 	strategy_t			*old_sty;
 	p_shtctl = GetShtctl();
-
-//	if(self->flag & HMIFLAG_WIN) {
-//		if((self->arg[1] == 0) &&  (cthis->sub_flag & DO_NOTHING) == 0) {
-//			return;
-//		}
-//	}
-//	
+	
 	if(((self->flag & HMIFLAG_WIN) == 0) && ((self->flag & HMIFLAG_KEYBOARD) == 0)) {
 		old_sty = cthis->p_sy;
 		cthis->p_sy = arr_p_setting_strategy[self->arg[0]][self->arg[1]];
@@ -244,15 +226,7 @@ static void	Setting_initSheet(HMI *self)
 static void	Setting_HMI_hide(HMI *self)
 {
 	Setting_HMI		*cthis = SUB_PTR( self, HMI, Setting_HMI);
-	
-	
-//	if(self->flag & HMIFLAG_WIN) {
-//		if((self->arg[1] == 0) &&  (cthis->sub_flag & DO_NOTHING) == 0) {
-//			return;
-//		}
-//	}
-
-	Sheet_updown(g_p_ico_memu, -1);
+//	Sheet_updown(g_p_ico_memu, -1);
 	Sheet_updown(g_p_shtTime, -1);
 	Sheet_updown(g_p_sht_title, -1);
 	Sheet_updown(g_p_sht_bkpic, -1);
@@ -278,14 +252,11 @@ static void	Setting_HMI_init_focus(HMI *self)
 	SET_PG_FLAG(cthis->sub_flag, FOCUS_IN_STARTEGY);
 	
 	
-	g_p_ico_pgup->cnt.effects = GP_CLR_EFF(g_p_ico_pgup->cnt.effects, EFF_FOCUS);
-	g_p_ico_pgdn->cnt.effects = GP_CLR_EFF(g_p_ico_pgdn->cnt.effects, EFF_FOCUS);
-	g_p_ico_memu->cnt.effects = GP_CLR_EFF(g_p_ico_memu->cnt.effects, EFF_FOCUS);
+//	g_p_ico_pgup->cnt.effects = GP_CLR_EFF(g_p_ico_pgup->cnt.effects, EFF_FOCUS);
+//	g_p_ico_pgdn->cnt.effects = GP_CLR_EFF(g_p_ico_pgdn->cnt.effects, EFF_FOCUS);
+//	g_p_ico_memu->cnt.effects = GP_CLR_EFF(g_p_ico_memu->cnt.effects, EFF_FOCUS);
 	
-//	self->p_fcuu = Focus_alloc(1, 2);
-//	Focus_Set_sht(self->p_fcuu, 0, 0, g_p_ico_pgup);
-//	Focus_Set_sht(self->p_fcuu, 0, 0, g_p_ico_pgdn);	
-//	Focus_Set_focus(self->p_fcuu, 0, 2);
+
 }
 
 static void	Setting_HMI_build_button(HMI *self)
@@ -297,76 +268,67 @@ static void	Setting_HMI_build_button(HMI *self)
 
 static void	Setting_HMI_clear_focus(HMI *self, uint8_t fouse_row, uint8_t fouse_col)
 {
-	Setting_HMI		*cthis = SUB_PTR( self, HMI, Setting_HMI);
-	sheet *p_fouse = Setting_HMI_get_focus(cthis, fouse_col);
+//	Setting_HMI		*cthis = SUB_PTR( self, HMI, Setting_HMI);
+//	sheet *p_fouse = Setting_HMI_get_focus(cthis, fouse_col);
+//	
+//	if(p_fouse == NULL)
+//		return;
+//	p_fouse->cnt.effects = GP_CLR_EFF(p_fouse->cnt.effects, EFF_FOCUS);
+//	
+//	p_fouse->e_heifht = 1;
+//	Sheet_slide(p_fouse);
+//	p_fouse->e_heifht = 0;
 	
-	if(p_fouse == NULL)
-		return;
-	p_fouse->cnt.effects = GP_CLR_EFF(p_fouse->cnt.effects, EFF_FOCUS);
-	
-	p_fouse->e_heifht = 1;
-	Sheet_slide(p_fouse);
-	p_fouse->e_heifht = 0;
-	
+	self->btn_jumpout(self);
 
 }
 static void	Setting_HMI_show_focus(HMI *self, uint8_t fouse_row, uint8_t fouse_col)
 {
-	Setting_HMI		*cthis = SUB_PTR( self, HMI, Setting_HMI);
-	sheet *p_fouse = Setting_HMI_get_focus(cthis, -1);
 	
-	if(p_fouse == NULL)
-		return;
-	p_fouse->cnt.effects = GP_SET_EFF(p_fouse->cnt.effects, EFF_FOCUS);
-	p_fouse->e_heifht = 1;
-	Sheet_slide(p_fouse);
-	p_fouse->e_heifht = 0;
+	self->btn_forward(self);
+//	Setting_HMI		*cthis = SUB_PTR( self, HMI, Setting_HMI);
+//	sheet *p_fouse = Setting_HMI_get_focus(cthis, -1);
+//	
+//	if(p_fouse == NULL)
+//		return;
+//	p_fouse->cnt.effects = GP_SET_EFF(p_fouse->cnt.effects, EFF_FOCUS);
+//	p_fouse->e_heifht = 1;
+//	Sheet_slide(p_fouse);
+//	p_fouse->e_heifht = 0;
 }
 
-static void Setting_HMI_add_focus(Setting_HMI *self)
-{
-	if(self->f_col < (self->col_max - 1))
-		self->f_col ++;
-	else
-		self->f_col = 0;
-	
-}
-static void Setting_HMI_minus_focus(Setting_HMI *self)
-{
-	if(self->f_col > 0)
-		self->f_col --;
-	else
-		self->f_col = self->col_max - 1;
-	
-}
+
+
 
 static sheet* Setting_HMI_get_focus(Setting_HMI *self, int arg)
 {
-	uint8_t		f = 0;
 	
-	if(arg < 0) {
-		
-		f = self->f_col;
-	} else {
-		f = arg;
-		
-	}
+
+//	uint8_t		f = 0;
 	
-	if(f == 0)
-		return g_p_ico_memu;
-	else if(f == 1)
-	{
-		if(self->sub_flag & HAS_PGUP)
-			return g_p_ico_pgup;
-		else
-			return g_p_ico_pgdn;
-		
-	}
-	else if(f == 2)
-	{
-		return g_p_ico_pgdn;
-		
-	}
+//	if(arg < 0) {
+//		
+//		f = self->f_col;
+//	} else {
+//		f = arg;
+//		
+//	}
+//	
+//	if(f == 0)
+//		return g_p_ico_memu;
+//	else if(f == 1)
+//	{
+//		if(self->sub_flag & HAS_PGUP)
+//			return g_p_ico_pgup;
+//		else
+//			return g_p_ico_pgdn;
+//		
+//	}
+//	else if(f == 2)
+//	{
+//		return g_p_ico_pgdn;
+//		
+//	}
 	return NULL;
 }
 
@@ -442,7 +404,7 @@ static void	Setting_HMI_hitHandle(HMI *self, char *s_key)
 {
 	
 	Setting_HMI		*cthis = SUB_PTR( self, HMI, Setting_HMI);
-	sheet			*p_focus;
+//	sheet			*p_focus;
 	strategy_t			*p_sy = cthis->p_sy;
 	strategy_focus_t	old_sf;
 	
@@ -474,8 +436,7 @@ static void	Setting_HMI_hitHandle(HMI *self, char *s_key)
 			}
 		}
 		if((cthis->sub_flag & FOCUS_IN_STARTEGY) == 0) {
-			
-			Setting_HMI_minus_focus(cthis);
+			self->btn_backward(self);
 			chgFouse = 1;
 		}
 		
@@ -497,8 +458,7 @@ static void	Setting_HMI_hitHandle(HMI *self, char *s_key)
 		}
 
 		if((cthis->sub_flag & FOCUS_IN_STARTEGY) == 0) {
-			
-			Setting_HMI_add_focus(cthis);
+			self->btn_forward(self);
 			chgFouse = 1;
 		}
 		
@@ -525,8 +485,6 @@ static void	Setting_HMI_hitHandle(HMI *self, char *s_key)
 			self->clear_focus(self, 0, focusCol);
 			Strategy_focus(cthis, &cthis->p_sy->sf, 1);
 			SET_PG_FLAG(cthis->sub_flag, FOCUS_IN_STARTEGY);
-			
-			
 		}
 		
 	}
@@ -566,15 +524,20 @@ static void	Setting_HMI_hitHandle(HMI *self, char *s_key)
 			cthis->p_sy->key_hit_er(NULL) ;
 			
 		} else {
-			p_focus = Setting_HMI_get_focus(cthis, -1);
-			if(STING_Show_Button(self, p_focus->id) == ERR_OPT_FAILED) {
-				if(p_focus->id == ICO_ID_MENU)
-				{
-					cthis->entry_start_row = 0;
-					self->switchHMI(self, g_p_HMI_menu);
-				}
+			if(self->flag & HMIFLAG_FOCUS_IN_BTN)
+			{
 				
+				self->btn_hit(self);
 			}
+//			p_focus = Setting_HMI_get_focus(cthis, -1);
+//			if(STING_Show_Button(self, p_focus->id) == ERR_OPT_FAILED) {
+//				if(p_focus->id == ICO_ID_MENU)
+//				{
+//					cthis->entry_start_row = 0;
+//					self->switchHMI(self, g_p_HMI_menu);
+//				}
+//				
+//			}
 		}
 	}
 	
@@ -626,18 +589,7 @@ static void	Setting_HMI_hitHandle(HMI *self, char *s_key)
 		return;
 }
 
-static void Setting_btn_hdl(void *arg, uint8_t btn_id)
-{
-	HMI					*self	= (HMI *)arg;		
-	Setting_HMI			*cthis = SUB_PTR(self, HMI, Setting_HMI);
-	
-	if(btn_id == ICO_ID_MENU)
-	{
-		
-		cthis->entry_start_row = 0;
-		self->switchHMI(self, g_p_HMI_menu);
-	}
-}
+
 
 
 static void	Setting_HMI_long_hit( HMI *self, char *s_key)
@@ -745,25 +697,25 @@ static void Clean_stripe(HMI *self)
 //切换页面时，将光标重新至于编辑区
 static int STING_Show_Button(HMI *self, int up_or_dn)
 {
-//	Setting_HMI		*cthis = SUB_PTR( self, HMI, Setting_HMI);
-//	if(up_or_dn == ICO_ID_PGDN) {
-//		cthis->entry_start_row += STRIPE_MAX_ROWS;
-//	} else if(up_or_dn == ICO_ID_PGUP) {
-//		cthis->entry_start_row -= STRIPE_MAX_ROWS;
-//	} else {
-//		return ERR_OPT_FAILED;
-//	}
+	Setting_HMI		*cthis = SUB_PTR( self, HMI, Setting_HMI);
+	if(up_or_dn == ICO_ID_PGDN) {
+		cthis->entry_start_row += STRIPE_MAX_ROWS;
+	} else if(up_or_dn == ICO_ID_PGUP) {
+		cthis->entry_start_row -= STRIPE_MAX_ROWS;
+	} else {
+		return ERR_OPT_FAILED;
+	}
 
-//	Clean_stripe(self);
-//	Show_entry(self, cthis->p_sy);
-//	SET_PG_FLAG(cthis->sub_flag, FOCUS_IN_STARTEGY);
-//	
-//	g_p_ico_pgup->cnt.effects = GP_CLR_EFF(g_p_ico_pgup->cnt.effects, EFF_FOCUS);
-//	g_p_ico_pgdn->cnt.effects = GP_CLR_EFF(g_p_ico_pgdn->cnt.effects, EFF_FOCUS);
-//	g_p_ico_memu->cnt.effects = GP_CLR_EFF(g_p_ico_memu->cnt.effects, EFF_FOCUS);
-////	self->show_focus(self, self->p_fcuu->focus_row, self->p_fcuu->focus_col);
-//	Strategy_focus(cthis, &cthis->p_sy->sf, 1);
-//	Flush_LCD();
+	Clean_stripe(self);
+	Show_entry(self, cthis->p_sy);
+	SET_PG_FLAG(cthis->sub_flag, FOCUS_IN_STARTEGY);
+	
+	g_p_ico_pgup->cnt.effects = GP_CLR_EFF(g_p_ico_pgup->cnt.effects, EFF_FOCUS);
+	g_p_ico_pgdn->cnt.effects = GP_CLR_EFF(g_p_ico_pgdn->cnt.effects, EFF_FOCUS);
+	g_p_ico_memu->cnt.effects = GP_CLR_EFF(g_p_ico_memu->cnt.effects, EFF_FOCUS);
+//	self->show_focus(self, self->p_fcuu->focus_row, self->p_fcuu->focus_col);
+	Strategy_focus(cthis, &cthis->p_sy->sf, 1);
+	Flush_LCD();
 	
 	return RET_OK;
 }
@@ -771,7 +723,8 @@ static int STING_Show_Button(HMI *self, int up_or_dn)
 static void	Show_entry(HMI *self, strategy_t *p_st)
 {
 	Setting_HMI		*cthis = SUB_PTR( self, HMI, Setting_HMI);
-	char			*p_trash;
+	char					*p_trash;
+	Button				*p_btn = BTN_Get_Sington();
 	uint8_t	row = 0;
 	uint8_t	col = 0;
 
@@ -825,30 +778,39 @@ static void	Show_entry(HMI *self, strategy_t *p_st)
 	}
 	
 	if(cthis->entry_start_row) {
-		g_p_ico_pgup->e_heifht = 1;
-		Sheet_slide(g_p_ico_pgup);
-		g_p_ico_pgup->e_heifht = 0;
-		SET_PG_FLAG(cthis->sub_flag, HAS_PGUP);
-	} else {
-		CLR_PG_FLAG(cthis->sub_flag, HAS_PGUP);
-	}
-	
-	if(more) {
-		g_p_ico_pgdn->e_heifht = 1;
-		Sheet_slide(g_p_ico_pgdn);
-		g_p_ico_pgdn->e_heifht = 0;
+//		g_p_ico_pgup->e_heifht = 1;
+//		Sheet_slide(g_p_ico_pgup);
+//		g_p_ico_pgup->e_heifht = 0;
+//		SET_PG_FLAG(cthis->sub_flag, HAS_PGUP);
 		
-		SET_PG_FLAG(cthis->sub_flag, HAS_PGDN);
-	} else {
-		CLR_PG_FLAG(cthis->sub_flag, HAS_PGDN);
-	}
+		p_btn->build_each_btn(1, BTN_TYPE_PGUP, Setting_btn_hdl, self);
+		p_btn->show_vaild_btn();
+	} 
+//	else {
+//		CLR_PG_FLAG(cthis->sub_flag, HAS_PGUP);
+//	}
 	
-	if((cthis->sub_flag & 0x0f)== 0)
-		cthis->col_max = 1;
-	if(cthis->sub_flag & HAS_PGUP)
-		cthis->col_max = 2;
-	if(cthis->sub_flag & HAS_PGDN)
-		cthis->col_max = 2;
+	if(more) 
+	{
+		p_btn->build_each_btn(1, BTN_TYPE_PGDN, Setting_btn_hdl, self);
+		p_btn->show_vaild_btn();
+//		g_p_ico_pgdn->e_heifht = 1;
+//		Sheet_slide(g_p_ico_pgdn);
+//		g_p_ico_pgdn->e_heifht = 0;
+//		
+//		SET_PG_FLAG(cthis->sub_flag, HAS_PGDN);
+	} 
+	
+//	else {
+//		CLR_PG_FLAG(cthis->sub_flag, HAS_PGDN);
+//	}
+	
+//	if((cthis->sub_flag & 0x0f)== 0)
+//		cthis->col_max = 1;
+//	if(cthis->sub_flag & HAS_PGUP)
+//		cthis->col_max = 2;
+//	if(cthis->sub_flag & HAS_PGDN)
+//		cthis->col_max = 2;
 
 	
 }

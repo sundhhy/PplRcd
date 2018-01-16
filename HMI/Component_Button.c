@@ -55,10 +55,10 @@ static Button	*p_self;
 static void 	BTN_Init(Button *self);
 static int		BTN_Build_each_btn(uint8_t	seq, uint8_t btn_type, btn_hdl bh, void *hdl_arg);
 static void		BTN_Clean_btn(void);
-static void		BTN_Clean_focus(void);
-static void		BTN_Show_focus(void);
-static int		BTN_Move_focus(uint8_t	position);		
-static void		BTN_Deal_enter(void);
+//static void		BTN_Clean_focus(void);
+//static void		BTN_Show_focus(void);
+static int		BTN_Move_focus(uint8_t	direction);		
+static void		BTN_Deal_hit(void);
 static void		BTN_Show_vaild_btn(void);
 
 //============================================================================//
@@ -79,11 +79,11 @@ CTOR(Button)
 FUNCTION_SETTING(init, BTN_Init);
 FUNCTION_SETTING(build_each_btn, BTN_Build_each_btn);
 FUNCTION_SETTING(clean_btn, BTN_Clean_btn);
-FUNCTION_SETTING(clean_focus, BTN_Clean_focus);
+//FUNCTION_SETTING(clean_focus, BTN_Clean_focus);
 FUNCTION_SETTING(show_vaild_btn, BTN_Show_vaild_btn);
-FUNCTION_SETTING(show_focus, BTN_Show_focus);
+//FUNCTION_SETTING(show_focus, BTN_Show_focus);
 FUNCTION_SETTING(move_focus, BTN_Move_focus);
-FUNCTION_SETTING(deal_enter, BTN_Deal_enter);
+FUNCTION_SETTING(hit, BTN_Deal_hit);
 END_CTOR
 //=========================================================================//
 //                                                                         //
@@ -159,24 +159,25 @@ static int		BTN_Build_each_btn(uint8_t	seq, uint8_t btn_type, btn_hdl bh, void *
 		
 		
 	}
-	
+	return RET_OK;
 }
 static void		BTN_Clean_btn(void)
 {
-	
-	
-}
-static void		BTN_Clean_focus(void)
-{
+	p_self->focus_btn_num = 0xff;
 	p_self->set_vaild_btn = 0;
 	
 }
+//static void		BTN_Clean_focus(void)
+//{
+//	p_self->set_vaild_btn = 0;
+//	
+//}
 
-static void		BTN_Show_focus(void)
-{
-	
-	
-}
+//static void		BTN_Show_focus(void)
+//{
+//	
+//	
+//}
 static void		BTN_Show_vaild_btn(void)
 {
 	uint8_t		*p_set = &p_self->set_vaild_btn;
@@ -196,13 +197,98 @@ static void		BTN_Show_vaild_btn(void)
 	}
 	
 }
-static int		BTN_Move_focus(uint8_t	position)
+static int		BTN_Move_focus(uint8_t	direction)
 {
+	uint8_t		*p_set = &p_self->set_vaild_btn;
+	uint8_t 	i = 0;
+	uint8_t		old_focus = p_self->focus_btn_num;
+	uint8_t		first_viald_btn = NUM_BUTTON;
+	uint8_t		last_viald_btn = 0;
 	
+	if(p_self->set_vaild_btn == 0)
+	{
+		p_self->focus_btn_num = 0xff;
+		return -1;
+		
+	}
+	
+	switch(direction)
+	{
+		case BTN_MOVE_FORWARD:
+			for(i = 0; i < NUM_BUTTON; i++)
+			{
+				if(Check_bit(p_set, i))
+				{
+					if(i > p_self->focus_btn_num)
+					{
+						p_self->focus_btn_num = i;
+						goto btn_show;
+					}
+					
+					if(i < first_viald_btn)
+						first_viald_btn = i;
+				}
+			}
+			p_self->focus_btn_num = first_viald_btn;
+			break;
+		case BTN_MOVE_BACKWARD:
+			for(i = 0; i < NUM_BUTTON; i++)
+			{
+				if(Check_bit(p_set, i))
+				{
+					if(i < old_focus)
+					{
+						p_self->focus_btn_num = i;
+						
+					}
+					
+					last_viald_btn = i;
+				}
+			}
+			
+			if(p_self->focus_btn_num == old_focus)
+				p_self->focus_btn_num = last_viald_btn;
+			break;
+		case BTN_MOVE_JUMPOUT:
+			p_self->focus_btn_num = 0xff;
+			break;
+		
+		default:
+			
+			return -1;
+	}
+	btn_show:
+	
+	if(p_self->focus_btn_num == old_focus)		//当只有一个有效按钮的时候，会出现这种情况
+		return RET_OK;
+	
+	//清除旧的特效
+	if(old_focus != 0xff)
+	{
+		arr_p_btn_sht[old_focus]->cnt.effects = GP_CLR_EFF(arr_p_btn_sht[old_focus]->cnt.effects, EFF_FOCUS);
+		arr_p_btn_sht[old_focus]->e_heifht = 1;
+		Sheet_slide(arr_p_btn_sht[old_focus]);
+		arr_p_btn_sht[old_focus]->e_heifht = 0;
+	}
+	
+	//显示新的选中特效
+	if(p_self->focus_btn_num == 0xff)
+		return RET_OK;
+	arr_p_btn_sht[p_self->focus_btn_num]->cnt.effects = GP_CLR_EFF(arr_p_btn_sht[p_self->focus_btn_num]->cnt.effects, EFF_FOCUS);
+	arr_p_btn_sht[p_self->focus_btn_num]->e_heifht = 1;
+	Sheet_slide(arr_p_btn_sht[p_self->focus_btn_num]);
+	arr_p_btn_sht[p_self->focus_btn_num]->e_heifht = 0;	
+		return RET_OK;
 	
 }
-static void		BTN_Deal_enter(void)
+static void		BTN_Deal_hit(void)
 {
+	if(p_self->focus_btn_num == 0xff)
+		return;
 	
+	if(p_self->arr_hdl[p_self->focus_btn_num] == NULL)
+		return;
+	
+	p_self->arr_hdl[p_self->focus_btn_num](p_self->arr_p_arg[p_self->focus_btn_num], arr_p_btn_sht[p_self->focus_btn_num]->id);
 	
 }

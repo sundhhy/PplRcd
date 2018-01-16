@@ -63,7 +63,7 @@ static char *const arr_p_chnnel_entry[11] = {"通道号", "位号", "信号类型", "工程
 };
 
 
-
+	
 
 //------------------------------------------------------------------------------
 // local function prototypes
@@ -161,9 +161,12 @@ static int Cns_init(void *arg)
 		memset(arr_p_vram[i], 0, 48);
 	}
 	
+	
 //	phn_sys.key_weight = 1;
 	return RET_OK;
 }
+
+
 static void CNS_Exit(void)
 {
 	
