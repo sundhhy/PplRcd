@@ -412,7 +412,7 @@ static void	Setting_HMI_hitHandle(HMI *self, char *s_key)
 //	uint8_t		focusRow = self->p_fcuu->focus_row;
 	uint8_t		focusCol = cthis->f_col;
 	uint8_t		sy_chgFouse = 0;
-	uint8_t		chgFouse = 0;
+//	uint8_t		chgFouse = 0;
 
 	old_sf.f_col = p_sy->sf.f_col;
 	old_sf.f_row = p_sy->sf.f_row;
@@ -437,7 +437,7 @@ static void	Setting_HMI_hitHandle(HMI *self, char *s_key)
 		}
 		if((cthis->sub_flag & FOCUS_IN_STARTEGY) == 0) {
 			self->btn_backward(self);
-			chgFouse = 1;
+//			chgFouse = 1;
 		}
 		
 	}
@@ -459,7 +459,7 @@ static void	Setting_HMI_hitHandle(HMI *self, char *s_key)
 
 		if((cthis->sub_flag & FOCUS_IN_STARTEGY) == 0) {
 			self->btn_forward(self);
-			chgFouse = 1;
+//			chgFouse = 1;
 		}
 		
 	}
@@ -568,7 +568,7 @@ static void	Setting_HMI_hitHandle(HMI *self, char *s_key)
 	} else if(sy_chgFouse == 2){
 		//光标从编辑区跳出
 		Strategy_focus(cthis, &old_sf, 0);
-		self->show_focus(self, 0, 0);
+//		self->show_focus(self, 0, 0);
 	}
 	else if(sy_chgFouse ==3){
 		//擦除掉原来这一行
@@ -579,11 +579,11 @@ static void	Setting_HMI_hitHandle(HMI *self, char *s_key)
 		Strategy_focus(cthis, &cthis->p_sy->sf, 1);
 	}
 	
-	if( chgFouse) {	
-		self->clear_focus(self, 0, focusCol);
-		self->show_focus(self, 0, 0);
-		
-	}
+//	if( chgFouse) {	
+//		self->clear_focus(self, 0, focusCol);
+//		self->show_focus(self, 0, 0);
+//		
+//	}
 	
 //	exit:
 		return;
@@ -710,10 +710,11 @@ static int STING_Show_Button(HMI *self, int up_or_dn)
 	Show_entry(self, cthis->p_sy);
 	SET_PG_FLAG(cthis->sub_flag, FOCUS_IN_STARTEGY);
 	
-	g_p_ico_pgup->cnt.effects = GP_CLR_EFF(g_p_ico_pgup->cnt.effects, EFF_FOCUS);
-	g_p_ico_pgdn->cnt.effects = GP_CLR_EFF(g_p_ico_pgdn->cnt.effects, EFF_FOCUS);
-	g_p_ico_memu->cnt.effects = GP_CLR_EFF(g_p_ico_memu->cnt.effects, EFF_FOCUS);
+//	g_p_ico_pgup->cnt.effects = GP_CLR_EFF(g_p_ico_pgup->cnt.effects, EFF_FOCUS);
+//	g_p_ico_pgdn->cnt.effects = GP_CLR_EFF(g_p_ico_pgdn->cnt.effects, EFF_FOCUS);
+//	g_p_ico_memu->cnt.effects = GP_CLR_EFF(g_p_ico_memu->cnt.effects, EFF_FOCUS);
 //	self->show_focus(self, self->p_fcuu->focus_row, self->p_fcuu->focus_col);
+	self->clear_focus(self, 0-1, -1);
 	Strategy_focus(cthis, &cthis->p_sy->sf, 1);
 	Flush_LCD();
 	
@@ -830,6 +831,7 @@ static int Setting_Sy_cmd(void *p_rcv, int cmd,  void *arg)
 			cthis->p_sht_text->cnt.colour = COLOUR_WHITE;
 //			Show_entry(self, cthis->p_sy);
 			self->show(self);
+			self->show_button(self);
 //			Strategy_focus(cthis, &cthis->p_sy->sf, 1);
 //			Flush_LCD();
 			break;

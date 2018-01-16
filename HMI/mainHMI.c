@@ -42,29 +42,12 @@ HMI *g_p_mainHmi;
 #define MAINHMI_BKPICNUM		"11"
 #define	MAINHMI_TITLE		"总貌画面"
 
-//static ro_char MAIN_hmi_code_bkPic[] =  {"<bpic vx0=0 vy0=0 m=0 >20</>" };
-
-
 //每个通道的单位
 static ro_char MAIN_hmi_code_data[] = { "<text f=32 m=0 aux=0>100</>" };
 static ro_char MAIN_hmi_code_unit[] = { "<text f=16 m=0 aux=1>m3/h</>" };
 //通道报警:HH HI LI LL
 static ro_char MAIN_hmi_code_alarm[] = { "<text f=16 m=0 aux=2> </>" };
 
-//static ro_char p_input1[] = { "<input cg=2 xali=l f=24> <text f=16  yali=m clr=blue >test1</>\
-//<box clr=blue bx=126 by=30></></gr>" };
-//static ro_char p_input2[] = { "<input cg=2 xali=l f=24> <text f=16  yali=m clr=blue >test2</>\
-//<box clr=blue bx=126 by=30></></gr>" };
-//static ro_char p_input3[] = { "<input cg=2 xali=l f=24> <text f=16  yali=m clr=blue >密码:</>\
-//<box clr=blue bx=126 by=30></></gr>" };
-
-//button 3 * 3
-//static ro_char p_button[] = { "<bu cols=2 cg=2 ls=2 f=16 bkc=black clr=blue xali=m x=126 y=30 ></> " };
-
-//const hmiAtt_t	mainHmiAtt = { 1,0, COLOUR_GRAY, CHN_ROW + 2, CHN_COL};
-//static sheet *p_sheets[ CHN_ROW + 2][CHN_COL] =  {NULL};
-
-//static sheet *arr_p_focus[ 4] =  {NULL};
 //------------------------------------------------------------------------------
 // local types
 //------------------------------------------------------------------------------
@@ -78,20 +61,19 @@ static mainHmi *signal_mainHmi;
 //------------------------------------------------------------------------------
 static int	Init_mainHmi( HMI *self, void *arg);
 static void	MainHmiShow( HMI *self);
-static void	MainHitHandle( HMI *self, char *s);
 static void MainHmiHide( HMI *self );
 static void MaininitSheet( HMI *self );
 
 //static void BuildChnInfoPic( sheet *arr_p_sheets[ CHN_ROW + 2][CHN_COL], char total);
 
-static void MainHmi_InitFouse( HMI *self );
 
 static void MainHmi_Init_chnShet(void);
 static int MainHmi_Data_update(void *p_data, void *p_mdl);
 static int MainHmi_Util_update(void *p_data, void *p_mdl);
 static int MainHmi_Alarm_update(void *p_data, void *p_mdl);
-//static void MainHmi_ClearFocuse( HMI *self, uint8_t fouse_row, uint8_t fouse_col);
-//static void MainHmi_ShowFocuse( HMI *self, uint8_t fouse_row, uint8_t fouse_col);
+
+
+
 //============================================================================//
 //            P U B L I C   F U N C T I O N S                                 //
 //============================================================================//
@@ -105,6 +87,82 @@ mainHmi *Get_mainHmi(void)
 	
 	return signal_mainHmi;
 }
+
+void Main_HMI_build_button(HMI *self)
+{
+	Button	*p = BTN_Get_Sington();
+	int		i;
+	
+	p->build_each_btn(0, BTN_TYPE_MENU, Main_btn_hdl, self);
+	p->build_each_btn(1, BTN_TYPE_BAR, Main_btn_hdl, self);
+	p->build_each_btn(2, BTN_TYPE_DIGITAL, Main_btn_hdl, self);
+	p->build_each_btn(3, BTN_TYPE_TREND, Main_btn_hdl, self);
+}
+
+void	Main_HMI_hit( HMI *self, char *s)
+{
+
+	
+
+	if( !strcmp( s, HMIKEY_UP) )
+	{
+
+	}
+	else if( !strcmp( s, HMIKEY_DOWN) )
+	{
+		
+	}
+	else if( !strcmp( s, HMIKEY_LEFT))
+	{
+		self->btn_backward(self);
+
+	}
+	else if( !strcmp( s, HMIKEY_RIGHT))
+	{
+
+		self->btn_forward(self);
+	}
+	
+	
+	
+	if( !strcmp( s, HMIKEY_ENTER))
+	{
+		
+		self->btn_hit(self);
+	}
+	if( !strcmp( s, HMIKEY_ESC))
+	{
+		self->switchBack(self);
+	}
+	
+}
+
+void Main_btn_hdl(void *arg, uint8_t btn_id)
+{
+	HMI					*self	= (HMI *)arg;		
+	
+	switch(btn_id)
+	{
+		
+		case ICO_ID_MENU:
+			self->switchHMI(self, g_p_HMI_menu);
+			break;
+		case ICO_ID_BAR:
+			self->switchHMI(self, g_p_barGhHmi);
+			break;	
+		case ICO_ID_DIGITAL:
+			self->switchHMI(self, g_p_dataHmi);
+			break;
+		case ICO_ID_TREND:
+			self->switchHMI(self, g_p_RLT_trendHmi);
+			break;	
+			
+	}
+
+	
+		
+}
+
 
 void Build_ChnSheets(void)
 {
@@ -159,11 +217,10 @@ FUNCTION_SETTING( HMI.hide, MainHmiHide);
 FUNCTION_SETTING( HMI.initSheet, MaininitSheet);
 
 FUNCTION_SETTING( HMI.show, MainHmiShow);
-FUNCTION_SETTING( HMI.hitHandle, MainHitHandle);
+FUNCTION_SETTING( HMI.hitHandle, Main_HMI_hit);
 
-FUNCTION_SETTING( HMI.init_focus, MainHmi_InitFouse);
-//FUNCTION_SETTING( HMI.clear_focus, MainHmi_ClearFocuse);
-//FUNCTION_SETTING( HMI.show_focus, MainHmi_ShowFocuse);
+
+FUNCTION_SETTING(HMI.build_button, Main_HMI_build_button);
 
 END_CTOR
 //=========================================================================//
@@ -195,6 +252,8 @@ static int	Init_mainHmi( HMI *self, void *arg)
 
 }
 
+
+
 //static void BuildChnInfoPic( sheet *arr_p_sheets[ CHN_ROW + 2][CHN_COL], char total)
 //{
 //	char count, i, j, numCol;
@@ -220,10 +279,10 @@ static void MainHmiHide( HMI *self )
 	
 
 	
-	Sheet_updown(g_p_ico_trend, -1);
-	Sheet_updown(g_p_ico_digital, -1);
-	Sheet_updown(g_p_ico_bar, -1);
-	Sheet_updown(g_p_ico_memu, -1);
+//	Sheet_updown(g_p_ico_trend, -1);
+//	Sheet_updown(g_p_ico_digital, -1);
+//	Sheet_updown(g_p_ico_bar, -1);
+//	Sheet_updown(g_p_ico_memu, -1);
 	for( i = 0; i < NUM_CHANNEL; i++) {		//
 		
 		Sheet_updown(g_arr_p_chnAlarm[i], -1);
@@ -234,7 +293,7 @@ static void MainHmiHide( HMI *self )
 	Sheet_updown(g_p_sht_title, -1);
 	Sheet_updown(g_p_sht_bkpic, -1);
 	self->clear_focus(self, self->p_fcuu->focus_row, self->p_fcuu->focus_col);
-	Focus_free(self->p_fcuu);
+//	Focus_free(self->p_fcuu);
 	
 }	
 
@@ -259,10 +318,10 @@ static void MaininitSheet( HMI *self )
 		
 	}
 
-	Sheet_updown(g_p_ico_memu, h++);
-	Sheet_updown(g_p_ico_bar, h++);
-	Sheet_updown(g_p_ico_digital, h++);
-	Sheet_updown(g_p_ico_trend, h++);
+//	Sheet_updown(g_p_ico_memu, h++);
+//	Sheet_updown(g_p_ico_bar, h++);
+//	Sheet_updown(g_p_ico_digital, h++);
+//	Sheet_updown(g_p_ico_trend, h++);
 	
 	
 	MainHmi_Init_chnShet();
@@ -286,86 +345,10 @@ static void	MainHmiShow( HMI *self )
 //	self->show_focus( self, 0, 0);
 }
 
-static void	MainHitHandle( HMI *self, char *s)
-{
-//	mainHmi		*cthis = SUB_PTR( self, HMI, mainHmi);
-	sheet 		*p_sht;
-	shtCmd		*p_cmd;
-//	uint8_t		focusRow = cthis->focusRow;
-//	uint8_t		focusCol = cthis->focusCol;
-	uint8_t		focusRow = self->p_fcuu->focus_row;
-	uint8_t		focusCol = self->p_fcuu->focus_col;
-	char			chgFouse = 0;
-	
-
-	if( !strcmp( s, HMIKEY_UP) )
-	{
-
-	}
-	else if( !strcmp( s, HMIKEY_DOWN) )
-	{
-		
-	}
-	else if( !strcmp( s, HMIKEY_LEFT))
-	{
-
-		Focus_move_left(self->p_fcuu);
-		chgFouse = 1;
-	}
-	else if( !strcmp( s, HMIKEY_RIGHT))
-	{
-
-		Focus_move_right(self->p_fcuu);
-		chgFouse = 1;
-	}
-	
-	if( chgFouse)
-	{
-			
-		self->clear_focus(self, focusRow, focusCol);
-		self->show_focus(self, 0, 0);
-		
-	}
-	
-	if( !strcmp( s, HMIKEY_ENTER))
-	{
-		p_sht = Focus_Get_focus(self->p_fcuu);
-		if(p_sht) {
-			p_cmd = p_sht->p_enterCmd;
-			p_cmd->shtExcute( p_cmd, p_sht, self);
-			
-		}
-		
-	}
-	if( !strcmp( s, HMIKEY_ESC))
-	{
-		
-	}
-	
-}
 
 
-//焦点操作
-static void MainHmi_InitFouse( HMI *self )
-{
-//	mainHmi		*cthis = SUB_PTR( self, HMI, mainHmi);
-//	int			i = 0;
-	
-	self->p_fcuu = Focus_alloc(1, 4);
-	
-//	for(i = 0; i < 4; i ++) {
-//		
-//		
-//	}
-	Focus_Set_sht(self->p_fcuu,0, 0, g_p_ico_memu);
-	Focus_Set_sht(self->p_fcuu,0, 1, g_p_ico_bar);
-	Focus_Set_sht(self->p_fcuu,0, 2, g_p_ico_digital);
-	Focus_Set_sht(self->p_fcuu,0, 3, g_p_ico_trend);
-	
-	Focus_Set_focus(self->p_fcuu, 0, 4);	
 
-	
-}
+
 
 static void MainHmi_Init_chnShet(void)
 {

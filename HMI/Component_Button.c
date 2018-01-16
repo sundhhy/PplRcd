@@ -12,8 +12,12 @@
 // const defines
 //------------------------------------------------------------------------------
 #define BTN_ICO_MENU			"20"
+#define BTN_ICO_BAR				"21"
+#define BTN_ICO_DIGITAL			"22"
+#define BTN_ICO_TREND			"23"
 #define BTN_ICO_COPY			"27"
-
+#define BTN_ICO_PGDN			"26"
+#define BTN_ICO_PGUP			"25"
 
 //4个按钮的图形代码
 static ro_char *arr_btn_code[NUM_BUTTON] ={ \
@@ -141,16 +145,46 @@ static int		BTN_Build_each_btn(uint8_t	seq, uint8_t btn_type, btn_hdl bh, void *
 	
 	switch(btn_type)
 	{
-		
+				
+
 		case BTN_TYPE_MENU:
 			arr_p_btn_sht[seq]->cnt.data = BTN_ICO_MENU;
 			arr_p_btn_sht[seq]->id = ICO_ID_MENU;
 			break;
+		case BTN_TYPE_BAR:
+			arr_p_btn_sht[seq]->cnt.data = BTN_ICO_BAR;
+			arr_p_btn_sht[seq]->id = ICO_ID_BAR;
+			break;
+		
+		case BTN_TYPE_DIGITAL:
+			arr_p_btn_sht[seq]->cnt.data = BTN_ICO_DIGITAL;
+			arr_p_btn_sht[seq]->id = ICO_ID_DIGITAL;
+			break;
 	
+		case BTN_TYPE_TREND:
+			arr_p_btn_sht[seq]->cnt.data = BTN_ICO_TREND;
+			arr_p_btn_sht[seq]->id = ICO_ID_TREND;
+			break;
 		case BTN_TYPE_COPY:
 			arr_p_btn_sht[seq]->cnt.data = BTN_ICO_COPY;
 			arr_p_btn_sht[seq]->id = ICO_ID_COPY;
 			break;
+		
+		case BTN_TYPE_PGDN:
+			arr_p_btn_sht[seq]->cnt.data = BTN_ICO_PGDN;
+			arr_p_btn_sht[seq]->id = ICO_ID_PGDN;
+			break;
+	
+		case BTN_TYPE_PGUP:
+			arr_p_btn_sht[seq]->cnt.data = BTN_ICO_PGUP;
+			arr_p_btn_sht[seq]->id = ICO_ID_PGUP;
+			break;
+		
+
+		
+
+		
+		
 		default:
 			Clear_bit(p_set, seq);
 			
@@ -159,11 +193,18 @@ static int		BTN_Build_each_btn(uint8_t	seq, uint8_t btn_type, btn_hdl bh, void *
 		
 		
 	}
+	arr_p_btn_sht[seq]->cnt.len = strlen(arr_p_btn_sht[seq]->cnt.data);
 	return RET_OK;
 }
 static void		BTN_Clean_btn(void)
 {
-	p_self->focus_btn_num = 0xff;
+	
+	if(p_self->focus_btn_num != 0xff)
+	{
+		arr_p_btn_sht[p_self->focus_btn_num]->cnt.effects = \
+		GP_CLR_EFF(arr_p_btn_sht[p_self->focus_btn_num]->cnt.effects, EFF_FOCUS);
+		p_self->focus_btn_num = 0xff;
+	}
 	p_self->set_vaild_btn = 0;
 	
 }
@@ -215,6 +256,9 @@ static int		BTN_Move_focus(uint8_t	direction)
 	switch(direction)
 	{
 		case BTN_MOVE_FORWARD:
+			
+			
+		
 			for(i = 0; i < NUM_BUTTON; i++)
 			{
 				if(Check_bit(p_set, i))
@@ -230,6 +274,7 @@ static int		BTN_Move_focus(uint8_t	direction)
 				}
 			}
 			p_self->focus_btn_num = first_viald_btn;
+			
 			break;
 		case BTN_MOVE_BACKWARD:
 			for(i = 0; i < NUM_BUTTON; i++)
@@ -248,6 +293,7 @@ static int		BTN_Move_focus(uint8_t	direction)
 			
 			if(p_self->focus_btn_num == old_focus)
 				p_self->focus_btn_num = last_viald_btn;
+			
 			break;
 		case BTN_MOVE_JUMPOUT:
 			p_self->focus_btn_num = 0xff;
@@ -274,7 +320,7 @@ static int		BTN_Move_focus(uint8_t	direction)
 	//显示新的选中特效
 	if(p_self->focus_btn_num == 0xff)
 		return RET_OK;
-	arr_p_btn_sht[p_self->focus_btn_num]->cnt.effects = GP_CLR_EFF(arr_p_btn_sht[p_self->focus_btn_num]->cnt.effects, EFF_FOCUS);
+	arr_p_btn_sht[p_self->focus_btn_num]->cnt.effects = GP_SET_EFF(arr_p_btn_sht[p_self->focus_btn_num]->cnt.effects, EFF_FOCUS);
 	arr_p_btn_sht[p_self->focus_btn_num]->e_heifht = 1;
 	Sheet_slide(arr_p_btn_sht[p_self->focus_btn_num]);
 	arr_p_btn_sht[p_self->focus_btn_num]->e_heifht = 0;	

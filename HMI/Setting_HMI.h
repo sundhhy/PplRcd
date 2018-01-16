@@ -58,6 +58,6 @@ extern strategy_t	g_chn_strategy, g_alarm_strategy, g_art_strategy, g_view_strat
 // function prototypes
 //------------------------------------------------------------------------------
 Setting_HMI *Get_Setting_HMI(void);
-void Setting_btn_hdl(void *arg, uint8_t btn_id);;
+void Setting_btn_hdl(void *arg, uint8_t btn_id);
 
 #endif

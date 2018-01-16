@@ -88,8 +88,7 @@ static void	RLT_init_focus(HMI *self);
 static void	RLT_clear_focus(HMI *self, uint8_t fouse_row, uint8_t fouse_col);
 static void	RLT_show_focus(HMI *self, uint8_t fouse_row, uint8_t fouse_col);
 
-//ÃüÁî
-static void RT_trendHmi_EnterCmdHdl( shtCmd *self, struct SHEET *p_sht, void *arg);
+
 
 //ÇúÏß
 static int RLT_trendHmi_MdlUpdata( Observer *self, void *p_srcMdl);
@@ -102,6 +101,9 @@ static int RLTHmi_Data_update(void *p_data, void *p_mdl);
 
 //¼üÅÌ
 static int	RLT_div_input(void *self, void *data, int len);
+
+
+static void RLT_HMI_build_button(HMI *self);
 //============================================================================//
 //            P U B L I C   F U N C T I O N S                                 //
 //============================================================================//
@@ -134,10 +136,7 @@ FUNCTION_SETTING( HMI.show_focus, RLT_show_focus);
 
 
 FUNCTION_SETTING( HMI.hitHandle, RT_trendHmi_HitHandle);
-
-
-
-FUNCTION_SETTING( shtCmd.shtExcute, RT_trendHmi_EnterCmdHdl);
+FUNCTION_SETTING(HMI.build_button, Main_HMI_build_button);
 FUNCTION_SETTING( Observer.update, RLT_trendHmi_MdlUpdata);
 
 END_CTOR
@@ -188,6 +187,15 @@ static int	Init_RT_trendHMI( HMI *self, void *arg)
 	self->flag = 0;
 	return RET_OK;
 
+}
+
+static void RLT_HMI_build_button(HMI *self)
+{
+	Button	*p = BTN_Get_Sington();
+	int		i;
+	
+	p->build_each_btn(0, BTN_TYPE_MENU, Main_btn_hdl, self);
+	
 }
 
 
@@ -274,7 +282,7 @@ static void	RLT_init_focus(HMI *self)
 	int	col = 0; 
 	RLT_trendHMI *cthis = SUB_PTR(self, HMI, RLT_trendHMI);
 	
-	self->p_fcuu = Focus_alloc(1, RLTHMI_NUM_CURVE + 2);
+	self->p_fcuu = Focus_alloc(1, RLTHMI_NUM_CURVE + 1);
 	
 	Focus_Set_focus(self->p_fcuu, 0, 0);
 	
@@ -282,7 +290,6 @@ static void	RLT_init_focus(HMI *self)
 	for(col = 0; col < RLTHMI_NUM_CURVE; col ++) {
 		Focus_Set_sht(self->p_fcuu, 0, col + 1, g_arr_p_check[col]);
 	}		
-	Focus_Set_sht(self->p_fcuu, 0, RLTHMI_NUM_CURVE+1, g_p_ico_memu);
 	
 }
 
@@ -384,13 +391,17 @@ static void	RT_trendHmi_HitHandle( HMI *self, char *s)
 	}
 	else if( !strcmp( s, HMIKEY_LEFT))
 	{
-		Focus_move_left(self->p_fcuu);
-		chgFouse = 1;
+		if(Focus_move_left(self->p_fcuu) == RET_OK)
+			chgFouse = 1;
+		else
+			self->btn_backward(self);
 	}
 	else if( !strcmp( s, HMIKEY_RIGHT))
 	{
-		Focus_move_right(self->p_fcuu);
-		chgFouse = 1;
+		if(Focus_move_right(self->p_fcuu) == RET_OK)
+			chgFouse = 1;
+		else
+			self->btn_backward(self);
 	}
 
 	if( !strcmp( s, HMIKEY_ENTER))
@@ -451,15 +462,7 @@ static void	RT_trendHmi_HitHandle( HMI *self, char *s)
 
 
 
-static void RT_trendHmi_EnterCmdHdl( shtCmd *self, struct SHEET *p_sht, void *arg)
-{
-	RLT_trendHMI	*cthis = SUB_PTR( self, shtCmd, RLT_trendHMI);
-	HMI		*selfHmi = SUPER_PTR( cthis, HMI);
-	HMI		*srcHmi = ( HMI *)arg;
-	
-	srcHmi->switchHMI( srcHmi, selfHmi);
-	
-}
+
 
 static void RLT_dataVisual( HMI *self, void *arg)
 {

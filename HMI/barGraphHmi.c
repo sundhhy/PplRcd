@@ -73,23 +73,14 @@ static void BarHmi_HideSheet( HMI *self );
 static void	BarHmi_Show( HMI *self);
 
 
-static void	BarHmi_HitHandle( HMI *self, char *s);
+//static void	BarHmi_HitHandle( HMI *self, char *s);
 
-//焦点
-static void BarHmi_InitFouse( HMI *self );
-//static void BarHmi_ClearFocuse( HMI *self, uint8_t fouse_row, uint8_t fouse_col);
-//static void BarHmi_ShowFocuse( HMI *self, uint8_t fouse_row, uint8_t fouse_col);
 
 //柱形图操作函数
 static void BarHmi_Init_chnSht(void);
 static void Init_bar( barGhHMI *self);
-//static void Cal_bar( barGhHMI *self);
 static int BarHmi_Data_update(void *p_data, void *p_mdl);
 static int BarHmi_Util_update(void *p_data, void *p_mdl);
-
-//命令
-static void BarHmi_EnterCmdHdl( shtCmd *self, struct SHEET *p_sht, void *arg);
-
 
 //============================================================================//
 //            P U B L I C   F U N C T I O N S                                 //
@@ -116,14 +107,8 @@ FUNCTION_SETTING( HMI.initSheet, BarHmi_InitSheet);
 FUNCTION_SETTING( HMI.hide, BarHmi_HideSheet);
 FUNCTION_SETTING( HMI.show, BarHmi_Show);
 
-FUNCTION_SETTING( HMI.hitHandle, BarHmi_HitHandle);
-
-FUNCTION_SETTING( HMI.init_focus, BarHmi_InitFouse);
-//FUNCTION_SETTING( HMI.clear_focus, BarHmi_ClearFocuse);
-//FUNCTION_SETTING( HMI.show_focus, BarHmi_ShowFocuse);
-
-FUNCTION_SETTING( shtCmd.shtExcute, BarHmi_EnterCmdHdl);
-
+FUNCTION_SETTING( HMI.hitHandle, Main_HMI_hit);
+FUNCTION_SETTING(HMI.build_button, Main_HMI_build_button);
 
 END_CTOR
 //=========================================================================//
@@ -191,10 +176,10 @@ static void BarHmi_InitSheet( HMI *self )
 //		Sheet_updown( cthis->pp_bar_unit[i], h++);
 	}
 	
-	Sheet_updown(g_p_ico_memu, h++);
-	Sheet_updown(g_p_ico_bar, h++);
-	Sheet_updown(g_p_ico_digital, h++);
-	Sheet_updown(g_p_ico_trend, h++);
+//	Sheet_updown(g_p_ico_memu, h++);
+//	Sheet_updown(g_p_ico_bar, h++);
+//	Sheet_updown(g_p_ico_digital, h++);
+//	Sheet_updown(g_p_ico_trend, h++);
 	
 	BarHmi_Init_chnSht();
 	//初始化焦点
@@ -210,10 +195,10 @@ static void BarHmi_HideSheet( HMI *self )
 //	self->clear_focus(self, cthis->focusRow, cthis->focusCol);
 	
 	
-	Sheet_updown(g_p_ico_trend, -1);
-	Sheet_updown(g_p_ico_digital, -1);
-	Sheet_updown(g_p_ico_bar, -1);
-	Sheet_updown(g_p_ico_memu, -1);
+//	Sheet_updown(g_p_ico_trend, -1);
+//	Sheet_updown(g_p_ico_digital, -1);
+//	Sheet_updown(g_p_ico_bar, -1);
+//	Sheet_updown(g_p_ico_memu, -1);
 	
 	for( i = BARHMI_NUM_BARS - 1; i >= 0; i--) {
 //		Sheet_updown( cthis->pp_bar_unit[i], -1);
@@ -227,7 +212,6 @@ static void BarHmi_HideSheet( HMI *self )
 	Sheet_updown(g_p_sht_bkpic, -1);
 	
 	self->clear_focus( self, self->p_fcuu->focus_row, self->p_fcuu->focus_col);
-	Focus_free(self->p_fcuu);
 	
 }	
 
@@ -247,99 +231,46 @@ static void	BarHmi_Show( HMI *self )
 //	self->show_focus( self, 0, 0);
 }
 
-static void	BarHmi_HitHandle( HMI *self, char *s)
-{
-//	barGhHMI		*cthis = SUB_PTR( self, HMI, barGhHMI);
-	shtCmd		*p_cmd;
-//	HMI 		**pp_trgtHmi;
-//	uint8_t		focusRow = cthis->focusRow;
-//	uint8_t		focusCol = cthis->focusCol;
-//	char			chgFouse = 0;
-////	char			row_max = BARHMI_NUM_BTNROW - 1;
-//	char			col_max = BARHMI_NUM_BTNCOL - 1;
-	//	uint8_t		focusRow = cthis->focusRow;
-//	uint8_t		focusCol = cthis->focusCol;
-	
-	sheet 		*p_sht;
-	uint8_t		focusRow = self->p_fcuu->focus_row;
-	uint8_t		focusCol = self->p_fcuu->focus_col;
-	char		chgFouse = 0;
-	
-	Set_flag_keyhandle(&self->flag, 1);
-	if( !strcmp( s, HMIKEY_UP) )
-	{
+//static void	BarHmi_HitHandle( HMI *self, char *s)
+//{
+//	Set_flag_keyhandle(&self->flag, 1);
+//	if( !strcmp( s, HMIKEY_UP) )
+//	{
 
-	}
-	else if( !strcmp( s, HMIKEY_DOWN) )
-	{
-		
-	}
-	else if( !strcmp( s, HMIKEY_LEFT))
-	{
+//	}
+//	else if( !strcmp( s, HMIKEY_DOWN) )
+//	{
+//		
+//	}
+//	else if( !strcmp( s, HMIKEY_LEFT))
+//	{
+//		self->btn_backward(self);
 
-		Focus_move_left(self->p_fcuu);
-		chgFouse = 1;
-	}
-	else if( !strcmp( s, HMIKEY_RIGHT))
-	{
+//	}
+//	else if( !strcmp( s, HMIKEY_RIGHT))
+//	{
 
-		Focus_move_right(self->p_fcuu);
-		chgFouse = 1;
-	}
-	
-	if( chgFouse)
-	{
-			
-		self->clear_focus(self, focusRow, focusCol);
-		self->show_focus(self, 0, 0);
-		
-	}
-	
-	if( !strcmp( s, HMIKEY_ENTER))
-	{
-		p_sht = Focus_Get_focus(self->p_fcuu);
-		if(p_sht) {
-			p_cmd = p_sht->p_enterCmd;
-			p_cmd->shtExcute( p_cmd, p_sht, self);
-			
-		}
-		
-	}
-
-	
-	if( !strcmp( s, HMIKEY_ESC))
-	{
-		self->switchBack(self);
-	}
-	
-	Set_flag_keyhandle(&self->flag, 0);
-	
-}
-
-static void BarHmi_InitFouse( HMI *self )
-{
-//	barGhHMI		*cthis = SUB_PTR( self, HMI, barGhHMI);
-	
-	
-	self->p_fcuu = Focus_alloc(1, 4);
-	
-	Focus_Set_sht(self->p_fcuu,0, 0, g_p_ico_memu);
-	Focus_Set_sht(self->p_fcuu,0, 1, g_p_ico_bar);
-	Focus_Set_sht(self->p_fcuu,0, 2, g_p_ico_digital);
-	Focus_Set_sht(self->p_fcuu,0, 3, g_p_ico_trend);
-	
-	Focus_Set_focus(self->p_fcuu, 0, 4);	
-	
-//	arr_p_sht_select[0] = g_p_ico_memu;
-//	arr_p_sht_select[1] = g_p_ico_bar;
-//	arr_p_sht_select[2] = g_p_ico_digital;
-//	arr_p_sht_select[3] = g_p_ico_trend;
+//		self->btn_forward(self);
+//	}
 //	
-//	cthis->focusCol = 0;
-//	cthis->focusRow = 0;
-//	g_p_ico_memu->cnt.effects = GP_SET_EFF( g_p_ico_memu->cnt.effects, EFF_FOCUS);
-	
-}
+//	
+//	
+//	if( !strcmp( s, HMIKEY_ENTER))
+//	{
+//		
+//		self->btn_hit(self);
+//	}
+//	
+//	if( !strcmp( s, HMIKEY_ESC))
+//	{
+//		self->switchBack(self);
+//	}
+//	
+//	Set_flag_keyhandle(&self->flag, 0);
+//	
+//}
+
+
 //static void BarHmi_CalFocuse( HMI *self, uint8_t fouse_row, uint8_t fouse_col)
 //{
 //	barGhHMI			*cthis = SUB_PTR( self, HMI, barGhHMI);
@@ -378,15 +309,6 @@ static void BarHmi_InitFouse( HMI *self )
 ////	p_fouse->p_gp->vdraw ( p_fouse->p_gp, &p_fouse->cnt, &p_fouse->area);
 //}
 
-static void BarHmi_EnterCmdHdl( shtCmd *self, struct SHEET *p_sht, void *arg)
-{
-	barGhHMI	*cthis = SUB_PTR( self, shtCmd, barGhHMI);
-	HMI		*selfHmi = SUPER_PTR( cthis, HMI);
-	HMI		*srcHmi = ( HMI *)arg;
-	
-	srcHmi->switchHMI( srcHmi, selfHmi);
-	
-}
 
 
 

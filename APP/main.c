@@ -128,8 +128,9 @@ int main (void) {
 	
 	p_mainHmi = CreateHMI( HMI_MAIN);
 	p_mainHmi->init( p_mainHmi, NULL);
-	p_mainHmi->show( p_mainHmi);
-	Set_flag_show(&p_mainHmi->flag, 1); 
+	p_mainHmi->switchHMI(p_mainHmi, p_mainHmi);
+//	p_mainHmi->show( p_mainHmi);
+//	Set_flag_show(&p_mainHmi->flag, 1); 
 	
 	p_control = SUPER_PTR(CtlTimer_new(), Controller);
 	p_control->init(p_control, NULL);

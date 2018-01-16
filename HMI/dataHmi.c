@@ -76,8 +76,7 @@ static void	DataHmi_HitHandle( HMI *self, char *s);
 
 
 
-//ÃüÁî
-static void DataHmi_EnterCmdHdl( shtCmd *self, struct SHEET *p_sht, void *arg);
+
 
 //static int DataHmi_MdlUpdata( Observer *self, void *p_srcMdl);
 //static void Bulid_dataSheet( dataHMI *self);
@@ -115,9 +114,6 @@ FUNCTION_SETTING( HMI.show, DataHmi_Show);
 
 FUNCTION_SETTING( HMI.hitHandle, DataHmi_HitHandle);
 
-
-
-FUNCTION_SETTING( shtCmd.shtExcute, DataHmi_EnterCmdHdl);
 //FUNCTION_SETTING( Observer.update, DataHmi_MdlUpdata);
 
 END_CTOR
@@ -225,18 +221,6 @@ static void	DataHmi_HitHandle( HMI *self, char *s)
 	{
 		self->switchBack(self);
 	}
-	
-}
-
-
-
-static void DataHmi_EnterCmdHdl( shtCmd *self, struct SHEET *p_sht, void *arg)
-{
-	dataHMI	*cthis = SUB_PTR( self, shtCmd, dataHMI);
-	HMI		*selfHmi = SUPER_PTR( cthis, HMI);
-	HMI		*srcHmi = ( HMI *)arg;
-	
-	srcHmi->switchHMI( srcHmi, selfHmi);
 	
 }
 

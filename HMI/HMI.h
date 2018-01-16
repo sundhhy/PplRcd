@@ -44,11 +44,14 @@
 
 /********图层的ID	***********************************/
 #define	ICO_ID_MENU				0x20
-#define	ICO_ID_PGUP				0x21
-#define	ICO_ID_PGDN				0x22
-#define	ICO_ID_ERASETOOL		0x23
-#define	ICO_ID_SEARCH			0x24
-#define	ICO_ID_COPY				0x25
+#define	ICO_ID_BAR				0x21
+#define	ICO_ID_DIGITAL			0x22
+#define	ICO_ID_TREND			0x23
+#define	ICO_ID_PGUP				0x24
+#define	ICO_ID_PGDN				0x25
+#define	ICO_ID_ERASETOOL		0x26
+#define	ICO_ID_SEARCH			0x27
+#define	ICO_ID_COPY				0x28
 
 #define	SHEET_BOXLIST				0x2a
 #define	SHEET_G_TEXT				0x2b
@@ -209,4 +212,10 @@ extern HMI *g_p_curHmi, *g_p_lastHmi, *g_p_win_last;
 extern void Set_flag_show(uint8_t	*p_flag, int val);
 extern void Set_flag_keyhandle(uint8_t	*p_flag, int val);
 void STY_Duild_button(void *arg);
+
+//很多界面的处理与主界面的按键处理一样，所以就把主界面的处理开放出来
+void Main_btn_hdl(void *arg, uint8_t btn_id);
+void Main_HMI_build_button(HMI *self);
+void Main_HMI_hit( HMI *self, char *s);
+
 #endif

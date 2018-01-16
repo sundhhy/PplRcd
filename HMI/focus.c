@@ -128,7 +128,7 @@ void Focus_Set_sht(focus_user_t *p_fcuu, int row, int col, sheet *p_sht)
 	arr_p_focus_shts[p_fcuu->first_idx + row * p_fcuu->rows + col] = p_sht; 
 }
 
-void Focus_move_left(focus_user_t *p_fcuu)
+int Focus_move_left(focus_user_t *p_fcuu)
 {
 	if(p_fcuu->focus_col > 0)
 		p_fcuu->focus_col --;
@@ -138,7 +138,7 @@ void Focus_move_left(focus_user_t *p_fcuu)
 	}
 	
 }
-void Focus_move_right(focus_user_t *p_fcuu)
+int Focus_move_right(focus_user_t *p_fcuu)
 {
 	p_fcuu->focus_col ++;
 	if(p_fcuu->focus_col >= p_fcuu->columns)
@@ -174,6 +174,9 @@ sheet* Focus_Get_focus(focus_user_t *p_fcuu)
 
 sheet* Focus_Get_sht(focus_user_t *p_fcuu, int row, int col)
 {
+	if(p_fcuu == NULL)
+		return NULL;
+	
 	if(row == p_fcuu->rows || col == p_fcuu->columns)
 		return NULL;
 	return arr_p_focus_shts[p_fcuu->first_idx + row * p_fcuu->rows + col];

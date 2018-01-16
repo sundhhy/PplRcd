@@ -21,9 +21,12 @@
 #define		NUM_BUTTON				4
 
 #define		BTN_TYPE_MENU			0
-#define		BTN_TYPE_COPY			1
-#define		BTN_TYPE_PGUP			2
-#define		BTN_TYPE_PGDN			3
+#define		BTN_TYPE_BAR			1
+#define		BTN_TYPE_DIGITAL		2
+#define		BTN_TYPE_TREND			3
+#define		BTN_TYPE_COPY			5
+#define		BTN_TYPE_PGUP			6
+#define		BTN_TYPE_PGDN			7
 #define 	BTN_TYPE_NONE			0xff
 
 #define BTN_MOVE_FORWARD		0

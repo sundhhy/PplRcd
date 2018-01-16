@@ -158,6 +158,9 @@ static void	SwitchHMI( HMI *self, HMI *p_hmi)
 static void	SwitchBack( HMI *self)
 {
 	HMI *nowHmi = g_p_lastHmi;
+	if(g_p_lastHmi == NULL)
+		return;
+	
 	g_p_lastHmi = g_p_curHmi;
 	g_p_curHmi = nowHmi;
 	
@@ -206,7 +209,10 @@ static void ConposeKeyHandle(HMI *self, char *s_key1, char *s_key2)
 	
 }
 
-void	Init_focus(HMI *self) {}
+void	Init_focus(HMI *self) 
+{
+	self->p_fcuu = NULL;
+}
 void	Clear_focus(HMI *self, uint8_t fouse_row, uint8_t fouse_col) 
 {
 	sheet *p_sht = Focus_Get_sht(self->p_fcuu, fouse_row, fouse_col);
