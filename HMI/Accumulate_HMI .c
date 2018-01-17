@@ -159,7 +159,7 @@ static void	Alarm_initSheet(HMI *self)
 	Sheet_updown(g_p_shtTime, h++);
 	Sheet_updown(g_p_text, h++);
 	Sheet_updown(g_p_boxlist, h++);
-	Sheet_updown(g_p_ico_memu, h++);
+//	Sheet_updown(g_p_ico_memu, h++);
 	
 
 	
@@ -171,7 +171,7 @@ static void	Accm_HMI_hide(HMI *self)
 	Accm_HMI		*cthis = SUB_PTR( self, HMI, Accm_HMI);
 
 	
-	Sheet_updown(g_p_ico_memu, -1);
+//	Sheet_updown(g_p_ico_memu, -1);
 	Sheet_updown(g_p_boxlist, -1);
 	Sheet_updown(g_p_text, -1);
 	Sheet_updown(g_p_shtTime, -1);
@@ -191,7 +191,7 @@ static void	Accm_HMI_init_focus(HMI *self)
 	
 	Focus_Set_focus(self->p_fcuu, 0, 0);
 	
-	Focus_Set_sht(self->p_fcuu, 0, 0, g_p_ico_memu);
+//	Focus_Set_sht(self->p_fcuu, 0, 0, g_p_ico_memu);
 	Focus_Set_sht(self->p_fcuu, 0, 1, g_p_boxlist);
 	
 		

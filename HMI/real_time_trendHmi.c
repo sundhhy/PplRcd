@@ -104,6 +104,7 @@ static int	RLT_div_input(void *self, void *data, int len);
 
 
 static void RLT_HMI_build_button(HMI *self);
+static void RLT_btn_hdl(void *arg, uint8_t btn_id);
 //============================================================================//
 //            P U B L I C   F U N C T I O N S                                 //
 //============================================================================//
@@ -136,7 +137,7 @@ FUNCTION_SETTING( HMI.show_focus, RLT_show_focus);
 
 
 FUNCTION_SETTING( HMI.hitHandle, RT_trendHmi_HitHandle);
-FUNCTION_SETTING(HMI.build_button, Main_HMI_build_button);
+FUNCTION_SETTING(HMI.build_button, RLT_HMI_build_button);
 FUNCTION_SETTING( Observer.update, RLT_trendHmi_MdlUpdata);
 
 END_CTOR
@@ -195,6 +196,27 @@ static void RLT_HMI_build_button(HMI *self)
 	int		i;
 	
 	p->build_each_btn(0, BTN_TYPE_MENU, Main_btn_hdl, self);
+	p->build_each_btn(1, BTN_TYPE_LOOP, RLT_btn_hdl, self);
+	p->build_each_btn(1, BTN_TYPE_PGDN, RLT_btn_hdl, self);
+	p->build_each_btn(1, BTN_TYPE_PGUP, RLT_btn_hdl, self);
+
+}
+
+static void RLT_btn_hdl(void *arg, uint8_t btn_id)
+{
+	HMI					*self	= (HMI *)arg;		
+	
+	switch(btn_id)
+	{
+		case ICO_ID_LOOP:
+			break;
+		case ICO_ID_PGDN:
+			break;
+		case ICO_ID_PGUP:
+			break;
+		
+			
+	}
 	
 }
 
@@ -236,7 +258,7 @@ static void RT_trendHmi_InitSheet( HMI *self )
 	Sheet_updown(g_p_curve_bkg, h++);
 	Sheet_updown(g_p_sht_title, h++);
 	Sheet_updown(g_p_shtTime, h++);
-	Sheet_updown(g_p_ico_memu, h++);
+//	Sheet_updown(g_p_ico_memu, h++);
 	Sheet_updown(cthis->p_div, h++);
 //	Sheet_updown( cthis->p_clean_chnifo, h++);
 	for(i = 0; i < RLTHMI_NUM_CURVE; i++) {
@@ -262,7 +284,7 @@ static void RT_trendHmi_HideSheet( HMI *self )
 	}
 //	Sheet_updown( cthis->p_clean_chnifo, -1);
 	Sheet_updown(cthis->p_div, -1);
-	Sheet_updown(g_p_ico_memu, -1);
+//	Sheet_updown(g_p_ico_memu, -1);
 	Sheet_updown(g_p_shtTime, -1);
 	Sheet_updown(g_p_sht_title, -1);
 	Sheet_updown(g_p_curve_bkg, -1);
@@ -272,7 +294,7 @@ static void RT_trendHmi_HideSheet( HMI *self )
 //	self->clear_focus(self, 0, 0);
 //	self->clear_focus( self, self->p_fcuu->focus_row, self->p_fcuu->focus_col);
 	Sheet_free(cthis->p_div);
-	Focus_free(self->p_fcuu);
+//	Focus_free(self->p_fcuu);
 }	
 
 
@@ -359,6 +381,8 @@ static void	RT_trendHmi_HitHandle( HMI *self, char *s)
 	RLT_trendHMI		*cthis = SUB_PTR( self, HMI, RLT_trendHMI);
 //	shtCmd		*p_cmd;
 	sheet		*p_focus;
+	Button	*p = BTN_Get_Sington();
+	
 	uint8_t		focusRow = self->p_fcuu->focus_row;
 	uint8_t		focusCol = self->p_fcuu->focus_col;
 	uint8_t		chgFouse = 0;
@@ -367,12 +391,11 @@ static void	RT_trendHmi_HitHandle( HMI *self, char *s)
 	
 //	cthis->flags |= 2;
 	Set_flag_keyhandle(&self->flag, 1);
-	if( !strcmp( s, HMIKEY_UP) )
+	if(!strcmp(s, HMIKEY_UP))
 	{
 		p_focus = Focus_Get_focus(self->p_fcuu);
-		if(p_focus->id == SHTID_RTL_MDIV)
+		if(p_focus != NULL && p_focus->id == SHTID_RTL_MDIV)
 		{
-			
 			Str_Calculations(p_focus->cnt.data, 2, OP_ADD, 1, 1, 60);
 			p_focus->cnt.len = strlen(p_focus->cnt.data);
 			chgFouse = 1;
@@ -381,7 +404,7 @@ static void	RT_trendHmi_HitHandle( HMI *self, char *s)
 	else if( !strcmp( s, HMIKEY_DOWN) )
 	{
 		p_focus = Focus_Get_focus(self->p_fcuu);
-		if(p_focus->id == SHTID_RTL_MDIV)
+		if(p_focus != NULL && p_focus->id == SHTID_RTL_MDIV)
 		{
 			
 			Str_Calculations(p_focus->cnt.data, 2, OP_SUB, 1, 1, 60);
@@ -391,23 +414,48 @@ static void	RT_trendHmi_HitHandle( HMI *self, char *s)
 	}
 	else if( !strcmp( s, HMIKEY_LEFT))
 	{
-		if(Focus_move_left(self->p_fcuu) == RET_OK)
-			chgFouse = 1;
-		else
+		if(self->flag & HMIFLAG_FOCUS_IN_BTN)
+		{
+			if(self->btn_backward(self) != RET_OK)
+				Focus_move_left(self->p_fcuu);
+			
+		}
+		else if(Focus_move_left(self->p_fcuu) != RET_OK)
+		{
 			self->btn_backward(self);
+			chgFouse = 1;
+		}
 	}
 	else if( !strcmp( s, HMIKEY_RIGHT))
 	{
-		if(Focus_move_right(self->p_fcuu) == RET_OK)
+		
+		if(self->flag & HMIFLAG_FOCUS_IN_BTN)
+		{
+			if(self->btn_forward(self) != RET_OK)
+				Focus_move_right(self->p_fcuu);
+			
+		}
+		else if(Focus_move_right(self->p_fcuu) == RET_OK)
+		{
+			self->btn_forward(self);
 			chgFouse = 1;
-		else
-			self->btn_backward(self);
+		}
 	}
 
 	if( !strcmp( s, HMIKEY_ENTER))
 	{
+		if(self->flag & HMIFLAG_FOCUS_IN_BTN)
+		{
+			p->hit();
+//			self->btn_hit(self);
+		}
+		
+		//处于按钮区的话p_focus 肯定是NULL
 		p_focus = Focus_Get_focus(self->p_fcuu);
-		if(p_focus && IS_CHECK(p_focus->id)) {
+		if(p_focus == NULL)
+			goto exit;
+		
+		if(IS_CHECK(p_focus->id)) {
 			chn = GET_CHN_FROM_ID(p_focus->id);
 			
 			if(cthis->chn_show_map & (1 << chn)) {
@@ -441,7 +489,7 @@ static void	RT_trendHmi_HitHandle( HMI *self, char *s)
 		}
 	}
 	
-	
+	exit:
 	if( chgFouse)
 	{
 		self->clear_focus(self, focusRow, focusCol);

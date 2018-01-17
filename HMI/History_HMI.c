@@ -49,9 +49,8 @@ static int	Init_History_HMI(HMI *self, void *arg);
 static void Show_History_HMI(HMI *self);
 static void	History_HMI_hide(HMI *self);
 static void	History_initSheet(HMI *self);
-static void	History_HMI_init_focus(HMI *self);
+static void	HIS_Build_button(HMI *self);
 
-static void	History_HMI_hitHandle( HMI *self, char *s_key);
 //============================================================================//
 //            P U B L I C   F U N C T I O N S                                 //
 //============================================================================//
@@ -77,10 +76,8 @@ FUNCTION_SETTING(HMI.initSheet, History_initSheet);
 FUNCTION_SETTING(HMI.hide, History_HMI_hide);
 FUNCTION_SETTING(HMI.show, Show_History_HMI);
 
-FUNCTION_SETTING(HMI.hitHandle, History_HMI_hitHandle);
-FUNCTION_SETTING(HMI.init_focus, History_HMI_init_focus);
-
-
+FUNCTION_SETTING(HMI.hitHandle, Main_HMI_hit);
+FUNCTION_SETTING(HMI.build_button, HIS_Build_button);
 
 END_CTOR
 //=========================================================================//
@@ -130,7 +127,7 @@ static void	History_initSheet(HMI *self)
 	Sheet_updown(g_p_sht_bkpic, h++);
 	Sheet_updown(g_p_sht_title, h++);
 	Sheet_updown(g_p_shtTime, h++);
-	Sheet_updown(g_p_ico_memu, h++);
+//	Sheet_updown(g_p_ico_memu, h++);
 	for(i = 0; i < NUM_CHANNEL; i++) {
 		Sheet_updown(g_arr_p_chnData[i], h++);
 		Sheet_updown(g_arr_p_check[i], h++);
@@ -147,82 +144,43 @@ static void	History_HMI_hide(HMI *self)
 	Sheet_updown(g_p_sht_title, -1);
 	Sheet_updown(g_p_sht_bkpic, -1);
 	
-	
-	
-	Focus_free(self->p_fcuu);
 }
 
 
-static void	History_HMI_init_focus(HMI *self)
+static void HIS_btn_hdl(void *arg, uint8_t btn_id)
 {
-	History_HMI		*cthis = SUB_PTR( self, HMI, History_HMI);
-	self->p_fcuu = Focus_alloc(1, 4);
+	HMI					*self	= (HMI *)arg;		
+	
+	switch(btn_id)
+	{
+			
+		case ICO_ID_PGUP:
+			
+			break;
+		case ICO_ID_PGDN:
+			
+			break;
+	
+	}
 
+	
+		
 }
 
-
-
-
-static void	History_HMI_hitHandle(HMI *self, char *s_key)
+static void	HIS_Build_button(HMI *self)
 {
+	Button	*p = BTN_Get_Sington();
 	
-	History_HMI		*cthis = SUB_PTR( self, HMI, History_HMI);
-	sheet		*p_focus;
-	uint8_t		focusCol = self->p_fcuu->focus_col;
-	uint8_t		chgFouse = 0;
+	p->build_each_btn(0, BTN_TYPE_MENU, Main_btn_hdl, self);
+	p->build_each_btn(1, BTN_TYPE_PGUP, HIS_btn_hdl, self);
+	p->build_each_btn(2, BTN_TYPE_PGDN, HIS_btn_hdl, self);
 
-	if( !strcmp( s_key, HMIKEY_LEFT) )
-	{
-		Focus_move_left(self->p_fcuu);
-		chgFouse = 1;
-	}
-	
-	if( !strcmp( s_key, HMIKEY_RIGHT) )
-	{
-		Focus_move_right(self->p_fcuu);
-		chgFouse = 1;
-	}
-	if( !strcmp(s_key, HMIKEY_ENTER))
-	{
-		p_focus = Focus_Get_focus(self->p_fcuu);
-		if(p_focus == NULL)
-			goto exit;
-		switch(p_focus->id)
-		{
-			case ICO_ID_MENU:
-				self->switchHMI(self, g_p_HMI_menu);
-				break;
-			case ICO_ID_PGUP:
-				break;
-			case ICO_ID_PGDN:
-				break;
-			case ICO_ID_ERASETOOL:
-				break;
-			
-			default:
-				break;
-						
-			
-		}
-		
-		
-	}
-	
-	if( !strcmp(s_key, HMIKEY_ESC))
-	{
-		self->switchBack(self);
-	}
-	
-	if( chgFouse)
-	{	
-		self->clear_focus(self, 0, focusCol);
-		self->show_focus(self, 0, 0);
-		
-	}
-	
-	exit:
-		return;
 }
+
+
+
+
+
 
 
 

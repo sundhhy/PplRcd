@@ -27,6 +27,9 @@
 #define		BTN_TYPE_COPY			5
 #define		BTN_TYPE_PGUP			6
 #define		BTN_TYPE_PGDN			7
+#define		BTN_TYPE_ERASE			8
+#define		BTN_TYPE_LOOP			9		//—≠ª∑œ‘ æ
+#define 	BTN_TYPE_SEARCH			10
 #define 	BTN_TYPE_NONE			0xff
 
 #define BTN_MOVE_FORWARD		0

@@ -61,10 +61,10 @@ void	Show_focus( HMI *self, uint8_t fouse_row, uint8_t fouse_col);
 static void		HMI_Build_button(HMI *self);
 static void		HMI_Clean_button(HMI *self);
 static void		HMI_Show_button(HMI *self);
-static void		HMI_Btn_forward(HMI *self);
-static void		HMI_Btn_backward(HMI *self);
+static int		HMI_Btn_forward(HMI *self);
+static int		HMI_Btn_backward(HMI *self);
 static void		HMI_Btn_jumpout(HMI *self);
-static void		HMI_Btn_hit(HMI *self);
+//static void		HMI_Btn_hit(HMI *self);
 
 //============================================================================//
 //            P U B L I C   F U N C T I O N S                                 //
@@ -108,7 +108,7 @@ FUNCTION_SETTING(show_button, HMI_Show_button);
 FUNCTION_SETTING(btn_forward, HMI_Btn_forward);
 FUNCTION_SETTING(btn_backward, HMI_Btn_backward);
 FUNCTION_SETTING(btn_jumpout, HMI_Btn_jumpout);
-FUNCTION_SETTING(btn_hit, HMI_Btn_hit);
+//FUNCTION_SETTING(btn_hit, HMI_Btn_hit);
 
 END_ABS_CTOR
 //=========================================================================//
@@ -262,18 +262,33 @@ static void		HMI_Show_button(HMI *self)
 
 }
 
-static void		HMI_Btn_forward(HMI *self)
+static int		HMI_Btn_forward(HMI *self)
 {
 	Button	*p = BTN_Get_Sington();
-	if(p->move_focus(BTN_MOVE_FORWARD) == RET_OK)
+	int			ret;
+	
+	ret = p->move_focus(BTN_MOVE_FORWARD);
+	if(ret == RET_OK)
 		self->flag |= HMIFLAG_FOCUS_IN_BTN;
+	else
+		self->flag &= ~HMIFLAG_FOCUS_IN_BTN;
+	return ret;
 }
 
-static void		HMI_Btn_backward(HMI *self)
+static int		HMI_Btn_backward(HMI *self)
 {
 	Button	*p = BTN_Get_Sington();
-	if(p->move_focus(BTN_MOVE_BACKWARD) == RET_OK)
+	
+	int			ret;
+	
+	ret = p->move_focus(BTN_MOVE_BACKWARD);
+	
+	if(ret == RET_OK)
 		self->flag |= HMIFLAG_FOCUS_IN_BTN;
+	else
+		self->flag &= ~HMIFLAG_FOCUS_IN_BTN;
+	
+	return ret;
 }
 static void		HMI_Btn_jumpout(HMI *self)
 {
@@ -282,12 +297,12 @@ static void		HMI_Btn_jumpout(HMI *self)
 	self->flag &= ~HMIFLAG_FOCUS_IN_BTN;
 }
 
-static void		HMI_Btn_hit(HMI *self)
-{
-	Button	*p = BTN_Get_Sington();
-	p->hit();
-	
-}
+//static void		HMI_Btn_hit(HMI *self)
+//{
+//	Button	*p = BTN_Get_Sington();
+//	p->hit();
+//	
+//}
 
 
 

@@ -54,8 +54,8 @@ void Focus_Set_focus(focus_user_t *p_fcuu, int row, int col);
 void Focus_Set_sht(focus_user_t *p_fcuu, int row, int col, sheet *p_sht);
 int Focus_move_left(focus_user_t *p_fcuu);
 int Focus_move_right(focus_user_t *p_fcuu);
-void Focus_move_up(focus_user_t *p_fcuu);
-void Focus_move_down(focus_user_t *p_fcuu);
+int Focus_move_up(focus_user_t *p_fcuu);
+int Focus_move_down(focus_user_t *p_fcuu);
 sheet* Focus_Get_focus(focus_user_t *p_fcuu);
 sheet* Focus_Get_sht(focus_user_t *p_fcuu, int row, int col);
 #endif

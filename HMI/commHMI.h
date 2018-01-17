@@ -62,12 +62,13 @@ typedef struct {
 
 //sheet
 extern	sheet			*g_p_sht_bkpic, *g_p_sht_title, *g_p_shtTime, *g_p_text, *g_p_boxlist;
+extern 	sheet			*g_p_cpic;
 
-extern 	sheet			*g_p_ico_memu, *g_p_ico_digital, *g_p_ico_bar,  *g_p_ico_trend, *g_p_cpic;
-extern 	sheet			*g_p_ico_pgup;
-extern 	sheet			*g_p_ico_pgdn;
-extern	sheet			*g_p_ico_eraseTool;
-extern	sheet			*g_p_ico_search;
+//extern 	sheet			*g_p_ico_memu, *g_p_ico_digital, *g_p_ico_bar,  *g_p_ico_trend, *g_p_cpic;
+//extern 	sheet			*g_p_ico_pgup;
+//extern 	sheet			*g_p_ico_pgdn;
+//extern	sheet			*g_p_ico_eraseTool;
+//extern	sheet			*g_p_ico_search;
 
 extern  sheet			*g_arr_p_chnData[NUM_CHANNEL];
 extern	sheet			*g_arr_p_chnUtil[NUM_CHANNEL];

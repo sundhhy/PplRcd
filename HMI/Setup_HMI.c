@@ -329,37 +329,42 @@ static void	Setup_HMI_hitHandle(HMI *self, char *s_key)
 
 	if( !strcmp( s_key, HMIKEY_LEFT) )
 	{
-		Focus_move_left(self->p_fcuu);
+		if(Focus_move_left(self->p_fcuu) != RET_OK)
+			Focus_move_left(self->p_fcuu);
 		chgFouse = 1;
 	}
 	
 	if( !strcmp( s_key, HMIKEY_RIGHT) )
 	{
-		Focus_move_right(self->p_fcuu);
+		if(Focus_move_right(self->p_fcuu) != RET_OK)
+			Focus_move_right(self->p_fcuu);
 		chgFouse = 1;
 	}
 	if( !strcmp( s_key, HMIKEY_UP) )
 	{
-		Focus_move_up(self->p_fcuu);
+		if(Focus_move_up(self->p_fcuu) != RET_OK)
+			Focus_move_up(self->p_fcuu);		//焦点不允许出现在外部
 		chgFouse = 1;
 	}
 	
 	if( !strcmp( s_key, HMIKEY_DOWN) )
 	{
-		Focus_move_down(self->p_fcuu);
+		if(Focus_move_down(self->p_fcuu) != RET_OK)
+			Focus_move_down(self->p_fcuu);
 		chgFouse = 1;
 	}
 	if( !strcmp(s_key, HMIKEY_ENTER))
 	{
 		p_focus = Focus_Get_focus(self->p_fcuu);
+		if(p_focus == NULL) 
+				goto exit;
+		
 		if(p_focus->id == SHEET_PSD_TEXT) {
 //			p_cmd = p_focus->p_enterCmd;
 //			p_cmd->shtExcute(p_cmd, p_focus, self);
 			Input_Password(self);
 			goto exit;
 		} else {
-			if(p_focus == NULL) 
-				goto exit;
 			if(self->p_fcuu->focus_row == 3 && self->p_fcuu->focus_col) {
 				self->switchHMI(self, g_p_HMI_menu);
 			} else {

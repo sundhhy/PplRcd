@@ -43,19 +43,20 @@
 
 
 /********Í¼²ãµÄID	***********************************/
-#define	ICO_ID_MENU				0x20
-#define	ICO_ID_BAR				0x21
+#define	ICO_ID_MENU					0x20
+#define	ICO_ID_BAR					0x21
 #define	ICO_ID_DIGITAL			0x22
-#define	ICO_ID_TREND			0x23
-#define	ICO_ID_PGUP				0x24
-#define	ICO_ID_PGDN				0x25
+#define	ICO_ID_TREND				0x23
+#define	ICO_ID_PGUP					0x24
+#define	ICO_ID_PGDN					0x25
 #define	ICO_ID_ERASETOOL		0x26
-#define	ICO_ID_SEARCH			0x27
-#define	ICO_ID_COPY				0x28
+#define	ICO_ID_SEARCH				0x27
+#define	ICO_ID_COPY					0x28
+#define	ICO_ID_LOOP					0x29
 
-#define	SHEET_BOXLIST				0x2a
-#define	SHEET_G_TEXT				0x2b
-#define	SHEET_PSD_TEXT				0x2c
+#define	SHEET_BOXLIST				0x30
+#define	SHEET_G_TEXT				0x31
+#define	SHEET_PSD_TEXT			0x32
 
 #define IS_CHECK(n)				((n&0xf0) == 0x30)
 #define SHTID_CHECK(n)			(0x30 + n)
@@ -189,10 +190,10 @@ ABS_CLASS(HMI)
 	void		(*build_button)(HMI *self);
 	void		(*clean_button)(HMI *self);
 	void		(*show_button)(HMI *self);
-	void		(*btn_forward)(HMI *self);
-	void		(*btn_backward)(HMI *self);
+	int		(*btn_forward)(HMI *self);
+	int		(*btn_backward)(HMI *self);
 	void		(*btn_jumpout)(HMI *self);
-	void		(*btn_hit)(HMI *self);
+//	void		(*btn_hit)(HMI *self);
 	
 };
 
@@ -217,5 +218,7 @@ void STY_Duild_button(void *arg);
 void Main_btn_hdl(void *arg, uint8_t btn_id);
 void Main_HMI_build_button(HMI *self);
 void Main_HMI_hit( HMI *self, char *s);
+
+
 
 #endif

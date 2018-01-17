@@ -91,7 +91,6 @@ mainHmi *Get_mainHmi(void)
 void Main_HMI_build_button(HMI *self)
 {
 	Button	*p = BTN_Get_Sington();
-	int		i;
 	
 	p->build_each_btn(0, BTN_TYPE_MENU, Main_btn_hdl, self);
 	p->build_each_btn(1, BTN_TYPE_BAR, Main_btn_hdl, self);
@@ -102,7 +101,7 @@ void Main_HMI_build_button(HMI *self)
 void	Main_HMI_hit( HMI *self, char *s)
 {
 
-	
+	Button	*p = BTN_Get_Sington();
 
 	if( !strcmp( s, HMIKEY_UP) )
 	{
@@ -127,8 +126,8 @@ void	Main_HMI_hit( HMI *self, char *s)
 	
 	if( !strcmp( s, HMIKEY_ENTER))
 	{
-		
-		self->btn_hit(self);
+		p->hit();
+//		self->btn_hit(self);
 	}
 	if( !strcmp( s, HMIKEY_ESC))
 	{

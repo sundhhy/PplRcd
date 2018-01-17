@@ -130,43 +130,67 @@ void Focus_Set_sht(focus_user_t *p_fcuu, int row, int col, sheet *p_sht)
 
 int Focus_move_left(focus_user_t *p_fcuu)
 {
-	if(p_fcuu->focus_col > 0)
+	if(p_fcuu->focus_col == 0xff)
+		p_fcuu->focus_col = p_fcuu->columns - 1;
+	else if(p_fcuu->focus_col > 0)
 		p_fcuu->focus_col --;
 	else
 	{
-		p_fcuu->focus_col = p_fcuu->columns - 1;
+//		p_fcuu->focus_col = p_fcuu->columns - 1;
+		
+		p_fcuu->focus_col = 0xff;
+		return RET_FAILED;
 	}
+	
+	return RET_OK;
 	
 }
 int Focus_move_right(focus_user_t *p_fcuu)
 {
-	p_fcuu->focus_col ++;
-	if(p_fcuu->focus_col >= p_fcuu->columns)
+	if(p_fcuu->focus_col == 0xff)	//从外部进入
 		p_fcuu->focus_col = 0;
+	else if(p_fcuu->focus_col < (p_fcuu->columns - 1))
+		p_fcuu->focus_col ++;
+	else
+	{
+		p_fcuu->focus_col = 0xff;		//跳到外部去
+		return RET_FAILED;
+	}
+	
+	return RET_OK;
 }
-void Focus_move_up(focus_user_t *p_fcuu)
+int Focus_move_up(focus_user_t *p_fcuu)
 {
 
-	
-	if(p_fcuu->focus_row > 0)
+	if(p_fcuu->focus_row == 0xff)
+		p_fcuu->focus_row = p_fcuu->rows;
+	else if(p_fcuu->focus_row > 0)
 		p_fcuu->focus_row --;
 	else
 	{
-		p_fcuu->focus_row = p_fcuu->rows;
+		p_fcuu->focus_row = 0xff;
+		return RET_FAILED;
 	}
-	
+	return RET_OK;
 }
-void Focus_move_down(focus_user_t *p_fcuu)
+int Focus_move_down(focus_user_t *p_fcuu)
 {
-	p_fcuu->focus_row ++;
-	if(p_fcuu->focus_row > p_fcuu->rows)
+	if(p_fcuu->focus_row== 0xff)
 		p_fcuu->focus_row = 0;
+	else if(p_fcuu->focus_row < (p_fcuu->rows - 1))
+		p_fcuu->focus_row ++;
+	else
+	{
+		p_fcuu->focus_row = 0xff;
+		return RET_FAILED;
+	}
+	return RET_OK;
 	
 }
 sheet* Focus_Get_focus(focus_user_t *p_fcuu)
 {
 	//这个if是为了能够让界面在选择区域超过边界时，不显示任何焦点
-	if(p_fcuu->focus_row == p_fcuu->rows || p_fcuu->focus_col == p_fcuu->columns)
+	if(p_fcuu->focus_row == 0xff || p_fcuu->focus_col == 0xff)
 		return NULL;
 	
 	return arr_p_focus_shts[p_fcuu->first_idx + p_fcuu->focus_row * p_fcuu->rows + p_fcuu->focus_col];

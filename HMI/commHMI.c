@@ -30,14 +30,14 @@ sheet			*g_p_cpic;
 sheet			*g_p_text;
 sheet			*g_p_boxlist;
 
-sheet			*g_p_ico_memu;
-sheet			*g_p_ico_bar;
-sheet			*g_p_ico_digital;
-sheet			*g_p_ico_trend;
-sheet			*g_p_ico_pgup;
-sheet			*g_p_ico_pgdn;
-sheet			*g_p_ico_search;
-sheet			*g_p_ico_eraseTool;
+//sheet			*g_p_ico_memu;
+//sheet			*g_p_ico_bar;
+//sheet			*g_p_ico_digital;
+//sheet			*g_p_ico_trend;
+//sheet			*g_p_ico_pgup;
+//sheet			*g_p_ico_pgdn;
+//sheet			*g_p_ico_search;
+//sheet			*g_p_ico_eraseTool;
 
 sheet			*g_arr_p_chnData[NUM_CHANNEL];
 sheet			*g_arr_p_chnUtil[NUM_CHANNEL];
@@ -71,18 +71,18 @@ static ro_char code_title[] =  {"<text vx0=0 vy0=4 m=0 clr=white f=24> </>" };
 
 static ro_char timeCode[] = { "<time vx0=200 vy0=0 bx=60  by=24 f=24 xali=m m=0 clr=yellow spr=/> </time>" };
 
-//进入主菜单
-static ro_char ico_memu[] = { "<bu vx0=10 vy0=212 bx=49 by=25 bkc=black clr=black><pic bx=48  by=24 >20</></bu>" };
-//进入棒图图标
-static ro_char ico_bar[] = { "<bu vx0=80 vy0=212 bx=49 by=25 bkc=black clr=black><pic  bx=48  by=24 >21</></bu>" };
-//进入数显画面图标
-static ro_char ico_digital[] = { "<bu vx0=160 vy0=212 bx=49 by=25 bkc=black clr=black><pic  bx=48  by=24 >22</></bu>" };
-//进入趋势画面图标
-static ro_char ico_trend[] = { "<bu vx0=240 vy0=212 bx=49 by=25 bkc=black clr=black><pic  bx=48  by=24 >23</></bu>" };
+////进入主菜单
+//static ro_char ico_memu[] = { "<bu vx0=10 vy0=212 bx=49 by=25 bkc=black clr=black><pic bx=48  by=24 >20</></bu>" };
+////进入棒图图标
+//static ro_char ico_bar[] = { "<bu vx0=80 vy0=212 bx=49 by=25 bkc=black clr=black><pic  bx=48  by=24 >21</></bu>" };
+////进入数显画面图标
+//static ro_char ico_digital[] = { "<bu vx0=160 vy0=212 bx=49 by=25 bkc=black clr=black><pic  bx=48  by=24 >22</></bu>" };
+////进入趋势画面图标
+//static ro_char ico_trend[] = { "<bu vx0=240 vy0=212 bx=49 by=25 bkc=black clr=black><pic  bx=48  by=24 >23</></bu>" };
 
-static ro_char ico_pgup[] = { "<bu vx0=80 vy0=212 bx=49 by=25 bkc=black clr=black><pic  bx=48  by=24 >25</></bu>" };
-static ro_char ico_pgdn[] = { "<bu vx0=160 vy0=212 bx=49 by=25 bkc=black clr=black><pic  bx=48  by=24 >26</></bu>" };
-static ro_char ico_eraseTool[] = {"<bu vx0=240 vy0=212 bx=49 by=25 bkc=black clr=black><pic  bx=48  by=24 >27</></bu>"};
+//static ro_char ico_pgup[] = { "<bu vx0=80 vy0=212 bx=49 by=25 bkc=black clr=black><pic  bx=48  by=24 >25</></bu>" };
+//static ro_char ico_pgdn[] = { "<bu vx0=160 vy0=212 bx=49 by=25 bkc=black clr=black><pic  bx=48  by=24 >26</></bu>" };
+//static ro_char ico_eraseTool[] = {"<bu vx0=240 vy0=212 bx=49 by=25 bkc=black clr=black><pic  bx=48  by=24 >27</></bu>"};
 //static ro_char ico_search[] = {"<bu vx0=240 vy0=212 bx=49 by=25 bkc=black clr=black><pic  bx=48  by=24 >24</></bu>"};
 
 
@@ -314,10 +314,10 @@ static int	Init_cmmHmi( HMI *self, void *arg)
 	rltHmi = SUB_PTR(p_hmi, HMI, RLT_trendHMI);
 	
 	//将图标动作与相关界面处理绑定
-	g_p_ico_memu->p_enterCmd = &menuHmi->shtCmd;
-	g_p_ico_digital->p_enterCmd = &dataHmi->shtCmd;
-	g_p_ico_bar->p_enterCmd = &barHmi->shtCmd;
-	g_p_ico_trend->p_enterCmd = &rltHmi->shtCmd;
+//	g_p_ico_memu->p_enterCmd = &menuHmi->shtCmd;
+//	g_p_ico_digital->p_enterCmd = &dataHmi->shtCmd;
+//	g_p_ico_bar->p_enterCmd = &barHmi->shtCmd;
+//	g_p_ico_trend->p_enterCmd = &rltHmi->shtCmd;
 	
 	
 	
@@ -362,71 +362,71 @@ static int	Init_cmmHmi( HMI *self, void *arg)
 
 static void Build_icoSheets(void)
 {
-	shtctl 		*p_shtctl = NULL;
-	Expr 		*p_exp ;
-		
-	p_shtctl = GetShtctl();
-	
-	//图标初始化
-	p_exp = ExpCreate( "bu");
+//	shtctl 		*p_shtctl = NULL;
+//	Expr 		*p_exp ;
+//		
+//	p_shtctl = GetShtctl();
+//	
+//	//图标初始化
+//	p_exp = ExpCreate( "bu");
 
-	
-	//初始化公用图标
-	g_p_ico_memu  = Sheet_alloc(p_shtctl);
-	p_exp->inptSht(p_exp, (void *)ico_memu, g_p_ico_memu) ;
-	g_p_ico_memu->area.x1 = g_p_ico_memu->area.x0 + g_p_ico_memu->bxsize;
-	g_p_ico_memu->area.y1 = g_p_ico_memu->area.y0 + g_p_ico_memu->bysize;
-	g_p_ico_memu->id = ICO_ID_MENU;
-	FormatSheetSub(g_p_ico_memu);
-	
-	
-	g_p_ico_bar  = Sheet_alloc(p_shtctl);
-	p_exp->inptSht(p_exp, (void *)ico_bar, g_p_ico_bar) ;
-	g_p_ico_bar->area.x1 = g_p_ico_bar->area.x0 + g_p_ico_bar->bxsize;
-	g_p_ico_bar->area.y1 = g_p_ico_bar->area.y0 + g_p_ico_bar->bysize;
-	FormatSheetSub(g_p_ico_bar);
-	
-	
-	g_p_ico_digital  = Sheet_alloc(p_shtctl);
-	p_exp->inptSht(p_exp, (void *)ico_digital, g_p_ico_digital) ;
-	g_p_ico_digital->area.x1 = g_p_ico_digital->area.x0 + g_p_ico_bar->bxsize;
-	g_p_ico_digital->area.y1 = g_p_ico_digital->area.y0 + g_p_ico_bar->bysize;
-	FormatSheetSub(g_p_ico_digital);
-	
-	g_p_ico_trend  = Sheet_alloc(p_shtctl);
-	p_exp->inptSht(p_exp, (void *)ico_trend, g_p_ico_trend) ;
-	g_p_ico_trend->area.x1 = g_p_ico_trend->area.x0 + g_p_ico_trend->bxsize;
-	g_p_ico_trend->area.y1 = g_p_ico_trend->area.y0 + g_p_ico_trend->bysize;
-	FormatSheetSub(g_p_ico_trend);
-	
-	g_p_ico_pgup  = Sheet_alloc(p_shtctl);
-	p_exp->inptSht(p_exp, (void *)ico_pgup, g_p_ico_pgup) ;
-	g_p_ico_pgup->area.x1 = g_p_ico_pgup->area.x0 + g_p_ico_pgup->bxsize;
-	g_p_ico_pgup->area.y1 = g_p_ico_pgup->area.y0 + g_p_ico_pgup->bysize;
-	g_p_ico_pgup->id = ICO_ID_PGUP;
-	FormatSheetSub(g_p_ico_pgup);
-	
-	g_p_ico_pgdn  = Sheet_alloc( p_shtctl);
-	p_exp->inptSht(p_exp, (void *)ico_pgdn, g_p_ico_pgdn) ;
-	g_p_ico_pgdn->area.x1 = g_p_ico_pgdn->area.x0 + g_p_ico_pgdn->bxsize;
-	g_p_ico_pgdn->area.y1 = g_p_ico_pgdn->area.y0 + g_p_ico_pgdn->bysize;
-	g_p_ico_pgdn->id = ICO_ID_PGDN;
-	FormatSheetSub(g_p_ico_pgdn);
-	
-	
-	g_p_ico_eraseTool  = Sheet_alloc(p_shtctl);
-	p_exp->inptSht(p_exp, (void *)ico_eraseTool, g_p_ico_eraseTool) ;
-	g_p_ico_eraseTool->area.x1 = g_p_ico_eraseTool->area.x0 + g_p_ico_eraseTool->bxsize;
-	g_p_ico_eraseTool->area.y1 = g_p_ico_eraseTool->area.y0 + g_p_ico_eraseTool->bysize;
-	g_p_ico_eraseTool->id = ICO_ID_ERASETOOL;
-	FormatSheetSub(g_p_ico_eraseTool);
-	
-	g_p_ico_search  = Sheet_alloc(p_shtctl);
-	p_exp->inptSht(p_exp, (void *)ico_eraseTool, g_p_ico_search) ;
-	g_p_ico_search->area.x1 = g_p_ico_search->area.x0 + g_p_ico_search->bxsize;
-	g_p_ico_search->area.y1 = g_p_ico_search->area.y0 + g_p_ico_search->bysize;
-	g_p_ico_search->id = ICO_ID_ERASETOOL;
-	FormatSheetSub(g_p_ico_search);
+//	
+//	//初始化公用图标
+//	g_p_ico_memu  = Sheet_alloc(p_shtctl);
+//	p_exp->inptSht(p_exp, (void *)ico_memu, g_p_ico_memu) ;
+//	g_p_ico_memu->area.x1 = g_p_ico_memu->area.x0 + g_p_ico_memu->bxsize;
+//	g_p_ico_memu->area.y1 = g_p_ico_memu->area.y0 + g_p_ico_memu->bysize;
+//	g_p_ico_memu->id = ICO_ID_MENU;
+//	FormatSheetSub(g_p_ico_memu);
+//	
+//	
+//	g_p_ico_bar  = Sheet_alloc(p_shtctl);
+//	p_exp->inptSht(p_exp, (void *)ico_bar, g_p_ico_bar) ;
+//	g_p_ico_bar->area.x1 = g_p_ico_bar->area.x0 + g_p_ico_bar->bxsize;
+//	g_p_ico_bar->area.y1 = g_p_ico_bar->area.y0 + g_p_ico_bar->bysize;
+//	FormatSheetSub(g_p_ico_bar);
+//	
+//	
+//	g_p_ico_digital  = Sheet_alloc(p_shtctl);
+//	p_exp->inptSht(p_exp, (void *)ico_digital, g_p_ico_digital) ;
+//	g_p_ico_digital->area.x1 = g_p_ico_digital->area.x0 + g_p_ico_bar->bxsize;
+//	g_p_ico_digital->area.y1 = g_p_ico_digital->area.y0 + g_p_ico_bar->bysize;
+//	FormatSheetSub(g_p_ico_digital);
+//	
+//	g_p_ico_trend  = Sheet_alloc(p_shtctl);
+//	p_exp->inptSht(p_exp, (void *)ico_trend, g_p_ico_trend) ;
+//	g_p_ico_trend->area.x1 = g_p_ico_trend->area.x0 + g_p_ico_trend->bxsize;
+//	g_p_ico_trend->area.y1 = g_p_ico_trend->area.y0 + g_p_ico_trend->bysize;
+//	FormatSheetSub(g_p_ico_trend);
+//	
+//	g_p_ico_pgup  = Sheet_alloc(p_shtctl);
+//	p_exp->inptSht(p_exp, (void *)ico_pgup, g_p_ico_pgup) ;
+//	g_p_ico_pgup->area.x1 = g_p_ico_pgup->area.x0 + g_p_ico_pgup->bxsize;
+//	g_p_ico_pgup->area.y1 = g_p_ico_pgup->area.y0 + g_p_ico_pgup->bysize;
+//	g_p_ico_pgup->id = ICO_ID_PGUP;
+//	FormatSheetSub(g_p_ico_pgup);
+//	
+//	g_p_ico_pgdn  = Sheet_alloc( p_shtctl);
+//	p_exp->inptSht(p_exp, (void *)ico_pgdn, g_p_ico_pgdn) ;
+//	g_p_ico_pgdn->area.x1 = g_p_ico_pgdn->area.x0 + g_p_ico_pgdn->bxsize;
+//	g_p_ico_pgdn->area.y1 = g_p_ico_pgdn->area.y0 + g_p_ico_pgdn->bysize;
+//	g_p_ico_pgdn->id = ICO_ID_PGDN;
+//	FormatSheetSub(g_p_ico_pgdn);
+//	
+//	
+//	g_p_ico_eraseTool  = Sheet_alloc(p_shtctl);
+//	p_exp->inptSht(p_exp, (void *)ico_eraseTool, g_p_ico_eraseTool) ;
+//	g_p_ico_eraseTool->area.x1 = g_p_ico_eraseTool->area.x0 + g_p_ico_eraseTool->bxsize;
+//	g_p_ico_eraseTool->area.y1 = g_p_ico_eraseTool->area.y0 + g_p_ico_eraseTool->bysize;
+//	g_p_ico_eraseTool->id = ICO_ID_ERASETOOL;
+//	FormatSheetSub(g_p_ico_eraseTool);
+//	
+//	g_p_ico_search  = Sheet_alloc(p_shtctl);
+//	p_exp->inptSht(p_exp, (void *)ico_eraseTool, g_p_ico_search) ;
+//	g_p_ico_search->area.x1 = g_p_ico_search->area.x0 + g_p_ico_search->bxsize;
+//	g_p_ico_search->area.y1 = g_p_ico_search->area.y0 + g_p_ico_search->bysize;
+//	g_p_ico_search->id = ICO_ID_ERASETOOL;
+//	FormatSheetSub(g_p_ico_search);
 	
 }
 

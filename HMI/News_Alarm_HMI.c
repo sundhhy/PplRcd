@@ -47,9 +47,8 @@ static int	Init_News_Alarm_HMI(HMI *self, void *arg);
 static void Show_News_Alarm_HMI(HMI *self);
 static void	News_Alarm_HMI_hide(HMI *self);
 static void	Alarm_initSheet(HMI *self);
-static void	News_Alarm_HMI_init_focus(HMI *self);
+static void	NWA_Build_button(HMI *self);
 
-static void	News_Alarm_HMI_hitHandle( HMI *self, char *s_key);
 //============================================================================//
 //            P U B L I C   F U N C T I O N S                                 //
 //============================================================================//
@@ -75,8 +74,8 @@ FUNCTION_SETTING(HMI.initSheet, Alarm_initSheet);
 FUNCTION_SETTING(HMI.hide, News_Alarm_HMI_hide);
 FUNCTION_SETTING(HMI.show, Show_News_Alarm_HMI);
 
-FUNCTION_SETTING(HMI.hitHandle, News_Alarm_HMI_hitHandle);
-FUNCTION_SETTING(HMI.init_focus, News_Alarm_HMI_init_focus);
+FUNCTION_SETTING(HMI.hitHandle, Main_HMI_hit);
+FUNCTION_SETTING(HMI.build_button, NWA_Build_button);
 
 
 
@@ -129,10 +128,10 @@ static void	Alarm_initSheet(HMI *self)
 	Sheet_updown(g_p_sht_bkpic, h++);
 	Sheet_updown(g_p_sht_title, h++);
 	Sheet_updown(g_p_shtTime, h++);
-	Sheet_updown(g_p_ico_memu, h++);
-	Sheet_updown(g_p_ico_pgup, h++);
-	Sheet_updown(g_p_ico_pgdn, h++);
-	Sheet_updown(g_p_ico_eraseTool, h++);
+//	Sheet_updown(g_p_ico_memu, h++);
+//	Sheet_updown(g_p_ico_pgup, h++);
+//	Sheet_updown(g_p_ico_pgdn, h++);
+//	Sheet_updown(g_p_ico_eraseTool, h++);
 
 	
 
@@ -142,97 +141,59 @@ static void	News_Alarm_HMI_hide(HMI *self)
 {
 //	News_Alarm_HMI		*cthis = SUB_PTR( self, HMI, News_Alarm_HMI);
 
-	Sheet_updown(g_p_ico_eraseTool, -1);
-	Sheet_updown(g_p_ico_pgdn, -1);
-	Sheet_updown(g_p_ico_pgup, -1);
-	Sheet_updown(g_p_ico_memu, -1);
+//	Sheet_updown(g_p_ico_eraseTool, -1);
+//	Sheet_updown(g_p_ico_pgdn, -1);
+//	Sheet_updown(g_p_ico_pgup, -1);
+//	Sheet_updown(g_p_ico_memu, -1);
 	Sheet_updown(g_p_shtTime, -1);
 	Sheet_updown(g_p_sht_title, -1);
 	Sheet_updown(g_p_sht_bkpic, -1);
 	
 	
 	
-	Focus_free(self->p_fcuu);
+//	Focus_free(self->p_fcuu);
 }
 
 
-static void	News_Alarm_HMI_init_focus(HMI *self)
+static void NWA_btn_hdl(void *arg, uint8_t btn_id)
 {
-//	News_Alarm_HMI		*cthis = SUB_PTR( self, HMI, News_Alarm_HMI);
-	self->p_fcuu = Focus_alloc(1, 4);
+	HMI					*self	= (HMI *)arg;		
 	
-	Focus_Set_focus(self->p_fcuu, 0, 0);
+	switch(btn_id)
+	{
+		
+		
+		case ICO_ID_ERASETOOL:
+			
+			break;	
+		case ICO_ID_PGUP:
+			
+			break;
+		case ICO_ID_PGDN:
+			
+			break;
 	
-	Focus_Set_sht(self->p_fcuu, 0, 0, g_p_ico_memu);
-	Focus_Set_sht(self->p_fcuu, 0, 1, g_p_ico_pgup);
-	Focus_Set_sht(self->p_fcuu, 0, 2, g_p_ico_pgdn);
-	Focus_Set_sht(self->p_fcuu, 0, 3, g_p_ico_eraseTool);
+	}
+
+	
 		
 }
 
-
-
-
-static void	News_Alarm_HMI_hitHandle(HMI *self, char *s_key)
+static void	NWA_Build_button(HMI *self)
 {
+	Button	*p = BTN_Get_Sington();
 	
-//	News_Alarm_HMI		*cthis = SUB_PTR( self, HMI, News_Alarm_HMI);
-	sheet		*p_focus;
-	uint8_t		focusCol = self->p_fcuu->focus_col;
-	uint8_t		chgFouse = 0;
-
-	if( !strcmp( s_key, HMIKEY_LEFT) )
-	{
-		Focus_move_up(self->p_fcuu);
-		chgFouse = 1;
-	}
-	
-	if( !strcmp( s_key, HMIKEY_RIGHT) )
-	{
-		Focus_move_down(self->p_fcuu);
-		chgFouse = 1;
-	}
-	if( !strcmp(s_key, HMIKEY_ENTER))
-	{
-		p_focus = Focus_Get_focus(self->p_fcuu);
-		if(p_focus == NULL)
-			goto exit;
-		switch(p_focus->id)
-		{
-			case ICO_ID_MENU:
-				self->switchHMI(self, g_p_HMI_menu);
-				break;
-			case ICO_ID_PGUP:
-				break;
-			case ICO_ID_PGDN:
-				break;
-			case ICO_ID_ERASETOOL:
-				break;
-			
-			default:
-				break;
-						
-			
-		}
+	p->build_each_btn(0, BTN_TYPE_MENU, Main_btn_hdl, self);
+	p->build_each_btn(1, BTN_TYPE_PGUP, NWA_btn_hdl, self);
+	p->build_each_btn(2, BTN_TYPE_PGDN, NWA_btn_hdl, self);
+	p->build_each_btn(3, BTN_TYPE_ERASE, NWA_btn_hdl, self);
 		
-		
-	}
-	
-	if( !strcmp(s_key, HMIKEY_ESC))
-	{
-		self->switchBack(self);
-	}
-	
-	if( chgFouse)
-	{	
-		self->clear_focus(self, 0, focusCol);
-		self->show_focus(self, 0, 0);
-		
-	}
-	
-	exit:
-		return;
 }
+
+
+
+
+
 
 
 

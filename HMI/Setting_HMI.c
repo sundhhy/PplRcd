@@ -403,11 +403,10 @@ static void Strategy_focus(Setting_HMI *self, strategy_focus_t *p_syf, int opt)
 static void	Setting_HMI_hitHandle(HMI *self, char *s_key)
 {
 	
-	Setting_HMI		*cthis = SUB_PTR( self, HMI, Setting_HMI);
-//	sheet			*p_focus;
-	strategy_t			*p_sy = cthis->p_sy;
+	Setting_HMI				*cthis = SUB_PTR( self, HMI, Setting_HMI);
+	strategy_t				*p_sy = cthis->p_sy;
 	strategy_focus_t	old_sf;
-	
+	Button						*p = BTN_Get_Sington();
 	
 //	uint8_t		focusRow = self->p_fcuu->focus_row;
 	uint8_t		focusCol = cthis->f_col;
@@ -526,8 +525,8 @@ static void	Setting_HMI_hitHandle(HMI *self, char *s_key)
 		} else {
 			if(self->flag & HMIFLAG_FOCUS_IN_BTN)
 			{
-				
-				self->btn_hit(self);
+				p->hit();
+//				self->btn_hit(self);
 			}
 //			p_focus = Setting_HMI_get_focus(cthis, -1);
 //			if(STING_Show_Button(self, p_focus->id) == ERR_OPT_FAILED) {
