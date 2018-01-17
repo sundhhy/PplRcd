@@ -167,6 +167,7 @@ static void DBP_Init_button(void *arg)
 	Button	*p_btn = BTN_Get_Sington();
 	p_btn->build_each_btn(0, BTN_TYPE_MENU, Setting_btn_hdl, arg);
 	p_btn->build_each_btn(1, BTN_TYPE_COPY, DBP_Btn_hdl, arg);
+	p_btn->build_each_btn(2, BTN_TYPE_STOP, DBP_Btn_hdl, arg);
 	
 }
 static void DBP_Exit(void)

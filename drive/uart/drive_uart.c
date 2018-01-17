@@ -143,13 +143,15 @@ static int UartWrite( driveUart *self, void *buf, int wrLen)
 //	}
 	if( buf == NULL || wrLen == 0)
 		return ERR_BAD_PARAMETER;
-	if( self->status == UARTSTATUS_TXBUSY)
+	if(self->status == UARTSTATUS_TXBUSY)
 		return ERR_BUSY;
 	
 	self->ioctol( self, DRICMD_SET_DIR_TX);
 	
 	if((myCfg->opt_mode != UART_MODE_CPU))
 	{
+		
+		self->status = UARTSTATUS_TXBUSY;
 		if((wrLen  < UART_TXCACHE_SIZE))
 		{
 			memset( self->txCache, 0, UART_TXCACHE_SIZE);
@@ -602,6 +604,7 @@ void Usart_irq( driveUart *thisDev)
 		USART_ClearFlag( thisDev->devUartBase,USART_IT_TC );
 		USART_ITConfig( thisDev->devUartBase, USART_IT_TC, DISABLE);
 		
+		thisDev->status = 0;
 //		if(myCfg->dma->dma_tx_base->CNDTR > 0) {
 //			cntdr = myCfg->dma->dma_tx_base->CNDTR;
 //			return;

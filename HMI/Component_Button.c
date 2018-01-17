@@ -16,11 +16,12 @@
 #define BTN_ICO_DIGITAL			"22"
 #define BTN_ICO_TREND			"23"
 #define BTN_ICO_COPY			"27"
+#define BTN_ICO_STOP			"24"
 #define BTN_ICO_PGDN			"26"
 #define BTN_ICO_PGUP			"25"
 #define BTN_ICO_ERASE			"27"
 #define BTN_ICO_LOOP			"25"
-#define BTN_ICO_SEARCH		"25"
+#define BTN_ICO_SEARCH			"25"
 //4个按钮的图形代码
 static ro_char *arr_btn_code[NUM_BUTTON] ={ \
 	"<bu vx0=10 vy0=212 bx=49 by=25 bkc=black clr=black><pic bx=48  by=24 >20</></bu>" , \
@@ -135,6 +136,7 @@ static void 	BTN_Init(Button *self)
 static int		BTN_Build_each_btn(uint8_t	seq, uint8_t btn_type, btn_hdl bh, void *hdl_arg)
 {
 	uint8_t		*p_set = &p_self->set_vaild_btn;
+	dspContent_t	*btn_pic ;
 //	void		*old_arg = p_self->arr_p_arg[seq];
 //	btn_hdl		old_hdl = p_self->arr_hdl[seq];
 	if(seq >= NUM_BUTTON)
@@ -144,53 +146,57 @@ static int		BTN_Build_each_btn(uint8_t	seq, uint8_t btn_type, btn_hdl bh, void *
 	Set_bit(p_set, seq);
 	p_self->arr_p_arg[seq] = hdl_arg;
 	p_self->arr_hdl[seq] = bh;
-	
+	btn_pic = Button_Get_subcnt(arr_p_btn_sht[seq]);
 	switch(btn_type)
 	{
 				
 
 		case BTN_TYPE_MENU:
-			arr_p_btn_sht[seq]->cnt.data = BTN_ICO_MENU;
+			btn_pic->data = BTN_ICO_MENU;
 			arr_p_btn_sht[seq]->id = ICO_ID_MENU;
 			break;
 		case BTN_TYPE_BAR:
-			arr_p_btn_sht[seq]->cnt.data = BTN_ICO_BAR;
+			btn_pic->data = BTN_ICO_BAR;
 			arr_p_btn_sht[seq]->id = ICO_ID_BAR;
 			break;
 		
 		case BTN_TYPE_DIGITAL:
-			arr_p_btn_sht[seq]->cnt.data = BTN_ICO_DIGITAL;
+			btn_pic->data = BTN_ICO_DIGITAL;
 			arr_p_btn_sht[seq]->id = ICO_ID_DIGITAL;
 			break;
 	
 		case BTN_TYPE_TREND:
-			arr_p_btn_sht[seq]->cnt.data = BTN_ICO_TREND;
+			btn_pic->data = BTN_ICO_TREND;
 			arr_p_btn_sht[seq]->id = ICO_ID_TREND;
 			break;
 		case BTN_TYPE_COPY:
-			arr_p_btn_sht[seq]->cnt.data = BTN_ICO_COPY;
+			btn_pic->data = BTN_ICO_COPY;
 			arr_p_btn_sht[seq]->id = ICO_ID_COPY;
+			break;
+		case BTN_TYPE_STOP:
+			btn_pic->data = BTN_ICO_STOP;
+			arr_p_btn_sht[seq]->id = ICO_ID_STOP;
 			break;
 		
 		case BTN_TYPE_PGDN:
-			arr_p_btn_sht[seq]->cnt.data = BTN_ICO_PGDN;
+			btn_pic->data = BTN_ICO_PGDN;
 			arr_p_btn_sht[seq]->id = ICO_ID_PGDN;
 			break;
 	
 		case BTN_TYPE_PGUP:
-			arr_p_btn_sht[seq]->cnt.data = BTN_ICO_PGUP;
+			btn_pic->data = BTN_ICO_PGUP;
 			arr_p_btn_sht[seq]->id = ICO_ID_PGUP;
 			break;
 		case BTN_TYPE_ERASE:
-			arr_p_btn_sht[seq]->cnt.data = BTN_ICO_ERASE;
+			btn_pic->data = BTN_ICO_ERASE;
 			arr_p_btn_sht[seq]->id = ICO_ID_ERASETOOL;
 			break;
 		case BTN_TYPE_LOOP:
-			arr_p_btn_sht[seq]->cnt.data = BTN_ICO_LOOP;
+			btn_pic->data = BTN_ICO_LOOP;
 			arr_p_btn_sht[seq]->id = ICO_ID_LOOP;
 			break;
 		case BTN_TYPE_SEARCH:
-			arr_p_btn_sht[seq]->cnt.data = BTN_ICO_SEARCH;
+			btn_pic->data = BTN_ICO_SEARCH;
 			arr_p_btn_sht[seq]->id = ICO_ID_SEARCH;
 			break;
 		default:
@@ -201,7 +207,7 @@ static int		BTN_Build_each_btn(uint8_t	seq, uint8_t btn_type, btn_hdl bh, void *
 		
 		
 	}
-	arr_p_btn_sht[seq]->cnt.len = strlen(arr_p_btn_sht[seq]->cnt.data);
+	btn_pic->len = strlen(btn_pic->data);
 	return RET_OK;
 }
 static void		BTN_Clean_btn(void)

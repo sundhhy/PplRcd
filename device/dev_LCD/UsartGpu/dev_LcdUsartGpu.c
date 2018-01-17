@@ -182,7 +182,7 @@ static void GpuBPic( char m, int x1, int y1, char num)
 static int Dev_UsartInit( void)
 {
 	int	ret = 0;
-	int	tx_wait_ms = 10000;
+//	int	tx_wait_ms = 10;
 	
 	gpu_sem = Alloc_sem();
 	
@@ -195,7 +195,7 @@ static int Dev_UsartInit( void)
 	
 	if(ret == RET_OK)
 	{
-		I_sendDev->ioctol(I_sendDev, DEVCMD_SET_TXWAITTIME_MS, tx_wait_ms);
+		I_sendDev->ioctol(I_sendDev, DEVCMD_SET_TXWAITTIME_MS, 0);
 		
 	}
 	return ret;
@@ -559,15 +559,18 @@ void GpuSend(char * buf)
 			osDelay(100);
 			break; 
 		} 
+		else if(ret == ERR_BUSY) {
+			osDelay(1);
+		} 
 //		else {
-//			
-////			strcpy(tmpbuf, "\r\n");
-////			I_sendDev->write(I_sendDev, tmpbuf, 2);
+			
+//			strcpy(tmpbuf, "\r\n");
+//			I_sendDev->write(I_sendDev, tmpbuf, 2);
 //			osDelay(50);
 //		}
 		//todo: 如果会在这里出现死机，还要加上退出机制	
 		c ++;
-		if(c > 20)
+		if(c > 200)
 			break;
 	}
 	

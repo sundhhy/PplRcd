@@ -52,7 +52,8 @@
 #define	ICO_ID_ERASETOOL		0x26
 #define	ICO_ID_SEARCH				0x27
 #define	ICO_ID_COPY					0x28
-#define	ICO_ID_LOOP					0x29
+#define	ICO_ID_STOP					0x29
+#define	ICO_ID_LOOP					0x2a
 
 #define	SHEET_BOXLIST				0x30
 #define	SHEET_G_TEXT				0x31

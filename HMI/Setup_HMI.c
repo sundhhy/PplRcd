@@ -151,8 +151,9 @@ static void	Setup_initSheet(HMI *self)
 	p_exp = ExpCreate("text");
 	cthis->p_lock = Sheet_alloc( p_shtctl);
 	p_exp->inptSht( p_exp, (void *)setup_hmi_code_lock, cthis->p_lock) ;
-	//如果是与窗口交互时切换回来就不进行初始化
-	if((self->flag & HMIFLAG_WIN) == 0) {
+
+	if(((self->flag & HMIFLAG_WIN) == 0) && (g_p_lastHmi != g_p_Setting_HMI)) {	
+		//从其他画面切换进入设置选择画面的时候，需要重新输入密码
 		VRAM_init();
 		arr_p_vram[0] = VRAM_alloc(4);				//用来放数值的密码
 		arr_p_vram[1] = VRAM_alloc(16);				//用来放密码对应的字符串
@@ -165,6 +166,9 @@ static void	Setup_initSheet(HMI *self)
 		Setup_HMI_lock(cthis);
 		
 	} else {
+		
+			//密码输入窗口的结果来设置界面
+			//设置画面返回时就不必重新输入密码了
 		
 		if(cthis->unlock) {
 			Setup_HMI_lock(cthis);
@@ -303,7 +307,7 @@ static void	Setup_HMI_show_focus(HMI *self, uint8_t fouse_row, uint8_t fouse_col
 static void	Setup_HMI_hitHandle(HMI *self, char *s_key)
 {
 	
-//	Setup_HMI		*cthis = SUB_PTR( self, HMI, Setup_HMI);
+	Setup_HMI	*cthis = SUB_PTR( self, HMI, Setup_HMI);
 	sheet		*p_focus;
 //	shtCmd		*p_cmd;
 	uint8_t		focusRow = self->p_fcuu->focus_row;
@@ -364,7 +368,8 @@ static void	Setup_HMI_hitHandle(HMI *self, char *s_key)
 //			p_cmd->shtExcute(p_cmd, p_focus, self);
 			Input_Password(self);
 			goto exit;
-		} else {
+		} else if(cthis->unlock == 0){
+			
 			if(self->p_fcuu->focus_row == 3 && self->p_fcuu->focus_col) {
 				self->switchHMI(self, g_p_HMI_menu);
 			} else {

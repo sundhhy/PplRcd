@@ -417,12 +417,19 @@ static void	RT_trendHmi_HitHandle( HMI *self, char *s)
 		if(self->flag & HMIFLAG_FOCUS_IN_BTN)
 		{
 			if(self->btn_backward(self) != RET_OK)
+			{
 				Focus_move_left(self->p_fcuu);
+				chgFouse = 1;
+			}
 			
 		}
 		else if(Focus_move_left(self->p_fcuu) != RET_OK)
 		{
 			self->btn_backward(self);
+			chgFouse = 1;
+		}
+		else
+		{
 			chgFouse = 1;
 		}
 	}
@@ -432,12 +439,19 @@ static void	RT_trendHmi_HitHandle( HMI *self, char *s)
 		if(self->flag & HMIFLAG_FOCUS_IN_BTN)
 		{
 			if(self->btn_forward(self) != RET_OK)
+			{
 				Focus_move_right(self->p_fcuu);
+				chgFouse = 1;
+			}
 			
 		}
-		else if(Focus_move_right(self->p_fcuu) == RET_OK)
+		else if(Focus_move_right(self->p_fcuu) != RET_OK)
 		{
 			self->btn_forward(self);
+			chgFouse = 1;
+		}
+		else
+		{
 			chgFouse = 1;
 		}
 	}
