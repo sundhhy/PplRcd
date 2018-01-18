@@ -108,7 +108,7 @@ FUNCTION_SETTING( HMI.hide, BarHmi_HideSheet);
 FUNCTION_SETTING( HMI.show, BarHmi_Show);
 
 FUNCTION_SETTING( HMI.hitHandle, Main_HMI_hit);
-FUNCTION_SETTING(HMI.build_button, Main_HMI_build_button);
+FUNCTION_SETTING(HMI.build_component, Main_HMI_build_button);
 
 END_CTOR
 //=========================================================================//

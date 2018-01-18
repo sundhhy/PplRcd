@@ -102,7 +102,7 @@ FUNCTION_SETTING( init_focus, Init_focus);
 FUNCTION_SETTING( clear_focus, Clear_focus);
 FUNCTION_SETTING( show_focus, Show_focus);
 
-FUNCTION_SETTING(build_button, HMI_Build_button);
+FUNCTION_SETTING(build_component, HMI_Build_button);
 FUNCTION_SETTING(clean_button, HMI_Clean_button);
 FUNCTION_SETTING(show_button, HMI_Show_button);
 FUNCTION_SETTING(btn_forward, HMI_Btn_forward);
@@ -147,7 +147,7 @@ static void	SwitchHMI( HMI *self, HMI *p_hmi)
 	self->clean_button(self);
 	
 	p_hmi->initSheet( p_hmi);
-	p_hmi->build_button(p_hmi);
+	p_hmi->build_component(p_hmi);
 	p_hmi->show( p_hmi);
 	p_hmi->show_button(p_hmi);
 	
@@ -171,7 +171,7 @@ static void	SwitchBack( HMI *self)
 	
 	
 	nowHmi->initSheet( nowHmi);
-	nowHmi->build_button(nowHmi);
+	nowHmi->build_component(nowHmi);
 	nowHmi->show( nowHmi);
 	nowHmi->show_button(nowHmi);
 	Set_flag_show(&nowHmi->flag, 1);

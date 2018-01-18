@@ -137,7 +137,7 @@ FUNCTION_SETTING( HMI.show_focus, RLT_show_focus);
 
 
 FUNCTION_SETTING( HMI.hitHandle, RT_trendHmi_HitHandle);
-FUNCTION_SETTING(HMI.build_button, RLT_HMI_build_button);
+FUNCTION_SETTING(HMI.build_component, RLT_HMI_build_button);
 FUNCTION_SETTING( Observer.update, RLT_trendHmi_MdlUpdata);
 
 END_CTOR
@@ -294,7 +294,7 @@ static void RT_trendHmi_HideSheet( HMI *self )
 //	self->clear_focus(self, 0, 0);
 //	self->clear_focus( self, self->p_fcuu->focus_row, self->p_fcuu->focus_col);
 	Sheet_free(cthis->p_div);
-//	Focus_free(self->p_fcuu);
+	Focus_free(self->p_fcuu);
 }	
 
 

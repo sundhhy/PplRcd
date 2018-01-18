@@ -196,6 +196,8 @@ static int Dev_UsartInit( void)
 	if(ret == RET_OK)
 	{
 		I_sendDev->ioctol(I_sendDev, DEVCMD_SET_TXWAITTIME_MS, 0);
+		//串口屏的反应时间最长好像是200ms
+		I_sendDev->ioctol(I_sendDev, DEVCMD_SET_RXWAITTIME_MS, 400);
 		
 	}
 	return ret;
@@ -548,7 +550,7 @@ void GpuSend(char * buf)
 		if(ret == RET_OK) {
 			if(buf[0] != '\r' || buf[1] != '\n')
 				break;
-			
+			//180118 有时候读取不到返回，要及时退出，否则会把定时器线程卡死
 			ret = I_sendDev->read(I_sendDev, tmpbuf, 4);
 			if(ret > 0) {
 				if(tmpbuf[0] == 'O' && tmpbuf[1] == 'K')
@@ -570,7 +572,7 @@ void GpuSend(char * buf)
 //		}
 		//todo: 如果会在这里出现死机，还要加上退出机制	
 		c ++;
-		if(c > 200)
+		if(c > 20)
 			break;
 	}
 	

@@ -63,7 +63,7 @@ static void	Setting_HMI_show_focus(HMI *self, uint8_t fouse_row, uint8_t fouse_c
 static void	Setting_HMI_hitHandle( HMI *self, char *s_key);
 static void	Setting_HMI_dhit( HMI *self, char *s_key);
 static void	Setting_HMI_long_hit( HMI *self, char *s_key);
-static void	Setting_HMI_build_button(HMI *self);
+static void	Setting_HMI_build_component(HMI *self);
 
 static void	Show_entry(HMI *self, strategy_t *p_st);
 static int STING_Show_Button(HMI *self, int up_or_dn);
@@ -133,7 +133,7 @@ FUNCTION_SETTING(HMI.init_focus, Setting_HMI_init_focus);
 FUNCTION_SETTING(HMI.clear_focus, Setting_HMI_clear_focus);
 FUNCTION_SETTING(HMI.show_focus, Setting_HMI_show_focus);
 
-FUNCTION_SETTING(HMI.build_button, Setting_HMI_build_button);
+FUNCTION_SETTING(HMI.build_component, Setting_HMI_build_component);
 END_CTOR
 
 
@@ -259,11 +259,11 @@ static void	Setting_HMI_init_focus(HMI *self)
 
 }
 
-static void	Setting_HMI_build_button(HMI *self)
+static void	Setting_HMI_build_component(HMI *self)
 {
 	Setting_HMI		*cthis = SUB_PTR( self, HMI, Setting_HMI);
 	
-	cthis->p_sy->build_button(self);
+	cthis->p_sy->build_component(self);
 }
 
 static void	Setting_HMI_clear_focus(HMI *self, uint8_t fouse_row, uint8_t fouse_col)

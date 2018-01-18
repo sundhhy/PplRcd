@@ -77,7 +77,7 @@ FUNCTION_SETTING(HMI.hide, History_HMI_hide);
 FUNCTION_SETTING(HMI.show, Show_History_HMI);
 
 FUNCTION_SETTING(HMI.hitHandle, Main_HMI_hit);
-FUNCTION_SETTING(HMI.build_button, HIS_Build_button);
+FUNCTION_SETTING(HMI.build_component, HIS_Build_button);
 
 END_CTOR
 //=========================================================================//

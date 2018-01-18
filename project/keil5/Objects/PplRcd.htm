@@ -3,7 +3,7 @@
 <title>Static Call Graph - [.\Objects\PplRcd.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image .\Objects\PplRcd.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5050106: Last Updated: Wed Jan 17 22:28:58 2018
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5050106: Last Updated: Thu Jan 18 22:28:24 2018
 <BR><P>
 <H3>Maximum Stack Usage =        224 bytes + Unknown(Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -86,10 +86,10 @@ Function Pointers
  <LI><a href="#[fd]">ConposeKeyHandle</a> from hmi.o(i.ConposeKeyHandle) referenced from hmi.o(i.HMI_ctor)
  <LI><a href="#[1d4]">Ctime_periodic</a> from ctltimer.o(i.Ctime_periodic) referenced from ctltimer.o(.constdata)
  <LI><a href="#[bf]">CtlKey_init</a> from ctlkey.o(i.CtlKey_init) referenced from ctlkey.o(i.CtlKey_ctor)
- <LI><a href="#[c3]">DBP_Btn_hdl</a> from set_databackup_strategy.o(i.DBP_Btn_hdl) referenced from set_databackup_strategy.o(i.DBP_Init_button)
+ <LI><a href="#[c3]">DBP_Btn_hdl</a> from set_databackup_strategy.o(i.DBP_Btn_hdl) referenced from set_databackup_strategy.o(i.DBP_build_component)
  <LI><a href="#[5e]">DBP_Exit</a> from set_databackup_strategy.o(i.DBP_Exit) referenced 2 times from set_databackup_strategy.o(.data)
- <LI><a href="#[56]">DBP_Init_button</a> from set_databackup_strategy.o(i.DBP_Init_button) referenced 2 times from set_databackup_strategy.o(.data)
  <LI><a href="#[c4]">DBP_Usb_event</a> from set_databackup_strategy.o(i.DBP_Usb_event) referenced from set_databackup_strategy.o(i.DBP_init)
+ <LI><a href="#[56]">DBP_build_component</a> from set_databackup_strategy.o(i.DBP_build_component) referenced 2 times from set_databackup_strategy.o(.data)
  <LI><a href="#[5d]">DBP_commit</a> from set_databackup_strategy.o(i.DBP_commit) referenced 2 times from set_databackup_strategy.o(.data)
  <LI><a href="#[5c]">DBP_get_focusdata</a> from set_databackup_strategy.o(i.DBP_get_focusdata) referenced 2 times from set_databackup_strategy.o(.data)
  <LI><a href="#[55]">DBP_init</a> from set_databackup_strategy.o(i.DBP_init) referenced 2 times from set_databackup_strategy.o(.data)
@@ -347,7 +347,7 @@ Function Pointers
  <LI><a href="#[6a]">SVC_Handler</a> from hal_cm3.o(.emb_text) referenced from startup_stm32f10x_hd.o(RESET)
  <LI><a href="#[49]">SYS_Exit</a> from set_system_strategy.o(i.SYS_Exit) referenced 2 times from set_system_strategy.o(.data)
  <LI><a href="#[170]">Save_channel_data</a> from storage.o(i.Save_channel_data) referenced from storage.o(i.Storage_ctor)
- <LI><a href="#[161]">Setting_HMI_build_button</a> from setting_hmi.o(i.Setting_HMI_build_button) referenced from setting_hmi.o(i.Setting_HMI_ctor)
+ <LI><a href="#[161]">Setting_HMI_build_component</a> from setting_hmi.o(i.Setting_HMI_build_component) referenced from setting_hmi.o(i.Setting_HMI_ctor)
  <LI><a href="#[15f]">Setting_HMI_clear_focus</a> from setting_hmi.o(i.Setting_HMI_clear_focus) referenced from setting_hmi.o(i.Setting_HMI_ctor)
  <LI><a href="#[15c]">Setting_HMI_dhit</a> from setting_hmi.o(i.Setting_HMI_dhit) referenced from setting_hmi.o(i.Setting_HMI_ctor)
  <LI><a href="#[159]">Setting_HMI_hide</a> from setting_hmi.o(i.Setting_HMI_hide) referenced from setting_hmi.o(i.Setting_HMI_ctor)
@@ -357,7 +357,7 @@ Function Pointers
  <LI><a href="#[160]">Setting_HMI_show_focus</a> from setting_hmi.o(i.Setting_HMI_show_focus) referenced from setting_hmi.o(i.Setting_HMI_ctor)
  <LI><a href="#[162]">Setting_Sy_cmd</a> from setting_hmi.o(i.Setting_Sy_cmd) referenced from setting_hmi.o(i.Setting_Sy_cmd)
  <LI><a href="#[162]">Setting_Sy_cmd</a> from setting_hmi.o(i.Setting_Sy_cmd) referenced from setting_hmi.o(i.Setting_initSheet)
- <LI><a href="#[c2]">Setting_btn_hdl</a> from setting_hmi.o(i.Setting_btn_hdl) referenced from set_databackup_strategy.o(i.DBP_Init_button)
+ <LI><a href="#[c2]">Setting_btn_hdl</a> from setting_hmi.o(i.Setting_btn_hdl) referenced from set_databackup_strategy.o(i.DBP_build_component)
  <LI><a href="#[c2]">Setting_btn_hdl</a> from setting_hmi.o(i.Setting_btn_hdl) referenced from setting_hmi.o(i.STY_Duild_button)
  <LI><a href="#[c2]">Setting_btn_hdl</a> from setting_hmi.o(i.Setting_btn_hdl) referenced from setting_hmi.o(i.Show_entry)
  <LI><a href="#[158]">Setting_initSheet</a> from setting_hmi.o(i.Setting_initSheet) referenced from setting_hmi.o(i.Setting_HMI_ctor)
@@ -1109,7 +1109,7 @@ Global Symbols
 <LI><a href="#[140]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;NWP_Build_button
 <LI><a href="#[13b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;NWA_Build_button
 <LI><a href="#[1a8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Init_mainHmi
-<LI><a href="#[56]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;DBP_Init_button
+<LI><a href="#[56]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;DBP_build_component
 <LI><a href="#[362]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Show_entry
 <LI><a href="#[15b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Setting_HMI_hitHandle
 <LI><a href="#[19]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;STY_Duild_button
@@ -1928,6 +1928,7 @@ Global Symbols
 <BR><BR>[Stack]<UL><LI>Max Depth = 12<LI>Call Chain = Focus_free
 </UL>
 <BR>[Called By]<UL><LI><a href="#[b0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Accm_HMI_hide
+<LI><a href="#[14d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RT_trendHmi_HideSheet
 <LI><a href="#[130]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Nws_HMI_hide
 <LI><a href="#[165]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Setup_HMI_hide
 </UL>
@@ -3525,9 +3526,9 @@ Global Symbols
 </UL>
 <BR>[Calls]<UL><LI><a href="#[361]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;STING_Show_Button
 </UL>
-<BR>[Address Reference Count : 3]<UL><LI> setting_hmi.o(i.STY_Duild_button)
+<BR>[Address Reference Count : 3]<UL><LI> set_databackup_strategy.o(i.DBP_build_component)
+<LI> setting_hmi.o(i.STY_Duild_button)
 <LI> setting_hmi.o(i.Show_entry)
-<LI> set_databackup_strategy.o(i.DBP_Init_button)
 </UL>
 <P><STRONG><a name="[373]"></a>Setup_HMI_ctor</STRONG> (Thumb, 44 bytes, Stack size 8 bytes, setup_hmi.o(i.Setup_HMI_ctor))
 <BR><BR>[Stack]<UL><LI>Max Depth = 8<LI>Call Chain = Setup_HMI_ctor
@@ -5896,7 +5897,7 @@ Local Symbols
 <LI><a href="#[4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ClearLcd
 </UL>
 
-<P><STRONG><a name="[2]"></a>Dev_UsartInit</STRONG> (Thumb, 70 bytes, Stack size 8 bytes, dev_lcdusartgpu.o(i.Dev_UsartInit))
+<P><STRONG><a name="[2]"></a>Dev_UsartInit</STRONG> (Thumb, 88 bytes, Stack size 8 bytes, dev_lcdusartgpu.o(i.Dev_UsartInit))
 <BR><BR>[Stack]<UL><LI>Max Depth = 144<LI>Call Chain = Dev_UsartInit &rArr; Dev_open &rArr; DevChar_open &rArr; Get_Dev_IIC &rArr; Dev_IIC_new &rArr; malloc &rArr; internal_alloc
 </UL>
 <BR>[Calls]<UL><LI><a href="#[239]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Sem_post
@@ -7411,10 +7412,11 @@ Local Symbols
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> real_time_trendhmi.o(i.RLT_trendHMI_ctor)
 </UL>
-<P><STRONG><a name="[14d]"></a>RT_trendHmi_HideSheet</STRONG> (Thumb, 110 bytes, Stack size 16 bytes, real_time_trendhmi.o(i.RT_trendHmi_HideSheet))
+<P><STRONG><a name="[14d]"></a>RT_trendHmi_HideSheet</STRONG> (Thumb, 116 bytes, Stack size 16 bytes, real_time_trendhmi.o(i.RT_trendHmi_HideSheet))
 <BR><BR>[Stack]<UL><LI>Max Depth = 200<LI>Call Chain = RT_trendHmi_HideSheet &rArr; Sheet_free &rArr; Sheet_updown &rArr; GetShtctl &rArr; Dev_open &rArr; DevChar_open &rArr; Get_Dev_IIC &rArr; Dev_IIC_new &rArr; malloc &rArr; internal_alloc
 </UL>
-<BR>[Calls]<UL><LI><a href="#[1f5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Sheet_updown
+<BR>[Calls]<UL><LI><a href="#[1f7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Focus_free
+<LI><a href="#[1f5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Sheet_updown
 <LI><a href="#[1f6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Sheet_free
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> real_time_trendhmi.o(i.RLT_trendHMI_ctor)
@@ -7837,8 +7839,8 @@ Local Symbols
 <BR>[Called By]<UL><LI><a href="#[c2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Setting_btn_hdl
 </UL>
 
-<P><STRONG><a name="[161]"></a>Setting_HMI_build_button</STRONG> (Thumb, 16 bytes, Stack size 16 bytes, setting_hmi.o(i.Setting_HMI_build_button))
-<BR><BR>[Stack]<UL><LI>Max Depth = 16<LI>Call Chain = Setting_HMI_build_button
+<P><STRONG><a name="[161]"></a>Setting_HMI_build_component</STRONG> (Thumb, 16 bytes, Stack size 16 bytes, setting_hmi.o(i.Setting_HMI_build_component))
+<BR><BR>[Stack]<UL><LI>Max Depth = 16<LI>Call Chain = Setting_HMI_build_component
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> setting_hmi.o(i.Setting_HMI_ctor)
 </UL>
@@ -7951,7 +7953,7 @@ Local Symbols
 </UL>
 
 <P><STRONG><a name="[c3]"></a>DBP_Btn_hdl</STRONG> (Thumb, 2 bytes, Stack size 0 bytes, set_databackup_strategy.o(i.DBP_Btn_hdl))
-<BR>[Address Reference Count : 1]<UL><LI> set_databackup_strategy.o(i.DBP_Init_button)
+<BR>[Address Reference Count : 1]<UL><LI> set_databackup_strategy.o(i.DBP_build_component)
 </UL>
 <P><STRONG><a name="[5e]"></a>DBP_Exit</STRONG> (Thumb, 14 bytes, Stack size 8 bytes, set_databackup_strategy.o(i.DBP_Exit))
 <BR><BR>[Stack]<UL><LI>Max Depth = 8<LI>Call Chain = DBP_Exit
@@ -7960,17 +7962,17 @@ Local Symbols
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> set_databackup_strategy.o(.data)
 </UL>
-<P><STRONG><a name="[56]"></a>DBP_Init_button</STRONG> (Thumb, 48 bytes, Stack size 16 bytes, set_databackup_strategy.o(i.DBP_Init_button))
-<BR><BR>[Stack]<UL><LI>Max Depth = 88<LI>Call Chain = DBP_Init_button &rArr; BTN_Get_Sington &rArr; Button_new &rArr; malloc &rArr; internal_alloc
-</UL>
-<BR>[Calls]<UL><LI><a href="#[20e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;BTN_Get_Sington
-</UL>
-<BR>[Address Reference Count : 1]<UL><LI> set_databackup_strategy.o(.data)
-</UL>
 <P><STRONG><a name="[c4]"></a>DBP_Usb_event</STRONG> (Thumb, 56 bytes, Stack size 16 bytes, set_databackup_strategy.o(i.DBP_Usb_event))
 <BR><BR>[Stack]<UL><LI>Max Depth = 16<LI>Call Chain = DBP_Usb_event
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> set_databackup_strategy.o(i.DBP_init)
+</UL>
+<P><STRONG><a name="[56]"></a>DBP_build_component</STRONG> (Thumb, 48 bytes, Stack size 16 bytes, set_databackup_strategy.o(i.DBP_build_component))
+<BR><BR>[Stack]<UL><LI>Max Depth = 88<LI>Call Chain = DBP_build_component &rArr; BTN_Get_Sington &rArr; Button_new &rArr; malloc &rArr; internal_alloc
+</UL>
+<BR>[Calls]<UL><LI><a href="#[20e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;BTN_Get_Sington
+</UL>
+<BR>[Address Reference Count : 1]<UL><LI> set_databackup_strategy.o(.data)
 </UL>
 <P><STRONG><a name="[5d]"></a>DBP_commit</STRONG> (Thumb, 6 bytes, Stack size 0 bytes, set_databackup_strategy.o(i.DBP_commit))
 <BR>[Address Reference Count : 1]<UL><LI> set_databackup_strategy.o(.data)

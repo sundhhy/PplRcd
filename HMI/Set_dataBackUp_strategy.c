@@ -16,7 +16,7 @@
 
 static int Data_bacnup_Strategy_entry(int row, int col, void *pp_text);
 static int DBP_init(void *arg);
-static void DBP_Init_button(void *arg);
+static void DBP_build_component(void *arg);
 static int DBP_key_up(void *arg);
 static int DBP_key_dn(void *arg);
 static int DBP_key_lt(void *arg);
@@ -28,7 +28,7 @@ static void DBP_Exit(void);
 strategy_t	g_DBP_strategy = {
 	Data_bacnup_Strategy_entry,
 	DBP_init,
-	DBP_Init_button,
+	DBP_build_component,
 	DBP_key_up,
 	DBP_key_dn,
 	DBP_key_lt,
@@ -162,7 +162,7 @@ static int DBP_init(void *arg)
 	return RET_OK;
 }
 
-static void DBP_Init_button(void *arg)
+static void DBP_build_component(void *arg)
 {
 	Button	*p_btn = BTN_Get_Sington();
 	p_btn->build_each_btn(0, BTN_TYPE_MENU, Setting_btn_hdl, arg);

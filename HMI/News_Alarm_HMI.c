@@ -75,7 +75,7 @@ FUNCTION_SETTING(HMI.hide, News_Alarm_HMI_hide);
 FUNCTION_SETTING(HMI.show, Show_News_Alarm_HMI);
 
 FUNCTION_SETTING(HMI.hitHandle, Main_HMI_hit);
-FUNCTION_SETTING(HMI.build_button, NWA_Build_button);
+FUNCTION_SETTING(HMI.build_component, NWA_Build_button);
 
 
 

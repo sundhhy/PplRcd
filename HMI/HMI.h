@@ -134,7 +134,7 @@ typedef struct {
 	//所有的显示应该是对齐的，不考虑出现空洞的情况
 	int (*entry_txt)(int row, int col,void *pp_text);	
 	int	(*init)(void	*arg);
-	void (*build_button)(void *arg);
+	void (*build_component)(void *arg);
 	int	(*key_hit_up)(void	*arg);
 	int	(*key_hit_dn)(void	*arg);
 	int	(*key_hit_lt)(void	*arg);
@@ -188,7 +188,7 @@ ABS_CLASS(HMI)
 	
 	
 		//屏幕上的按钮
-	void		(*build_button)(HMI *self);
+	void		(*build_component)(HMI *self);
 	void		(*clean_button)(HMI *self);
 	void		(*show_button)(HMI *self);
 	int		(*btn_forward)(HMI *self);

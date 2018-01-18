@@ -152,17 +152,17 @@ static void	Setup_initSheet(HMI *self)
 	cthis->p_lock = Sheet_alloc( p_shtctl);
 	p_exp->inptSht( p_exp, (void *)setup_hmi_code_lock, cthis->p_lock) ;
 
-	if(((self->flag & HMIFLAG_WIN) == 0) && (g_p_lastHmi != g_p_Setting_HMI)) {	
+	
+		
+	VRAM_init();
+	arr_p_vram[0] = VRAM_alloc(4);				//用来放数值的密码
+	arr_p_vram[1] = VRAM_alloc(16);				//用来放密码对应的字符串
+	memset(arr_p_vram[0], 0, 4);
+	System_to_string(arr_p_vram[0], arr_p_vram[1] , 16, es_psd); 
+		
+		
+	if(((self->flag & HMIFLAG_WIN) == 0) && (g_p_lastHmi != g_p_Setting_HMI)) {		
 		//从其他画面切换进入设置选择画面的时候，需要重新输入密码
-		VRAM_init();
-		arr_p_vram[0] = VRAM_alloc(4);				//用来放数值的密码
-		arr_p_vram[1] = VRAM_alloc(16);				//用来放密码对应的字符串
-		memset(arr_p_vram[0], 0, 4);
-		System_to_string(arr_p_vram[0], arr_p_vram[1] , 16, es_psd); 
-		
-		
-		
-		
 		Setup_HMI_lock(cthis);
 		
 	} else {
