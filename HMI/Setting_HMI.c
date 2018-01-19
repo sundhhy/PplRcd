@@ -830,7 +830,7 @@ static int Setting_Sy_cmd(void *p_rcv, int cmd,  void *arg)
 			cthis->p_sht_text->cnt.colour = COLOUR_WHITE;
 //			Show_entry(self, cthis->p_sy);
 			self->show(self);
-			self->show_button(self);
+			self->show_cmp(self);
 //			Strategy_focus(cthis, &cthis->p_sy->sf, 1);
 //			Flush_LCD();
 			break;

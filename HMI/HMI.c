@@ -58,9 +58,9 @@ void	Init_focus(HMI *self);
 void	Clear_focus(HMI *self, uint8_t fouse_row, uint8_t fouse_col);
 void	Show_focus( HMI *self, uint8_t fouse_row, uint8_t fouse_col);
 
-static void		HMI_Build_button(HMI *self);
-static void		HMI_Clean_button(HMI *self);
-static void		HMI_Show_button(HMI *self);
+static void		HMI_Build_cmp(HMI *self);
+static void		HMI_Clean_cmp(HMI *self);
+static void		HMI_Show_cmp(HMI *self);
 static int		HMI_Btn_forward(HMI *self);
 static int		HMI_Btn_backward(HMI *self);
 static void		HMI_Btn_jumpout(HMI *self);
@@ -102,9 +102,9 @@ FUNCTION_SETTING( init_focus, Init_focus);
 FUNCTION_SETTING( clear_focus, Clear_focus);
 FUNCTION_SETTING( show_focus, Show_focus);
 
-FUNCTION_SETTING(build_component, HMI_Build_button);
-FUNCTION_SETTING(clean_button, HMI_Clean_button);
-FUNCTION_SETTING(show_button, HMI_Show_button);
+FUNCTION_SETTING(build_component, HMI_Build_cmp);
+FUNCTION_SETTING(clean_cmp, HMI_Clean_cmp);
+FUNCTION_SETTING(show_cmp, HMI_Show_cmp);
 FUNCTION_SETTING(btn_forward, HMI_Btn_forward);
 FUNCTION_SETTING(btn_backward, HMI_Btn_backward);
 FUNCTION_SETTING(btn_jumpout, HMI_Btn_jumpout);
@@ -144,12 +144,12 @@ static void	SwitchHMI( HMI *self, HMI *p_hmi)
 	g_p_curHmi = p_hmi;
 	Set_flag_show(&self->flag, 0);
 	self->hide(self);
-	self->clean_button(self);
+	self->clean_cmp(self);
 	
 	p_hmi->initSheet( p_hmi);
 	p_hmi->build_component(p_hmi);
 	p_hmi->show( p_hmi);
-	p_hmi->show_button(p_hmi);
+	p_hmi->show_cmp(p_hmi);
 	
 	Set_flag_show(&p_hmi->flag, 1);
 	
@@ -167,13 +167,13 @@ static void	SwitchBack( HMI *self)
 	phn_sys.key_weight = 1;
 	Set_flag_show(&self->flag, 0);
 	self->hide( self);
-	self->clean_button(self);
+	self->clean_cmp(self);
 	
 	
 	nowHmi->initSheet( nowHmi);
 	nowHmi->build_component(nowHmi);
 	nowHmi->show( nowHmi);
-	nowHmi->show_button(nowHmi);
+	nowHmi->show_cmp(nowHmi);
 	Set_flag_show(&nowHmi->flag, 1);
 	
 }
@@ -234,7 +234,7 @@ void	Show_focus( HMI *self, uint8_t fouse_row, uint8_t fouse_col)
 }
 
 
-static void		HMI_Build_button(HMI *self)
+static void		HMI_Build_cmp(HMI *self)
 {
 	Button	*p = BTN_Get_Sington();
 	int		i;
@@ -247,14 +247,17 @@ static void		HMI_Build_button(HMI *self)
 
 }
 
-static void		HMI_Clean_button(HMI *self)
+static void		HMI_Clean_cmp(HMI *self)
 {
 
 	Button	*p = BTN_Get_Sington();
+	Progress_bar	*p_bar = PGB_Get_Sington();
 	p->clean_btn();
 	self->flag &= ~HMIFLAG_FOCUS_IN_BTN;
+	
+	p_bar->delete_bar(PGB_DEL_ALL);
 }
-static void		HMI_Show_button(HMI *self)
+static void		HMI_Show_cmp(HMI *self)
 {
 	Button	*p = BTN_Get_Sington();
 	

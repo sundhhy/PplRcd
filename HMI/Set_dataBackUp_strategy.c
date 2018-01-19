@@ -164,10 +164,15 @@ static int DBP_init(void *arg)
 
 static void DBP_build_component(void *arg)
 {
-	Button	*p_btn = BTN_Get_Sington();
+	Button				*p_btn = BTN_Get_Sington();
+	Progress_bar	*p_bar = PGB_Get_Sington();
+	bar_object_t	bob = {{6, 100, 20, 100, 2, PGB_TWD_CROSS, FONT_16, PGB_TIP_RIGHT}, \
+		{COLOUR_PURPLE, COLOUR_BLUE, COLOUR_RED, 0}};
 	p_btn->build_each_btn(0, BTN_TYPE_MENU, Setting_btn_hdl, arg);
 	p_btn->build_each_btn(1, BTN_TYPE_COPY, DBP_Btn_hdl, arg);
 	p_btn->build_each_btn(2, BTN_TYPE_STOP, DBP_Btn_hdl, arg);
+		
+	p_bar->build_bar(&bob);
 	
 }
 static void DBP_Exit(void)

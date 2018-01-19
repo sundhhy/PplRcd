@@ -50,7 +50,6 @@ I_dev_Char *I_sendDev;
 
 
 static sem_t	gpu_sem;	
-
 static char	lcdBuf[LCDBUF_MAX];
 
 

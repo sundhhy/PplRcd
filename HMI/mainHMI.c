@@ -230,18 +230,19 @@ END_CTOR
 
 static int	Init_mainHmi( HMI *self, void *arg)
 {
-	HMI 			*p_cmm;
-	Button		*p_btn;
-	
+	HMI 					*p_cmm;
+	Button				*p_btn;
+	Progress_bar	*p_bar;
 
 	
 	p_cmm = CreateHMI( HMI_CMM);
 	p_cmm->init( p_cmm, NULL);
 	self->flag = 0;
-	//初始化
-		//初始化按键要在公共部分之后
+	//初始化界面组件
 	p_btn = BTN_Get_Sington();
 	p_btn->init(p_btn);
+	p_bar = PGB_Get_Sington();
+	p_bar->init(p_bar);
 	
 	self->initSheet( self);
 

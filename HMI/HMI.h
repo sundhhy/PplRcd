@@ -19,7 +19,7 @@
 #include "focus.h"
 
 #include "Component_Button.h"
-
+#include "Component_progress_bar.h"
 //------------------------------------------------------------------------------
 // check for correct compilation options
 //------------------------------------------------------------------------------
@@ -189,8 +189,8 @@ ABS_CLASS(HMI)
 	
 		//ÆÁÄ»ÉÏµÄ°´Å¥
 	void		(*build_component)(HMI *self);
-	void		(*clean_button)(HMI *self);
-	void		(*show_button)(HMI *self);
+	void		(*clean_cmp)(HMI *self);
+	void		(*show_cmp)(HMI *self);
 	int		(*btn_forward)(HMI *self);
 	int		(*btn_backward)(HMI *self);
 	void		(*btn_jumpout)(HMI *self);
