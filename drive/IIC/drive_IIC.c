@@ -100,6 +100,7 @@ int Read_IIC(int No, void *buf, uint8_t slave_addr, uint8_t reg_addr, uint16_t r
 	int 					ret = RET_OK;	
 	uint8_t					*p_u8 = (uint8_t *)buf;
 	uint16_t				bytes_to_read = rd_len;
+	uint32_t				safe_count = 10000;
 	
 	if(No >= NUM_IICS)
 		return ERR_BAD_PARAMETER;
@@ -110,7 +111,17 @@ int Read_IIC(int No, void *buf, uint8_t slave_addr, uint8_t reg_addr, uint16_t r
 		i2c_reg = I2C2;
 	
 	
-	while(I2C_GetFlagStatus(i2c_reg, I2C_FLAG_BUSY)); 
+	while(I2C_GetFlagStatus(i2c_reg, I2C_FLAG_BUSY))
+	{
+		if(safe_count)
+			safe_count--; 
+		else
+		{
+			
+			return ERR_DEV_TIMEOUT;
+		}
+		
+	}
 
 
 	I2C_GenerateSTART(i2c_reg, ENABLE);
@@ -129,6 +140,7 @@ int Read_IIC(int No, void *buf, uint8_t slave_addr, uint8_t reg_addr, uint16_t r
 	if(I2C_wait_EV(i2c_reg, I2C_EVENT_MASTER_TRANSMITTER_MODE_SELECTED) < 0)
 	{
 		ret = ERR_DEV_TIMEOUT;	
+		
 		goto err_exit;
 	}
 
@@ -165,6 +177,8 @@ int Read_IIC(int No, void *buf, uint8_t slave_addr, uint8_t reg_addr, uint16_t r
 	}
 	
   /* While there is data to be read */
+ //180121 这里会进入死循环，导致系统卡死，因此要进行超时退出
+	safe_count = 1000;
   while(bytes_to_read)  
   {
     if(bytes_to_read == 1)
@@ -174,6 +188,17 @@ int Read_IIC(int No, void *buf, uint8_t slave_addr, uint8_t reg_addr, uint16_t r
       
       /* Send STOP Condition */
       I2C_GenerateSTOP(i2c_reg, ENABLE);
+		
+		if(safe_count)
+			safe_count --;
+		else
+		{
+			
+			ret = ERR_DEV_TIMEOUT;
+			goto err_exit;
+		}
+		
+	
     }
 
     /* Test on EV7 and clear it */
@@ -198,6 +223,8 @@ err_exit:
 
 	/* Send STOP condition */
 	I2C_GenerateSTOP(i2c_reg, ENABLE);
+	I2C_DeInit(i2c_reg);
+	Init_IIC(No, arr_p_conf[No]);
 	return ret;
 	
 }

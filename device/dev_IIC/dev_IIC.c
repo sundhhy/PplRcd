@@ -116,6 +116,8 @@ static int Read_dev_IIC(I_dev_Char *self, void *buf, int rd_len)
 		ret = Read_IIC(cthis->minor, buf, sl->slave_addr, sl->reg_addr, rd_len);
 		if(ret >0)
 			len += ret;
+		else
+			break;
 	}
 	
 	return len;

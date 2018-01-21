@@ -4,6 +4,8 @@
 #include "system.h"
 #include "ModelFactory.h"
 #include "utils/Storage.h"
+#include "arithmetic/bit.h"
+
 #ifdef NO_ASSERT
 #include "basis/assert.h"
 #else
@@ -43,7 +45,7 @@
 // local vars
 //------------------------------------------------------------------------------
 
-
+static uint8_t	chn_smp_time[8];			//每个通道的采集时间分配
 //------------------------------------------------------------------------------
 // local function prototypes
 //------------------------------------------------------------------------------
@@ -54,6 +56,7 @@ static void Ctime_periodic (void const *arg);
 
 static osTimerId ctime_id;                                           // timer id
 static osTimerDef (ctime, Ctime_periodic);
+static void Ctime_Allco_time(uint16_t  all_time, uint8_t need);
 //============================================================================//
 //            P U B L I C   F U N C T I O N S                                 //
 //============================================================================//
@@ -96,8 +99,9 @@ static void Init_ctime( Controller *self, void *arg)
 	
 	
 	assert(ret == RET_OK);
+	Ctime_Allco_time(phn_sys.sys_conf.record_gap_s, NUM_CHANNEL);
 	cthis->time_count = 0;
-	next_record = phn_sys.sys_conf.record_gap_s;
+	time_smp = 0;
 	
 }
 
@@ -113,14 +117,15 @@ static void Ctime_periodic (void const *arg)
 	char			i;
 	
 	cthis->time_count ++;
-	p_md = ModelCreate("time");
-	p_md->run(p_md);
-	
+//	p_md = ModelCreate("time");
+//	p_md->run(p_md);
+//	
 	if(phn_sys.save_chg_flga & CHG_SYSTEM_CONF)
 	{
 		stg->wr_stored_data(stg, CFG_TYPE_SYSTEM, &phn_sys.sys_conf);
 		
 		phn_sys.save_chg_flga &= ~CHG_SYSTEM_CONF;
+		Ctime_Allco_time(phn_sys.sys_conf.record_gap_s, NUM_CHANNEL);
 	}
 	for(i = 0; i < NUM_CHANNEL; i++)
 	{
@@ -139,12 +144,12 @@ static void Ctime_periodic (void const *arg)
 	
 	
 	
-	if(next_record)
+	if(time_smp < phn_sys.sys_conf.record_gap_s)
 	{
-		next_record --;
-		return;
+		time_smp ++;
 	} 
-	next_record = phn_sys.sys_conf.record_gap_s;
+	else
+		time_smp = 0;
 	
 	
 	
@@ -152,6 +157,8 @@ static void Ctime_periodic (void const *arg)
 
 	for(i = 0; i < NUM_CHANNEL; i++)
 	{
+		if(chn_smp_time[i] != time_smp)
+			continue;
 		sprintf(chn_name,"chn_%d", i);
 		p_md = ModelCreate(chn_name);
 		p_md->run(p_md);
@@ -175,6 +182,55 @@ static void Ctime_periodic (void const *arg)
 		
 	}
 	phn_sys.DO_err = 0;
+	
+	
+}
+
+//todo:180121 目前的实现方式是只考虑6通道的情况下
+//把每个通道的采集时间打散，让每次的处理负荷尽可能的平均
+static void Ctime_Allco_time(uint16_t  all_time, uint8_t need)
+{
+	
+	int i = 0; 
+	
+	switch(all_time)
+	{
+		case 0:
+		case 1:
+			for(i = 0; i < 8; i++)
+				chn_smp_time[i] = 0;
+			break;
+		case 2:
+			chn_smp_time[0] = 0;
+			chn_smp_time[1] = 0;
+			chn_smp_time[2] = 0;
+			chn_smp_time[3] = 1;
+			chn_smp_time[4] = 1;
+			chn_smp_time[5] = 1;
+			break;
+		case 3:
+		case 4:
+		case 5:
+			chn_smp_time[0] = 0;
+			chn_smp_time[1] = 0;
+			chn_smp_time[2] = 1;
+			chn_smp_time[3] = 1;
+			chn_smp_time[4] = 2;
+			chn_smp_time[5] = 2;
+			break;
+		default:
+			chn_smp_time[0] = 0;
+			chn_smp_time[1] = 1;
+			chn_smp_time[2] = 2;
+			chn_smp_time[3] = 3;
+			chn_smp_time[4] = 4;
+			chn_smp_time[5] = 5;
+			break;
+			
+		
+		
+		
+	}
 	
 	
 }

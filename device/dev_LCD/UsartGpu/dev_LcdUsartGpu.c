@@ -107,7 +107,8 @@ I_dev_lcd g_IUsartGpu =
 static void GpuCutPicture( short x1, short y1, short num, short px1, short py1, short w, short h)
 {
 #if USE_CMD_BUF == 1
-	Sem_wait(&gpu_sem, FOREVER);
+	if(Sem_wait(&gpu_sem, phn_sys.lcd_sem_wait_ms) <= 0)
+		return;
 	sprintf( lcdBuf, "CPIC(%d,%d,%d,%d,%d,%d,%d);", x1, y1, num, px1, py1, w, h );
 	Cmdbuf_manager(lcdBuf);
 	GpuSend(lcdBuf);
@@ -123,7 +124,8 @@ static void GpuCutPicture( short x1, short y1, short num, short px1, short py1, 
 static void GpuPic( int x1, int y1, char num)
 {
 #if USE_CMD_BUF == 1
-	Sem_wait(&gpu_sem, FOREVER);
+	if(Sem_wait(&gpu_sem, phn_sys.lcd_sem_wait_ms) <= 0)
+		return;
 	sprintf( lcdBuf, "PIC(%d,%d,%d);", x1, y1, num);
 	Cmdbuf_manager(lcdBuf);
 	GpuSend(lcdBuf);
@@ -139,7 +141,8 @@ static void GpuPic( int x1, int y1, char num)
 static void GpuIcon(int x1, int y1, char num, int xn, int yn, int n)
 {
 #if USE_CMD_BUF == 1
-	Sem_wait(&gpu_sem, FOREVER);
+	if(Sem_wait(&gpu_sem, phn_sys.lcd_sem_wait_ms) <= 0)
+		return;
 	sprintf( lcdBuf, "ICON(%d,%d,%d,%d,%d,%d);", x1, y1, num, xn, yn, n);
 	Cmdbuf_manager(lcdBuf);
 	GpuSend(lcdBuf);
@@ -158,7 +161,8 @@ static void GpuBPic( char m, int x1, int y1, char num)
 #if USE_CMD_BUF == 1
 //	if((x1 == 0) && (y1 == 0)) 
 //		ClearLcd(0);
-	Sem_wait(&gpu_sem, FOREVER);
+	if(Sem_wait(&gpu_sem, phn_sys.lcd_sem_wait_ms) <= 0)
+		return;
 	sprintf( lcdBuf, "BPIC(%d,%d,%d,%d);",m,  x1, y1, num);
 	Cmdbuf_manager(lcdBuf);
 	GpuSend(lcdBuf);
@@ -196,7 +200,7 @@ static int Dev_UsartInit( void)
 	{
 		I_sendDev->ioctol(I_sendDev, DEVCMD_SET_TXWAITTIME_MS, 0);
 		//串口屏的反应时间最长好像是200ms
-		I_sendDev->ioctol(I_sendDev, DEVCMD_SET_RXWAITTIME_MS, 400);
+		I_sendDev->ioctol(I_sendDev, DEVCMD_SET_RXWAITTIME_MS, 300);
 		
 	}
 	return ret;
@@ -212,7 +216,8 @@ static int Dev_UsartdeInit( void)
 static int ClearLcd( int c)
 {
 #if USE_CMD_BUF == 1
-	Sem_wait(&gpu_sem, FOREVER);
+	if(Sem_wait(&gpu_sem, phn_sys.lcd_sem_wait_ms) <= 0)
+		return RET_FAILED;
 	sprintf( lcdBuf, "CLS(%d);", c);
 	Cmdbuf_manager(lcdBuf);
 	GpuSend(lcdBuf);
@@ -240,7 +245,8 @@ static int GpuBox( int x1, int y1, int x2, int y2, char type, char c)
 {
 	
 #if USE_CMD_BUF == 1
-	Sem_wait(&gpu_sem, FOREVER);
+	if(Sem_wait(&gpu_sem, phn_sys.lcd_sem_wait_ms) <= 0)
+		return RET_FAILED;
 	if( type == FILLED_RECTANGLE)
 	{
 		sprintf( lcdBuf, "BOXF(%d,%d,%d,%d,%d);", x1, y1, x2, y2,c);
@@ -286,9 +292,10 @@ static int GpuWrString( char m ,char *string, int len, int x, int y, int font, c
 		f = FONT_12;
 	}
 #if USE_CMD_BUF == 1	
-	Sem_wait(&gpu_sem, FOREVER);
+	if(Sem_wait(&gpu_sem, phn_sys.lcd_sem_wait_ms) <= 0)
+		return RET_FAILED;
 #endif		
-	if( m < 0x80) {
+	if( m < 0x8) {
 		
 		sprintf( lcdBuf, "PS%d(%d,%d,%d,'",f, m, x, y);
 		sprintf(colour, "',%d, 0);",c);
@@ -353,7 +360,8 @@ int GpuLabel( char *string,  int len, scArea_t *area, int font, char c, char ali
 	}
 	
 #if USE_CMD_BUF == 1	
-	Sem_wait(&gpu_sem, FOREVER);
+	if(Sem_wait(&gpu_sem, phn_sys.lcd_sem_wait_ms) <= 0)
+		return RET_FAILED;
 #endif	
 	
 	sprintf( lcdBuf, "LABL(%d,%d,%d,%d,'", m, area->x1, area->y1, area->x2);
@@ -386,7 +394,8 @@ static void GpuBKColor( char c)
 	if( c == ERR_COLOUR)
 		return;
 #if USE_CMD_BUF == 1	
-	Sem_wait(&gpu_sem, FOREVER);
+	if(Sem_wait(&gpu_sem, phn_sys.lcd_sem_wait_ms) <= 0)
+		return;
 #endif
 	sprintf( lcdBuf, "SBC(%d);", c);
 #if USE_CMD_BUF == 1
@@ -430,7 +439,8 @@ static void GpuDone( void)
 #if USE_CMD_BUF == 1
 	
 //	int		ret = 0;
-	Sem_wait(&gpu_sem, FOREVER);
+	if(Sem_wait(&gpu_sem, phn_sys.lcd_sem_wait_ms) <= 0)
+		return;
 	
 	Gpu_send_done();
 //	while(1) {
@@ -555,6 +565,11 @@ void GpuSend(char * buf)
 				if(tmpbuf[0] == 'O' && tmpbuf[1] == 'K')
 					break; 
 			
+			}
+			else
+			{
+				
+				break;		//不必多等，直接退出 180120
 			}
 		}  else if(ret == ERR_DEV_TIMEOUT) {
 			osDelay(100);

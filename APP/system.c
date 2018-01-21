@@ -30,7 +30,7 @@ static UtlRtc *sys_rtc;
 //为了能够紧凑的定义一些静态变量，所以都定义在一起
 //只有非4字节对齐的，需要放在这里定于
 char 				*arr_p_vram[16];
-uint16_t		next_record;
+uint16_t			time_smp;
 char				g_setting_chn = 0;
 char				flush_flag = 0;
 //------------------------------------------------------------------------------
@@ -99,6 +99,8 @@ void System_init(void)
 
 	phn_sys.major_ver = PHN_MAJOR_VER;
 	phn_sys.minor_ver = PHN_MINOR_VER;
+	
+	phn_sys.lcd_sem_wait_ms = 0xffffffff;
 	
 	sys_rtc = ( UtlRtc *)Pcf8563_new();
 	sys_rtc->init(sys_rtc, NULL);
@@ -339,7 +341,6 @@ void System_modify_string(char	*p_s, int aux, int op, int val)
 	{
 		case es_rcd_t_s:
 			phn_sys.sys_conf.record_gap_s = Operate_in_tange(phn_sys.sys_conf.record_gap_s, op, val, 0, 99);
-			next_record = phn_sys.sys_conf.record_gap_s;
 			sprintf(p_s, "%d", phn_sys.sys_conf.record_gap_s);
 			break;
 		case es_brk_cpl:

@@ -164,6 +164,9 @@ typedef struct {
 //--------------------------------------------------------------------------
 
 typedef struct {
+
+	
+	
 	uint8_t				major_ver;
 	uint8_t				minor_ver;
 	uint8_t				save_chg_flga;		//可存储的配置信息的变化标志
@@ -174,11 +177,14 @@ typedef struct {
 	
 	//显示相关
 	uint16_t			lcd_cmd_bytes;
+	uint32_t			lcd_sem_wait_ms;
 	
 	//通道板子上的信息
-	uint16_t			code_end_temperature;
 	uint8_t				DO_val;				//DO的实时值
 	uint8_t				DO_err;
+	uint16_t			code_end_temperature;
+		
+
 	
 	
 	
@@ -197,7 +203,7 @@ typedef struct {
 // global variable declarations
 //------------------------------------------------------------------------------
 extern	char 				*arr_p_vram[16];
-extern	uint16_t		next_record;			//下次记录的时间
+extern	uint16_t		time_smp;			//下次记录的时间
 extern 	char				g_setting_chn;
 extern	char				flush_flag;
 

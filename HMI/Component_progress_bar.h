@@ -19,15 +19,15 @@
 // const defines
 //------------------------------------------------------------------------------
 #define		NUM_PGB							4
-#define		PGB_TWD_CROSS				0
-#define		PGB_TWD_PARALLEL		0
+#define		PGB_TWD_CROSS					0
+#define		PGB_TWD_PARALLEL				1
 
 #define		PGB_TIP_UP					0
 #define		PGB_TIP_DOWN				1
 #define		PGB_TIP_LEFT				2
 #define		PGB_TIP_RIGHT				3
 
-#define 	PGB_DEL_ALL					0xff
+#define 	PGB_BAR_ALL					0xff
 //------------------------------------------------------------------------------
 // typedef
 //------------------------------------------------------------------------------
@@ -39,18 +39,17 @@
 
 typedef struct
 {
-	uint16_t		bar_x0, bar_y0;		//左上角的起点
-	uint8_t			bar_width, bar_len, bar_border_width;
+	uint16_t		bar_x0, bar_y0, bar_len;		//左上角的起点
+	uint8_t			bar_width,  bar_border_width;
 	uint8_t			bar_towards;
 	uint8_t			bar_tip_text_font;
 	uint8_t			bar_tip_text_position;		//0 上面 1 下面 2 左边 3 右边
-	
+	uint8_t			none;
 }bar_form_t;
 typedef struct
 {
-	uint8_t			bar_col, bar_border_col;
-	uint8_t			bar_tip_text_col;
-	uint8_t			bar_percentage;
+	uint8_t			bar_col, shade_col,bar_border_col;
+	uint8_t			bar_tip_text_col;			
 }bar_content_t;
 
 typedef struct
@@ -63,7 +62,8 @@ CLASS(Progress_bar)
 {
 //	uint8_t		btn_id;
 	uint8_t		set_free_bar;
-	uint8_t		none[3];
+	uint8_t		set_vaild_bar;
+	uint8_t		none[2];
 //	uint8_t		cur_focush_btn;
 //	uint8_t		focus_btn_num;
 //	void		*arr_p_arg[NUM_BUTTON];
@@ -73,6 +73,7 @@ CLASS(Progress_bar)
 	uint8_t	(*build_bar)(bar_object_t  *b);
 	void		(*update_bar)(uint8_t  bar_fd, uint8_t prc);
 	void		(*delete_bar)(uint8_t  bar_fd);
+	void		(*show_bar)();
 //	int			(*build_each_btn)(uint8_t	seq, uint8_t btn_type, btn_hdl bh, void *hdl_arg);
 //	void		(*clean_btn)(void);
 ////	void		(*clean_focus)(void);

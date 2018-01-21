@@ -255,13 +255,15 @@ static void		HMI_Clean_cmp(HMI *self)
 	p->clean_btn();
 	self->flag &= ~HMIFLAG_FOCUS_IN_BTN;
 	
-	p_bar->delete_bar(PGB_DEL_ALL);
+	p_bar->delete_bar(PGB_BAR_ALL);
 }
 static void		HMI_Show_cmp(HMI *self)
 {
 	Button	*p = BTN_Get_Sington();
+	Progress_bar	*p_bar = PGB_Get_Sington();
 	
 	p->show_vaild_btn();
+	p_bar->show_bar();
 
 }
 

@@ -85,8 +85,10 @@ osThreadDef (ThrdKeyRun, osPriorityNormal, 1, 0);                   // thread ob
 
 int main (void) {
 	Keyboard		*p_kb;
-	Controller	*p_control;
-	HMI 				*p_mainHmi;
+	Controller		*p_control;
+	HMI 			*p_mainHmi;
+	Model 			*p_mdl_time;
+	uint8_t			main_count_1s = 0;
 
 	osKernelInitialize ();                    // initialize CMSIS-RTOS
   // initialize peripherals here
@@ -135,13 +137,21 @@ int main (void) {
 	p_control = SUPER_PTR(CtlTimer_new(), Controller);
 	p_control->init(p_control, NULL);
 	
+	p_mdl_time = ModelCreate("time");
+	
 	osKernelStart ();                        
 	while(1)
 	{
-		
+		osDelay(100);
+		main_count_1s ++;
+		if(main_count_1s >= 9)
+		{
+			p_mdl_time->run(p_mdl_time);
+			main_count_1s = 0;
+		}
 		USB_Run(NULL);
 		LCD_Run();
-		osDelay(100);
+		
 
 	}
 #elif TDD_EFS == 1

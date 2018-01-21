@@ -355,6 +355,7 @@ static void		BTN_Deal_hit(void)
 	if(p_self->arr_hdl[p_self->focus_btn_num] == NULL)
 		return;
 	
-	p_self->arr_hdl[p_self->focus_btn_num](p_self->arr_p_arg[p_self->focus_btn_num], arr_p_btn_sht[p_self->focus_btn_num]->id);
+	p_self->arr_hdl[p_self->focus_btn_num](p_self->arr_p_arg[p_self->focus_btn_num], \
+	arr_p_btn_sht[p_self->focus_btn_num]->id);
 	
 }

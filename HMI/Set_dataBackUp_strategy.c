@@ -2,6 +2,7 @@
 #include "Setting_HMI.h"
 #include "system.h"
 #include "USB/Usb.h"
+#include "os/os_depend.h"
 //============================================================================//
 //            G L O B A L   D E F I N I T I O N S                             //
 //============================================================================//
@@ -164,15 +165,16 @@ static int DBP_init(void *arg)
 
 static void DBP_build_component(void *arg)
 {
-	Button				*p_btn = BTN_Get_Sington();
+	Button			*p_btn = BTN_Get_Sington();
 	Progress_bar	*p_bar = PGB_Get_Sington();
-	bar_object_t	bob = {{6, 100, 20, 100, 2, PGB_TWD_CROSS, FONT_16, PGB_TIP_RIGHT}, \
-		{COLOUR_PURPLE, COLOUR_BLUE, COLOUR_RED, 0}};
+	bar_object_t	bob = {{1, 130, 280, 16, 0, PGB_TWD_CROSS, FONT_16, PGB_TIP_RIGHT}, \
+		{COLOUR_GREN, COLOUR_GRAY, COLOUR_BLUE, COLOUR_YELLOW}};
 	p_btn->build_each_btn(0, BTN_TYPE_MENU, Setting_btn_hdl, arg);
 	p_btn->build_each_btn(1, BTN_TYPE_COPY, DBP_Btn_hdl, arg);
 	p_btn->build_each_btn(2, BTN_TYPE_STOP, DBP_Btn_hdl, arg);
 		
-	p_bar->build_bar(&bob);
+	g_DBP_strategy.sty_some_fd = p_bar->build_bar(&bob);
+//	p_bar->update_bar(g_DBP_strategy.sty_some_fd, 50);
 	
 }
 static void DBP_Exit(void)
@@ -352,9 +354,29 @@ static int DBP_update_content(int op, int weight)
 	return ret;
 }
 
+static void DBP_Copy(void)
+{
+	int				i = 0;
+	Progress_bar	*p_bar = PGB_Get_Sington();
+
+	while(i < 100)
+	{
+		i ++;
+		p_bar->update_bar(g_DBP_strategy.sty_some_fd, i);
+		delay_ms(500);
+		
+	}
+	
+	
+}
+
  static void	DBP_Btn_hdl(void *self, uint8_t	btn_id)
  {
-	 
+	 if(btn_id == ICO_ID_COPY)
+	 {
+		 DBP_Copy();
+		 
+	 }
 	 
  }
 

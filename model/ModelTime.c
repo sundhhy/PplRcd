@@ -74,8 +74,10 @@ void MdlTime_run(Model *self)
 	
 	System_time(tm);
 	
+	//180121 时钟更新的话 允许失败
+	phn_sys.lcd_sem_wait_ms = 200;
 	self->notify( self);
-	
+	phn_sys.lcd_sem_wait_ms = 0xffffffff;;
 	
 }
 
