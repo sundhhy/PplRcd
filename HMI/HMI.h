@@ -146,9 +146,6 @@ typedef struct {
 	strategy_focus_t	sf;
 	void				*p_cmd_rcv;
 	stategy_cmd			cmd_hdl;
-	uint8_t				sty_id;
-	uint8_t				sty_some_fd;
-	uint8_t				none[2];
 }strategy_t;
 
 

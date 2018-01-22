@@ -22,6 +22,16 @@
 //------------------------------------------------------------------------------
 #define 	PHN_MAJOR_VER				0
 #define 	PHN_MINOR_VER				2
+
+
+const unsigned short daytab[13]={0,31,59,90,120,151,181,212,243,273,304,334,365};//非闰年月份累积天数
+const unsigned short daytab1[13]={0,31,60,91,121,152,182,213,244,274,305,335,366};//闰年月份累积天数
+
+#define    xMINUTE     (60)					/*1 ????*/
+#define    xHOUR         (60*xMINUTE)			/*1 ?????*/
+#define    xDAY           (24*xHOUR)			/*1 ????*/
+#define    xYEAR         (365*xDAY)			/*1 ???? */
+
 //------------------------------------------------------------------------------
 // module global vars
 //------------------------------------------------------------------------------
@@ -75,14 +85,14 @@ void System_default(void)
 	memset(p_sc, 0, sizeof(system_conf_t));
 	p_sc->sys_flag = 0;
 	p_sc->num_chn = NUM_CHANNEL;
-	stg->wr_stored_data(stg, CFG_TYPE_SYSTEM, &phn_sys.sys_conf);
+	stg->wr_stored_data(stg, CFG_TYPE_SYSTEM, &phn_sys.sys_conf, sizeof(phn_sys.sys_conf));
 	
 	for(i = 0; i < NUM_CHANNEL; i++)
 	{
 		
 		MdlChn_default_conf(i);
 		MdlChn_default_alarm(i);
-		stg->wr_stored_data(stg, CFG_CHN_CONF(i), NULL);
+		stg->wr_stored_data(stg, CFG_CHN_CONF(i), NULL, 0);
 	}
 	
 //	p_sc->baud_idx = 0;
@@ -117,7 +127,7 @@ void System_init(void)
 #if TDD_ON	== 0
 	stg->init(stg);
 	
-	stg->rd_stored_data(stg, CFG_TYPE_SYSTEM, &phn_sys.sys_conf);
+	stg->rd_stored_data(stg, CFG_TYPE_SYSTEM, &phn_sys.sys_conf, sizeof(phn_sys.sys_conf));
 	if(phn_sys.sys_conf.num_chn != NUM_CHANNEL)
 		System_default();
 
@@ -130,12 +140,59 @@ void System_time(struct  tm *stime)
 	sys_rtc->get(sys_rtc, stime);
 }
 
-extern uint32_t System_tm_2_u32(struct  tm *stime)
+
+
+
+
+//--------------------------------------------------------------------------------
+//计算从2000年1月1号0时0分0秒到现在的秒数
+//----------------------------------------------------------------------------------
+uint32_t    Time_2_u32(struct  tm	*tm_2_sec)
 {
+
+	unsigned char a;
+	unsigned short b;
+	unsigned long seconds;
+
+	a=tm_2_sec->tm_yday/4;
+	seconds=(unsigned long)1461*a*xDAY;	//过去的整年秒数
+	a=tm_2_sec->tm_yday%4;
+	if(a==0)
+	{
+		a = tm_2_sec->tm_mon - 1;
+		b = daytab1[a];
+	}
+	else
+	{
+		b=366;
+		while(--a)
+		{
+			b=b+365;
+		}
+		a = tm_2_sec->tm_mon - 1;
+		b=b+daytab[a];
+	}
+	seconds +=xDAY*(b+tm_2_sec->tm_mday-1);//加上本月已过的天数的秒数
+	seconds += xHOUR*tm_2_sec->tm_hour;				//加上本日已过的小时
+	seconds += xMINUTE*tm_2_sec->tm_min;			//加上本分钟已经过去的秒数
+	seconds += tm_2_sec->tm_sec;					//??????
+	return seconds;
+
 	
-	return 0;
+	
 }
-extern int System_u32_2_tm(uint32_t time_u32, struct  tm *stime)
+
+uint32_t  Str_time_2_u32(char *s_time)
+{
+	uint32_t sec = 0;
+	
+	
+	return sec;
+	
+	
+}
+
+extern int Sec_2_tm(uint32_t time_u32, struct  tm *stime)
 {
 	
 	return RET_OK;

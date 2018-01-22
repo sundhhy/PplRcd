@@ -156,7 +156,6 @@ static int	Init_Setting_HMI(HMI *self, void *arg)
 //	p_exp = ExpCreate( "pic");
 	
 	cthis->entry_start_row = 0;	
-	phn_sys.hmi_mgr.set_strategy = 0xff;
 	return RET_OK;
 }
 
@@ -236,7 +235,6 @@ static void	Setting_HMI_hide(HMI *self)
 	Sheet_free(cthis->p_sht_CUR);
 	Sheet_free(cthis->p_sht_clean);
 	
-	phn_sys.hmi_mgr.set_strategy = 0xff;
 }
 
 
@@ -248,7 +246,6 @@ static void	Setting_HMI_init_focus(HMI *self)
 	cthis->col_max = 1;
 	if(((self->flag & HMIFLAG_WIN) == 0) && ((self->flag & HMIFLAG_KEYBOARD) == 0))
 		cthis->p_sy->init(NULL);
-	phn_sys.hmi_mgr.set_strategy = cthis->p_sy->sty_id;
 	SET_PG_FLAG(cthis->sub_flag, FOCUS_IN_STARTEGY);
 	
 	
@@ -713,7 +710,7 @@ static int STING_Show_Button(HMI *self, int up_or_dn)
 //	g_p_ico_pgdn->cnt.effects = GP_CLR_EFF(g_p_ico_pgdn->cnt.effects, EFF_FOCUS);
 //	g_p_ico_memu->cnt.effects = GP_CLR_EFF(g_p_ico_memu->cnt.effects, EFF_FOCUS);
 //	self->show_focus(self, self->p_fcuu->focus_row, self->p_fcuu->focus_col);
-	self->clear_focus(self, 0-1, -1);
+	self->clear_focus(self, 0xff, 0xff);
 	Strategy_focus(cthis, &cthis->p_sy->sf, 1);
 	Flush_LCD();
 	

@@ -77,8 +77,7 @@ typedef struct {
 
 //-----------HMI -----------------------------------------------
 typedef struct {
-	uint8_t			set_strategy;
-	uint8_t			none[3];
+	uint8_t			none[4];
 }hmi_mgr_t;
 //---------- flash驱动的定义 --------------------------------------
 
@@ -211,14 +210,18 @@ extern system_t			phn_sys;
 //------------------------------------------------------------------------------
 // function prototypes
 //------------------------------------------------------------------------------
-extern void Str_Calculations(char *p_str, int len,  int op, int val, int rangel, int rangeh);
-extern int	Operate_in_tange(int	arg1, int op, int arg2, int rangel, int rangeh);
+void Str_Calculations(char *p_str, int len,  int op, int val, int rangel, int rangeh);
+int	Operate_in_tange(int	arg1, int op, int arg2, int rangel, int rangeh);
 
-extern void System_init(void);
-extern void System_time(struct  tm *stime);
-extern uint32_t System_tm_2_u32(struct  tm *stime);
-extern int System_u32_2_tm(uint32_t time_u32, struct  tm *stime);
-extern int System_set_time(struct  tm *stime);
+void System_init(void);
+void System_time(struct  tm *stime);
+
+uint32_t  Str_time_2_u32(char *s_time);
+uint32_t  Time_2_u32(struct  tm	*tm_2_sec);
+int Sec_2_tm(uint32_t time_u32, struct  tm *stime);
+int System_set_time(struct  tm *stime);
+
+
 extern void System_default(void);
 void System_modify_string(char	*p_s, int aux, int op, int val);
 void System_to_string(void *p_data, char	*p_s, int len, int aux);

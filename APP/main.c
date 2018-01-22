@@ -12,6 +12,7 @@
 #include "mySystemClock.h"
 #include "pinmux.h"
 #include "intrInit.h"
+#include "sys_cmd.h"
 
 #include "basis/macros.h"
 #include "basis/sdhError.h"
@@ -136,6 +137,8 @@ int main (void) {
 	
 	p_control = SUPER_PTR(CtlTimer_new(), Controller);
 	p_control->init(p_control, NULL);
+	
+	Init_Cmd_Thread();
 	
 	p_mdl_time = ModelCreate("time");
 	

@@ -247,7 +247,7 @@ static int MdlChn_init(Model *self, IN void *arg)
 	self->mdl_id = MDLID_CHN(chn_num);
 	cthis->chni.chn_NO = chn_num;
 	
-	if(stg->rd_stored_data(stg, CFG_CHN_CONF(cthis->chni.chn_NO), &save) != RET_OK) 
+	if(stg->rd_stored_data(stg, CFG_CHN_CONF(cthis->chni.chn_NO), &save, sizeof(save)) != RET_OK) 
 	{
 
 		MdlChn_default_conf(chn_num);

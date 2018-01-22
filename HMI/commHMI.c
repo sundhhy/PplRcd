@@ -98,6 +98,7 @@ typedef struct {
 // local vars
 //------------------------------------------------------------------------------
 static cmmHmi *singalCmmHmi;
+
 //static char s_timer[TIME_BUF_LEN];
 //------------------------------------------------------------------------------
 // local function prototypes

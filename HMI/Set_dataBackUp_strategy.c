@@ -3,6 +3,8 @@
 #include "system.h"
 #include "USB/Usb.h"
 #include "os/os_depend.h"
+#include "sys_cmd.h"
+#include "utils/Storage.h"
 //============================================================================//
 //            G L O B A L   D E F I N I T I O N S                             //
 //============================================================================//
@@ -62,7 +64,8 @@ strategy_t	g_DBP_strategy = {
 	 "文件名：", "备份进程"
  };
  
-	
+static uint8_t		arr_DBP_fds[3];
+static uint8_t		DBP_copy;
 //------------------------------------------------------------------------------
 // local function prototypes
 //------------------------------------------------------------------------------
@@ -145,7 +148,6 @@ static int DBP_init(void *arg)
 	int			i;
 	
 
-	g_DBP_strategy.sty_id = DBP_ID;
 	memset(&g_DBP_strategy.sf, 0, sizeof(g_DBP_strategy.sf));
 	g_DBP_strategy.sf.f_col = 1;
 	g_DBP_strategy.sf.f_row = 1;
@@ -158,7 +160,7 @@ static int DBP_init(void *arg)
 		memset(arr_p_vram[i], 0, 64);
 	}
 	g_setting_chn = 0;
-	g_DBP_strategy.sty_some_fd = USB_Rgt_event_hdl(DBP_Usb_event);
+	arr_DBP_fds[0] = USB_Rgt_event_hdl(DBP_Usb_event);
 //	phn_sys.key_weight = 1;
 	return RET_OK;
 }
@@ -173,14 +175,15 @@ static void DBP_build_component(void *arg)
 	p_btn->build_each_btn(1, BTN_TYPE_COPY, DBP_Btn_hdl, arg);
 	p_btn->build_each_btn(2, BTN_TYPE_STOP, DBP_Btn_hdl, arg);
 		
-	g_DBP_strategy.sty_some_fd = p_bar->build_bar(&bob);
+	arr_DBP_fds[1] = p_bar->build_bar(&bob);
 //	p_bar->update_bar(g_DBP_strategy.sty_some_fd, 50);
 	
 }
 static void DBP_Exit(void)
 {
-	USB_Del_event_hdl(g_DBP_strategy.sty_some_fd);
-	
+	Progress_bar	*p_bar = PGB_Get_Sington();
+	USB_Del_event_hdl(arr_DBP_fds[0]);
+	p_bar->delete_bar(arr_DBP_fds[1]);
 }
 static int DBP_key_up(void *arg)
 {
@@ -303,8 +306,7 @@ static int DBP_commit(void *arg)
 static int	DBP_Usb_event(int type)
 {
 	strategy_focus_t		pos;
-	if(phn_sys.hmi_mgr.set_strategy != DBP_ID)
-		return RET_OK;
+
 	if((type != et_ready) && (type != et_remove))
 		return RET_OK;
 	
@@ -354,18 +356,56 @@ static int DBP_update_content(int op, int weight)
 	return ret;
 }
 
-static void DBP_Copy(void)
+static void DBP_Copy(void *arg)
 {
-	int				i = 0;
+	
+	uint32_t			start_sec = Str_time_2_u32(arr_p_vram[2]);
+	uint32_t			end_sec = Str_time_2_u32(arr_p_vram[3]);
+	uint32_t			total_sec = end_sec - start_sec;
+	uint32_t			done_sec = 0;
+	uint32_t			rd_sec = 0;
 	Progress_bar	*p_bar = PGB_Get_Sington();
+	uint8_t				*copy_buf = NULL;
+	int						rd_len = 0;
+	int						usb_fd = 0;
+	
+	usb_fd = USB_Open_file(arr_p_vram[4], USB_FM_WRITE | USB_FM_COVER);
 
-	while(i < 100)
+	total_sec = 100;
+	while(done_sec < total_sec)
 	{
-		i ++;
-		p_bar->update_bar(g_DBP_strategy.sty_some_fd, i);
+
+			
+		if(DBP_copy == 0)
+			break;
+		if(phn_sys.usb_device == 0)
+			goto copy_wait;
+		
+//		rd_len = STG_Read_rcd_by_time(g_setting_chn, start_sec, end_sec, copy_buf, 512, &rd_sec);
+//		if(rd_len <= 0)
+//			done_sec = total_sec;
+//		else
+//		{
+//			
+//			start_sec += rd_sec;
+//			done_sec += rd_sec;
+//		}
+//		
+//		if(rd_len)
+//		{
+//			USB_Write_file(usb_fd, copy_buf, rd_len);
+//		}
+		
+		
+		//用读取的时间与总时间的比值作为进度依据
+		done_sec += 2;
+	copy_wait:
+		p_bar->update_bar(arr_DBP_fds[1], done_sec / total_sec);
 		delay_ms(500);
 		
 	}
+	
+	Cmd_del_recv(arr_DBP_fds[2]);
 	
 	
 }
@@ -374,8 +414,12 @@ static void DBP_Copy(void)
  {
 	 if(btn_id == ICO_ID_COPY)
 	 {
-		 DBP_Copy();
-		 
+		 DBP_copy = 1;
+		 arr_DBP_fds[2] = Cmd_Rgt_recv(DBP_Copy, NULL);		 
+	 }
+	 else if(btn_id == ICO_ID_STOP)
+	 {
+		 DBP_copy = 0;
 	 }
 	 
  }
