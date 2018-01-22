@@ -121,7 +121,7 @@ static int Data_bacnup_Strategy_entry(int row, int col, void *pp_text)
 				break;
 			case 4:		
 				if(arr_p_vram[row][0] == '\0')
-					sprintf(arr_p_vram[row], "data_%d.csv", g_setting_chn);
+					sprintf(arr_p_vram[row], "/data_%d.csv", g_setting_chn);
 				else {
 					
 					if( strstr(arr_p_vram[row], ".csv") == NULL)
@@ -369,7 +369,7 @@ static void DBP_Copy(void *arg)
 	int						rd_len = 0;
 	int						usb_fd = 0;
 	
-	usb_fd = USB_Open_file(arr_p_vram[4], USB_FM_WRITE | USB_FM_COVER);
+//	usb_fd = USB_Open_file(arr_p_vram[4], USB_FM_WRITE | USB_FM_COVER);
 
 	total_sec = 100;
 	while(done_sec < total_sec)
@@ -380,6 +380,11 @@ static void DBP_Copy(void *arg)
 			break;
 		if(phn_sys.usb_device == 0)
 			goto copy_wait;
+		if(usb_fd == 0)
+		{
+			usb_fd = USB_Open_file(arr_p_vram[4], USB_FM_WRITE | USB_FM_COVER);
+			
+		}
 		
 //		rd_len = STG_Read_rcd_by_time(g_setting_chn, start_sec, end_sec, copy_buf, 512, &rd_sec);
 //		if(rd_len <= 0)
@@ -400,7 +405,7 @@ static void DBP_Copy(void *arg)
 		//用读取的时间与总时间的比值作为进度依据
 		done_sec += 2;
 	copy_wait:
-		p_bar->update_bar(arr_DBP_fds[1], done_sec / total_sec);
+		p_bar->update_bar(arr_DBP_fds[1], done_sec * 100 / total_sec);
 		delay_ms(500);
 		
 	}

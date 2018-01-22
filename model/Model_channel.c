@@ -82,8 +82,9 @@ Model_chn *Get_Mode_chn(int n)
 	
 	p_mc = Model_chn_new();
 	p_mdl = SUPER_PTR(p_mc, Model);
-	p_mdl->init(p_mdl, (void *)&n);
 	arr_p_mdl_chn[n] = p_mdl;
+	p_mdl->init(p_mdl, (void *)&n);
+	
 	
 	return p_mc;
 }
@@ -284,6 +285,7 @@ void MdlChn_default_conf(int chn_num)
 	
 	memset(&p_mdl->chni, 0, sizeof(p_mdl->chni));
 	p_mdl->chni.signal_type = AI_0_400_ohm;
+	p_mdl->chni.chn_NO = chn_num;
 	p_mdl->chni.tag_NO = chn_num;
 	p_mdl->chni.MB = 2;
 }
@@ -1173,7 +1175,7 @@ static void Pe_singnaltype(e_signal_t sgt, char *str)
 			sprintf(str, "T");
 			break;
 		case AI_0_400_ohm:
-			sprintf(str, "0-400O");
+			sprintf(str, "0-400 O");
 			break;		
 		case PI_0_30_kHz:
 			sprintf(str, "PI");

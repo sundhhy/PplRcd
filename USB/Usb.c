@@ -156,7 +156,7 @@ int USB_Init(void* arg)
 	return ret;
 	
 }
-
+//³É¹¦·µ»Ø1
 int USB_Open_file(char *file_name, char mode)
 {
 	int	ret = RET_OK;

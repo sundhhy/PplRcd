@@ -41,7 +41,7 @@
 // local types
 //------------------------------------------------------------------------------
 typedef struct {
-	cmd_recv func;
+	cmd_recv 		func;
 	void 			*arg;
 	
 }cmd_run_t;
@@ -96,7 +96,7 @@ static void Cmd_Thread (void const *argument) {
     ; // Insert thread code here...
 		if(cmd_run.func)
 			cmd_run.func(cmd_run.arg);
-    osThreadYield ();                                           // suspend thread
+    osThreadYield ();  		// suspend thread
   }
 }
 

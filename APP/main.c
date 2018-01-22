@@ -115,6 +115,13 @@ int main (void) {
 //	mTime = ModelCreate("time");
 	//控制器初始化
 #if TDD_ON == 0
+
+	//界面初始化
+	p_mainHmi = CreateHMI( HMI_MAIN);
+	p_mainHmi->init( p_mainHmi, NULL);
+	p_mainHmi->switchHMI(p_mainHmi, p_mainHmi);
+
+
 	//按键初始化
 	p_kb = GetKeyInsance();
 	
@@ -123,18 +130,11 @@ int main (void) {
 	p_kb->init( p_kb, &phn_sys.lcd_cmd_bytes);
 	phn_sys.lcd_cmd_bytes  = 0;
 	tid_Thread_key = osThreadCreate (osThread(ThrdKeyRun), p_kb);
-	
 	if (!tid_Thread_key) return(-1);
-	//界面初始化
+	
+	//创建控制器
 	p_control = SUPER_PTR( Get_CtlKey(), Controller);
 	p_control->init(p_control, p_kb);
-	
-	p_mainHmi = CreateHMI( HMI_MAIN);
-	p_mainHmi->init( p_mainHmi, NULL);
-	p_mainHmi->switchHMI(p_mainHmi, p_mainHmi);
-//	p_mainHmi->show( p_mainHmi);
-//	Set_flag_show(&p_mainHmi->flag, 1); 
-	
 	p_control = SUPER_PTR(CtlTimer_new(), Controller);
 	p_control->init(p_control, NULL);
 	
