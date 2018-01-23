@@ -12,12 +12,13 @@
 //------------------------------------------------------------------------------
 // const defines
 //------------------------------------------------------------------------------
-#define CFG_CHN_CONF(n)					(n)
-#define CFG_TYPE_SYSTEM					0x10
+#define STG_CHN_CONF(n)					(n)
+#define STG_SYS_CONF					0x10
 #define STG_CHN_DATA(n)					(0x20 + n)
 #define STG_CHN_ALARM(n)				(0x30 + n)
-#define STG_LOSE_PWR						(0x40)
+#define STG_LOSE_PWR					(0x40)
 
+#define	IS_CHN_CONF(type)				(type < NUM_CHANNEL)
 #define	IS_SYS_CONF(type)				(type == 0x10)
 #define	IS_CHN_DATA(type)				((type & 0xf0) == 0x20)
 #define	IS_CHN_ALARM(type)			((type & 0xf0) == 0x30)

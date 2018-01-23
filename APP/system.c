@@ -85,14 +85,14 @@ void System_default(void)
 	memset(p_sc, 0, sizeof(system_conf_t));
 	p_sc->sys_flag = 0;
 	p_sc->num_chn = NUM_CHANNEL;
-	stg->wr_stored_data(stg, CFG_TYPE_SYSTEM, &phn_sys.sys_conf, sizeof(phn_sys.sys_conf));
+	stg->wr_stored_data(stg, STG_SYS_CONF, &phn_sys.sys_conf, sizeof(phn_sys.sys_conf));
 	
 	for(i = 0; i < NUM_CHANNEL; i++)
 	{
 		
 		MdlChn_default_conf(i);
 		MdlChn_default_alarm(i);
-		stg->wr_stored_data(stg, CFG_CHN_CONF(i), NULL, 0);
+		stg->wr_stored_data(stg, STG_CHN_CONF(i), NULL, 0);
 	}
 	
 //	p_sc->baud_idx = 0;
@@ -127,7 +127,7 @@ void System_init(void)
 #if TDD_ON	== 0
 	stg->init(stg);
 	
-	stg->rd_stored_data(stg, CFG_TYPE_SYSTEM, &phn_sys.sys_conf, sizeof(phn_sys.sys_conf));
+	stg->rd_stored_data(stg, STG_SYS_CONF, &phn_sys.sys_conf, sizeof(phn_sys.sys_conf));
 	if(phn_sys.sys_conf.num_chn != NUM_CHANNEL)
 		System_default();
 
@@ -142,8 +142,10 @@ void System_time(struct  tm *stime)
 
 uint32_t  SYS_time_sec(void)
 {
+	struct tm  t;
+	sys_rtc->get(sys_rtc, &t);
 	
-	
+	return Time_2_u32(&t);
 }
 
 

@@ -122,7 +122,7 @@ static void Ctime_periodic (void const *arg)
 //	
 	if(phn_sys.save_chg_flga & CHG_SYSTEM_CONF)
 	{
-		stg->wr_stored_data(stg, CFG_TYPE_SYSTEM, &phn_sys.sys_conf, sizeof(phn_sys.sys_conf));
+		stg->wr_stored_data(stg, STG_SYS_CONF, &phn_sys.sys_conf, sizeof(phn_sys.sys_conf));
 		
 		phn_sys.save_chg_flga &= ~CHG_SYSTEM_CONF;
 		Ctime_Allco_time(phn_sys.sys_conf.record_gap_s, NUM_CHANNEL);
@@ -134,7 +134,7 @@ static void Ctime_periodic (void const *arg)
 			
 			
 			
-			stg->wr_stored_data(stg, CFG_CHN_CONF(i), NULL, 0);
+			stg->wr_stored_data(stg, STG_CHN_CONF(i), NULL, 0);
 			phn_sys.save_chg_flga &= ~CHG_MODCHN_CONF(i);
 			
 		}

@@ -102,6 +102,7 @@ int 	EFS_Lseek(int fd, int whence, uint32_t offset);
 int	EFS_resize(int fd, char *path, int new_size);
 file_info_t		*EFS_file_info(int fd);
 int		EFS_delete(int fd);
+void 	EFS_Erase_file(int fd);
 void 	EFS_Shutdown(void);
 
 static int EFS_format(void);
@@ -147,6 +148,7 @@ int 	EFS_init(int arg)
 	EFS_FS.fs_write = EFS_write;
 	EFS_FS.fs_delete = EFS_delete;
 	EFS_FS.fs_resize = EFS_resize;
+	EFS_FS.fs_erase_file = EFS_Erase_file;
 	EFS_FS.fs_shutdown = EFS_Shutdown;
 	EFS_FS.fs_file_info = EFS_file_info;
 	
@@ -305,6 +307,21 @@ int	EFS_read(int fd, uint8_t *p, int len)
 		f->read_position += ret;
 	
 	return ret;
+}
+
+void 	EFS_Erase_file(int fd)
+{
+	int 		ret;
+	file_info_t *f = &efs_mgr.arr_file_info[fd];
+	int			start_addr = f->start_page * EFS_FSH(f->fsh_No).fnf.page_size;
+	int			end_addr = start_addr + f->file_size;
+
+	if(fd > EFS_MAX_NUM_FILES)
+		return;
+	
+	
+	EFS_FSH(f->fsh_No).fsh_ersse_addr(start_addr, f->file_size);
+	
 }
 
 //用fd或者path来指定文件

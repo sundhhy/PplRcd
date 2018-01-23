@@ -72,6 +72,7 @@ static I_dev_Char *p_fm25_spi;
 
 void FM25_WP(int protect);
 void FM25_info(fsh_info_t *info);
+void FM25_Erase_addr(uint32_t s, uint32_t si);
 int FM25_Erase(int opt, uint32_t Sector_Number);
 int FM25_Write(uint8_t *pBuffer, uint32_t WriteAddr, uint32_t WriteBytesNum);
 int FM25_rd_data(uint8_t *pBuffer, uint32_t rd_add, uint32_t len);
@@ -102,6 +103,8 @@ int FM25_init(void)
 	phn_sys.arr_fsh[FM25_SPI_NO].fsh_wp = FM25_WP;
 
 	phn_sys.arr_fsh[FM25_SPI_NO].fsh_ersse = FM25_Erase;
+	phn_sys.arr_fsh[FM25_SPI_NO].fsh_ersse_addr = FM25_Erase_addr;
+
 	phn_sys.arr_fsh[FM25_SPI_NO].fsh_write = FM25_Write;
 	phn_sys.arr_fsh[FM25_SPI_NO].fsh_read = FM25_rd_data;
 	phn_sys.arr_fsh[FM25_SPI_NO].fsh_flush = FM25_Flush;
@@ -182,6 +185,12 @@ void FM25_WP(int protect)
 
 void FM25_Flush(void)
 {
+	
+}
+
+void FM25_Erase_addr(uint32_t s, uint32_t si)
+{
+	
 	
 }
 

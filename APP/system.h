@@ -103,6 +103,7 @@ typedef struct {
 
 
 	int	(*fsh_ersse)(int opt, uint32_t	num);
+	void	(*fsh_ersse_addr)(uint32_t	start_addr, uint32_t size);
 //	int	(*fsh_wr_sector)(uint8_t *wr_buf, uint16_t num_sector);
 //	int	(*fsh_rd_sector)(uint8_t *rd_buf, uint16_t num_sector);
 	int (*fsh_write)(uint8_t *wr_buf, uint32_t wr_addr, uint32_t num_bytes);
@@ -154,6 +155,7 @@ typedef struct {
 	int		(*fs_read)(int fd, uint8_t *p, int len);
 	int		(*fs_resize)(int fd, char *name, int new_size);
 	int 	(*fs_lseek)(int fd, int whence, uint32_t offset);
+	void 	(*fs_erase_file)(int fd);
 	void 	(*fs_shutdown)(void);
 	file_info_t*		(*fs_file_info)(int fd);
 			

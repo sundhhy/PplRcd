@@ -134,6 +134,7 @@ void W25Q_WP(int protect);
 
 void w25q_info(fsh_info_t *info);
 int W25Q_erase(int opt, uint32_t num);
+void W25Q_Erase_addr(uint32_t st, uint32_t sz);
 //int w25q_erase(uint32_t offset, uint32_t len);
 //int w25q_Write_Sector_Data(uint8_t *pBuffer, uint16_t Sector_Num);
 
@@ -173,6 +174,8 @@ int w25q_init(void)
 	phn_sys.arr_fsh[FSH_W25Q_NUM].fsh_wp = W25Q_WP;
 
 	phn_sys.arr_fsh[FSH_W25Q_NUM].fsh_ersse = W25Q_erase;
+	phn_sys.arr_fsh[FSH_W25Q_NUM].fsh_ersse_addr = W25Q_Erase_addr;
+
 //	phn_sys.arr_fsh[FSH_W25Q_NUM].fsh_wr_sector = w25q_Write_Sector_Data;
 //	phn_sys.arr_fsh[FSH_W25Q_NUM].fsh_rd_sector = w25q_Read_Sector_Data;
 	phn_sys.arr_fsh[FSH_W25Q_NUM].fsh_write = w25q_Write;
@@ -294,6 +297,43 @@ int W25Q_erase(int opt, uint32_t num)
 	
 	return ret;
 	
+}
+
+void W25Q_Erase_addr(uint32_t st, uint32_t sz)
+{
+	uint16_t		head_area[2];
+	uint16_t		tail_area[2];
+	   
+	//先取出块来进行擦除
+	//1 计算出起始块号
+	//2 计算出块的数量
+	//3 擦除这些块
+	//4 计算去掉被擦除的块之后的头部和尾部的位置
+	
+	//再从剩下的头部和尾部两片区域中取出扇区进行擦除
+	//此时与前一步块相连的部分是肯定扇区对齐的，因此不用考虑相连部分无法被扇区擦除擦干净
+	//1 擦除头部区域的扇区
+	//1.1 计算出起始扇区号
+	//1.2 计算出块的扇区数量
+	//1.3 擦除这些扇区
+	//1.4 计算去掉被擦除之后的剩余头部
+		
+	//2 擦除尾部区域的扇区
+	//1.1 计算出起始扇区号
+	//1.2 计算出块的扇区数量
+	//1.3 擦除这些扇区
+	//1.4 计算去掉被擦除之后的剩余尾部
+	
+	//再从剩下的头部和尾部两片区域按字节写入oxff
+	//1 擦除头部
+	//计算头部所处于的扇区号，读取该扇
+	//擦除该扇区
+	//计算扣除头部位置之后要写入该扇区的字节数并写入
+	//2 擦除尾部
+	//计算尾部所处于的扇区号，读取该扇
+	//擦除该扇区
+	//计算跳过尾部位置之后的数据长度，并在缓存中跳过尾部的长度后，写入flash
+		
 }
 
 //将提供的扇区进行擦除操作。扇区号的范围是0 - 4096 （w25q128）

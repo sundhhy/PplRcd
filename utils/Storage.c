@@ -41,7 +41,7 @@ typedef struct {
 	uint8_t			rcd_flag;
 	uint16_t		rcd_val;
 	
-}rcd_channel_t;
+}data_in_fsh_t;
 
 //通过缓存，将分散的通道记录，汇集起来，然后一致的存入FLASH
 typedef struct {
@@ -212,16 +212,17 @@ static int	Strg_rd_stored_data(Storage *self, uint8_t	cfg_type, void *buf, int l
 		ret = STG_Acc_sys_conf(STG_DRC_READ, buf);
 		
 	}
-	else if(IS_LOSE_PWR(cfg_type))
-	{
-		ret = STG_Acc_lose_pwr(STG_DRC_READ, buf, len);
-		
-	}
 	else if(IS_SYS_CONF(cfg_type))
 	{
 		ret = STG_Acc_chn_conf(STG_GET_CHN(cfg_type), STG_DRC_READ, buf);
 		
 	}
+	else if(IS_LOSE_PWR(cfg_type))
+	{
+		ret = STG_Acc_lose_pwr(STG_DRC_READ, buf, len);
+		
+	}
+	
 	else if(IS_CHN_DATA(cfg_type))
 	{
 		ret = STG_Acc_chn_data(cfg_type, STG_DRC_READ, buf, len);
@@ -248,14 +249,14 @@ static int		Strg_WR_stored_data(Storage *self, uint8_t	cfg_type, void *buf, int 
 		ret = STG_Acc_sys_conf(STG_DRC_WRITE, buf);
 		
 	}
-	else if(IS_LOSE_PWR(cfg_type))
-	{
-		ret = STG_Acc_lose_pwr(STG_DRC_WRITE, buf, len);
-		
-	}
 	else if(IS_SYS_CONF(cfg_type))
 	{
 		ret = STG_Acc_chn_conf(STG_GET_CHN(cfg_type), STG_DRC_WRITE, buf);
+		
+	}
+	else if(IS_LOSE_PWR(cfg_type))
+	{
+		ret = STG_Acc_lose_pwr(STG_DRC_WRITE, buf, len);
 		
 	}
 	else if(IS_CHN_DATA(cfg_type))
@@ -274,22 +275,29 @@ static int		Strg_WR_stored_data(Storage *self, uint8_t	cfg_type, void *buf, int 
 
 static void Strg_Updata_rcd_mgr(uint8_t	num, mdl_chn_save_t *p)
 {
-//	mdl_chn_save_t		*p_save = (mdl_chn_save_t *)p;
-//	file_info_t			*fnf ;
-//	Storage				*stg = Get_storage();
-//	int					i;
-//	
-//	fnf = STRG_SYS.fs.fs_file_info(stg->rcd_fd);
-//	if(fnf->write_position == 0)		//第一次创建记录文件时，所有的记录数量都是0
-//	{
-//		for(i = 0; i < NUM_CHANNEL; i++)
-//			stg->arr_rcd_mgr[i].rcd_count = 0;
-//		
-//	}
-//	
-//	if(p == NULL)
-//		return;
-//	stg->arr_rcd_mgr[num].rcd_maxcount = p_save->MB * 1024 * 1024 / sizeof(rcd_channel_t);
+	mdl_chn_save_t		*p_save = (mdl_chn_save_t *)p;
+	file_info_t			*fnf ;
+	Storage				*stg = Get_storage();
+	int					fd;
+	
+	fd = STG_Open_file(STG_CHN_DATA(num));
+	fnf = STRG_SYS.fs.fs_file_info(fd);
+	
+	stg->arr_rcd_mgr[num].rcd_count = fnf->write_position / sizeof(data_in_fsh_t);
+		
+	
+	if(p == NULL)
+		return;
+	//如果文件的大小没有发生变化，下面这条语句不会执行任何操作
+	//单思大小发送变化的话就会去执行文件大小重新分配额
+	if(STRG_SYS.fs.fs_resize(fd, NULL, p_save->MB * 1024 * 1024) == fd)
+		stg->arr_rcd_mgr[num].rcd_maxcount = p_save->MB * 1024 * 1024 / sizeof(data_in_fsh_t);
+	else
+	{
+		stg->arr_rcd_mgr[num].rcd_maxcount = fnf->file_size / sizeof(data_in_fsh_t);
+		
+	}
+		
 
 	
 }
@@ -301,13 +309,13 @@ static int	STG_Acc_chn_conf(uint8_t	chn_num, uint8_t	drc, void *p)
 	int	num = 0;
 	int	ret = -1;
 	
-	fd = STRG_SYS.fs.fs_open(STRG_CFG_FSH_NUM, "phn.cfg", "r", 256);
+	fd = STG_Open_file(STG_CHN_CONF(chn_num));
 	STRG_SYS.fs.fs_lseek(fd, RD_SEEK_SET, num * sizeof(mdl_chn_save_t));
 	if(drc == STG_DRC_READ)
 	{
-		if(STRG_SYS.fs.fs_read(fd,p, sizeof(mdl_chn_save_t)) == sizeof(mdl_chn_save_t))
+		if(STRG_SYS.fs.fs_read(fd, p, sizeof(mdl_chn_save_t)) == sizeof(mdl_chn_save_t))
 		{
-//			Strg_Updata_rcd_mgr(num, p);
+			Strg_Updata_rcd_mgr(num, p);
 			
 			ret = RET_OK;
 		}
@@ -316,11 +324,9 @@ static int	STG_Acc_chn_conf(uint8_t	chn_num, uint8_t	drc, void *p)
 	{
 		if(STRG_SYS.fs.fs_write(fd, p, sizeof(mdl_chn_save_t)) == sizeof(mdl_chn_save_t))
 		{
-//			Strg_Updata_rcd_mgr(num, p);
-			
 			ret = RET_OK;
 		}
-		
+		Strg_Updata_rcd_mgr(num, p);
 	}
 	STRG_SYS.fs.fs_close(fd);
 	
@@ -329,13 +335,13 @@ static int	STG_Acc_chn_conf(uint8_t	chn_num, uint8_t	drc, void *p)
 	
 }
 
-static int	STG_Acc_sys_conf(uint8_t	drc, void *p)
+static int	STG_Acc_sys_conf(uint8_t drc, void *p)
 {
 	int fd;
 	int	ret = -1;
 
 	
-	fd = STRG_SYS.fs.fs_open(STRG_CFG_FSH_NUM, "phn.cfg", "r", 256);
+	fd = STG_Open_file(STG_SYS_CONF);
 	STRG_SYS.fs.fs_lseek(fd, RD_SEEK_SET, NUM_CHANNEL * sizeof(mdl_chn_save_t));
 	if(drc == STG_DRC_READ)
 	{
@@ -387,6 +393,9 @@ static int	STG_Acc_chn_data(uint8_t	type, uint8_t	drc, void *p, int len)
 			//flash空间耗尽了
 #if STG_RCD_FULL_ACTION == STG_STOP
 			return 0;
+#elif STG_RCD_FULL_ACTION == STG_ERASE
+			fd = STG_Open_file(type);
+			STRG_SYS.fs.fs_erase_file(fd);
 #else
 			STG_flush_wr_cache(type);
 			fd = STG_Open_file(type);
@@ -567,7 +576,38 @@ static void STG_flush_wr_cache(uint8_t type)
 
 static int 	STG_Open_file(uint8_t type)
 {
+	int 		fd = -1;
+	Storage		*stg = Get_storage();
+	char		name[8];
 	
 	
-	return 0;
+	if(IS_SYS_CONF(type))
+	{
+		fd = STRG_SYS.fs.fs_open(STRG_CFG_FSH_NUM, "phn.cfg", "r", 256);
+		
+	}
+	else if(IS_LOSE_PWR(type))
+	{
+		fd = STRG_SYS.fs.fs_open(STRG_CFG_FSH_NUM, "lose_pwe", "r", 1024);
+		
+	}
+	else if(IS_CHN_CONF(type))
+	{
+		//通道配置与系统配置存放在同一个文件的不同位置
+		fd = STRG_SYS.fs.fs_open(STRG_CFG_FSH_NUM, "phn.cfg", "r", 256);
+		
+	}
+	else if(IS_CHN_DATA(type))
+	{
+		sprintf(name, "chn_%d", STG_GET_CHN(type));
+		fd = STRG_SYS.fs.fs_open(STRG_CFG_FSH_NUM, name, "wr", \
+		stg->arr_rcd_mgr[STG_GET_CHN(type)].rcd_maxcount * sizeof(data_in_fsh_t));
+		
+	}
+	else if(IS_CHN_ALARM(type))
+	{
+		fd = STRG_SYS.fs.fs_open(STRG_CFG_FSH_NUM, "alarm", "r", 1024);
+		
+	}
+	return fd;
 }

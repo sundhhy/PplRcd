@@ -3,158 +3,267 @@
 <pre>
 <h1>µVision Build Log</h1>
 <h2>Tool Versions:</h2>
-IDE-Version: ¦ÌVision V5.17.0.0
-Copyright (C) 2015 ARM Ltd and ARM Germany GmbH. All rights reserved.
-License Information: sundh AutoBVT, Microsoft, LIC=CZLLQ-NU9UN-7RAX3-ASCBA-F98MF-K8GII
+IDE-Version: ¦ÌVision V5.13.0.0
+Copyright (C) 2014 ARM Ltd and ARM Germany GmbH. All rights reserved.
+License Information: sundh Administrator, ssss, LIC=NHY8T-R7SVS-59KGZ-J3A9Z-ZZPPP-9LWZP
  
 Tool Versions:
-Toolchain:       MDK-ARM Standard  Version: 5.17
+Toolchain:       MDK-ARM Professional  Version: 5.13.0.0
 Toolchain Path:  D:\Keil_v5\ARM\ARMCC\Bin
-C Compiler:      Armcc.exe V5.06 update 1 (build 61)
-Assembler:       Armasm.exe V5.06 update 1 (build 61)
-Linker/Locator:  ArmLink.exe V5.06 update 1 (build 61)
-Library Manager: ArmAr.exe V5.06 update 1 (build 61)
-Hex Converter:   FromElf.exe V5.06 update 1 (build 61)
-CPU DLL:         SARMCM3.DLL V5.17
-Dialog DLL:      DCM.DLL V1.13.4.0
-Target DLL:      UL2CM3.DLL V1.156.1.0
-Dialog DLL:      TCM.DLL V1.14.6.0
+C Compiler:      Armcc.exe V5.05 update 1 (build 106)
+Assembler:       Armasm.exe V5.05 update 1 (build 106)
+Linker/Locator:  ArmLink.exe V5.05 update 1 (build 106)
+Library Manager: ArmAr.exe V5.05 update 1 (build 106)
+Hex Converter:   FromElf.exe V5.05 update 1 (build 106)
+CPU DLL:         SARMCM3.DLL V5.13.0.0
+Dialog DLL:      DCM.DLL V1.13.1.0
+Target DLL:      UL2CM3.DLL V1.154.12.0
+Dialog DLL:      TCM.DLL V1.14.4.0
  
 <h2>Project:</h2>
-E:\PHN\mycode\phn_code\PplRcd\project\keil5\PplRcd.uvprojx
+E:\PaperlessRecorder\myCode\PplRcd\project\keil5\PplRcd.uvprojx
 Project File Date:  01/23/2018
 
 <h2>Output:</h2>
-*** Using Compiler 'V5.06 update 1 (build 61)', folder: 'D:\Keil_v5\ARM\ARMCC\Bin'
 Build target 'Target 1'
+compiling main.c...
+compiling system.c...
+compiling intrInit.c...
+compiling dev_LcdUsartGpu.c...
+compiling glyph.c...
+compiling expression.c...
+compiling TxtExpr.c...
+compiling ExpFactory.c...
+compiling NtButton.c...
+compiling NtInput.c...
+compiling GeometricsExpr.c...
+compiling PicExpr.c...
+compiling FM25.c...
+..\..\utils\FM25.c(254): warning:  #177-D: function "FM25_Read_status" was declared but never referenced
+  static int FM25_Read_status(void)
+..\..\utils\FM25.c: 1 warning, 0 errors
+compiling hw_w25q.c...
+compiling keyboard.c...
 compiling Storage.c...
 ..\..\utils\Storage.c(112): warning:  #940-D: missing return statement at end of non-void function "STG_Read_rcd_by_time"
   }
-..\..\utils\Storage.c(361): warning:  #940-D: missing return statement at end of non-void function "STG_Acc_sys_conf"
+..\..\utils\Storage.c(367): warning:  #940-D: missing return statement at end of non-void function "STG_Acc_sys_conf"
   }
-..\..\utils\Storage.c(335): warning:  #550-D: variable "ret" was set but never used
-  	int	ret = -1;
-..\..\utils\Storage.c(367): warning:  #940-D: missing return statement at end of non-void function "STG_Acc_chn_alarm"
+..\..\utils\Storage.c(341): warning:  #550-D: variable "ret" was set but never used
+        int     ret = -1;
+..\..\utils\Storage.c(373): warning:  #940-D: missing return statement at end of non-void function "STG_Acc_chn_alarm"
   }
-..\..\utils\Storage.c(412): warning:  #940-D: missing return statement at end of non-void function "STG_Acc_chn_data"
+..\..\utils\Storage.c(421): warning:  #940-D: missing return statement at end of non-void function "STG_Acc_chn_data"
   }
-..\..\utils\Storage.c(373): warning:  #550-D: variable "t" was set but never used
-  	uint8_t				t = 0;
-..\..\utils\Storage.c(418): warning:  #940-D: missing return statement at end of non-void function "STG_Acc_lose_pwr"
+..\..\utils\Storage.c(379): warning:  #550-D: variable "t" was set but never used
+        uint8_t                         t = 0;
+..\..\utils\Storage.c(427): warning:  #940-D: missing return statement at end of non-void function "STG_Acc_lose_pwr"
   }
-..\..\utils\Storage.c(452): warning:  #223-D: function "delay_ms" declared implicitly
-  					delay_ms(1);
-..\..\utils\Storage.c(275): warning:  #177-D: function "Strg_Updata_rcd_mgr" was declared but never referenced
-  static void Strg_Updata_rcd_mgr(uint8_t	num, mdl_chn_save_t *p)
-..\..\utils\Storage.c: 9 warnings, 0 errors
+..\..\utils\Storage.c(461): warning:  #223-D: function "delay_ms" declared implicitly
+                                        delay_ms(1);
+..\..\utils\Storage.c: 8 warnings, 0 errors
+compiling sheet.c...
+compiling Acc_day.c...
+compiling Acc_month.c...
+compiling Accumulate_HMI .c...
+compiling barGraphHmi.c...
+compiling chnInfoPic.c...
+compiling commHMI.c...
+..\..\HMI\commHMI.c(281): warning:  #550-D: variable "menuHmi" was set but never used
+        menuHMI                 *menuHmi ;
+..\..\HMI\commHMI.c(282): warning:  #550-D: variable "barHmi" was set but never used
+        barGhHMI                *barHmi ;
+..\..\HMI\commHMI.c(283): warning:  #550-D: variable "dataHmi" was set but never used
+        dataHMI                 *dataHmi;
+..\..\HMI\commHMI.c(284): warning:  #550-D: variable "rltHmi" was set but never used
+        RLT_trendHMI    *rltHmi;
+..\..\HMI\commHMI.c: 4 warnings, 0 errors
+compiling Component_Button.c...
+compiling curve.c...
+compiling dataHmi.c...
+compiling focus.c...
+compiling format.c...
+compiling History_HMI.c...
+..\..\HMI\History_HMI.c(91): warning:  #177-D: variable "cthis" was declared but never referenced
+        History_HMI             *cthis = SUB_PTR( self, HMI, History_HMI);
+..\..\HMI\History_HMI.c(92): warning:  #550-D: variable "p_exp" was set but never used
+        Expr                    *p_exp ;
+..\..\HMI\History_HMI.c(93): warning:  #550-D: variable "p_shtctl" was set but never used
+        shtctl                  *p_shtctl = NULL;
+..\..\HMI\History_HMI.c(94): warning:  #177-D: variable "i" was declared but never referenced
+        short                           i = 0;  
+..\..\HMI\History_HMI.c(106): warning:  #177-D: variable "cthis" was declared but never referenced
+        History_HMI             *cthis = SUB_PTR( self, HMI, History_HMI);
+..\..\HMI\History_HMI.c(113): warning:  #177-D: variable "cthis" was declared but never referenced
+        History_HMI             *cthis = SUB_PTR( self, HMI, History_HMI);
+..\..\HMI\History_HMI.c(140): warning:  #177-D: variable "cthis" was declared but never referenced
+        History_HMI             *cthis = SUB_PTR( self, HMI, History_HMI);
+..\..\HMI\History_HMI.c(152): warning:  #177-D: variable "self" was declared but never referenced
+        HMI                                     *self   = (HMI *)arg;           
+..\..\HMI\History_HMI.c: 8 warnings, 0 errors
+compiling HMI.c...
+compiling HMIFactory.c...
+compiling keyboardHMI.c...
+compiling mainHMI.c...
+compiling menuHMI.c...
+compiling News_Alarm_HMI.c...
+..\..\HMI\News_Alarm_HMI.c(160): warning:  #177-D: variable "self" was declared but never referenced
+        HMI                                     *self   = (HMI *)arg;           
+..\..\HMI\News_Alarm_HMI.c: 1 warning, 0 errors
+compiling News_Power_down_HMI.c...
+..\..\HMI\News_Power_down_HMI.c(162): warning:  #177-D: variable "self" was declared but never referenced
+        HMI                                     *self   = (HMI *)arg;           
+..\..\HMI\News_Power_down_HMI.c: 1 warning, 0 errors
+compiling news_select_HMI.c...
+compiling real_time_trendHmi.c...
+..\..\HMI\real_time_trendHmi.c(196): warning:  #177-D: variable "i" was declared but never referenced
+        int             i;
+..\..\HMI\real_time_trendHmi.c(207): warning:  #177-D: variable "self" was declared but never referenced
+        HMI                                     *self   = (HMI *)arg;           
+..\..\HMI\real_time_trendHmi.c: 2 warnings, 0 errors
+compiling Set_alarm_strategy.c...
+compiling Set_arithmetic_strategy.c...
+compiling Set_channel_strategy.c...
+compiling Set_dataPrint_strategy.c...
+compiling Set_system_strategy.c...
+compiling Set_view_strategy.c...
+compiling Setting_HMI.c...
+..\..\HMI\Setting_HMI.c(300): warning:  #177-D: function "Setting_HMI_get_focus" was declared but never referenced
+  static sheet* Setting_HMI_get_focus(Setting_HMI *self, int arg)
+..\..\HMI\Setting_HMI.c: 1 warning, 0 errors
+compiling Set_dataBackUp_strategy.c...
+..\..\HMI\Set_dataBackUp_strategy.c(366): warning:  #177-D: variable "rd_sec" was declared but never referenced
+        uint32_t                        rd_sec = 0;
+..\..\HMI\Set_dataBackUp_strategy.c(368): warning:  #177-D: variable "copy_buf" was declared but never referenced
+        uint8_t                         *copy_buf = NULL;
+..\..\HMI\Set_dataBackUp_strategy.c(369): warning:  #177-D: variable "rd_len" was declared but never referenced
+        int                                             rd_len = 0;
+..\..\HMI\Set_dataBackUp_strategy.c: 3 warnings, 0 errors
+compiling Setup_HMI.c...
+compiling windownsHMI.c...
+compiling Component_progress_bar.c...
+compiling Model_channel.c...
+compiling ModelFactory.c...
+compiling ModelTime.c...
+compiling CtlKey.c...
+compiling CtlTimer.c...
+compiling Usb.c...
+compiling easy_fs.c...
+..\..\fs\easy_fs.c(314): warning:  #177-D: variable "ret" was declared but never referenced
+        int             ret;
+..\..\fs\easy_fs.c(317): warning:  #177-D: variable "end_addr" was declared but never referenced
+        int                     end_addr = start_addr + f->file_size;
+..\..\fs\easy_fs.c(600): warning:  #177-D: function "EFS_set_flag" was declared but never referenced
+  static void EFS_set_flag(uint8_t  num, uint8_t        flag, char val)
+..\..\fs\easy_fs.c: 3 warnings, 0 errors
 linking...
-Program Size: Code=88452 RO-data=4312 RW-data=1940 ZI-data=45804  
-".\Objects\PplRcd.axf" - 0 Error(s), 9 Warning(s).
+Program Size: Code=88880 RO-data=4312 RW-data=1940 ZI-data=45812  
+".\Objects\PplRcd.axf" - 0 Error(s), 32 Warning(s).
 
 <h2>Software Packages used:</h2>
 
 Package Vendor: ARM
-                http://www.keil.com/pack/ARM.CMSIS.4.5.0.pack
+                http://www.keil.com/pack/ARM.CMSIS.4.4.0.pack
                 ::CMSIS:RTOS:1.0 (API)
                 CMSIS (Cortex Microcontroller Software Interface Standard)
    * Component: RTOS Version: 1.0
-   * Component: CORE Version: 4.3.0
-   * Component: Keil RTX Version: 4.80.0
+   * Component: Keil RTX Version: 4.79.0
+   * Component: CORE Version: 4.2.0
 
 Package Vendor: Keil
                 http://www.keil.com/pack/Keil.STM32F1xx_DFP.2.1.0.pack
-                Keil::Device:Startup:1.0.0
+                Keil::Device:StdPeriph Drivers:RCC:3.5.0
                 STMicroelectronics STM32F1 Series Device Support, Drivers and Examples
-   * Component: Startup Version: 1.0.0
+   * Component: RCC Version: 3.5.0
+   * Component: GPIO Version: 3.5.0
+   * Component: SPI Version: 3.5.0
+   * Component: USART Version: 3.5.0
    * Component: Framework Version: 3.5.1
    * Component: DMA Version: 3.5.0
    * Component: EXTI Version: 3.5.0
-   * Component: Flash Version: 3.5.0
-   * Component: GPIO Version: 3.5.0
    * Component: I2C Version: 3.5.0
-   * Component: RCC Version: 3.5.0
-   * Component: SPI Version: 3.5.0
+   * Component: Flash Version: 3.5.0
    * Component: TIM Version: 3.5.0
-   * Component: USART Version: 3.5.0
+   * Component: Startup Version: 1.0.0
 
 <h2>Collection of Component include folders:</h2>
-  E:\PHN\mycode\phn_code\PplRcd\project\keil5\RTE
-  E:\PHN\mycode\phn_code\PplRcd\project\keil5\RTE\Device\STM32F103VC
-  D:\Keil_v5\ARM\PACK\ARM\CMSIS\4.5.0\CMSIS\Include
-  D:\Keil_v5\ARM\PACK\ARM\CMSIS\4.5.0\CMSIS\RTOS\RTX\INC
-  D:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\Include
-  D:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\StdPeriph_Driver\inc
+  E:\PaperlessRecorder\myCode\PplRcd\project\keil5\RTE
+  E:\PaperlessRecorder\myCode\PplRcd\project\keil5\RTE\Device\STM32F103VC
+  d:\Keil_v5\ARM\PACK\ARM\CMSIS\4.4.0\CMSIS\Include
+  d:\Keil_v5\ARM\PACK\ARM\CMSIS\4.4.0\CMSIS\RTOS\RTX\INC
+  d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0
+  d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\Include
+  d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\StdPeriph_Driver\inc
 
 <h2>Collection of Component Files used:</h2>
 
    * Component: ::CMSIS:RTOS:1.0 (API)
 
-   * Component: ARM::CMSIS:CORE:4.3.0
-
-   * Component: ARM::CMSIS:RTOS:Keil RTX:4.80.0
-      Include file:  CMSIS\RTOS\RTX\INC\cmsis_os.h
-      Source file:   CMSIS\RTOS\RTX\Templates\RTX_Conf_CM.c
-      Include file:  CMSIS\RTOS\RTX\UserCodeTemplates\osObjects.h
-      Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\main.c
-      Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\MailQueue.c
-      Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\MemPool.c
-      Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\MsgQueue.c
-      Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\Mutex.c
-      Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\Semaphore.c
-      Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\Thread.c
+   * Component: ARM::CMSIS:RTOS:Keil RTX:4.79.0
       Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\Timer.c
+      Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\Semaphore.c
       Source file:   CMSIS\RTOS\RTX\SRC\ARM\SVC_Table.s
+      Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\MailQueue.c
+      Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\Thread.c
+      Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\MemPool.c
+      Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\Mutex.c
+      Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\MsgQueue.c
       Library file:  CMSIS\RTOS\RTX\LIB\ARM\RTX_CM3.lib
+      Include file:  CMSIS\RTOS\RTX\UserCodeTemplates\osObjects.h
+      Source file:   CMSIS\RTOS\RTX\Templates\RTX_Conf_CM.c
+      Include file:  CMSIS\RTOS\RTX\INC\cmsis_os.h
+      Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\main.c
 
-   * Component: Keil::Device:Startup:1.0.0
-      Source file:   Device\Source\ARM\STM32F1xx_OPT.s
-      Source file:   Device\Source\ARM\startup_stm32f10x_hd.s
-      Source file:   Device\Source\system_stm32f10x.c
-      Include file:  RTE_Driver\Config\RTE_Device.h
+   * Component: ARM::CMSIS:CORE:4.2.0
+
+   * Component: Keil::Device:StdPeriph Drivers:RCC:3.5.0
+      Include file:  Device\StdPeriph_Driver\inc\stm32f10x_rcc.h
+      Source file:   Device\StdPeriph_Driver\src\stm32f10x_rcc.c
+
+   * Component: Keil::Device:StdPeriph Drivers:GPIO:3.5.0
+      Include file:  Device\StdPeriph_Driver\inc\stm32f10x_gpio.h
+      Source file:   Device\StdPeriph_Driver\src\stm32f10x_gpio.c
+
+   * Component: Keil::Device:StdPeriph Drivers:SPI:3.5.0
+      Include file:  Device\StdPeriph_Driver\inc\stm32f10x_spi.h
+      Source file:   Device\StdPeriph_Driver\src\stm32f10x_spi.c
+
+   * Component: Keil::Device:StdPeriph Drivers:USART:3.5.0
+      Include file:  Device\StdPeriph_Driver\inc\stm32f10x_usart.h
+      Source file:   Device\StdPeriph_Driver\src\stm32f10x_usart.c
 
    * Component: Keil::Device:StdPeriph Drivers:Framework:3.5.1
-      Include file:  Device\StdPeriph_Driver\inc\misc.h
-      Source file:   Device\StdPeriph_Driver\src\misc.c
-      Source file:   Device\StdPeriph_Driver\templates\stm32f10x_conf.h
       Include file:  Device\StdPeriph_Driver\templates\stm32f10x_it.h
       Source file:   Device\StdPeriph_Driver\templates\stm32f10x_it.c
+      Include file:  Device\StdPeriph_Driver\inc\misc.h
+      Source file:   Device\StdPeriph_Driver\templates\stm32f10x_conf.h
+      Source file:   Device\StdPeriph_Driver\src\misc.c
 
    * Component: Keil::Device:StdPeriph Drivers:DMA:3.5.0
       Include file:  Device\StdPeriph_Driver\inc\stm32f10x_dma.h
       Source file:   Device\StdPeriph_Driver\src\stm32f10x_dma.c
 
    * Component: Keil::Device:StdPeriph Drivers:EXTI:3.5.0
-      Include file:  Device\StdPeriph_Driver\inc\stm32f10x_exti.h
       Source file:   Device\StdPeriph_Driver\src\stm32f10x_exti.c
-
-   * Component: Keil::Device:StdPeriph Drivers:Flash:3.5.0
-      Include file:  Device\StdPeriph_Driver\inc\stm32f10x_flash.h
-      Source file:   Device\StdPeriph_Driver\src\stm32f10x_flash.c
-
-   * Component: Keil::Device:StdPeriph Drivers:GPIO:3.5.0
-      Include file:  Device\StdPeriph_Driver\inc\stm32f10x_gpio.h
-      Source file:   Device\StdPeriph_Driver\src\stm32f10x_gpio.c
+      Include file:  Device\StdPeriph_Driver\inc\stm32f10x_exti.h
 
    * Component: Keil::Device:StdPeriph Drivers:I2C:3.5.0
       Include file:  Device\StdPeriph_Driver\inc\stm32f10x_i2c.h
       Source file:   Device\StdPeriph_Driver\src\stm32f10x_i2c.c
 
-   * Component: Keil::Device:StdPeriph Drivers:RCC:3.5.0
-      Include file:  Device\StdPeriph_Driver\inc\stm32f10x_rcc.h
-      Source file:   Device\StdPeriph_Driver\src\stm32f10x_rcc.c
-
-   * Component: Keil::Device:StdPeriph Drivers:SPI:3.5.0
-      Include file:  Device\StdPeriph_Driver\inc\stm32f10x_spi.h
-      Source file:   Device\StdPeriph_Driver\src\stm32f10x_spi.c
+   * Component: Keil::Device:StdPeriph Drivers:Flash:3.5.0
+      Source file:   Device\StdPeriph_Driver\src\stm32f10x_flash.c
+      Include file:  Device\StdPeriph_Driver\inc\stm32f10x_flash.h
 
    * Component: Keil::Device:StdPeriph Drivers:TIM:3.5.0
       Include file:  Device\StdPeriph_Driver\inc\stm32f10x_tim.h
       Source file:   Device\StdPeriph_Driver\src\stm32f10x_tim.c
 
-   * Component: Keil::Device:StdPeriph Drivers:USART:3.5.0
-      Include file:  Device\StdPeriph_Driver\inc\stm32f10x_usart.h
-      Source file:   Device\StdPeriph_Driver\src\stm32f10x_usart.c
-Build Time Elapsed:  00:00:01
+   * Component: Keil::Device:Startup:1.0.0
+      Source file:   Device\Source\ARM\STM32F1xx_OPT.s
+      Source file:   Device\Source\system_stm32f10x.c
+      Source file:   Device\Source\ARM\startup_stm32f10x_hd.s
+      Include file:  RTE_Driver\Config\RTE_Device.h
 </pre>
 </body>
 </html>
