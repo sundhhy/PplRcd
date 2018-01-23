@@ -43,13 +43,25 @@ typedef struct {
 	
 }rcd_channel_t;
 
-
+//通过缓存，将分散的通道记录，汇集起来，然后一致的存入FLASH
+typedef struct {
+	uint16_t			cur_idx;
+	uint16_t			buf_size;
+	uint8_t				*p_buf;
+}STG_wr_buf_mgr_t;
 	
+typedef struct {
+	uint32_t		time_s;
+	uint16_t		val;
+	uint8_t			flag;
+	uint8_t			chn;
+}STG_cache_t;
 //------------------------------------------------------------------------------
 // local vars
 //------------------------------------------------------------------------------
 //Observer		strg_mdl_ob;
-
+static uint8_t			stg_buf[4096];
+static STG_wr_buf_mgr_t stg_wr_mgr = {0, 4096, stg_buf};
 //------------------------------------------------------------------------------
 // local function prototypes
 //------------------------------------------------------------------------------
@@ -67,10 +79,16 @@ static int 	STG_Open_file(uint8_t type);
 
 static int	STG_Acc_chn_conf(uint8_t	chn_num, uint8_t	drc, void *p);
 static int	STG_Acc_chn_alarm(uint8_t	chn_num, uint8_t	drc, void *p, int len);
-static int	STG_Acc_chn_data(uint8_t	chn_num, uint8_t	drc, void *p, int len);
+static int	STG_Acc_chn_data(uint8_t	type, uint8_t	drc, void *p, int len);
 
 static int	STG_Acc_sys_conf(uint8_t	drc, void *p);
 static int	STG_Acc_lose_pwr(uint8_t	drc, void *p, int len);
+
+
+//------- 记录通道数据的函数--------------------------------------------------//
+static void STG_WR_cache_mgr(void);
+static void STG_flush_wr_cache(uint8_t type);
+
 //============================================================================//
 //            P U B L I C   F U N C T I O N S                                 //
 //============================================================================//
@@ -206,7 +224,7 @@ static int	Strg_rd_stored_data(Storage *self, uint8_t	cfg_type, void *buf, int l
 	}
 	else if(IS_CHN_DATA(cfg_type))
 	{
-		ret = STG_Acc_chn_data(STG_GET_CHN(cfg_type), STG_DRC_READ, buf, len);
+		ret = STG_Acc_chn_data(cfg_type, STG_DRC_READ, buf, len);
 		
 	}
 	else if(IS_CHN_ALARM(cfg_type))
@@ -347,8 +365,48 @@ static int	STG_Acc_chn_alarm(uint8_t	chn_num, uint8_t	drc, void *p, int len)
 	
 	
 }
-static int	STG_Acc_chn_data(uint8_t	chn_num, uint8_t	drc, void *p, int len)
+static int	STG_Acc_chn_data(uint8_t	type, uint8_t	drc, void *p, int len)
 {
+	STG_cache_t		*c;
+	Storage				*stg = Get_storage();
+	int						fd = -1;
+	uint8_t				t = 0;
+	
+	uint8_t				chn_num = STG_GET_CHN(type);
+	if(drc == STG_DRC_READ)
+	{
+		
+		
+		
+	}
+	else
+	{
+		STG_WR_cache_mgr();
+		if(stg->arr_rcd_mgr[chn_num].rcd_count >= stg->arr_rcd_mgr[chn_num].rcd_maxcount)
+		{
+			//flash空间耗尽了
+#if STG_RCD_FULL_ACTION == STG_STOP
+			return 0;
+#else
+			STG_flush_wr_cache(type);
+			fd = STG_Open_file(type);
+			STRG_SYS.fs.fs_lseek(fd, WR_SEEK_SET, 0);
+			stg->arr_rcd_mgr[chn_num].rcd_count = 0;
+#endif
+			
+			
+		}
+		c = (STG_cache_t *)(stg_wr_mgr.p_buf + stg_wr_mgr.cur_idx);
+		t = SYS_time_sec();
+		c->flag = 1;
+		c->chn = chn_num;
+		c->val = *(uint16_t *)p;
+		stg_wr_mgr.cur_idx += sizeof(STG_cache_t);
+		stg->arr_rcd_mgr[chn_num].rcd_count ++;
+		
+		
+		
+	}
 	
 	
 }
@@ -356,6 +414,57 @@ static int	STG_Acc_chn_data(uint8_t	chn_num, uint8_t	drc, void *p, int len)
 static int	STG_Acc_lose_pwr(uint8_t	drc, void *p, int len)
 {
 	
+	
+}
+
+
+
+static void STG_WR_cache_mgr(void)
+{
+	int i;
+	if(stg_wr_mgr.cur_idx < stg_wr_mgr.buf_size)
+		return;
+	for(i = 0; i < NUM_CHANNEL; i++)
+		STG_flush_wr_cache(STG_CHN_DATA(i));
+	
+}
+static void STG_flush_wr_cache(uint8_t type)
+{
+	
+	STG_cache_t		*c;
+	uint16_t 			i = 0;
+	uint8_t				chn_num = STG_GET_CHN(type);
+	uint8_t				safe_count = 20;
+	int 					fd = STG_Open_file(type);
+	
+	while(i < stg_wr_mgr.buf_size)
+	{
+		safe_count = 20;
+		c = (STG_cache_t *)stg_wr_mgr.p_buf + i;
+		if(c->flag && c->chn == chn_num)
+		{
+			//c->flag c->chn 这两个成员不必存储到flash
+			while(STRG_SYS.fs.fs_write(fd, (uint8_t *)c, sizeof(STG_cache_t) - 2) != (sizeof(STG_cache_t) - 2))
+			{
+				if(safe_count)
+				{
+					safe_count --;
+					delay_ms(1);
+				}
+				else
+				{
+					//
+					break;
+				}
+				
+			}
+			c->flag = 0;
+			
+			
+		}
+		
+		
+	}
 	
 }
 

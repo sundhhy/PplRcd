@@ -27,6 +27,12 @@
 
 #define STG_DRC_READ					0
 #define STG_DRC_WRITE					1
+
+
+#define	STG_STOP									0
+#define	STG_COVER									1
+#define	STG_ERASE									2
+#define STG_RCD_FULL_ACTION				STG_ERASE
 //------------------------------------------------------------------------------
 // typedef
 //------------------------------------------------------------------------------

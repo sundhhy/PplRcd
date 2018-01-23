@@ -216,6 +216,7 @@ int	Operate_in_tange(int	arg1, int op, int arg2, int rangel, int rangeh);
 void System_init(void);
 void System_time(struct  tm *stime);
 
+uint32_t  SYS_time_sec(void);
 uint32_t  Str_time_2_u32(char *s_time);
 uint32_t  Time_2_u32(struct  tm	*tm_2_sec);
 int Sec_2_tm(uint32_t time_u32, struct  tm *stime);

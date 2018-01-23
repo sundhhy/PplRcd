@@ -140,6 +140,12 @@ void System_time(struct  tm *stime)
 	sys_rtc->get(sys_rtc, stime);
 }
 
+uint32_t  SYS_time_sec(void)
+{
+	
+	
+}
+
 
 
 

@@ -417,8 +417,9 @@ static int MdlChn_self_check( Model *self)
 
 static void MdlChn_run(Model *self)
 {
-	Model_chn			*cthis = SUB_PTR(self, Model, Model_chn);
-	uint8_t				chk_buf[16];
+	Model_chn					*cthis = SUB_PTR(self, Model, Model_chn);
+	Storage						*stg = Get_storage();
+	uint8_t						chk_buf[16];
 	SmBus_result_t		rst;
 //	do_out_t			d = {0};
 	
@@ -494,7 +495,7 @@ static void MdlChn_run(Model *self)
 		
 	}
 	
-	
+	stg->wr_stored_data(stg, STG_CHN_DATA(cthis->chni.chn_NO), &cthis->chni.value, 2);
 	
 
 	return;
