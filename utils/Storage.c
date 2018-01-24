@@ -107,6 +107,11 @@ Storage		*Get_storage()
 
 int	STG_Read_rcd_by_time(uint8_t	cfg_type, uint32_t start_sec, uint32_t end_sec, void *buf, int buf_size, uint32_t *rd_sec)
 {
+	Storage				*stg = Get_storage();
+	int						fd = -1;
+											
+	STRG_SYS.fs.fs_lseek(fd, RD_SEEK_SET, 0);
+	
 	
 	
 }
@@ -289,7 +294,7 @@ static void Strg_Updata_rcd_mgr(uint8_t	num, mdl_chn_save_t *p)
 	if(p == NULL)
 		return;
 	//如果文件的大小没有发生变化，下面这条语句不会执行任何操作
-	//单思大小发送变化的话就会去执行文件大小重新分配额
+	//大小发生变化的话就会去执行文件大小重新分配额
 	if(STRG_SYS.fs.fs_resize(fd, NULL, p_save->MB * 1024 * 1024) == fd)
 		stg->arr_rcd_mgr[num].rcd_maxcount = p_save->MB * 1024 * 1024 / sizeof(data_in_fsh_t);
 	else
@@ -369,21 +374,24 @@ static int	STG_Acc_sys_conf(uint8_t drc, void *p)
 static int	STG_Acc_chn_alarm(uint8_t	chn_num, uint8_t	drc, void *p, int len)
 {
 	
-	
 }
+
+//返回写入或者读取的字节数
 static int	STG_Acc_chn_data(uint8_t	type, uint8_t	drc, void *p, int len)
 {
 	STG_cache_t		*c;
 	Storage				*stg = Get_storage();
 	int						fd = -1;
 	uint8_t				t = 0;
-	
 	uint8_t				chn_num = STG_GET_CHN(type);
+	uint16_t			rd_len = 0;
 	if(drc == STG_DRC_READ)
 	{
+		fd = STG_Open_file(type);
+		rd_len = len - len % sizeof(data_in_fsh_t);
+		rd_len = STRG_SYS.fs.fs_read(fd, p, rd_len);
 		
-		
-		
+		return rd_len;
 	}
 	else
 	{
@@ -413,11 +421,11 @@ static int	STG_Acc_chn_data(uint8_t	type, uint8_t	drc, void *p, int len)
 		stg_wr_mgr.cur_idx += sizeof(STG_cache_t);
 		stg->arr_rcd_mgr[chn_num].rcd_count ++;
 		
-		
+		return len;
 		
 	}
 	
-	
+	return 0;
 }
 
 static int	STG_Acc_lose_pwr(uint8_t	drc, void *p, int len)

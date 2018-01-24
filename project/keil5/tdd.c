@@ -372,6 +372,7 @@ void TDD_W25q(void)
 	//		}
 	//	}
 
+	
 	if(tdd_i > tdd_j)
 	{
 		sprintf(lcd_buf, "check addr %d", tdd_i);
@@ -468,6 +469,9 @@ void TDD_W25q(void)
 	{
 		Tdd_disp_text("³É¹¦",7, 160);
 	}
+	
+	Tdd_disp_text("erae 1000 - 70000",8, 0);
+	
 	while(1);	
 	
 }

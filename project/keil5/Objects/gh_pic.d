@@ -15,4 +15,4 @@
 .\objects\gh_pic.o: E:\sdhLib\inc\os/os_depend.h
 .\objects\gh_pic.o: ..\..\APP\sdhlibConf.h
 .\objects\gh_pic.o: E:\sdhLib\inc\os/rtx/rtx_depend.h
-.\objects\gh_pic.o: d:\Keil_v5\ARM\PACK\ARM\CMSIS\4.4.0\CMSIS\RTOS\RTX\INC\cmsis_os.h
+.\objects\gh_pic.o: D:\Keil_v5\ARM\PACK\ARM\CMSIS\4.5.0\CMSIS\RTOS\RTX\INC\cmsis_os.h

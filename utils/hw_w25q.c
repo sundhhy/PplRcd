@@ -136,7 +136,6 @@ void w25q_info(fsh_info_t *info);
 int W25Q_erase(int opt, uint32_t num);
 void W25Q_Erase_addr(uint32_t st, uint32_t sz);
 //int w25q_erase(uint32_t offset, uint32_t len);
-//int w25q_Write_Sector_Data(uint8_t *pBuffer, uint16_t Sector_Num);
 
 int w25q_Write(uint8_t *pBuffer, uint32_t WriteAddr, uint32_t WriteBytesNum);
 int w25q_rd_data(uint8_t *pBuffer, uint32_t rd_add, uint32_t len);
@@ -145,6 +144,8 @@ void W25Q_Flush(void);
 
 
 static int w25q_Read_Sector_Data(uint8_t *pBuffer, uint16_t Sector_Num);
+static int w25q_Write_Sector_Data(uint8_t *pBuffer, uint16_t Sector_Num);
+
 //static int w25q_Read_page_Data(uint8_t *pBuffer, uint16_t num_page);
 static uint16_t W25Q_Addr_2_sct(uint32_t addr);
 static int	W25Q_wr_cache(uint32_t addr, uint8_t *wr_buf, uint16_t wr_len);
@@ -299,41 +300,129 @@ int W25Q_erase(int opt, uint32_t num)
 	
 }
 
+//todo: @sdhlib 
+//从某一段连续的地址中，按照区块大小，取出连续的区域
+//存放的结果是：起始地址，结束地址
+//成功返回0，失败返回1
+int W25Q_Cal_area(uint32_t start, uint32_t size, uint32_t area_sz, uint32_t rst[2])
+{
+	if(size < area_sz)
+		return 1;
+	
+	rst[0] = ((start - 1) / area_sz + 1) * area_sz;
+	rst[1] = ((start + size) / area_sz) * area_sz;
+	if(rst[1] == rst[0])
+		return 1;
+	return 0;
+}
+
 void W25Q_Erase_addr(uint32_t st, uint32_t sz)
 {
-	uint16_t		head_area[2];
-	uint16_t		tail_area[2];
-	   
+	uint16_t		head_area[2] ;
+	uint16_t		tail_area[2] ;
+	uint32_t		middle_area[2];
+	uint16_t		i;
+	uint16_t		n1, n2;
+	
+	head_area[0] = st;
+	head_area[1] = st + sz;
+
+	tail_area[0] = st + sz;
+	tail_area[1] = st + sz;
+	
 	//先取出块来进行擦除
 	//1 计算出起始块号
 	//2 计算出块的数量
+	if(W25Q_Cal_area(st, sz, BLOCK_SIZE, middle_area))
+		goto erase_sec;
 	//3 擦除这些块
+	n1 = middle_area[0] / BLOCK_SIZE;
+	n2 = middle_area[1] / BLOCK_SIZE;
+	for(i = n1; i < n2; i ++)
+	{
+		W25Q_erase(FSH_OPT_BLOCK, i);
+		
+	}
 	//4 计算去掉被擦除的块之后的头部和尾部的位置
+	head_area[0] = st;
+	head_area[1] = middle_area[0];
+	tail_area[0] = middle_area[1];
+	tail_area[1] = st + sz;
 	
+	erase_sec:
 	//再从剩下的头部和尾部两片区域中取出扇区进行擦除
 	//此时与前一步块相连的部分是肯定扇区对齐的，因此不用考虑相连部分无法被扇区擦除擦干净
 	//1 擦除头部区域的扇区
 	//1.1 计算出起始扇区号
 	//1.2 计算出块的扇区数量
+	if(W25Q_Cal_area(head_area[0], head_area[1] - head_area[0], SECTOR_SIZE, middle_area))
+		goto erase_sec_tial;
+	n1 = middle_area[0] / SECTOR_SIZE;
+	n2 = middle_area[1] / SECTOR_SIZE;
 	//1.3 擦除这些扇区
-	//1.4 计算去掉被擦除之后的剩余头部
+	for(i = n1; i < n2; i ++)
+	{
+		W25Q_erase(FSH_OPT_SECTOR, i);
 		
+	}
+	//1.4 计算去掉被擦除之后的剩余头部
+	head_area[0] = st;
+	head_area[1] = middle_area[0];
+	
+	erase_sec_tial:
 	//2 擦除尾部区域的扇区
 	//1.1 计算出起始扇区号
 	//1.2 计算出块的扇区数量
+	if(W25Q_Cal_area(tail_area[0], tail_area[1] - tail_area[0], SECTOR_SIZE, middle_area))
+		goto erase_byte;
+	n1 = middle_area[0] / SECTOR_SIZE;
+	n2 = middle_area[1] / SECTOR_SIZE;
 	//1.3 擦除这些扇区
+	for(i = n1; i < n2; i ++)
+	{
+		W25Q_erase(FSH_OPT_SECTOR, i);
+		
+	}
 	//1.4 计算去掉被擦除之后的剩余尾部
+	tail_area[0] = middle_area[1];
+	tail_area[1] = st + sz;
 	
+	erase_byte:
 	//再从剩下的头部和尾部两片区域按字节写入oxff
 	//1 擦除头部
+	if(head_area[1] == st)
+		goto erase_tail;
 	//计算头部所处于的扇区号，读取该扇
+	n1 = head_area[0] / SECTOR_SIZE;
+	W25Q_Flush();
+	w25q_Read_Sector_Data(w25q_mgr.p_sct_buf, n1);
+	
 	//擦除该扇区
+	W25Q_erase(FSH_OPT_SECTOR, n1);
 	//计算扣除头部位置之后要写入该扇区的字节数并写入
-	//2 擦除尾部
-	//计算尾部所处于的扇区号，读取该扇
-	//擦除该扇区
-	//计算跳过尾部位置之后的数据长度，并在缓存中跳过尾部的长度后，写入flash
 		
+	
+	i = head_area[0] - n1 * SECTOR_SIZE;
+	n2 =  n1 * SECTOR_SIZE;
+	for(; i < SECTOR_SIZE; i++)
+		w25q_mgr.p_sct_buf[i] = 0xff;
+	w25q_Write_Sector_Data(w25q_mgr.p_sct_buf, n1);
+		
+	erase_tail:
+	//2 擦除尾部
+		if(tail_area[0] == st + sz)
+			return;
+	//计算尾部所处于的扇区号，读取该扇
+		n1 = tail_area[0] / SECTOR_SIZE;
+		W25Q_Flush();
+		w25q_Read_Sector_Data(w25q_mgr.p_sct_buf, n1);
+	//擦除该扇区
+		W25Q_erase(FSH_OPT_SECTOR, n1);
+	//计算跳过尾部位置之后的数据长度，并在缓存中跳过尾部的长度后，写入flash
+		n2 = tail_area[1] - n1 * SECTOR_SIZE;
+		for(i = 0 ; i < n2; i++)
+			w25q_mgr.p_sct_buf[i] = 0xff;
+		w25q_Write_Sector_Data(w25q_mgr.p_sct_buf, n1);
 }
 
 //将提供的扇区进行擦除操作。扇区号的范围是0 - 4096 （w25q128）

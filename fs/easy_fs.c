@@ -321,7 +321,8 @@ void 	EFS_Erase_file(int fd)
 	
 	
 	EFS_FSH(f->fsh_No).fsh_ersse_addr(start_addr, f->file_size);
-	
+	f->write_position = 0;
+	f->read_position = 0;
 }
 
 //用fd或者path来指定文件
