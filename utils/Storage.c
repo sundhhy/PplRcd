@@ -26,7 +26,7 @@
 // const defines
 //------------------------------------------------------------------------------
 #define STRG_SYS				phn_sys
-#define STRG_FSH_NUM		FSH_W25Q_NUM
+#define STRG_RCD_FSH_NUM		FSH_W25Q_NUM
 #define STRG_CFG_FSH_NUM		FSH_FM25_NUM
 #define RCD_ALARM_NUM				100   //记录容量少于这个数值时，要产生报警
 
@@ -37,12 +37,11 @@
 //------------------------------------------------------------------------------
 typedef struct {
 	uint32_t		rcd_time_s;
-	uint8_t			chn_num;
-	uint8_t			rcd_flag;
 	uint16_t		rcd_val;
-	
+	uint16_t		none;
 }data_in_fsh_t;
 
+#if STG_RCD_FULL_ACTION != STG_ERASE
 //通过缓存，将分散的通道记录，汇集起来，然后一致的存入FLASH
 typedef struct {
 	uint16_t			cur_idx;
@@ -56,12 +55,15 @@ typedef struct {
 	uint8_t			flag;
 	uint8_t			chn;
 }STG_cache_t;
+#endif
 //------------------------------------------------------------------------------
 // local vars
 //------------------------------------------------------------------------------
 //Observer		strg_mdl_ob;
+#if STG_RCD_FULL_ACTION != STG_ERASE
 static uint8_t			stg_buf[4096];
 static STG_wr_buf_mgr_t stg_wr_mgr = {0, 4096, stg_buf};
+#endif
 //------------------------------------------------------------------------------
 // local function prototypes
 //------------------------------------------------------------------------------
@@ -75,9 +77,9 @@ static int		Strg_WR_stored_data(Storage *self, uint8_t	cfg_type, void *buf, int 
 //static int	Strg_WR_sys_conf(uint8_t type, void *p);
 static void Strg_Updata_rcd_mgr(uint8_t	num, mdl_chn_save_t *p);
 
-static int 	STG_Open_file(uint8_t type);
+static int 	STG_Open_file(uint8_t type, uint32_t file_size);
 
-static int	STG_Acc_chn_conf(uint8_t	chn_num, uint8_t	drc, void *p);
+static int	STG_Acc_chn_conf(uint8_t	tp, uint8_t	drc, void *p);
 static int	STG_Acc_chn_alarm(uint8_t	chn_num, uint8_t	drc, void *p, int len);
 static int	STG_Acc_chn_data(uint8_t	type, uint8_t	drc, void *p, int len);
 
@@ -86,9 +88,10 @@ static int	STG_Acc_lose_pwr(uint8_t	drc, void *p, int len);
 
 
 //------- 记录通道数据的函数--------------------------------------------------//
+#if STG_RCD_FULL_ACTION != STG_ERASE
 static void STG_WR_cache_mgr(void);
 static void STG_flush_wr_cache(uint8_t type);
-
+#endif
 //============================================================================//
 //            P U B L I C   F U N C T I O N S                                 //
 //============================================================================//
@@ -157,6 +160,7 @@ CTOR(Storage)
 FUNCTION_SETTING(init, Strg_init);
 FUNCTION_SETTING(rd_stored_data, Strg_rd_stored_data);
 FUNCTION_SETTING(wr_stored_data, Strg_WR_stored_data);
+FUNCTION_SETTING(open_file, STG_Open_file);
 
 //FUNCTION_SETTING(Observer.update, Save_channel_data);
 
@@ -181,8 +185,6 @@ static int Strg_init(Storage *self)
 //	{
 //		sprintf(chn_name,"chn_%d", i);
 //		p_md = ModelCreate(chn_name);
-//		p_md->attach(p_md, &self->Observer);
-//		self->arr_rcd_fd[i] = 0xff;
 //	}
 //	
 //	pg_size = STRG_SYS.arr_fsh[STRG_FSH_NUM].fnf.page_size;
@@ -219,7 +221,7 @@ static int	Strg_rd_stored_data(Storage *self, uint8_t	cfg_type, void *buf, int l
 	}
 	else if(IS_SYS_CONF(cfg_type))
 	{
-		ret = STG_Acc_chn_conf(STG_GET_CHN(cfg_type), STG_DRC_READ, buf);
+		ret = STG_Acc_chn_conf(cfg_type, STG_DRC_READ, buf);
 		
 	}
 	else if(IS_LOSE_PWR(cfg_type))
@@ -235,7 +237,7 @@ static int	Strg_rd_stored_data(Storage *self, uint8_t	cfg_type, void *buf, int l
 	}
 	else if(IS_CHN_ALARM(cfg_type))
 	{
-		ret = STG_Acc_chn_alarm(STG_GET_CHN(cfg_type), STG_DRC_READ, buf, len);
+		ret = STG_Acc_chn_alarm(cfg_type, STG_DRC_READ, buf, len);
 		
 	}
 	
@@ -254,9 +256,9 @@ static int		Strg_WR_stored_data(Storage *self, uint8_t	cfg_type, void *buf, int 
 		ret = STG_Acc_sys_conf(STG_DRC_WRITE, buf);
 		
 	}
-	else if(IS_SYS_CONF(cfg_type))
+	else if(IS_CHN_CONF(cfg_type))
 	{
-		ret = STG_Acc_chn_conf(STG_GET_CHN(cfg_type), STG_DRC_WRITE, buf);
+		ret = STG_Acc_chn_conf(cfg_type, STG_DRC_WRITE, buf);
 		
 	}
 	else if(IS_LOSE_PWR(cfg_type))
@@ -266,12 +268,12 @@ static int		Strg_WR_stored_data(Storage *self, uint8_t	cfg_type, void *buf, int 
 	}
 	else if(IS_CHN_DATA(cfg_type))
 	{
-		ret = STG_Acc_chn_data(STG_GET_CHN(cfg_type), STG_DRC_WRITE, buf, len);
+		ret = STG_Acc_chn_data(cfg_type, STG_DRC_WRITE, buf, len);
 		
 	}
 	else if(IS_CHN_ALARM(cfg_type))
 	{
-		ret = STG_Acc_chn_alarm(STG_GET_CHN(cfg_type), STG_DRC_WRITE, buf, len);
+		ret = STG_Acc_chn_alarm(cfg_type, STG_DRC_WRITE, buf, len);
 		
 	}
 	
@@ -285,11 +287,10 @@ static void Strg_Updata_rcd_mgr(uint8_t	num, mdl_chn_save_t *p)
 	Storage				*stg = Get_storage();
 	int					fd;
 	
-	fd = STG_Open_file(STG_CHN_DATA(num));
+	fd = STG_Open_file(STG_CHN_DATA(num), STG_DEF_FILE_SIZE);
 	fnf = STRG_SYS.fs.fs_file_info(fd);
 	
 	stg->arr_rcd_mgr[num].rcd_count = fnf->write_position / sizeof(data_in_fsh_t);
-		
 	
 	if(p == NULL)
 		return;
@@ -302,22 +303,25 @@ static void Strg_Updata_rcd_mgr(uint8_t	num, mdl_chn_save_t *p)
 		stg->arr_rcd_mgr[num].rcd_maxcount = fnf->file_size / sizeof(data_in_fsh_t);
 		
 	}
+	
+	STRG_SYS.fs.fs_close(fd);
 		
 
 	
 }
 
-static int	STG_Acc_chn_conf(uint8_t	chn_num, uint8_t	drc, void *p)
+static int	STG_Acc_chn_conf(uint8_t	tp, uint8_t	drc, void *p)
 {
 	
 	int fd;
 	int	num = 0;
 	int	ret = -1;
+	uint8_t chn_num = STG_GET_CHN(tp);
+	fd = STG_Open_file(tp, STG_DEF_FILE_SIZE);
 	
-	fd = STG_Open_file(STG_CHN_CONF(chn_num));
-	STRG_SYS.fs.fs_lseek(fd, RD_SEEK_SET, num * sizeof(mdl_chn_save_t));
 	if(drc == STG_DRC_READ)
 	{
+		STRG_SYS.fs.fs_lseek(fd, RD_SEEK_SET, num * sizeof(mdl_chn_save_t));
 		if(STRG_SYS.fs.fs_read(fd, p, sizeof(mdl_chn_save_t)) == sizeof(mdl_chn_save_t))
 		{
 			Strg_Updata_rcd_mgr(num, p);
@@ -327,14 +331,18 @@ static int	STG_Acc_chn_conf(uint8_t	chn_num, uint8_t	drc, void *p)
 	}
 	else
 	{
+		STRG_SYS.fs.fs_lseek(fd, WR_SEEK_SET, num * sizeof(mdl_chn_save_t));
 		if(STRG_SYS.fs.fs_write(fd, p, sizeof(mdl_chn_save_t)) == sizeof(mdl_chn_save_t))
 		{
 			ret = RET_OK;
 		}
+		
+		
 		Strg_Updata_rcd_mgr(num, p);
+
+		
+		
 	}
-	STRG_SYS.fs.fs_close(fd);
-	
 	return ret;
 	
 	
@@ -346,10 +354,11 @@ static int	STG_Acc_sys_conf(uint8_t drc, void *p)
 	int	ret = -1;
 
 	
-	fd = STG_Open_file(STG_SYS_CONF);
-	STRG_SYS.fs.fs_lseek(fd, RD_SEEK_SET, NUM_CHANNEL * sizeof(mdl_chn_save_t));
+	fd = STG_Open_file(STG_SYS_CONF, STG_DEF_FILE_SIZE);
+	
 	if(drc == STG_DRC_READ)
 	{
+		STRG_SYS.fs.fs_lseek(fd, RD_SEEK_SET, NUM_CHANNEL * sizeof(mdl_chn_save_t));
 		if(STRG_SYS.fs.fs_read(fd, p, sizeof(system_conf_t)) == sizeof(system_conf_t))
 		{
 			
@@ -358,6 +367,7 @@ static int	STG_Acc_sys_conf(uint8_t drc, void *p)
 	}
 	else
 	{
+		STRG_SYS.fs.fs_lseek(fd, WR_SEEK_SET, NUM_CHANNEL * sizeof(mdl_chn_save_t));
 		if(STRG_SYS.fs.fs_write(fd, p, sizeof(system_conf_t)) == sizeof(system_conf_t))
 		{
 			
@@ -379,15 +389,50 @@ static int	STG_Acc_chn_alarm(uint8_t	chn_num, uint8_t	drc, void *p, int len)
 //返回写入或者读取的字节数
 static int	STG_Acc_chn_data(uint8_t	type, uint8_t	drc, void *p, int len)
 {
+#if STG_RCD_FULL_ACTION == STG_ERASE
+	data_in_fsh_t		dinf;
+	Storage				*stg = Get_storage();
+	int						fd = -1;
+	int					acc_len = 0;
+	uint8_t				chn_num = STG_GET_CHN(type);
+	
+	fd = STG_Open_file(type, STG_DEF_FILE_SIZE);
+	
+	if(drc == STG_DRC_READ)
+	{
+		
+		
+	}
+	else
+	{
+		if(stg->arr_rcd_mgr[chn_num].rcd_count >= stg->arr_rcd_mgr[chn_num].rcd_maxcount)
+		{
+			STRG_SYS.fs.fs_erase_file(fd);
+			stg->arr_rcd_mgr[chn_num].rcd_count = 0;
+		}
+		dinf.rcd_time_s = SYS_time_sec();
+		dinf.rcd_val = *(uint16_t *)p;
+		stg->arr_rcd_mgr[chn_num].rcd_count ++;
+		acc_len = STRG_SYS.fs.fs_direct_write(fd, (uint8_t *)&dinf, sizeof(dinf));
+	}
+	
+	return acc_len;
+	
+		
+#else			
 	STG_cache_t		*c;
+
 	Storage				*stg = Get_storage();
 	int						fd = -1;
 	uint8_t				t = 0;
 	uint8_t				chn_num = STG_GET_CHN(type);
 	uint16_t			rd_len = 0;
+	
+	fd = STG_Open_file(type, STG_DEF_FILE_SIZE);
+	
 	if(drc == STG_DRC_READ)
 	{
-		fd = STG_Open_file(type);
+		
 		rd_len = len - len % sizeof(data_in_fsh_t);
 		rd_len = STRG_SYS.fs.fs_read(fd, p, rd_len);
 		
@@ -401,15 +446,12 @@ static int	STG_Acc_chn_data(uint8_t	type, uint8_t	drc, void *p, int len)
 			//flash空间耗尽了
 #if STG_RCD_FULL_ACTION == STG_STOP
 			return 0;
-#elif STG_RCD_FULL_ACTION == STG_ERASE
-			fd = STG_Open_file(type);
-			STRG_SYS.fs.fs_erase_file(fd);
-#else
+#endif			
 			STG_flush_wr_cache(type);
-			fd = STG_Open_file(type);
+			fd = STG_Open_file(type, STG_DEF_FILE_SIZE);
 			STRG_SYS.fs.fs_lseek(fd, WR_SEEK_SET, 0);
 			stg->arr_rcd_mgr[chn_num].rcd_count = 0;
-#endif
+
 			
 			
 		}
@@ -420,11 +462,9 @@ static int	STG_Acc_chn_data(uint8_t	type, uint8_t	drc, void *p, int len)
 		c->val = *(uint16_t *)p;
 		stg_wr_mgr.cur_idx += sizeof(STG_cache_t);
 		stg->arr_rcd_mgr[chn_num].rcd_count ++;
-		
 		return len;
-		
 	}
-	
+#endif	
 	return 0;
 }
 
@@ -435,9 +475,10 @@ static int	STG_Acc_lose_pwr(uint8_t	drc, void *p, int len)
 }
 
 
-
+#if STG_RCD_FULL_ACTION != STG_ERASE
 static void STG_WR_cache_mgr(void)
 {
+
 	int i;
 	if(stg_wr_mgr.cur_idx < stg_wr_mgr.buf_size)
 		return;
@@ -452,7 +493,7 @@ static void STG_flush_wr_cache(uint8_t type)
 	uint16_t 			i = 0;
 	uint8_t				chn_num = STG_GET_CHN(type);
 	uint8_t				safe_count = 20;
-	int 					fd = STG_Open_file(type);
+	int 					fd = STG_Open_file(type, STG_DEF_FILE_SIZE);
 	
 	while(i < stg_wr_mgr.buf_size)
 	{
@@ -484,6 +525,7 @@ static void STG_flush_wr_cache(uint8_t type)
 	}
 	
 }
+#endif
 
 //static int	Strg_RD_chn_conf(uint8_t type, void *p)
 //{
@@ -582,7 +624,7 @@ static void STG_flush_wr_cache(uint8_t type)
 //	return ret;
 //}
 
-static int 	STG_Open_file(uint8_t type)
+static int 	STG_Open_file(uint8_t type, uint32_t file_size)
 {
 	int 		fd = -1;
 	Storage		*stg = Get_storage();
@@ -594,28 +636,40 @@ static int 	STG_Open_file(uint8_t type)
 		fd = STRG_SYS.fs.fs_open(STRG_CFG_FSH_NUM, "phn.cfg", "r", 256);
 		
 	}
-	else if(IS_LOSE_PWR(type))
-	{
-		fd = STRG_SYS.fs.fs_open(STRG_CFG_FSH_NUM, "lose_pwe", "r", 1024);
-		
-	}
 	else if(IS_CHN_CONF(type))
 	{
 		//通道配置与系统配置存放在同一个文件的不同位置
 		fd = STRG_SYS.fs.fs_open(STRG_CFG_FSH_NUM, "phn.cfg", "r", 256);
 		
 	}
-	else if(IS_CHN_DATA(type))
+	else if(IS_LOSE_PWR(type))
 	{
-		sprintf(name, "chn_%d", STG_GET_CHN(type));
-		fd = STRG_SYS.fs.fs_open(STRG_CFG_FSH_NUM, name, "wr", \
-		stg->arr_rcd_mgr[STG_GET_CHN(type)].rcd_maxcount * sizeof(data_in_fsh_t));
+		fd = STRG_SYS.fs.fs_open(STRG_RCD_FSH_NUM, "alm_lost_pwr", "r", 1024);
 		
 	}
 	else if(IS_CHN_ALARM(type))
 	{
-		fd = STRG_SYS.fs.fs_open(STRG_CFG_FSH_NUM, "alarm", "r", 1024);
+		fd = STRG_SYS.fs.fs_open(STRG_RCD_FSH_NUM, "alm_lost_pwr", "r", 1024);
 		
 	}
+	else if(IS_CHN_DATA(type))
+	{
+		sprintf(name, "chn_%d", STG_GET_CHN(type));
+		if(file_size == STG_DEF_FILE_SIZE)
+		{
+			fd = STRG_SYS.fs.fs_open(STRG_RCD_FSH_NUM, name, "wr", \
+		stg->arr_rcd_mgr[STG_GET_CHN(type)].rcd_maxcount * sizeof(data_in_fsh_t));
+			
+		}
+		else
+		{
+			
+			fd = STRG_SYS.fs.fs_open(STRG_RCD_FSH_NUM, name, "wr", file_size);
+			stg->arr_rcd_mgr[STG_GET_CHN(type)].rcd_maxcount = file_size / sizeof(data_in_fsh_t);
+			Strg_Updata_rcd_mgr(STG_GET_CHN(type), NULL);
+		}
+		
+	}
+	
 	return fd;
 }

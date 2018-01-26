@@ -27,7 +27,7 @@ V010 171226 :
 #define	EFS_MGR_FSH_NO					0
 #define	EFS_MGR_NUM_FSH					2
 #define EFS_NAME_LEN					14
-#define EFS_MAX_NUM_FILES				7
+#define EFS_MAX_NUM_FILES				8
 #define EFS_NUM_IDLE_FILES				0		//¿ÕÏÐÇøÓò
 
 
@@ -97,11 +97,12 @@ static efs_mgr_t 		efs_mgr;
 int		EFS_open(uint8_t		prt, char *path, char *mode, int	file_size);
 int		EFS_close(int fd);
 int		EFS_write(int fd, uint8_t *p, int len);
+int		EFS_Direct_write(int fd, uint8_t *p, int len);
 int		EFS_read(int fd, uint8_t *p, int len);
 int 	EFS_Lseek(int fd, int whence, uint32_t offset);
 int	EFS_resize(int fd, char *path, int new_size);
 file_info_t		*EFS_file_info(int fd);
-int		EFS_delete(int fd);
+int		EFS_delete(int fd, char *path);
 void 	EFS_Erase_file(int fd);
 void 	EFS_Shutdown(void);
 
@@ -146,6 +147,8 @@ int 	EFS_init(int arg)
 	
 	EFS_FS.fs_read = EFS_read;
 	EFS_FS.fs_write = EFS_write;
+	
+	EFS_FS.fs_direct_write = EFS_Direct_write;
 	EFS_FS.fs_delete = EFS_delete;
 	EFS_FS.fs_resize = EFS_resize;
 	EFS_FS.fs_erase_file = EFS_Erase_file;
@@ -187,6 +190,7 @@ int	EFS_open(uint8_t prt, char *path, char *mode, int	file_size)
 	{
 		new_fd = EFS_malloc_file_mgr();
 		new_fd = EFS_create_file(new_fd, prt, path, file_size);
+		EFS_Erase_file(new_fd);
 	}
 	if(new_fd >= 0)
 	{
@@ -261,10 +265,55 @@ int 	EFS_Lseek(int fd, int whence, uint32_t offset)
 	return ERR_OK;
 	
 }
-int	EFS_delete(int fd)
+int	EFS_delete(int fd, char *path)
 {
+	efs_file_mgt_t  		*ef = NULL;
+	
+	if(fd < 0)
+	{
+		
+		fd = EFS_search_file(path);
+	}
+	if(fd < 0)
+		goto exit;
+	
+	ef = &efs_mgr.arr_efiles[fd];
+	memset(ef, 0, sizeof(efs_file_mgt_t));
+	exit:
 	return 0;
 }
+
+int		EFS_Direct_write(int fd, uint8_t *p, int len)
+{
+	
+	int   ret;
+	file_info_t *f = &efs_mgr.arr_file_info[fd];
+	efs_file_mgt_t  *ef = &efs_mgr.arr_efiles[fd];
+	int			start_addr = f->start_page * EFS_FSH(f->fsh_No).fnf.page_size;
+
+	if(fd > EFS_MAX_NUM_FILES)
+		return -1;
+	
+	if(len > f->num_page * EFS_FSH(f->fsh_No).fnf.page_size)
+		len = f->num_page * EFS_FSH(f->fsh_No).fnf.page_size;
+	
+	
+	
+	ret =  EFS_FSH(f->fsh_No).fsh_direct_write(p, start_addr + f->write_position,len);
+	if(ret > 0)
+		f->write_position += ret;
+	
+	if((f->num_page - f->write_position / EFS_FSH(f->fsh_No).fnf.page_size) < f->low_pg)
+		EFS_FS.err_code |= FS_ALARM_LOWSPACE;
+	else
+		EFS_FS.err_code &= ~FS_ALARM_LOWSPACE;
+	ef->efile_wr_position = f->write_position;
+	EFS_flush_mgr(fd);
+	return ret;
+	
+	
+}
+
 int	EFS_write(int fd, uint8_t *p, int len)
 {
 	int   ret;

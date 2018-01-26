@@ -124,7 +124,7 @@ static void 	GpioIrqHdl( void *self, int type, int encode);
 
 static void		Tdd_disp_text(char	*text, int	line, int	row);
 static void		Tdd_disp_clean(void);
-
+static void 	TDD_efs_erase(int erase_size, int lcd_line);
 //============================================================================//
 //            P U B L I C   F U N C T I O N S                                 //
 //============================================================================//
@@ -142,6 +142,10 @@ void 	Tdd_init(void)
 	Flush_LCD();
 	LCD_Run();	//立即执行lcd指令
 }
+
+
+
+
 void TDD_Efs(void)
 {
 	
@@ -166,7 +170,7 @@ void TDD_Efs(void)
 
 	for(tdd_j = 0 ; tdd_j < TEST_NUM_FILE; tdd_j ++)
 	{
-		sprintf(lcd_buf, "mod_chn_%d, 2MB", tdd_j);
+		sprintf(lcd_buf, "mod_chn_%d, %dKB", tdd_j, TEST_FILE_SIZE/1024);
 		Tdd_disp_text(lcd_buf,2 + tdd_j, 0);
 
 		sprintf(appBuf, "mod_chn_%d", tdd_j);
@@ -221,6 +225,32 @@ void TDD_Efs(void)
 		Tdd_disp_text("chk ok", 2 + tdd_j, 260);
 	}
 
+	if(TEST_NUM_FILE != 6)
+		while(1);		//擦除测试建立在测试文件有6个的前提之下的
+	Tdd_disp_text("文件擦除测试", 8, 0);
+	
+	//在之前的读写测试基础上进行测试
+	//取用中间的一个文件进行测试，这样既可以测试擦除功能
+	//也可以测试对擦除对其他文件是否有影响
+	//测试是是针对w25q进行的，因此扇区，块大小都是按照w25q进行的
+	
+	
+	//测试小于一个扇区文件的擦除功能
+	TDD_efs_erase(1025, 9);
+	//测试一个扇区大小的擦除
+	TDD_efs_erase(4096, 10);
+	//测试1个块大小的擦除
+	TDD_efs_erase(65536, 11);
+	//测试组合擦除
+	TDD_efs_erase(65536 + 4096 + 1025, 12);
+
+	Tdd_disp_text("删除测试文件", 13, 0);	
+	for(tdd_j = 0 ; tdd_j < TEST_NUM_FILE; tdd_j ++)
+	{
+
+		sprintf(appBuf, "mod_chn_%d", tdd_j);
+		phn_sys.fs.fs_delete(-1, appBuf);
+	}
 
 	while(1);
 	
@@ -373,12 +403,12 @@ void TDD_W25q(void)
 	//	}
 
 	
-	if(tdd_i > tdd_j)
-	{
-		sprintf(lcd_buf, "check addr %d", tdd_i);
-		Tdd_disp_text(lcd_buf,1, 0);
-		Tdd_disp_text("成功", 1, 160);
-	}
+//	if(tdd_i > tdd_j)
+//	{
+//		sprintf(lcd_buf, "check addr %d", tdd_i);
+//		Tdd_disp_text(lcd_buf,1, 0);
+//		Tdd_disp_text("成功", 1, 160);
+//	}
 
 	for(tdd_j = 0; tdd_j <= 0xff; tdd_j ++)
 	{
@@ -470,7 +500,6 @@ void TDD_W25q(void)
 		Tdd_disp_text("成功",7, 160);
 	}
 	
-	Tdd_disp_text("erae 1000 - 70000",8, 0);
 	
 	while(1);	
 	
@@ -936,5 +965,102 @@ static int	Usb_event(int type)
 	
 	return 0;
 }
+
+
+static void TDD_efs_erase(int erase_size, int lcd_line)
+{
+	uint8_t			*p_efs_u8 = (uint8_t *)appBuf;
+	
+	//	与测试文件相邻的左右两边的文件
+	uint8_t			ngh_file[2] = {0, 2};;		
+	
+	if(erase_size > TEST_FILE_SIZE)
+	{
+		phn_sys.fs.fs_delete(-1, "mod_chn_2");
+		ngh_file[1] = 3;
+	}
+	if(erase_size > 2 * TEST_FILE_SIZE)
+	{
+		phn_sys.fs.fs_delete(-1, "mod_chn_3");
+		ngh_file[1] = 4;
+	}
+	if(erase_size > 3 * TEST_FILE_SIZE)
+	{
+		phn_sys.fs.fs_delete(-1, "mod_chn_4");
+		ngh_file[1] = 5;
+	}
+	if(erase_size > 4 * TEST_FILE_SIZE)
+	{
+		phn_sys.fs.fs_delete(-1, "mod_chn_5");
+		ngh_file[1] = 0xff;
+	}
+	
+	tdd_fd = phn_sys.fs.fs_resize(-1, "mod_chn_1", erase_size);	
+	phn_sys.fs.fs_erase_file(tdd_fd);
+	tdd_err = 0;
+	for(tdd_i = 0; tdd_i < erase_size;)
+	{
+		memset(appBuf, 0xcc, sizeof(appBuf));
+		tdd_len = phn_sys.fs.fs_read(tdd_fd, p_efs_u8, sizeof(appBuf));
+		for(tdd_k = 0; tdd_k < tdd_len ; tdd_k ++)
+		{
+			if(p_efs_u8[tdd_k] != 0xff)
+			{
+				tdd_err = 1;
+				break;
+			}			
+		}
+		tdd_i += tdd_len;	
+		
+		
+	}
+	if(tdd_err == 0)
+	{
+		sprintf(lcd_buf, "er %d ok!", erase_size); 		
+	}
+	else
+	{
+		sprintf(lcd_buf, "er %d err!", erase_size); 
+	}
+	Tdd_disp_text(lcd_buf, lcd_line, 0);
+	
+	//检查对相邻文件是否产生了破坏
+	for(tdd_i = 0; tdd_i < 2; tdd_i++)
+	{
+		tdd_err = 0;
+		tdd_j = ngh_file[tdd_i];
+		if(tdd_j > 6)
+			continue;
+		sprintf(appBuf, "mod_chn_%d", tdd_j);
+		tdd_fd = phn_sys.fs.fs_open(1, appBuf, "rw", TEST_FILE_SIZE);
+		tdd_err = 0;
+		for(tdd_count = 0; tdd_count < TEST_FILE_SIZE / sizeof(appBuf); tdd_count++)
+		{
+			memset(appBuf, 0xcc, sizeof(appBuf));
+			tdd_len = phn_sys.fs.fs_read(tdd_fd, (uint8_t *)appBuf, sizeof(appBuf));
+			p_tdd_u16 = (uint16_t *)appBuf;
+			for(tdd_k = 0; tdd_k < tdd_len ; tdd_k ++)
+			{
+				if(appBuf[tdd_k] != (tdd_j + 1))
+				{
+					tdd_err = 1;
+					break;
+				}			
+			}		
+		}
+		if(tdd_err == 0)
+		{
+			sprintf(lcd_buf, "ngh %d ok!", tdd_j); 		
+		}
+		else
+		{
+			sprintf(lcd_buf, "ngh %d err!", tdd_j); 
+		}
+		Tdd_disp_text(lcd_buf, lcd_line, (tdd_i + 1) *100);
+	}
+	
+	
+}
+
 #endif //TDD_ON == 1
 

@@ -107,6 +107,7 @@ typedef struct {
 //	int	(*fsh_wr_sector)(uint8_t *wr_buf, uint16_t num_sector);
 //	int	(*fsh_rd_sector)(uint8_t *rd_buf, uint16_t num_sector);
 	int (*fsh_write)(uint8_t *wr_buf, uint32_t wr_addr, uint32_t num_bytes);
+	int (*fsh_direct_write)(uint8_t *wr_buf, uint32_t wr_addr, uint32_t num_bytes);
 	int (*fsh_read)(uint8_t *wr_buf, uint32_t rd_addr, uint32_t num_bytes);
 	
 	void (*fsh_flush)(void);
@@ -150,8 +151,9 @@ typedef struct {
 	//file_size在文件不存在时，需要创建时使用
 	int		(*fs_open)(uint8_t		prt, char *path, char *mode, int	file_size);	
 	int		(*fs_close)(int fd);
-	int		(*fs_delete)(int fd);
+	int		(*fs_delete)(int fd, char *path);	//fd < 0的时候，通过path来查找文件
 	int		(*fs_write)(int fd, uint8_t *p, int len);
+	int		(*fs_direct_write)(int fd, uint8_t *p, int len);		//直接写入到硬件，不使用缓存
 	int		(*fs_read)(int fd, uint8_t *p, int len);
 	int		(*fs_resize)(int fd, char *name, int new_size);
 	int 	(*fs_lseek)(int fd, int whence, uint32_t offset);

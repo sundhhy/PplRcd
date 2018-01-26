@@ -21,7 +21,7 @@
 // const defines
 //------------------------------------------------------------------------------
 #define 	PHN_MAJOR_VER				0
-#define 	PHN_MINOR_VER				2
+#define 	PHN_MINOR_VER				5
 
 
 const unsigned short daytab[13]={0,31,59,90,120,151,181,212,243,273,304,334,365};//非闰年月份累积天数
@@ -80,20 +80,13 @@ void System_default(void)
 {
 	system_conf_t 	*p_sc = &phn_sys.sys_conf;
 	Storage			*stg = Get_storage();
-	int				i = 0;
 	
 	memset(p_sc, 0, sizeof(system_conf_t));
 	p_sc->sys_flag = 0;
 	p_sc->num_chn = NUM_CHANNEL;
 	stg->wr_stored_data(stg, STG_SYS_CONF, &phn_sys.sys_conf, sizeof(phn_sys.sys_conf));
 	
-	for(i = 0; i < NUM_CHANNEL; i++)
-	{
-		
-		MdlChn_default_conf(i);
-		MdlChn_default_alarm(i);
-		stg->wr_stored_data(stg, STG_CHN_CONF(i), NULL, 0);
-	}
+	
 	
 //	p_sc->baud_idx = 0;
 //	p_sc->baud_rate = arr_baud[0];
@@ -103,9 +96,10 @@ void System_default(void)
 void System_init(void)
 {
 	struct  tm stm;
-	Model 		*md_time;
+	Model 		*m;
 	Storage					*stg = Get_storage();
-
+	char			chn_name[7];
+	char			i;
 
 	phn_sys.major_ver = PHN_MAJOR_VER;
 	phn_sys.minor_ver = PHN_MINOR_VER;
@@ -117,8 +111,9 @@ void System_init(void)
 	sys_rtc->get(sys_rtc, &stm);
 	
 	//md_time要系统时间初始化之后初始化
-	md_time = ModelCreate("time");
-	md_time->init(md_time, NULL);
+	m = ModelCreate("time");
+	m->init(m, NULL);
+	
 	
 	w25q_init();
 	FM25_init();
@@ -130,6 +125,16 @@ void System_init(void)
 	stg->rd_stored_data(stg, STG_SYS_CONF, &phn_sys.sys_conf, sizeof(phn_sys.sys_conf));
 	if(phn_sys.sys_conf.num_chn != NUM_CHANNEL)
 		System_default();
+	
+	
+	for(i = 0; i < NUM_CHANNEL; i++)
+	{
+
+		sprintf(chn_name,"chn_%d", i);
+		m = ModelCreate(chn_name);
+		m->init(m, &i);
+		
+	}
 
 #endif	
 	

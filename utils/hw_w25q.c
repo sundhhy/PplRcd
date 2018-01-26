@@ -128,6 +128,7 @@ static int w25q_read_id(uint8_t  buf[2]);
 static int w25q_Erase_Sector(uint32_t Sector_Number);
 static int w25q_Erase_block(uint16_t block_Number);
 static int w25q_Erase_chip_c7(void);
+static int	W25Q_wr_fsh(uint8_t *pBuffer, uint32_t WriteAddr, uint32_t WriteBytesNum);
 //static int w25q_Erase_chip_60(void);
 
 void W25Q_WP(int protect);
@@ -138,6 +139,7 @@ void W25Q_Erase_addr(uint32_t st, uint32_t sz);
 //int w25q_erase(uint32_t offset, uint32_t len);
 
 int w25q_Write(uint8_t *pBuffer, uint32_t WriteAddr, uint32_t WriteBytesNum);
+//int w25q_Direct_write(uint8_t *pBuffer, uint32_t WriteAddr, uint32_t WriteBytesNum);
 int w25q_rd_data(uint8_t *pBuffer, uint32_t rd_add, uint32_t len);
 void W25Q_Flush(void);
 //int w25q_close(void);
@@ -180,6 +182,7 @@ int w25q_init(void)
 //	phn_sys.arr_fsh[FSH_W25Q_NUM].fsh_wr_sector = w25q_Write_Sector_Data;
 //	phn_sys.arr_fsh[FSH_W25Q_NUM].fsh_rd_sector = w25q_Read_Sector_Data;
 	phn_sys.arr_fsh[FSH_W25Q_NUM].fsh_write = w25q_Write;
+	phn_sys.arr_fsh[FSH_W25Q_NUM].fsh_direct_write = W25Q_wr_fsh;
 	phn_sys.arr_fsh[FSH_W25Q_NUM].fsh_read = w25q_rd_data;
 	W25Q_FSH.fsh_flush = W25Q_Flush;
 	W25Q_Disable_WP;
@@ -234,48 +237,6 @@ void W25Q_WP(int protect)
 		W25Q_Disable_WP;
 }
 
-
-
-//int w25q_close(void)
-//{
-//	
-//	return ERR_OK;
-//	
-//}
-
-
-
-//int w25q_erase(uint32_t offset, uint32_t len)
-//{
-//	uint32_t start, end, erase_size;
-//	int ret = 0;
-//	
-//	erase_size = SECTOR_SIZE;
-//	W25Q_tx_buf[0] = W25Q_INSTR_Sector_Erase_4K;
-//	
-//	
-//	start = offset;
-//	end = start + len;
-//	
-//	while (offset < end) {
-//		W25Q_tx_buf[1] = offset >> 16;
-//		W25Q_tx_buf[2] = offset >> 8;
-//		W25Q_tx_buf[3] = offset >> 0;
-//		offset += erase_size;
-
-//		ret = w25q_write_waitbusy( W25Q_tx_buf, 4);
-//		if( ret != ERR_OK)
-//			goto exit;
-//		
-//		
-//	}
-//	return ERR_OK;
-//	exit:
-//	W25Q_Disable_CS;
-//	return ret;	
-//	
-//}
-
 int W25Q_erase(int opt, uint32_t num)
 {
 	int ret = ERR_DEV_FAILED;
@@ -318,8 +279,8 @@ int W25Q_Cal_area(uint32_t start, uint32_t size, uint32_t area_sz, uint32_t rst[
 
 void W25Q_Erase_addr(uint32_t st, uint32_t sz)
 {
-	uint16_t		head_area[2] ;
-	uint16_t		tail_area[2] ;
+	uint32_t		head_area[2] ;
+	uint32_t		tail_area[2] ;
 	uint32_t		middle_area[2];
 	uint16_t		i;
 	uint16_t		n1, n2;

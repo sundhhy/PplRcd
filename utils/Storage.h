@@ -32,8 +32,11 @@
 
 #define	STG_STOP									0
 #define	STG_COVER									1
-#define	STG_ERASE									2
+#define	STG_ERASE									2		//对于记录类，使用这种形式就不必考虑缓存了，只可能往后
 #define STG_RCD_FULL_ACTION				STG_ERASE
+
+
+#define STG_DEF_FILE_SIZE 		0
 //------------------------------------------------------------------------------
 // typedef
 //------------------------------------------------------------------------------
@@ -61,7 +64,7 @@ CLASS(Storage)
 	int					(*rd_stored_data)(Storage *self, uint8_t	cfg_type, void *buf, int len);
 	int					(*wr_stored_data)(Storage *self, uint8_t	cfg_type, void *buf, int len);
 	void				(*shutdown)(Storage *self);
-	
+	int					(*open_file)(uint8_t	cfg_type, uint32_t file_size);
 //	uint8_t			arr_rcd_fd[NUM_CHANNEL];
 //	uint8_t			alarm_fd;
 //	uint8_t			lose_pwr_fd;

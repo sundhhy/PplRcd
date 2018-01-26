@@ -33,7 +33,7 @@ Model		*arr_p_mdl_chn[NUM_CHANNEL];
 //------------------------------------------------------------------------------
 // const defines
 //------------------------------------------------------------------------------
-
+#define  TDD_SAVE_DATA		1
 //------------------------------------------------------------------------------
 // local types
 //------------------------------------------------------------------------------
@@ -83,7 +83,7 @@ Model_chn *Get_Mode_chn(int n)
 	p_mc = Model_chn_new();
 	p_mdl = SUPER_PTR(p_mc, Model);
 	arr_p_mdl_chn[n] = p_mdl;
-	p_mdl->init(p_mdl, (void *)&n);
+//	p_mdl->init(p_mdl, (void *)&n);
 	
 	
 	return p_mc;
@@ -237,7 +237,7 @@ static	uint16_t Cut_small_signal(chn_info_t *p, uint16_t	d)
 
 static int MdlChn_init(Model *self, IN void *arg)
 {
-	int					chn_num = *((int *)arg);
+	uint8_t					chn_num = *((uint8_t *)arg);
 	Model_chn		*cthis = SUB_PTR(self, Model, Model_chn);
 	Storage			*stg = Get_storage();
 	mdl_chn_save_t		save;
@@ -258,10 +258,11 @@ static int MdlChn_init(Model *self, IN void *arg)
 	{
 		MdlChn_Save_2_conf(&save, &cthis->chni, 0);
 		MdlChn_Save_2_alarm(&save, &cthis->alarm, 0);
+		stg->wr_stored_data(stg, STG_CHN_CONF(cthis->chni.chn_NO), NULL, 0);
 		
 	}
 
-	
+	stg->open_file(STG_CHN_DATA(cthis->chni.chn_NO), cthis->chni.MB * 1024 * 1024);
 	return RET_OK;
 }
 
@@ -427,6 +428,12 @@ static void MdlChn_run(Model *self)
 	uint8_t 			i;
 //	uint8_t				old_do;
 	
+#if TDD_SAVE_DATA == 1
+	cthis->chni.value ++;
+	stg->wr_stored_data(stg, STG_CHN_DATA(cthis->chni.chn_NO), &cthis->chni.value, 2);
+#else	
+	
+	
 	Dev_open(DEVID_UART3, ( void *)&I_uart3);
 	
 	//在通道0上要采集冷端温度
@@ -501,6 +508,8 @@ static void MdlChn_run(Model *self)
 	return;
 	err:
 		cthis->chni.flag_err = 1;
+	
+#endif
 	
 }
 
