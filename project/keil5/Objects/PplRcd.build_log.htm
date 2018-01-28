@@ -26,17 +26,43 @@ Project File Date:  01/24/2018
 
 <h2>Output:</h2>
 Build target 'Target 1'
-compiling easy_fs.c...
-..\..\fs\easy_fs.c(363): warning:  #177-D: variable "ret" was declared but never referenced
-        int             ret;
-..\..\fs\easy_fs.c(366): warning:  #177-D: variable "end_addr" was declared but never referenced
-        int                     end_addr = start_addr + f->file_size;
-..\..\fs\easy_fs.c(650): warning:  #177-D: function "EFS_set_flag" was declared but never referenced
-  static void EFS_set_flag(uint8_t  num, uint8_t        flag, char val)
-..\..\fs\easy_fs.c: 3 warnings, 0 errors
+compiling system.c...
+..\..\APP\system.c(245): warning:  #177-D: variable "sec" was declared but never referenced
+        uint32_t sec = 0;
+..\..\APP\system.c: 1 warning, 0 errors
+compiling Storage.c...
+..\..\utils\Storage.c(352): warning:  #177-D: variable "chn_num" was declared but never referenced
+        uint8_t chn_num = STG_GET_CHN(tp);
+..\..\utils\Storage.c(415): warning:  #940-D: missing return statement at end of non-void function "STG_Acc_sys_conf"
+  }
+..\..\utils\Storage.c(387): warning:  #550-D: variable "ret" was set but never used
+        int     ret = -1;
+..\..\utils\Storage.c(434): warning:  #940-D: missing return statement at end of non-void function "STG_Acc_lose_pwr"
+  }
+..\..\utils\Storage.c(539): warning:  #111-D: statement is unreachable
+        return 0;
+..\..\utils\Storage.c: 5 warnings, 0 errors
+compiling Set_dataBackUp_strategy.c...
+compiling Model_channel.c...
+..\..\model\Model_channel.c(423): warning:  #177-D: variable "chk_buf" was declared but never referenced
+        uint8_t                                         chk_buf[16];
+..\..\model\Model_channel.c(424): warning:  #177-D: variable "rst" was declared but never referenced
+        SmBus_result_t          rst;
+..\..\model\Model_channel.c(427): warning:  #177-D: variable "I_uart3" was declared but never referenced
+        I_dev_Char                      *I_uart3 = NULL;
+..\..\model\Model_channel.c(428): warning:  #177-D: variable "i" was declared but never referenced
+        uint8_t                         i;
+..\..\model\Model_channel.c(196): warning:  #177-D: function "Zero_shift_K_B" was declared but never referenced
+  static        uint16_t Zero_shift_K_B(chn_info_t *p, uint16_t d)
+..\..\model\Model_channel.c(218): warning:  #177-D: function "Cut_small_signal" was declared but never referenced
+  static        uint16_t Cut_small_signal(chn_info_t *p, uint16_t       d)
+..\..\model\Model_channel.c(131): warning:  #177-D: function "Signal_Alarm" was declared but never referenced
+  static void Signal_Alarm(chn_info_t *p, chn_alarm_t *p_alm)
+..\..\model\Model_channel.c: 7 warnings, 0 errors
+compiling CtlTimer.c...
 linking...
-Program Size: Code=89024 RO-data=4312 RW-data=1932 ZI-data=41780  
-".\Objects\PplRcd.axf" - 0 Error(s), 3 Warning(s).
+Program Size: Code=90776 RO-data=4296 RW-data=1932 ZI-data=41772  
+".\Objects\PplRcd.axf" - 0 Error(s), 13 Warning(s).
 
 <h2>Software Packages used:</h2>
 
@@ -50,19 +76,19 @@ Package Vendor: ARM
 
 Package Vendor: Keil
                 http://www.keil.com/pack/Keil.STM32F1xx_DFP.2.1.0.pack
-                Keil::Device:StdPeriph Drivers:Framework:3.5.1
+                Keil::Device:Startup:1.0.0
                 STMicroelectronics STM32F1 Series Device Support, Drivers and Examples
-   * Component: Framework Version: 3.5.1
    * Component: Startup Version: 1.0.0
-   * Component: I2C Version: 3.5.0
+   * Component: Framework Version: 3.5.1
+   * Component: Flash Version: 3.5.0
+   * Component: DMA Version: 3.5.0
    * Component: USART Version: 3.5.0
-   * Component: RCC Version: 3.5.0
+   * Component: I2C Version: 3.5.0
+   * Component: SPI Version: 3.5.0
    * Component: GPIO Version: 3.5.0
+   * Component: RCC Version: 3.5.0
    * Component: EXTI Version: 3.5.0
    * Component: TIM Version: 3.5.0
-   * Component: SPI Version: 3.5.0
-   * Component: DMA Version: 3.5.0
-   * Component: Flash Version: 3.5.0
 
 <h2>Collection of Component include folders:</h2>
   E:\PaperlessRecorder\myCode\PplRcd\project\keil5\RTE
@@ -78,70 +104,70 @@ Package Vendor: Keil
    * Component: ::CMSIS:RTOS:1.0 (API)
 
    * Component: ARM::CMSIS:RTOS:Keil RTX:4.79.0
-      Include file:  CMSIS\RTOS\RTX\UserCodeTemplates\osObjects.h
-      Include file:  CMSIS\RTOS\RTX\INC\cmsis_os.h
       Source file:   CMSIS\RTOS\RTX\Templates\RTX_Conf_CM.c
-      Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\main.c
-      Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\MemPool.c
-      Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\MsgQueue.c
-      Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\Timer.c
-      Library file:  CMSIS\RTOS\RTX\LIB\ARM\RTX_CM3.lib
-      Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\Semaphore.c
       Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\MailQueue.c
-      Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\Mutex.c
-      Source file:   CMSIS\RTOS\RTX\SRC\ARM\SVC_Table.s
+      Include file:  CMSIS\RTOS\RTX\UserCodeTemplates\osObjects.h
+      Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\main.c
+      Include file:  CMSIS\RTOS\RTX\INC\cmsis_os.h
+      Library file:  CMSIS\RTOS\RTX\LIB\ARM\RTX_CM3.lib
       Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\Thread.c
+      Source file:   CMSIS\RTOS\RTX\SRC\ARM\SVC_Table.s
+      Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\Timer.c
+      Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\Mutex.c
+      Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\MsgQueue.c
+      Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\MemPool.c
+      Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\Semaphore.c
 
    * Component: ARM::CMSIS:CORE:4.2.0
 
-   * Component: Keil::Device:StdPeriph Drivers:Framework:3.5.1
-      Source file:   Device\StdPeriph_Driver\src\misc.c
-      Include file:  Device\StdPeriph_Driver\inc\misc.h
-      Source file:   Device\StdPeriph_Driver\templates\stm32f10x_conf.h
-      Source file:   Device\StdPeriph_Driver\templates\stm32f10x_it.c
-      Include file:  Device\StdPeriph_Driver\templates\stm32f10x_it.h
-
    * Component: Keil::Device:Startup:1.0.0
       Source file:   Device\Source\ARM\STM32F1xx_OPT.s
+      Source file:   Device\Source\ARM\startup_stm32f10x_hd.s
       Source file:   Device\Source\system_stm32f10x.c
       Include file:  RTE_Driver\Config\RTE_Device.h
-      Source file:   Device\Source\ARM\startup_stm32f10x_hd.s
 
-   * Component: Keil::Device:StdPeriph Drivers:I2C:3.5.0
-      Source file:   Device\StdPeriph_Driver\src\stm32f10x_i2c.c
-      Include file:  Device\StdPeriph_Driver\inc\stm32f10x_i2c.h
+   * Component: Keil::Device:StdPeriph Drivers:Framework:3.5.1
+      Source file:   Device\StdPeriph_Driver\templates\stm32f10x_it.c
+      Include file:  Device\StdPeriph_Driver\inc\misc.h
+      Source file:   Device\StdPeriph_Driver\templates\stm32f10x_conf.h
+      Source file:   Device\StdPeriph_Driver\src\misc.c
+      Include file:  Device\StdPeriph_Driver\templates\stm32f10x_it.h
+
+   * Component: Keil::Device:StdPeriph Drivers:Flash:3.5.0
+      Include file:  Device\StdPeriph_Driver\inc\stm32f10x_flash.h
+      Source file:   Device\StdPeriph_Driver\src\stm32f10x_flash.c
+
+   * Component: Keil::Device:StdPeriph Drivers:DMA:3.5.0
+      Source file:   Device\StdPeriph_Driver\src\stm32f10x_dma.c
+      Include file:  Device\StdPeriph_Driver\inc\stm32f10x_dma.h
 
    * Component: Keil::Device:StdPeriph Drivers:USART:3.5.0
       Include file:  Device\StdPeriph_Driver\inc\stm32f10x_usart.h
       Source file:   Device\StdPeriph_Driver\src\stm32f10x_usart.c
 
+   * Component: Keil::Device:StdPeriph Drivers:I2C:3.5.0
+      Include file:  Device\StdPeriph_Driver\inc\stm32f10x_i2c.h
+      Source file:   Device\StdPeriph_Driver\src\stm32f10x_i2c.c
+
+   * Component: Keil::Device:StdPeriph Drivers:SPI:3.5.0
+      Include file:  Device\StdPeriph_Driver\inc\stm32f10x_spi.h
+      Source file:   Device\StdPeriph_Driver\src\stm32f10x_spi.c
+
+   * Component: Keil::Device:StdPeriph Drivers:GPIO:3.5.0
+      Include file:  Device\StdPeriph_Driver\inc\stm32f10x_gpio.h
+      Source file:   Device\StdPeriph_Driver\src\stm32f10x_gpio.c
+
    * Component: Keil::Device:StdPeriph Drivers:RCC:3.5.0
       Include file:  Device\StdPeriph_Driver\inc\stm32f10x_rcc.h
       Source file:   Device\StdPeriph_Driver\src\stm32f10x_rcc.c
-
-   * Component: Keil::Device:StdPeriph Drivers:GPIO:3.5.0
-      Source file:   Device\StdPeriph_Driver\src\stm32f10x_gpio.c
-      Include file:  Device\StdPeriph_Driver\inc\stm32f10x_gpio.h
 
    * Component: Keil::Device:StdPeriph Drivers:EXTI:3.5.0
       Include file:  Device\StdPeriph_Driver\inc\stm32f10x_exti.h
       Source file:   Device\StdPeriph_Driver\src\stm32f10x_exti.c
 
    * Component: Keil::Device:StdPeriph Drivers:TIM:3.5.0
-      Source file:   Device\StdPeriph_Driver\src\stm32f10x_tim.c
       Include file:  Device\StdPeriph_Driver\inc\stm32f10x_tim.h
-
-   * Component: Keil::Device:StdPeriph Drivers:SPI:3.5.0
-      Include file:  Device\StdPeriph_Driver\inc\stm32f10x_spi.h
-      Source file:   Device\StdPeriph_Driver\src\stm32f10x_spi.c
-
-   * Component: Keil::Device:StdPeriph Drivers:DMA:3.5.0
-      Source file:   Device\StdPeriph_Driver\src\stm32f10x_dma.c
-      Include file:  Device\StdPeriph_Driver\inc\stm32f10x_dma.h
-
-   * Component: Keil::Device:StdPeriph Drivers:Flash:3.5.0
-      Source file:   Device\StdPeriph_Driver\src\stm32f10x_flash.c
-      Include file:  Device\StdPeriph_Driver\inc\stm32f10x_flash.h
+      Source file:   Device\StdPeriph_Driver\src\stm32f10x_tim.c
 </pre>
 </body>
 </html>

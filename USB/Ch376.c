@@ -61,7 +61,7 @@ static void xWriteCH376Data_u32(uint32_t data_u32);
 static void xWriteCH376Cmd(uint8_t mCmd);
 static uint8_t CH376GetIntStatus(void);
 static uint8_t	CH376SendCmdWaitInt( uint8_t mCmd );
-static uint8_t Wait376Interrupt( void )  ;
+static uint8_t Wait376Interrupt(int set_irq )  ;
 static uint8_t	CH376ReadVar8( uint8_t var );  /* 读CH376芯片内部的8位变量 */
 static void	CH376WriteHostBlock( uint8_t *buf, uint8_t len );
 static uint8_t	CH376DiskReqSense( void );  
@@ -366,7 +366,7 @@ uint8_t	CH376SecWrite( uint8_t *buf, uint8_t ReqCount, uint8_t *RealCount )
 		xWriteCH376Data( ReqCount );
 		xEndCH376Cmd( );
 
-		s = Wait376Interrupt( );
+		s = Wait376Interrupt( 1);
 		if ( s != USB_INT_SUCCESS )
 			return( s );
 		xWriteCH376Cmd( CMD01_RD_USB_DATA0 );
@@ -417,7 +417,7 @@ uint8_t	CH376ByteRead(uint8_t* buf, uint16_t ReqCount, uint16_t* RealCount )
 	
 	while ( 1 ) 
 	{
-		s = Wait376Interrupt( );
+		s = Wait376Interrupt( 1);
 		if ( s == USB_INT_DISK_READ )                                                   /* 请求数据读出 */
 		{
 			s = CH376ReadBlock( buf, ReqCount );                                                  /* 从当前主机端点的接收缓冲区读取数据块,返回长度 */
@@ -455,7 +455,9 @@ uint8_t	CH376ByteWrite( uint8_t *buf, uint16_t ReqCount, uint16_t *RealCount )
 
 	while ( 1 )
 	{
-		s = Wait376Interrupt( );
+		Ch376_enbale_Irq(0);
+		s = Wait376Interrupt(0);
+		Ch376_enbale_Irq(1);
 		if ( s == USB_INT_DISK_WRITE )
 		{
 			//向内部指定缓冲区写入请求的数据块,返回长度 
@@ -467,8 +469,14 @@ uint8_t	CH376ByteWrite( uint8_t *buf, uint16_t ReqCount, uint16_t *RealCount )
 				*RealCount += s;
 		}
 		else
+		{
+			
 			return( s );  // 错误
+			
+		}
 	}
+	
+//	Ch376_enbale_Irq(1);
 	
 //	return 0;
 }
@@ -493,10 +501,11 @@ static uint8_t	CH376DiskWriteSec( uint8_t *buf, uint32_t iLbaStart, uint8_t iSec
 		xEndCH376Cmd( );
 
 		mBlockCount = iSectorCount * DEF_SECTOR_SIZE / CH376_DAT_BLOCK_LEN;
+		
 		for ( ; mBlockCount != 0; -- mBlockCount )
 		{ 
 			// 数据块计数 
-			s = Wait376Interrupt( );  // 等待中断并获取状态 ，应返回0x1E
+			s = Wait376Interrupt( 1);  // 等待中断并获取状态 ，应返回0x1E
 			if ( s == USB_INT_DISK_WRITE )
 			{
 				// USB存储器写数据块,请求数据写入 
@@ -510,7 +519,7 @@ static uint8_t	CH376DiskWriteSec( uint8_t *buf, uint32_t iLbaStart, uint8_t iSec
 		}
 		if ( mBlockCount == 0 )
 		{
-			s = Wait376Interrupt( );  // 等待中断并获取状态 
+			s = Wait376Interrupt(1 );  // 等待中断并获取状态 
 			if ( s == USB_INT_SUCCESS )
 				return( USB_INT_SUCCESS );  // 操作成功 
 		}
@@ -643,11 +652,15 @@ static uint8_t CH376GetIntStatus(void)
 //发出命令码后,等待中断 
 static uint8_t	CH376SendCmdWaitInt( uint8_t mCmd )  
 {
+	uint8_t	itr = 0;
+	Ch376_enbale_Irq(0);
 	
 	xWriteCH376Cmd( mCmd );
 	delay_ms(1);
-	xEndCH376Cmd( );
-	return( Wait376Interrupt( ) );
+	xEndCH376Cmd();
+	itr = Wait376Interrupt(0);
+	Ch376_enbale_Irq(1);
+	return itr;
 }
 
 //??CH376??(INT#???)
@@ -662,15 +675,17 @@ static int Query376Interrupt(void)
 	else
 		return 1;
 }
-static uint8_t Wait376Interrupt( void )  
+static uint8_t Wait376Interrupt(int	set_irq )  
 {
 	uint16_t	i = 10000;
-	Ch376_enbale_Irq(0);
+	if(set_irq)
+		Ch376_enbale_Irq(0);
 	while(1)
 	{
 		if (Query376Interrupt( ))
 		{
-			Ch376_enbale_Irq(1);
+			if(set_irq)
+				Ch376_enbale_Irq(1);
 			return( CH376GetIntStatus( ) );	
 		}
 			
@@ -680,8 +695,8 @@ static uint8_t Wait376Interrupt( void )
 		else
 			break;
 	}
-	
-	Ch376_enbale_Irq(1);
+	if(set_irq)
+		Ch376_enbale_Irq(1);
 	return( ERR_USB_UNKNOWN );
 }
 
@@ -730,7 +745,7 @@ static void xWriteCH376Data_u32(uint32_t data_u32)
 static void	CH376WriteVar32(uint8_t var, uint32_t dat )  /* 写CH376芯片内部的32位变量 */
 {
 	
-	xWriteCH376Cmd( CMD50_WRITE_VAR32 );
+	xWriteCH376Cmd( CMD20_WR_OFS_DATA );
 	xWriteCH376Data( var );
 	xWriteCH376Data_u32(dat);
 	
@@ -922,10 +937,16 @@ static  uint8_t	CH376WriteReqBlock( uint8_t *buf )
 // 发出命令码和一字节数据后,等待中断 
 static uint8_t	CH376SendCmdDatWaitInt( uint8_t mCmd, uint8_t mDat )  
 {
+	
+	uint8_t	itr = 0;
+
+	Ch376_enbale_Irq(0);
 	xWriteCH376Cmd( mCmd );
 	xWriteCH376Data( mDat );
 	xEndCH376Cmd( );
-	return( Wait376Interrupt( ) );
+	itr = Wait376Interrupt(0);
+	Ch376_enbale_Irq(1);
+	return itr;
 }
 
 

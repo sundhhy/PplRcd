@@ -26,10 +26,10 @@ struct  tm {
         int  tm_mon;    /* months since January     -- [0,11] */
         int  tm_year;   /* years since 1900                   */
         int  tm_wday;   /* days since Sunday        -- [0,6]  */
-        int  tm_yday;   /* days since January 1     -- [0,365]*/
-        int  tm_isdst;  /* Daylight Savings Time flag */
-        long int tm_gmtoff; /* Offset from gmt */
-        const char *tm_zone;    /* String for zone name */
+//        int  tm_yday;   /* days since January 1     -- [0,365]*/
+//        int  tm_isdst;  /* Daylight Savings Time flag */
+//        long int tm_gmtoff; /* Offset from gmt */
+//        const char *tm_zone;    /* String for zone name */
 };
 
 typedef struct TIME_T

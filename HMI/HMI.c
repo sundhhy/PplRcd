@@ -24,6 +24,8 @@ const Except_T Hmi_Failed = { "HMI Failed" };
 HMI *g_p_curHmi;
 HMI *g_p_lastHmi;
 HMI *g_p_win_last;
+
+keyboard_commit	kbr_cmt = NULL;
 //============================================================================//
 //            P R I V A T E   D E F I N I T I O N S                           //
 //============================================================================//

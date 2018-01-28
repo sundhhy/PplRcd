@@ -298,6 +298,8 @@ static void 	PGB_Update_bar(uint8_t	bar_fd, uint8_t prc)
 
 	if(prc <= 100)
 		arr_pgb[bar_fd].bar_val = prc;
+	else if(prc != 0xff)
+		arr_pgb[bar_fd].bar_val = 100;
 	
 	arr_cal[arr_pgb[bar_fd].toward](arr_pgb[bar_fd].p_bar, arr_pgb[bar_fd].bar_len, arr_pgb[bar_fd].bar_val);
 	sprintf(arr_pgb[bar_fd].text_buf, "%3d", arr_pgb[bar_fd].bar_val);

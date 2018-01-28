@@ -1,6 +1,6 @@
 #include "Storage.h"
 #include "sdhDef.h"
-
+#include <string.h>
 //============================================================================//
 //            G L O B A L   D E F I N I T I O N S                             //
 //============================================================================//
@@ -80,7 +80,7 @@ static void Strg_Updata_rcd_mgr(uint8_t	num, mdl_chn_save_t *p);
 static int 	STG_Open_file(uint8_t type, uint32_t file_size);
 
 static int	STG_Acc_chn_conf(uint8_t	tp, uint8_t	drc, void *p);
-static int	STG_Acc_chn_alarm(uint8_t	chn_num, uint8_t	drc, void *p, int len);
+static int	STG_Acc_chn_alarm(uint8_t	type, uint8_t	drc, void *p, int len);
 static int	STG_Acc_chn_data(uint8_t	type, uint8_t	drc, void *p, int len);
 
 static int	STG_Acc_sys_conf(uint8_t	drc, void *p);
@@ -108,14 +108,47 @@ Storage		*Get_storage()
 }
 
 
-int	STG_Read_rcd_by_time(uint8_t	cfg_type, uint32_t start_sec, uint32_t end_sec, void *buf, int buf_size, uint32_t *rd_sec)
+int	STG_Read_rcd_by_time(uint8_t	chn, uint32_t start_sec, uint32_t end_sec, char *buf, int buf_size, uint32_t *rd_sec)
 {
 	Storage				*stg = Get_storage();
-	int						fd = -1;
-											
+	int					fd = -1;
+	data_in_fsh_t		d;
+	struct  tm			t;
+	uint32_t			min_sec = 0xffffffff, max_sec = 0;	
+	int					buf_offset = 0;
+	
+	fd = STG_Open_file(STG_CHN_DATA(chn), STG_DEF_FILE_SIZE);
 	STRG_SYS.fs.fs_lseek(fd, RD_SEEK_SET, 0);
-	
-	
+	memset(buf, 0, buf_size);
+	while(1)
+	{
+		
+		if(STRG_SYS.fs.fs_read(fd, (uint8_t *)&d, sizeof(data_in_fsh_t)) != sizeof(data_in_fsh_t))
+			break;
+		if((buf_offset + 21)> buf_size)		//必须预留最大数据长度的空间
+			break;
+		if(d.rcd_time_s == 0xffffffff)
+			break;
+		if((d.rcd_time_s < start_sec) || (d.rcd_time_s > end_sec))
+			continue;
+		if(min_sec > d.rcd_time_s)
+			min_sec = d.rcd_time_s;
+		if(max_sec < d.rcd_time_s)
+			max_sec = d.rcd_time_s;
+		
+		Sec_2_tm(d.rcd_time_s, &t);
+		
+		
+		
+		//放置csv格式的数据
+		sprintf((char *)buf + buf_offset, "%2d/%02d/%02d %02d:%02d:%02d=%x ", t.tm_year,t.tm_mon, t.tm_mday, \
+				t.tm_hour, t.tm_min, t.tm_sec, d.rcd_val);
+		buf_offset = strlen(buf);
+		
+	}
+	*rd_sec = max_sec - min_sec;
+	return buf_offset;
+		
 	
 }
 
@@ -381,8 +414,46 @@ static int	STG_Acc_sys_conf(uint8_t drc, void *p)
 	
 }
 
-static int	STG_Acc_chn_alarm(uint8_t	chn_num, uint8_t	drc, void *p, int len)
+
+static int	STG_Acc_lose_pwr(uint8_t	drc, void *p, int len)
 {
+	int fd = STG_Open_file(STG_LOSE_PWR, STG_DEF_FILE_SIZE);
+	
+	if((drc & 1) == STG_DRC_READ)
+	{
+		if(drc & STG_DRC_START)
+			STRG_SYS.fs.fs_lseek(fd, RD_SEEK_SET, 2400);		//掉电信息之前是 6 * 384 的报警信息
+		
+	}
+	else
+	{
+		if(drc & STG_DRC_START)
+			STRG_SYS.fs.fs_lseek(fd, WR_SEEK_SET, 2400);
+	}
+	
+}
+static int	STG_Acc_chn_alarm(uint8_t	type, uint8_t	drc, void *p, int len)
+{
+	int fd = STG_Open_file(type, STG_DEF_FILE_SIZE);
+	uint8_t		chn_num = STG_GET_CHN(type);
+	if(chn_num > (NUM_CHANNEL - 1))
+		return 0;
+	if(len > 384)
+		len = 384;
+	if((drc & 1) == STG_DRC_READ)
+	{
+		if(drc & STG_DRC_START)
+			STRG_SYS.fs.fs_lseek(fd, RD_SEEK_SET, chn_num * 384);
+		return STRG_SYS.fs.fs_read(fd, p, len);
+		
+	}
+	else
+	{
+		if(drc & STG_DRC_START)
+			STRG_SYS.fs.fs_lseek(fd, WR_SEEK_SET, chn_num * 384);
+		
+		return STRG_SYS.fs.fs_write(fd, p, len);
+	}
 	
 }
 
@@ -468,11 +539,7 @@ static int	STG_Acc_chn_data(uint8_t	type, uint8_t	drc, void *p, int len)
 	return 0;
 }
 
-static int	STG_Acc_lose_pwr(uint8_t	drc, void *p, int len)
-{
-	
-	
-}
+
 
 
 #if STG_RCD_FULL_ACTION != STG_ERASE
@@ -644,12 +711,12 @@ static int 	STG_Open_file(uint8_t type, uint32_t file_size)
 	}
 	else if(IS_LOSE_PWR(type))
 	{
-		fd = STRG_SYS.fs.fs_open(STRG_RCD_FSH_NUM, "alm_lost_pwr", "r", 1024);
+		fd = STRG_SYS.fs.fs_open(STRG_RCD_FSH_NUM, "alm_lost_pwr", "r", 4096);
 		
 	}
 	else if(IS_CHN_ALARM(type))
 	{
-		fd = STRG_SYS.fs.fs_open(STRG_RCD_FSH_NUM, "alm_lost_pwr", "r", 1024);
+		fd = STRG_SYS.fs.fs_open(STRG_RCD_FSH_NUM, "alm_lost_pwr", "r", 4096);
 		
 	}
 	else if(IS_CHN_DATA(type))

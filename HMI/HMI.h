@@ -96,6 +96,10 @@
  //------------------------------------------------------------------------------
 // typedef
 //------------------------------------------------------------------------------
+
+typedef int	(*keyboard_commit)(void *self, void *data, int len);
+
+
 typedef struct {
 	uint8_t		rowGrap;			//行间距
 	uint8_t		colGrap;			//列间距
@@ -201,6 +205,8 @@ typedef   const char  ro_char;
 //------------------------------------------------------------------------------
 // global variable declarations
 //------------------------------------------------------------------------------
+extern keyboard_commit	kbr_cmt;
+
 extern const Except_T Hmi_Failed;
 //extern  ro_char str_endRow[];
 //extern	ro_char str_endCol[];

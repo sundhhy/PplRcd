@@ -103,7 +103,7 @@ int main (void) {
 	System_init();
 	
 #if TDD_ON == 1
-	Tdd_init();
+	Tdd_Init();
 #endif		
 
 	assert(USB_Init(NULL) == RET_OK);
@@ -157,6 +157,8 @@ int main (void) {
 		
 
 	}
+#elif TDD_TIME_SEC == 1
+	TDD_Time_sec();
 #elif TDD_EFS == 1
 	TDD_Efs();
 #elif TDD_Fm25 == 1

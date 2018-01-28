@@ -197,7 +197,7 @@ static void	Setting_initSheet(HMI *self)
 	p_exp = ExpCreate( "text");
 	cthis->p_sht_text = Sheet_alloc(p_shtctl);
 	p_exp->inptSht( p_exp, (void *)setting_hmi_code_text, cthis->p_sht_text) ;
-	cthis->p_sht_text->input = NULL;
+//	cthis->p_sht_text->input = NULL;
 	
 	p_exp = ExpCreate( "box");
 	cthis->p_sht_CUR = Sheet_alloc(p_shtctl);

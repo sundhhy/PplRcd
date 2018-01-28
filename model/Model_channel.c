@@ -430,6 +430,7 @@ static void MdlChn_run(Model *self)
 	
 #if TDD_SAVE_DATA == 1
 	cthis->chni.value ++;
+	self->notify(self);
 	stg->wr_stored_data(stg, STG_CHN_DATA(cthis->chni.chn_NO), &cthis->chni.value, 2);
 #else	
 	
@@ -1185,7 +1186,7 @@ static void Pe_singnaltype(e_signal_t sgt, char *str)
 			sprintf(str, "T");
 			break;
 		case AI_0_400_ohm:
-			sprintf(str, "0-400 O");
+			sprintf(str, "0-400¦¸");
 			break;		
 		case PI_0_30_kHz:
 			sprintf(str, "PI");

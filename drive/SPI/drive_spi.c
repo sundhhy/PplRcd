@@ -11,7 +11,7 @@
 //------------------------------------------------------------------------------
 // const defines
 //------------------------------------------------------------------------------
-#define SPI_CLK			72000000
+//#define SPI_CLK			72000000
 //------------------------------------------------------------------------------
 // module global vars
 //------------------------------------------------------------------------------
@@ -267,14 +267,14 @@ static void Spi_mode_CP(int mode, SPI_InitTypeDef *spi_def)
 
 static void Spi_baud_Prescaler(int baudrate, SPI_InitTypeDef *spi_def)
 {
-	uint16_t	bpr[8] = {SPI_BaudRatePrescaler_2, SPI_BaudRatePrescaler_4,SPI_BaudRatePrescaler_8, \
-		SPI_BaudRatePrescaler_16, SPI_BaudRatePrescaler_32, SPI_BaudRatePrescaler_64, \
-		SPI_BaudRatePrescaler_128, SPI_BaudRatePrescaler_256};
-	int div = SPI_CLK/baudrate;
-		
-	
-	
-	spi_def->SPI_BaudRatePrescaler = bpr[div];
+//	uint16_t	bpr[8] = {SPI_BaudRatePrescaler_2, SPI_BaudRatePrescaler_4,SPI_BaudRatePrescaler_8, \
+//		SPI_BaudRatePrescaler_16, SPI_BaudRatePrescaler_32, SPI_BaudRatePrescaler_64, \
+//		SPI_BaudRatePrescaler_128, SPI_BaudRatePrescaler_256};
+//	int div = SPI_CLK/baudrate;
+//		
+//	
+//	
+//	spi_def->SPI_BaudRatePrescaler = bpr[div];
 }
 
 static int spi_read_word(SPI_TypeDef	*spi_reg)

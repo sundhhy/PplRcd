@@ -23,6 +23,7 @@
 struct SHTCTL;
 struct SHEET;
 
+
 typedef struct {
 	uint8_t		numSubRow;
 	uint8_t		numSubCol;
@@ -44,10 +45,10 @@ INTERFACE( shtCmd)
 
 
 
-CLASS( shtDefCmd)
-{
-	IMPLEMENTS( shtCmd);
-};
+//CLASS( shtDefCmd)
+//{
+//	IMPLEMENTS( shtCmd);
+//};
 
 /* sheet.c   */
 typedef struct SHEET {
@@ -76,8 +77,9 @@ typedef struct SHEET {
 	Model			*p_mdl;
 	
 	//键盘相关
-	shtCmd		*p_enterCmd;
-	int	(*input)(void *self, void *data, int len);
+//	shtCmd		*p_enterCmd;
+//	sht_commit	sht_cnt_commit;
+//	int	(*input)(void *self, void *data, int len);
 	
 //    struct SHTCTL *p_shtctl;
 }sheet;
@@ -111,5 +113,5 @@ void Sheet_refresh( struct SHEET *p_sht);
 void Sheet_slide(  struct SHEET *p_sht);
 void Sheet_free( struct SHEET *p_sht);
 int Sheet_is_hide(sheet *p_sht);
-shtDefCmd *Get_shtDefCmd(void);
+//shtDefCmd *Get_shtDefCmd(void);
 #endif

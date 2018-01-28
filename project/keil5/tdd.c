@@ -58,7 +58,7 @@
 //------------------------------------------------------------------------------
 // const defines
 //------------------------------------------------------------------------------
-#define 	USB_TFILE							"/TDD3.TXT"
+#define 	USB_TFILE							"/CHN_0.CSV"
 
 #define TDD_MDLCHN_SINGAL 			AI_Pt100
 #define TDD_MDLCHN_NUM_CHN 			6
@@ -128,7 +128,7 @@ static void 	TDD_efs_erase(int erase_size, int lcd_line);
 //============================================================================//
 //            P U B L I C   F U N C T I O N S                                 //
 //============================================================================//
-void 	Tdd_init(void)
+void 	Tdd_Init(void)
 {
 	
 //	Keyboard	*p_kb;
@@ -143,7 +143,24 @@ void 	Tdd_init(void)
 	LCD_Run();	//立即执行lcd指令
 }
 
-
+void TDD_Time_sec(void)
+{
+	struct  tm	t = {0};
+	uint32_t	s = 0;
+	Tdd_disp_text("[TDD]秒值与时间的转换测试",0, 0);
+	sprintf(appBuf, "18/01/28 09:46:05");
+	Tdd_disp_text("测试时间: ",1, 0);
+	Tdd_disp_text(appBuf, 1, 100);
+	s = Str_time_2_u32(appBuf);
+	sprintf(lcd_buf, "sec = %x", s);
+	Tdd_disp_text(lcd_buf, 2, 0);
+	Sec_2_tm(s, &t);
+	
+	sprintf(lcd_buf, "tm %02d/%02d/%02d %02d:%02d:%02d", t.tm_year,t.tm_mon, t.tm_mday, \
+				t.tm_hour, t.tm_min, t.tm_sec);
+	Tdd_disp_text(lcd_buf, 3, 0);
+	while(1);
+}
 
 
 void TDD_Efs(void)

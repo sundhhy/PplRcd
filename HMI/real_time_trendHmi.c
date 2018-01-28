@@ -100,7 +100,7 @@ static void RLTHmi_Init_chnSht(void);
 static int RLTHmi_Data_update(void *p_data, void *p_mdl);
 
 //¼üÅÌ
-static int	RLT_div_input(void *self, void *data, int len);
+//static int	RLT_div_input(void *self, void *data, int len);
 
 
 static void RLT_HMI_build_button(HMI *self);
@@ -240,8 +240,8 @@ static void RT_trendHmi_InitSheet( HMI *self )
 	cthis->min_div = atoi(cthis->str_div);
 	cthis->p_div->cnt.data = cthis->str_div;
 	cthis->p_div->cnt.len = strlen(cthis->p_div->cnt.data);
-	cthis->p_div ->p_enterCmd = &g_keyHmi->shtCmd;
-	cthis->p_div->input =  RLT_div_input;
+//	cthis->p_div ->p_enterCmd = &g_keyHmi->shtCmd;
+//	cthis->p_div->input =  RLT_div_input;
 	cthis->p_div->id = SHTID_RTL_MDIV;
 	
 	
@@ -350,18 +350,18 @@ static void	RLT_show_focus(HMI *self, uint8_t fouse_row, uint8_t fouse_col)
 	}
 	Sheet_slide( p_sht);
 }
-static int	RLT_div_input(void *self, void *data, int len)
-{
-	RLT_trendHMI		*cthis = Get_RLT_trendHMI();
-	if(len > 2)
-		return ERR_PARAM_BAD;
-	cthis->str_div[0] = ((char *)data)[0];
-	cthis->str_div[1] = ((char *)data)[1];
-	cthis->p_div->cnt.len = len;
-	cthis->min_div = atoi(data);
-	
-	return RET_OK;
-}
+//static int	RLT_div_input(void *self, void *data, int len)
+//{
+//	RLT_trendHMI		*cthis = Get_RLT_trendHMI();
+//	if(len > 2)
+//		return ERR_PARAM_BAD;
+//	cthis->str_div[0] = ((char *)data)[0];
+//	cthis->str_div[1] = ((char *)data)[1];
+//	cthis->p_div->cnt.len = len;
+//	cthis->min_div = atoi(data);
+//	
+//	return RET_OK;
+//}
 static void	RT_trendHmi_Show( HMI *self )
 {
 //	RLT_trendHMI		*cthis = SUB_PTR(self, HMI, RLT_trendHMI);

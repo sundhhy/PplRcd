@@ -110,39 +110,37 @@ int MdlTime_getData(  Model *self, IN int aux, void *arg)
 	return RET_OK;
 }
 //"YY/MM/DD HH:MM:SS"
+//与MdlTime_text_iteartor紧密耦合
 void MdlTime_text_modify(char	*p_time_text, int idx, int op)
 {
 	switch(idx) {
 		case 0:		//年
 		case 1:
-			break;
-		case 2:
-		case 3:
 			Str_Calculations(p_time_text + idx, 1, op, 1, 0, 9);
 			break;
 		
 		//月
-		case 5:
+		case 3:
 			Str_Calculations(p_time_text + idx, 1,  op, 1, 0, 1);
 			break;
-		case 6:
+		case 4:
 			if(p_time_text[3] == '1')
 				Str_Calculations(p_time_text + idx, 1,  op, 1, 0, 2);
 			else 
 				Str_Calculations(p_time_text + idx, 1,  op, 1, 0, 9);
 			break;
 			//日
-		case 8:
+		case 6:
 			Str_Calculations(p_time_text + idx, 1,  op, 1, 0, 3);
 			break;
-		case 9:
+		case 7:
 			Str_Calculations(p_time_text + idx, 1,  op, 1, 0, 9);
 			break;
 		//时
-		case 11:
+		case 9:
 			Str_Calculations(p_time_text + idx, 1,  op, 1, 0, 2);
 			break;
-		case 12:
+		case 10:
 			
 			if(p_time_text[9] == '2')
 				Str_Calculations(p_time_text + idx, 1,  op, 1, 0, 4);
@@ -151,22 +149,79 @@ void MdlTime_text_modify(char	*p_time_text, int idx, int op)
 //			Str_Calculations(p_time_text + idx, 1,  op, 1, 0, 9);
 			break;
 		//分
-		case 14:
+		case 12:
 			Str_Calculations(p_time_text + idx, 1,  op, 1, 0, 5);
 			break;
-		case 15:
+		case 13:
 			Str_Calculations(p_time_text + idx, 1,  op, 1, 0, 9);
 			break;
 		//秒
-		case 17:
+		case 15:
 			Str_Calculations(p_time_text + idx, 1,  op, 1, 0, 5);
 			break;
-		case 18:
+		case 16:
 			Str_Calculations(p_time_text + idx, 1,  op, 1, 0, 9);
 			break;
 		default:
 			break;
 	}
+	
+	//年份是4位数
+//	switch(idx) {
+//		case 0:		//年
+//		case 1:
+//			break;
+//		case 2:
+//		case 3:
+//			Str_Calculations(p_time_text + idx, 1, op, 1, 0, 9);
+//			break;
+//		
+//		//月
+//		case 5:
+//			Str_Calculations(p_time_text + idx, 1,  op, 1, 0, 1);
+//			break;
+//		case 6:
+//			if(p_time_text[3] == '1')
+//				Str_Calculations(p_time_text + idx, 1,  op, 1, 0, 2);
+//			else 
+//				Str_Calculations(p_time_text + idx, 1,  op, 1, 0, 9);
+//			break;
+//			//日
+//		case 8:
+//			Str_Calculations(p_time_text + idx, 1,  op, 1, 0, 3);
+//			break;
+//		case 9:
+//			Str_Calculations(p_time_text + idx, 1,  op, 1, 0, 9);
+//			break;
+//		//时
+//		case 11:
+//			Str_Calculations(p_time_text + idx, 1,  op, 1, 0, 2);
+//			break;
+//		case 12:
+//			
+//			if(p_time_text[9] == '2')
+//				Str_Calculations(p_time_text + idx, 1,  op, 1, 0, 4);
+//			else 
+//				Str_Calculations(p_time_text + idx, 1,  op, 1, 0, 9);
+////			Str_Calculations(p_time_text + idx, 1,  op, 1, 0, 9);
+//			break;
+//		//分
+//		case 14:
+//			Str_Calculations(p_time_text + idx, 1,  op, 1, 0, 5);
+//			break;
+//		case 15:
+//			Str_Calculations(p_time_text + idx, 1,  op, 1, 0, 9);
+//			break;
+//		//秒
+//		case 17:
+//			Str_Calculations(p_time_text + idx, 1,  op, 1, 0, 5);
+//			break;
+//		case 18:
+//			Str_Calculations(p_time_text + idx, 1,  op, 1, 0, 9);
+//			break;
+//		default:
+//			break;
+//	}
 	
 	
 }
@@ -177,6 +232,7 @@ void MdlTime_text_modify(char	*p_time_text, int idx, int op)
 
 //对时间显示的字符上移动
 //返回新的位置
+//与MdlTime_text_modify函数紧密耦合
 int MdlTime_text_iteartor(char	*p_time_text, int idx, int director)
 {
 	int	new_idx = 0;
@@ -239,7 +295,7 @@ static char* MdlTime_to_string( Model *self, IN int aux, void *arg)
 		case 1:
 			if(arg == NULL)
 				break;
-			sprintf(arg, "%04d/%02d/%02d %02d:%02d:%02d", p_tm->tm_year, p_tm->tm_mon, p_tm->tm_mday, \
+			sprintf(arg, "%02d/%02d/%02d %02d:%02d:%02d", p_tm->tm_year, p_tm->tm_mon, p_tm->tm_mday, \
 				p_tm->tm_hour, p_tm->tm_min, p_tm->tm_sec);
 			return arg;
 		default:break;
@@ -294,45 +350,6 @@ static int MdlTime_set_by_string( Model *self, IN int aux, void *arg)
 			t.tm_sec = Get_str_data(p, ":", 2, &err);
 			if(err)
 				return ERR_PARAM_BAD;
-			
-//			for(i = 5; i < 20; i+=3) {
-//				
-//				memcpy(s_data, (char *)arg + i, 2);
-//				s_data[2] = 0;
-//				val = atoi(s_data);
-//				if(i == 0) {
-////					val += 2000;
-//					t.tm_year = val;
-//					
-//				} else if(i == 1 * 3) {
-//					if(val > 12)
-//						return -1;
-//					t.tm_mon = val;
-//					
-//				} else if(i == 2 * 3) {
-//					if(val > g_moth_day[t.tm_mon])
-//						return -1;
-//					t.tm_mday = val;
-//					
-//				} else if(i == 3 * 3) {
-//					if(val > 23)
-//						return -1;
-//					t.tm_hour = val;
-//					
-//				} else if(i == 4 * 3) {
-//					if(val > 59)
-//						return -1;
-//					t.tm_min = val;
-//					
-//				} else if(i == 5 * 3) {
-//					if(val > 59)
-//						return -1;
-//					t.tm_sec = val;
-//					
-//				}
-//				
-//				
-//			}
 			
 			p_tm->tm_year = t.tm_year;
 			p_tm->tm_mon = t.tm_mon;

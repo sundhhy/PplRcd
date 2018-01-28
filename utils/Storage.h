@@ -28,7 +28,7 @@
 
 #define STG_DRC_READ					0
 #define STG_DRC_WRITE					1
-
+#define STG_DRC_START					2			//设置充文件头开始读写的标志
 
 #define	STG_STOP									0
 #define	STG_COVER									1
@@ -46,6 +46,13 @@ typedef struct {
 	
 }rcd_mgr_t;
 
+typedef struct {
+	uint8_t			alm_pwr_type;
+	uint8_t			flag;
+	uint8_t			none[2];
+	uint32_t		happen_time_s;
+	uint32_t		disapper_time_s;
+}rcd_alm_pwr_t;
 typedef struct
 {
 	mdl_chn_save_t		mdlchn[NUM_CHANNEL];
@@ -82,5 +89,5 @@ Storage		*Get_storage();
 //针对记录数据的特殊接口
 //读取某段时间内的记录数据，返回值是读取到的数据的长度
 //并且把数据转成csv格式
-int	STG_Read_rcd_by_time(uint8_t	cfg_type, uint32_t start_sec, uint32_t end_sec, void *buf, int buf_size, uint32_t *rd_sec);			
+int	STG_Read_rcd_by_time(uint8_t	chn, uint32_t start_sec, uint32_t end_sec, char *buf, int buf_size, uint32_t *rd_sec);			
 #endif

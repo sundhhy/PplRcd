@@ -51,7 +51,7 @@
 static shtctl *p_signalShtctl = NULL;
 const Except_T Sheet_Failed = { "Alloc Sheet Failed" };
 
-static shtDefCmd *signal_cmd;
+//static shtDefCmd *signal_cmd;
 //------------------------------------------------------------------------------
 // local function prototypes
 //------------------------------------------------------------------------------
@@ -103,11 +103,11 @@ err:
 	return p_ctl;
 	
 }
-int Sht_input( void *self, void *data, int len)
-{
-	return 0;
-	
-}
+//int Sht_input( void *self, void *data, int len)
+//{
+//	return 0;
+//	
+//}
 
 struct SHEET *Sheet_alloc( struct SHTCTL *p_ctl)
 {
@@ -131,9 +131,9 @@ struct SHEET *Sheet_alloc( struct SHTCTL *p_ctl)
 			p_sht->subAtt.numSubRow = 0;
 			p_sht->subAtt.subColGrap = 0;
 			p_sht->subAtt.subRowGrap = 0;
-			p_sht->input = Sht_input;
+//			p_sht->input = Sht_input;
 			
-			p_sht->p_enterCmd = (shtCmd*)Get_shtDefCmd();
+//			p_sht->p_enterCmd = (shtCmd*)Get_shtDefCmd();
 //			p_sht->p_enterCmd = NULL;
             return p_sht;
             
@@ -346,25 +346,25 @@ void Sheet_free( struct SHEET *p_sht)
 
 //	
 //}
-shtDefCmd *Get_shtDefCmd(void)
-{
-	if( signal_cmd == NULL)
-	{
-		signal_cmd = shtDefCmd_new();
-		
-		
-	}
-	
-	return signal_cmd;
-	
-}
+//shtDefCmd *Get_shtDefCmd(void)
+//{
+//	if( signal_cmd == NULL)
+//	{
+//		signal_cmd = shtDefCmd_new();
+//		
+//		
+//	}
+//	
+//	return signal_cmd;
+//	
+//}
 
-CTOR( shtDefCmd)
-FUNCTION_SETTING( shtCmd.shtExcute, ShtDefualtExc);
+//CTOR( shtDefCmd)
+//FUNCTION_SETTING( shtCmd.shtExcute, ShtDefualtExc);
 
 
 
-END_CTOR
+//END_CTOR
 
 //=========================================================================//
 //                                                                         //
@@ -409,10 +409,10 @@ static void Sheet_refreshsub( struct SHEET *p_sht)
 
 
 
-void ShtDefualtExc( shtCmd *self, struct SHEET *p_sht, void *arg)
-{
-	
-}
+//void ShtDefualtExc( shtCmd *self, struct SHEET *p_sht, void *arg)
+//{
+//	
+//}
 
 
 
