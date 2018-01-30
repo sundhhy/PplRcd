@@ -117,7 +117,7 @@ int	STG_Set_file_position(uint8_t	file_type, uint8_t rd_or_wr, uint32_t position
 	int						fd = -1;
 	int 					whn = 0;
 	uint32_t			whr = 0;
-	uint8_t				chn_num = STG_CHN_DATA(file_type);
+	uint8_t				chn_num = STG_GET_CHN(file_type);
 	
 	
 	fd = STG_Open_file(file_type, STG_DEF_FILE_SIZE);
@@ -494,14 +494,14 @@ static int	STG_Acc_chn_alarm(uint8_t	type, uint8_t	drc, void *p, int len)
 	
 	if(drc == STG_DRC_READ)
 	{
-		if((len + p_fnf->read_position) > STG_CHN_ALARM_FILE_SIZE)
+		if((len + p_fnf->read_position) > (chn_num + 1)* STG_CHN_ALARM_FILE_SIZE)
 			return 0;
 		return STRG_SYS.fs.fs_read(fd, p, len);
 		
 	}
 	else
 	{
-		if((len + p_fnf->write_position) > STG_CHN_ALARM_FILE_SIZE)
+		if((len + p_fnf->write_position) > (chn_num + 1) * STG_CHN_ALARM_FILE_SIZE)
 			return 0;
 		return STRG_SYS.fs.fs_write(fd, p, len);
 	}

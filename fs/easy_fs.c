@@ -191,10 +191,14 @@ int	EFS_open(uint8_t prt, char *path, char *mode, int	file_size)
 		new_fd = EFS_malloc_file_mgr();
 		new_fd = EFS_create_file(new_fd, prt, path, file_size);
 		EFS_Erase_file(new_fd);
+		
 	}
 	if(new_fd >= 0)
 	{
-		efs_mgr.arr_file_info[new_fd].read_position = 0;
+		//如果第一次打开的话，就初始化读取位置为0
+		//不每次打开都初始化读取位置是因为有些场合下不希望该值被初始化为0
+		if((efs_mgr.arr_file_info[new_fd].file_flag & EFS_FLAG_OPENED) == 0)
+			efs_mgr.arr_file_info[new_fd].read_position = 0;
 		efs_mgr.arr_file_info[new_fd].file_flag |= EFS_FLAG_OPENED;
 		
 	}
@@ -208,6 +212,9 @@ int	EFS_close(int fd)
 	
 	if(fd > EFS_MAX_NUM_FILES)
 		return -1;
+	
+	
+	efs_mgr.arr_file_info[fd].read_position = 0;
 	
 	//更新写位置
 	if(f_mgr->efile_wr_position != f->write_position)

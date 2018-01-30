@@ -446,6 +446,8 @@ static void MdlChn_Init_alm_mgr_by_STG_alm(Model_chn *cthis)
 	Storage						*stg = Get_storage();
 	rcd_alm_pwr_t			stg_alm = {0};
 	int								num_alm = 0;
+	
+	STG_Set_file_position(STG_CHN_ALARM(cthis->chni.chn_NO), STG_DRC_READ, 0);
 	while(stg_alm.flag != 0xff)
 	{
 		if(stg->rd_stored_data(stg, STG_CHN_ALARM(cthis->chni.chn_NO), \
@@ -600,6 +602,15 @@ static void MdlChn_run(Model *self)
 	
 #if TDD_SAVE_DATA == 1
 	cthis->chni.value ++;
+	if(cthis->chni.value > 15)
+		cthis->chni.value = 0;
+	
+	cthis->alarm.alarm_hh = 10;
+	cthis->alarm.alarm_hi = 8;
+	
+	cthis->alarm.alarm_lo = 4;
+	cthis->alarm.alarm_ll = 2;
+	
 	Signal_Alarm(cthis);
 	
 	self->notify(self);

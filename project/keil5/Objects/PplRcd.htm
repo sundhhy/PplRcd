@@ -3,7 +3,7 @@
 <title>Static Call Graph - [.\Objects\PplRcd.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image .\Objects\PplRcd.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060061: Last Updated: Tue Jan 30 19:35:16 2018
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5050106: Last Updated: Tue Jan 30 22:51:27 2018
 <BR><P>
 <H3>Maximum Stack Usage =        296 bytes + Unknown(Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -1661,7 +1661,7 @@ Global Symbols
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> easy_fs.o(i.EFS_init)
 </UL>
-<P><STRONG><a name="[e3]"></a>EFS_close</STRONG> (Thumb, 84 bytes, Stack size 16 bytes, easy_fs.o(i.EFS_close))
+<P><STRONG><a name="[e3]"></a>EFS_close</STRONG> (Thumb, 98 bytes, Stack size 16 bytes, easy_fs.o(i.EFS_close))
 <BR><BR>[Stack]<UL><LI>Max Depth = 32<LI>Call Chain = EFS_close &rArr; EFS_flush_mgr
 </UL>
 <BR>[Calls]<UL><LI><a href="#[29f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;EFS_flush_mgr
@@ -1690,7 +1690,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[3bb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;System_init
 </UL>
 
-<P><STRONG><a name="[e2]"></a>EFS_open</STRONG> (Thumb, 104 bytes, Stack size 24 bytes, easy_fs.o(i.EFS_open))
+<P><STRONG><a name="[e2]"></a>EFS_open</STRONG> (Thumb, 122 bytes, Stack size 24 bytes, easy_fs.o(i.EFS_open))
 <BR><BR>[Stack]<UL><LI>Max Depth = 96<LI>Call Chain = EFS_open &rArr; EFS_create_file &rArr; EFS_Cal_free_space
 </UL>
 <BR>[Calls]<UL><LI><a href="#[ea]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;EFS_Erase_file
@@ -1831,7 +1831,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[1ae]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;KeyboardHitHandle
 </UL>
 
-<P><STRONG><a name="[2b3]"></a>Except_raise</STRONG> (Thumb, 128 bytes, Stack size 0 bytes, except.o(i.Except_raise))
+<P><STRONG><a name="[2b3]"></a>Except_raise</STRONG> (Thumb, 130 bytes, Stack size 0 bytes, except.o(i.Except_raise))
 <BR><BR>[Stack]<UL><LI>Max Depth = 24 + In Cycle
 <LI>Call Chain = Except_raise &rArr;  Except_raise (Cycle)
 </UL>
@@ -2897,18 +2897,18 @@ Global Symbols
 <BR>[Calls]<UL><LI><a href="#[21a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;BTN_Get_Sington
 <LI><a href="#[205]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strcmp
 </UL>
-<BR>[Address Reference Count : 4]<UL><LI> news_power_down_hmi.o(i.News_PwrDn_HMI_ctor)
-<LI> bargraphhmi.o(i.barGhHMI_ctor)
+<BR>[Address Reference Count : 4]<UL><LI> bargraphhmi.o(i.barGhHMI_ctor)
+<LI> news_power_down_hmi.o(i.News_PwrDn_HMI_ctor)
 <LI> mainhmi.o(i.mainHmi_ctor)
 <LI> news_alarm_hmi.o(i.News_Alarm_HMI_ctor)
 </UL>
 <P><STRONG><a name="[115]"></a>Main_btn_hdl</STRONG> (Thumb, 78 bytes, Stack size 16 bytes, mainhmi.o(i.Main_btn_hdl))
 <BR><BR>[Stack]<UL><LI>Max Depth = 16<LI>Call Chain = Main_btn_hdl
 </UL>
-<BR>[Address Reference Count : 4]<UL><LI> real_time_trendhmi.o(i.RLT_HMI_build_button)
-<LI> mainhmi.o(i.Main_HMI_build_button)
+<BR>[Address Reference Count : 4]<UL><LI> mainhmi.o(i.Main_HMI_build_button)
 <LI> news_power_down_hmi.o(i.NWP_Build_button)
 <LI> news_alarm_hmi.o(i.NWA_Build_button)
+<LI> real_time_trendhmi.o(i.RLT_HMI_build_button)
 </UL>
 <P><STRONG><a name="[32d]"></a>MdlChn_default_alarm</STRONG> (Thumb, 38 bytes, Stack size 16 bytes, model_channel.o(i.MdlChn_default_alarm))
 <BR><BR>[Stack]<UL><LI>Max Depth = 96<LI>Call Chain = MdlChn_default_alarm &rArr; Get_Mode_chn &rArr; Model_chn_new &rArr; malloc &rArr; internal_alloc
@@ -3542,13 +3542,14 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[c2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;DBP_Copy
 </UL>
 
-<P><STRONG><a name="[32a]"></a>STG_Set_file_position</STRONG> (Thumb, 118 bytes, Stack size 40 bytes, storage.o(i.STG_Set_file_position))
+<P><STRONG><a name="[32a]"></a>STG_Set_file_position</STRONG> (Thumb, 114 bytes, Stack size 40 bytes, storage.o(i.STG_Set_file_position))
 <BR><BR>[Stack]<UL><LI>Max Depth = 176<LI>Call Chain = STG_Set_file_position &rArr; STG_Open_file &rArr; Strg_Updata_rcd_mgr &rArr;  STG_Open_file (Cycle)
 </UL>
 <BR>[Calls]<UL><LI><a href="#[265]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Get_storage
 <LI><a href="#[17a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;STG_Open_file
 </UL>
-<BR>[Called By]<UL><LI><a href="#[32b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MdlChn_Check_new_alarm
+<BR>[Called By]<UL><LI><a href="#[32c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MdlChn_Init_alm_mgr_by_STG_alm
+<LI><a href="#[32b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MdlChn_Check_new_alarm
 <LI><a href="#[328]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MdlChn_Cancle_alarm
 </UL>
 
@@ -3557,12 +3558,12 @@ Global Symbols
 </UL>
 <BR>[Calls]<UL><LI><a href="#[21a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;BTN_Get_Sington
 </UL>
-<BR>[Address Reference Count : 6]<UL><LI> set_arithmetic_strategy.o(.data)
-<LI> set_view_strategy.o(.data)
-<LI> set_alarm_strategy.o(.data)
-<LI> set_channel_strategy.o(.data)
-<LI> set_dataprint_strategy.o(.data)
+<BR>[Address Reference Count : 6]<UL><LI> set_alarm_strategy.o(.data)
+<LI> set_arithmetic_strategy.o(.data)
 <LI> set_system_strategy.o(.data)
+<LI> set_view_strategy.o(.data)
+<LI> set_dataprint_strategy.o(.data)
+<LI> set_channel_strategy.o(.data)
 </UL>
 <P><STRONG><a name="[329]"></a>SYS_time_sec</STRONG> (Thumb, 28 bytes, Stack size 32 bytes, system.o(i.SYS_time_sec))
 <BR><BR>[Stack]<UL><LI>Max Depth = 44<LI>Call Chain = SYS_time_sec &rArr; Time_2_u32
@@ -5446,7 +5447,7 @@ Global Symbols
 <LI><a href="#[6d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SysTick_Handler
 </UL>
 
-<P><STRONG><a name="[42e]"></a>rt_tsk_create</STRONG> (Thumb, 118 bytes, Stack size 24 bytes, rt_task.o(i.rt_tsk_create))
+<P><STRONG><a name="[42e]"></a>rt_tsk_create</STRONG> (Thumb, 120 bytes, Stack size 24 bytes, rt_task.o(i.rt_tsk_create))
 <BR><BR>[Stack]<UL><LI>Max Depth = 56<LI>Call Chain = rt_tsk_create &rArr; rt_init_context &rArr; rt_init_stack
 </UL>
 <BR>[Calls]<UL><LI><a href="#[42f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;dbg_task_notify
@@ -5457,7 +5458,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[1c5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;svcThreadCreate
 </UL>
 
-<P><STRONG><a name="[430]"></a>rt_tsk_delete</STRONG> (Thumb, 352 bytes, Stack size 40 bytes, rt_task.o(i.rt_tsk_delete))
+<P><STRONG><a name="[430]"></a>rt_tsk_delete</STRONG> (Thumb, 346 bytes, Stack size 40 bytes, rt_task.o(i.rt_tsk_delete))
 <BR><BR>[Stack]<UL><LI>Max Depth = 68<LI>Call Chain = rt_tsk_delete &rArr; rt_dispatch &rArr; rt_put_prio
 </UL>
 <BR>[Calls]<UL><LI><a href="#[1e8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_stk_check
@@ -6625,7 +6626,7 @@ Local Symbols
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> keyboard.o(i.Keyboard_ctor)
 </UL>
-<P><STRONG><a name="[386]"></a>STG_Acc_chn_alarm</STRONG> (Thumb, 120 bytes, Stack size 32 bytes, storage.o(i.STG_Acc_chn_alarm))
+<P><STRONG><a name="[386]"></a>STG_Acc_chn_alarm</STRONG> (Thumb, 134 bytes, Stack size 32 bytes, storage.o(i.STG_Acc_chn_alarm))
 <BR><BR>[Stack]<UL><LI>Max Depth = 168<LI>Call Chain = STG_Acc_chn_alarm &rArr; STG_Open_file &rArr; Strg_Updata_rcd_mgr &rArr;  STG_Open_file (Cycle)
 </UL>
 <BR>[Calls]<UL><LI><a href="#[17a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;STG_Open_file
@@ -7372,8 +7373,8 @@ Local Symbols
 <LI><a href="#[21f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Sheet_is_hide
 <LI><a href="#[1fe]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strlen
 </UL>
-<BR>[Address Reference Count : 2]<UL><LI> mainhmi.o(i.Build_ChnSheets)
-<LI> mainhmi.o(i.MainHmi_Init_chnShet)
+<BR>[Address Reference Count : 2]<UL><LI> mainhmi.o(i.MainHmi_Init_chnShet)
+<LI> mainhmi.o(i.Build_ChnSheets)
 </UL>
 <P><STRONG><a name="[b6]"></a>MainHmi_Data_update</STRONG> (Thumb, 190 bytes, Stack size 56 bytes, mainhmi.o(i.MainHmi_Data_update))
 <BR><BR>[Stack]<UL><LI>Max Depth = 88<LI>Call Chain = MainHmi_Data_update &rArr; Sheet_slide &rArr; Sheet_refreshsub
@@ -7382,8 +7383,8 @@ Local Symbols
 <LI><a href="#[21f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Sheet_is_hide
 <LI><a href="#[1fe]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strlen
 </UL>
-<BR>[Address Reference Count : 2]<UL><LI> mainhmi.o(i.Build_ChnSheets)
-<LI> mainhmi.o(i.MainHmi_Init_chnShet)
+<BR>[Address Reference Count : 2]<UL><LI> mainhmi.o(i.MainHmi_Init_chnShet)
+<LI> mainhmi.o(i.Build_ChnSheets)
 </UL>
 <P><STRONG><a name="[327]"></a>MainHmi_Init_chnShet</STRONG> (Thumb, 204 bytes, Stack size 16 bytes, mainhmi.o(i.MainHmi_Init_chnShet))
 <BR><BR>[Stack]<UL><LI>Max Depth = 104<LI>Call Chain = MainHmi_Init_chnShet &rArr; ExpCreate &rArr; GetPictExpr &rArr; PicExpr_new &rArr; malloc &rArr; internal_alloc
@@ -7400,8 +7401,8 @@ Local Symbols
 <LI><a href="#[21f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Sheet_is_hide
 <LI><a href="#[1fe]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strlen
 </UL>
-<BR>[Address Reference Count : 2]<UL><LI> mainhmi.o(i.Build_ChnSheets)
-<LI> mainhmi.o(i.MainHmi_Init_chnShet)
+<BR>[Address Reference Count : 2]<UL><LI> mainhmi.o(i.MainHmi_Init_chnShet)
+<LI> mainhmi.o(i.Build_ChnSheets)
 </UL>
 <P><STRONG><a name="[1b4]"></a>MaininitSheet</STRONG> (Thumb, 132 bytes, Stack size 16 bytes, mainhmi.o(i.MaininitSheet))
 <BR><BR>[Stack]<UL><LI>Max Depth = 192<LI>Call Chain = MaininitSheet &rArr; Sheet_updown &rArr; GetShtctl &rArr; Dev_open &rArr; DevChar_open &rArr; Get_Dev_IIC &rArr; Dev_IIC_new &rArr; malloc &rArr; internal_alloc
@@ -8708,10 +8709,11 @@ Local Symbols
 <BR>[Called By]<UL><LI><a href="#[339]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Signal_Alarm
 </UL>
 
-<P><STRONG><a name="[32c]"></a>MdlChn_Init_alm_mgr_by_STG_alm</STRONG> (Thumb, 98 bytes, Stack size 32 bytes, model_channel.o(i.MdlChn_Init_alm_mgr_by_STG_alm))
-<BR><BR>[Stack]<UL><LI>Max Depth = 104<LI>Call Chain = MdlChn_Init_alm_mgr_by_STG_alm &rArr; Get_storage &rArr; Storage_new &rArr; malloc &rArr; internal_alloc
+<P><STRONG><a name="[32c]"></a>MdlChn_Init_alm_mgr_by_STG_alm</STRONG> (Thumb, 114 bytes, Stack size 32 bytes, model_channel.o(i.MdlChn_Init_alm_mgr_by_STG_alm))
+<BR><BR>[Stack]<UL><LI>Max Depth = 208<LI>Call Chain = MdlChn_Init_alm_mgr_by_STG_alm &rArr; STG_Set_file_position &rArr; STG_Open_file &rArr; Strg_Updata_rcd_mgr &rArr;  STG_Open_file (Cycle)
 </UL>
 <BR>[Calls]<UL><LI><a href="#[265]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Get_storage
+<LI><a href="#[32a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;STG_Set_file_position
 </UL>
 <BR>[Called By]<UL><LI><a href="#[120]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MdlChn_init
 </UL>
@@ -8737,7 +8739,7 @@ Local Symbols
 <BR>[Address Reference Count : 1]<UL><LI> model_channel.o(i.Model_chn_ctor)
 </UL>
 <P><STRONG><a name="[120]"></a>MdlChn_init</STRONG> (Thumb, 184 bytes, Stack size 56 bytes, model_channel.o(i.MdlChn_init))
-<BR><BR>[Stack]<UL><LI>Max Depth = 160<LI>Call Chain = MdlChn_init &rArr; MdlChn_Init_alm_mgr_by_STG_alm &rArr; Get_storage &rArr; Storage_new &rArr; malloc &rArr; internal_alloc
+<BR><BR>[Stack]<UL><LI>Max Depth = 264<LI>Call Chain = MdlChn_init &rArr; MdlChn_Init_alm_mgr_by_STG_alm &rArr; STG_Set_file_position &rArr; STG_Open_file &rArr; Strg_Updata_rcd_mgr &rArr;  STG_Open_file (Cycle)
 </UL>
 <BR>[Calls]<UL><LI><a href="#[334]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Mem_calloc
 <LI><a href="#[265]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Get_storage
@@ -8759,7 +8761,7 @@ Local Symbols
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> model_channel.o(i.Model_chn_ctor)
 </UL>
-<P><STRONG><a name="[121]"></a>MdlChn_run</STRONG> (Thumb, 66 bytes, Stack size 24 bytes, model_channel.o(i.MdlChn_run))
+<P><STRONG><a name="[121]"></a>MdlChn_run</STRONG> (Thumb, 104 bytes, Stack size 24 bytes, model_channel.o(i.MdlChn_run))
 <BR><BR>[Stack]<UL><LI>Max Depth = 296<LI>Call Chain = MdlChn_run &rArr; Signal_Alarm &rArr; MdlChn_Check_new_alarm &rArr; STG_Set_file_position &rArr; STG_Open_file &rArr; Strg_Updata_rcd_mgr &rArr;  STG_Open_file (Cycle)
 </UL>
 <BR>[Calls]<UL><LI><a href="#[265]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Get_storage
@@ -9241,7 +9243,7 @@ Local Symbols
 <LI><a href="#[403]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;isrSemaphoreRelease
 </UL>
 
-<P><STRONG><a name="[436]"></a>rt_ms2tick</STRONG> (Thumb, 58 bytes, Stack size 0 bytes, rt_cmsis.o(i.rt_ms2tick))
+<P><STRONG><a name="[436]"></a>rt_ms2tick</STRONG> (Thumb, 60 bytes, Stack size 0 bytes, rt_cmsis.o(i.rt_ms2tick))
 <BR><BR>[Called By]<UL><LI><a href="#[1c4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;svcSemaphoreWait
 <LI><a href="#[1c1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;svcMessageGet
 <LI><a href="#[1be]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;svcDelay
