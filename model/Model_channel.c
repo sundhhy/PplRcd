@@ -60,13 +60,14 @@ static int MdlChn_modify_sconf(Model *self, IN int aux, char *s, int op, int val
 static void Pe_singnaltype(e_signal_t sgt, char *str);
 static void Pe_touch_spot(int spot, char *str);
 
-static void MdlChn_Save_2_conf(mdl_chn_save_t *p_mcs, chn_info_t *p_cnf, uint8_t direct);
+static void MdlChn_Init_alm_mgr_by_STG_alm(Model_chn *cthis);
 
+static void MdlChn_Save_2_conf(mdl_chn_save_t *p_mcs, chn_info_t *p_cnf, uint8_t direct);
 static void MdlChn_Save_2_alarm(mdl_chn_save_t *p_mcs, chn_alarm_t *p_alr, uint8_t direct);
 
 static	uint16_t Zero_shift_K_B(chn_info_t *p, uint16_t	d);
 static	uint16_t Cut_small_signal(chn_info_t *p, uint16_t	d);
-static void Signal_Alarm(chn_info_t *p, chn_alarm_t *p_alm);
+static void Signal_Alarm(Model_chn *cthis);
 //static int Str_to_data(char *str, int prec);
 //============================================================================//
 //            P U B L I C   F U N C T I O N S                                 //
@@ -128,8 +129,128 @@ static int16_t	Percent_to_data(chn_info_t *p,uint16_t prc, char	point)
 	return(j);	
 }
 
-static void Signal_Alarm(chn_info_t *p, chn_alarm_t *p_alm)
+//检查指定的错误是否是新发生的
+static void	MdlChn_Check_new_alarm(Model_chn *cthis, uint8_t new_flag, uint8_t alm_flag)
 {
+	uint8_t *p_index = NULL;
+	Storage	*stg = NULL;
+	rcd_alm_pwr_t		rap;
+	uint8_t					alm_code = 0;
+	uint8_t					retry = 5;
+	if(cthis->alarm.alm_flag & alm_flag)
+		return;		//已经被记录了，直接退出
+	if((new_flag & alm_flag) == 0)
+		return;	
+	//指定的报警是新产生的
+	switch(alm_flag)
+	{
+		case ALM_HH:
+			p_index = &cthis->alarm_mgr.alm_hh_index;
+			alm_code = ALM_CODE_HH;
+			break;
+		case ALM_HI:
+			p_index = &cthis->alarm_mgr.alm_hi_index;
+			alm_code = ALM_CODE_HI;
+			break;
+		case ALM_LO:
+			p_index = &cthis->alarm_mgr.alm_lo_index;
+			alm_code = ALM_CODE_LO;
+			break;
+		case ALM_LL:
+			p_index = &cthis->alarm_mgr.alm_ll_index;
+			alm_code = ALM_CODE_LL;
+			break;
+	}
+	if(p_index == NULL)
+		return;
+	
+	stg = Get_storage();
+
+	
+	*p_index = cthis->alarm.num_alms_in_stg;
+	cthis->alarm.num_alms_in_stg ++;
+	cthis->alarm.num_alms_in_stg %= STG_MAX_NUM_CHNALARM;
+	
+	rap.alm_pwr_type = alm_code;
+	rap.flag = 1;
+	rap.happen_time_s = SYS_time_sec();
+	rap.disapper_time_s = 0;
+	
+	STG_Set_file_position(STG_CHN_ALARM(cthis->chni.chn_NO), STG_DRC_WRITE, *p_index * sizeof(rcd_alm_pwr_t));
+	while(stg->wr_stored_data(stg, STG_CHN_ALARM(cthis->chni.chn_NO), &rap, sizeof(rcd_alm_pwr_t)) != sizeof(rcd_alm_pwr_t))
+	{
+		if(retry)
+			retry --;
+		else
+			break;
+		
+	}
+	
+}
+
+
+//通过对比新的报警状态和旧的报警状态，来判断旧的报警是否被取消了
+//需要注意的是，如果报警从一种报警，迁移到另外一种报警的时候，也要记录取消时间
+static void	MdlChn_Cancle_alarm(Model_chn *cthis, uint8_t new_flag, uint8_t alm_flag)
+{
+	uint8_t *p_index = NULL;
+	Storage	*stg = NULL;
+	uint32_t		dsp_time;
+	uint8_t					alm_code = 0;
+	uint8_t					retry = 5;
+	
+	//只有就的报警状态上存在的记录，并且在新的报警状态中不存在的报警，才能说明该报警被取消掉了
+	
+	if((cthis->alarm.alm_flag & alm_flag) == 0)
+		return;		//报警未发生过，也就没有取消报警的说法了
+	if((new_flag & alm_flag) )
+		return;		//报警还存在，也说明该报警没有取消
+
+	switch(alm_flag)
+	{
+		case ALM_HH:
+			p_index = &cthis->alarm_mgr.alm_hh_index;
+			alm_code = ALM_CODE_HH;
+			break;
+		case ALM_HI:
+			p_index = &cthis->alarm_mgr.alm_hi_index;
+			alm_code = ALM_CODE_HI;
+			break;
+		case ALM_LO:
+			p_index = &cthis->alarm_mgr.alm_lo_index;
+			alm_code = ALM_CODE_LO;
+			break;
+		case ALM_LL:
+			p_index = &cthis->alarm_mgr.alm_ll_index;
+			alm_code = ALM_CODE_LL;
+			break;
+	}
+	if(p_index == NULL)
+		return;
+	if(*p_index == 0xff)
+		return;
+	
+	stg = Get_storage();
+	
+
+	dsp_time = SYS_time_sec();
+
+	
+	STG_Set_file_position(STG_CHN_ALARM(cthis->chni.chn_NO), STG_DRC_WRITE, *p_index * sizeof(rcd_alm_pwr_t) +(int)(&((rcd_alm_pwr_t *)0)->disapper_time_s));
+	while(stg->wr_stored_data(stg, STG_CHN_ALARM(cthis->chni.chn_NO), &dsp_time, sizeof(uint32_t)) != sizeof(uint32_t))
+	{
+		if(retry)
+			retry --;
+		else
+			break;
+		
+	}
+	
+}
+static void Signal_Alarm(Model_chn *cthis)
+{
+	chn_info_t *p = &cthis->chni;
+	chn_alarm_t *p_alm = &cthis->alarm;
 	uint8_t flag, new_flag = 0;
 	int16_t tempS2,tempS3,bjhc, prc_data;
 	int32_t temps4;
@@ -152,7 +273,7 @@ static void Signal_Alarm(chn_info_t *p, chn_alarm_t *p_alm)
 	//报警判断及处理
 	if(p->value < tempS3)		
 	{
-		if(p->value<tempS2)
+		if(p->value < tempS2)
 		{	//低低报
 			phn_sys.DO_err |= 1 << p_alm->touch_spot_ll;
 			new_flag |= ALM_LL;
@@ -190,6 +311,18 @@ static void Signal_Alarm(chn_info_t *p, chn_alarm_t *p_alm)
 			}		
 	}
 	//todo: 180115  产生新报警或者消除旧的报警的时候，是需要进行报警的记录处理
+	//检查是否产生新的报警
+	MdlChn_Check_new_alarm(cthis, new_flag, ALM_HH);
+	MdlChn_Check_new_alarm(cthis, new_flag, ALM_HI);
+	MdlChn_Check_new_alarm(cthis, new_flag, ALM_LO);
+	MdlChn_Check_new_alarm(cthis, new_flag, ALM_LL);
+
+	//检查是否有报警被消除
+	MdlChn_Cancle_alarm(cthis, new_flag, ALM_HH);
+	MdlChn_Cancle_alarm(cthis, new_flag, ALM_HI);
+	MdlChn_Cancle_alarm(cthis, new_flag, ALM_LO);
+	MdlChn_Cancle_alarm(cthis, new_flag, ALM_LL);
+	
 	p_alm->alm_flag = new_flag;
 }
 
@@ -237,10 +370,11 @@ static	uint16_t Cut_small_signal(chn_info_t *p, uint16_t	d)
 
 static int MdlChn_init(Model *self, IN void *arg)
 {
-	uint8_t					chn_num = *((uint8_t *)arg);
-	Model_chn		*cthis = SUB_PTR(self, Model, Model_chn);
-	Storage			*stg = Get_storage();
+	Model_chn					*cthis = SUB_PTR(self, Model, Model_chn);
+	Storage						*stg = Get_storage();
 	mdl_chn_save_t		save;
+	uint8_t						chn_num = *((uint8_t *)arg);
+
 	
 	cthis->str_buf = CALLOC(1,8);
 	cthis->unit_buf = CALLOC(1,8);
@@ -261,6 +395,8 @@ static int MdlChn_init(Model *self, IN void *arg)
 		stg->wr_stored_data(stg, STG_CHN_CONF(cthis->chni.chn_NO), NULL, 0);
 		
 	}
+	
+	MdlChn_Init_alm_mgr_by_STG_alm(cthis);
 
 	stg->open_file(STG_CHN_DATA(cthis->chni.chn_NO), cthis->chni.MB * 1024 * 1024);
 	return RET_OK;
@@ -300,6 +436,40 @@ void MdlChn_default_alarm(int chn_num)
 	p_mdl->alarm.alarm_hh = 0x7fff;
 	p_mdl->alarm.alarm_hi = 0x7fff;
 	
+	
+}
+
+//从存储器中读取报警的记录信息，来确定本次初始化的报警存储起始位置
+static void MdlChn_Init_alm_mgr_by_STG_alm(Model_chn *cthis)
+{
+	
+	Storage						*stg = Get_storage();
+	rcd_alm_pwr_t			stg_alm = {0};
+	int								num_alm = 0;
+	while(stg_alm.flag != 0xff)
+	{
+		if(stg->rd_stored_data(stg, STG_CHN_ALARM(cthis->chni.chn_NO), \
+			&stg_alm, sizeof(rcd_alm_pwr_t)) != sizeof(rcd_alm_pwr_t))
+			{
+				
+				//或者已经读完了
+				break;
+				
+				
+			}
+			if(stg_alm.flag != 0xff)
+				num_alm ++;
+		
+	}
+	
+	if(num_alm == STG_MAX_NUM_CHNALARM)
+		num_alm = 0;		//报警内存都满了，就重头开始覆盖
+	cthis->alarm.num_alms_in_stg = num_alm;
+	
+	cthis->alarm_mgr.alm_hh_index = 0xff;
+	cthis->alarm_mgr.alm_hi_index = 0xff;
+	cthis->alarm_mgr.alm_lo_index = 0xff;
+	cthis->alarm_mgr.alm_ll_index = 0xff;
 	
 }
 
@@ -430,6 +600,8 @@ static void MdlChn_run(Model *self)
 	
 #if TDD_SAVE_DATA == 1
 	cthis->chni.value ++;
+	Signal_Alarm(cthis);
+	
 	self->notify(self);
 	stg->wr_stored_data(stg, STG_CHN_DATA(cthis->chni.chn_NO), &cthis->chni.value, 2);
 #else	
@@ -499,7 +671,7 @@ static void MdlChn_run(Model *self)
 //		if((phn_sys.sys_flag & SYSFLAG_SETTING) == 0)
 			self->notify(self);
 		
-		Signal_Alarm(&cthis->chni, &cthis->alarm);
+		Signal_Alarm(cthis);
 		
 	}
 	

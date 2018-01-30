@@ -9,6 +9,10 @@
 // const defines
 //------------------------------------------------------------------------------
 
+//记录文件结构：[通道报警记录 * NUM_CHANNEL | 掉电记录]
+#define STG_CHN_ALARM_FILE_SIZE 		STG_MAX_NUM_CHNALARM * sizeof(rcd_mgr_t)
+#define STG_LSTPWR_FILE_OFFSET			STG_CHN_ALARM_FILE_SIZE * NUM_CHANNEL
+#define	STG_LSTPWR_FILE_SIZE				4096 - STG_LSTPWR_FILE_OFFSET
 //------------------------------------------------------------------------------
 // module global vars
 //------------------------------------------------------------------------------
@@ -107,6 +111,52 @@ Storage		*Get_storage()
 	
 }
 
+int	STG_Set_file_position(uint8_t	file_type, uint8_t rd_or_wr, uint32_t position)
+{
+	Storage				*stg = Get_storage();
+	int						fd = -1;
+	int 					whn = 0;
+	uint32_t			whr = 0;
+	uint8_t				chn_num = STG_CHN_DATA(file_type);
+	
+	
+	fd = STG_Open_file(file_type, STG_DEF_FILE_SIZE);
+	if(rd_or_wr == STG_DRC_READ)
+	{
+		whn = RD_SEEK_SET;
+		
+	}
+	else
+	{
+		whn = WR_SEEK_SET;
+	}
+	
+	if(IS_CHN_ALARM(file_type))
+	{
+		//每个通道都有自己的存储区
+		if(position > STG_CHN_ALARM_FILE_SIZE)
+		{
+			return ERR_PARAM_BAD;
+			
+		}
+		
+		whr = chn_num * STG_CHN_ALARM_FILE_SIZE + position;
+	}
+	if(IS_LOSE_PWR(file_type))
+	{
+		if(position > STG_LSTPWR_FILE_SIZE)
+		{
+			return STG_LSTPWR_FILE_SIZE;
+			
+		}
+		
+		whr = STG_LSTPWR_FILE_OFFSET + position;
+		
+		
+	}
+	
+	return STRG_SYS.fs.fs_lseek(fd, whn, whr);
+}
 
 int	STG_Read_rcd_by_time(uint8_t	chn, uint32_t start_sec, uint32_t end_sec, char *buf, int buf_size, uint32_t *rd_sec)
 {
@@ -414,44 +464,45 @@ static int	STG_Acc_sys_conf(uint8_t drc, void *p)
 	
 }
 
-
+//调用方维护读写位置的正确
 static int	STG_Acc_lose_pwr(uint8_t	drc, void *p, int len)
 {
+	
 	int fd = STG_Open_file(STG_LOSE_PWR, STG_DEF_FILE_SIZE);
 	
-	if((drc & 1) == STG_DRC_READ)
+	if(drc == STG_DRC_READ)
 	{
-		if(drc & STG_DRC_START)
-			STRG_SYS.fs.fs_lseek(fd, RD_SEEK_SET, 2400);		//掉电信息之前是 6 * 384 的报警信息
-		
+		return STRG_SYS.fs.fs_read(fd, p, len);
 	}
 	else
 	{
-		if(drc & STG_DRC_START)
-			STRG_SYS.fs.fs_lseek(fd, WR_SEEK_SET, 2400);
+		return STRG_SYS.fs.fs_write(fd, p, len);
 	}
 	
 }
+//调用方维护读写位置的正确
+
 static int	STG_Acc_chn_alarm(uint8_t	type, uint8_t	drc, void *p, int len)
 {
 	int fd = STG_Open_file(type, STG_DEF_FILE_SIZE);
+	file_info_t	*p_fnf = STRG_SYS.fs.fs_file_info(fd);
 	uint8_t		chn_num = STG_GET_CHN(type);
 	if(chn_num > (NUM_CHANNEL - 1))
 		return 0;
-	if(len > 384)
-		len = 384;
-	if((drc & 1) == STG_DRC_READ)
+	if(len > STG_CHN_ALARM_FILE_SIZE)
+		return 0;
+	
+	if(drc == STG_DRC_READ)
 	{
-		if(drc & STG_DRC_START)
-			STRG_SYS.fs.fs_lseek(fd, RD_SEEK_SET, chn_num * 384);
+		if((len + p_fnf->read_position) > STG_CHN_ALARM_FILE_SIZE)
+			return 0;
 		return STRG_SYS.fs.fs_read(fd, p, len);
 		
 	}
 	else
 	{
-		if(drc & STG_DRC_START)
-			STRG_SYS.fs.fs_lseek(fd, WR_SEEK_SET, chn_num * 384);
-		
+		if((len + p_fnf->write_position) > STG_CHN_ALARM_FILE_SIZE)
+			return 0;
 		return STRG_SYS.fs.fs_write(fd, p, len);
 	}
 	

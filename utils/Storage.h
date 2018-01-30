@@ -28,7 +28,6 @@
 
 #define STG_DRC_READ					0
 #define STG_DRC_WRITE					1
-#define STG_DRC_START					2			//设置充文件头开始读写的标志
 
 #define	STG_STOP									0
 #define	STG_COVER									1
@@ -37,6 +36,9 @@
 
 
 #define STG_DEF_FILE_SIZE 		0
+
+
+#define STG_MAX_NUM_CHNALARM			24		//每个通道的最大报警数量	
 //------------------------------------------------------------------------------
 // typedef
 //------------------------------------------------------------------------------
@@ -90,4 +92,7 @@ Storage		*Get_storage();
 //读取某段时间内的记录数据，返回值是读取到的数据的长度
 //并且把数据转成csv格式
 int	STG_Read_rcd_by_time(uint8_t	chn, uint32_t start_sec, uint32_t end_sec, char *buf, int buf_size, uint32_t *rd_sec);			
+int	STG_Set_file_position(uint8_t	file_type, uint8_t rd_or_wr, uint32_t position);
+
+
 #endif

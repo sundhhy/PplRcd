@@ -23,6 +23,12 @@
 #define ALM_HI					0x20
 #define ALM_LO					0x10
 #define ALM_LL					0x08
+#define ALM_CODE_HH			1
+#define ALM_CODE_HI			2
+#define ALM_CODE_LO			3
+#define ALM_CODE_LL			4
+
+
 //------------------------------------------------------------------------------
 // typedef
 //------------------------------------------------------------------------------
@@ -120,7 +126,9 @@ typedef struct {
 	*/
 	
 	
-	uint8_t				none[2];
+	
+	uint8_t				num_alms_in_stg;		//存储器中的报警数量
+	uint8_t				none;
 }chn_alarm_t;
 	
 typedef struct {
@@ -166,6 +174,12 @@ CLASS(Model_chn)
 	EXTENDS( Model);
 	chn_info_t		chni;
 	chn_alarm_t		alarm;
+	struct {
+		uint8_t		alm_hh_index;
+		uint8_t		alm_hi_index;
+		uint8_t		alm_lo_index;
+		uint8_t		alm_ll_index;
+	}alarm_mgr;
 	
 	char 	*str_buf;
 	char 	*unit_buf;
