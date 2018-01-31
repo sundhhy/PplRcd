@@ -10,7 +10,7 @@
 //------------------------------------------------------------------------------
 
 //记录文件结构：[通道报警记录 * NUM_CHANNEL | 掉电记录]
-#define STG_CHN_ALARM_FILE_SIZE 		STG_MAX_NUM_CHNALARM * sizeof(rcd_mgr_t)
+#define STG_CHN_ALARM_FILE_SIZE 		STG_MAX_NUM_CHNALARM * sizeof(rcd_alm_pwr_t)
 #define STG_LSTPWR_FILE_OFFSET			STG_CHN_ALARM_FILE_SIZE * NUM_CHANNEL
 #define	STG_LSTPWR_FILE_SIZE				4096 - STG_LSTPWR_FILE_OFFSET
 //------------------------------------------------------------------------------

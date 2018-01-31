@@ -177,6 +177,8 @@ void System_init(void)
 #if TDD_ON	== 0
 	stg->init(stg);
 	
+	System_power_on();
+	
 	stg->rd_stored_data(stg, STG_SYS_CONF, &phn_sys.sys_conf, sizeof(phn_sys.sys_conf));
 	if(phn_sys.sys_conf.num_chn != NUM_CHANNEL)
 		System_default();

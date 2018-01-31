@@ -977,10 +977,10 @@ static char* MdlChn_to_string( Model *self, IN int aux, void *arg)
 {
 	Model_chn		*cthis = SUB_PTR( self, Model, Model_chn);
 	char		*p = (char *)arg;
-	int 			hh = cthis->alarm.alarm_hh;
-	int 			hi = cthis->alarm.alarm_hi;
-	int 			li = cthis->alarm.alarm_lo;
-	int 			ll = cthis->alarm.alarm_ll;
+//	int 			hh = cthis->alarm.alarm_hh;
+//	int 			hi = cthis->alarm.alarm_hi;
+//	int 			li = cthis->alarm.alarm_lo;
+//	int 			ll = cthis->alarm.alarm_ll;
 	int				i;
 	
 	
@@ -1012,29 +1012,55 @@ static char* MdlChn_to_string( Model *self, IN int aux, void *arg)
 			}
 		
 			memset(p, 0, 8);
-			if(cthis->chni.value > hh) {
-				strcat(p, "HH ");
+			if(cthis->alarm.alm_flag & ALM_HH)
+			{
+				strcat(p, "HH");
+				
 			}
-			
-			if(cthis->chni.value > hi) {
-				strcat(p, "Hi");
+			else if(cthis->alarm.alm_flag & ALM_HI)
+			{
+				strcat(p, "HI");
+				
 			}
-			
-			if(cthis->chni.value < li) {
-				strcat(p, "Li ");
+			else if(cthis->alarm.alm_flag & ALM_LO)
+			{
+				strcat(p, "LO");
+				
 			}
-			
-			if(cthis->chni.value < ll) {
+			else if(cthis->alarm.alm_flag & ALM_LL)
+			{
 				strcat(p, "LL");
+				
 			}
-			
-			//把空间填满，来达到清除掉上一次的显示的目的
-			for(i = strlen(p); i < 5; i++)
+			else
 			{
 				
-				p[i] = ' ';
-				
+				strcat(p, "  ");
 			}
+			
+//			if(cthis->chni.value > hh) {
+//				strcat(p, "HH ");
+//			}
+//			
+//			if(cthis->chni.value > hi) {
+//				strcat(p, "Hi");
+//			}
+//			
+//			if(cthis->chni.value < li) {
+//				strcat(p, "Li ");
+//			}
+//			
+//			if(cthis->chni.value < ll) {
+//				strcat(p, "LL");
+//			}
+//			
+//			//把空间填满，来达到清除掉上一次的显示的目的
+//			for(i = strlen(p); i < 5; i++)
+//			{
+//				
+//				p[i] = ' ';
+//				
+//			}
 			
 			
 			return p;
