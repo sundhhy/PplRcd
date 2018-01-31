@@ -25,11 +25,10 @@ CLASS(News_Alarm_HMI)
 {
 	EXTENDS(HMI);
 	
+	strategy_t	*nwa_p_sy;
 	
-	
-	
-	
-	
+
+
 };
 
 

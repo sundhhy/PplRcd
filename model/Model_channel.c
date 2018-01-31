@@ -311,17 +311,21 @@ static void Signal_Alarm(Model_chn *cthis)
 			}		
 	}
 	//todo: 180115  产生新报警或者消除旧的报警的时候，是需要进行报警的记录处理
+	
+	//检查是否有报警被消除
+	MdlChn_Cancle_alarm(cthis, new_flag, ALM_HH);
+	MdlChn_Cancle_alarm(cthis, new_flag, ALM_HI);
+	MdlChn_Cancle_alarm(cthis, new_flag, ALM_LO);
+	MdlChn_Cancle_alarm(cthis, new_flag, ALM_LL);
+	
+	
 	//检查是否产生新的报警
 	MdlChn_Check_new_alarm(cthis, new_flag, ALM_HH);
 	MdlChn_Check_new_alarm(cthis, new_flag, ALM_HI);
 	MdlChn_Check_new_alarm(cthis, new_flag, ALM_LO);
 	MdlChn_Check_new_alarm(cthis, new_flag, ALM_LL);
 
-	//检查是否有报警被消除
-	MdlChn_Cancle_alarm(cthis, new_flag, ALM_HH);
-	MdlChn_Cancle_alarm(cthis, new_flag, ALM_HI);
-	MdlChn_Cancle_alarm(cthis, new_flag, ALM_LO);
-	MdlChn_Cancle_alarm(cthis, new_flag, ALM_LL);
+	
 	
 	p_alm->alm_flag = new_flag;
 }

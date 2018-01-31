@@ -74,7 +74,62 @@ static void Disable_string(char *p, int able);
 //            P U B L I C   F U N C T I O N S                                 //
 //============================================================================//
 
+//要在存储功能初始化之后调用
+void System_power_on(void)
+{
+	Storage			*stg = Get_storage();
+	rcd_alm_pwr_t			stg_pwr = {0};
+	int								num_pwr = 0;
+	
+	STG_Set_file_position(STG_LOSE_PWR, STG_DRC_READ, 0);
+	while(stg_pwr.flag != 0xff)
+	{
+		if(stg->rd_stored_data(stg, STG_LOSE_PWR, \
+			&stg_pwr, sizeof(rcd_alm_pwr_t)) != sizeof(rcd_alm_pwr_t))
+			{
+				
+				//或者已经读完了
+				break;
+				
+				
+			}
+			if(stg_pwr.flag != 0xff)
+				num_pwr ++;
+		
+	}
+	
+	if(num_pwr == STG_MAX_NUM_LST_PWR)
+		num_pwr = 0;		
+	if(num_pwr)
+		phn_sys.pwr_rcd_index = num_pwr + 1;
+	else
+		phn_sys.pwr_rcd_index = 0;
+	//记录上电时间
+	STG_Set_file_position(STG_LOSE_PWR, STG_DRC_WRITE, phn_sys.pwr_rcd_index * sizeof(rcd_alm_pwr_t));
+	stg_pwr.flag = 1;
+	stg_pwr.happen_time_s = SYS_time_sec();
+	stg->wr_stored_data(stg, STG_LOSE_PWR, &stg_pwr, sizeof(rcd_alm_pwr_t));
+	
+}
 
+void System_power_off(void)
+{
+	int 				retry = 5;
+	uint32_t		dsp_time = 0;
+	Storage			*stg = Get_storage();
+	
+	dsp_time = SYS_time_sec();
+	STG_Set_file_position(STG_LOSE_PWR, STG_DRC_WRITE, phn_sys.pwr_rcd_index * sizeof(rcd_alm_pwr_t) +(int)(&((rcd_alm_pwr_t *)0)->disapper_time_s));
+	
+	while(stg->wr_stored_data(stg, STG_LOSE_PWR, &dsp_time, sizeof(uint32_t)) != sizeof(uint32_t))
+	{
+		if(retry)
+			retry --;
+		else
+			break;
+		
+	}
+}
 
 void System_default(void)
 {

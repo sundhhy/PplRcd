@@ -175,7 +175,7 @@ typedef struct {
 	uint8_t				save_chg_flga;		//ø…¥Ê¥¢µƒ≈‰÷√–≈œ¢µƒ±‰ªØ±Í÷æ
 	uint8_t				usb_device;		//0 Œﬁusb…Ë±∏ 1 ”–usb…Ë±
 	uint8_t				sys_flag;
-	uint8_t				none;
+	uint8_t				pwr_rcd_index;
 	
 	
 	//œ‘ æœ‡πÿ
@@ -218,14 +218,15 @@ void Str_Calculations(char *p_str, int len,  int op, int val, int rangel, int ra
 int	Operate_in_tange(int	arg1, int op, int arg2, int rangel, int rangeh);
 
 void System_init(void);
-void System_time(struct  tm *stime);
+void System_power_off(void);
 
+void 			System_time(struct  tm *stime);
 uint32_t  SYS_time_sec(void);
-int  Str_time_2_tm(char *s_time, struct  tm	*time);
+int  			Str_time_2_tm(char *s_time, struct  tm	*time);
 uint32_t  Str_time_2_u32(char *s_time);
 uint32_t  Time_2_u32(struct  tm	*tm_2_sec);
-int Sec_2_tm(uint32_t seconds, struct  tm *time);
-int System_set_time(struct  tm *stime);
+int 			Sec_2_tm(uint32_t seconds, struct  tm *time);
+int 			System_set_time(struct  tm *stime);
 
 
 extern void System_default(void);

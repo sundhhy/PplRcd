@@ -190,6 +190,12 @@ static void	NWA_Build_button(HMI *self)
 		
 }
 
+static void	NWA_Show_entry(HMI *self, strategy_t *p_st)
+{
+	
+	
+}
+
 
 
 
