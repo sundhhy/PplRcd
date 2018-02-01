@@ -299,7 +299,7 @@ static int	Init_cmmHmi( HMI *self, void *arg)
 	
 	//创建与公用图标相关的界面
 	p_hmi = CreateHMI(HMI_MENU);
-//	p_hmi->init( p_hmi, NULL);
+	p_hmi->init( p_hmi, NULL);
 //	menuHmi = SUB_PTR(p_hmi, HMI, menuHMI);
 	
 	p_hmi = CreateHMI(HMI_DATA);

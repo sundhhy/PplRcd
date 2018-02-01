@@ -100,7 +100,7 @@ static int NPW_Entry(int row, int col, void *pp_text)
 	
 	r = row % STRIPE_MAX_ROWS;		//条纹界面上的行数是11
 	
-	if(row == 0)
+	if(r == 0)
 	{
 		
 		*pp = arr_NPW_col_0[col];

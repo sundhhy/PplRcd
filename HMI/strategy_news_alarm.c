@@ -73,7 +73,7 @@ strategy_t	g_news_alarm = {
 //------------------------------------------------------------------------------
 // local vars
 //------------------------------------------------------------------------------
- static char *const arr_NLM_col_0[5] = {"NO", "通道", "类型", "报警开始", "报警结束"};
+ static char *const arr_NLM_col_0[5] = {"类型", "报警开始", "报警结束"};
 	
 //------------------------------------------------------------------------------
 // local function prototypes
@@ -96,17 +96,34 @@ static int NLM_Entry(int row, int col, void *pp_text)
 	rcd_alm_pwr_t		stg_alm;
 	struct 		tm 		t;
 	int							r = 0;
-	if(col >4)
+	if(col > 2)
 		return 0;
 	
 	r = row % STRIPE_MAX_ROWS;		//条纹界面上的行数是11
 	
-	if(row == 0)
+	if(r == 0)
 	{
 		
 		*pp = arr_NLM_col_0[col];
 		return strlen(arr_NLM_col_0[col]);
 	}
+	else if(r == 1)
+	{
+		if(col == 0)
+		{
+			sprintf(arr_p_vram[r], "通道");
+			goto exit;
+		}
+		else if(col == 1)
+		{
+			sprintf(arr_p_vram[r], "CHN%d", g_setting_chn);
+			goto exit;
+			
+		}
+		return 0;
+	}
+	
+//	return 0;
 	
 	STG_Set_file_position(STG_CHN_ALARM(g_setting_chn), STG_DRC_READ, row * sizeof(rcd_alm_pwr_t));
 	if(stg->rd_stored_data(stg, STG_CHN_ALARM(g_setting_chn), \
@@ -121,13 +138,13 @@ static int NLM_Entry(int row, int col, void *pp_text)
 		
 	switch(col)
 	{
+//		case 0:
+//			sprintf(arr_p_vram[r], "%d", row);
+//			break;
+//		case 1:
+//			sprintf(arr_p_vram[r], "CHN%d", g_setting_chn);
+//			break;
 		case 0:
-			sprintf(arr_p_vram[r], "%d", row);
-			break;
-		case 1:
-			sprintf(arr_p_vram[r], "CHN%d", g_setting_chn);
-			break;
-		case 2:
 			switch(stg_alm.alm_pwr_type)
 			{
 				case ALM_CODE_HH:
@@ -148,20 +165,26 @@ static int NLM_Entry(int row, int col, void *pp_text)
 					break;
 			}
 			break;
-		case 3:
+		case 1:
 			Sec_2_tm(stg_alm.happen_time_s, &t);
-			sprintf(arr_p_vram[r], "%2d/%02d/%02d %02d:%02d:%02d", t.tm_year,t.tm_mon, t.tm_mday, \
+			sprintf(arr_p_vram[r], "%2d%02d%02d-%02d:%02d:%02d", t.tm_year,t.tm_mon, t.tm_mday, \
 					t.tm_hour, t.tm_min, t.tm_sec);
+		
+//			sprintf(arr_p_vram[r], "%02d:%02d:%02d", t.tm_hour, t.tm_min, t.tm_sec);
 			break;
-		case 4:
+		case 2:
 			Sec_2_tm(stg_alm.disapper_time_s, &t);
-			sprintf(arr_p_vram[r], "%2d/%02d/%02d %02d:%02d:%02d", t.tm_year,t.tm_mon, t.tm_mday, \
+			sprintf(arr_p_vram[r], "%2d%02d%02d-%02d:%02d:%02d", t.tm_year,t.tm_mon, t.tm_mday, \
 					t.tm_hour, t.tm_min, t.tm_sec);
+		
+//			sprintf(arr_p_vram[r], "%02d:%02d:%02d", t.tm_hour, t.tm_min, t.tm_sec);
 			break;
 		default:
 			return 0;
 		
 	}
+	exit:
+	*pp = arr_p_vram[r];
 	return strlen(arr_p_vram[r]);
 
 }
