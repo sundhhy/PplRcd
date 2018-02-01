@@ -902,16 +902,6 @@
               <FilePath>..\..\HMI\menuHMI.c</FilePath>
             </File>
             <File>
-              <FileName>News_Alarm_HMI.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\HMI\News_Alarm_HMI.c</FilePath>
-            </File>
-            <File>
-              <FileName>News_Power_down_HMI.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\HMI\News_Power_down_HMI.c</FilePath>
-            </File>
-            <File>
               <FileName>news_select_HMI.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\HMI\news_select_HMI.c</FilePath>
@@ -952,11 +942,6 @@
               <FilePath>..\..\HMI\Set_view_strategy.c</FilePath>
             </File>
             <File>
-              <FileName>Setting_HMI.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\HMI\Setting_HMI.c</FilePath>
-            </File>
-            <File>
               <FileName>Set_dataBackUp_strategy.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\HMI\Set_dataBackUp_strategy.c</FilePath>
@@ -987,11 +972,6 @@
               <FilePath>..\..\HMI\Component_Button.h</FilePath>
             </File>
             <File>
-              <FileName>Setting_HMI.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\..\HMI\Setting_HMI.h</FilePath>
-            </File>
-            <File>
               <FileName>Component_progress_bar.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\HMI\Component_progress_bar.c</FilePath>
@@ -1005,6 +985,36 @@
               <FileName>News_Alarm_HMI.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\HMI\News_Alarm_HMI.h</FilePath>
+            </File>
+            <File>
+              <FileName>HMI_striped_background.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\HMI\HMI_striped_background.h</FilePath>
+            </File>
+            <File>
+              <FileName>HMI_striped_background.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\HMI\HMI_striped_background.c</FilePath>
+            </File>
+            <File>
+              <FileName>strategy_news_alarm.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\HMI\strategy_news_alarm.c</FilePath>
+            </File>
+            <File>
+              <FileName>strategy_news_power.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\HMI\strategy_news_power.c</FilePath>
+            </File>
+            <File>
+              <FileName>strategy_news_alarm.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\HMI\strategy_news_alarm.h</FilePath>
+            </File>
+            <File>
+              <FileName>strategy_news_power.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\HMI\strategy_news_power.h</FilePath>
             </File>
           </Files>
         </Group>

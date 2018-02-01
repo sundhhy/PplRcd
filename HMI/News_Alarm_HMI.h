@@ -41,6 +41,6 @@ CLASS(News_Alarm_HMI)
 //------------------------------------------------------------------------------
 // function prototypes
 //------------------------------------------------------------------------------
-News_Alarm_HMI *Get_News_Alarm_HMI(void);
+//News_Alarm_HMI *Get_News_Alarm_HMI(void);
 
 #endif

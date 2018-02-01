@@ -1,5 +1,5 @@
 #include <stdint.h>
-#include "Setting_HMI.h"
+#include "HMI_striped_background.h"
 #include "system.h"
 #include "USB/Usb.h"
 #include "os/os_depend.h"

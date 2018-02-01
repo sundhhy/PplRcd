@@ -252,19 +252,19 @@ int FM25_Erase(int opt, uint32_t num)
 /// \{
 
 
-static int FM25_Read_status(void)
-{
-	uint8_t tmp_u8 = FM25CL64_RDSR;
-  FM25_Enable_CS;
-	
-	if(FM25_SPI_WRITE(&tmp_u8, 1) != 1)
-		return -1;
-	if(FM25_SPI_READ(&tmp_u8, 1) != 1)
-		return -1;
-	FM25_Disable_CS;
-  
-  return tmp_u8;
-}
+//static int FM25_Read_status(void)
+//{
+//	uint8_t tmp_u8 = FM25CL64_RDSR;
+//  FM25_Enable_CS;
+//	
+//	if(FM25_SPI_WRITE(&tmp_u8, 1) != 1)
+//		return -1;
+//	if(FM25_SPI_READ(&tmp_u8, 1) != 1)
+//		return -1;
+//	FM25_Disable_CS;
+//  
+//  return tmp_u8;
+//}
 
 static int FM25_Write_status(uint8_t s)
 {

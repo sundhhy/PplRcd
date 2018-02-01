@@ -1013,7 +1013,7 @@ static void TDD_efs_erase(int erase_size, int lcd_line)
 	}
 	
 	tdd_fd = phn_sys.fs.fs_resize(-1, "mod_chn_1", erase_size);	
-	phn_sys.fs.fs_erase_file(tdd_fd);
+	phn_sys.fs.fs_erase_file(tdd_fd, 0, 0);
 	tdd_err = 0;
 	for(tdd_i = 0; tdd_i < erase_size;)
 	{

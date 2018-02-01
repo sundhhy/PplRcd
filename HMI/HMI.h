@@ -114,6 +114,8 @@ typedef struct {
 	uint8_t		start_byte, num_byte;
 }strategy_focus_t;
 
+
+
 typedef struct {
 	uint8_t		key_type;
 	uint8_t		none[3];

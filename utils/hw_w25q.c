@@ -105,7 +105,8 @@ typedef struct {
 //	uint16_t		num_sct;
 
 	uint8_t			w25q_flag;
-	uint8_t			none[3];
+	uint8_t			cache_earse;
+	uint8_t			none[2];
 
 	uint8_t			*p_sct_buf;
 	uint8_t			*p_chk_buf;
@@ -190,6 +191,7 @@ int w25q_init(void)
 	w25q_info(&phn_sys.arr_fsh[FSH_W25Q_NUM].fnf);
 	
 	w25q_mgr.w25q_flag  = 0;
+	w25q_mgr.cache_earse = 0;
 	w25q_mgr.p_sct_buf = malloc(w25q_mgr.sct_size);
 	return ret;
 }
@@ -267,6 +269,7 @@ int W25Q_erase(int opt, uint32_t num)
 //成功返回0，失败返回1
 int W25Q_Cal_area(uint32_t start, uint32_t size, uint32_t area_sz, uint32_t rst[2])
 {
+	uint32_t  	cur_cache_addr = w25q_mgr.cur_sct * SECTOR_SIZE ;
 	if(size < area_sz)
 		return 1;
 	
@@ -274,6 +277,11 @@ int W25Q_Cal_area(uint32_t start, uint32_t size, uint32_t area_sz, uint32_t rst[
 	rst[1] = ((start + size) / area_sz) * area_sz;
 	if(rst[1] == rst[0])
 		return 1;
+	
+	//计算擦除的区域是否与当前缓存的扇区重合
+	
+	if((cur_cache_addr > rst[0]) && (cur_cache_addr < rst[0]))
+		w25q_mgr.cache_earse = 1;
 	return 0;
 }
 
@@ -384,6 +392,21 @@ void W25Q_Erase_addr(uint32_t st, uint32_t sz)
 		for(i = 0 ; i < n2; i++)
 			w25q_mgr.p_sct_buf[i] = 0xff;
 		w25q_Write_Sector_Data(w25q_mgr.p_sct_buf, n1);
+		
+		
+		//更新当前的缓存页面
+		if(w25q_mgr.cache_earse )
+		{
+	
+		
+			w25q_Read_Sector_Data(w25q_mgr.p_sct_buf, w25q_mgr.cur_sct);
+			w25q_mgr.w25q_flag |= W25Q_FLAG_READED;
+			w25q_mgr.w25q_flag &= ~W25Q_FLAG_DATA_CHANGED;
+			
+		}
+		
+		w25q_mgr.cache_earse = 0;
+
 }
 
 //将提供的扇区进行擦除操作。扇区号的范围是0 - 4096 （w25q128）

@@ -1,5 +1,5 @@
 #include <stdint.h>
-#include "Setting_HMI.h"
+#include "HMI_striped_background.h"
 
 //============================================================================//
 //            G L O B A L   D E F I N I T I O N S                             //

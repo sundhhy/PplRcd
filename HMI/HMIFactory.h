@@ -18,7 +18,7 @@
 //#include "History_HMI.h"
 #include "Accumulate_HMI.h"
 #include "Setup_HMI.h"
-#include "Setting_HMI.h"
+#include "HMI_striped_background.h"
 #include "windowsHMI.h"
 
 //------------------------------------------------------------------------------
@@ -36,8 +36,8 @@
 #define HMI_DATA				6
 #define HMI_RLT_TREND			7
 #define HMI_NWS					8
-#define HMI_NEWS_ALARM			9
-#define HMI_NEWS_POWER_DOWN		10
+//#define HMI_NEWS_ALARM			9
+//#define HMI_NEWS_POWER_DOWN		10
 //#define HMI_HISTORY				11
 #define HMI_ACCM				12
 #define HMI_SETUP				13

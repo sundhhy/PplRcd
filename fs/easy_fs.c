@@ -103,7 +103,7 @@ int 	EFS_Lseek(int fd, int whence, uint32_t offset);
 int	EFS_resize(int fd, char *path, int new_size);
 file_info_t		*EFS_file_info(int fd);
 int		EFS_delete(int fd, char *path);
-void 	EFS_Erase_file(int fd);
+void 	EFS_Erase_file(int fd, uint32_t start, uint32_t size);
 void 	EFS_Shutdown(void);
 
 static int EFS_format(void);
@@ -190,7 +190,7 @@ int	EFS_open(uint8_t prt, char *path, char *mode, int	file_size)
 	{
 		new_fd = EFS_malloc_file_mgr();
 		new_fd = EFS_create_file(new_fd, prt, path, file_size);
-		EFS_Erase_file(new_fd);
+		EFS_Erase_file(new_fd, 0, 0);
 		
 	}
 	if(new_fd >= 0)
@@ -365,18 +365,27 @@ int	EFS_read(int fd, uint8_t *p, int len)
 	return ret;
 }
 
-void 	EFS_Erase_file(int fd)
+void 	EFS_Erase_file(int fd, uint32_t start, uint32_t size)
 {
-	int 		ret;
 	file_info_t *f = &efs_mgr.arr_file_info[fd];
 	int			start_addr = f->start_page * EFS_FSH(f->fsh_No).fnf.page_size;
-	int			end_addr = start_addr + f->file_size;
+	int			sz = f->file_size;
 
 	if(fd > EFS_MAX_NUM_FILES)
 		return;
 	
 	
-	EFS_FSH(f->fsh_No).fsh_ersse_addr(start_addr, f->file_size);
+
+	
+	if(start)
+	{
+		start_addr += start;
+		
+		sz = size;
+	}
+	
+	
+	EFS_FSH(f->fsh_No).fsh_ersse_addr(start_addr, sz);
 	f->write_position = 0;
 	f->read_position = 0;
 }
@@ -654,28 +663,28 @@ static void EFS_Change_file_size(int fd, uint32_t new_size)
 	
 }
 
-static void EFS_set_flag(uint8_t  num, uint8_t	flag, char val)
-{
-	int i = 0;
-	if(val)
-	{
-		for(i = 0; i < num; i++)
-		{
-			efs_mgr.arr_efiles[i].efs_flag |= flag;
-		}
-		
-	}
-	else
-	{
-		for(i = 0; i < num; i++)
-		{
-			efs_mgr.arr_efiles[i].efs_flag &= ~flag;
-		}
-		
-	}
-		
-	
-}
+//static void EFS_set_flag(uint8_t  num, uint8_t	flag, char val)
+//{
+//	int i = 0;
+//	if(val)
+//	{
+//		for(i = 0; i < num; i++)
+//		{
+//			efs_mgr.arr_efiles[i].efs_flag |= flag;
+//		}
+//		
+//	}
+//	else
+//	{
+//		for(i = 0; i < num; i++)
+//		{
+//			efs_mgr.arr_efiles[i].efs_flag &= ~flag;
+//		}
+//		
+//	}
+//		
+//	
+//}
 static int EFS_create_file(uint8_t	fd, uint8_t	prt, char *path, int size)
 {
 	space_t  space;

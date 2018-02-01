@@ -1,5 +1,5 @@
 #include <stdint.h>
-#include "Setting_HMI.h"
+#include "HMI_striped_background.h"
 #include "ModelFactory.h"
 
 //============================================================================//

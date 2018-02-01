@@ -88,14 +88,14 @@ END_CTOR
 
 static int	Init_History_HMI(HMI *self, void *arg)
 {
-	History_HMI		*cthis = SUB_PTR( self, HMI, History_HMI);
-	Expr 			*p_exp ;
-	shtctl 			*p_shtctl = NULL;
-	short				i = 0;	
-	p_shtctl = GetShtctl();
-	
+//	History_HMI		*cthis = SUB_PTR( self, HMI, History_HMI);
+//	Expr 			*p_exp ;
+//	shtctl 			*p_shtctl = NULL;
+//	short				i = 0;	
+//	p_shtctl = GetShtctl();
+//	
 
-	p_exp = ExpCreate( "pic");
+//	p_exp = ExpCreate( "pic");
 	
 		
 	return RET_OK;
@@ -103,14 +103,14 @@ static int	Init_History_HMI(HMI *self, void *arg)
 
 static void Show_History_HMI(HMI *self)
 {
-	History_HMI		*cthis = SUB_PTR( self, HMI, History_HMI);
+//	History_HMI		*cthis = SUB_PTR( self, HMI, History_HMI);
 	Sheet_refresh(g_p_sht_bkpic);
 //	cthis->p_bkg->p_gp->vdraw( cthis->p_bkg->p_gp, &cthis->p_bkg->cnt, &cthis->p_bkg->area);
 	self->show_focus( self,self->p_fcuu->focus_row, 0);
 }
 static void	History_initSheet(HMI *self)
 {
-	History_HMI		*cthis = SUB_PTR( self, HMI, History_HMI);
+//	History_HMI		*cthis = SUB_PTR( self, HMI, History_HMI);
 	int  			i, h = 0;
 	Expr 			*p_exp ;
 	
@@ -137,7 +137,7 @@ static void	History_initSheet(HMI *self)
 }
 static void	History_HMI_hide(HMI *self)
 {
-	History_HMI		*cthis = SUB_PTR( self, HMI, History_HMI);
+//	History_HMI		*cthis = SUB_PTR( self, HMI, History_HMI);
 
 	
 	Sheet_updown(g_p_shtTime, -1);
@@ -149,7 +149,7 @@ static void	History_HMI_hide(HMI *self)
 
 static void HIS_btn_hdl(void *arg, uint8_t btn_id)
 {
-	HMI					*self	= (HMI *)arg;		
+//	HMI					*self	= (HMI *)arg;		
 	
 	switch(btn_id)
 	{

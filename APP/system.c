@@ -299,7 +299,7 @@ int  Str_time_2_tm(char *s_time, struct  tm	*time)
 
 uint32_t  Str_time_2_u32(char *s_time)
 {
-	uint32_t sec = 0;
+//	uint32_t sec = 0;
 	struct  tm	t = {0};
 	
 	

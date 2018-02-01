@@ -193,7 +193,7 @@ static int	Init_RT_trendHMI( HMI *self, void *arg)
 static void RLT_HMI_build_button(HMI *self)
 {
 	Button	*p = BTN_Get_Sington();
-	int		i;
+//	int		i;
 	
 	p->build_each_btn(0, BTN_TYPE_MENU, Main_btn_hdl, self);
 	p->build_each_btn(1, BTN_TYPE_LOOP, RLT_btn_hdl, self);
@@ -204,7 +204,7 @@ static void RLT_HMI_build_button(HMI *self)
 
 static void RLT_btn_hdl(void *arg, uint8_t btn_id)
 {
-	HMI					*self	= (HMI *)arg;		
+//	HMI					*self	= (HMI *)arg;		
 	
 	switch(btn_id)
 	{

@@ -1,4 +1,4 @@
-#include "Setting_HMI.h"
+#include "HMI_striped_background.h"
 #include "sdhDef.h"
 #include "ExpFactory.h"
 #include "windowsHmi.h"
@@ -20,13 +20,13 @@ static const char setting_hmi_code_CUR[] =  {"<box clr=gren> </>" };
 static const char setting_hmi_code_clean[] =  {"<cpic>16</>" };
 
 
-static char *setting_titles[4][2] = {{"系统设置", "通道设置"},{"报警设置", "算法设置"},\
-{"显示设置", "数据备份"},{"数据打印", "退出"}};
+static char *setting_titles[5][2] = {{"系统设置", "通道设置"},{"报警设置", "算法设置"},\
+{"显示设置", "数据备份"},{"数据打印", "退出"},{"报警一览", "掉电一览"}};
 //------------------------------------------------------------------------------
 // module global vars
 //------------------------------------------------------------------------------
 
-HMI 	*g_p_Setting_HMI;
+HMI 	*g_p_HMI_striped;
 //------------------------------------------------------------------------------
 // global function prototypes
 //------------------------------------------------------------------------------
@@ -47,30 +47,29 @@ HMI 	*g_p_Setting_HMI;
 // local vars
 //------------------------------------------------------------------------------
 
- static strategy_t	*arr_p_setting_strategy[4][2] = {{&g_sys_strategy, &g_chn_strategy}, {&g_alarm_strategy, &g_art_strategy}, \
- {&g_view_strategy, &g_DBP_strategy},{&g_dataPrint_strategy, NULL}};
+ static strategy_t	*arr_p_setting_strategy[5][2] = {{&g_sys_strategy, &g_chn_strategy}, {&g_alarm_strategy, &g_art_strategy}, \
+ {&g_view_strategy, &g_DBP_strategy},{&g_dataPrint_strategy, NULL}, {&g_news_alarm, &g_news_power}};
  
 //------------------------------------------------------------------------------
 // local function prototypes
 //------------------------------------------------------------------------------
-static int	Init_Setting_HMI(HMI *self, void *arg);
-static void Show_Setting_HMI(HMI *self);
-static void	Setting_HMI_hide(HMI *self);
-static void	Setting_initSheet(HMI *self);
-static void	Setting_HMI_init_focus(HMI *self);
-static void	Setting_HMI_clear_focus(HMI *self, uint8_t fouse_row, uint8_t fouse_col);
-static void	Setting_HMI_show_focus(HMI *self, uint8_t fouse_row, uint8_t fouse_col);
-static void	Setting_HMI_hitHandle( HMI *self, char *s_key);
-static void	Setting_HMI_dhit( HMI *self, char *s_key);
-static void	Setting_HMI_long_hit( HMI *self, char *s_key);
-static void	Setting_HMI_build_component(HMI *self);
+static int	HMI_SBG_Init(HMI *self, void *arg);
+static void HMI_SBG_Show(HMI *self);
+static void	HMI_SBG_Hide(HMI *self);
+static void	HMI_SBG_Init_sheet(HMI *self);
+static void	HMI_SBG_Init_focus(HMI *self);
+static void	HMI_SBG_Clear_focus(HMI *self, uint8_t fouse_row, uint8_t fouse_col);
+static void	HMI_SBG_Show_focus(HMI *self, uint8_t fouse_row, uint8_t fouse_col);
+static void	HMI_SBG_Hit( HMI *self, char *s_key);
+static void	HMI_SBG_Long_hit( HMI *self, char *s_key);
+static void	HMI_SBG_Build_component(HMI *self);
 
-static void	Show_entry(HMI *self, strategy_t *p_st);
-static int STING_Show_Button(HMI *self, int up_or_dn);
+static void	HMI_SBG_Show_entry(HMI *self, strategy_t *p_st);
+static int HMI_SBG_Show_button(HMI *self, int up_or_dn);
  
  
-static sheet* Setting_HMI_get_focus(Setting_HMI *self, int arg);
-static void Strategy_focus(Setting_HMI *self, strategy_focus_t *p_syf, int opt);
+//static sheet* HMI_SBG_Get_focus(HMI_striped_background *self, int arg);
+static void Strategy_focus(HMI_striped_background *self, strategy_focus_t *p_syf, int opt);
 static int Setting_Sy_cmd(void *p_rcv, int cmd,  void *arg);
  
 
@@ -79,13 +78,13 @@ static int Setting_Sy_cmd(void *p_rcv, int cmd,  void *arg);
 //            P U B L I C   F U N C T I O N S                                 //
 //============================================================================//
 
-Setting_HMI *Get_Setting_HMI(void)
+HMI_striped_background *Get_Setting_HMI(void)
 {
-	static Setting_HMI *singal_Setting_HMI = NULL;
+	static HMI_striped_background *singal_Setting_HMI = NULL;
 	if( singal_Setting_HMI == NULL)
 	{
-		singal_Setting_HMI = Setting_HMI_new();
-		g_p_Setting_HMI = SUPER_PTR(singal_Setting_HMI, HMI);
+		singal_Setting_HMI = HMI_striped_background_new();
+		g_p_HMI_striped = SUPER_PTR(singal_Setting_HMI, HMI);
 
 	}
 	
@@ -103,7 +102,7 @@ void STY_Duild_button(void *arg)
 void Setting_btn_hdl(void *arg, uint8_t btn_id)
 {
 	HMI					*self	= (HMI *)arg;		
-	Setting_HMI			*cthis = SUB_PTR(self, HMI, Setting_HMI);
+	HMI_striped_background			*cthis = SUB_PTR(self, HMI, HMI_striped_background);
 	
 	if(btn_id == ICO_ID_MENU)
 	{
@@ -113,27 +112,26 @@ void Setting_btn_hdl(void *arg, uint8_t btn_id)
 	}
 	else if((btn_id == ICO_ID_PGUP) || (btn_id == ICO_ID_PGDN))
 	{
-		STING_Show_Button(self, btn_id);
+		HMI_SBG_Show_button(self, btn_id);
 	}
 }
 
-CTOR(Setting_HMI)
+CTOR(HMI_striped_background)
 SUPER_CTOR( HMI);
-FUNCTION_SETTING(HMI.init, Init_Setting_HMI);
-FUNCTION_SETTING(HMI.initSheet, Setting_initSheet);
-FUNCTION_SETTING(HMI.hide, Setting_HMI_hide);
-FUNCTION_SETTING(HMI.show, Show_Setting_HMI);
+FUNCTION_SETTING(HMI.init, HMI_SBG_Init);
+FUNCTION_SETTING(HMI.initSheet, HMI_SBG_Init_sheet);
+FUNCTION_SETTING(HMI.hide, HMI_SBG_Hide);
+FUNCTION_SETTING(HMI.show, HMI_SBG_Show);
 
-FUNCTION_SETTING(HMI.hitHandle, Setting_HMI_hitHandle);
-FUNCTION_SETTING(HMI.dhitHandle, Setting_HMI_dhit);
-FUNCTION_SETTING(HMI.longpushHandle, Setting_HMI_long_hit);
+FUNCTION_SETTING(HMI.hitHandle, HMI_SBG_Hit);
+FUNCTION_SETTING(HMI.longpushHandle, HMI_SBG_Long_hit);
 
 
-FUNCTION_SETTING(HMI.init_focus, Setting_HMI_init_focus);
-FUNCTION_SETTING(HMI.clear_focus, Setting_HMI_clear_focus);
-FUNCTION_SETTING(HMI.show_focus, Setting_HMI_show_focus);
+FUNCTION_SETTING(HMI.init_focus, HMI_SBG_Init_focus);
+FUNCTION_SETTING(HMI.clear_focus, HMI_SBG_Clear_focus);
+FUNCTION_SETTING(HMI.show_focus, HMI_SBG_Show_focus);
 
-FUNCTION_SETTING(HMI.build_component, Setting_HMI_build_component);
+FUNCTION_SETTING(HMI.build_component, HMI_SBG_Build_component);
 END_CTOR
 
 
@@ -144,9 +142,9 @@ END_CTOR
 //                                                                         //
 //=========================================================================//
 
-static int	Init_Setting_HMI(HMI *self, void *arg)
+static int	HMI_SBG_Init(HMI *self, void *arg)
 {
-	Setting_HMI		*cthis = SUB_PTR( self, HMI, Setting_HMI);
+	HMI_striped_background		*cthis = SUB_PTR( self, HMI, HMI_striped_background);
 //	Expr 			*p_exp ;
 //	shtctl 			*p_shtctl = NULL;
 //	short				i = 0;	
@@ -159,20 +157,20 @@ static int	Init_Setting_HMI(HMI *self, void *arg)
 	return RET_OK;
 }
 
-static void Show_Setting_HMI(HMI *self)
+static void HMI_SBG_Show(HMI *self)
 {
-	Setting_HMI		*cthis = SUB_PTR( self, HMI, Setting_HMI);
+	HMI_striped_background		*cthis = SUB_PTR( self, HMI, HMI_striped_background);
 
 	Stop_flush_LCD();
 	Sheet_refresh(g_p_sht_bkpic);
-	Show_entry(self, cthis->p_sy);
+	HMI_SBG_Show_entry(self, cthis->p_sy);
 	Strategy_focus(cthis, &cthis->p_sy->sf, 1);
 	Flush_LCD();
 	
 }
-static void	Setting_initSheet(HMI *self)
+static void	HMI_SBG_Init_sheet(HMI *self)
 {
-	Setting_HMI		*cthis = SUB_PTR( self, HMI, Setting_HMI);
+	HMI_striped_background		*cthis = SUB_PTR( self, HMI, HMI_striped_background);
 	int  		 		h = 0;
 	Expr 				*p_exp ;
 	shtctl 				*p_shtctl = NULL;
@@ -222,9 +220,9 @@ static void	Setting_initSheet(HMI *self)
 
 	self->init_focus(self);
 }
-static void	Setting_HMI_hide(HMI *self)
+static void	HMI_SBG_Hide(HMI *self)
 {
-	Setting_HMI		*cthis = SUB_PTR( self, HMI, Setting_HMI);
+	HMI_striped_background		*cthis = SUB_PTR( self, HMI, HMI_striped_background);
 //	Sheet_updown(g_p_ico_memu, -1);
 	Sheet_updown(g_p_shtTime, -1);
 	Sheet_updown(g_p_sht_title, -1);
@@ -238,9 +236,9 @@ static void	Setting_HMI_hide(HMI *self)
 }
 
 
-static void	Setting_HMI_init_focus(HMI *self)
+static void	HMI_SBG_Init_focus(HMI *self)
 {
-	Setting_HMI		*cthis = SUB_PTR( self, HMI, Setting_HMI);
+	HMI_striped_background		*cthis = SUB_PTR( self, HMI, HMI_striped_background);
 	cthis->f_col = 0;
 	cthis->sub_flag &= 0xf0;
 	cthis->col_max = 1;
@@ -256,17 +254,17 @@ static void	Setting_HMI_init_focus(HMI *self)
 
 }
 
-static void	Setting_HMI_build_component(HMI *self)
+static void	HMI_SBG_Build_component(HMI *self)
 {
-	Setting_HMI		*cthis = SUB_PTR( self, HMI, Setting_HMI);
+	HMI_striped_background		*cthis = SUB_PTR( self, HMI, HMI_striped_background);
 	
 	cthis->p_sy->build_component(self);
 }
 
-static void	Setting_HMI_clear_focus(HMI *self, uint8_t fouse_row, uint8_t fouse_col)
+static void	HMI_SBG_Clear_focus(HMI *self, uint8_t fouse_row, uint8_t fouse_col)
 {
-//	Setting_HMI		*cthis = SUB_PTR( self, HMI, Setting_HMI);
-//	sheet *p_fouse = Setting_HMI_get_focus(cthis, fouse_col);
+//	HMI_striped_background		*cthis = SUB_PTR( self, HMI, HMI_striped_background);
+//	sheet *p_fouse = HMI_SBG_Get_focus(cthis, fouse_col);
 //	
 //	if(p_fouse == NULL)
 //		return;
@@ -279,12 +277,12 @@ static void	Setting_HMI_clear_focus(HMI *self, uint8_t fouse_row, uint8_t fouse_
 	self->btn_jumpout(self);
 
 }
-static void	Setting_HMI_show_focus(HMI *self, uint8_t fouse_row, uint8_t fouse_col)
+static void	HMI_SBG_Show_focus(HMI *self, uint8_t fouse_row, uint8_t fouse_col)
 {
 	
 	self->btn_forward(self);
-//	Setting_HMI		*cthis = SUB_PTR( self, HMI, Setting_HMI);
-//	sheet *p_fouse = Setting_HMI_get_focus(cthis, -1);
+//	HMI_striped_background		*cthis = SUB_PTR( self, HMI, HMI_striped_background);
+//	sheet *p_fouse = HMI_SBG_Get_focus(cthis, -1);
 //	
 //	if(p_fouse == NULL)
 //		return;
@@ -297,12 +295,12 @@ static void	Setting_HMI_show_focus(HMI *self, uint8_t fouse_row, uint8_t fouse_c
 
 
 
-static sheet* Setting_HMI_get_focus(Setting_HMI *self, int arg)
-{
-	
+//static sheet* HMI_SBG_Get_focus(HMI_striped_background *self, int arg)
+//{
+//	
 
 //	uint8_t		f = 0;
-	
+//	
 //	if(arg < 0) {
 //		
 //		f = self->f_col;
@@ -326,10 +324,10 @@ static sheet* Setting_HMI_get_focus(Setting_HMI *self, int arg)
 //		return g_p_ico_pgdn;
 //		
 //	}
-	return NULL;
-}
+//	return NULL;
+//}
 
-static void Strategy_focus_text(Setting_HMI *self, strategy_focus_t *p_syf, int opt)
+static void Strategy_focus_text(HMI_striped_background *self, strategy_focus_t *p_syf, int opt)
 {
 	int f_data_len = 0;
 	uint16_t	txt_xsize, txt_ysize;
@@ -353,7 +351,7 @@ static void Strategy_focus_text(Setting_HMI *self, strategy_focus_t *p_syf, int 
 	
 }
 
-static void Strategy_focus(Setting_HMI *self, strategy_focus_t *p_syf, int opt)
+static void Strategy_focus(HMI_striped_background *self, strategy_focus_t *p_syf, int opt)
 {
 //	int f_data_len = 0;
 	uint16_t	txt_xsize, txt_ysize;
@@ -397,10 +395,10 @@ static void Strategy_focus(Setting_HMI *self, strategy_focus_t *p_syf, int opt)
 	self->p_sht_text->cnt.colour = COLOUR_WHITE;
 }
 
-static void	Setting_HMI_hitHandle(HMI *self, char *s_key)
+static void	HMI_SBG_Hit(HMI *self, char *s_key)
 {
 	
-	Setting_HMI				*cthis = SUB_PTR( self, HMI, Setting_HMI);
+	HMI_striped_background				*cthis = SUB_PTR( self, HMI, HMI_striped_background);
 	strategy_t				*p_sy = cthis->p_sy;
 	strategy_focus_t	old_sf;
 	Button						*p = BTN_Get_Sington();
@@ -525,8 +523,8 @@ static void	Setting_HMI_hitHandle(HMI *self, char *s_key)
 				p->hit();
 //				self->btn_hit(self);
 			}
-//			p_focus = Setting_HMI_get_focus(cthis, -1);
-//			if(STING_Show_Button(self, p_focus->id) == ERR_OPT_FAILED) {
+//			p_focus = HMI_SBG_Get_focus(cthis, -1);
+//			if(HMI_SBG_Show_button(self, p_focus->id) == ERR_OPT_FAILED) {
 //				if(p_focus->id == ICO_ID_MENU)
 //				{
 //					cthis->entry_start_row = 0;
@@ -588,9 +586,9 @@ static void	Setting_HMI_hitHandle(HMI *self, char *s_key)
 
 
 
-static void	Setting_HMI_long_hit( HMI *self, char *s_key)
+static void	HMI_SBG_Long_hit( HMI *self, char *s_key)
 {
-	Setting_HMI			*cthis = SUB_PTR( self, HMI, Setting_HMI);
+	HMI_striped_background			*cthis = SUB_PTR( self, HMI, HMI_striped_background);
 	strategy_keyval_t	skt = {SY_KEYTYPE_LONGPUSH};
 	strategy_t			*p_sy = cthis->p_sy;
 	
@@ -634,53 +632,7 @@ static void	Setting_HMI_long_hit( HMI *self, char *s_key)
 	//180114 长按的时候尽快刷新
 	Flush_LCD();
 }
-//长按按键:up,dn 来对光标的行进行切换
-//切换有两种情况:编辑区内的行切换, 编辑区内外之间的切换
-static void	Setting_HMI_dhit( HMI *self, char *s_key)
-{
-//	Setting_HMI			*cthis = SUB_PTR( self, HMI, Setting_HMI);
-//	strategy_keyval_t	skt = {SY_KEYTYPE_LONGPUSH};
-//	strategy_t			*p_sy = cthis->p_sy;
-//	strategy_focus_t	old_sf;
-//	
 
-
-//	old_sf.f_col = p_sy->sf.f_col;
-//	old_sf.f_row = p_sy->sf.f_row;
-//	old_sf.start_byte = p_sy->sf.start_byte;
-//	old_sf.num_byte = p_sy->sf.num_byte;
-//	
-//	if((cthis->sub_flag & FOCUS_IN_STARTEGY) == 0)
-//		return;
-//	if(strcmp( s_key, HMIKEY_UP) && strcmp( s_key, HMIKEY_DOWN))
-//		return;
-//	
-//	
-//	if(phn_sys.key_weight < 10000)
-//		phn_sys.key_weight *= 10;
-//	else
-//		phn_sys.key_weight = 1;
-//	
-//	if( !strcmp( s_key, HMIKEY_UP) )
-//	{
-//		p_sy->key_hit_up(&skt);
-//		
-//		
-//	}
-//	
-//	if( !strcmp( s_key, HMIKEY_DOWN) )
-//	{
-//		p_sy->key_hit_dn(&skt);
-//		
-//	}
-//	
-//	
-//	Strategy_focus(cthis, &old_sf, 2);
-//	//重新显示改行文本
-//	Strategy_focus_text(cthis, &cthis->p_sy->sf, 2);
-//	//显示新的选中效果
-//	Strategy_focus(cthis, &cthis->p_sy->sf, 1);	
-}
 static void Clean_stripe(HMI *self)
 {
 	//todo:cpic 运行之后的结果好像不对
@@ -691,9 +643,9 @@ static void Clean_stripe(HMI *self)
 }
 
 //切换页面时，将光标重新至于编辑区
-static int STING_Show_Button(HMI *self, int up_or_dn)
+static int HMI_SBG_Show_button(HMI *self, int up_or_dn)
 {
-	Setting_HMI		*cthis = SUB_PTR( self, HMI, Setting_HMI);
+	HMI_striped_background		*cthis = SUB_PTR( self, HMI, HMI_striped_background);
 	if(up_or_dn == ICO_ID_PGDN) {
 		cthis->entry_start_row += STRIPE_MAX_ROWS;
 	} else if(up_or_dn == ICO_ID_PGUP) {
@@ -703,7 +655,7 @@ static int STING_Show_Button(HMI *self, int up_or_dn)
 	}
 
 	Clean_stripe(self);
-	Show_entry(self, cthis->p_sy);
+	HMI_SBG_Show_entry(self, cthis->p_sy);
 	SET_PG_FLAG(cthis->sub_flag, FOCUS_IN_STARTEGY);
 	
 //	g_p_ico_pgup->cnt.effects = GP_CLR_EFF(g_p_ico_pgup->cnt.effects, EFF_FOCUS);
@@ -717,9 +669,9 @@ static int STING_Show_Button(HMI *self, int up_or_dn)
 	return RET_OK;
 }
 
-static void	Show_entry(HMI *self, strategy_t *p_st)
+static void	HMI_SBG_Show_entry(HMI *self, strategy_t *p_st)
 {
-	Setting_HMI		*cthis = SUB_PTR( self, HMI, Setting_HMI);
+	HMI_striped_background		*cthis = SUB_PTR( self, HMI, HMI_striped_background);
 	char					*p_trash;
 	Button				*p_btn = BTN_Get_Sington();
 	uint8_t	row = 0;
@@ -739,7 +691,7 @@ static void	Show_entry(HMI *self, strategy_t *p_st)
 	
 	cthis->p_sht_text->p_gp->getSize(cthis->p_sht_text->p_gp, cthis->p_sht_text->cnt.font, &txt_xsize, &txt_ysize);
 	
-	for(col = 0; col < 3; col ++) {
+	for(col = 0; col < 5; col ++) {
 		
 		col_vx0 += col_maxlen * txt_xsize;
 		cthis->col_vx0[col] = col_vx0;
@@ -781,16 +733,16 @@ static void	Show_entry(HMI *self, strategy_t *p_st)
 //		SET_PG_FLAG(cthis->sub_flag, HAS_PGUP);
 		
 		p_btn->build_each_btn(1, BTN_TYPE_PGUP, Setting_btn_hdl, self);
-		p_btn->show_vaild_btn();
+		
 	} 
-//	else {
-//		CLR_PG_FLAG(cthis->sub_flag, HAS_PGUP);
-//	}
+	else {		
+		p_btn->build_each_btn(1, BTN_TYPE_NONE, NULL, NULL);
+	}
 	
 	if(more) 
 	{
-		p_btn->build_each_btn(1, BTN_TYPE_PGDN, Setting_btn_hdl, self);
-		p_btn->show_vaild_btn();
+		p_btn->build_each_btn(2, BTN_TYPE_PGDN, Setting_btn_hdl, self);
+		
 //		g_p_ico_pgdn->e_heifht = 1;
 //		Sheet_slide(g_p_ico_pgdn);
 //		g_p_ico_pgdn->e_heifht = 0;
@@ -798,9 +750,13 @@ static void	Show_entry(HMI *self, strategy_t *p_st)
 //		SET_PG_FLAG(cthis->sub_flag, HAS_PGDN);
 	} 
 	
-//	else {
-//		CLR_PG_FLAG(cthis->sub_flag, HAS_PGDN);
-//	}
+	else {
+		
+		p_btn->build_each_btn(2, BTN_TYPE_NONE, NULL, NULL);
+	}
+	
+	
+	p_btn->show_vaild_btn();
 	
 //	if((cthis->sub_flag & 0x0f)== 0)
 //		cthis->col_max = 1;
@@ -816,7 +772,7 @@ static void	Show_entry(HMI *self, strategy_t *p_st)
 static int Setting_Sy_cmd(void *p_rcv, int cmd,  void *arg)
 {
 	HMI								*self = (HMI *)p_rcv;
-	Setting_HMI				*cthis = SUB_PTR( self, HMI, Setting_HMI);
+	HMI_striped_background				*cthis = SUB_PTR( self, HMI, HMI_striped_background);
 	winHmi						*p_win;
 	strategy_focus_t	*p_pos;
 	int 							ret = RET_OK;
@@ -825,7 +781,7 @@ static int Setting_Sy_cmd(void *p_rcv, int cmd,  void *arg)
 	switch(cmd) {
 		case sycmd_reflush:
 			cthis->p_sht_text->cnt.colour = COLOUR_WHITE;
-//			Show_entry(self, cthis->p_sy);
+//			HMI_SBG_Show_entry(self, cthis->p_sy);
 			self->show(self);
 			self->show_cmp(self);
 //			Strategy_focus(cthis, &cthis->p_sy->sf, 1);

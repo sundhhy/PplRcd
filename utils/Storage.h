@@ -94,6 +94,7 @@ Storage		*Get_storage();
 //并且把数据转成csv格式
 int	STG_Read_rcd_by_time(uint8_t	chn, uint32_t start_sec, uint32_t end_sec, char *buf, int buf_size, uint32_t *rd_sec);			
 int	STG_Set_file_position(uint8_t	file_type, uint8_t rd_or_wr, uint32_t position);
+void STG_Erase_file(uint8_t	file_type);
 
 
 #endif

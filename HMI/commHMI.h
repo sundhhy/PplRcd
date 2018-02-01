@@ -91,13 +91,13 @@ extern  HMI 			*g_p_dataHmi;
 extern 	HMI 			*g_p_barGhHmi;
 extern 	HMI 			*g_p_RLT_trendHmi;
 
-extern 	HMI 			*g_p_News_Alarm_HMI;
-extern	HMI 			*g_p_News_PwrDn_HMI;
+//extern 	HMI 			*g_p_News_Alarm_HMI;
+//extern	HMI 			*g_p_News_PwrDn_HMI;
 extern	HMI 			*g_p_History_HMI;
 extern	HMI 			*g_p_Accm_HMI;
 
 extern 	HMI 			*g_p_Setup_HMI;
-extern 	HMI 			*g_p_Setting_HMI;
+extern 	HMI 			*g_p_HMI_striped;
 extern 	HMI 			*g_p_winHmi;
 
 //------------------------------------------------------------------------------

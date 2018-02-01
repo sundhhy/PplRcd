@@ -319,8 +319,8 @@ static void Init_bar( barGhHMI *self)
 	
 	Expr 			*p_exp ;
 	shtctl 			*p_shtctl = NULL;
-	short 			i;
-	
+	char 			i;
+//	char			chn_name[7];
 	
 	p_shtctl = GetShtctl();
 
@@ -335,10 +335,10 @@ static void Init_bar( barGhHMI *self)
 		
 		
 		
-		//todo: 后面要绑定正确的模型，而不是测试模型
-//		self->arr_p_sht_textPrcn[i]->p_mdl = ModelCreate("test");
-//		self->pp_bar_unit[i]->p_mdl = ModelCreate("test");
-		
+//		sprintf(chn_name,"chn_%d", i);
+//		self->arr_p_sht_textPrcn[i]->p_mdl = ModelCreate(chn_name);
+//		self->pp_bar_unit[i]->p_mdl = ModelCreate(chn_name);
+//		
 		
 		
 		self->arr_p_barshts[i]->cnt.bkc = arr_clrs[i];
@@ -434,7 +434,7 @@ static int BarHmi_Data_update(void *p_data, void *p_mdl)
 	
 	barGhHMI *self = Get_barGhHMI();
 	sheet	*p_sht = (sheet *)p_data;
-	static	int test_chn = 0;
+//	static	int test_chn = 0;
 
 	uint16_t bar_vx0[BARHMI_NUM_BARS] = { 30, 78, 126, 172, 220, 268};
 	
@@ -449,11 +449,11 @@ static int BarHmi_Data_update(void *p_data, void *p_mdl)
 	uint32_t	height = 0;
 	
 
-	if(test_chn != i)
-		return 0;
-	test_chn ++;
-	if(test_chn == 6)
-		test_chn = 0;
+//	if(test_chn != i)
+//		return 0;
+//	test_chn ++;
+//	if(test_chn == 6)
+//		test_chn = 0;
 
 	if(IS_HMI_KEYHANDLE(g_p_barGhHmi->flag))
 		return 0;

@@ -158,6 +158,32 @@ int	STG_Set_file_position(uint8_t	file_type, uint8_t rd_or_wr, uint32_t position
 	return STRG_SYS.fs.fs_lseek(fd, whn, whr);
 }
 
+void STG_Erase_file(uint8_t	file_type)
+{
+	
+	Storage				*stg = Get_storage();
+	int						fd = -1;
+	uint32_t			erase_addr[2];
+	uint8_t				chn_num = STG_GET_CHN(file_type);
+	
+	
+	fd = STG_Open_file(file_type, STG_DEF_FILE_SIZE);
+	
+	if(IS_CHN_ALARM(file_type))
+	{
+		erase_addr[0] = chn_num * STG_CHN_ALARM_FILE_SIZE;
+		erase_addr[1] = STG_CHN_ALARM_FILE_SIZE;
+	}
+	if(IS_LOSE_PWR(file_type))
+	{
+		
+		erase_addr[0] = STG_LSTPWR_FILE_OFFSET;
+		erase_addr[1] = 4096 - STG_LSTPWR_FILE_OFFSET;
+	}
+	
+	STRG_SYS.fs.fs_erase_file(fd, erase_addr[0] , erase_addr[1]);
+	
+}
 int	STG_Read_rcd_by_time(uint8_t	chn, uint32_t start_sec, uint32_t end_sec, char *buf, int buf_size, uint32_t *rd_sec)
 {
 	Storage				*stg = Get_storage();
@@ -397,9 +423,9 @@ static int	STG_Acc_chn_conf(uint8_t	tp, uint8_t	drc, void *p)
 {
 	
 	int fd;
-	int	num = 0;
+	int	num = STG_GET_CHN(tp);
 	int	ret = -1;
-	uint8_t chn_num = STG_GET_CHN(tp);
+//	uint8_t chn_num = STG_GET_CHN(tp);
 	fd = STG_Open_file(tp, STG_DEF_FILE_SIZE);
 	
 	if(drc == STG_DRC_READ)
@@ -460,7 +486,7 @@ static int	STG_Acc_sys_conf(uint8_t drc, void *p)
 	}
 	STRG_SYS.fs.fs_close(fd);
 	
-	
+	return ret;
 	
 }
 
@@ -529,7 +555,7 @@ static int	STG_Acc_chn_data(uint8_t	type, uint8_t	drc, void *p, int len)
 	{
 		if(stg->arr_rcd_mgr[chn_num].rcd_count >= stg->arr_rcd_mgr[chn_num].rcd_maxcount)
 		{
-			STRG_SYS.fs.fs_erase_file(fd);
+			STRG_SYS.fs.fs_erase_file(fd, 0, 0);
 			stg->arr_rcd_mgr[chn_num].rcd_count = 0;
 		}
 		dinf.rcd_time_s = SYS_time_sec();
@@ -587,7 +613,7 @@ static int	STG_Acc_chn_data(uint8_t	type, uint8_t	drc, void *p, int len)
 		return len;
 	}
 #endif	
-	return 0;
+//	return 0;
 }
 
 

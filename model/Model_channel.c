@@ -196,7 +196,7 @@ static void	MdlChn_Cancle_alarm(Model_chn *cthis, uint8_t new_flag, uint8_t alm_
 	uint8_t *p_index = NULL;
 	Storage	*stg = NULL;
 	uint32_t		dsp_time;
-	uint8_t					alm_code = 0;
+//	uint8_t					alm_code = 0;
 	uint8_t					retry = 5;
 	
 	//只有就的报警状态上存在的记录，并且在新的报警状态中不存在的报警，才能说明该报警被取消掉了
@@ -210,19 +210,19 @@ static void	MdlChn_Cancle_alarm(Model_chn *cthis, uint8_t new_flag, uint8_t alm_
 	{
 		case ALM_HH:
 			p_index = &cthis->alarm_mgr.alm_hh_index;
-			alm_code = ALM_CODE_HH;
+//			alm_code = ALM_CODE_HH;
 			break;
 		case ALM_HI:
 			p_index = &cthis->alarm_mgr.alm_hi_index;
-			alm_code = ALM_CODE_HI;
+//			alm_code = ALM_CODE_HI;
 			break;
 		case ALM_LO:
 			p_index = &cthis->alarm_mgr.alm_lo_index;
-			alm_code = ALM_CODE_LO;
+//			alm_code = ALM_CODE_LO;
 			break;
 		case ALM_LL:
 			p_index = &cthis->alarm_mgr.alm_ll_index;
-			alm_code = ALM_CODE_LL;
+//			alm_code = ALM_CODE_LL;
 			break;
 	}
 	if(p_index == NULL)
@@ -600,8 +600,8 @@ static void MdlChn_run(Model *self)
 	SmBus_result_t		rst;
 //	do_out_t			d = {0};
 	
-	I_dev_Char 			*I_uart3 = NULL;
-	uint8_t 			i;
+//	I_dev_Char 			*I_uart3 = NULL;
+//	uint8_t 			i;
 //	uint8_t				old_do;
 	
 #if TDD_SAVE_DATA == 1
@@ -981,7 +981,7 @@ static char* MdlChn_to_string( Model *self, IN int aux, void *arg)
 //	int 			hi = cthis->alarm.alarm_hi;
 //	int 			li = cthis->alarm.alarm_lo;
 //	int 			ll = cthis->alarm.alarm_ll;
-	int				i;
+//	int				i;
 	
 	
 	switch(aux) {

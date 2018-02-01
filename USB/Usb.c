@@ -159,7 +159,7 @@ int USB_Init(void* arg)
 //³É¹¦·µ»Ø1
 int USB_Open_file(char *file_name, char mode)
 {
-	int	ret = RET_OK;
+//	int	ret = RET_OK;
 	uint8_t	s;
 #if ONLY_ROOT_PATH == 1	
 	char	*p_name;
@@ -182,7 +182,6 @@ int USB_Open_file(char *file_name, char mode)
 	
 #endif	
 	
-	return ret;
 }
 
 int USB_Colse_file(int fd)

@@ -4,6 +4,9 @@
 
 #include <string.h>
 
+#include "HMI_striped_background.h"
+
+
 //============================================================================//
 //            G L O B A L   D E F I N I T I O N S                             //
 //============================================================================//
@@ -205,31 +208,44 @@ static void	Nws_HMI_hitHandle(HMI *self, char *s_key)
 		Focus_move_down(self->p_fcuu);
 		chgFouse = 1;
 	}
+	
+	//arg[0]用来指示当前选择的是信息画面，还是选择累积画面
 	if( !strcmp(s_key, HMIKEY_ENTER))
 	{
 		
-		if(self->p_fcuu->focus_row == 0) {
-			if(self->arg[0] == 0)
-				self->switchHMI(self, g_p_News_Alarm_HMI);
-			else if(self->arg[0] == 1) {
-				g_p_Accm_HMI->arg[0] = 0;
-				self->switchHMI(self, g_p_Accm_HMI);
-			}
-			
-		}
-		else if(self->p_fcuu->focus_row == 1) {
-			if(self->arg[0] == 0)
-				self->switchHMI(self, g_p_News_PwrDn_HMI);
-			else if(self->arg[0] == 1) {
-				g_p_Accm_HMI->arg[0] = 1;
-				self->switchHMI(self, g_p_Accm_HMI);
-			}
-			
-		}
-		else if(self->p_fcuu->focus_row == 2)
+		if(self->p_fcuu->focus_row >= 2)
+		{
 			self->switchHMI(self, g_p_HMI_menu);
+			return;
+		}
+		
+		if(self->arg[0] == 0)
+		{
+			
+			//选择信息
+			g_p_HMI_striped->arg[0] = HMI_SBG_SELECT_NEWS;
+			g_p_HMI_striped->arg[1] = self->p_fcuu->focus_row;
+			self->switchHMI(self, g_p_HMI_striped);
+			
+		}
+		else
+		{
+			//选择累积信息
+			
+			if(self->p_fcuu->focus_row == 0) 
+			{
+				
+				self->switchHMI(self, g_p_Accm_HMI);
+			}
+			else if(self->p_fcuu->focus_row == 1) 
+			{
+				self->switchHMI(self, g_p_Accm_HMI);
+			}
+			
+		}
+		
 	}
-	
+
 	if( !strcmp(s_key, HMIKEY_ESC))
 	{
 		self->switchBack(self);

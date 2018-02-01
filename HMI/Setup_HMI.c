@@ -161,7 +161,7 @@ static void	Setup_initSheet(HMI *self)
 	System_to_string(arr_p_vram[0], arr_p_vram[1] , 16, es_psd); 
 		
 		
-	if(((self->flag & HMIFLAG_WIN) == 0) && (g_p_lastHmi != g_p_Setting_HMI)) {		
+	if(((self->flag & HMIFLAG_WIN) == 0) && (g_p_lastHmi != g_p_HMI_striped)) {		
 		//从其他画面切换进入设置选择画面的时候，需要重新输入密码
 		Setup_HMI_lock(cthis);
 		
@@ -373,10 +373,10 @@ static void	Setup_HMI_hitHandle(HMI *self, char *s_key)
 			if(self->p_fcuu->focus_row == 3 && self->p_fcuu->focus_col) {
 				self->switchHMI(self, g_p_HMI_menu);
 			} else {
-				g_p_Setting_HMI->arg[0] = self->p_fcuu->focus_row - 0;
-				g_p_Setting_HMI->arg[1] = self->p_fcuu->focus_col;
+				g_p_HMI_striped->arg[0] = self->p_fcuu->focus_row - 0;
+				g_p_HMI_striped->arg[1] = self->p_fcuu->focus_col;
 				
-				self->switchHMI(self, g_p_Setting_HMI);
+				self->switchHMI(self, g_p_HMI_striped);
 			}
 		}
 	}

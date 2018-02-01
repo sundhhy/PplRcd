@@ -278,10 +278,10 @@ static int	Init_cmmHmi( HMI *self, void *arg)
 {
 //	cmmHmi	*cthis = SUB_PTR( self, HMI, cmmHmi);
 	HMI 			*p_hmi;
-	menuHMI			*menuHmi ;
-	barGhHMI		*barHmi ;
-	dataHMI			*dataHmi;
-	RLT_trendHMI	*rltHmi;
+//	menuHMI			*menuHmi ;
+//	barGhHMI		*barHmi ;
+//	dataHMI			*dataHmi;
+//	RLT_trendHMI	*rltHmi;
 //	shtctl *p_shtctl = NULL;
 //	Expr *p_exp ;
 	
@@ -299,20 +299,20 @@ static int	Init_cmmHmi( HMI *self, void *arg)
 	
 	//创建与公用图标相关的界面
 	p_hmi = CreateHMI(HMI_MENU);
-	p_hmi->init( p_hmi, NULL);
-	menuHmi = SUB_PTR(p_hmi, HMI, menuHMI);
+//	p_hmi->init( p_hmi, NULL);
+//	menuHmi = SUB_PTR(p_hmi, HMI, menuHMI);
 	
 	p_hmi = CreateHMI(HMI_DATA);
 	p_hmi->init(p_hmi, NULL);
-	dataHmi = SUB_PTR(p_hmi, HMI, dataHMI);
+//	dataHmi = SUB_PTR(p_hmi, HMI, dataHMI);
 	
 	p_hmi = CreateHMI(HMI_BAR);
 	p_hmi->init( p_hmi, NULL);
-	barHmi = SUB_PTR(p_hmi, HMI, barGhHMI);
+//	barHmi = SUB_PTR(p_hmi, HMI, barGhHMI);
 	
 	p_hmi = CreateHMI(HMI_RLT_TREND);
 	p_hmi->init(p_hmi, NULL);
-	rltHmi = SUB_PTR(p_hmi, HMI, RLT_trendHMI);
+//	rltHmi = SUB_PTR(p_hmi, HMI, RLT_trendHMI);
 	
 	//将图标动作与相关界面处理绑定
 //	g_p_ico_memu->p_enterCmd = &menuHmi->shtCmd;
@@ -331,11 +331,11 @@ static int	Init_cmmHmi( HMI *self, void *arg)
 	p_hmi = CreateHMI(HMI_NWS);
 	p_hmi->init(p_hmi, NULL);
 	
-	p_hmi = CreateHMI(HMI_NEWS_ALARM);
-	p_hmi->init(p_hmi, NULL);
-	
-	p_hmi = CreateHMI(HMI_NEWS_POWER_DOWN);
-	p_hmi->init(p_hmi, NULL);
+//	p_hmi = CreateHMI(HMI_NEWS_ALARM);
+//	p_hmi->init(p_hmi, NULL);
+//	
+//	p_hmi = CreateHMI(HMI_NEWS_POWER_DOWN);
+//	p_hmi->init(p_hmi, NULL);
 //	
 //	p_hmi = CreateHMI(HMI_HISTORY);
 //	p_hmi->init(p_hmi, NULL);

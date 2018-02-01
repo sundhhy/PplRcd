@@ -37,6 +37,6 @@ CLASS(News_PwrDn_HMI)
 //------------------------------------------------------------------------------
 // function prototypes
 //------------------------------------------------------------------------------
-News_PwrDn_HMI *Get_PwrDn_HMI(void);
+//News_PwrDn_HMI *Get_PwrDn_HMI(void);
 
 #endif
