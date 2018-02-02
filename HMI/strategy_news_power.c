@@ -217,7 +217,10 @@ static int NPW_Key_ET(void *arg)
 static void	NPW_Btn_hdl(void *self, uint8_t	btn_id)
 {
 	if(btn_id == ICO_ID_ERASETOOL)
+	{
 		STG_Erase_file(STG_LOSE_PWR);
+		g_news_power.cmd_hdl(g_news_power.p_cmd_rcv, sycmd_reflush, NULL);
+	}
 	
 }
 

@@ -65,7 +65,7 @@ static void	HMI_SBG_Long_hit( HMI *self, char *s_key);
 static void	HMI_SBG_Build_component(HMI *self);
 
 static void	HMI_SBG_Show_entry(HMI *self, strategy_t *p_st);
-static int HMI_SBG_Show_button(HMI *self, int up_or_dn);
+static int HMI_SBG_Turn_page(HMI *self, int up_or_dn);
  
  
 //static sheet* HMI_SBG_Get_focus(HMI_striped_background *self, int arg);
@@ -112,7 +112,7 @@ void Setting_btn_hdl(void *arg, uint8_t btn_id)
 	}
 	else if((btn_id == ICO_ID_PGUP) || (btn_id == ICO_ID_PGDN))
 	{
-		HMI_SBG_Show_button(self, btn_id);
+		HMI_SBG_Turn_page(self, btn_id);
 	}
 }
 
@@ -183,7 +183,7 @@ static void	HMI_SBG_Init_sheet(HMI *self)
 		
 		
 		if(old_sty && old_sty != cthis->p_sy)
-			old_sty->exit();
+			old_sty->sty_exit();
 		
 		cthis->p_sy->p_cmd_rcv = self;
 		cthis->p_sy->cmd_hdl = Setting_Sy_cmd;
@@ -524,7 +524,7 @@ static void	HMI_SBG_Hit(HMI *self, char *s_key)
 //				self->btn_hit(self);
 			}
 //			p_focus = HMI_SBG_Get_focus(cthis, -1);
-//			if(HMI_SBG_Show_button(self, p_focus->id) == ERR_OPT_FAILED) {
+//			if(HMI_SBG_Turn_page(self, p_focus->id) == ERR_OPT_FAILED) {
 //				if(p_focus->id == ICO_ID_MENU)
 //				{
 //					cthis->entry_start_row = 0;
@@ -545,12 +545,15 @@ static void	HMI_SBG_Hit(HMI *self, char *s_key)
 			sy_chgFouse = 2;
 			CLR_PG_FLAG(cthis->sub_flag, FOCUS_IN_STARTEGY);
 			
-			
+			//180202 将光标移动到外部
+			self->btn_forward(self);
 			cthis->f_col = 0;
 		} else {
 			
 			cthis->entry_start_row = 0;
-			self->switchHMI(self, g_p_Setup_HMI);
+//			self->switchHMI(self, g_p_Setup_HMI);
+			cthis->p_sy->sty_exit();
+			self->switchBack(self);
 			
 		}
 		
@@ -562,6 +565,8 @@ static void	HMI_SBG_Hit(HMI *self, char *s_key)
 	} else if(sy_chgFouse == 2){
 		//光标从编辑区跳出
 		Strategy_focus(cthis, &old_sf, 0);
+		
+		//在编辑区外部显示光标
 //		self->show_focus(self, 0, 0);
 	}
 	else if(sy_chgFouse ==3){
@@ -643,7 +648,7 @@ static void Clean_stripe(HMI *self)
 }
 
 //切换页面时，将光标重新至于编辑区
-static int HMI_SBG_Show_button(HMI *self, int up_or_dn)
+static int HMI_SBG_Turn_page(HMI *self, int up_or_dn)
 {
 	HMI_striped_background		*cthis = SUB_PTR( self, HMI, HMI_striped_background);
 	if(up_or_dn == ICO_ID_PGDN) {

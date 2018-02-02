@@ -40,7 +40,7 @@ strategy_t	g_news_alarm = {
 	NLM_Exit,
 };
 
-#define STRT_SELF			g_news_alarm
+
 
 //static int Cns_init(void *arg);
 //static int Cns_get_focusdata(void *pp_data, strategy_focus_t *p_in_syf);
@@ -239,6 +239,8 @@ static int NLM_Key_UP(void *arg)
 	if(g_setting_chn == NUM_CHANNEL)
 		g_setting_chn = 0;
 	
+	g_news_alarm.cmd_hdl(g_news_alarm.p_cmd_rcv, sycmd_reflush, NULL);
+	
 	return -1;
 }
 static int NLM_Key_DN(void *arg)
@@ -247,7 +249,7 @@ static int NLM_Key_DN(void *arg)
 		g_setting_chn --;
 	else
 		g_setting_chn = NUM_CHANNEL - 1;
-	
+	g_news_alarm.cmd_hdl(g_news_alarm.p_cmd_rcv, sycmd_reflush, NULL);
 	return -1;
 }
 static int NLM_Key_LT(void *arg)
@@ -270,7 +272,10 @@ static int NLM_Key_ET(void *arg)
 static void	NLM_Btn_hdl(void *self, uint8_t	btn_id)
 {
 	if(btn_id == ICO_ID_ERASETOOL)
+	{
 		STG_Erase_file(STG_CHN_ALARM(g_setting_chn));
+		g_news_alarm.cmd_hdl(g_news_alarm.p_cmd_rcv, sycmd_reflush, NULL);
+	}
 	
 }
 

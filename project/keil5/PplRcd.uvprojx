@@ -10,6 +10,7 @@
       <TargetName>Target 1</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
+      <pCCUsed>5060061::V5.06 update 1 (build 61)::ARMCC</pCCUsed>
       <TargetOption>
         <TargetCommonOption>
           <Device>STM32F103VC</Device>
@@ -84,6 +85,8 @@
             <UserProg2Name></UserProg2Name>
             <UserProg1Dos16Mode>0</UserProg1Dos16Mode>
             <UserProg2Dos16Mode>0</UserProg2Dos16Mode>
+            <nStopA1X>0</nStopA1X>
+            <nStopA2X>0</nStopA2X>
           </AfterMake>
           <SelectedForBatchBuild>0</SelectedForBatchBuild>
           <SVCSIdString></SVCSIdString>
@@ -227,6 +230,7 @@
             <useUlib>1</useUlib>
             <EndSel>0</EndSel>
             <uLtcg>0</uLtcg>
+            <nSecure>0</nSecure>
             <RoSelD>3</RoSelD>
             <RwSelD>3</RwSelD>
             <CodeSel>0</CodeSel>
@@ -361,6 +365,10 @@
             <uSurpInc>0</uSurpInc>
             <uC99>0</uC99>
             <useXO>0</useXO>
+            <v6Lang>0</v6Lang>
+            <v6LangP>0</v6LangP>
+            <vShortEn>0</vShortEn>
+            <vShortWch>0</vShortWch>
             <VariousControls>
               <MiscControls>--diag_suppress=1295;--diag_suppress=1;--diag_suppress=177-D</MiscControls>
               <Define>USE_STDPERIPH_DRIVER, STM32F10X_HD, USE_STM3210B_EVAL,HSE_VALUE=8000000,_MCU_ENDIAN=1</Define>
@@ -899,11 +907,6 @@
               <FilePath>..\..\HMI\news_select_HMI.c</FilePath>
             </File>
             <File>
-              <FileName>real_time_trendHmi.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\HMI\real_time_trendHmi.c</FilePath>
-            </File>
-            <File>
               <FileName>Set_alarm_strategy.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\HMI\Set_alarm_strategy.c</FilePath>
@@ -974,11 +977,6 @@
               <FilePath>..\..\HMI\Component_progress_bar.h</FilePath>
             </File>
             <File>
-              <FileName>News_Alarm_HMI.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\..\HMI\News_Alarm_HMI.h</FilePath>
-            </File>
-            <File>
               <FileName>HMI_striped_background.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\HMI\HMI_striped_background.h</FilePath>
@@ -999,14 +997,29 @@
               <FilePath>..\..\HMI\strategy_news_power.c</FilePath>
             </File>
             <File>
-              <FileName>strategy_news_alarm.h</FileName>
+              <FileName>curve.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\..\HMI\strategy_news_alarm.h</FilePath>
+              <FilePath>..\..\HMI\curve.h</FilePath>
             </File>
             <File>
-              <FileName>strategy_news_power.h</FileName>
+              <FileName>HMI_curve.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\HMI\HMI_curve.c</FilePath>
+            </File>
+            <File>
+              <FileName>HMI_curve.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\..\HMI\strategy_news_power.h</FilePath>
+              <FilePath>..\..\HMI\HMI_curve.h</FilePath>
+            </File>
+            <File>
+              <FileName>Component_curve.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\HMI\Component_curve.h</FilePath>
+            </File>
+            <File>
+              <FileName>Component_curve.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\HMI\Component_curve.c</FilePath>
             </File>
           </Files>
         </Group>

@@ -49,6 +49,7 @@ keyboard_commit	kbr_cmt = NULL;
 // local function prototypes
 //------------------------------------------------------------------------------
 static void	HmiShow( HMI *self);
+static void	HMI_Run( HMI *self);
 static void	SwitchHMI( HMI *self, HMI *p_hmi);
 static void	SwitchBack( HMI *self);
 static void HitHandle( HMI *self, char *s_key);
@@ -92,6 +93,8 @@ void Set_flag_keyhandle(uint8_t	*p_flag, int val)
 
 ABS_CTOR( HMI)
 FUNCTION_SETTING( show, HmiShow);
+FUNCTION_SETTING( hmi_run, HMI_Run);
+
 FUNCTION_SETTING( switchHMI, SwitchHMI);
 FUNCTION_SETTING( switchBack, SwitchBack);
 FUNCTION_SETTING( hitHandle, HitHandle);
@@ -128,6 +131,11 @@ static void	HmiShow( HMI *self)
 	
 }
 
+static void	HMI_Run( HMI *self)
+{
+	
+	
+}
 
 static void	SwitchHMI( HMI *self, HMI *p_hmi)
 {
@@ -252,21 +260,24 @@ static void		HMI_Build_cmp(HMI *self)
 static void		HMI_Clean_cmp(HMI *self)
 {
 
-	Button	*p = BTN_Get_Sington();
+	Button				*p = BTN_Get_Sington();
 	Progress_bar	*p_bar = PGB_Get_Sington();
+	Curve 				*p_crv = CRV_Get_Sington();
 	p->clean_btn();
 	self->flag &= ~HMIFLAG_FOCUS_IN_BTN;
 	
-	p_bar->delete_bar(PGB_BAR_ALL);
+	p_bar->delete_bar(HMI_CMP_ALL);
+	p_crv->free(HMI_CMP_ALL);
 }
 static void		HMI_Show_cmp(HMI *self)
 {
-	Button	*p = BTN_Get_Sington();
+	Button				*p = BTN_Get_Sington();
 	Progress_bar	*p_bar = PGB_Get_Sington();
+	Curve 				*p_crv = CRV_Get_Sington();
 	
 	p->show_vaild_btn();
 	p_bar->show_bar();
-
+	p_crv->crv_show_bkg();
 }
 
 static int		HMI_Btn_forward(HMI *self)

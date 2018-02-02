@@ -189,6 +189,11 @@ static void DBP_Exit(void)
 {
 	Progress_bar	*p_bar = PGB_Get_Sington();
 	USB_Del_event_hdl(arr_DBP_fds[0]);
+	
+	//如果正在拷贝的时候，按ESC退出
+	//应该让拷贝程序停止拷贝
+	if(DBP_copy)
+		DBP_copy = 0;
 	p_bar->delete_bar(arr_DBP_fds[1]);
 	kbr_cmt = NULL;
 }

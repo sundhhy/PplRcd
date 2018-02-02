@@ -150,6 +150,7 @@ int main (void) {
 		if(main_count_1s >= 9)
 		{
 			p_mdl_time->run(p_mdl_time);
+			g_p_curHmi->hmi_run(g_p_curHmi);
 			main_count_1s = 0;
 		}
 		USB_Run(NULL);

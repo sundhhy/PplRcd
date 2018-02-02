@@ -19,6 +19,7 @@
 #include "focus.h"
 
 #include "Component_Button.h"
+#include "Component_curve.h"
 #include "Component_progress_bar.h"
 //------------------------------------------------------------------------------
 // check for correct compilation options
@@ -42,18 +43,28 @@
 #define HMI_KEYCODE_ESC		5
 
 
+//显示用的方向
+#define		HMI_DIR_UP					0
+#define		HMI_DIR_DOWN				1
+#define		HMI_DIR_LEFT				2
+#define		HMI_DIR_RIGHT				3
+
+#define		HMI_CMP_ALL					0xff		//
+
+
 /********图层的ID	***********************************/
-#define	ICO_ID_MENU					0x20
-#define	ICO_ID_BAR					0x21
-#define	ICO_ID_DIGITAL			0x22
-#define	ICO_ID_TREND				0x23
-#define	ICO_ID_PGUP					0x24
-#define	ICO_ID_PGDN					0x25
-#define	ICO_ID_ERASETOOL		0x26
-#define	ICO_ID_SEARCH				0x27
-#define	ICO_ID_COPY					0x28
-#define	ICO_ID_STOP					0x29
-#define	ICO_ID_LOOP					0x2a
+#define	ICO_ID_MENU					0x20	//主菜单
+#define	ICO_ID_BAR					0x21	//棒图
+#define	ICO_ID_DIGITAL			0x22	//数显
+#define	ICO_ID_TREND				0x23	//趋势
+#define	ICO_ID_PGUP					0x24	//向上翻页
+#define	ICO_ID_PGDN					0x25	//向下翻页
+#define	ICO_ID_ERASETOOL		0x26	//擦除工具
+#define	ICO_ID_SEARCH				0x27	//查找工具
+#define	ICO_ID_COPY					0x28	//复制
+#define	ICO_ID_STOP					0x29	//停止
+#define	ICO_ID_LOOP					0x2a	//循环显示
+
 
 #define	SHEET_BOXLIST				0x30
 #define	SHEET_G_TEXT				0x31
@@ -148,7 +159,7 @@ typedef struct {
 	int	(*key_hit_er)(void	*arg);
 	int	(*get_focus_data)(void *pp_data,  strategy_focus_t *p_in_syf);		//成功返回大于0，失败返回-1
 	int	(*commit)(void	*arg);
-	void	(*exit)(void);
+	void	(*sty_exit)(void);
 	strategy_focus_t	sf;
 	void				*p_cmd_rcv;
 	stategy_cmd			cmd_hdl;
@@ -157,8 +168,8 @@ typedef struct {
 
 ABS_CLASS(HMI)
 {
-	HMI*			prev;
-	HMI*			next;
+//	HMI*			prev;
+//	HMI*			next;
 	
 	focus_user_t	*p_fcuu;
 	uint8_t			flag;
@@ -171,7 +182,7 @@ ABS_CLASS(HMI)
 	
 	
 	//数据相关
-	void	(*dataVisual)(HMI *self, void *arg);		//17-09-20 数据可视化处理
+//	void	(*dataVisual)(HMI *self, void *arg);		//17-09-20 数据可视化处理
 	
 	// initSheet hide 
 	void		(*hide)( HMI *self);
@@ -197,6 +208,10 @@ ABS_CLASS(HMI)
 	int		(*btn_forward)(HMI *self);
 	int		(*btn_backward)(HMI *self);
 	void		(*btn_jumpout)(HMI *self);
+	
+	
+	//180202 定期执行，用于周期性重刷屏幕或者其他的内部数据的刷新
+	void		(*hmi_run)(HMI *self);			
 //	void		(*btn_hit)(HMI *self);
 	
 };

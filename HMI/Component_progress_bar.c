@@ -327,7 +327,7 @@ static void 	PGB_Delete_bar(uint8_t	bar_fd)
 	
 	for(i = 0; i < NUM_PGB; i++)
 	{
-		if((i == bar_fd) || (bar_fd == PGB_BAR_ALL))
+		if((i == bar_fd) || (bar_fd == HMI_CMP_ALL))
 		{
 			Clear_bit(&p_PGB_self->set_vaild_bar, i);
 			Set_bit(&p_PGB_self->set_free_bar, i);
