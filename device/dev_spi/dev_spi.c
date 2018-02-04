@@ -64,6 +64,7 @@ Dev_spi *Get_DevSpi(int minor)
 	if(d_spi[minor] == NULL) 
 	{
 		d_spi[minor] = Dev_spi_new();
+		if(d_spi[ minor]  == NULL) while(1);
 		d_spi[minor]->minor = minor;
 		devChar = SUPER_PTR(d_spi[minor], I_dev_Char);
 		

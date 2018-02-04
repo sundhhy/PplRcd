@@ -57,6 +57,7 @@ CtlKey *Get_CtlKey(void)
 	if( p_signalCtrlKey == NULL)
 	{
 		p_signalCtrlKey = CtlKey_new();
+		if(p_signalCtrlKey == NULL) while(1);
 		
 	}
 	return p_signalCtrlKey;

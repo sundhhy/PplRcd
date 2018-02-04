@@ -55,6 +55,7 @@ GhRectangle *Get_GhRectangle(void)
 	if( signalGhRectangle == NULL)
 	{
 		signalGhRectangle = GhRectangle_new();
+		if(signalGhRectangle  == NULL) while(1);
 //		gh = ( Glyph *)signalGhRectangle;
 
 //		gh->setFont( gh, DEF_FONT);

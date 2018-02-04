@@ -61,6 +61,7 @@ History_HMI *Get_History_HMI(void)
 	if( singal_History_HMI == NULL)
 	{
 		singal_History_HMI = History_HMI_new();
+		if(singal_History_HMI  == NULL) while(1);
 		g_p_History_HMI = SUPER_PTR(singal_History_HMI, HMI);
 
 	}

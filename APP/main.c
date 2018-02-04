@@ -129,16 +129,19 @@ int main (void) {
 	phn_sys.lcd_cmd_bytes = CONF_KEYSCAN_CYCLEMS;
 	p_kb->init( p_kb, &phn_sys.lcd_cmd_bytes);
 	phn_sys.lcd_cmd_bytes  = 0;
-	tid_Thread_key = osThreadCreate (osThread(ThrdKeyRun), p_kb);
-	if (!tid_Thread_key) return(-1);
+
 	
 	//创建控制器
 	p_control = SUPER_PTR( Get_CtlKey(), Controller);
 	p_control->init(p_control, p_kb);
 	p_control = SUPER_PTR(CtlTimer_new(), Controller);
+	if(p_control == NULL) while(1);
 	p_control->init(p_control, NULL);
 	
+//	创建线程
 	Init_Cmd_Thread();
+	tid_Thread_key = osThreadCreate (osThread(ThrdKeyRun), p_kb);
+	if (!tid_Thread_key) return(-1);
 	
 	p_mdl_time = ModelCreate("time");
 	
@@ -155,7 +158,7 @@ int main (void) {
 		}
 		USB_Run(NULL);
 		LCD_Run();
-		
+//		osThreadYield ();  
 
 	}
 #elif TDD_TIME_SEC == 1
@@ -200,12 +203,9 @@ int main (void) {
 
 static void ThrdKeyRun (void const *argument) {
 	Keyboard	*p_kb = ( Keyboard	*)argument ;
-//	Model 		*mTime  = ModelCreate("time");
 	while (1) { 
-
 		delay_ms(CONF_KEYSCAN_CYCLEMS);		
 		p_kb->run( p_kb);
-//		mTime->getMdlData(mTime, 0, NULL);
 		osThreadYield ();                                           // suspend thread
 	}
 }

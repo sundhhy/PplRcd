@@ -54,6 +54,7 @@ GhPic *Get_GhPic(void)
 	if( signalGhPic == NULL)
 	{
 		signalGhPic = GhPic_new();
+		if(signalGhPic  == NULL) while(1);
 		
 	}
 	

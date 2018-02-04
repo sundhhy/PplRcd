@@ -60,6 +60,7 @@ GmtrExpr *GetGmtrExpr(void)
 	if( signaExpr == NULL)
 	{
 		signaExpr = GmtrExpr_new();
+		if(signaExpr  == NULL) while(1);
 	}
 	return signaExpr;
 }

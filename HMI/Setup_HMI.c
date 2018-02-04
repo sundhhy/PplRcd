@@ -78,6 +78,7 @@ Setup_HMI *Get_Setup_HMI(void)
 	if( singal_Setup_HMI == NULL)
 	{
 		singal_Setup_HMI = Setup_HMI_new();
+		if(singal_Setup_HMI  == NULL) while(1);
 		g_p_Setup_HMI = SUPER_PTR(singal_Setup_HMI, HMI);
 
 	}

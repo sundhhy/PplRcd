@@ -48,6 +48,7 @@ static const char CRV_code_bk_pic[] =  {"<bpic vx0=0 vy0=50 m=1 >15</>" };
 static Curve 	*p_CRV_self = NULL;
 static sheet	*p_CRV_line;
 static sheet	*p_CRV_bk_pic;
+
 //------------------------------------------------------------------------------
 // local function prototypes
 //------------------------------------------------------------------------------
@@ -77,7 +78,10 @@ Curve	*CRV_Get_Sington(void)
 {
 	
 	if(p_CRV_self == NULL)
+	{
 		p_CRV_self = Curve_new();
+		if(p_CRV_self  == NULL) while(1);
+	}
 	
 	return p_CRV_self;
 	

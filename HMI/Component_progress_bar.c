@@ -75,7 +75,10 @@ Progress_bar	*PGB_Get_Sington(void)
 {
 	
 	if(p_PGB_self == NULL)
+	{
 		p_PGB_self = Progress_bar_new();
+		if(p_PGB_self  == NULL) while(1);
+	}
 	
 	return p_PGB_self;
 	

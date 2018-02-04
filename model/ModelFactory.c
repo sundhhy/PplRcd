@@ -12,7 +12,12 @@ Model *ModelCreate( char *type)
 	if( p)
 	{
 		if(aMdl[0] == NULL)
+		{
 			aMdl[0] = (Model *)ModelTime_new();
+			if(aMdl[0]  == NULL) while(1);
+			
+		}
+			
 		return aMdl[0];
 	}
 	

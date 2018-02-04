@@ -197,7 +197,7 @@ Model_chn *Get_Mode_chn(int n);
 int	MdlChn_save_data(uint8_t chn_num, mdl_chn_save_t *p);		//把要存储的数据放入p，返回长度
 void MdlChn_default_conf(int chn_num);
 void MdlChn_default_alarm(int chn_num);
-
+void MdlChn_Clean_Alamr(int chn_num);
 
 
 

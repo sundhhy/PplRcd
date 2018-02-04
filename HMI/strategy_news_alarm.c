@@ -92,14 +92,33 @@ static void	NLM_Btn_hdl(void *self, uint8_t	btn_id);
 static int NLM_Entry(int row, int col, void *pp_text)
 {
 	char 						**pp = (char **)pp_text;
-	Storage					*stg = Get_storage();
-	rcd_alm_pwr_t		stg_alm;
-	struct 		tm 		t;
-	int							r = 0;
+	Storage						*stg = Get_storage();
+	rcd_alm_pwr_t				stg_alm;
+	struct 		tm 				t;
+	short						r = 0, pic_num = 0;
 	if(col > 2)
 		return 0;
 	
 	r = row % STRIPE_MAX_ROWS;		//条纹界面上的行数是11
+	
+	pic_num = row / STRIPE_MAX_ROWS + 1;  //第几副画面
+	if( row > 1)
+	{
+		
+		//有可能是查询是否更多数据
+		//(row - 2 * pic_num) 每页的0，1两行显示的不是报警数据，因此要剪掉
+		STG_Set_file_position(STG_CHN_ALARM(g_setting_chn), STG_DRC_READ, (row - 2 * pic_num)* sizeof(rcd_alm_pwr_t));
+		if(stg->rd_stored_data(stg, STG_CHN_ALARM(g_setting_chn), \
+				&stg_alm, sizeof(rcd_alm_pwr_t)) != sizeof(rcd_alm_pwr_t))
+			{	
+				//或者已经读完了
+				return 0;
+			}
+			
+		if(stg_alm.flag == 0xff)
+			return 0;		//记录结尾
+	
+	}
 	
 	if(r == 0)
 	{
@@ -107,6 +126,9 @@ static int NLM_Entry(int row, int col, void *pp_text)
 		*pp = arr_NLM_col_0[col];
 		return strlen(arr_NLM_col_0[col]);
 	}
+	
+	
+	
 	else if(r == 1)
 	{
 		if(col == 0)
@@ -124,17 +146,10 @@ static int NLM_Entry(int row, int col, void *pp_text)
 	}
 	
 //	return 0;
+
 	
-	STG_Set_file_position(STG_CHN_ALARM(g_setting_chn), STG_DRC_READ, row * sizeof(rcd_alm_pwr_t));
-	if(stg->rd_stored_data(stg, STG_CHN_ALARM(g_setting_chn), \
-			&stg_alm, sizeof(rcd_alm_pwr_t)) != sizeof(rcd_alm_pwr_t))
-		{	
-			//或者已经读完了
-			return 0;
-		}
 		
-	if(stg_alm.flag == 0xff)
-		return 0;		//记录结尾
+	
 		
 	switch(col)
 	{
@@ -275,6 +290,7 @@ static void	NLM_Btn_hdl(void *self, uint8_t	btn_id)
 	{
 		STG_Erase_file(STG_CHN_ALARM(g_setting_chn));
 		g_news_alarm.cmd_hdl(g_news_alarm.p_cmd_rcv, sycmd_reflush, NULL);
+		MdlChn_Clean_Alamr(g_setting_chn);
 	}
 	
 }

@@ -840,6 +840,9 @@ void TDD_Keyboard(void)
 	Dev_open( LCD_DEVID, (void *)&lcd);
 	lcd->Clear( COLOUR_BLACK);
 	p_kbTestOb = KbTestOb_new();
+	if(p_kbTestOb == NULL)
+		while(1);
+	
 	p_kbTestOb->setKeyHdl( p_kbTestOb, KeyEvent);
 	tdd_u8 = p_kb->addOb( p_kb, ( keyObservice *)p_kbTestOb);
 	osKernelStart ();                         // start thread execution 

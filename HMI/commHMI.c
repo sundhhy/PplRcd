@@ -116,6 +116,7 @@ cmmHmi *GetCmmHMI(void)
 	if( singalCmmHmi == NULL)
 	{
 		singalCmmHmi = cmmHmi_new();
+		if(singalCmmHmi  == NULL) while(1);
 		
 	}
 	

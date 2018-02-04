@@ -30,9 +30,11 @@ Dev_Uart *Get_DevUart( int minor)
 	if( devUart[ minor] == NULL)
 	{
 		devUart[ minor] = Dev_Uart_new();
+		if(devUart[ minor]  == NULL) while(1);
 		devChar = ( I_dev_Char *)devUart[ minor];
 		
 		devUart[ minor]->dri = driveUart_new();
+		if(devUart[ minor]  == NULL) while(1);
 		devUart[ minor]->minor = minor;
 		
 		

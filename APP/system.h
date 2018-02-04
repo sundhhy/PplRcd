@@ -131,6 +131,8 @@ typedef struct {
 	uint8_t			file_flag;
 	uint8_t			low_pg;
 	
+	int				file_sem;
+	
 	uint16_t		start_page;
 	uint16_t		num_page;
 	

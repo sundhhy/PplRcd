@@ -92,6 +92,7 @@ barGhHMI *Get_barGhHMI(void)
 	if( singal_barHmi == NULL)
 	{
 		singal_barHmi = barGhHMI_new();
+		if(singal_barHmi  == NULL) while(1);
 		g_p_barGhHmi = SUPER_PTR( singal_barHmi, HMI);
 		
 	}

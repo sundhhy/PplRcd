@@ -72,7 +72,7 @@ strategy_t	g_news_power = {
 //------------------------------------------------------------------------------
 // local vars
 //------------------------------------------------------------------------------
- static char *const arr_NPW_col_0[5] = {"NO", "上电时间", "掉电"};
+ static char *const arr_NPW_col_0[5] = {"NO", "上电时间", "掉电时间"};
 	
 //------------------------------------------------------------------------------
 // local function prototypes
@@ -94,11 +94,27 @@ static int NPW_Entry(int row, int col, void *pp_text)
 	Storage					*stg = Get_storage();
 	rcd_alm_pwr_t		stg_alm;
 	struct 		tm 		t;
-	int							r = 0;
+	short						r = 0, pic_num = 0;
 	if(col >2)
 		return 0;
 	
 	r = row % STRIPE_MAX_ROWS;		//条纹界面上的行数是11
+	pic_num = row / STRIPE_MAX_ROWS + 1;
+	if(row > 0)
+	{
+		//(row - 1 * pic_num) 每页第0行显示的是标题栏，不能算入信息计数
+		STG_Set_file_position(STG_LOSE_PWR, STG_DRC_READ, (row - 1 * pic_num)* sizeof(rcd_alm_pwr_t));
+		if(stg->rd_stored_data(stg, STG_LOSE_PWR, \
+				&stg_alm, sizeof(rcd_alm_pwr_t)) != sizeof(rcd_alm_pwr_t))
+			{	
+				//或者已经读完了
+				return 0;
+			}
+			
+		if(stg_alm.flag == 0xff)
+			return 0;		//记录结尾
+		
+	}
 	
 	if(r == 0)
 	{
@@ -107,37 +123,28 @@ static int NPW_Entry(int row, int col, void *pp_text)
 		return strlen(arr_NPW_col_0[col]);
 	}
 	
-	STG_Set_file_position(STG_LOSE_PWR, STG_DRC_READ, row * sizeof(rcd_alm_pwr_t));
-	if(stg->rd_stored_data(stg, STG_LOSE_PWR, \
-			&stg_alm, sizeof(rcd_alm_pwr_t)) != sizeof(rcd_alm_pwr_t))
-		{	
-			//或者已经读完了
-			return 0;
-		}
-		
-	if(stg_alm.flag == 0xff)
-		return 0;		//记录结尾
+	
 		
 	switch(col)
 	{
 		case 0:
-			sprintf(arr_p_vram[r], "%d", row);
+			sprintf(arr_p_vram[r], "%d", row - 1 * pic_num);
 			break;
 		case 1:
 			Sec_2_tm(stg_alm.happen_time_s, &t);
-			sprintf(arr_p_vram[r], "%2d/%02d/%02d %02d:%02d:%02d", t.tm_year,t.tm_mon, t.tm_mday, \
+			sprintf(arr_p_vram[r], "%2d%02d%02d-%02d:%02d:%02d", t.tm_year,t.tm_mon, t.tm_mday, \
 					t.tm_hour, t.tm_min, t.tm_sec);
 			break;
 		case 2:
 			Sec_2_tm(stg_alm.disapper_time_s, &t);
-			sprintf(arr_p_vram[r], "%2d/%02d/%02d %02d:%02d:%02d", t.tm_year,t.tm_mon, t.tm_mday, \
+			sprintf(arr_p_vram[r], "%2d%02d%02d-%02d:%02d:%02d", t.tm_year,t.tm_mon, t.tm_mday, \
 					t.tm_hour, t.tm_min, t.tm_sec);
 			break;
 		default:
 			return 0;
 		
 	}
-	
+	*pp = arr_p_vram[r];
 	return strlen(arr_p_vram[r]);
 
 }

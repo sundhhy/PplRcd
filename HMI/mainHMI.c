@@ -84,6 +84,7 @@ mainHmi *Get_mainHmi(void)
 	if( signal_mainHmi == NULL)
 	{
 		signal_mainHmi = mainHmi_new();
+		if(signal_mainHmi  == NULL) while(1);
 		g_p_mainHmi = SUPER_PTR( signal_mainHmi, HMI);
 	}
 	

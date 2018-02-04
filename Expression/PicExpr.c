@@ -54,6 +54,7 @@ PicExpr *GetPictExpr(void)
 	if( signalPicExpr == NULL)
 	{
 		signalPicExpr = PicExpr_new();
+		if(signalPicExpr  == NULL) while(1);
 	}
 	return signalPicExpr;
 }

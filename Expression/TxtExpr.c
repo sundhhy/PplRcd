@@ -16,6 +16,7 @@ TxtExpr *GetTxtExpr(void)
 	if( signalTxtExpr == NULL)
 	{
 		signalTxtExpr = TxtExpr_new();
+		if(signalTxtExpr  == NULL) while(1);
 	}
 	return signalTxtExpr;
 }

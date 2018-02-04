@@ -106,6 +106,7 @@ winHmi *Get_winHmi(void)
 	if( signal_winHmi == NULL)
 	{
 		signal_winHmi = winHmi_new();
+		if(signal_winHmi  == NULL) while(1);
 		g_p_winHmi = SUPER_PTR( signal_winHmi, HMI);
 	}
 	

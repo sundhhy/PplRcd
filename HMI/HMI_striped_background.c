@@ -84,6 +84,7 @@ HMI_striped_background *Get_Setting_HMI(void)
 	if( singal_Setting_HMI == NULL)
 	{
 		singal_Setting_HMI = HMI_striped_background_new();
+		if(singal_Setting_HMI  == NULL) while(1);
 		g_p_HMI_striped = SUPER_PTR(singal_Setting_HMI, HMI);
 
 	}
@@ -787,6 +788,7 @@ static int Setting_Sy_cmd(void *p_rcv, int cmd,  void *arg)
 		case sycmd_reflush:
 			cthis->p_sht_text->cnt.colour = COLOUR_WHITE;
 //			HMI_SBG_Show_entry(self, cthis->p_sy);
+			cthis->entry_start_row = 0;
 			self->show(self);
 			self->show_cmp(self);
 //			Strategy_focus(cthis, &cthis->p_sy->sf, 1);

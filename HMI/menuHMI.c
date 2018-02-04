@@ -88,6 +88,7 @@ menuHMI *GetmenuHMI(void)
 	if( singal_menu == NULL)
 	{
 		singal_menu = menuHMI_new();
+		if(singal_menu  == NULL) while(1);
 		g_p_HMI_menu = SUPER_PTR(singal_menu, HMI);
 	}
 	

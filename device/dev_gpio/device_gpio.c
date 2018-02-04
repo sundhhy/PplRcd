@@ -68,11 +68,12 @@ devGpio *Get_DevGpio(int minor)
 		return  arr_gpioInstance[ minor];
 	
 	p_dev = devGpio_new();
+	if(p_dev == NULL) while(1);
 	if( p_dev == NULL)
 		return NULL;
 	
 	p_dev->dri = driveGpio_new();
-	
+	if(p_dev->dri == NULL) while(1);
 	if( p_dev->dri == NULL)
 		goto destoryQuit0;
 	

@@ -202,6 +202,7 @@ keyboardHMI *GetkeyboardHMI(void)
 	if( singalKBHmi == NULL)
 	{
 		singalKBHmi = keyboardHMI_new();
+		if(singalKBHmi  == NULL) while(1);
 		
 	}
 	

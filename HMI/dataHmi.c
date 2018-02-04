@@ -97,6 +97,7 @@ dataHMI *Get_dataHMI(void)
 	if( singal_dataHmi == NULL)
 	{
 		singal_dataHmi = dataHMI_new();
+		if(singal_dataHmi  == NULL) while(1);
 		g_p_dataHmi = SUPER_PTR( singal_dataHmi, HMI);
 		
 	}

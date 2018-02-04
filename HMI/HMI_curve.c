@@ -117,6 +117,7 @@ RLT_trendHMI *Get_RLT_trendHMI(void)
 	if( singal_RTTHmi == NULL)
 	{
 		singal_RTTHmi = RLT_trendHMI_new();
+		if(singal_RTTHmi  == NULL) while(1);
 		g_p_RLT_trendHmi = SUPER_PTR( singal_RTTHmi, HMI);
 		
 	}

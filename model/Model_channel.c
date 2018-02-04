@@ -82,12 +82,65 @@ Model_chn *Get_Mode_chn(int n)
 		return SUB_PTR(arr_p_mdl_chn[n], Model, Model_chn);
 	
 	p_mc = Model_chn_new();
+	if(p_mc  == NULL) while(1);
 	p_mdl = SUPER_PTR(p_mc, Model);
 	arr_p_mdl_chn[n] = p_mdl;
 //	p_mdl->init(p_mdl, (void *)&n);
 	
 	
 	return p_mc;
+}
+
+int	MdlChn_save_data(uint8_t chn_num, mdl_chn_save_t *p)
+{
+	
+	Model_chn *p_mdl= Get_Mode_chn(chn_num);
+	
+	if(p_mdl == NULL)
+		return 0;
+	
+	MdlChn_Save_2_conf(p, &p_mdl->chni, 1);
+	MdlChn_Save_2_alarm(p, &p_mdl->alarm, 1);
+	
+	return (sizeof(p_mdl->chni) + sizeof(p_mdl->alarm));
+}
+
+void MdlChn_default_conf(int chn_num)
+{
+	Model_chn *p_mdl= Get_Mode_chn(chn_num);
+	
+	memset(&p_mdl->chni, 0, sizeof(p_mdl->chni));
+	p_mdl->chni.signal_type = AI_0_400_ohm;
+	p_mdl->chni.chn_NO = chn_num;
+	p_mdl->chni.tag_NO = chn_num;
+	p_mdl->chni.MB = 2;
+}
+
+
+void MdlChn_default_alarm(int chn_num)
+{
+	Model_chn *p_mdl= Get_Mode_chn(chn_num);
+	
+	memset(&p_mdl->alarm, 0, sizeof(p_mdl->alarm));
+	p_mdl->alarm.alarm_hh = 0x7fff;
+	p_mdl->alarm.alarm_hi = 0x7fff;
+	
+	
+}
+
+void MdlChn_Clean_Alamr(int chn_num)
+{
+	Model_chn *p_mdl= Get_Mode_chn(chn_num);
+	
+	p_mdl->alarm.alm_flag = 0;
+	p_mdl->alarm.num_alms_in_stg = 0;
+	
+	p_mdl->alarm_mgr.alm_hh_index = 0xff;
+	p_mdl->alarm_mgr.alm_hi_index = 0xff;
+	p_mdl->alarm_mgr.alm_lo_index = 0xff;
+	p_mdl->alarm_mgr.alm_ll_index = 0xff;
+	
+	
 }
 
 CTOR( Model_chn)
@@ -176,7 +229,8 @@ static void	MdlChn_Check_new_alarm(Model_chn *cthis, uint8_t new_flag, uint8_t a
 	rap.happen_time_s = SYS_time_sec();
 	rap.disapper_time_s = 0;
 	
-	STG_Set_file_position(STG_CHN_ALARM(cthis->chni.chn_NO), STG_DRC_WRITE, *p_index * sizeof(rcd_alm_pwr_t));
+	while(STG_Set_file_position(STG_CHN_ALARM(cthis->chni.chn_NO), STG_DRC_WRITE, *p_index * sizeof(rcd_alm_pwr_t)) < 0)
+		delay_ms(1);
 	while(stg->wr_stored_data(stg, STG_CHN_ALARM(cthis->chni.chn_NO), &rap, sizeof(rcd_alm_pwr_t)) != sizeof(rcd_alm_pwr_t))
 	{
 		if(retry)
@@ -406,42 +460,7 @@ static int MdlChn_init(Model *self, IN void *arg)
 	return RET_OK;
 }
 
-int	MdlChn_save_data(uint8_t chn_num, mdl_chn_save_t *p)
-{
-	
-	Model_chn *p_mdl= Get_Mode_chn(chn_num);
-	
-	if(p_mdl == NULL)
-		return 0;
-	
-	MdlChn_Save_2_conf(p, &p_mdl->chni, 1);
-	MdlChn_Save_2_alarm(p, &p_mdl->alarm, 1);
-	
-	return (sizeof(p_mdl->chni) + sizeof(p_mdl->alarm));
-}
 
-void MdlChn_default_conf(int chn_num)
-{
-	Model_chn *p_mdl= Get_Mode_chn(chn_num);
-	
-	memset(&p_mdl->chni, 0, sizeof(p_mdl->chni));
-	p_mdl->chni.signal_type = AI_0_400_ohm;
-	p_mdl->chni.chn_NO = chn_num;
-	p_mdl->chni.tag_NO = chn_num;
-	p_mdl->chni.MB = 2;
-}
-
-
-void MdlChn_default_alarm(int chn_num)
-{
-	Model_chn *p_mdl= Get_Mode_chn(chn_num);
-	
-	memset(&p_mdl->alarm, 0, sizeof(p_mdl->alarm));
-	p_mdl->alarm.alarm_hh = 0x7fff;
-	p_mdl->alarm.alarm_hi = 0x7fff;
-	
-	
-}
 
 //从存储器中读取报警的记录信息，来确定本次初始化的报警存储起始位置
 static void MdlChn_Init_alm_mgr_by_STG_alm(Model_chn *cthis)

@@ -64,6 +64,7 @@ Accm_HMI *Get_Accm_HMI(void)
 	if( singal_Accm_HMI == NULL)
 	{
 		singal_Accm_HMI = Accm_HMI_new();
+		if(singal_Accm_HMI  == NULL) while(1);
 		g_p_Accm_HMI = SUPER_PTR(singal_Accm_HMI, HMI);
 
 	}

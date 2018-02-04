@@ -57,6 +57,8 @@ ModelTest *Get_ModeTest(void)
 	Model	*p_mdl;
 	if( signal_modeTest == NULL) {
 		signal_modeTest = ModelTest_new();
+		if(signal_modeTest == NULL)
+			while(1);
 		p_mdl = SUPER_PTR( signal_modeTest, Model);
 		p_mdl->init( p_mdl, NULL);
 	}

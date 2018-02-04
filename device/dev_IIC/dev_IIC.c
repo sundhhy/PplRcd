@@ -64,6 +64,7 @@ Dev_IIC *Get_Dev_IIC(int minor)
 	if(d_IIC[minor] == NULL) 
 	{
 		d_IIC[minor] = Dev_IIC_new();
+		if(d_IIC[ minor]  == NULL) while(1);
 		d_IIC[minor]->minor = minor;
 		devChar = SUPER_PTR(d_IIC[minor], I_dev_Char);
 		

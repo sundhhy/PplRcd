@@ -277,7 +277,7 @@ static void		HMI_Show_cmp(HMI *self)
 	
 	p->show_vaild_btn();
 	p_bar->show_bar();
-	p_crv->crv_show_bkg();
+//	p_crv->crv_show_bkg();
 }
 
 static int		HMI_Btn_forward(HMI *self)

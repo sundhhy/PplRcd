@@ -12,7 +12,7 @@ GhNone *Get_GhNone(void)
 	if( signalGhNone == NULL)
 	{
 		signalGhNone = GhNone_new();
-		
+		if(signalGhNone  == NULL) while(1);
 		
 		
 	}

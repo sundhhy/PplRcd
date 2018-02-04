@@ -104,7 +104,11 @@ Storage		*Get_storage()
 	static Storage *sington_strg = NULL;
 	
 	if(sington_strg == NULL)
+	{
 		sington_strg = Storage_new();
+		if(sington_strg == NULL)
+			while(1);
+	}
 	
 	
 	return sington_strg;

@@ -110,7 +110,11 @@ Keyboard *GetKeyInsance( void)
 {
 	static Keyboard *signalKey = NULL;
 	if( signalKey == NULL)
+	{
 		signalKey = Keyboard_new();
+		if(signalKey == NULL)
+			while(1);
+	}
 	
 	return signalKey;
 	

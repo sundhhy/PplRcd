@@ -56,6 +56,7 @@ NtInput *GetNtInput(void)
 	if( signalNtInput == NULL)
 	{
 		signalNtInput = NtInput_new();
+		if(signalNtInput  == NULL) while(1);
 	}
 	return signalNtInput;
 }

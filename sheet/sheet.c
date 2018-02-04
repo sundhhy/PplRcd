@@ -50,7 +50,7 @@
 //------------------------------------------------------------------------------
 static shtctl *p_signalShtctl = NULL;
 const Except_T Sheet_Failed = { "Alloc Sheet Failed" };
-
+static struct SHTCTL	sht_rsc;
 //static shtDefCmd *signal_cmd;
 //------------------------------------------------------------------------------
 // local function prototypes
@@ -81,8 +81,8 @@ struct SHTCTL* Shtctl_init(   uint16_t vxsize, uint16_t vysize)
 	struct SHTCTL* p_ctl;
 	int i;
     
-    p_ctl = CALLOC( 1, sizeof( struct SHTCTL));
-    
+//    p_ctl = CALLOC( 1, sizeof( struct SHTCTL));
+    p_ctl = &sht_rsc;
     if( p_ctl == NULL)
         goto err;
     

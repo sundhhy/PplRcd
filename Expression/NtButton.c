@@ -54,6 +54,7 @@ NtButton *GetNtButton(void)
 	if( signalNtButton == NULL)
 	{
 		signalNtButton = NtButton_new();
+		if(signalNtButton  == NULL) while(1);
 	}
 	return signalNtButton;
 }

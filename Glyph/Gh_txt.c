@@ -54,7 +54,7 @@ GhTxt *Get_GhTxt(void)
 	if( signalGhTxt == NULL)
 	{
 		signalGhTxt = GhTxt_new();
-		
+		if(signalGhTxt  == NULL) while(1);
 	}
 	
 

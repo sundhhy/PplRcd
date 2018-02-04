@@ -363,24 +363,27 @@ void W25Q_Erase_addr(uint32_t st, uint32_t sz)
 		goto erase_tail;
 	//计算头部所处于的扇区号，读取该扇
 	n1 = head_area[0] / SECTOR_SIZE;
-	W25Q_Flush();
-	w25q_Read_Sector_Data(w25q_mgr.p_sct_buf, n1);
 	
+	if(n1 != w25q_mgr.cur_sct)
+	{
+		W25Q_Flush();
+		w25q_Read_Sector_Data(w25q_mgr.p_sct_buf, n1);
+	}
 	//擦除该扇区
 	W25Q_erase(FSH_OPT_SECTOR, n1);
 	//计算扣除头部位置之后要写入该扇区的字节数并写入
 		
 	
 	i = head_area[0] - n1 * SECTOR_SIZE;
-	n2 =  n1 * SECTOR_SIZE;
-	for(; i < SECTOR_SIZE; i++)
+	n2 =  head_area[1] - n1 * SECTOR_SIZE;
+	for(; i < n2; i++)
 		w25q_mgr.p_sct_buf[i] = 0xff;
 	w25q_Write_Sector_Data(w25q_mgr.p_sct_buf, n1);
 		
 	erase_tail:
 	//2 擦除尾部
 		if(tail_area[0] == st + sz)
-			return;
+			goto exit;
 	//计算尾部所处于的扇区号，读取该扇
 		n1 = tail_area[0] / SECTOR_SIZE;
 		W25Q_Flush();
@@ -393,6 +396,7 @@ void W25Q_Erase_addr(uint32_t st, uint32_t sz)
 			w25q_mgr.p_sct_buf[i] = 0xff;
 		w25q_Write_Sector_Data(w25q_mgr.p_sct_buf, n1);
 		
+		exit:
 		
 		//更新当前的缓存页面
 		if(w25q_mgr.cache_earse )

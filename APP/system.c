@@ -21,7 +21,7 @@
 // const defines
 //------------------------------------------------------------------------------
 #define 	PHN_MAJOR_VER				0
-#define 	PHN_MINOR_VER				6
+#define 	PHN_MINOR_VER				3
 
 
 const unsigned short daytab[13]={0,31,59,90,120,151,181,212,243,273,304,334,365};//非闰年月份累积天数
@@ -162,6 +162,8 @@ void System_init(void)
 	phn_sys.lcd_sem_wait_ms = 0xffffffff;
 	
 	sys_rtc = ( UtlRtc *)Pcf8563_new();
+	if(sys_rtc == NULL) while(1);
+
 	sys_rtc->init(sys_rtc, NULL);
 	sys_rtc->get(sys_rtc, &stm);
 	

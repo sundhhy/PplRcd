@@ -75,7 +75,10 @@ Button	*BTN_Get_Sington(void)
 {
 	static Button *Sington = NULL;
 	if(Sington == NULL)
+	{
 		Sington = Button_new();
+		if(Sington  == NULL) while(1);
+	}
 	
 	return Sington;
 	
