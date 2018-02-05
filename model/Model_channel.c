@@ -625,14 +625,14 @@ static void MdlChn_run(Model *self)
 	
 #if TDD_SAVE_DATA == 1
 	cthis->chni.value ++;
-	if(cthis->chni.value > 15)
+	if(cthis->chni.value > 100)
 		cthis->chni.value = 0;
 	
-	cthis->alarm.alarm_hh = 10;
-	cthis->alarm.alarm_hi = 8;
+	cthis->alarm.alarm_hh = 80;
+	cthis->alarm.alarm_hi = 60;
 	
-	cthis->alarm.alarm_lo = 4;
-	cthis->alarm.alarm_ll = 2;
+	cthis->alarm.alarm_lo = 40;
+	cthis->alarm.alarm_ll = 20;
 	
 	Signal_Alarm(cthis);
 	
@@ -772,6 +772,13 @@ static int MdlChn_getData(Model *self, IN int aux, void *arg)
 			
 			if(arg)
 				p_s16 = (int16_t *)arg;
+			#if TDD_SAVE_DATA == 1
+			if(aux == chnaux_upper_limit)
+				*p_s16 = 100;
+			else
+				*p_s16 = 0;
+			break;
+			#endif
 		
 			if(aux == chnaux_upper_limit)
 				i = SmBus_RD_hig_limit(SMBUS_MAKE_CHN(SMBUS_CHN_AI, cthis->chni.chn_NO), sbus_buf, 32);

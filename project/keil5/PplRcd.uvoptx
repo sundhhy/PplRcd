@@ -171,9 +171,41 @@
         <Bp>
           <Number>0</Number>
           <Type>0</Type>
+          <LineNumber>538</LineNumber>
+          <EnabledFlag>1</EnabledFlag>
+          <Address>134277644</Address>
+          <ByteObject>0</ByteObject>
+          <HtxType>0</HtxType>
+          <ManyObjects>0</ManyObjects>
+          <SizeOfObject>0</SizeOfObject>
+          <BreakByAccess>0</BreakByAccess>
+          <BreakIfRCount>1</BreakIfRCount>
+          <Filename>..\..\HMI\HMI_curve.c</Filename>
+          <ExecCommand></ExecCommand>
+          <Expression></Expression>
+        </Bp>
+        <Bp>
+          <Number>1</Number>
+          <Type>0</Type>
+          <LineNumber>276</LineNumber>
+          <EnabledFlag>1</EnabledFlag>
+          <Address>134252776</Address>
+          <ByteObject>0</ByteObject>
+          <HtxType>0</HtxType>
+          <ManyObjects>0</ManyObjects>
+          <SizeOfObject>0</SizeOfObject>
+          <BreakByAccess>0</BreakByAccess>
+          <BreakIfRCount>1</BreakIfRCount>
+          <Filename>..\..\APP\main.c</Filename>
+          <ExecCommand></ExecCommand>
+          <Expression></Expression>
+        </Bp>
+        <Bp>
+          <Number>2</Number>
+          <Type>0</Type>
           <LineNumber>139</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>134268486</Address>
+          <Address>134268706</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
@@ -200,6 +232,11 @@
           <count>2</count>
           <WinNumber>1</WinNumber>
           <ItemText>os_tsk</ItemText>
+        </Ww>
+        <Ww>
+          <count>3</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>g_arr_p_chnData</ItemText>
         </Ww>
       </WatchWindow1>
       <WatchWindow2>
@@ -1295,7 +1332,7 @@
 
   <Group>
     <GroupName>HMI</GroupName>
-    <tvExp>0</tvExp>
+    <tvExp>1</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>
@@ -1836,7 +1873,7 @@
 
   <Group>
     <GroupName>model</GroupName>
-    <tvExp>0</tvExp>
+    <tvExp>1</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>
@@ -2094,7 +2131,7 @@
 
   <Group>
     <GroupName>fs</GroupName>
-    <tvExp>0</tvExp>
+    <tvExp>1</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>

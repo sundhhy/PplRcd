@@ -82,7 +82,7 @@ extern	const char		arr_clrs[NUM_CHANNEL];
 extern	hmiAtt_t		CmmHmiAtt;
 extern 	keyboardHMI		*g_keyHmi;
 extern 	ro_char 		news_cpic[];
-extern curve_ctl_t		g_curve[NUM_CHANNEL];
+//extern curve_ctl_t		g_curve[NUM_CHANNEL];
 
 //HMI
 extern 	HMI 			*g_p_mainHmi;
@@ -109,8 +109,8 @@ extern void Build_ChnSheets(void);
 extern int Stripe_clean_clr(int row);
 extern int Stripe_vy(int row) ;
 
-extern void VRAM_init(void);
-extern void *VRAM_alloc(int bytes);
+extern void HMI_Ram_init(void);
+extern void *HMI_Ram_alloc(int bytes);
 
 extern void Win_content(char *p_tips);
 #endif

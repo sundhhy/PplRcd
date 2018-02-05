@@ -154,9 +154,9 @@ static int NPW_Init(void *arg)
 	int i = 0;
 	
 	
-	VRAM_init();
+	HMI_Ram_init();
 	for(i = 0; i < 11; i++) {
-		arr_p_vram[i] = VRAM_alloc(48);
+		arr_p_vram[i] = HMI_Ram_alloc(48);
 		memset(arr_p_vram[i], 0, 48);
 	}
 	

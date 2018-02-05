@@ -7,7 +7,7 @@
 #include "focus.h"
 #include "Component_Button.h"
 #include "Component_curve.h"
-
+#include "os/os_depend.h"
 
 //提供 按键，事件，消息，窗口，报警，时间，复选框的图层
 //这些图层可能会被其他界面所使用
@@ -252,7 +252,9 @@ static int	Init_mainHmi( HMI *self, void *arg)
 	
 	self->initSheet( self);
 
-	
+	phn_sys.hmi_mgr.hmi_crv_sem = Alloc_sem();
+	Sem_init(&phn_sys.hmi_mgr.hmi_crv_sem);
+	Sem_post(&phn_sys.hmi_mgr.hmi_crv_sem);
 	return RET_OK;
 	
 

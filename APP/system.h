@@ -23,6 +23,8 @@
 
 #define OP_ADD				0
 #define OP_SUB				1
+#define OP_MUX				2
+#define OP_DIV				3
 
 #define FSH_FM25_NUM			0
 #define FSH_W25Q_NUM			1
@@ -77,7 +79,7 @@ typedef struct {
 
 //-----------HMI -----------------------------------------------
 typedef struct {
-	uint8_t			none[4];
+	int			hmi_crv_sem;
 }hmi_mgr_t;
 //---------- flash驱动的定义 --------------------------------------
 

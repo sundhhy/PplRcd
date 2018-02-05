@@ -76,3 +76,6 @@
 .\objects\mainhmi.o: ..\..\HMI\format.h
 .\objects\mainhmi.o: E:\sdhLib\inc\basis/assert.h
 .\objects\mainhmi.o: ..\..\HMI\chnInfoPic.h
+.\objects\mainhmi.o: E:\sdhLib\inc\os/os_depend.h
+.\objects\mainhmi.o: E:\sdhLib\inc\os/rtx/rtx_depend.h
+.\objects\mainhmi.o: d:\Keil_v5\ARM\PACK\ARM\CMSIS\4.4.0\CMSIS\RTOS\RTX\INC\cmsis_os.h

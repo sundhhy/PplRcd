@@ -79,12 +79,12 @@ void Set_flag_show(uint8_t	*p_flag, int val)
 	*p_flag |= val;
 }
 
-void Set_flag_keyhandle(uint8_t	*p_flag, int val)
-{
-	val &= 2;
-	*p_flag &= 0xfd;
-	*p_flag |= val;
-}
+//void Set_flag_keyhandle(uint8_t	*p_flag, int val)
+//{
+//	val &= 2;
+//	*p_flag &= 0xfd;
+//	*p_flag |= val;
+//}
 
 
 
@@ -277,7 +277,7 @@ static void		HMI_Show_cmp(HMI *self)
 	
 	p->show_vaild_btn();
 	p_bar->show_bar();
-//	p_crv->crv_show_bkg();
+	p_crv->crv_show_bkg();
 }
 
 static int		HMI_Btn_forward(HMI *self)

@@ -157,13 +157,13 @@ static int DBP_init(void *arg)
 	g_DBP_strategy.sf.f_row = 1;
 	g_DBP_strategy.sf.start_byte = 0;
 	g_DBP_strategy.sf.num_byte = 1;
-	VRAM_init();
+	HMI_Ram_init();
 	for(i = 0; i < 5; i++) {
 		
-		arr_p_vram[i] = VRAM_alloc(64);
+		arr_p_vram[i] = HMI_Ram_alloc(64);
 		memset(arr_p_vram[i], 0, 64);
 	}
-	arr_p_vram[5] = VRAM_alloc(240);		//这个缓存用于数据备份
+	arr_p_vram[5] = HMI_Ram_alloc(240);		//这个缓存用于数据备份
 	
 	g_setting_chn = 0;
 	arr_DBP_fds[0] = USB_Rgt_event_hdl(DBP_Usb_event);

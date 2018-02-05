@@ -19,7 +19,8 @@
 // const defines
 //------------------------------------------------------------------------------
 #define CRV_CTL_HIDE					0
-#define CRV_CTL_STEP_PIX			1
+#define CRV_CTL_STEP_PIX				1
+//#define CRV_CTL_DIRTY					2
 
 //曲线显示控制
 #define	CRV_SHOW_WHOLE				0		//整根曲线都显示

@@ -122,7 +122,7 @@ static void	Alarm_initSheet(HMI *self)
 	Expr 			*p_exp ;
 	shtctl 			*p_shtctl = NULL;
 	
-	VRAM_init();
+	HMI_Ram_init();
 	
 	p_shtctl = GetShtctl();
 	
@@ -141,7 +141,7 @@ static void	Alarm_initSheet(HMI *self)
 	
 	FormatSheetSub(g_p_boxlist);
 	p_cnt = Button_Get_subcnt(g_p_boxlist);
-	p_cnt->data = VRAM_alloc(40);
+	p_cnt->data = HMI_Ram_alloc(40);
 	sprintf(p_cnt->data, "%02d", cthis->cur_chn);
 	p_cnt->len = strlen(p_cnt->data);
 	

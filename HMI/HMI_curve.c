@@ -8,7 +8,7 @@
 #include "ModelFactory.h"
 #include "curve.h"
 #include "Component_curve.h"
-
+#include "os/os_depend.h"
 
 //柱状图在y坐标上，按100%显示的话是:71 -187 
 //============================================================================//
@@ -43,12 +43,15 @@ sheet  		*g_arr_p_check[NUM_CHANNEL]; 		//是否显示的指示图形
 //------------------------------------------------------------------------------
 // const defines
 //------------------------------------------------------------------------------
-#define		RLTHMI_BKPICNUM		"14"
-#define		RLTHMI_TITLE		"实时趋势"
+#define	RLTHMI_BKPICNUM		"14"
+#define	RLTHMI_TITLE		"实时趋势"
 
-#define 	HISTORY_TITLE		"历史趋势"
+#define HISTORY_TITLE		"历史趋势"
 
-#define 	DEFAULT_MIN_DIV		'1'
+#define DEFAULT_MIN_DIV		'1'
+
+#define CHNSHOW_ROW_SPACE		32
+
 
 static const char RT_hmi_code_chninfo[] =  {"<cpic vx0=260 vy0=30 vx1=320 vy1=240>23</>" };
 
@@ -57,7 +60,9 @@ static const char RT_hmi_code_div[] = { "<text vx0=8 vy0=36 f=16 m=0 clr=red> </
 
 static const char RT_hmi_code_data[] = { "<text f=16 vx0=285 m=0 aux=3>100</>" };
 static const char RLT_hmi_code_chnshow[] ={ "<icon vx0=265 vy0=62 xn=5 yn=1 n=0>19</>" };
-#define  CHNSHOW_ROW_SPACE		32
+
+//static const char RT_hmi_code_div[] = { "<text vx0=8 vy0=36 f=16 m=0 clr=red> </>" };
+
 
 //------------------------------------------------------------------------------
 // local types
@@ -213,10 +218,12 @@ static void RLT_HMI_build_button(HMI *self)
 		crv.crv_col = arr_clrs[i];
 		crv.crv_direction = HMI_DIR_RIGHT;
 		crv.crv_step_pix = cthis->min_div;
+		
+		//下面的尺寸要跟曲线的背景位置匹配
 		crv.crv_x0 = 0;
-		crv.crv_y0 = 50;
+		crv.crv_y0 = 50 + i * 10;
 		crv.crv_x1 = 240;
-		crv.crv_y1 = 150;
+		crv.crv_y1 = 150 + i * 10;		//210
 		
 		cthis->arr_crv_fd[i] = p_crv->alloc(&crv);
 	}
@@ -414,13 +421,19 @@ static void	RT_trendHmi_HitHandle( HMI *self, char *s)
 
 	
 //	cthis->flags |= 2;
-	Set_flag_keyhandle(&self->flag, 1);
+//	Set_flag_keyhandle(&self->flag, 1);
+//	self->flag |= HMI_FLAG_DEAL_HIT;
 	if(!strcmp(s, HMIKEY_UP))
 	{
 		p_focus = Focus_Get_focus(self->p_fcuu);
 		if(p_focus != NULL && p_focus->id == SHTID_RTL_MDIV)
 		{
-			Str_Calculations(p_focus->cnt.data, 2, OP_ADD, 1, 1, 60);
+			Str_Calculations(p_focus->cnt.data, 2, OP_MUX, 2, 1, 16);
+//			if(cthis->min_div < 16)
+//				cthis->min_div *= 2;
+//			else
+//				cthis->min_div = 1;
+//			sprintf(p_focus->cnt.data, "%2d", cthis->min_div);
 			p_focus->cnt.len = strlen(p_focus->cnt.data);
 			chgFouse = 1;
 		}
@@ -431,7 +444,12 @@ static void	RT_trendHmi_HitHandle( HMI *self, char *s)
 		if(p_focus != NULL && p_focus->id == SHTID_RTL_MDIV)
 		{
 			
-			Str_Calculations(p_focus->cnt.data, 2, OP_SUB, 1, 1, 60);
+			Str_Calculations(p_focus->cnt.data, 2, OP_DIV, 2, 1, 16);
+//			if(cthis->min_div > 1)
+//				cthis->min_div /= 2;
+//			else
+//				cthis->min_div = 16;
+//			sprintf(p_focus->cnt.data, "%2d", cthis->min_div);
 			p_focus->cnt.len = strlen(p_focus->cnt.data);
 			chgFouse = 1;
 		}
@@ -499,6 +517,7 @@ static void	RT_trendHmi_HitHandle( HMI *self, char *s)
 			if(cthis->chn_show_map & (1 << chn)) {
 				cthis->chn_show_map &= ~(1 << chn);
 				p_crv->crv_ctl(cthis->arr_crv_fd[chn], CRV_CTL_HIDE, 1);
+				p_crv->crv_show_curve(HMI_CMP_ALL, CRV_SHOW_WHOLE);
 				p_focus->area.n = 2;
 				//清除数字显示
 				g_arr_p_chnData[chn]->cnt.data = "   ";
@@ -509,15 +528,21 @@ static void	RT_trendHmi_HitHandle( HMI *self, char *s)
 				p_focus->area.n = 0;
 				cthis->chn_show_map |= 1 << chn;
 				p_crv->crv_ctl(cthis->arr_crv_fd[chn], CRV_CTL_HIDE, 0);
+				p_crv->crv_show_curve(HMI_CMP_ALL, CRV_SHOW_WHOLE);
 			}
 			p_focus->p_gp->vdraw(p_focus->p_gp, &p_focus->cnt, &p_focus->area);
 			Flush_LCD();
 			
 		} else if(p_focus->id == SHTID_RTL_MDIV) {
-			
+			if(Sem_wait(&phn_sys.hmi_mgr.hmi_crv_sem, 1000) <= 0)
+				goto exit;
 			cthis->min_div = atoi(p_focus->cnt.data);
-			self->switchHMI(self, self);
-			p_crv->crv_ctl(cthis->arr_crv_fd[chn], CRV_CTL_STEP_PIX, cthis->min_div);
+//			self->switchHMI(self, self);
+			HMI_Ram_init();
+			p_crv->crv_ctl(HMI_CMP_ALL, CRV_CTL_STEP_PIX, cthis->min_div);
+//			p_crv->crv_show_curve(HMI_CMP_ALL, CRV_SHOW_WHOLE);
+			
+			Sem_post(&phn_sys.hmi_mgr.hmi_crv_sem);
 //			if(p_focus) {
 //				p_cmd = p_focus->p_enterCmd;
 //				if(p_cmd)
@@ -545,7 +570,8 @@ static void	RT_trendHmi_HitHandle( HMI *self, char *s)
 	}
 	
 //	cthis->flags &= ~2;
-	Set_flag_keyhandle(&self->flag, 0);
+//	Set_flag_keyhandle(&self->flag, 0);
+//	self->flag &= ~HMI_FLAG_DEAL_HIT;
 	
 }
 
@@ -614,8 +640,8 @@ static void HMI_CRV_Run(HMI *self)
 //	int				y = 0;
 	
 	cthis->count ++;
-	if(cthis->count < cthis->min_div)
-		return;
+//	if(cthis->count < cthis->min_div)
+//		return;
 	cthis->count = 0;
 	//刷新时间未到就直接退出
 	
@@ -627,9 +653,12 @@ static void HMI_CRV_Run(HMI *self)
 //	}
 	
 
-
+	if(Sem_wait(&phn_sys.hmi_mgr.hmi_crv_sem, 1000) <= 0)
+		return;
 	
 	for(i = 0; i < RLTHMI_NUM_CURVE; i++) {
+//		if(self->flag & HMI_FLAG_DEAL_HIT)
+//			break;
 
 //		if((cthis->chn_show_map & (1 << i)) == 0) {
 //			continue;
@@ -645,23 +674,21 @@ static void HMI_CRV_Run(HMI *self)
 		
 		p_mdl->getMdlData(p_mdl, chnaux_upper_limit, &cval.up_limit);
 		p_mdl->getMdlData(p_mdl, chnaux_small_signal, &cval.lower_limit);
-//		y = vy0 - height * y / 100;
-//		
-//		if(y < (vy0 - height))
-//			y = vy0 - height;
+
 		
-		g_arr_p_chnData[i]->cnt.data = p_mdl->to_string(p_mdl, AUX_DATA, NULL);
+		
+		
+		p_crv->add_point(cthis->arr_crv_fd[i], &cval);
+		sprintf(g_arr_p_chnData[i]->cnt.data, "%2d", cval.prc);
 		g_arr_p_chnData[i]->cnt.len = strlen(g_arr_p_chnData[i]->cnt.data);
 		g_arr_p_chnData[i]->p_gp->vdraw(g_arr_p_chnData[i]->p_gp, &g_arr_p_chnData[i]->cnt, &g_arr_p_chnData[i]->area);
 		
-		p_crv->add_point(cthis->arr_crv_fd[i], &cval);
-		
-//		Curve_add_point(arr_p_crv[i], y);
-//		if(IS_HMI_KEYHANDLE(g_p_RLT_trendHmi->flag) == 0)
-//			Curve_draw(arr_p_crv[i]);
+
 	}
-	p_crv->crv_show_curve(HMI_CMP_ALL, CRV_SHOW_LATEST);
 	
+//	if((self->flag & HMI_FLAG_DEAL_HIT) == 0)
+	p_crv->crv_show_curve(HMI_CMP_ALL, CRV_SHOW_LATEST);
+	Sem_post(&phn_sys.hmi_mgr.hmi_crv_sem);
 //	Flush_LCD();
 	
 	
@@ -675,7 +702,7 @@ static void RLT_Init_curve(RLT_trendHMI *self)
 {
 	
 	
-	VRAM_init();		//曲线需要使用的缓存
+	HMI_Ram_init();		//曲线需要使用的缓存
 //	curve_ctl_t *p_cctl;
 //	int i = 0;
 //	

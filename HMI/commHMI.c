@@ -91,14 +91,19 @@ static ro_char timeCode[] = { "<time vx0=200 vy0=0 bx=60  by=24 f=24 xali=m m=0 
 //------------------------------------------------------------------------------
 // local types
 //------------------------------------------------------------------------------
+
+//只会从头向后分配，而且不考虑空洞
+//用完之后不必回收，在执行HMI_Ram_init 的时候会把内存全部回收
 typedef struct {
-	uint16_t		free_idx[NUM_CHANNEL];		//已经被使用	
-}vram_mgr_t;
+	uint16_t		used_bytes;		//已经被使用
+	uint16_t		free_bytes;
+	uint8_t			vram_buf[1440];		//NUM_CHANNEL * CURVE_POINT
+}hmi_ram_mgr_t;
 //------------------------------------------------------------------------------
 // local vars
 //------------------------------------------------------------------------------
 static cmmHmi *singalCmmHmi;
-
+static hmi_ram_mgr_t	hmi_ram;
 //static char s_timer[TIME_BUF_LEN];
 //------------------------------------------------------------------------------
 // local function prototypes
@@ -209,9 +214,39 @@ void Str_Calculations(char *p_str, int len, int op, int val, int rangel, int ran
 		else 
 			dig = rangeh;
 	}
+	else if(op == OP_MUX) {
+		
+		if(dig < rangeh)
+			dig *= val;
+		else 
+			dig = rangel;
+	}
+	else if(op == OP_DIV) {
+		if(val == 0)
+			return;
+		if(dig > rangel)
+			dig /= val;
+		else 
+			dig = rangeh;
+	}
+	switch(len)
+	{
+		case 2:
+			snprintf(buf, 6, "%2d", dig);
+			break;
+		case 3:
+			snprintf(buf, 6, "%3d", dig);
+			break;
+		case 4:
+			snprintf(buf, 6, "%4d", dig);
+			break;
+		default:
+			snprintf(buf, 6, "%d", dig);
+			break;
+		
+		
+	}
 	
-	
-	snprintf(buf, 6, "%d", dig);
 	
 	for(i = 0; i < len; i ++) {
 		p_str[i] = buf[i];
@@ -224,42 +259,52 @@ void Str_Calculations(char *p_str, int len, int op, int val, int rangel, int ran
 //每次要分配内存之前都要重新初始化下
 //因此这种内存在切换界面之后，之前的内存就会被回收
 //界面在使用这种显存的时候，都要事先进行初始化
-void VRAM_init(void)
+void HMI_Ram_init(void)
 {
-	vram_mgr_t *p_vram = (vram_mgr_t *)g_curve[0].points;
-	int i = 0;
+	hmi_ram_mgr_t *p_ram = &hmi_ram;
 	
-	for(i = 0; i < NUM_CHANNEL; i++) {
-		
-		p_vram->free_idx[i] = 0;
-		
-	}
+	p_ram->free_bytes = sizeof(p_ram->vram_buf);
+	p_ram->used_bytes = 0;
+//	int i = 0;
+//	
+//	for(i = 0; i < NUM_CHANNEL; i++) {
+//		
+//		p_vram->free_idx[i] = 0;
+//		
+//	}
 	
-	p_vram->free_idx[0] = sizeof(vram_mgr_t);
+//	p_vram->free_idx[0] = sizeof(vram_mgr_t);
 	
 	
 	
 }
 
 //分配算法是最简单的，第一个匹配地址
-void *VRAM_alloc(int bytes)
+void *HMI_Ram_alloc(int bytes)
 {
-	vram_mgr_t *p_vram = (vram_mgr_t *)g_curve[0].points;
+	hmi_ram_mgr_t *p_ram = &hmi_ram;
 	void	*p;
-	int i = 0;
 	
-	for(i = 0; i < NUM_CHANNEL; i++) {
-		
-		if((CURVE_POINT - p_vram->free_idx[i]) >=  bytes) {
-			p = g_curve[i].points + p_vram->free_idx[i];
-			p_vram->free_idx[i] += bytes;
-			return p;
-				
-		}
-		
-	}
 	
-	return NULL;
+	if(p_ram->free_bytes < bytes)
+		return NULL;
+	p = p_ram->vram_buf + p_ram->used_bytes;
+	p_ram->used_bytes += bytes;
+	p_ram->free_bytes -= bytes;
+//	int i = 0;
+	
+//	for(i = 0; i < NUM_CHANNEL; i++) {
+//		
+//		if((CURVE_POINT - p_vram->free_idx[i]) >=  bytes) {
+//			p = g_curve[i].points + p_vram->free_idx[i];
+//			p_vram->free_idx[i] += bytes;
+//			return p;
+//				
+//		}
+//		
+//	}
+	
+	return p;
 	
 	
 	

@@ -83,8 +83,9 @@
 /***************************************************************/
 
 
-#define	HMI_FLAG_HIDE	0
-#define	HMI_FLAG_SHOW	1
+#define	HMI_FLAG_HIDE			0
+#define	HMI_FLAG_SHOW			1
+#define	HMI_FLAG_DEAL_HIT		2	
 
 #define SY_KEYTYPE_HIT				0
 #define SY_KEYTYPE_DHIT				1
@@ -232,7 +233,7 @@ extern HMI *g_p_curHmi, *g_p_lastHmi, *g_p_win_last;
 // function prototypes
 //------------------------------------------------------------------------------
 extern void Set_flag_show(uint8_t	*p_flag, int val);
-extern void Set_flag_keyhandle(uint8_t	*p_flag, int val);
+//extern void Set_flag_keyhandle(uint8_t	*p_flag, int val);
 void STY_Duild_button(void *arg);
 
 //很多界面的处理与主界面的按键处理一样，所以就把主界面的处理开放出来
