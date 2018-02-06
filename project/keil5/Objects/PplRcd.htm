@@ -3,7 +3,7 @@
 <title>Static Call Graph - [.\Objects\PplRcd.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image .\Objects\PplRcd.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5050106: Last Updated: Mon Feb 05 15:03:46 2018
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5050106: Last Updated: Tue Feb 06 21:34:26 2018
 <BR><P>
 <H3>Maximum Stack Usage =        296 bytes + Unknown(Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -8584,7 +8584,7 @@ Local Symbols
 <P><STRONG><a name="[6d]"></a>NPW_Key_UP</STRONG> (Thumb, 8 bytes, Stack size 0 bytes, strategy_news_power.o(i.NPW_Key_UP))
 <BR>[Address Reference Count : 1]<UL><LI> strategy_news_power.o(.data)
 </UL>
-<P><STRONG><a name="[17a]"></a>HMI_CRV_Run</STRONG> (Thumb, 246 bytes, Stack size 32 bytes, hmi_curve.o(i.HMI_CRV_Run))
+<P><STRONG><a name="[17a]"></a>HMI_CRV_Run</STRONG> (Thumb, 266 bytes, Stack size 32 bytes, hmi_curve.o(i.HMI_CRV_Run))
 <BR><BR>[Stack]<UL><LI>Max Depth = 104<LI>Call Chain = HMI_CRV_Run &rArr; CRV_Get_Sington &rArr; Curve_new &rArr; malloc &rArr; internal_alloc
 </UL>
 <BR>[Calls]<UL><LI><a href="#[26c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Sem_wait
@@ -8669,8 +8669,8 @@ Local Symbols
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> hmi_curve.o(i.RLT_trendHMI_ctor)
 </UL>
-<P><STRONG><a name="[17e]"></a>RT_trendHmi_HitHandle</STRONG> (Thumb, 664 bytes, Stack size 56 bytes, hmi_curve.o(i.RT_trendHmi_HitHandle))
-<BR><BR>[Stack]<UL><LI>Max Depth = 200<LI>Call Chain = RT_trendHmi_HitHandle &rArr; Str_Calculations &rArr; atoi &rArr; strtol &rArr; _strtoul
+<P><STRONG><a name="[17e]"></a>RT_trendHmi_HitHandle</STRONG> (Thumb, 738 bytes, Stack size 64 bytes, hmi_curve.o(i.RT_trendHmi_HitHandle))
+<BR><BR>[Stack]<UL><LI>Max Depth = 208<LI>Call Chain = RT_trendHmi_HitHandle &rArr; Str_Calculations &rArr; atoi &rArr; strtol &rArr; _strtoul
 </UL>
 <BR>[Calls]<UL><LI><a href="#[26c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Sem_wait
 <LI><a href="#[26f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Sem_post
@@ -8740,7 +8740,7 @@ Local Symbols
 </UL>
 <BR>[Calls]<UL><LI><a href="#[25d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CRV_Set_dirty
 </UL>
-<BR>[Called By]<UL><LI><a href="#[264]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CRV_Exc_display
+<BR>[Called By]<UL><LI><a href="#[263]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CRV_Exc_display
 </UL>
 
 <P><STRONG><a name="[25e]"></a>CRV_Copy_att</STRONG> (Thumb, 34 bytes, Stack size 0 bytes, component_curve.o(i.CRV_Copy_att))
@@ -8769,21 +8769,17 @@ Local Symbols
 </UL>
 <BR>[Calls]<UL><LI><a href="#[262]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CRV_Rle
 </UL>
-<BR>[Called By]<UL><LI><a href="#[264]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CRV_Exc_display
+<BR>[Called By]<UL><LI><a href="#[263]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CRV_Exc_display
 </UL>
 
-<P><STRONG><a name="[263]"></a>CRV_Draw_right_to_left</STRONG> (Thumb, 206 bytes, Stack size 40 bytes, component_curve.o(i.CRV_Draw_right_to_left))
-<BR><BR>[Stack]<UL><LI>Max Depth = 64<LI>Call Chain = CRV_Draw_right_to_left &rArr; CRV_Rle
-</UL>
-<BR>[Calls]<UL><LI><a href="#[262]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CRV_Rle
-</UL>
-<BR>[Called By]<UL><LI><a href="#[264]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CRV_Exc_display
+<P><STRONG><a name="[264]"></a>CRV_Draw_right_to_left</STRONG> (Thumb, 2 bytes, Stack size 0 bytes, component_curve.o(i.CRV_Draw_right_to_left))
+<BR><BR>[Called By]<UL><LI><a href="#[263]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CRV_Exc_display
 </UL>
 
-<P><STRONG><a name="[264]"></a>CRV_Exc_display</STRONG> (Thumb, 272 bytes, Stack size 16 bytes, component_curve.o(i.CRV_Exc_display))
-<BR><BR>[Stack]<UL><LI>Max Depth = 80<LI>Call Chain = CRV_Exc_display &rArr; CRV_Draw_right_to_left &rArr; CRV_Rle
+<P><STRONG><a name="[263]"></a>CRV_Exc_display</STRONG> (Thumb, 272 bytes, Stack size 16 bytes, component_curve.o(i.CRV_Exc_display))
+<BR><BR>[Stack]<UL><LI>Max Depth = 80<LI>Call Chain = CRV_Exc_display &rArr; CRV_Draw_left_to_right &rArr; CRV_Rle
 </UL>
-<BR>[Calls]<UL><LI><a href="#[263]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CRV_Draw_right_to_left
+<BR>[Calls]<UL><LI><a href="#[264]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CRV_Draw_right_to_left
 <LI><a href="#[261]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CRV_Draw_left_to_right
 <LI><a href="#[260]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CRV_Clean_bkg
 </UL>
@@ -8814,8 +8810,7 @@ Local Symbols
 <P><STRONG><a name="[262]"></a>CRV_Rle</STRONG> (Thumb, 114 bytes, Stack size 24 bytes, component_curve.o(i.CRV_Rle))
 <BR><BR>[Stack]<UL><LI>Max Depth = 24<LI>Call Chain = CRV_Rle
 </UL>
-<BR>[Called By]<UL><LI><a href="#[263]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CRV_Draw_right_to_left
-<LI><a href="#[261]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CRV_Draw_left_to_right
+<BR>[Called By]<UL><LI><a href="#[261]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CRV_Draw_left_to_right
 </UL>
 
 <P><STRONG><a name="[25d]"></a>CRV_Set_dirty</STRONG> (Thumb, 74 bytes, Stack size 16 bytes, component_curve.o(i.CRV_Set_dirty))
@@ -8836,11 +8831,11 @@ Local Symbols
 <BR>[Address Reference Count : 1]<UL><LI> component_curve.o(i.Curve_ctor)
 </UL>
 <P><STRONG><a name="[df]"></a>CRV_Show_curve</STRONG> (Thumb, 96 bytes, Stack size 16 bytes, component_curve.o(i.CRV_Show_curve))
-<BR><BR>[Stack]<UL><LI>Max Depth = 96<LI>Call Chain = CRV_Show_curve &rArr; CRV_Exc_display &rArr; CRV_Draw_right_to_left &rArr; CRV_Rle
+<BR><BR>[Stack]<UL><LI>Max Depth = 96<LI>Call Chain = CRV_Show_curve &rArr; CRV_Exc_display &rArr; CRV_Draw_left_to_right &rArr; CRV_Rle
 </UL>
 <BR>[Calls]<UL><LI><a href="#[228]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Check_bit
 <LI><a href="#[25d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CRV_Set_dirty
-<LI><a href="#[264]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CRV_Exc_display
+<LI><a href="#[263]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CRV_Exc_display
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> component_curve.o(i.Curve_ctor)
 </UL>

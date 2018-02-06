@@ -20,11 +20,14 @@
 //------------------------------------------------------------------------------
 #define CRV_CTL_HIDE					0
 #define CRV_CTL_STEP_PIX				1
-//#define CRV_CTL_DIRTY					2
+#define CRV_CTL_MAX_NUM					2
 
 //曲线显示控制
 #define	CRV_SHOW_WHOLE				0		//整根曲线都显示
 #define	CRV_SHOW_LATEST				1		//只显示最新添加的点
+
+#define FLEX_ZOOM_IN				0		//放大
+#define FLEX_ZOOM_OUT				1		//缩小
 //------------------------------------------------------------------------------
 // typedef
 //------------------------------------------------------------------------------
@@ -38,6 +41,9 @@ typedef struct
 	uint8_t					crv_flag;
 	uint16_t				crv_x0,crv_y0;
 	uint16_t				crv_x1,crv_y1;
+	
+	uint16_t				crv_buf_size;
+	uint16_t				crv_max_num_data;
 }curve_att_t;
 
 typedef struct {
@@ -48,12 +54,15 @@ typedef struct {
 }crv_val_t;
 typedef struct {
 	uint8_t			*p_vals_y;
-	uint16_t		crv_size;
 	uint16_t		crv_num_points;		//已有的点数
 	uint16_t		cur_index;
 	//当前曲线的起始索引，当曲线满了以后不清除的情况下，其实索引才会发生变化
 	//对于清除曲线的情况下，curve_start_index始终为0
-	uint16_t		crv_start_index;		
+	//在缩小和放大的之后，start_index也会变化
+	uint16_t		crv_start_index;
+
+	uint8_t			none[2];
+	
 }crv_run_info_t;
 
 typedef struct {
@@ -80,7 +89,7 @@ CLASS(Curve)
 	void		(*crv_ctl)(uint8_t  crv_fd, uint8_t	ctl, uint16_t val);
 	void		(*crv_show_bkg)(void);
 	void		(*crv_show_curve)(uint8_t  crv_fd, uint8_t show_ctl);
-
+	void		(*crv_data_flex)(uint8_t	crv_fd, char flex, uint8_t	scale, uint16_t new_max_num);
 };
 //------------------------------------------------------------------------------
 // global variable declarations

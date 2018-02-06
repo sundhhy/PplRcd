@@ -63,7 +63,7 @@ I (..\..\..\PplRcd\utils/rtc_pcf8563.h)(0x594619D6)
 I (..\..\..\PplRcd\utils/rtc.h)(0x5A392FA0)
 I (..\..\..\PplRcd\HMI/focus.h)(0x5A5F3A21)
 I (..\..\..\PplRcd\HMI/Component_Button.h)(0x5A5F5601)
-I (..\..\..\PplRcd\HMI/Component_curve.h)(0x5A77F365)
+I (..\..\..\PplRcd\HMI/Component_curve.h)(0x5A79AD6D)
 I (..\..\..\PplRcd\HMI/Component_progress_bar.h)(0x5A64541F)
 I (..\..\..\PplRcd\HMI/keyboardHMI.h)(0x59930709)
 I (..\..\..\PplRcd\HMI/mainHMI.h)(0x59D9D0C3)
@@ -141,7 +141,7 @@ I (..\..\..\PplRcd\utils/rtc_pcf8563.h)(0x594619D6)
 I (..\..\..\PplRcd\utils/rtc.h)(0x5A392FA0)
 I (..\..\..\PplRcd\HMI/focus.h)(0x5A5F3A21)
 I (..\..\..\PplRcd\HMI/Component_Button.h)(0x5A5F5601)
-I (..\..\..\PplRcd\HMI/Component_curve.h)(0x5A77F365)
+I (..\..\..\PplRcd\HMI/Component_curve.h)(0x5A79AD6D)
 I (..\..\..\PplRcd\HMI/Component_progress_bar.h)(0x5A64541F)
 I (..\..\..\PplRcd\HMI/keyboardHMI.h)(0x59930709)
 I (..\..\..\PplRcd\HMI/mainHMI.h)(0x59D9D0C3)
@@ -1696,7 +1696,7 @@ I (..\..\..\PplRcd\utils/rtc_pcf8563.h)(0x594619D6)
 I (..\..\..\PplRcd\utils/rtc.h)(0x5A392FA0)
 I (..\..\HMI\focus.h)(0x5A5F3A21)
 I (..\..\HMI\Component_Button.h)(0x5A5F5601)
-I (..\..\HMI\Component_curve.h)(0x5A77F365)
+I (..\..\HMI\Component_curve.h)(0x5A79AD6D)
 I (..\..\HMI\Component_progress_bar.h)(0x5A64541F)
 I (..\..\HMI\commHMI.h)(0x5A77F365)
 I (..\..\HMI\keyboardHMI.h)(0x59930709)
@@ -1755,7 +1755,7 @@ I (..\..\..\PplRcd\utils/rtc_pcf8563.h)(0x594619D6)
 I (..\..\..\PplRcd\utils/rtc.h)(0x5A392FA0)
 I (..\..\HMI\focus.h)(0x5A5F3A21)
 I (..\..\HMI\Component_Button.h)(0x5A5F5601)
-I (..\..\HMI\Component_curve.h)(0x5A77F365)
+I (..\..\HMI\Component_curve.h)(0x5A79AD6D)
 I (..\..\HMI\Component_progress_bar.h)(0x5A64541F)
 I (..\..\HMI\commHMI.h)(0x5A77F365)
 I (..\..\HMI\keyboardHMI.h)(0x59930709)
@@ -1814,7 +1814,7 @@ I (..\..\..\PplRcd\utils/rtc_pcf8563.h)(0x594619D6)
 I (..\..\..\PplRcd\utils/rtc.h)(0x5A392FA0)
 I (..\..\HMI\focus.h)(0x5A5F3A21)
 I (..\..\HMI\Component_Button.h)(0x5A5F5601)
-I (..\..\HMI\Component_curve.h)(0x5A77F365)
+I (..\..\HMI\Component_curve.h)(0x5A79AD6D)
 I (..\..\HMI\Component_progress_bar.h)(0x5A64541F)
 I (..\..\HMI\commHMI.h)(0x5A77F365)
 I (..\..\HMI\keyboardHMI.h)(0x59930709)
@@ -1877,7 +1877,7 @@ I (..\..\..\PplRcd\utils/rtc_pcf8563.h)(0x594619D6)
 I (..\..\..\PplRcd\utils/rtc.h)(0x5A392FA0)
 I (..\..\HMI\focus.h)(0x5A5F3A21)
 I (..\..\HMI\Component_Button.h)(0x5A5F5601)
-I (..\..\HMI\Component_curve.h)(0x5A77F365)
+I (..\..\HMI\Component_curve.h)(0x5A79AD6D)
 I (..\..\HMI\Component_progress_bar.h)(0x5A64541F)
 I (..\..\HMI\commHMI.h)(0x5A77F365)
 I (..\..\HMI\keyboardHMI.h)(0x59930709)
@@ -1951,7 +1951,7 @@ I (..\..\..\PplRcd\utils/rtc_pcf8563.h)(0x594619D6)
 I (..\..\..\PplRcd\utils/rtc.h)(0x5A392FA0)
 I (..\..\HMI\focus.h)(0x5A5F3A21)
 I (..\..\HMI\Component_Button.h)(0x5A5F5601)
-I (..\..\HMI\Component_curve.h)(0x5A77F365)
+I (..\..\HMI\Component_curve.h)(0x5A79AD6D)
 I (..\..\HMI\Component_progress_bar.h)(0x5A64541F)
 I (..\..\HMI\HMIFactory.h)(0x5A76AF7F)
 I (..\..\HMI\commHMI.h)(0x5A77F365)
@@ -2026,7 +2026,7 @@ I (..\..\..\PplRcd\utils/rtc_pcf8563.h)(0x594619D6)
 I (..\..\..\PplRcd\utils/rtc.h)(0x5A392FA0)
 I (..\..\HMI\focus.h)(0x5A5F3A21)
 I (..\..\HMI\Component_Button.h)(0x5A5F5601)
-I (..\..\HMI\Component_curve.h)(0x5A77F365)
+I (..\..\HMI\Component_curve.h)(0x5A79AD6D)
 I (..\..\HMI\Component_progress_bar.h)(0x5A64541F)
 I (..\..\HMI\keyboardHMI.h)(0x59930709)
 I (..\..\Expression\ExpFactory.h)(0x59D9A401)
@@ -2102,7 +2102,7 @@ I (..\..\..\PplRcd\utils/rtc_pcf8563.h)(0x594619D6)
 I (..\..\..\PplRcd\utils/rtc.h)(0x5A392FA0)
 I (..\..\HMI\HMI.h)(0x5A77E9CE)
 I (..\..\HMI\focus.h)(0x5A5F3A21)
-I (..\..\HMI\Component_curve.h)(0x5A77F365)
+I (..\..\HMI\Component_curve.h)(0x5A79AD6D)
 I (..\..\HMI\Component_progress_bar.h)(0x5A64541F)
 I (..\..\HMI\format.h)(0x59CE0686)
 I (E:\sdhLib\inc\arithmetic\bit.h)(0x5A5CB6FA)
@@ -2161,7 +2161,7 @@ I (..\..\..\PplRcd\utils/rtc_pcf8563.h)(0x594619D6)
 I (..\..\..\PplRcd\utils/rtc.h)(0x5A392FA0)
 I (..\..\HMI\focus.h)(0x5A5F3A21)
 I (..\..\HMI\Component_Button.h)(0x5A5F5601)
-I (..\..\HMI\Component_curve.h)(0x5A77F365)
+I (..\..\HMI\Component_curve.h)(0x5A79AD6D)
 I (..\..\HMI\Component_progress_bar.h)(0x5A64541F)
 I (..\..\HMI\commHMI.h)(0x5A77F365)
 I (..\..\HMI\keyboardHMI.h)(0x59930709)
@@ -2223,7 +2223,7 @@ I (..\..\..\PplRcd\utils/rtc_pcf8563.h)(0x594619D6)
 I (..\..\..\PplRcd\utils/rtc.h)(0x5A392FA0)
 I (..\..\HMI\focus.h)(0x5A5F3A21)
 I (..\..\HMI\Component_Button.h)(0x5A5F5601)
-I (..\..\HMI\Component_curve.h)(0x5A77F365)
+I (..\..\HMI\Component_curve.h)(0x5A79AD6D)
 I (..\..\HMI\Component_progress_bar.h)(0x5A64541F)
 I (..\..\HMI\commHMI.h)(0x5A77F365)
 I (..\..\HMI\keyboardHMI.h)(0x59930709)
@@ -2348,7 +2348,7 @@ I (..\..\..\PplRcd\utils/rtc_pcf8563.h)(0x594619D6)
 I (..\..\..\PplRcd\utils/rtc.h)(0x5A392FA0)
 I (..\..\HMI\focus.h)(0x5A5F3A21)
 I (..\..\HMI\Component_Button.h)(0x5A5F5601)
-I (..\..\HMI\Component_curve.h)(0x5A77F365)
+I (..\..\HMI\Component_curve.h)(0x5A79AD6D)
 I (..\..\HMI\Component_progress_bar.h)(0x5A64541F)
 F (..\..\HMI\History_HMI.c)(0x5A76CE05)(-c --cpu Cortex-M3 -D__RTX -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I..\..\configs -I..\..\BSP -IE:\sdhLib\inc -I..\..\device\dev_LCD\nokia_5110 -I..\..\..\PplRcd -I..\..\drive -I..\..\device -I..\..\Glyph -I..\..\Expression -I..\..\Views -I..\..\REEC -I..\..\model -I..\..\sheet -I..\..\usb -I..\..\APP --diag_suppress=1295;--diag_suppress=1;--diag_suppress=177-D-I E:\PaperlessRecorder\myCode\PplRcd\project\keil5\RTE-I E:\PaperlessRecorder\myCode\PplRcd\project\keil5\RTE\Device\STM32F103VC-I d:\Keil_v5\ARM\PACK\ARM\CMSIS\4.4.0\CMSIS\Include-I d:\Keil_v5\ARM\PACK\ARM\CMSIS\4.4.0\CMSIS\RTOS\RTX\INC-I d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0-I d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\Include-I d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\StdPeriph_Driver\inc-D__UVISION_VERSION="513" -D_RTE_ -DSTM32F10X_HD -DUSE_STDPERIPH_DRIVER -DSTM32F10X_HD -DUSE_STM3210B_EVAL -DHSE_VALUE="8000000" -D_MCU_ENDIAN="1"-o .\objects\history_hmi.o --omf_browse .\objects\history_hmi.crf --depend .\objects\history_hmi.d)
 I (..\..\HMI\History_HMI.h)(0x59D7815B)
@@ -2405,7 +2405,7 @@ I (..\..\..\PplRcd\utils/rtc_pcf8563.h)(0x594619D6)
 I (..\..\..\PplRcd\utils/rtc.h)(0x5A392FA0)
 I (..\..\HMI\focus.h)(0x5A5F3A21)
 I (..\..\HMI\Component_Button.h)(0x5A5F5601)
-I (..\..\HMI\Component_curve.h)(0x5A77F365)
+I (..\..\HMI\Component_curve.h)(0x5A79AD6D)
 I (..\..\HMI\Component_progress_bar.h)(0x5A64541F)
 I (..\..\HMI\commHMI.h)(0x5A77F365)
 I (..\..\HMI\keyboardHMI.h)(0x59930709)
@@ -2466,7 +2466,7 @@ I (..\..\..\PplRcd\utils/rtc_pcf8563.h)(0x594619D6)
 I (..\..\..\PplRcd\utils/rtc.h)(0x5A392FA0)
 I (..\..\HMI\focus.h)(0x5A5F3A21)
 I (..\..\HMI\Component_Button.h)(0x5A5F5601)
-I (..\..\HMI\Component_curve.h)(0x5A77F365)
+I (..\..\HMI\Component_curve.h)(0x5A79AD6D)
 I (..\..\HMI\Component_progress_bar.h)(0x5A64541F)
 I (..\..\HMI\commHMI.h)(0x5A77F365)
 I (..\..\HMI\keyboardHMI.h)(0x59930709)
@@ -2526,7 +2526,7 @@ I (..\..\..\PplRcd\utils/rtc_pcf8563.h)(0x594619D6)
 I (..\..\..\PplRcd\utils/rtc.h)(0x5A392FA0)
 I (..\..\HMI\focus.h)(0x5A5F3A21)
 I (..\..\HMI\Component_Button.h)(0x5A5F5601)
-I (..\..\HMI\Component_curve.h)(0x5A77F365)
+I (..\..\HMI\Component_curve.h)(0x5A79AD6D)
 I (..\..\HMI\Component_progress_bar.h)(0x5A64541F)
 I (..\..\HMI\keyboardHMI.h)(0x59930709)
 I (..\..\HMI\mainHMI.h)(0x59D9D0C3)
@@ -2594,7 +2594,7 @@ I (..\..\..\PplRcd\utils/rtc_pcf8563.h)(0x594619D6)
 I (..\..\..\PplRcd\utils/rtc.h)(0x5A392FA0)
 I (..\..\HMI\focus.h)(0x5A5F3A21)
 I (..\..\HMI\Component_Button.h)(0x5A5F5601)
-I (..\..\HMI\Component_curve.h)(0x5A77F365)
+I (..\..\HMI\Component_curve.h)(0x5A79AD6D)
 I (..\..\HMI\Component_progress_bar.h)(0x5A64541F)
 I (..\..\HMI\commHMI.h)(0x5A77F365)
 I (..\..\Expression\ExpFactory.h)(0x59D9A401)
@@ -2656,7 +2656,7 @@ I (..\..\..\PplRcd\utils/rtc_pcf8563.h)(0x594619D6)
 I (..\..\..\PplRcd\utils/rtc.h)(0x5A392FA0)
 I (..\..\HMI\focus.h)(0x5A5F3A21)
 I (..\..\HMI\Component_Button.h)(0x5A5F5601)
-I (..\..\HMI\Component_curve.h)(0x5A77F365)
+I (..\..\HMI\Component_curve.h)(0x5A79AD6D)
 I (..\..\HMI\Component_progress_bar.h)(0x5A64541F)
 I (..\..\HMI\commHMI.h)(0x5A77F365)
 I (..\..\HMI\keyboardHMI.h)(0x59930709)
@@ -2733,7 +2733,7 @@ I (..\..\..\PplRcd\utils/rtc_pcf8563.h)(0x594619D6)
 I (..\..\..\PplRcd\utils/rtc.h)(0x5A392FA0)
 I (..\..\HMI\focus.h)(0x5A5F3A21)
 I (..\..\HMI\Component_Button.h)(0x5A5F5601)
-I (..\..\HMI\Component_curve.h)(0x5A77F365)
+I (..\..\HMI\Component_curve.h)(0x5A79AD6D)
 I (..\..\HMI\Component_progress_bar.h)(0x5A64541F)
 I (..\..\HMI\HMIFactory.h)(0x5A76AF7F)
 I (..\..\HMI\commHMI.h)(0x5A77F365)
@@ -2807,7 +2807,7 @@ I (..\..\..\PplRcd\utils/rtc_pcf8563.h)(0x594619D6)
 I (..\..\..\PplRcd\utils/rtc.h)(0x5A392FA0)
 I (..\..\HMI\focus.h)(0x5A5F3A21)
 I (..\..\HMI\Component_Button.h)(0x5A5F5601)
-I (..\..\HMI\Component_curve.h)(0x5A77F365)
+I (..\..\HMI\Component_curve.h)(0x5A79AD6D)
 I (..\..\HMI\Component_progress_bar.h)(0x5A64541F)
 I (..\..\HMI\commHMI.h)(0x5A77F365)
 I (..\..\HMI\keyboardHMI.h)(0x59930709)
@@ -2870,7 +2870,7 @@ I (..\..\..\PplRcd\utils/rtc_pcf8563.h)(0x594619D6)
 I (..\..\..\PplRcd\utils/rtc.h)(0x5A392FA0)
 I (..\..\HMI\focus.h)(0x5A5F3A21)
 I (..\..\HMI\Component_Button.h)(0x5A5F5601)
-I (..\..\HMI\Component_curve.h)(0x5A77F365)
+I (..\..\HMI\Component_curve.h)(0x5A79AD6D)
 I (..\..\HMI\Component_progress_bar.h)(0x5A64541F)
 I (..\..\HMI\commHMI.h)(0x5A77F365)
 I (..\..\HMI\keyboardHMI.h)(0x59930709)
@@ -2929,7 +2929,7 @@ I (..\..\..\PplRcd\utils/rtc_pcf8563.h)(0x594619D6)
 I (..\..\..\PplRcd\utils/rtc.h)(0x5A392FA0)
 I (..\..\HMI\focus.h)(0x5A5F3A21)
 I (..\..\HMI\Component_Button.h)(0x5A5F5601)
-I (..\..\HMI\Component_curve.h)(0x5A77F365)
+I (..\..\HMI\Component_curve.h)(0x5A79AD6D)
 I (..\..\HMI\Component_progress_bar.h)(0x5A64541F)
 I (..\..\HMI\commHMI.h)(0x5A77F365)
 I (..\..\HMI\keyboardHMI.h)(0x59930709)
@@ -2988,7 +2988,7 @@ I (..\..\..\PplRcd\utils/rtc_pcf8563.h)(0x594619D6)
 I (..\..\..\PplRcd\utils/rtc.h)(0x5A392FA0)
 I (..\..\HMI\focus.h)(0x5A5F3A21)
 I (..\..\HMI\Component_Button.h)(0x5A5F5601)
-I (..\..\HMI\Component_curve.h)(0x5A77F365)
+I (..\..\HMI\Component_curve.h)(0x5A79AD6D)
 I (..\..\HMI\Component_progress_bar.h)(0x5A64541F)
 I (..\..\HMI\commHMI.h)(0x5A77F365)
 I (..\..\HMI\keyboardHMI.h)(0x59930709)
@@ -3047,7 +3047,7 @@ I (..\..\..\PplRcd\utils/rtc_pcf8563.h)(0x594619D6)
 I (..\..\..\PplRcd\utils/rtc.h)(0x5A392FA0)
 I (..\..\HMI\focus.h)(0x5A5F3A21)
 I (..\..\HMI\Component_Button.h)(0x5A5F5601)
-I (..\..\HMI\Component_curve.h)(0x5A77F365)
+I (..\..\HMI\Component_curve.h)(0x5A79AD6D)
 I (..\..\HMI\Component_progress_bar.h)(0x5A64541F)
 I (..\..\HMI\commHMI.h)(0x5A77F365)
 I (..\..\HMI\keyboardHMI.h)(0x59930709)
@@ -3106,7 +3106,7 @@ I (..\..\..\PplRcd\utils/rtc_pcf8563.h)(0x594619D6)
 I (..\..\..\PplRcd\utils/rtc.h)(0x5A392FA0)
 I (..\..\HMI\focus.h)(0x5A5F3A21)
 I (..\..\HMI\Component_Button.h)(0x5A5F5601)
-I (..\..\HMI\Component_curve.h)(0x5A77F365)
+I (..\..\HMI\Component_curve.h)(0x5A79AD6D)
 I (..\..\HMI\Component_progress_bar.h)(0x5A64541F)
 I (..\..\HMI\commHMI.h)(0x5A77F365)
 I (..\..\HMI\keyboardHMI.h)(0x59930709)
@@ -3166,7 +3166,7 @@ I (..\..\..\PplRcd\utils/rtc_pcf8563.h)(0x594619D6)
 I (..\..\..\PplRcd\utils/rtc.h)(0x5A392FA0)
 I (..\..\HMI\focus.h)(0x5A5F3A21)
 I (..\..\HMI\Component_Button.h)(0x5A5F5601)
-I (..\..\HMI\Component_curve.h)(0x5A77F365)
+I (..\..\HMI\Component_curve.h)(0x5A79AD6D)
 I (..\..\HMI\Component_progress_bar.h)(0x5A64541F)
 I (..\..\HMI\commHMI.h)(0x5A77F365)
 I (..\..\HMI\keyboardHMI.h)(0x59930709)
@@ -3225,7 +3225,7 @@ I (..\..\..\PplRcd\utils/rtc_pcf8563.h)(0x594619D6)
 I (..\..\..\PplRcd\utils/rtc.h)(0x5A392FA0)
 I (..\..\HMI\focus.h)(0x5A5F3A21)
 I (..\..\HMI\Component_Button.h)(0x5A5F5601)
-I (..\..\HMI\Component_curve.h)(0x5A77F365)
+I (..\..\HMI\Component_curve.h)(0x5A79AD6D)
 I (..\..\HMI\Component_progress_bar.h)(0x5A64541F)
 I (..\..\HMI\commHMI.h)(0x5A77F365)
 I (..\..\HMI\keyboardHMI.h)(0x59930709)
@@ -3290,7 +3290,7 @@ I (..\..\..\PplRcd\utils/rtc_pcf8563.h)(0x594619D6)
 I (..\..\..\PplRcd\utils/rtc.h)(0x5A392FA0)
 I (..\..\HMI\focus.h)(0x5A5F3A21)
 I (..\..\HMI\Component_Button.h)(0x5A5F5601)
-I (..\..\HMI\Component_curve.h)(0x5A77F365)
+I (..\..\HMI\Component_curve.h)(0x5A79AD6D)
 I (..\..\HMI\Component_progress_bar.h)(0x5A64541F)
 I (..\..\HMI\commHMI.h)(0x5A77F365)
 I (..\..\HMI\keyboardHMI.h)(0x59930709)
@@ -3353,7 +3353,7 @@ I (..\..\..\PplRcd\utils/rtc_pcf8563.h)(0x594619D6)
 I (..\..\..\PplRcd\utils/rtc.h)(0x5A392FA0)
 I (..\..\HMI\focus.h)(0x5A5F3A21)
 I (..\..\HMI\Component_Button.h)(0x5A5F5601)
-I (..\..\HMI\Component_curve.h)(0x5A77F365)
+I (..\..\HMI\Component_curve.h)(0x5A79AD6D)
 I (..\..\HMI\Component_progress_bar.h)(0x5A64541F)
 I (..\..\HMI\commHMI.h)(0x5A77F365)
 I (..\..\HMI\keyboardHMI.h)(0x59930709)
@@ -3433,7 +3433,7 @@ I (..\..\..\PplRcd\utils/rtc.h)(0x5A392FA0)
 I (..\..\HMI\HMI.h)(0x5A77E9CE)
 I (..\..\HMI\focus.h)(0x5A5F3A21)
 I (..\..\HMI\Component_Button.h)(0x5A5F5601)
-I (..\..\HMI\Component_curve.h)(0x5A77F365)
+I (..\..\HMI\Component_curve.h)(0x5A79AD6D)
 I (E:\sdhLib\inc\arithmetic\bit.h)(0x5A5CB6FA)
 F (..\..\HMI\Component_progress_bar.h)(0x5A64541F)()
 F (..\..\HMI\HMI_striped_background.h)(0x5A731EAD)()
@@ -3492,7 +3492,7 @@ I (..\..\..\PplRcd\utils/rtc_pcf8563.h)(0x594619D6)
 I (..\..\..\PplRcd\utils/rtc.h)(0x5A392FA0)
 I (..\..\HMI\focus.h)(0x5A5F3A21)
 I (..\..\HMI\Component_Button.h)(0x5A5F5601)
-I (..\..\HMI\Component_curve.h)(0x5A77F365)
+I (..\..\HMI\Component_curve.h)(0x5A79AD6D)
 I (..\..\HMI\Component_progress_bar.h)(0x5A64541F)
 I (..\..\HMI\commHMI.h)(0x5A77F365)
 I (..\..\HMI\keyboardHMI.h)(0x59930709)
@@ -3555,7 +3555,7 @@ I (..\..\..\PplRcd\utils/rtc_pcf8563.h)(0x594619D6)
 I (..\..\..\PplRcd\utils/rtc.h)(0x5A392FA0)
 I (..\..\HMI\focus.h)(0x5A5F3A21)
 I (..\..\HMI\Component_Button.h)(0x5A5F5601)
-I (..\..\HMI\Component_curve.h)(0x5A77F365)
+I (..\..\HMI\Component_curve.h)(0x5A79AD6D)
 I (..\..\HMI\Component_progress_bar.h)(0x5A64541F)
 I (..\..\HMI\commHMI.h)(0x5A77F365)
 I (..\..\HMI\keyboardHMI.h)(0x59930709)
@@ -3615,13 +3615,13 @@ I (..\..\..\PplRcd\utils/rtc_pcf8563.h)(0x594619D6)
 I (..\..\..\PplRcd\utils/rtc.h)(0x5A392FA0)
 I (..\..\HMI\focus.h)(0x5A5F3A21)
 I (..\..\HMI\Component_Button.h)(0x5A5F5601)
-I (..\..\HMI\Component_curve.h)(0x5A77F365)
+I (..\..\HMI\Component_curve.h)(0x5A79AD6D)
 I (..\..\HMI\Component_progress_bar.h)(0x5A64541F)
 I (..\..\HMI\commHMI.h)(0x5A77F365)
 I (..\..\HMI\keyboardHMI.h)(0x59930709)
 I (..\..\..\PplRcd\utils/Storage.h)(0x5A731EAD)
 F (..\..\HMI\curve.h)(0x5A0303F0)()
-F (..\..\HMI\HMI_curve.c)(0x5A78010E)(-c --cpu Cortex-M3 -D__RTX -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I..\..\configs -I..\..\BSP -IE:\sdhLib\inc -I..\..\device\dev_LCD\nokia_5110 -I..\..\..\PplRcd -I..\..\drive -I..\..\device -I..\..\Glyph -I..\..\Expression -I..\..\Views -I..\..\REEC -I..\..\model -I..\..\sheet -I..\..\usb -I..\..\APP --diag_suppress=1295;--diag_suppress=1;--diag_suppress=177-D-I E:\PaperlessRecorder\myCode\PplRcd\project\keil5\RTE-I E:\PaperlessRecorder\myCode\PplRcd\project\keil5\RTE\Device\STM32F103VC-I d:\Keil_v5\ARM\PACK\ARM\CMSIS\4.4.0\CMSIS\Include-I d:\Keil_v5\ARM\PACK\ARM\CMSIS\4.4.0\CMSIS\RTOS\RTX\INC-I d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0-I d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\Include-I d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\StdPeriph_Driver\inc-D__UVISION_VERSION="513" -D_RTE_ -DSTM32F10X_HD -DUSE_STDPERIPH_DRIVER -DSTM32F10X_HD -DUSE_STM3210B_EVAL -DHSE_VALUE="8000000" -D_MCU_ENDIAN="1"-o .\objects\hmi_curve.o --omf_browse .\objects\hmi_curve.crf --depend .\objects\hmi_curve.d)
+F (..\..\HMI\HMI_curve.c)(0x5A79AEC0)(-c --cpu Cortex-M3 -D__RTX -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I..\..\configs -I..\..\BSP -IE:\sdhLib\inc -I..\..\device\dev_LCD\nokia_5110 -I..\..\..\PplRcd -I..\..\drive -I..\..\device -I..\..\Glyph -I..\..\Expression -I..\..\Views -I..\..\REEC -I..\..\model -I..\..\sheet -I..\..\usb -I..\..\APP --diag_suppress=1295;--diag_suppress=1;--diag_suppress=177-D-I E:\PaperlessRecorder\myCode\PplRcd\project\keil5\RTE-I E:\PaperlessRecorder\myCode\PplRcd\project\keil5\RTE\Device\STM32F103VC-I d:\Keil_v5\ARM\PACK\ARM\CMSIS\4.4.0\CMSIS\Include-I d:\Keil_v5\ARM\PACK\ARM\CMSIS\4.4.0\CMSIS\RTOS\RTX\INC-I d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0-I d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\Include-I d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\StdPeriph_Driver\inc-D__UVISION_VERSION="513" -D_RTE_ -DSTM32F10X_HD -DUSE_STDPERIPH_DRIVER -DSTM32F10X_HD -DUSE_STM3210B_EVAL -DHSE_VALUE="8000000" -D_MCU_ENDIAN="1"-o .\objects\hmi_curve.o --omf_browse .\objects\hmi_curve.crf --depend .\objects\hmi_curve.d)
 I (..\..\HMI\HMI_curve.h)(0x5A76AF7F)
 I (..\..\HMI\HMI.h)(0x5A77E9CE)
 I (D:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x5475F300)
@@ -3676,7 +3676,7 @@ I (..\..\..\PplRcd\utils/rtc_pcf8563.h)(0x594619D6)
 I (..\..\..\PplRcd\utils/rtc.h)(0x5A392FA0)
 I (..\..\HMI\focus.h)(0x5A5F3A21)
 I (..\..\HMI\Component_Button.h)(0x5A5F5601)
-I (..\..\HMI\Component_curve.h)(0x5A77F365)
+I (..\..\HMI\Component_curve.h)(0x5A79AD6D)
 I (..\..\HMI\Component_progress_bar.h)(0x5A64541F)
 I (..\..\HMI\commHMI.h)(0x5A77F365)
 I (..\..\HMI\keyboardHMI.h)(0x59930709)
@@ -3700,9 +3700,9 @@ I (E:\sdhLib\inc\os\os_depend.h)(0x5A5CA707)
 I (E:\sdhLib\inc\os\rtx\rtx_depend.h)(0x5A5CA707)
 I (d:\Keil_v5\ARM\PACK\ARM\CMSIS\4.4.0\CMSIS\RTOS\RTX\INC\cmsis_os.h)(0x55A4B2DA)
 F (..\..\HMI\HMI_curve.h)(0x5A76AF7F)()
-F (..\..\HMI\Component_curve.h)(0x5A77F365)()
-F (..\..\HMI\Component_curve.c)(0x5A7801CF)(-c --cpu Cortex-M3 -D__RTX -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I..\..\configs -I..\..\BSP -IE:\sdhLib\inc -I..\..\device\dev_LCD\nokia_5110 -I..\..\..\PplRcd -I..\..\drive -I..\..\device -I..\..\Glyph -I..\..\Expression -I..\..\Views -I..\..\REEC -I..\..\model -I..\..\sheet -I..\..\usb -I..\..\APP --diag_suppress=1295;--diag_suppress=1;--diag_suppress=177-D-I E:\PaperlessRecorder\myCode\PplRcd\project\keil5\RTE-I E:\PaperlessRecorder\myCode\PplRcd\project\keil5\RTE\Device\STM32F103VC-I d:\Keil_v5\ARM\PACK\ARM\CMSIS\4.4.0\CMSIS\Include-I d:\Keil_v5\ARM\PACK\ARM\CMSIS\4.4.0\CMSIS\RTOS\RTX\INC-I d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0-I d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\Include-I d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\StdPeriph_Driver\inc-D__UVISION_VERSION="513" -D_RTE_ -DSTM32F10X_HD -DUSE_STDPERIPH_DRIVER -DSTM32F10X_HD -DUSE_STM3210B_EVAL -DHSE_VALUE="8000000" -D_MCU_ENDIAN="1"-o .\objects\component_curve.o --omf_browse .\objects\component_curve.crf --depend .\objects\component_curve.d)
-I (..\..\HMI\Component_curve.h)(0x5A77F365)
+F (..\..\HMI\Component_curve.h)(0x5A79AD6D)()
+F (..\..\HMI\Component_curve.c)(0x5A78024B)(-c --cpu Cortex-M3 -D__RTX -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I..\..\configs -I..\..\BSP -IE:\sdhLib\inc -I..\..\device\dev_LCD\nokia_5110 -I..\..\..\PplRcd -I..\..\drive -I..\..\device -I..\..\Glyph -I..\..\Expression -I..\..\Views -I..\..\REEC -I..\..\model -I..\..\sheet -I..\..\usb -I..\..\APP --diag_suppress=1295;--diag_suppress=1;--diag_suppress=177-D-I E:\PaperlessRecorder\myCode\PplRcd\project\keil5\RTE-I E:\PaperlessRecorder\myCode\PplRcd\project\keil5\RTE\Device\STM32F103VC-I d:\Keil_v5\ARM\PACK\ARM\CMSIS\4.4.0\CMSIS\Include-I d:\Keil_v5\ARM\PACK\ARM\CMSIS\4.4.0\CMSIS\RTOS\RTX\INC-I d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0-I d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\Include-I d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\StdPeriph_Driver\inc-D__UVISION_VERSION="513" -D_RTE_ -DSTM32F10X_HD -DUSE_STDPERIPH_DRIVER -DSTM32F10X_HD -DUSE_STM3210B_EVAL -DHSE_VALUE="8000000" -D_MCU_ENDIAN="1"-o .\objects\component_curve.o --omf_browse .\objects\component_curve.crf --depend .\objects\component_curve.d)
+I (..\..\HMI\Component_curve.h)(0x5A79AD6D)
 I (D:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x5475F300)
 I (D:\Keil_v5\ARM\ARMCC\include\string.h)(0x5475F300)
 I (E:\sdhLib\inc\lw_oopc.h)(0x5A5CA707)
@@ -4005,7 +4005,7 @@ I (..\..\..\PplRcd\utils/rtc_pcf8563.h)(0x594619D6)
 I (..\..\..\PplRcd\utils/rtc.h)(0x5A392FA0)
 I (..\..\..\PplRcd\HMI/focus.h)(0x5A5F3A21)
 I (..\..\..\PplRcd\HMI/Component_Button.h)(0x5A5F5601)
-I (..\..\..\PplRcd\HMI/Component_curve.h)(0x5A77F365)
+I (..\..\..\PplRcd\HMI/Component_curve.h)(0x5A79AD6D)
 I (..\..\..\PplRcd\HMI/Component_progress_bar.h)(0x5A64541F)
 F (..\..\Control\CtlKey.h)(0x59906338)()
 F (..\..\Control\CtlTimer.c)(0x5A6D9761)(-c --cpu Cortex-M3 -D__RTX -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I..\..\configs -I..\..\BSP -IE:\sdhLib\inc -I..\..\device\dev_LCD\nokia_5110 -I..\..\..\PplRcd -I..\..\drive -I..\..\device -I..\..\Glyph -I..\..\Expression -I..\..\Views -I..\..\REEC -I..\..\model -I..\..\sheet -I..\..\usb -I..\..\APP --diag_suppress=1295;--diag_suppress=1;--diag_suppress=177-D-I E:\PaperlessRecorder\myCode\PplRcd\project\keil5\RTE-I E:\PaperlessRecorder\myCode\PplRcd\project\keil5\RTE\Device\STM32F103VC-I d:\Keil_v5\ARM\PACK\ARM\CMSIS\4.4.0\CMSIS\Include-I d:\Keil_v5\ARM\PACK\ARM\CMSIS\4.4.0\CMSIS\RTOS\RTX\INC-I d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0-I d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\Include-I d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\StdPeriph_Driver\inc-D__UVISION_VERSION="513" -D_RTE_ -DSTM32F10X_HD -DUSE_STDPERIPH_DRIVER -DSTM32F10X_HD -DUSE_STM3210B_EVAL -DHSE_VALUE="8000000" -D_MCU_ENDIAN="1"-o .\objects\ctltimer.o --omf_browse .\objects\ctltimer.crf --depend .\objects\ctltimer.d)

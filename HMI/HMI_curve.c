@@ -206,7 +206,8 @@ static void RLT_HMI_build_button(HMI *self)
 	Button					*p = BTN_Get_Sington();
 	Curve 					*p_crv = CRV_Get_Sington();
 	curve_att_t			crv;
-	int							i;
+	short							i;
+	short				num = 0;
 	
 	p->build_each_btn(0, BTN_TYPE_MENU, Main_btn_hdl, self);
 	p->build_each_btn(1, BTN_TYPE_LOOP, RLT_btn_hdl, self);
@@ -224,6 +225,13 @@ static void RLT_HMI_build_button(HMI *self)
 		crv.crv_y0 = 50 + i * 10;
 		crv.crv_x1 = 240;
 		crv.crv_y1 = 150 + i * 10;		//210
+		
+		crv.crv_buf_size = 240;
+		num = cthis->min_div * 60;
+		if( num <= 240)
+			crv.crv_max_num_data = num;
+		else
+			crv.crv_max_num_data = 240;
 		
 		cthis->arr_crv_fd[i] = p_crv->alloc(&crv);
 	}
@@ -418,6 +426,8 @@ static void	RT_trendHmi_HitHandle( HMI *self, char *s)
 	uint8_t		focusCol = self->p_fcuu->focus_col;
 	uint8_t		chgFouse = 0;
 	uint8_t		chn = 0;
+	
+	uint8_t		new_mins = 0;
 
 	
 //	cthis->flags |= 2;
@@ -536,11 +546,19 @@ static void	RT_trendHmi_HitHandle( HMI *self, char *s)
 		} else if(p_focus->id == SHTID_RTL_MDIV) {
 			if(Sem_wait(&phn_sys.hmi_mgr.hmi_crv_sem, 1000) <= 0)
 				goto exit;
-			cthis->min_div = atoi(p_focus->cnt.data);
+			new_mins = atoi(p_focus->cnt.data);
 //			self->switchHMI(self, self);
 			HMI_Ram_init();
-			p_crv->crv_ctl(HMI_CMP_ALL, CRV_CTL_STEP_PIX, cthis->min_div);
-//			p_crv->crv_show_curve(HMI_CMP_ALL, CRV_SHOW_WHOLE);
+			
+			p_crv->crv_ctl(HMI_CMP_ALL, CRV_CTL_STEP_PIX, new_mins);
+			
+			if(new_mins > cthis->min_div)
+				p_crv->crv_data_flex(HMI_CMP_ALL, FLEX_ZOOM_OUT, new_mins / 4);
+			else
+				p_crv->crv_data_flex(HMI_CMP_ALL, FLEX_ZOOM_IN, new_mins / 4);
+			
+			cthis->min_div = new_mins;
+			p_crv->crv_show_curve(HMI_CMP_ALL, CRV_SHOW_WHOLE);
 			
 			Sem_post(&phn_sys.hmi_mgr.hmi_crv_sem);
 //			if(p_focus) {
@@ -623,7 +641,7 @@ static void	RT_trendHmi_HitHandle( HMI *self, char *s)
 //	
 //}
 
-
+//实时曲线的运行方法
 static void HMI_CRV_Run(HMI *self)
 {
 	RLT_trendHMI		*cthis = SUB_PTR( self, HMI, RLT_trendHMI);
@@ -640,19 +658,11 @@ static void HMI_CRV_Run(HMI *self)
 //	int				y = 0;
 	
 	cthis->count ++;
-//	if(cthis->count < cthis->min_div)
-//		return;
+	if(cthis->count < cthis->min_div / 4)
+		return;
 	cthis->count = 0;
 	//刷新时间未到就直接退出
 	
-//	for(i = 0; i < RLTHMI_NUM_CURVE; i++) {
-//		if(cthis->chn_show_map & (1 << i)) {
-//			Curve_clean_bkg(arr_p_crv[i]);	//因为曲线都在一个屏幕上绘制，所以清屏一次就够了
-//			break;
-//		}
-//	}
-	
-
 	if(Sem_wait(&phn_sys.hmi_mgr.hmi_crv_sem, 1000) <= 0)
 		return;
 	
