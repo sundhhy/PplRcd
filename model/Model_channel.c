@@ -624,10 +624,30 @@ static void MdlChn_run(Model *self)
 //	uint8_t				old_do;
 	
 #if TDD_SAVE_DATA == 1
-	cthis->chni.value ++;
-	if(cthis->chni.value > 100)
-		cthis->chni.value = 0;
-	
+	if(cthis->chni.none == 0)
+	{
+		cthis->chni.value ++;
+		if(cthis->chni.value > 100)
+		{
+			cthis->chni.value = 99;
+			cthis->chni.none = 1;
+		}
+	}
+	else
+	{
+		if(cthis->chni.value)
+		{
+			cthis->chni.value --;
+			
+		}
+		else
+		{
+			cthis->chni.value = 1;
+			cthis->chni.none = 0;
+			
+		}
+		
+	}
 	cthis->alarm.alarm_hh = 80;
 	cthis->alarm.alarm_hi = 60;
 	

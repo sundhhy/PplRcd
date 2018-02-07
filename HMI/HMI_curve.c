@@ -218,7 +218,7 @@ static void RLT_HMI_build_button(HMI *self)
 	{
 		crv.crv_col = arr_clrs[i];
 		crv.crv_direction = HMI_DIR_RIGHT;
-		crv.crv_step_pix = cthis->min_div;
+		crv.crv_step_pix = 4 / cthis->min_div;
 		
 		//ÏÂÃæµÄ³ß´çÒª¸úÇúÏßµÄ±³¾°Î»ÖÃÆ¥Åä
 		crv.crv_x0 = 0;
@@ -550,10 +550,10 @@ static void	RT_trendHmi_HitHandle( HMI *self, char *s)
 //			self->switchHMI(self, self);
 			HMI_Ram_init();
 			
-			p_crv->crv_ctl(HMI_CMP_ALL, CRV_CTL_STEP_PIX, new_mins);
+			p_crv->crv_ctl(HMI_CMP_ALL, CRV_CTL_STEP_PIX, 4 / new_mins);
 			
 			if(new_mins > cthis->min_div)
-				p_crv->crv_data_flex(HMI_CMP_ALL, FLEX_ZOOM_OUT, new_mins / 4, 60 * new_mins);
+				p_crv->crv_data_flex(HMI_CMP_ALL, FLEX_ZOOM_OUT, new_mins   / 4, 60 * new_mins);
 			else
 				p_crv->crv_data_flex(HMI_CMP_ALL, FLEX_ZOOM_IN, new_mins / 4, 60 * new_mins);
 			
@@ -689,7 +689,7 @@ static void HMI_CRV_Run(HMI *self)
 		
 		
 		p_crv->add_point(cthis->arr_crv_fd[i], &cval);
-		sprintf(g_arr_p_chnData[i]->cnt.data, "%2d", cval.prc);
+		sprintf(g_arr_p_chnData[i]->cnt.data, "%%%3d", cval.prc);
 		g_arr_p_chnData[i]->cnt.len = strlen(g_arr_p_chnData[i]->cnt.data);
 		g_arr_p_chnData[i]->p_gp->vdraw(g_arr_p_chnData[i]->p_gp, &g_arr_p_chnData[i]->cnt, &g_arr_p_chnData[i]->area);
 		
