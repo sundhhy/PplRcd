@@ -58,11 +58,9 @@ typedef struct {
 	uint16_t		cur_index;
 	//当前曲线的起始索引，当曲线满了以后不清除的情况下，其实索引才会发生变化
 	//对于清除曲线的情况下，curve_start_index始终为0
-	//在缩小和放大的之后，start_index也会变化
 	uint16_t		crv_start_index;
 
 	uint8_t			none[2];
-	
 }crv_run_info_t;
 
 typedef struct {

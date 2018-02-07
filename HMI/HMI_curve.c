@@ -553,9 +553,9 @@ static void	RT_trendHmi_HitHandle( HMI *self, char *s)
 			p_crv->crv_ctl(HMI_CMP_ALL, CRV_CTL_STEP_PIX, new_mins);
 			
 			if(new_mins > cthis->min_div)
-				p_crv->crv_data_flex(HMI_CMP_ALL, FLEX_ZOOM_OUT, new_mins / 4);
+				p_crv->crv_data_flex(HMI_CMP_ALL, FLEX_ZOOM_OUT, new_mins / 4, 60 * new_mins);
 			else
-				p_crv->crv_data_flex(HMI_CMP_ALL, FLEX_ZOOM_IN, new_mins / 4);
+				p_crv->crv_data_flex(HMI_CMP_ALL, FLEX_ZOOM_IN, new_mins / 4, 60 * new_mins);
 			
 			cthis->min_div = new_mins;
 			p_crv->crv_show_curve(HMI_CMP_ALL, CRV_SHOW_WHOLE);
