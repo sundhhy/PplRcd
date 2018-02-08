@@ -385,7 +385,7 @@ static void CRV_smp(uint8_t *dst, uint8_t *src, uint16_t dst_len, uint16_t src_l
 
 static void CRV_Cut_expand_tail(uint8_t *dst, uint8_t *src, uint16_t tali_len, uint16_t src_len, uint8_t mul)
 {
-	uint16_t i = 0, j = 0, k =0;
+	short i = 0, j = 0, k =0;
 	uint16_t	l = tali_len;
 	
 	if(l > src_len)
@@ -395,16 +395,24 @@ static void CRV_Cut_expand_tail(uint8_t *dst, uint8_t *src, uint16_t tali_len, u
 	j = src_len - tali_len;
 	
 	
+	//从后往前赋值 是为了避免覆盖掉数据
+	for(i = l - 1; i >= 0; i -- )
+	{
+		
+		dst[i * mul] = src[i + j];
+		
+	}
 	
 	for(i = 0; i < l; i+= 1)
 	{
 		
-//		dst[i * mul] = src[i + j];
-		for(k = 0; k < mul; k ++)
+		for(k = 1; k < mul; k ++)
 		{
-			dst[i * mul + k] = src[i + j];
+			dst[i * mul + k] = src[i * mul];
 		}
+		
 	}
+	
 	
 	
 }
@@ -436,13 +444,13 @@ static void CRV_Zoom_in(uint8_t	crv_fd, uint8_t	scale, uint16_t new_max_num)
 			
 			break;
 		case 2:
-			cut_len = p_run->cur_index % (new_max_num >> 1);
+			cut_len = p_run->cur_index % (new_max_num - 1);
 		
 			CRV_Cut_expand_tail(p1, p2, cut_len, p_run->crv_num_points, 2);	
 			p_run->crv_num_points = cut_len * 2;
 			break;
 		case 4:
-			cut_len = p_run->cur_index % (new_max_num >> 2);
+			cut_len = p_run->cur_index % (new_max_num - 1);
 			CRV_Cut_expand_tail(p1, p2, cut_len, p_run->crv_num_points, 4);	
 			p_run->crv_num_points = cut_len * 4;
 			break;

@@ -611,22 +611,51 @@ static void	RT_trendHmi_HitHandle( HMI *self, char *s)
 static void RTV_midv_change(RLT_trendHMI *cthis, uint8_t new_mins)
 {
 	Curve						*p_crv = CRV_Get_Sington();
-	uint8_t					s = 1;
+	uint8_t						s = 1;
+	uint8_t						pix_s = 1;
+	uint8_t						pix_gap[2];
 	p_crv->crv_ctl(HMI_CMP_ALL, CRV_CTL_STEP_PIX, 4 / new_mins);
 	
 	
 	/*
-	时标 数据数量倍率(即采样频率)
-	1 1
-	2 1
-	4 1
-	8 2
-	16 4
+	时标 数据数量倍率(即采样频率) 像素间隔
+	1 1 4
+	2 1 2
+	4 1 1
+	8 2 1
+	16 4 1
 	*/
-	if((new_mins + cthis->min_div) == 24)		//8 与 16之间的变化，倍数是2
-		s = 2;
+	
+	//先计算倍数
+	//然后再去除像素间隔的倍数
+	pix_gap[0] = 4 / cthis->min_div;
+	pix_gap[1] = 4 / new_mins;
+	if(pix_gap[0] == 0)
+		pix_gap[0] = 1;
+	if(pix_gap[1] == 0)
+		pix_gap[1] = 1;
+	
+	if(new_mins > cthis->min_div)
+	{
+		s = new_mins / cthis->min_div;
+		pix_s = pix_gap[0] / pix_gap[1];
+		s /= pix_s;
+		
+	}
 	else
-		s = new_mins / 4;
+	{
+		s = cthis->min_div / new_mins;
+		pix_s = pix_gap[1] / pix_gap[0];
+		s /= pix_s;
+	}
+	
+	
+	
+	
+//	if((new_mins + cthis->min_div) == 24)		//8 与 16之间的变化，倍数是2
+//		s = 2;
+//	else
+//		s = new_mins / 4;
 	if(new_mins > cthis->min_div)
 		p_crv->crv_data_flex(HMI_CMP_ALL, FLEX_ZOOM_OUT, s, 60 * new_mins);
 	else
