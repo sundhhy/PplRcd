@@ -39,11 +39,7 @@
 //------------------------------------------------------------------------------
 // local types
 //------------------------------------------------------------------------------
-typedef struct {
-	uint32_t		rcd_time_s;
-	uint16_t		rcd_val;
-	uint16_t		none;
-}data_in_fsh_t;
+
 
 #if STG_RCD_FULL_ACTION != STG_ERASE
 //通过缓存，将分散的通道记录，汇集起来，然后一致的存入FLASH
@@ -134,6 +130,7 @@ int	STG_Set_file_position(uint8_t	file_type, uint8_t rd_or_wr, uint32_t position
 	{
 		whn = WR_SEEK_SET;
 	}
+	whr = position;
 	
 	if(IS_CHN_ALARM(file_type))
 	{

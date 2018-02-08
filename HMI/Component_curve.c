@@ -499,7 +499,8 @@ static void		CRV_Data_flex(uint8_t	crv_fd, char flex, uint8_t	scale, uint16_t ne
 {
 	
 	curve_att_t							*p_att;
-	int									i;
+	crv_run_info_t					*p_run;
+	int										i;
 	
 	if(scale == 0)
 		scale = 1;
@@ -511,6 +512,7 @@ static void		CRV_Data_flex(uint8_t	crv_fd, char flex, uint8_t	scale, uint16_t ne
 		if((i != crv_fd) && crv_fd != HMI_CMP_ALL)
 			continue;
 		p_att = p_CRV_self->p_crv_att + i;
+		p_run = p_CRV_self->p_run_info + i ;
 		if(new_max_num > p_att->crv_buf_size)
 			new_max_num = p_att->crv_buf_size;
 		
@@ -519,12 +521,18 @@ static void		CRV_Data_flex(uint8_t	crv_fd, char flex, uint8_t	scale, uint16_t ne
 			CRV_Zoom_in(i, scale, new_max_num);
 			
 			
-		}
-		else
+		} 
+		else if(flex == FLEX_ZOOM_OUT)
 		{
 			
 			CRV_Zoom_out(i, scale, new_max_num);
 			
+		}
+		else
+		{
+			p_run->crv_num_points = 0;
+			p_run->crv_start_index = 0;
+			p_run->cur_index = 0;
 		}
 		p_att->crv_max_num_data = new_max_num;
 	}

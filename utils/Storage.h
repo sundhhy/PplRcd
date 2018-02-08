@@ -64,6 +64,12 @@ typedef struct
 	
 }conf_file_t;
 
+typedef struct {
+	uint32_t		rcd_time_s;
+	uint16_t		rcd_val;
+	uint16_t		none;
+}data_in_fsh_t;
+
 CLASS(Storage)
 {
 //	IMPLEMENTS( Observer);

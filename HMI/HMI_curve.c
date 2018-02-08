@@ -9,6 +9,7 @@
 #include "curve.h"
 #include "Component_curve.h"
 #include "os/os_depend.h"
+#include "utils/Storage.h"
 
 //柱状图在y坐标上，按100%显示的话是:71 -187 
 //============================================================================//
@@ -18,7 +19,7 @@
 //------------------------------------------------------------------------------
 // const defines
 //------------------------------------------------------------------------------
-
+#define CRV_MAX_PIXS			240  //曲线最大的像素点数量
 
 
 //------------------------------------------------------------------------------
@@ -67,14 +68,26 @@ static const char RLT_hmi_code_chnshow[] ={ "<icon vx0=265 vy0=62 xn=5 yn=1 n=0>
 //------------------------------------------------------------------------------
 // local types
 //------------------------------------------------------------------------------
-
-
+typedef void (*midv_change)(RLT_trendHMI *cthis, uint8_t new_mins);
+struct {
+	uint32_t		hst_time_s;
+	uint16_t		prv_time_step;
+	uint16_t		next_time_step;
+	uint8_t			dsp_chn;
+	uint8_t			dsp_err;
+	uint8_t			none[3];
+}display_hst;
 //------------------------------------------------------------------------------
 // local vars
 //------------------------------------------------------------------------------
 
 //static curve_ctl_t *arr_p_crv[RLTHMI_NUM_CURVE];
-	
+
+
+static void RTV_midv_change(RLT_trendHMI *cthis, uint8_t new_mins);
+static void HST_midv_change(RLT_trendHMI *cthis, uint8_t new_mins);
+
+static midv_change	arr_mdiv_change[2] = {RTV_midv_change, HST_midv_change};
 //------------------------------------------------------------------------------
 // local function prototypes
 //------------------------------------------------------------------------------
@@ -98,7 +111,9 @@ static void	RLT_show_focus(HMI *self, uint8_t fouse_row, uint8_t fouse_col);
 //static void HMI_CRV_Show_all_crvs( HMI *self);		//在切入本界面时，用于将初始的曲线画面
 
 //每秒执行一次，在每次更新曲线时，是对全部的通道曲线进行更新
-static void HMI_CRV_Run(HMI *self);
+static void HMI_CRV_RTV_Run(HMI *self);
+static void HMI_CRV_HST_Run(HMI *self);
+
 //static void Bulid_rtCurveSheet( RLT_trendHMI *self);
 static void RLT_Init_curve(RLT_trendHMI *self);
 
@@ -137,7 +152,7 @@ FUNCTION_SETTING( HMI.init, Init_RT_trendHMI);
 FUNCTION_SETTING( HMI.initSheet, RT_trendHmi_InitSheet);
 FUNCTION_SETTING( HMI.hide, RT_trendHmi_HideSheet);
 FUNCTION_SETTING( HMI.show, RT_trendHmi_Show);
-FUNCTION_SETTING( HMI.hmi_run, HMI_CRV_Run);
+FUNCTION_SETTING( HMI.hmi_run, HMI_CRV_RTV_Run);
 
 FUNCTION_SETTING( HMI.init_focus, RLT_init_focus);
 FUNCTION_SETTING( HMI.clear_focus, RLT_clear_focus);
@@ -218,7 +233,10 @@ static void RLT_HMI_build_button(HMI *self)
 	{
 		crv.crv_col = arr_clrs[i];
 		crv.crv_direction = HMI_DIR_RIGHT;
-		crv.crv_step_pix = 4 / cthis->min_div;
+		if(self->arg[0] == 0)
+			crv.crv_step_pix = 4 / cthis->min_div;
+		else		//历史趋势就是像素倍数
+			crv.crv_step_pix = cthis->min_div;
 		
 		//下面的尺寸要跟曲线的背景位置匹配
 		crv.crv_x0 = 0;
@@ -226,12 +244,12 @@ static void RLT_HMI_build_button(HMI *self)
 		crv.crv_x1 = 240;
 		crv.crv_y1 = 150 + i * 10;		//210
 		
-		crv.crv_buf_size = 240;
+		crv.crv_buf_size = CRV_MAX_PIXS;
 		num = cthis->min_div * 60;
-		if( num <= 240)
+		if( num <= CRV_MAX_PIXS)
 			crv.crv_max_num_data = num;
 		else
-			crv.crv_max_num_data = 240;
+			crv.crv_max_num_data = CRV_MAX_PIXS;
 		
 		cthis->arr_crv_fd[i] = p_crv->alloc(&crv);
 	}
@@ -285,8 +303,10 @@ static void RT_trendHmi_InitSheet( HMI *self )
 
 	if(self->arg[0] == 0) {
 		g_p_sht_title->cnt.data = RLTHMI_TITLE;
+		self->hmi_run = HMI_CRV_RTV_Run;
 	} else if(self->arg[0] == 1) {
 		g_p_sht_title->cnt.data = HISTORY_TITLE;
+		self->hmi_run = HMI_CRV_HST_Run;
 	} 
 	g_p_sht_title->cnt.len = strlen(g_p_sht_title->cnt.data);
 
@@ -547,18 +567,12 @@ static void	RT_trendHmi_HitHandle( HMI *self, char *s)
 			if(Sem_wait(&phn_sys.hmi_mgr.hmi_crv_sem, 1000) <= 0)
 				goto exit;
 			new_mins = atoi(p_focus->cnt.data);
+			
+			arr_mdiv_change[self->arg[0]](cthis, new_mins);
 //			self->switchHMI(self, self);
-			HMI_Ram_init();
+//			HMI_Ram_init();
 			
-			p_crv->crv_ctl(HMI_CMP_ALL, CRV_CTL_STEP_PIX, 4 / new_mins);
 			
-			if(new_mins > cthis->min_div)
-				p_crv->crv_data_flex(HMI_CMP_ALL, FLEX_ZOOM_OUT, new_mins   / 4, 60 * new_mins);
-			else
-				p_crv->crv_data_flex(HMI_CMP_ALL, FLEX_ZOOM_IN, new_mins / 4, 60 * new_mins);
-			
-			cthis->min_div = new_mins;
-			p_crv->crv_show_curve(HMI_CMP_ALL, CRV_SHOW_WHOLE);
 			
 			Sem_post(&phn_sys.hmi_mgr.hmi_crv_sem);
 //			if(p_focus) {
@@ -594,7 +608,42 @@ static void	RT_trendHmi_HitHandle( HMI *self, char *s)
 }
 
 
-
+static void RTV_midv_change(RLT_trendHMI *cthis, uint8_t new_mins)
+{
+	Curve						*p_crv = CRV_Get_Sington();
+	uint8_t					s = 1;
+	p_crv->crv_ctl(HMI_CMP_ALL, CRV_CTL_STEP_PIX, 4 / new_mins);
+	
+	
+	/*
+	时标 数据数量倍率(即采样频率)
+	1 1
+	2 1
+	4 1
+	8 2
+	16 4
+	*/
+	if((new_mins + cthis->min_div) == 24)		//8 与 16之间的变化，倍数是2
+		s = 2;
+	else
+		s = new_mins / 4;
+	if(new_mins > cthis->min_div)
+		p_crv->crv_data_flex(HMI_CMP_ALL, FLEX_ZOOM_OUT, s, 60 * new_mins);
+	else
+		p_crv->crv_data_flex(HMI_CMP_ALL, FLEX_ZOOM_IN, s, 60 * new_mins);
+	
+	cthis->min_div = new_mins;
+	p_crv->crv_show_curve(HMI_CMP_ALL, CRV_SHOW_WHOLE);
+}
+static void HST_midv_change(RLT_trendHMI *cthis, uint8_t new_mins)
+{
+	Curve						*p_crv = CRV_Get_Sington();
+	p_crv->crv_ctl(HMI_CMP_ALL, CRV_CTL_STEP_PIX, new_mins);	
+	p_crv->crv_ctl(HMI_CMP_ALL, CRV_CTL_MAX_NUM, 240 / new_mins);	
+	p_crv->crv_data_flex(HMI_CMP_ALL, FLEX_CLEAN, 0, 0);
+	cthis->min_div = new_mins;
+	
+}
 
 
 //static void RLT_dataVisual( HMI *self, void *arg)
@@ -641,8 +690,34 @@ static void	RT_trendHmi_HitHandle( HMI *self, char *s)
 //	
 //}
 
+//历史曲线运行方法
+static void HMI_CRV_HST_Run(HMI *self)
+{
+	RLT_trendHMI		*cthis = SUB_PTR( self, HMI, RLT_trendHMI);
+	Curve 					*p_crv = CRV_Get_Sington();
+	Storage					*stg = Get_storage();
+	data_in_fsh_t		d;
+	uint16_t				i, end;
+	
+	if(display_hst.hst_time_s == 0)
+	{
+		STG_Set_file_position(STG_CHN_DATA(display_hst.dsp_chn), STG_DRC_READ, 0);	
+		if(stg->rd_stored_data(stg, STG_CHN_DATA(display_hst.dsp_chn), &d, sizeof(d)) != sizeof(d))
+		{
+			display_hst.dsp_err = 1;
+			return;
+		}
+		display_hst.hst_time_s = d.rcd_time_s;
+		
+	}
+	
+//	end = 
+	
+	
+	
+}
 //实时曲线的运行方法
-static void HMI_CRV_Run(HMI *self)
+static void HMI_CRV_RTV_Run(HMI *self)
 {
 	RLT_trendHMI		*cthis = SUB_PTR( self, HMI, RLT_trendHMI);
 	Curve 					*p_crv = CRV_Get_Sington();
