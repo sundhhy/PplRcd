@@ -392,8 +392,10 @@ int	EFS_read(int fd, uint8_t *p, int len)
 		return -1;
 	if(len > f->num_page * EFS_FSH(f->fsh_No).fnf.page_size)
 		len = f->num_page * EFS_FSH(f->fsh_No).fnf.page_size;
-	
+	while(Sem_wait(&f->file_sem, EFS_WAIT_WR_MS) <= 0)
+		delay_ms(1);
 	ret =  EFS_FSH(f->fsh_No).fsh_read(p, start_addr + f->read_position,len);
+	Sem_post(&f->file_sem);
 	if(ret > 0)
 		f->read_position += ret;
 	

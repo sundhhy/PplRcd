@@ -864,11 +864,6 @@
               <FilePath>..\..\HMI\format.c</FilePath>
             </File>
             <File>
-              <FileName>History_HMI.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\HMI\History_HMI.c</FilePath>
-            </File>
-            <File>
               <FileName>HMI.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\HMI\HMI.c</FilePath>

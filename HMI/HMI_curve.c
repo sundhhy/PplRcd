@@ -124,6 +124,7 @@ static void HMI_CRV_HST_Run(HMI *self);
 //static void Bulid_rtCurveSheet( RLT_trendHMI *self);
 static void RLT_Init_curve(RLT_trendHMI *self);
 static void HST_Init(void);
+static uint16_t HST_Num_rcds(uint8_t	mul);
 static void HST_Flex(uint8_t new_mdiv, uint8_t old_mdiv);
 static void HST_Move(RLT_trendHMI *cthis, uint8_t direction);
 
@@ -136,7 +137,7 @@ static int RLTHmi_Data_update(void *p_data, void *p_mdl);
 //static int	RLT_div_input(void *self, void *data, int len);
 
 
-static void RLT_HMI_build_button(HMI *self);
+static void HMI_CRV_Build_cmp(HMI *self);
 static void RLT_btn_hdl(void *arg, uint8_t btn_id);
 //============================================================================//
 //            P U B L I C   F U N C T I O N S                                 //
@@ -171,7 +172,7 @@ FUNCTION_SETTING( HMI.show_focus, RLT_show_focus);
 
 
 FUNCTION_SETTING( HMI.hitHandle, RT_trendHmi_HitHandle);
-FUNCTION_SETTING(HMI.build_component, RLT_HMI_build_button);
+FUNCTION_SETTING(HMI.build_component, HMI_CRV_Build_cmp);
 
 
 //FUNCTION_SETTING(Observer.update, RLT_trendHmi_MdlUpdata);		
@@ -226,7 +227,7 @@ static int	Init_RT_trendHMI( HMI *self, void *arg)
 
 }
 
-static void RLT_HMI_build_button(HMI *self)
+static void HMI_CRV_Build_cmp(HMI *self)
 {
 	RLT_trendHMI		*cthis = SUB_PTR( self, HMI, RLT_trendHMI);
 	Button					*p = BTN_Get_Sington();
@@ -245,9 +246,15 @@ static void RLT_HMI_build_button(HMI *self)
 		crv.crv_col = arr_clrs[i];
 		crv.crv_direction = HMI_DIR_RIGHT;
 		if(self->arg[0] == 0)
+		{
 			crv.crv_step_pix = 4 / cthis->min_div;
+			num = cthis->min_div * 60;
+		}
 		else		//历史趋势就是像素倍数
+		{
 			crv.crv_step_pix = cthis->min_div;
+			num = HST_Num_rcds(cthis->min_div);
+		}
 		
 		//下面的尺寸要跟曲线的背景位置匹配
 		crv.crv_x0 = 0;
@@ -256,7 +263,8 @@ static void RLT_HMI_build_button(HMI *self)
 		crv.crv_y1 = 150 + i * 10;		//210
 		
 		crv.crv_buf_size = CRV_MAX_PIXS;
-		num = cthis->min_div * 60;
+		
+		
 		if( num <= CRV_MAX_PIXS)
 			crv.crv_max_num_data = num;
 		else
@@ -698,7 +706,7 @@ static void HST_midv_change(RLT_trendHMI *cthis, uint8_t new_mins)
 	Curve						*p_crv = CRV_Get_Sington();
 	p_crv->crv_ctl(HMI_CMP_ALL, CRV_CTL_STEP_PIX, new_mins);	
 //	p_crv->crv_ctl(HMI_CMP_ALL, CRV_CTL_MAX_NUM, 240 / new_mins);	
-	p_crv->crv_data_flex(HMI_CMP_ALL, FLEX_CLEAN, 0, 0);
+	p_crv->crv_data_flex(HMI_CMP_ALL, FLEX_CLEAN, 0, HST_Num_rcds(new_mins));
 	
 	HST_Flex(new_mins, cthis->min_div);
 	
@@ -796,7 +804,7 @@ static void HMI_CRV_HST_Run(HMI *self)
 	
 
 	
-	end = HST_Num_rcds(cthis->min_div);
+	end = HST_Num_rcds(cthis->min_div) - 1;
 	
 	for(i = 0; i < RLTHMI_NUM_CURVE; i++)
 	{
@@ -807,7 +815,7 @@ static void HMI_CRV_HST_Run(HMI *self)
 		
 		p_mdl = g_arr_p_chnData[i]->p_mdl;
 		p_mdl->getMdlData(p_mdl, chnaux_upper_limit, &cval.up_limit);
-		p_mdl->getMdlData(p_mdl, chnaux_small_signal, &cval.lower_limit);
+		p_mdl->getMdlData(p_mdl, chnaux_lower_limit, &cval.lower_limit);
 		
 		STG_Set_file_position(STG_CHN_DATA(i), STG_DRC_READ, hst_mgr.arr_hst_num[i] * sizeof(data_in_fsh_t));	
 		while(1)
@@ -830,7 +838,7 @@ static void HMI_CRV_HST_Run(HMI *self)
 	
 	
 	hst_mgr.hst_flags |= HST_FLAG_DONE;
-	p_crv->crv_show_curve(HMI_CMP_ALL, CRV_SHOW_LATEST);
+	p_crv->crv_show_curve(HMI_CMP_ALL, CRV_SHOW_WHOLE);
 		
 
 	
@@ -869,7 +877,7 @@ static void HMI_CRV_RTV_Run(HMI *self)
 		p_mdl = g_arr_p_chnData[i]->p_mdl;
 		p_mdl->getMdlData(p_mdl, AUX_DATA, &cval.val);
 		p_mdl->getMdlData(p_mdl, chnaux_upper_limit, &cval.up_limit);
-		p_mdl->getMdlData(p_mdl, chnaux_small_signal, &cval.lower_limit);
+		p_mdl->getMdlData(p_mdl, chnaux_lower_limit, &cval.lower_limit);
 
 		p_crv->add_point(cthis->arr_crv_fd[i], &cval);
 		

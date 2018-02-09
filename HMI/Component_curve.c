@@ -17,7 +17,7 @@
 #define CRV_FLAG_FULL_CLEAN			2		//当点数到达最大数量时，清除全部曲线数据标志
 
 
-#define	CRV_BEEK					5		//曲线平滑度
+#define	CRV_BEEK					1		//曲线平滑度
 //------------------------------------------------------------------------------
 // module global vars
 //------------------------------------------------------------------------------
@@ -71,7 +71,7 @@ static void CRV_Exc_display(uint8_t  crv_fd, uint8_t show_ctl);
 static void CRV_Clean_bkg(uint8_t	crv_fd);
 static void CRV_Draw_left_to_right(uint8_t  crv_fd, uint8_t show_ctl);
 static void CRV_Draw_right_to_left(uint8_t  crv_fd, uint8_t show_ctl);
-static __inline uint8_t *CRV_Get_val_y(uint8_t crv_fd, uint16_t index);
+static __inline uint8_t *CRV_Get_val_y(uint8_t crv_fd, short index);
 //============================================================================//
 //            P U B L I C   F U N C T I O N S                                 //
 //============================================================================//
@@ -148,7 +148,7 @@ static int CRV_Alloc(curve_att_t  *c)
 			Set_bit(&p_CRV_self->set_vaild_curve, i);
 			CRV_Copy_att(p_CRV_self->p_crv_att + i, c);
 			p_CRV_self->p_run_info[i].p_vals_y = HMI_Ram_alloc(p_CRV_self->p_crv_att[i].crv_buf_size);
-			p_CRV_self->p_run_info[i].cur_index = 0;
+			p_CRV_self->p_run_info[i].next_index = 0;
 			p_CRV_self->p_run_info[i].crv_start_index = 0;
 			p_CRV_self->p_crv_att[i].crv_flag |= CRV_FLAG_FULL_CLEAN;		//默认情况下，曲线满了就清除
 			CRV_Alloc_bkg_id(i);
@@ -180,7 +180,7 @@ static void		CRV_Reset(uint8_t  crv_fd)
 	if(crv_fd >= p_CRV_self->num_curve)
 			return;
 	
-	p_CRV_self->p_run_info[crv_fd].cur_index = 0;
+	p_CRV_self->p_run_info[crv_fd].next_index = 0;
 	p_CRV_self->p_run_info[crv_fd].crv_num_points = 0;
 	
 }
@@ -215,12 +215,12 @@ static void		CRV_Add_point(uint8_t  crv_fd, crv_val_t *cv)
 	height = cv->prc * range / 100;
 	val_y = p_CRV_self->p_crv_att[crv_fd].crv_y1 - height;
 	
-	*CRV_Get_val_y(crv_fd, p_CRV_self->p_run_info[crv_fd].cur_index) = val_y;
-//	p_CRV_self->p_run_info[crv_fd].p_vals_y[CRV_abs_idx(p_CRV_self->p_run_info[crv_fd].cur_index)] = val_y;
+	*CRV_Get_val_y(crv_fd, p_CRV_self->p_run_info[crv_fd].next_index) = val_y;
+//	p_CRV_self->p_run_info[crv_fd].p_vals_y[CRV_abs_idx(p_CRV_self->p_run_info[crv_fd].next_index)] = val_y;
 	
 	
-	p_CRV_self->p_run_info[crv_fd].cur_index += 1;
-	p_CRV_self->p_run_info[crv_fd].cur_index %= p_CRV_self->p_crv_att[crv_fd].crv_max_num_data;
+	p_CRV_self->p_run_info[crv_fd].next_index += 1;
+	p_CRV_self->p_run_info[crv_fd].next_index %= p_CRV_self->p_crv_att[crv_fd].crv_max_num_data;
 	
 	p_CRV_self->p_run_info[crv_fd].crv_num_points ++;
 	
@@ -266,11 +266,11 @@ static void		CRV_Ctl(uint8_t  crv_fd, uint8_t	ctl, uint16_t val)
 				p_att->crv_step_pix = val;
 				
 //					p_run->crv_start_index = 0;
-//					p_run->cur_index = 0;
+//					p_run->next_index = 0;
 				
 //					p_run->crv_size = (p_att->crv_x1 - p_att->crv_x0) / p_att->crv_step_pix;
 //					p_run->p_vals_y = HMI_Ram_alloc(p_CRV_self->p_run_info[i].crv_size);
-//					p_run->cur_index = 0;
+//					p_run->next_index = 0;
 //					p_run->crv_start_index = 0;
 //					p_run->crv_num_points = 0;
 				
@@ -444,20 +444,20 @@ static void CRV_Zoom_in(uint8_t	crv_fd, uint8_t	scale, uint16_t new_max_num)
 			
 			break;
 		case 2:
-			cut_len = p_run->cur_index % (new_max_num - 1);
+			cut_len = p_run->next_index % (new_max_num - 1);
 		
 			CRV_Cut_expand_tail(p1, p2, cut_len, p_run->crv_num_points, 2);	
 			p_run->crv_num_points = cut_len * 2;
 			break;
 		case 4:
-			cut_len = p_run->cur_index % (new_max_num - 1);
+			cut_len = p_run->next_index % (new_max_num - 1);
 			CRV_Cut_expand_tail(p1, p2, cut_len, p_run->crv_num_points, 4);	
 			p_run->crv_num_points = cut_len * 4;
 			break;
 		
 	}
 	
-	p_run->cur_index = p_run->crv_num_points;
+	p_run->next_index = p_run->crv_num_points;
 	p_run->crv_start_index = 0;
 	
 }
@@ -497,7 +497,7 @@ static void CRV_Zoom_out(uint8_t	crv_fd, uint8_t	scale, uint16_t new_max_num)
 			break;
 	}
 	
-	p_run->cur_index = p_run->crv_num_points;
+	p_run->next_index = p_run->crv_num_points;
 	p_run->crv_start_index = 0;
 	
 	
@@ -540,7 +540,7 @@ static void		CRV_Data_flex(uint8_t	crv_fd, char flex, uint8_t	scale, uint16_t ne
 		{
 			p_run->crv_num_points = 0;
 			p_run->crv_start_index = 0;
-			p_run->cur_index = 0;
+			p_run->next_index = 0;
 		}
 		p_att->crv_max_num_data = new_max_num;
 	}
@@ -600,7 +600,7 @@ static void CRV_Copy_att(curve_att_t *dst, curve_att_t *src)
 static void CRV_Deal_full(uint8_t crv_fd)
 {
 	
-	if(p_CRV_self->p_run_info[crv_fd].crv_num_points <  p_CRV_self->p_crv_att[crv_fd].crv_max_num_data)
+	if(p_CRV_self->p_run_info[crv_fd].crv_num_points <=  p_CRV_self->p_crv_att[crv_fd].crv_max_num_data)
 		return;
 	
 	//曲线点满了以后，清除掉全部的点重新绘制还是逐个覆盖点数
@@ -608,14 +608,14 @@ static void CRV_Deal_full(uint8_t crv_fd)
 	{
 		CRV_Set_dirty(p_CRV_self->p_bkg_info[crv_fd].crv_bkg_id, 1);
 		//清除该曲线
-		p_CRV_self->p_run_info[crv_fd].cur_index = 0;
+		p_CRV_self->p_run_info[crv_fd].next_index = 0;
 		p_CRV_self->p_run_info[crv_fd].crv_num_points = 0;
 	}
 	else
 	{
 		//只移除最早的那个点,点数不变
-		p_CRV_self->p_run_info[crv_fd].cur_index += 1;
-		p_CRV_self->p_run_info[crv_fd].cur_index %= p_CRV_self->p_crv_att[crv_fd].crv_max_num_data;
+		p_CRV_self->p_run_info[crv_fd].next_index += 1;
+		p_CRV_self->p_run_info[crv_fd].next_index %= p_CRV_self->p_crv_att[crv_fd].crv_max_num_data;
 		//移动该曲线的起始索引
 		p_CRV_self->p_run_info[crv_fd].crv_start_index ++;
 		p_CRV_self->p_run_info[crv_fd].crv_start_index %= p_CRV_self->p_crv_att[crv_fd].crv_max_num_data;
@@ -724,16 +724,17 @@ static int CRV_Rle(uint8_t  crv_fd, int cur_idx)
 	crv_run_info_t	*p_run = p_CRV_self->p_run_info + crv_fd;
 //	curve_att_t			*p_att = p_CRV_self->p_crv_att + crv_fd;
 	int 	len = 0;
-	short 	i = 0;
+//	short 	i = 0;
 	short	points = 0;
 	short	idx = 0;
 	
-	points = p_run->crv_num_points;
+	points = p_run->crv_num_points - (p_run->crv_start_index + cur_idx);
+	idx = cur_idx;
 	
 	//对cur_idx之后所有的点进行计算
-	for(i = 1; i < (points); i+= 1) {
+	while(points --) {
 		
-		idx =cur_idx + i;
+//		idx = cur_idx + i;
 //		idx %= p_att->crv_max_num_data;
 		
 		
@@ -742,7 +743,7 @@ static int CRV_Rle(uint8_t  crv_fd, int cur_idx)
 			len ++;
 		else
 			break;
-		
+		idx ++;
 		
 		
 		
@@ -806,19 +807,24 @@ static void CRV_Draw_left_to_right(uint8_t  crv_fd, uint8_t show_ctl)
 	
 		p_CRV_line->cnt.colour = p_att->crv_col;
 		
-		p_CRV_line->area.x0 = p_att->crv_x0 +  p_att->crv_step_pix * (p_run->cur_index - 2);
+		p_CRV_line->area.x0 = p_att->crv_x0 +  p_att->crv_step_pix * \
+		(((p_run->next_index + p_att->crv_max_num_data)- 2) % p_att->crv_max_num_data);
+		
 		p_CRV_line->area.x1 = p_CRV_line->area.x0 + p_att->crv_step_pix;
 		
-		p_CRV_line->area.y0 =  *CRV_Get_val_y(crv_fd, p_run->cur_index - 2);
-		p_CRV_line->area.y1 =  *CRV_Get_val_y(crv_fd, p_run->cur_index - 1);
+		p_CRV_line->area.y0 =  *CRV_Get_val_y(crv_fd, p_run->next_index - 2);
+		p_CRV_line->area.y1 =  *CRV_Get_val_y(crv_fd, p_run->next_index - 1);
 		p_CRV_line->p_gp->vdraw(p_CRV_line->p_gp, &p_CRV_line->cnt, &p_CRV_line->area);		
 		return;
 	}
 	
 	
-	points = p_run->crv_num_points;
+	points = p_run->crv_num_points - 1;
 	
-	for(i = 0; i < (points - 1); i+= len) {
+	//把数据平移到从0开始
+	CRV_Move_start_idx(p_run->p_vals_y, p_run->crv_start_index, p_run->crv_num_points);
+	
+	for(i = 0; i < points; i+= len) {
 		//计算x0,y0
 		p_CRV_line->area.x0 = p_att->crv_x0 +  i * p_att->crv_step_pix;
 		idx = i;
@@ -828,7 +834,7 @@ static void CRV_Draw_left_to_right(uint8_t  crv_fd, uint8_t show_ctl)
 
 		len = CRV_Rle(crv_fd, idx);
 		//计算x1, y1
-		p_CRV_line->area.x1 = p_CRV_line->area.x0 + p_att->crv_step_pix * (len + 0);
+		p_CRV_line->area.x1 = p_CRV_line->area.x0 + p_att->crv_step_pix * (len);
 		idx += len;
 		p_CRV_line->area.y1 = *CRV_Get_val_y(crv_fd, idx);
 		p_CRV_line->p_gp->vdraw(p_CRV_line->p_gp, &p_CRV_line->cnt, &p_CRV_line->area);
@@ -839,9 +845,16 @@ static void CRV_Draw_left_to_right(uint8_t  crv_fd, uint8_t show_ctl)
 }
 
 //从索引，缓存偏移，起始索引来获取引用的数据的位置
-static __inline uint8_t *CRV_Get_val_y(uint8_t crv_fd, uint16_t index)
+static __inline uint8_t *CRV_Get_val_y(uint8_t crv_fd, short index)
 {
-	uint16_t		abs_idx = index + p_CRV_self->p_run_info[crv_fd].crv_start_index;
+	uint16_t		abs_idx;
+	
+	if(index < 0)
+	{
+		index += p_CRV_self->p_crv_att[crv_fd].crv_max_num_data;
+		
+	}
+	abs_idx = index + p_CRV_self->p_run_info[crv_fd].crv_start_index;
 	abs_idx %= p_CRV_self->p_crv_att[crv_fd].crv_max_num_data;
 	
 	return p_CRV_self->p_run_info[crv_fd].p_vals_y + abs_idx;

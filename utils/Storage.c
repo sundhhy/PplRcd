@@ -549,7 +549,7 @@ static int	STG_Acc_chn_data(uint8_t	type, uint8_t	drc, void *p, int len)
 	
 	if(drc == STG_DRC_READ)
 	{
-		
+		acc_len = STRG_SYS.fs.fs_read(fd, (uint8_t *)p, len);
 		
 	}
 	else

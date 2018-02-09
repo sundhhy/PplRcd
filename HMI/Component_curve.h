@@ -59,7 +59,7 @@ typedef struct {
 typedef struct {
 	uint8_t			*p_vals_y;
 	uint16_t		crv_num_points;		//已有的点数
-	uint16_t		cur_index;
+	uint16_t		next_index;
 	//当前曲线的起始索引，当曲线满了以后不清除的情况下，其实索引才会发生变化
 	//对于清除曲线的情况下，curve_start_index始终为0
 	uint16_t		crv_start_index;
