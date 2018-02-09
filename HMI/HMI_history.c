@@ -19,7 +19,7 @@
 //------------------------------------------------------------------------------
 // const defines
 //------------------------------------------------------------------------------
-#define CRV_MAX_PIXS			240  //曲线最大的像素点数量
+
 
 #define HST_FLAG_DONE			1			//当前页面已经显示好了
 #define HST_FLAG_LOOP			2	
@@ -30,7 +30,7 @@
 // module global vars
 //------------------------------------------------------------------------------
 
-HMI *g_p_RLT_trendHmi;
+HMI *g_p_HMI_History;
 
 sheet  		*g_arr_p_check[NUM_CHANNEL]; 		//是否显示的指示图形
 //------------------------------------------------------------------------------
@@ -49,12 +49,8 @@ sheet  		*g_arr_p_check[NUM_CHANNEL]; 		//是否显示的指示图形
 // const defines
 //------------------------------------------------------------------------------
 #define	RLTHMI_BKPICNUM		"14"
-#define	RLTHMI_TITLE		"实时趋势"
-
 #define HISTORY_TITLE		"历史趋势"
-
 #define DEFAULT_MIN_DIV		'1'
-
 #define CHNSHOW_ROW_SPACE		32
 
 
@@ -72,18 +68,15 @@ static const char RLT_hmi_code_chnshow[] ={ "<icon vx0=265 vy0=62 xn=5 yn=1 n=0>
 //------------------------------------------------------------------------------
 // local types
 //------------------------------------------------------------------------------
-typedef void (*midv_change)(RLT_trendHMI *cthis, uint8_t new_mins);
-
-
+typedef void (*midv_change)(HMI_History *cthis, uint8_t new_mins);
 struct {
-	uint32_t			arr_hst_num[NUM_CHANNEL];
-	uint8_t				hst_flags;
-	uint8_t				none[3];
-}hst_mgr;
-					
-	
-	
-
+	uint32_t		start_rcd_num;		//当前的记录序号
+	uint16_t		num_rcd;	
+	uint16_t		prv_num_rcd;		
+	uint8_t			dsp_chn;
+	uint8_t			dsp_flag;
+	uint8_t			none[3];
+}display_hst;
 //------------------------------------------------------------------------------
 // local vars
 //------------------------------------------------------------------------------
@@ -91,8 +84,8 @@ struct {
 //static curve_ctl_t *arr_p_crv[RLTHMI_NUM_CURVE];
 
 
-static void RTV_midv_change(RLT_trendHMI *cthis, uint8_t new_mins);
-static void HST_midv_change(RLT_trendHMI *cthis, uint8_t new_mins);
+static void RTV_midv_change(HMI_History *cthis, uint8_t new_mins);
+static void HST_midv_change(HMI_History *cthis, uint8_t new_mins);
 
 static midv_change	arr_mdiv_change[2] = {RTV_midv_change, HST_midv_change};
 //------------------------------------------------------------------------------
@@ -121,11 +114,11 @@ static void	RLT_show_focus(HMI *self, uint8_t fouse_row, uint8_t fouse_col);
 static void HMI_CRV_RTV_Run(HMI *self);
 static void HMI_CRV_HST_Run(HMI *self);
 
-//static void Bulid_rtCurveSheet( RLT_trendHMI *self);
-static void RLT_Init_curve(RLT_trendHMI *self);
+//static void Bulid_rtCurveSheet( HMI_History *self);
+static void RLT_Init_curve(HMI_History *self);
 static void HST_Init(void);
 static void HST_Flex(uint8_t new_mdiv, uint8_t old_mdiv);
-static void HST_Move(RLT_trendHMI *cthis, uint8_t direction);
+static void HST_Move(uint8_t direction);
 
 
 //数据
@@ -142,14 +135,14 @@ static void RLT_btn_hdl(void *arg, uint8_t btn_id);
 //            P U B L I C   F U N C T I O N S                                 //
 //============================================================================//
 
-RLT_trendHMI *Get_RLT_trendHMI(void)
+HMI_History *Get_HMI_History(void)
 {
-	static RLT_trendHMI *singal_RTTHmi = NULL;
+	static HMI_History *singal_RTTHmi = NULL;
 	if( singal_RTTHmi == NULL)
 	{
-		singal_RTTHmi = RLT_trendHMI_new();
+		singal_RTTHmi = HMI_History_new();
 		if(singal_RTTHmi  == NULL) while(1);
-		g_p_RLT_trendHmi = SUPER_PTR( singal_RTTHmi, HMI);
+		g_p_HMI_History = SUPER_PTR( singal_RTTHmi, HMI);
 		
 	}
 	
@@ -157,7 +150,7 @@ RLT_trendHMI *Get_RLT_trendHMI(void)
 	
 }
 
-CTOR( RLT_trendHMI)
+CTOR( HMI_History)
 SUPER_CTOR( HMI);
 FUNCTION_SETTING( HMI.init, Init_RT_trendHMI);
 FUNCTION_SETTING( HMI.initSheet, RT_trendHmi_InitSheet);
@@ -174,7 +167,7 @@ FUNCTION_SETTING( HMI.hitHandle, RT_trendHmi_HitHandle);
 FUNCTION_SETTING(HMI.build_component, RLT_HMI_build_button);
 
 
-//FUNCTION_SETTING(Observer.update, RLT_trendHmi_MdlUpdata);		
+//FUNCTION_SETTING(Observer.update, HMI_History_MdlUpdata);		
 
 END_CTOR
 //=========================================================================//
@@ -185,50 +178,23 @@ END_CTOR
 
 static int	Init_RT_trendHMI( HMI *self, void *arg)
 {
-	RLT_trendHMI		*cthis = SUB_PTR( self, HMI, RLT_trendHMI);
+	HMI_History		*cthis = SUB_PTR( self, HMI, HMI_History);
 	Expr 						*p_exp ;
 	shtctl 					*p_shtctl = NULL;
 	short						i = 0;
 	
-	
-	
 	Curve_init();
-	
 	p_shtctl = GetShtctl();
 	
 	
-	
-	cthis->str_div[0] = DEFAULT_MIN_DIV;
-
-	
-	
-
-//	Bulid_rtCurveSheet(cthis);
-	
-	
-	//初始化通道勾选图形
-	p_exp = ExpCreate( "pic");
-	cthis->chn_show_map = 0xff;
-	for(i = 0; i < RLTHMI_NUM_CURVE; i++) {
-		g_arr_p_check[i] = Sheet_alloc( p_shtctl);
-		p_exp->inptSht( p_exp, (void *)RLT_hmi_code_chnshow, g_arr_p_check[i]);
-		g_arr_p_check[i]->area.y0 += i * CHNSHOW_ROW_SPACE;
-		g_arr_p_check[i]->area.y1 += i * CHNSHOW_ROW_SPACE;
-		g_arr_p_check[i]->id = SHTID_CHECK(i);
-	}
-
-	//初始化焦点
-//	self->init_focus(self);
-	
-	
-	self->flag = 0;
+	cthis->mul = 1;
+	cthis->str_mul[0] = '1';
 	return RET_OK;
-
 }
 
 static void RLT_HMI_build_button(HMI *self)
 {
-	RLT_trendHMI		*cthis = SUB_PTR( self, HMI, RLT_trendHMI);
+	HMI_History		*cthis = SUB_PTR( self, HMI, HMI_History);
 	Button					*p = BTN_Get_Sington();
 	Curve 					*p_crv = CRV_Get_Sington();
 	curve_att_t			crv;
@@ -269,15 +235,15 @@ static void RLT_HMI_build_button(HMI *self)
 
 static void RLT_btn_hdl(void *arg, uint8_t btn_id)
 {
-	HMI						*self	= (HMI *)arg;		
-	RLT_trendHMI	*cthis = SUB_PTR( self, HMI, RLT_trendHMI);
+	HMI					*self	= (HMI *)arg;		
+	
 	switch(btn_id)
 	{
 		case ICO_ID_LOOP:
 			if(self->arg[0] == 1)
 			{
 				
-				hst_mgr.hst_flags ^= HST_FLAG_LOOP;
+				display_hst.dsp_flag ^= HST_FLAG_LOOP;
 				
 			}
 			break;
@@ -285,7 +251,7 @@ static void RLT_btn_hdl(void *arg, uint8_t btn_id)
 			if(self->arg[0] == 1)
 			{
 				
-				HST_Move(cthis, HST_NEXT_PG);
+				HST_Move(HST_NEXT_PG);
 				
 			}
 			break;
@@ -293,7 +259,7 @@ static void RLT_btn_hdl(void *arg, uint8_t btn_id)
 			if(self->arg[0] == 1)
 			{
 				
-				HST_Move(cthis, HST_PREV_PG);
+				HST_Move(HST_PREV_PG);
 				
 			}
 			break;
@@ -307,7 +273,7 @@ static void RLT_btn_hdl(void *arg, uint8_t btn_id)
 
 static void RT_trendHmi_InitSheet( HMI *self )
 {
-	RLT_trendHMI	*cthis = SUB_PTR( self, HMI, RLT_trendHMI);
+	HMI_History	*cthis = SUB_PTR( self, HMI, HMI_History);
 	Expr 			*p_exp ;
 	shtctl 			*p_shtctl = NULL;
 	int 			i,  h = 0;
@@ -358,7 +324,7 @@ static void RT_trendHmi_InitSheet( HMI *self )
 
 static void RT_trendHmi_HideSheet( HMI *self )
 {
-	RLT_trendHMI			*cthis = SUB_PTR( self, HMI, RLT_trendHMI);
+	HMI_History			*cthis = SUB_PTR( self, HMI, HMI_History);
 	
 	int i;
 	
@@ -387,7 +353,7 @@ static void RT_trendHmi_HideSheet( HMI *self )
 static void	RLT_init_focus(HMI *self)
 {
 	int	col = 0; 
-	RLT_trendHMI *cthis = SUB_PTR(self, HMI, RLT_trendHMI);
+	HMI_History *cthis = SUB_PTR(self, HMI, HMI_History);
 	
 	self->p_fcuu = Focus_alloc(1, RLTHMI_NUM_CURVE + 1);
 	
@@ -437,7 +403,7 @@ static void	RLT_show_focus(HMI *self, uint8_t fouse_row, uint8_t fouse_col)
 }
 //static int	RLT_div_input(void *self, void *data, int len)
 //{
-//	RLT_trendHMI		*cthis = Get_RLT_trendHMI();
+//	HMI_History		*cthis = Get_HMI_History();
 //	if(len > 2)
 //		return ERR_PARAM_BAD;
 //	cthis->str_div[0] = ((char *)data)[0];
@@ -449,7 +415,7 @@ static void	RLT_show_focus(HMI *self, uint8_t fouse_row, uint8_t fouse_col)
 //}
 static void	RT_trendHmi_Show( HMI *self )
 {
-//	RLT_trendHMI		*cthis = SUB_PTR(self, HMI, RLT_trendHMI);
+//	HMI_History		*cthis = SUB_PTR(self, HMI, HMI_History);
 	
 	Curve 					*p_crv = CRV_Get_Sington();
 	g_p_curHmi = self;
@@ -465,7 +431,7 @@ static void	RT_trendHmi_Show( HMI *self )
 
 static void	RT_trendHmi_HitHandle( HMI *self, char *s)
 {
-	RLT_trendHMI		*cthis = SUB_PTR( self, HMI, RLT_trendHMI);
+	HMI_History		*cthis = SUB_PTR( self, HMI, HMI_History);
 	Curve						*p_crv = CRV_Get_Sington();
 //	shtCmd		*p_cmd;
 	sheet		*p_focus;
@@ -637,7 +603,7 @@ static void	RT_trendHmi_HitHandle( HMI *self, char *s)
 }
 
 
-static void RTV_midv_change(RLT_trendHMI *cthis, uint8_t new_mins)
+static void RTV_midv_change(HMI_History *cthis, uint8_t new_mins)
 {
 	Curve						*p_crv = CRV_Get_Sington();
 	uint8_t						s = 1;
@@ -693,7 +659,7 @@ static void RTV_midv_change(RLT_trendHMI *cthis, uint8_t new_mins)
 	cthis->min_div = new_mins;
 	p_crv->crv_show_curve(HMI_CMP_ALL, CRV_SHOW_WHOLE);
 }
-static void HST_midv_change(RLT_trendHMI *cthis, uint8_t new_mins)
+static void HST_midv_change(HMI_History *cthis, uint8_t new_mins)
 {
 	Curve						*p_crv = CRV_Get_Sington();
 	p_crv->crv_ctl(HMI_CMP_ALL, CRV_CTL_STEP_PIX, new_mins);	
@@ -705,140 +671,124 @@ static void HST_midv_change(RLT_trendHMI *cthis, uint8_t new_mins)
 	cthis->min_div = new_mins;
 	
 }
-static uint16_t HST_Num_rcds(uint8_t	mul)
-{
-	return CRV_MAX_PIXS / mul;
-	
-	
-}
+
 static void HST_Init(void)
 {
-	int i;
 	
-	for(i = 0; i < NUM_CHANNEL; i++)
-	{
-		hst_mgr.arr_hst_num[i] = 0;
-	}
-	hst_mgr.hst_flags = 0;
+	display_hst.start_rcd_num = 0;
+	display_hst.dsp_flag = 0;
+	display_hst.num_rcd = 0;
+	display_hst.prv_num_rcd = 0;
+	
+	
 }
 
 static void HST_Flex(uint8_t new_mdiv, uint8_t old_mdiv)
 {
-	uint8_t		i = 0;
+	
+	//放大曲线 -> 曲线的数据缩小
+	if(new_mdiv > old_mdiv)
+	{
 		
-	for(i = 0; i < NUM_CHANNEL; i++)
-	{
-		hst_mgr.arr_hst_num[i] = 0;
-	}
-	hst_mgr.hst_flags &= ~HST_FLAG_DONE;
-
-	
-}
-
-static void HST_Move(RLT_trendHMI *cthis, uint8_t direction)
-{
-	uint8_t		i;
-	uint16_t		num = HST_Num_rcds(cthis->min_div);
-	
-	
-	
-	
-	if(direction == HST_NEXT_PG)
-	{
-		for(i = 0; i < NUM_CHANNEL; i++)
-		{
-			hst_mgr.arr_hst_num[i] += num;
-		}
+		display_hst.prv_num_rcd /= new_mdiv / old_mdiv;
+		
 	}
 	else
 	{
-		for(i = 0; i < NUM_CHANNEL; i++)
-		{
-			
-				if(hst_mgr.arr_hst_num[i] > num)
-				{
-					
-					hst_mgr.arr_hst_num[i] -= num;
-					
-				}
-				else
-				{
-					hst_mgr.arr_hst_num[i] = 0;
-					
-				}
-		}
 		
+		display_hst.prv_num_rcd *= new_mdiv / old_mdiv;
 	}
 	
-	hst_mgr.hst_flags &= ~HST_FLAG_DONE;
+	display_hst.dsp_flag = 0;
+	display_hst.num_rcd = 0;
+	
+}
+
+static void HST_Move(uint8_t direction)
+{
+	
+	if(direction == HST_NEXT_PG)
+	{
+		display_hst.start_rcd_num += display_hst.num_rcd;
+		display_hst.prv_num_rcd = display_hst.num_rcd;
+		display_hst.num_rcd = 0;
+		
+	}
+	else
+	{
+		
+		if(display_hst.start_rcd_num > display_hst.prv_num_rcd)
+		{
+			display_hst.start_rcd_num -= display_hst.prv_num_rcd;
+			
+			
+			
+		}
+		else
+		{
+			display_hst.start_rcd_num = 0;
+			
+		}
+		
+		display_hst.num_rcd = 0; 
+		
+	}
 	
 }
 
 //历史曲线运行方法
 static void HMI_CRV_HST_Run(HMI *self)
 {
-	RLT_trendHMI		*cthis = SUB_PTR( self, HMI, RLT_trendHMI);
+	HMI_History		*cthis = SUB_PTR( self, HMI, HMI_History);
 	Curve 					*p_crv = CRV_Get_Sington();
 	Storage					*stg = Get_storage();
 	Model						*p_mdl ;
 	data_in_fsh_t		d;
+//	uint16_t				i, end;
 	crv_val_t				cval;
-	uint16_t				i, count, end;
 
 	//读取一条就记录记录一条
 	//知道屏幕上容纳不下了，或者记录读完了
 	
-	if(hst_mgr.hst_flags & HST_FLAG_DONE)
+	if(display_hst.dsp_flag & HST_FLAG_DONE)
 		return;
 	
+	STG_Set_file_position(STG_CHN_DATA(display_hst.dsp_chn), STG_DRC_READ, display_hst.start_rcd_num * sizeof(data_in_fsh_t));	
 	
 	
+	p_mdl = g_arr_p_chnData[display_hst.dsp_chn]->p_mdl;
+	p_mdl->getMdlData(p_mdl, chnaux_upper_limit, &cval.up_limit);
+	p_mdl->getMdlData(p_mdl, chnaux_small_signal, &cval.lower_limit);
 	
-
-	
-	end = HST_Num_rcds(cthis->min_div);
-	
-	for(i = 0; i < RLTHMI_NUM_CURVE; i++)
+	while(1)
 	{
-		if((cthis->chn_show_map & (1 << i)) == 0) {
-			continue;
-		}	
-		count = 0;
 		
-		p_mdl = g_arr_p_chnData[i]->p_mdl;
-		p_mdl->getMdlData(p_mdl, chnaux_upper_limit, &cval.up_limit);
-		p_mdl->getMdlData(p_mdl, chnaux_small_signal, &cval.lower_limit);
+		if(stg->rd_stored_data(stg, STG_CHN_DATA(display_hst.dsp_chn), &d, sizeof(d)) != sizeof(d))
+			break;
+		if(d.rcd_time_s == 0xffffffff)
+			break;
 		
-		STG_Set_file_position(STG_CHN_DATA(i), STG_DRC_READ, hst_mgr.arr_hst_num[i] * sizeof(data_in_fsh_t));	
-		while(1)
-		{
-			
-			if(stg->rd_stored_data(stg, STG_CHN_DATA(i), &d, sizeof(d)) != sizeof(d))
-				break;
-			if(d.rcd_time_s == 0xffffffff)
-				break;
-			
-			cval.val = d.rcd_val;
-			p_crv->add_point(cthis->arr_crv_fd[i], &cval);
-			count ++;
-			if(count > end)
-				break;
-		}
-		
-		
+		cval.val = d.rcd_val;
+		p_crv->add_point(cthis->arr_crv_fd[display_hst.dsp_chn], &cval);
+		display_hst.num_rcd ++;
+		if(display_hst.num_rcd > CRV_MAX_PIXS / cthis->min_div)
+			break;
 	}
 	
-	
-	hst_mgr.hst_flags |= HST_FLAG_DONE;
-	p_crv->crv_show_curve(HMI_CMP_ALL, CRV_SHOW_LATEST);
+	display_hst.dsp_flag |= HST_FLAG_DONE;
+	p_crv->crv_show_curve(cthis->arr_crv_fd[display_hst.dsp_chn], CRV_SHOW_LATEST);
 		
-
+	
+	
+//	end = 
+	
+	
 	
 }
 //实时曲线的运行方法
 static void HMI_CRV_RTV_Run(HMI *self)
 {
-	RLT_trendHMI		*cthis = SUB_PTR( self, HMI, RLT_trendHMI);
+	HMI_History		*cthis = SUB_PTR( self, HMI, HMI_History);
 	Curve 					*p_crv = CRV_Get_Sington();
 //	HMI				*p_hmi = SUPER_PTR(cthis, HMI);
 	Model						*p_mdl ;
@@ -895,7 +845,7 @@ static void HMI_CRV_RTV_Run(HMI *self)
 	
 }
 
-static void RLT_Init_curve(RLT_trendHMI *self)
+static void RLT_Init_curve(HMI_History *self)
 {
 	
 	
