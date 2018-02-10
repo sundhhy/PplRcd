@@ -244,7 +244,7 @@ int	EFS_close(int fd)
 	efs_mgr.arr_file_info[fd].read_position = 0;
 	
 	//¸üÐÂÐ´Î»ÖÃ
-//	if(Sem_wait(&f->file_sem, EFS_WAIT_WR_MS) <= 0)
+//	if(Sem_wait(&f->file_sem, EFS_WAIT_WR_MS) <= 0)												
 //		return -1;
 	if(f_mgr->efile_wr_position != f->write_position)
 	{
@@ -332,13 +332,12 @@ int		EFS_Direct_write(int fd, uint8_t *p, int len)
 
 	if(fd > EFS_MAX_NUM_FILES)
 		return -1;
+	while(Sem_wait(&f->file_sem, EFS_WAIT_WR_MS) <= 0)
+		delay_ms(1);
 	
 	if(len > f->num_page * EFS_FSH(f->fsh_No).fnf.page_size)
 		len = f->num_page * EFS_FSH(f->fsh_No).fnf.page_size;
-	
-	
-	if(Sem_wait(&f->file_sem, EFS_WAIT_WR_MS) <= 0)
-		return -1;
+
 	ret =  EFS_FSH(f->fsh_No).fsh_direct_write(p, start_addr + f->write_position,len);
 	if(ret > 0)
 		f->write_position += ret;
@@ -348,8 +347,10 @@ int		EFS_Direct_write(int fd, uint8_t *p, int len)
 	else
 		EFS_FS.err_code &= ~FS_ALARM_LOWSPACE;
 	ef->efile_wr_position = f->write_position;
-	Sem_post(&f->file_sem);
+	
 	EFS_flush_mgr(fd);
+	
+	Sem_post(&f->file_sem);
 	return ret;
 	
 	

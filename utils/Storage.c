@@ -218,7 +218,7 @@ int	STG_Read_rcd_by_time(uint8_t	chn, uint32_t start_sec, uint32_t end_sec, char
 		
 		
 		//放置csv格式的数据
-		sprintf((char *)buf + buf_offset, "%2d/%02d/%02d %02d:%02d:%02d=%x ", t.tm_year,t.tm_mon, t.tm_mday, \
+		sprintf((char *)buf + buf_offset, "%2d/%02d/%02d,%02d:%02d:%02d,%d\r\n", t.tm_year,t.tm_mon, t.tm_mday, \
 				t.tm_hour, t.tm_min, t.tm_sec, d.rcd_val);
 		buf_offset = strlen(buf);
 		

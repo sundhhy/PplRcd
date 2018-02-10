@@ -8,6 +8,7 @@
 #include "Component_Button.h"
 #include "Component_curve.h"
 #include "os/os_depend.h"
+#include "Component_tips.h"
 
 //提供 按键，事件，消息，窗口，报警，时间，复选框的图层
 //这些图层可能会被其他界面所使用
@@ -234,9 +235,10 @@ END_CTOR
 static int	Init_mainHmi( HMI *self, void *arg)
 {
 	HMI 					*p_cmm;
-	Button				*p_btn;
-	Progress_bar	*p_bar;
+	Button					*p_btn;
+	Progress_bar			*p_bar;
 	Curve					*p_crv;
+	CMP_tips				*p_tips;
 
 	
 	p_cmm = CreateHMI( HMI_CMM);
@@ -249,6 +251,8 @@ static int	Init_mainHmi( HMI *self, void *arg)
 	p_bar->init(p_bar);
 	p_crv = CRV_Get_Sington();
 	p_crv->init(p_crv, NUM_CHANNEL);
+	p_tips = TIP_Get_Sington();
+	p_tips->init(p_tips);
 	
 	self->initSheet( self);
 

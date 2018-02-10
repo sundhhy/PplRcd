@@ -844,11 +844,6 @@
               <FilePath>..\..\HMI\Component_Button.c</FilePath>
             </File>
             <File>
-              <FileName>curve.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\HMI\curve.c</FilePath>
-            </File>
-            <File>
               <FileName>dataHmi.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\HMI\dataHmi.c</FilePath>
@@ -984,11 +979,6 @@
               <FilePath>..\..\HMI\strategy_news_power.c</FilePath>
             </File>
             <File>
-              <FileName>curve.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\..\HMI\curve.h</FilePath>
-            </File>
-            <File>
               <FileName>HMI_curve.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\HMI\HMI_curve.c</FilePath>
@@ -1007,6 +997,16 @@
               <FileName>Component_curve.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\HMI\Component_curve.c</FilePath>
+            </File>
+            <File>
+              <FileName>Component_tips.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\HMI\Component_tips.c</FilePath>
+            </File>
+            <File>
+              <FileName>Component_tips.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\HMI\Component_tips.h</FilePath>
             </File>
           </Files>
         </Group>

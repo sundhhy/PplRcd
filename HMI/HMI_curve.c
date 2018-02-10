@@ -6,10 +6,10 @@
 #include "format.h"
 #include "chnInfoPic.h"
 #include "ModelFactory.h"
-#include "curve.h"
 #include "Component_curve.h"
 #include "os/os_depend.h"
 #include "utils/Storage.h"
+#include "arithmetic/bit.h"
 
 //柱状图在y坐标上，按100%显示的话是:71 -187 
 //============================================================================//
@@ -78,7 +78,8 @@ typedef void (*midv_change)(RLT_trendHMI *cthis, uint8_t new_mins);
 struct {
 	uint32_t			arr_hst_num[NUM_CHANNEL];
 	uint8_t				hst_flags;
-	uint8_t				none[3];
+	uint8_t				has_pgdn;		//执行过向下翻页
+	uint8_t				none[2];
 }hst_mgr;
 					
 	
@@ -95,6 +96,8 @@ static void RTV_midv_change(RLT_trendHMI *cthis, uint8_t new_mins);
 static void HST_midv_change(RLT_trendHMI *cthis, uint8_t new_mins);
 
 static midv_change	arr_mdiv_change[2] = {RTV_midv_change, HST_midv_change};
+
+static sheet  		*p_curve_bkg;
 //------------------------------------------------------------------------------
 // local function prototypes
 //------------------------------------------------------------------------------
@@ -193,7 +196,7 @@ static int	Init_RT_trendHMI( HMI *self, void *arg)
 	
 	
 	
-	Curve_init();
+//	Curve_init();
 	
 	p_shtctl = GetShtctl();
 	
@@ -236,10 +239,10 @@ static void HMI_CRV_Build_cmp(HMI *self)
 	short							i;
 	short				num = 0;
 	
-	p->build_each_btn(0, BTN_TYPE_MENU, Main_btn_hdl, self);
-	p->build_each_btn(1, BTN_TYPE_LOOP, RLT_btn_hdl, self);
-	p->build_each_btn(1, BTN_TYPE_PGDN, RLT_btn_hdl, self);
-	p->build_each_btn(1, BTN_TYPE_PGUP, RLT_btn_hdl, self);
+//	p->build_each_btn(0, BTN_TYPE_MENU, Main_btn_hdl, self);
+//	p->build_each_btn(0, BTN_TYPE_PGUP, RLT_btn_hdl, self);
+//	p->build_each_btn(1, BTN_TYPE_PGDN, RLT_btn_hdl, self);
+	p->build_each_btn(2, BTN_TYPE_LOOP, RLT_btn_hdl, self);
 	
 	for(i = 0; i < NUM_CHANNEL; i++)
 	{
@@ -252,7 +255,7 @@ static void HMI_CRV_Build_cmp(HMI *self)
 		}
 		else		//历史趋势就是像素倍数
 		{
-			crv.crv_step_pix = cthis->min_div;
+			crv.crv_step_pix = 16 / cthis->min_div;
 			num = HST_Num_rcds(cthis->min_div);
 		}
 		
@@ -348,7 +351,7 @@ static void RT_trendHmi_InitSheet( HMI *self )
 	g_p_sht_title->cnt.len = strlen(g_p_sht_title->cnt.data);
 
 	Sheet_updown(g_p_sht_bkpic, h++);
-	Sheet_updown(g_p_curve_bkg, h++);
+	Sheet_updown(p_curve_bkg, h++);
 	Sheet_updown(g_p_sht_title, h++);
 	Sheet_updown(g_p_shtTime, h++);
 //	Sheet_updown(g_p_ico_memu, h++);
@@ -380,7 +383,7 @@ static void RT_trendHmi_HideSheet( HMI *self )
 //	Sheet_updown(g_p_ico_memu, -1);
 	Sheet_updown(g_p_shtTime, -1);
 	Sheet_updown(g_p_sht_title, -1);
-	Sheet_updown(g_p_curve_bkg, -1);
+	Sheet_updown(p_curve_bkg, -1);
 	Sheet_updown(g_p_sht_bkpic, -1);
 	
 	
@@ -527,14 +530,14 @@ static void	RT_trendHmi_HitHandle( HMI *self, char *s)
 		{
 			if(self->btn_backward(self) != RET_OK)
 			{
-				Focus_move_left(self->p_fcuu);
+				Focus_move_right(self->p_fcuu);
 				chgFouse = 1;
 			}
 			
 		}
 		else if(Focus_move_left(self->p_fcuu) != RET_OK)
 		{
-			self->btn_backward(self);
+			self->btn_forward(self);	//跳到第一个按钮
 			chgFouse = 1;
 		}
 		else
@@ -549,14 +552,14 @@ static void	RT_trendHmi_HitHandle( HMI *self, char *s)
 		{
 			if(self->btn_forward(self) != RET_OK)
 			{
-				Focus_move_right(self->p_fcuu);
+				Focus_move_left(self->p_fcuu);	//移动到最左端
 				chgFouse = 1;
 			}
 			
 		}
 		else if(Focus_move_right(self->p_fcuu) != RET_OK)
 		{
-			self->btn_forward(self);
+			self->btn_forward(self);	//跳到第一个按钮
 			chgFouse = 1;
 		}
 		else
@@ -704,7 +707,7 @@ static void RTV_midv_change(RLT_trendHMI *cthis, uint8_t new_mins)
 static void HST_midv_change(RLT_trendHMI *cthis, uint8_t new_mins)
 {
 	Curve						*p_crv = CRV_Get_Sington();
-	p_crv->crv_ctl(HMI_CMP_ALL, CRV_CTL_STEP_PIX, new_mins);	
+	p_crv->crv_ctl(HMI_CMP_ALL, CRV_CTL_STEP_PIX, 16 / new_mins);	
 //	p_crv->crv_ctl(HMI_CMP_ALL, CRV_CTL_MAX_NUM, 240 / new_mins);	
 	p_crv->crv_data_flex(HMI_CMP_ALL, FLEX_CLEAN, 0, HST_Num_rcds(new_mins));
 	
@@ -715,7 +718,7 @@ static void HST_midv_change(RLT_trendHMI *cthis, uint8_t new_mins)
 }
 static uint16_t HST_Num_rcds(uint8_t	mul)
 {
-	return CRV_MAX_PIXS / mul;
+	return 15 * mul;
 	
 	
 }
@@ -728,6 +731,7 @@ static void HST_Init(void)
 		hst_mgr.arr_hst_num[i] = 0;
 	}
 	hst_mgr.hst_flags = 0;
+	hst_mgr.has_pgdn = 0;
 }
 
 static void HST_Flex(uint8_t new_mdiv, uint8_t old_mdiv)
@@ -756,6 +760,8 @@ static void HST_Move(RLT_trendHMI *cthis, uint8_t direction)
 		for(i = 0; i < NUM_CHANNEL; i++)
 		{
 			hst_mgr.arr_hst_num[i] += num;
+			Set_bit(&hst_mgr.has_pgdn, i);
+			
 		}
 	}
 	else
@@ -772,7 +778,7 @@ static void HST_Move(RLT_trendHMI *cthis, uint8_t direction)
 				else
 				{
 					hst_mgr.arr_hst_num[i] = 0;
-					
+					Clear_bit(&hst_mgr.has_pgdn, i);
 				}
 		}
 		
@@ -789,9 +795,10 @@ static void HMI_CRV_HST_Run(HMI *self)
 	Curve 					*p_crv = CRV_Get_Sington();
 	Storage					*stg = Get_storage();
 	Model						*p_mdl ;
-	data_in_fsh_t		d;
+	Button					*p_btn = BTN_Get_Sington();
+	data_in_fsh_t			d;
 	crv_val_t				cval;
-	uint16_t				i, count, end;
+	uint16_t				i, count, end, need_clean = 0;
 
 	//读取一条就记录记录一条
 	//知道屏幕上容纳不下了，或者记录读完了
@@ -822,7 +829,7 @@ static void HMI_CRV_HST_Run(HMI *self)
 		{
 			
 			if(stg->rd_stored_data(stg, STG_CHN_DATA(i), &d, sizeof(d)) != sizeof(d))
-				break;
+				return;	//可能文件正在被其他线程访问，直接退出，下一次再尝试
 			if(d.rcd_time_s == 0xffffffff)
 				break;
 			
@@ -836,6 +843,30 @@ static void HMI_CRV_HST_Run(HMI *self)
 		
 	}
 	
+	if(count >= end) //说明可能还有记录
+	{
+		
+		p_btn->build_each_btn(1, BTN_TYPE_PGDN, RLT_btn_hdl, self);
+	}
+	else {		
+		p_btn->build_each_btn(1, BTN_TYPE_NONE, NULL, NULL);
+		need_clean = 1;
+	}
+	
+	if(hst_mgr.has_pgdn) //说明可能还有记录
+	{
+		
+		p_btn->build_each_btn(0, BTN_TYPE_PGUP, RLT_btn_hdl, self);
+	}
+	else {		
+		p_btn->build_each_btn(0, BTN_TYPE_NONE, NULL, NULL);
+		need_clean = 1;
+	}
+	if((cthis->chn_show_map & ((1 << NUM_CHANNEL) - 1)) == 0)
+		need_clean = 1;		//没有曲线需要显示的时候，把界面清除掉
+	if(need_clean)
+		self->show(self);
+	p_btn->show_vaild_btn();
 	
 	hst_mgr.hst_flags |= HST_FLAG_DONE;
 	p_crv->crv_show_curve(HMI_CMP_ALL, CRV_SHOW_WHOLE);

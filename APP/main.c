@@ -19,12 +19,16 @@
 #include "device.h"
 #include "TDD.h"
 #include "HMI/HMIFactory.h"
+#include "HMI/Component_tips.h"
+
 #include "Usb.h"
 
 #include "control/CtlKey.h"
 #include "control/CtlTimer.h"
 #include "utils/time.h"
 #include "utils/keyboard.h"
+
+
 
 #include "os/os_depend.h"
 //============================================================================//
@@ -72,6 +76,7 @@ osThreadDef (ThrdKeyRun, osPriorityNormal, 1, 0);                   // thread ob
 // local function prototypes
 //------------------------------------------------------------------------------
 
+static int	Main_USB_event(int type);
 
 
 //============================================================================//
@@ -82,6 +87,7 @@ osThreadDef (ThrdKeyRun, osPriorityNormal, 1, 0);                   // thread ob
  * main: initialize and start the system
  */
 
+//extern cmd_run_t 	cmd_run;
 
 
 int main (void) {
@@ -108,11 +114,11 @@ int main (void) {
 
 	assert(USB_Init(NULL) == RET_OK);
 	
-	InitTimer( TIM2, 1000);
-	clean_time_flags();
-//	p_mdl_test =  ModelCreate("test");
-//	p_mdl_test->init( p_mdl_test, NULL);
-//	mTime = ModelCreate("time");
+	
+//	InitTimer( TIM2, 1000);		//180210 用不到
+//	clean_time_flags();
+
+
 	//控制器初始化
 #if TDD_ON == 0
 
@@ -131,9 +137,12 @@ int main (void) {
 	phn_sys.lcd_cmd_bytes  = 0;
 
 	
+	
+	
 	//创建控制器
 	p_control = SUPER_PTR( Get_CtlKey(), Controller);
 	p_control->init(p_control, p_kb);
+	
 	p_control = SUPER_PTR(CtlTimer_new(), Controller);
 	if(p_control == NULL) while(1);
 	p_control->init(p_control, NULL);
@@ -145,6 +154,8 @@ int main (void) {
 	
 	p_mdl_time = ModelCreate("time");
 	
+	
+	USB_Rgt_event_hdl(Main_USB_event);
 	osKernelStart ();                        
 	while(1)
 	{
@@ -158,10 +169,13 @@ int main (void) {
 		}
 		USB_Run(NULL);
 		LCD_Run();
-//		osThreadYield ();  
+//		osThreadYield (); 
+
+//		if(cmd_run.func)
+//			cmd_run.func(cmd_run.arg);
 
 	}
-#elif TDD_TIME_SEC == 1
+#elif TDD_TIME_SEC == 1	//tdd_on == 0
 	TDD_Time_sec();
 #elif TDD_EFS == 1
 	TDD_Efs();
@@ -279,5 +293,21 @@ void HardFault_Handler()
 	
 }
 
+static int	Main_USB_event(int type)
+{
+	CMP_tips *p_tips = TIP_Get_Sington();
+	if(type == et_ready)
+	{
+		p_tips->show_tips(TIP_ICO_IN_TITLE, 0, -1);
+		
+	}
+	else if(type == et_remove)
+	{
+		p_tips->clear_tips(TIP_ICO_IN_TITLE, 0);
+		
+	}
+	
+	return 0;
+}
 
 

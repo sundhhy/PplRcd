@@ -420,7 +420,7 @@ static void DBP_Copy(void *arg)
 			goto copy_wait;
 		if(usb_fd == 0)
 		{
-			usb_fd = USB_Open_file("CHN_0.TXT", USB_FM_WRITE | USB_FM_COVER);
+			usb_fd = USB_Create_file(arr_p_vram[4], USB_FM_WRITE | USB_FM_COVER);
 			if(usb_fd == 0x42)
 			{
 				//todo: 文件名错误的处理要完善

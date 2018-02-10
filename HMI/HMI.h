@@ -55,11 +55,11 @@
 /********图层的ID	***********************************/
 #define	ICO_ID_MENU					0x20	//主菜单
 #define	ICO_ID_BAR					0x21	//棒图
-#define	ICO_ID_DIGITAL			0x22	//数显
+#define	ICO_ID_DIGITAL				0x22	//数显
 #define	ICO_ID_TREND				0x23	//趋势
 #define	ICO_ID_PGUP					0x24	//向上翻页
 #define	ICO_ID_PGDN					0x25	//向下翻页
-#define	ICO_ID_ERASETOOL		0x26	//擦除工具
+#define	ICO_ID_ERASETOOL			0x26	//擦除工具
 #define	ICO_ID_SEARCH				0x27	//查找工具
 #define	ICO_ID_COPY					0x28	//复制
 #define	ICO_ID_STOP					0x29	//停止

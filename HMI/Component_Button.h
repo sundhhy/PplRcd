@@ -20,18 +20,22 @@
 //------------------------------------------------------------------------------
 #define		NUM_BUTTON				4
 
-#define		BTN_TYPE_MENU			0
-#define		BTN_TYPE_BAR			1
-#define		BTN_TYPE_DIGITAL		2
-#define		BTN_TYPE_TREND			3
-#define		BTN_TYPE_COPY			5
-#define		BTN_TYPE_PGUP			6
-#define		BTN_TYPE_PGDN			7
-#define		BTN_TYPE_ERASE			8
-#define		BTN_TYPE_LOOP			9		//循环显示
-#define 	BTN_TYPE_SEARCH			10
-#define		BTN_TYPE_STOP			11
-#define 	BTN_TYPE_NONE			0xff
+#define		BTN_TYPE_MENU			ICO_ID_MENU
+#define		BTN_TYPE_BAR			ICO_ID_BAR
+#define		BTN_TYPE_DIGITAL		ICO_ID_DIGITAL
+#define		BTN_TYPE_TREND			ICO_ID_TREND
+#define		BTN_TYPE_COPY			ICO_ID_COPY
+#define		BTN_TYPE_PGUP			ICO_ID_PGUP
+#define		BTN_TYPE_PGDN			ICO_ID_PGDN
+#define		BTN_TYPE_ERASE			ICO_ID_ERASETOOL
+#define		BTN_TYPE_LOOP			ICO_ID_LOOP		//循环显示
+#define 	BTN_TYPE_SEARCH			ICO_ID_SEARCH
+#define		BTN_TYPE_STOP			ICO_ID_STOP
+#define		BTN_FLAG_CLEAN			0x80		//当按钮不需要了清除掉
+#define 	BTN_TYPE_NONE			0x7f
+
+
+
 
 #define BTN_MOVE_FORWARD		0
 #define BTN_MOVE_BACKWARD		1

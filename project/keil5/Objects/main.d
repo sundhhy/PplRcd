@@ -77,6 +77,7 @@
 .\objects\main.o: ..\..\..\PplRcd\HMI/Setup_HMI.h
 .\objects\main.o: ..\..\..\PplRcd\HMI/HMI_striped_background.h
 .\objects\main.o: ..\..\..\PplRcd\HMI/windowsHMI.h
+.\objects\main.o: ..\..\..\PplRcd\HMI/Component_tips.h
 .\objects\main.o: ..\..\usb\Usb.h
 .\objects\main.o: ..\..\..\PplRcd\control/CtlKey.h
 .\objects\main.o: ..\..\..\PplRcd\control/Controller.h

@@ -742,7 +742,7 @@ static void	HMI_SBG_Show_entry(HMI *self, strategy_t *p_st)
 		
 	} 
 	else {		
-		p_btn->build_each_btn(1, BTN_TYPE_NONE, NULL, NULL);
+		p_btn->build_each_btn(1, BTN_FLAG_CLEAN | BTN_TYPE_PGUP, NULL, NULL);
 	}
 	
 	if(more) 
@@ -758,7 +758,7 @@ static void	HMI_SBG_Show_entry(HMI *self, strategy_t *p_st)
 	
 	else {
 		
-		p_btn->build_each_btn(2, BTN_TYPE_NONE, NULL, NULL);
+		p_btn->build_each_btn(2, BTN_FLAG_CLEAN | BTN_TYPE_PGDN, NULL, NULL);
 	}
 	
 	

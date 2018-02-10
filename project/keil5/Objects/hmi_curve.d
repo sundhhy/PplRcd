@@ -76,8 +76,8 @@
 .\objects\hmi_curve.o: ..\..\HMI\format.h
 .\objects\hmi_curve.o: E:\sdhLib\inc\basis/assert.h
 .\objects\hmi_curve.o: ..\..\HMI\chnInfoPic.h
-.\objects\hmi_curve.o: ..\..\HMI\curve.h
 .\objects\hmi_curve.o: E:\sdhLib\inc\os/os_depend.h
 .\objects\hmi_curve.o: E:\sdhLib\inc\os/rtx/rtx_depend.h
 .\objects\hmi_curve.o: d:\Keil_v5\ARM\PACK\ARM\CMSIS\4.4.0\CMSIS\RTOS\RTX\INC\cmsis_os.h
 .\objects\hmi_curve.o: ..\..\..\PplRcd\utils/Storage.h
+.\objects\hmi_curve.o: E:\sdhLib\inc\arithmetic/bit.h

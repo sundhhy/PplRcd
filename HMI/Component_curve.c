@@ -199,7 +199,7 @@ static void		CRV_Add_point(uint8_t  crv_fd, crv_val_t *cv)
 
 	
 	
-	
+	CRV_Deal_full(crv_fd);
 		
 	if(cv->val <= cv->lower_limit)
 		cv->prc = 0;
@@ -224,7 +224,7 @@ static void		CRV_Add_point(uint8_t  crv_fd, crv_val_t *cv)
 	
 	p_CRV_self->p_run_info[crv_fd].crv_num_points ++;
 	
-	CRV_Deal_full(crv_fd);
+	
 	
 	if(p_CRV_self->p_crv_att[crv_fd].crv_direction == HMI_DIR_LEFT)
 		CRV_Set_dirty(p_CRV_self->p_bkg_info[crv_fd].crv_bkg_id, 1);
@@ -600,7 +600,7 @@ static void CRV_Copy_att(curve_att_t *dst, curve_att_t *src)
 static void CRV_Deal_full(uint8_t crv_fd)
 {
 	
-	if(p_CRV_self->p_run_info[crv_fd].crv_num_points <=  p_CRV_self->p_crv_att[crv_fd].crv_max_num_data)
+	if(p_CRV_self->p_run_info[crv_fd].crv_num_points <  p_CRV_self->p_crv_att[crv_fd].crv_max_num_data)
 		return;
 	
 	//曲线点满了以后，清除掉全部的点重新绘制还是逐个覆盖点数
@@ -627,10 +627,13 @@ static void CRV_Deal_full(uint8_t crv_fd)
 static void		CRV_Show_curve(uint8_t  crv_fd, uint8_t show_ctl)
 {
 	
-	int	i = 0;
+	short	i = 0, has_show = 0;
 	
 	if(show_ctl == CRV_SHOW_WHOLE)		
 		CRV_Set_dirty(HMI_CMP_ALL, 1);
+	
+	
+	
 	
 	for(i = 0; i < p_CRV_self->num_curve; i++)
 	{
@@ -644,8 +647,25 @@ static void		CRV_Show_curve(uint8_t  crv_fd, uint8_t show_ctl)
 		if(p_CRV_self->p_crv_att[i].crv_flag & CRV_FLAG_HIDE)
 			continue;
 		
+		has_show = 1;
 		//显示该曲线
 		CRV_Exc_display(i, show_ctl);
+		
+		
+	}
+	
+	//一根曲线也没有显示，要清除一下背景，避免残留
+	if(has_show == 0)
+	{
+		for(i = 0; i < p_CRV_self->num_curve; i++)
+		{
+			if((p_CRV_self->p_bkg_info[i].crv_bkg_dirty))
+			{
+				CRV_Clean_bkg(i);
+				
+			}
+			
+		}
 		
 		
 	}

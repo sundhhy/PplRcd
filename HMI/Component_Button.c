@@ -147,9 +147,15 @@ static int		BTN_Build_each_btn(uint8_t	seq, uint8_t btn_type, btn_hdl bh, void *
 //	assert(p_self != NULL);
 	
 	Set_bit(p_set, seq);
-	p_self->arr_p_arg[seq] = hdl_arg;
-	p_self->arr_hdl[seq] = bh;
+	if(bh)
+	{
+		p_self->arr_p_arg[seq] = hdl_arg;
+		p_self->arr_hdl[seq] = bh;
+	}
 	btn_pic = Button_Get_subcnt(arr_p_btn_sht[seq]);
+	
+	
+	
 	switch(btn_type)
 	{
 				
@@ -201,9 +207,30 @@ static int		BTN_Build_each_btn(uint8_t	seq, uint8_t btn_type, btn_hdl bh, void *
 		case BTN_TYPE_SEARCH:
 			btn_pic->data = BTN_ICO_SEARCH;
 			arr_p_btn_sht[seq]->id = ICO_ID_SEARCH;
-			break;
+			break;	
 		default:
-			Clear_bit(p_set, seq);
+			//只有匹配的上才清除
+			if(btn_type & BTN_FLAG_CLEAN)
+			{
+				if(arr_p_btn_sht[seq]->id  == (btn_type & 0x7f))
+				{
+					
+					Clear_bit(p_set, seq);
+					arr_p_btn_sht[seq]->cnt.effects = GP_CLR_EFF(arr_p_btn_sht[seq]->cnt.effects, EFF_FOCUS);
+					
+				}
+				
+				
+				
+			}
+			else
+			{
+				Clear_bit(p_set, seq);
+				arr_p_btn_sht[seq]->cnt.effects = GP_CLR_EFF(arr_p_btn_sht[seq]->cnt.effects, EFF_FOCUS);
+				
+				
+			}
+				
 			
 			break;
 		
@@ -334,10 +361,13 @@ static int		BTN_Move_focus(uint8_t	direction)
 	//清除旧的特效
 	if(old_focus != 0xff)
 	{
-		arr_p_btn_sht[old_focus]->cnt.effects = GP_CLR_EFF(arr_p_btn_sht[old_focus]->cnt.effects, EFF_FOCUS);
-		arr_p_btn_sht[old_focus]->e_heifht = 1;
-		Sheet_slide(arr_p_btn_sht[old_focus]);
-		arr_p_btn_sht[old_focus]->e_heifht = 0;
+		if(Check_bit(p_set, old_focus))
+		{
+			arr_p_btn_sht[old_focus]->cnt.effects = GP_CLR_EFF(arr_p_btn_sht[old_focus]->cnt.effects, EFF_FOCUS);
+			arr_p_btn_sht[old_focus]->e_heifht = 1;
+			Sheet_slide(arr_p_btn_sht[old_focus]);
+			arr_p_btn_sht[old_focus]->e_heifht = 0;
+		}
 	}
 	
 	//显示新的选中特效
