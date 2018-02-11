@@ -58,6 +58,7 @@
 .\objects\system.o: ..\..\..\PplRcd\HMI/Component_Button.h
 .\objects\system.o: ..\..\..\PplRcd\HMI/Component_curve.h
 .\objects\system.o: ..\..\..\PplRcd\HMI/Component_progress_bar.h
+.\objects\system.o: ..\..\..\PplRcd\HMI/Component_tips.h
 .\objects\system.o: ..\..\..\PplRcd\HMI/keyboardHMI.h
 .\objects\system.o: ..\..\..\PplRcd\HMI/mainHMI.h
 .\objects\system.o: ..\..\..\PplRcd\HMI/menuHMI.h

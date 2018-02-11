@@ -58,6 +58,7 @@
 .\objects\hmifactory.o: ..\..\HMI\Component_Button.h
 .\objects\hmifactory.o: ..\..\HMI\Component_curve.h
 .\objects\hmifactory.o: ..\..\HMI\Component_progress_bar.h
+.\objects\hmifactory.o: ..\..\HMI\Component_tips.h
 .\objects\hmifactory.o: ..\..\HMI\keyboardHMI.h
 .\objects\hmifactory.o: ..\..\HMI\mainHMI.h
 .\objects\hmifactory.o: ..\..\HMI\menuHMI.h

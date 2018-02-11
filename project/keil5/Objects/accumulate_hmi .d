@@ -57,6 +57,7 @@
 .\objects\accumulate_hmi .o: ..\..\HMI\Component_Button.h
 .\objects\accumulate_hmi .o: ..\..\HMI\Component_curve.h
 .\objects\accumulate_hmi .o: ..\..\HMI\Component_progress_bar.h
+.\objects\accumulate_hmi .o: ..\..\HMI\Component_tips.h
 .\objects\accumulate_hmi .o: ..\..\HMI\commHMI.h
 .\objects\accumulate_hmi .o: ..\..\HMI\keyboardHMI.h
 .\objects\accumulate_hmi .o: ..\..\Expression\ExpFactory.h

@@ -57,6 +57,7 @@
 .\objects\strategy_news_power.o: ..\..\HMI\Component_Button.h
 .\objects\strategy_news_power.o: ..\..\HMI\Component_curve.h
 .\objects\strategy_news_power.o: ..\..\HMI\Component_progress_bar.h
+.\objects\strategy_news_power.o: ..\..\HMI\Component_tips.h
 .\objects\strategy_news_power.o: ..\..\HMI\commHMI.h
 .\objects\strategy_news_power.o: ..\..\HMI\keyboardHMI.h
 .\objects\strategy_news_power.o: ..\..\..\PplRcd\utils/Storage.h

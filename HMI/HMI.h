@@ -21,6 +21,8 @@
 #include "Component_Button.h"
 #include "Component_curve.h"
 #include "Component_progress_bar.h"
+#include "Component_tips.h"
+
 //------------------------------------------------------------------------------
 // check for correct compilation options
 //------------------------------------------------------------------------------

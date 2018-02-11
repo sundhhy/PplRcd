@@ -57,6 +57,7 @@
 .\objects\commhmi.o: ..\..\HMI\Component_Button.h
 .\objects\commhmi.o: ..\..\HMI\Component_curve.h
 .\objects\commhmi.o: ..\..\HMI\Component_progress_bar.h
+.\objects\commhmi.o: ..\..\HMI\Component_tips.h
 .\objects\commhmi.o: ..\..\HMI\keyboardHMI.h
 .\objects\commhmi.o: ..\..\Expression\ExpFactory.h
 .\objects\commhmi.o: ..\..\Expression\expression.h

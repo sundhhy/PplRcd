@@ -261,23 +261,30 @@ static void		HMI_Clean_cmp(HMI *self)
 {
 
 	Button				*p = BTN_Get_Sington();
-	Progress_bar	*p_bar = PGB_Get_Sington();
+	Progress_bar		*p_bar = PGB_Get_Sington();
 	Curve 				*p_crv = CRV_Get_Sington();
+	CMP_tips 			*p_tips = TIP_Get_Sington();
+	
 	p->clean_btn();
 	self->flag &= ~HMIFLAG_FOCUS_IN_BTN;
 	
 	p_bar->delete_bar(HMI_CMP_ALL);
 	p_crv->free(HMI_CMP_ALL);
+	
+	p_tips->hide_ico_tips(0);		//默认提示图标允许显示
+
 }
 static void		HMI_Show_cmp(HMI *self)
 {
 	Button				*p = BTN_Get_Sington();
-	Progress_bar	*p_bar = PGB_Get_Sington();
+	Progress_bar		*p_bar = PGB_Get_Sington();
 	Curve 				*p_crv = CRV_Get_Sington();
+	CMP_tips 			*p_tips = TIP_Get_Sington();
 	
 	p->show_vaild_btn();
 	p_bar->show_bar();
 	p_crv->crv_show_bkg();
+	p_tips->show_tips();
 }
 
 static int		HMI_Btn_forward(HMI *self)

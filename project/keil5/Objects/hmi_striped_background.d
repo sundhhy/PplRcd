@@ -57,6 +57,7 @@
 .\objects\hmi_striped_background.o: ..\..\HMI\Component_Button.h
 .\objects\hmi_striped_background.o: ..\..\HMI\Component_curve.h
 .\objects\hmi_striped_background.o: ..\..\HMI\Component_progress_bar.h
+.\objects\hmi_striped_background.o: ..\..\HMI\Component_tips.h
 .\objects\hmi_striped_background.o: ..\..\HMI\commHMI.h
 .\objects\hmi_striped_background.o: ..\..\HMI\keyboardHMI.h
 .\objects\hmi_striped_background.o: ..\..\Expression\ExpFactory.h

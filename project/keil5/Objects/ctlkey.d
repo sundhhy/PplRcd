@@ -59,3 +59,4 @@
 .\objects\ctlkey.o: ..\..\..\PplRcd\HMI/Component_Button.h
 .\objects\ctlkey.o: ..\..\..\PplRcd\HMI/Component_curve.h
 .\objects\ctlkey.o: ..\..\..\PplRcd\HMI/Component_progress_bar.h
+.\objects\ctlkey.o: ..\..\..\PplRcd\HMI/Component_tips.h

@@ -59,16 +59,16 @@ static const char TIP_code_box[] = { "<box ></>" };
 //------------------------------------------------------------------------------
 static CMP_tips 			*p_TIP_self = NULL;
 static sheet				*arr_p_tip_ico[NUM_TIP_ICO];
+static char					arr_s_ico[NUM_TIP_ICO][3];
 //static cal_end_by_val		arr_cal[2];
 //------------------------------------------------------------------------------
 // local function prototypes
 //------------------------------------------------------------------------------
 static void 	TIP_Init(CMP_tips *self);
-static void 	TIP_Set_self(CMP_tips *self);
-
-static void		TIP_Show_tips(uint8_t tips_type, uint8_t tips_seq, short pic_num);
-static void		TIP_Clear_tips(uint8_t tips_type, uint8_t tips_seq);
-
+static void		TIP_Show_ico_tips(uint8_t tips_seq, short pic_num);
+static void		TIP_Clear_ico_tips(uint8_t tips_seq);
+static void		TIP_Hide_ico_tips(char ctl);
+static void		TIP_Show_tips();
 //============================================================================//
 //            P U B L I C   F U N C T I O N S                                 //
 //============================================================================//
@@ -88,10 +88,10 @@ CMP_tips	*TIP_Get_Sington(void)
 
 CTOR(CMP_tips)
 FUNCTION_SETTING(init, TIP_Init);
+FUNCTION_SETTING(show_ico_tips, TIP_Show_ico_tips);
+FUNCTION_SETTING(clear_ico_tips, TIP_Clear_ico_tips);
+FUNCTION_SETTING(hide_ico_tips, TIP_Hide_ico_tips);
 FUNCTION_SETTING(show_tips, TIP_Show_tips);
-FUNCTION_SETTING(clear_tips, TIP_Clear_tips);
-//FUNCTION_SETTING(update_bar, TIP_Update_bar);
-//FUNCTION_SETTING(delete_bar, TIP_Delete_bar);
 //FUNCTION_SETTING(show_bar, TIP_Show_bar);
 
 END_CTOR
@@ -125,7 +125,8 @@ static void 	TIP_Init(CMP_tips *self)
 		
 	}
 //	
-//	self->set_free_bar = 0xff;
+	self->flag_hide_tips = 0;
+	self->set_ico_vaild_tip = 0;
 
 
 //	p_TIP_self = self;
@@ -133,24 +134,78 @@ static void 	TIP_Init(CMP_tips *self)
 	
 }
 
-static void		TIP_Show_tips(uint8_t tips_type, uint8_t tips_seq, short pic_num)
+static void		TIP_Show_ico_tips(uint8_t tips_seq, short pic_num)
 {
-	char	s_pic_num[] = "29";
+	
+	if(tips_seq > NUM_TIP_ICO)
+		return;
+	
+	if(pic_num >= 0)
+		sprintf(arr_s_ico[tips_seq], "%d", pic_num);
+	else
+	{
+		if(tips_seq == 0)
+			sprintf(arr_s_ico[tips_seq], "29");
+		
+	}
+	
 	arr_p_tip_ico[tips_seq]->e_heifht = 1;
-	arr_p_tip_ico[tips_seq]->cnt.data = s_pic_num;
+	arr_p_tip_ico[tips_seq]->cnt.data = arr_s_ico[tips_seq];
 	Sheet_slide(arr_p_tip_ico[tips_seq]);
 	arr_p_tip_ico[tips_seq]->e_heifht = 0;
 	
 	
+	Set_bit(&p_TIP_self->set_ico_vaild_tip, tips_seq);
+	p_TIP_self->flag_hide_tips = 0;
 }
-static void		TIP_Clear_tips(uint8_t tips_type, uint8_t tips_seq)
+static void		TIP_Clear_ico_tips(uint8_t tips_seq)
 {
 	char	pic_num[] = "30";
+	
+	if(tips_seq > NUM_TIP_ICO)
+		return;
+	
 	arr_p_tip_ico[tips_seq]->e_heifht = 1;
 	arr_p_tip_ico[tips_seq]->cnt.data = pic_num;
 	Sheet_slide(arr_p_tip_ico[tips_seq]);
 	arr_p_tip_ico[tips_seq]->e_heifht = 0;
 	
+//	Set_bit(&p_TIP_self->set_ico_hide_tip, tips_seq);
+	Clear_bit(&p_TIP_self->set_ico_vaild_tip, tips_seq);
+	arr_p_tip_ico[tips_seq]->cnt.data = arr_s_ico[tips_seq];		//»Ö¸´
+	
+}
+
+static void		TIP_Hide_ico_tips(char ctl)
+{
+	
+		
+	p_TIP_self->flag_hide_tips = ctl;
+	
+	
+	
+}
+
+static void		TIP_Show_tips()
+{
+	int i;
+	
+	if(p_TIP_self->flag_hide_tips)
+		return;
+	
+	for(i = 0; i < NUM_TIP_ICO; i++)
+	{
+		if(Check_bit(&p_TIP_self->set_ico_vaild_tip, i) == 0)
+			continue;
+		
+		arr_p_tip_ico[i]->e_heifht = 1;
+		Sheet_slide(arr_p_tip_ico[i]);
+		arr_p_tip_ico[i]->e_heifht = 0;
+			
+		
+		
+		
+	}
 	
 }
 

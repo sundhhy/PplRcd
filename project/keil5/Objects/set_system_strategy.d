@@ -57,6 +57,7 @@
 .\objects\set_system_strategy.o: ..\..\HMI\Component_Button.h
 .\objects\set_system_strategy.o: ..\..\HMI\Component_curve.h
 .\objects\set_system_strategy.o: ..\..\HMI\Component_progress_bar.h
+.\objects\set_system_strategy.o: ..\..\HMI\Component_tips.h
 .\objects\set_system_strategy.o: ..\..\HMI\commHMI.h
 .\objects\set_system_strategy.o: ..\..\HMI\keyboardHMI.h
 .\objects\set_system_strategy.o: ..\..\HMI\HMI_striped_background.h

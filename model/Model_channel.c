@@ -51,7 +51,7 @@ Model		*arr_p_mdl_chn[NUM_CHANNEL];
 //------------------------------------------------------------------------------
 // const defines
 //------------------------------------------------------------------------------
-#define  TDD_SAVE_DATA		0
+#define  TDD_SAVE_DATA		1
 //------------------------------------------------------------------------------
 // local types
 //------------------------------------------------------------------------------
@@ -668,25 +668,28 @@ static void MdlChn_run(Model *self)
 //	uint8_t				old_do;
 	
 #if TDD_SAVE_DATA == 1
+	
+	rst.val = cthis->chni.value;
+	
 	if(cthis->chni.none == 0)
 	{
-		cthis->chni.value ++;
-		if(cthis->chni.value > 100)
+		rst.val ++;
+		if(rst.val > 100)
 		{
-			cthis->chni.value = 99;
+			rst.val = 99;
 			cthis->chni.none = 1;
 		}
 	}
 	else
 	{
-		if(cthis->chni.value)
+		if(rst.val)
 		{
-			cthis->chni.value --;
+			rst.val --;
 			
 		}
 		else
 		{
-			cthis->chni.value = 1;
+			rst.val = 1;
 			cthis->chni.none = 0;
 			
 		}
@@ -697,6 +700,11 @@ static void MdlChn_run(Model *self)
 	
 	cthis->alarm.alarm_lo = 40;
 	cthis->alarm.alarm_ll = 20;
+	
+	
+	rst.val = Zero_shift_K_B(&cthis->chni, rst.val);
+	rst.val = Cut_small_signal(&cthis->chni, rst.val);
+	cthis->chni.value = rst.val;
 	
 	Signal_Alarm(cthis);
 	

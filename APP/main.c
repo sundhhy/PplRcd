@@ -77,7 +77,7 @@ osThreadDef (ThrdKeyRun, osPriorityNormal, 1, 0);                   // thread ob
 //------------------------------------------------------------------------------
 
 static int	Main_USB_event(int type);
-
+static void 	Init_LCD(void);
 
 //============================================================================//
 //            P U B L I C   F U N C T I O N S                                 //
@@ -105,6 +105,8 @@ int main (void) {
 	Pin_init();
 	NVIC_Configuration();
 	
+	
+	Init_LCD();
 	//各个外设驱动模块初始化
 	System_init();
 	
@@ -121,6 +123,9 @@ int main (void) {
 
 	//控制器初始化
 #if TDD_ON == 0
+
+	
+	assert(USB_Init(NULL) == RET_OK);
 
 	//界面初始化
 	p_mainHmi = CreateHMI( HMI_MAIN);
@@ -154,7 +159,6 @@ int main (void) {
 	
 	p_mdl_time = ModelCreate("time");
 	
-	assert(USB_Init(NULL) == RET_OK);
 	USB_Rgt_event_hdl(Main_USB_event);
 	osKernelStart ();                        
 	while(1)
@@ -298,16 +302,25 @@ static int	Main_USB_event(int type)
 	CMP_tips *p_tips = TIP_Get_Sington();
 	if(type == et_ready)
 	{
-		p_tips->show_tips(TIP_ICO_IN_TITLE, 0, -1);
+		p_tips->show_ico_tips(0, -1);
 		
 	}
 	else if(type == et_remove)
 	{
-		p_tips->clear_tips(TIP_ICO_IN_TITLE, 0);
+		p_tips->clear_ico_tips(0);
 		
 	}
 	
 	return 0;
 }
 
+static void 	Init_LCD(void)
+{
+	I_dev_lcd 				*tdd_lcd;
 
+	Dev_open( LCD_DEVID, (void *)&tdd_lcd);
+	tdd_lcd->open();
+	tdd_lcd->Clear( COLOUR_BLACK);
+	Flush_LCD();
+	LCD_Run();	//立即执行lcd指令
+}

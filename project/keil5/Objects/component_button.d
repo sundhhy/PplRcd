@@ -60,6 +60,7 @@
 .\objects\component_button.o: ..\..\HMI\focus.h
 .\objects\component_button.o: ..\..\HMI\Component_curve.h
 .\objects\component_button.o: ..\..\HMI\Component_progress_bar.h
+.\objects\component_button.o: ..\..\HMI\Component_tips.h
 .\objects\component_button.o: ..\..\HMI\format.h
 .\objects\component_button.o: E:\sdhLib\inc\basis/assert.h
 .\objects\component_button.o: E:\sdhLib\inc\arithmetic/bit.h

@@ -57,4 +57,5 @@
 .\objects\format.o: ..\..\HMI\Component_Button.h
 .\objects\format.o: ..\..\HMI\Component_curve.h
 .\objects\format.o: ..\..\HMI\Component_progress_bar.h
+.\objects\format.o: ..\..\HMI\Component_tips.h
 .\objects\format.o: E:\sdhLib\inc\basis/assert.h

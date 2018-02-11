@@ -25,14 +25,15 @@
 // module global vars
 //------------------------------------------------------------------------------
 
+HMI *g_p_HMI_menu;
 
 //------------------------------------------------------------------------------
 // global function prototypes
 //------------------------------------------------------------------------------
 
 
-HMI *g_p_HMI_menu;
 
+void	Hide_ico_tips(HMI *self);
 
 //============================================================================//
 //            P R I V A T E   D E F I N I T I O N S                           //
@@ -79,6 +80,9 @@ static void MenuinitSheet( HMI *self );
 static void MenuEnterCmdHdl( shtCmd *self, struct SHEET *p_sht, void *arg);
 static void MenuClearFocuse( HMI *self, uint8_t fouse_row, uint8_t fouse_col);
 static void MenuShowFocuse( HMI *self, uint8_t fouse_row, uint8_t fouse_col);
+
+
+
 //============================================================================//
 //            P U B L I C   F U N C T I O N S                                 //
 //============================================================================//
@@ -101,6 +105,7 @@ SUPER_CTOR( HMI);
 FUNCTION_SETTING( HMI.init, Init_menuHMI);
 FUNCTION_SETTING( HMI.hide, MenuHmiHide);
 FUNCTION_SETTING( HMI.initSheet, MenuinitSheet);
+FUNCTION_SETTING(HMI.build_component, Hide_ico_tips);
 
 FUNCTION_SETTING( HMI.show, MenuHmiShow);
 FUNCTION_SETTING( HMI.hitHandle, MenuHitHandle);
@@ -182,6 +187,13 @@ static void MenuinitSheet( HMI *self )
 	
 	
 	
+}
+
+void	Hide_ico_tips(HMI *self)
+{
+	CMP_tips 			*p_tips = TIP_Get_Sington();
+	
+	p_tips->hide_ico_tips(1);
 }
 
 

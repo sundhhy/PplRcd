@@ -57,5 +57,6 @@
 .\objects\acc_month.o: ..\..\HMI\Component_Button.h
 .\objects\acc_month.o: ..\..\HMI\Component_curve.h
 .\objects\acc_month.o: ..\..\HMI\Component_progress_bar.h
+.\objects\acc_month.o: ..\..\HMI\Component_tips.h
 .\objects\acc_month.o: ..\..\HMI\commHMI.h
 .\objects\acc_month.o: ..\..\HMI\keyboardHMI.h

@@ -57,5 +57,6 @@
 .\objects\set_view_strategy.o: ..\..\HMI\Component_Button.h
 .\objects\set_view_strategy.o: ..\..\HMI\Component_curve.h
 .\objects\set_view_strategy.o: ..\..\HMI\Component_progress_bar.h
+.\objects\set_view_strategy.o: ..\..\HMI\Component_tips.h
 .\objects\set_view_strategy.o: ..\..\HMI\commHMI.h
 .\objects\set_view_strategy.o: ..\..\HMI\keyboardHMI.h

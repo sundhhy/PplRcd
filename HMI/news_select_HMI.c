@@ -25,6 +25,8 @@ HMI *g_p_NewSlct_HMI;
 // global function prototypes
 //------------------------------------------------------------------------------
 
+extern void	Hide_ico_tips(HMI *self);
+
 //============================================================================//
 //            P R I V A T E   D E F I N I T I O N S                           //
 //============================================================================//
@@ -84,6 +86,7 @@ FUNCTION_SETTING(HMI.initSheet, Nws_initSheet);
 FUNCTION_SETTING(HMI.hide, Nws_HMI_hide);
 FUNCTION_SETTING(HMI.show, Show_Nws_HMI);
 
+FUNCTION_SETTING(HMI.build_component, Hide_ico_tips);
 FUNCTION_SETTING(HMI.hitHandle, Nws_HMI_hitHandle);
 FUNCTION_SETTING(HMI.init_focus, Nws_HMI_init_focus);
 FUNCTION_SETTING(HMI.clear_focus, Nws_HMI_clear_focus);

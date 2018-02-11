@@ -60,6 +60,7 @@
 .\objects\component_curve.o: ..\..\HMI\focus.h
 .\objects\component_curve.o: ..\..\HMI\Component_Button.h
 .\objects\component_curve.o: ..\..\HMI\Component_progress_bar.h
+.\objects\component_curve.o: ..\..\HMI\Component_tips.h
 .\objects\component_curve.o: ..\..\HMI\commHMI.h
 .\objects\component_curve.o: ..\..\HMI\keyboardHMI.h
 .\objects\component_curve.o: E:\sdhLib\inc\arithmetic/bit.h

@@ -57,6 +57,7 @@
 .\objects\news_select_hmi.o: ..\..\HMI\Component_Button.h
 .\objects\news_select_hmi.o: ..\..\HMI\Component_curve.h
 .\objects\news_select_hmi.o: ..\..\HMI\Component_progress_bar.h
+.\objects\news_select_hmi.o: ..\..\HMI\Component_tips.h
 .\objects\news_select_hmi.o: ..\..\HMI\commHMI.h
 .\objects\news_select_hmi.o: ..\..\HMI\keyboardHMI.h
 .\objects\news_select_hmi.o: ..\..\Expression\ExpFactory.h

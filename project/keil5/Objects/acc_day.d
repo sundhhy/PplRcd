@@ -57,5 +57,6 @@
 .\objects\acc_day.o: ..\..\HMI\Component_Button.h
 .\objects\acc_day.o: ..\..\HMI\Component_curve.h
 .\objects\acc_day.o: ..\..\HMI\Component_progress_bar.h
+.\objects\acc_day.o: ..\..\HMI\Component_tips.h
 .\objects\acc_day.o: ..\..\HMI\commHMI.h
 .\objects\acc_day.o: ..\..\HMI\keyboardHMI.h

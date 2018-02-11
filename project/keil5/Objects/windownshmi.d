@@ -57,6 +57,7 @@
 .\objects\windownshmi.o: ..\..\HMI\Component_Button.h
 .\objects\windownshmi.o: ..\..\HMI\Component_curve.h
 .\objects\windownshmi.o: ..\..\HMI\Component_progress_bar.h
+.\objects\windownshmi.o: ..\..\HMI\Component_tips.h
 .\objects\windownshmi.o: ..\..\HMI\commHMI.h
 .\objects\windownshmi.o: ..\..\HMI\keyboardHMI.h
 .\objects\windownshmi.o: ..\..\HMI\HMIFactory.h

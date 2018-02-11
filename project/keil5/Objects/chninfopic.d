@@ -57,6 +57,7 @@
 .\objects\chninfopic.o: ..\..\HMI\Component_Button.h
 .\objects\chninfopic.o: ..\..\HMI\Component_curve.h
 .\objects\chninfopic.o: ..\..\HMI\Component_progress_bar.h
+.\objects\chninfopic.o: ..\..\HMI\Component_tips.h
 .\objects\chninfopic.o: ..\..\HMI\HMIFactory.h
 .\objects\chninfopic.o: ..\..\HMI\commHMI.h
 .\objects\chninfopic.o: ..\..\HMI\keyboardHMI.h

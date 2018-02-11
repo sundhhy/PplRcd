@@ -57,6 +57,7 @@
 .\objects\mainhmi.o: ..\..\HMI\Component_Button.h
 .\objects\mainhmi.o: ..\..\HMI\Component_curve.h
 .\objects\mainhmi.o: ..\..\HMI\Component_progress_bar.h
+.\objects\mainhmi.o: ..\..\HMI\Component_tips.h
 .\objects\mainhmi.o: ..\..\HMI\commHMI.h
 .\objects\mainhmi.o: ..\..\HMI\keyboardHMI.h
 .\objects\mainhmi.o: ..\..\HMI\HMIFactory.h
@@ -79,4 +80,3 @@
 .\objects\mainhmi.o: E:\sdhLib\inc\os/os_depend.h
 .\objects\mainhmi.o: E:\sdhLib\inc\os/rtx/rtx_depend.h
 .\objects\mainhmi.o: d:\Keil_v5\ARM\PACK\ARM\CMSIS\4.4.0\CMSIS\RTOS\RTX\INC\cmsis_os.h
-.\objects\mainhmi.o: ..\..\HMI\Component_tips.h

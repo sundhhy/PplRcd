@@ -60,4 +60,5 @@
 .\objects\component_progress_bar.o: ..\..\HMI\focus.h
 .\objects\component_progress_bar.o: ..\..\HMI\Component_Button.h
 .\objects\component_progress_bar.o: ..\..\HMI\Component_curve.h
+.\objects\component_progress_bar.o: ..\..\HMI\Component_tips.h
 .\objects\component_progress_bar.o: E:\sdhLib\inc\arithmetic/bit.h
