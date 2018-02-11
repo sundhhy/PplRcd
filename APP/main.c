@@ -112,7 +112,7 @@ int main (void) {
 	Tdd_Init();
 #endif		
 
-	assert(USB_Init(NULL) == RET_OK);
+	
 	
 	
 //	InitTimer( TIM2, 1000);		//180210 ”√≤ªµΩ
@@ -154,7 +154,7 @@ int main (void) {
 	
 	p_mdl_time = ModelCreate("time");
 	
-	
+	assert(USB_Init(NULL) == RET_OK);
 	USB_Rgt_event_hdl(Main_USB_event);
 	osKernelStart ();                        
 	while(1)

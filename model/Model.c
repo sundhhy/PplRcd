@@ -97,13 +97,17 @@ static void DoUpdate(void **x, void *cl)
 
 
 
-void Pe_float(int data, int prec, char *str)
+void Pe_float(int data, short int_len, short prec, char *str)
 {
 	int		d1, d2;
-	int		sign = 1;
-	
+	char		sign = 1;
+	char		i, len;		//用于对齐
 	if(data < 0)
+	{
 		sign = -1;
+		data *= -1;		//转成正数才好显示
+		
+	}
 	
 	if(prec == 1) {
 		d1 = data/10;
@@ -111,12 +115,9 @@ void Pe_float(int data, int prec, char *str)
 		
 		//显示数字的符号时，把符号作为整体的符号来显示
 		//去除每个部分的符号，
-		d1 = d1 * sign;
-		d2 = d2 * sign;
-		if(sign > 0)
-			sprintf(str, "%d.%d", d1, d2);
-		else 
-			sprintf(str, "-%d.%d", d1, d2);
+//		d1 = d1 * sign;
+//		d2 = d2 * sign;
+		
 		
 	}
 	else if(prec == 2)  {
@@ -125,15 +126,47 @@ void Pe_float(int data, int prec, char *str)
 		
 		//显示数字的符号时，把符号作为整体的符号来显示
 		//去除每个部分的符号，
-		d1 = d1 * sign;
-		d2 = d2 * sign;
-		if(sign > 0)
-			sprintf(str, "%d.%02d", d1, d2);
-		else 
-			sprintf(str, "-%d.%02d", d1, d2);
+//		d1 = d1 * sign;
+//		d2 = d2 * sign;
+//		if(sign > 0)
+//			sprintf(str, "%d.%02d", d1, d2);
+//		else 
+//			sprintf(str, "-%d.%02d", d1, d2);
+		
+	}
+	else
+	{
+		return;
 		
 	}
 	
+	if(sign > 0)
+	{
+//		if(int_len == 4)
+//			sprintf(str, "%4d.%d", d1, d2);
+//		else if(int_len == 4)
+//			sprintf(str, "%2d.%d", d1, d2);
+//		else
+			sprintf(str, "%4d.%d", d1, d2);
+	}
+	else 
+	{
+//		if(int_len == 4)
+//			sprintf(str, "-%4d.%d", d1, d2);
+//		else if(int_len == 4)
+//			sprintf(str, "-%2d.%d", d1, d2);
+//		else
+			sprintf(str, "-%4d.%d", d1, d2);
+		
+		
+	}
+	
+	for(i = strlen(str); i < int_len; i ++)
+	{
+		
+		str[i] = ' ';
+		
+	}
 	
 }
 

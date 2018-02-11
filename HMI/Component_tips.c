@@ -14,8 +14,8 @@
 
 //4个按钮的图形代码
 static ro_char *arr_tips_code[NUM_TIP_ICO] ={ \
-	"<pic vx0=100  vy0=0 >29</>" , \
-	"<pic  vx0=100  vy0=0 >30</>" ,\
+	"<pic vx0=120  vy0=0 >29</>" , \
+	"<pic  vx0=120  vy0=0 >30</>" ,\
 	
 };
 
@@ -135,7 +135,9 @@ static void 	TIP_Init(CMP_tips *self)
 
 static void		TIP_Show_tips(uint8_t tips_type, uint8_t tips_seq, short pic_num)
 {
+	char	s_pic_num[] = "29";
 	arr_p_tip_ico[tips_seq]->e_heifht = 1;
+	arr_p_tip_ico[tips_seq]->cnt.data = s_pic_num;
 	Sheet_slide(arr_p_tip_ico[tips_seq]);
 	arr_p_tip_ico[tips_seq]->e_heifht = 0;
 	

@@ -525,6 +525,7 @@ void TDD_W25q(void)
 
 void TDD_Mdl_chn(void)
 {
+	int16_t	set_val ;
 	osKernelStart (); 	
 	line = 0;
 	Tdd_disp_text("通道采样测试",line++, 0);
@@ -534,19 +535,30 @@ void TDD_Mdl_chn(void)
 		sprintf(appBuf,"chn_%d", tdd_i);
 		Tdd_disp_text(appBuf,line, 0);
 		p_mdl_test = ModelCreate(appBuf);
+		tdd_u8 = tdd_i;
+		p_mdl_test->init(p_mdl_test, &tdd_u8);
 		//		if(p_mdl_test->self_check(p_mdl_test) == RET_OK)
 		{
 			//			Tdd_disp_text("自检成功!",line++, 200);
 
 			//设置信号类型为pt100
-			//			tdd_u8 = TDD_MDLCHN_SINGAL;
-			//			
-			//			p_mdl_test->setMdlData(p_mdl_test,AUX_SIGNALTYPE, &tdd_u8);
-			//			if(p_mdl_test->setMdlData(p_mdl_test,AUX_SIGNALTYPE, &tdd_u8) != RET_OK)
-			//			{
-			//				Tdd_disp_text("设置信号类型失败",line, 60);
-			//				
-			//			}
+			tdd_u8 = TDD_MDLCHN_SINGAL;
+			
+			p_mdl_test->setMdlData(p_mdl_test,AUX_SIGNALTYPE, &tdd_u8);
+			if(p_mdl_test->setMdlData(p_mdl_test,AUX_SIGNALTYPE, &tdd_u8) != RET_OK)
+			{
+				Tdd_disp_text("设置信号类型失败",line, 60);
+				
+			}
+			
+			//设置 k b small_signal
+			set_val = 100;
+			p_mdl_test->setMdlData(p_mdl_test,chnaux_k, &set_val);
+			set_val = 0;
+			p_mdl_test->setMdlData(p_mdl_test,chnaux_b, &set_val);
+			set_val = 0;
+			p_mdl_test->setMdlData(p_mdl_test,chnaux_small_signal, &set_val);
+			
 			tdd_u16 = 0x1;
 			p_mdl_test->setMdlData(p_mdl_test,chnaux_lower_limit, &tdd_u16);
 			tdd_u16 = 0x5000;
@@ -582,6 +594,8 @@ void TDD_Mdl_chn(void)
 		for(tdd_i = 0; tdd_i < TDD_MDLCHN_NUM_CHN; tdd_i++)
 		{
 			sprintf(appBuf,"chn_%d", tdd_i);
+			
+			
 			p_mdl_test = ModelCreate(appBuf);
 			p_mdl_test->run(p_mdl_test);
 
@@ -598,9 +612,9 @@ void TDD_Mdl_chn(void)
 				Tdd_disp_text("err",line, 120);
 			}
 
-			tdd_do.do_chn = tdd_i;
-			tdd_do.val = tdd_count & 1;
-			p_mdl_test->setMdlData(p_mdl_test, DO_output, &tdd_do);
+//			tdd_do.do_chn = tdd_i;
+//			tdd_do.val = tdd_count & 1;
+//			p_mdl_test->setMdlData(p_mdl_test, DO_output, &tdd_do);
 
 			if(tdd_i == 0)
 			{
@@ -610,7 +624,7 @@ void TDD_Mdl_chn(void)
 			}
 			line ++;
 		}
-		osDelay(3000);
+		osDelay(1000);
 	}
 }
 
@@ -712,7 +726,7 @@ void TDD_Smart_bus(void)
 
 void TDD_Usb(void)
 {
-	
+	assert(USB_Init(NULL) == RET_OK);
 	memset(udisk_buf, '8', 512); 
 
 	USB_Rgt_event_hdl(Usb_event);

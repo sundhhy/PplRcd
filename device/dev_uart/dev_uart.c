@@ -53,10 +53,10 @@ Dev_Uart *Get_DevUart( int minor)
 		devUart[ minor]->txsem = Alloc_sem();
 		devUart[ minor]->rxsem = Alloc_sem();
 		
-		if( Sem_init(&devUart[ minor]->txsem))
-			goto errExit0;
-		if( Sem_init(&devUart[ minor]->rxsem))
-			goto errExit1;
+		Sem_init(&devUart[ minor]->txsem);
+		
+		Sem_init(&devUart[ minor]->rxsem);
+			
 		
 		devUart[ minor]->dri->device = devUart[ minor];
 		

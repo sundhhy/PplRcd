@@ -52,6 +52,23 @@ typedef enum {
 	alarm_backlash,
 	DO_output
 }e_chn_aux_t;
+
+
+//#define B_o         	 0  	/*B型热电偶*/
+//#define E_o        		 1  	/*E型热电偶*/
+//#define J_o        		 2    	/*J型热电偶*/
+//#define K_o         	 3    	/*K型热电偶*/
+//#define S_o         	 4    	/*S型热电偶*/
+//#define T_o        		 5    	/*T型热电偶*/
+//#define Pt100          	 6    	/*Pt100热电阻*/
+//#define Cu50           	 7    	/*Cu50热电阻*/
+//#define mA0_10			 8		/*0~10毫安电流信号*/
+//#define mA4_20			 9		/*4~20毫安电流信号*/
+//#define V_5			 	 10		/*0~5伏大信号*/
+//#define V_1_5			 11		/*1～5伏大信号*/
+//#define mV_20      	 	 12		/*0~20毫伏电压信号*/
+//#define mV_100     	 	 13		/*0～100毫伏电压信号*
+
 typedef enum {
 	 
 	
@@ -74,11 +91,12 @@ typedef enum {
 	AI_0_20_mV,
 	AI_0_100_mV,
 	
-	AI_0_400_ohm,
-	PI_0_30_kHz,
-	DI_8_30_V,
-	DI_0_5_V,
-	AO_4_20_mA,
+	
+//	AI_0_400_ohm,
+//	PI_0_30_kHz,
+//	DI_8_30_V,
+//	DI_0_5_V,
+//	AO_4_20_mA,
 	es_max,
 }e_signal_t;
 
@@ -92,7 +110,31 @@ typedef struct {
 	uint8_t			decimal;
 	uint8_t			flag_err;		//0 无错误， 1 采样失败    8
 	short				small_signal;					//10
-	uint16_t		lower_limit, upper_limit;		//	14
+	int16_t		lower_limit, upper_limit;		//	14
+	
+	/*
+	上下限的默认值与信号类型有关
+	const int16 SingleTypeInfo[TYPENUMS][3]={
+	{4,250,1820},		B
+	{4,-148,1000},		E
+	{4,-148,1200},		J
+	{4,-148,1370},		K
+	{4,-50,1760},		S
+	{3,-400,4000},		T
+	{3,0,1000},			0 - 20 mv
+	{3,0,1000},			0 - 10 mv
+	{3,0,1000},			0 - 5V
+	{3,0,1000},			1 - 5V
+	{3,0,1000},			0 - 10mA
+	{3,0,1000},			4 - 20mA
+	{3,-999,8500},		pt100
+	{3,-500,1500},		Cu50
+
+	};
+		
+	
+	
+	*/
 
 	//K的小数点固定为2，B的小数点与采样信号类型的小数点一致
 	short				k,b;				//18

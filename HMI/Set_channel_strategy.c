@@ -328,6 +328,11 @@ static void Cns_update_content(int op, int weight)
 	Model				*p_md = SUPER_PTR(p_mc, Model);
 	strategy_focus_t 	*p_syf = &g_chn_strategy.sf;
 	
+	strategy_focus_t		pos;
+
+	
+	
+	
 	
 	
 	
@@ -344,6 +349,15 @@ static void Cns_update_content(int op, int weight)
 			break;
 		case 2:		//信号类型
 			p_md->modify_str_conf(p_md, AUX_SIGNALTYPE, arr_p_vram[p_syf->f_row], op, weight);
+			
+			//要把上下限重新显示
+			pos.f_col = 1;
+			pos.f_row = 4;
+			g_chn_strategy.cmd_hdl(g_chn_strategy.p_cmd_rcv, sycmd_reflush_position, &pos);
+		
+			pos.f_col = 1;
+			pos.f_row = 5;
+			g_chn_strategy.cmd_hdl(g_chn_strategy.p_cmd_rcv, sycmd_reflush_position, &pos);
 			break;
 		case 3:		//单位
 			p_md->modify_str_conf(p_md, AUX_UNIT, arr_p_vram[p_syf->f_row], op, weight);
