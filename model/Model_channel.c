@@ -75,8 +75,8 @@ static char* MdlChn_to_string( Model *self, IN int aux, void *arg);
 static int  MdlChn_to_percentage( Model *self, void *arg);
 static int MdlChn_set_by_string( Model *self, IN int aux, void *arg);
 static int MdlChn_modify_sconf(Model *self, IN int aux, char *s, int op, int val);
-static void Pe_singnaltype(e_signal_t sgt, char *str);
-static void Pe_touch_spot(int spot, char *str);
+static void Print_singnaltype(e_signal_t sgt, char *str);
+static void Print_touch_spot(int spot, char *str);
 
 static void MdlChn_Init_alm_mgr_by_STG_alm(Model_chn *cthis);
 
@@ -440,7 +440,7 @@ static	int16_t Zero_shift_K_B(chn_info_t *p, int16_t	d)
 	
 	
 	rst = tmp_s32;
-	exit:
+//	exit:
 	return rst;
 }
 
@@ -476,7 +476,7 @@ static int MdlChn_init(Model *self, IN void *arg)
 	
 	Dev_open(DEVID_UART3, ( void *)&I_uart3);
 	I_uart3->ioctol(I_uart3, DEVCMD_SET_TXWAITTIME_MS, 1000);
-	I_uart3->ioctol(I_uart3, DEVCMD_SET_TXWAITTIME_MS, 1000);
+	I_uart3->ioctol(I_uart3, DEVCMD_SET_TXWAITTIME_MS, 50);
 	
 	cthis->str_buf = CALLOC(1,8);
 	cthis->unit_buf = CALLOC(1,8);
@@ -668,43 +668,50 @@ static void MdlChn_run(Model *self)
 //	uint8_t				old_do;
 	
 #if TDD_SAVE_DATA == 1
+	short	test_val;
 	
-	rst.val = cthis->chni.value;
+	test_val = cthis->chni.value;
+	
+	
+	cthis->chni.lower_limit = -10;
+	cthis->chni.upper_limit = 10;
 	
 	if(cthis->chni.none == 0)
 	{
-		rst.val ++;
-		if(rst.val > 100)
+		test_val ++;
+		if(test_val > cthis->chni.upper_limit)
 		{
-			rst.val = 99;
+			test_val = cthis->chni.upper_limit - 1;
 			cthis->chni.none = 1;
 		}
 	}
 	else
 	{
-		if(rst.val)
+		if(test_val > cthis->chni.lower_limit)
 		{
-			rst.val --;
+			test_val --;
 			
 		}
 		else
 		{
-			rst.val = 1;
+//			test_val = cthis->chni.lower_limit + 1;
+			test_val = 0;
 			cthis->chni.none = 0;
 			
 		}
 		
 	}
-	cthis->alarm.alarm_hh = 80;
-	cthis->alarm.alarm_hi = 60;
+	cthis->alarm.alarm_hh = cthis->chni.upper_limit - 20;
+	cthis->alarm.alarm_hi = cthis->chni.lower_limit - 10;
 	
-	cthis->alarm.alarm_lo = 40;
-	cthis->alarm.alarm_ll = 20;
+	cthis->alarm.alarm_lo = cthis->chni.lower_limit + 20;
+	cthis->alarm.alarm_ll = cthis->chni.lower_limit + 10;
 	
 	
-	rst.val = Zero_shift_K_B(&cthis->chni, rst.val);
-	rst.val = Cut_small_signal(&cthis->chni, rst.val);
-	cthis->chni.value = rst.val;
+	
+	test_val = Zero_shift_K_B(&cthis->chni, test_val);
+	test_val = Cut_small_signal(&cthis->chni, test_val);
+	cthis->chni.value = test_val;
 	
 	Signal_Alarm(cthis);
 	
@@ -846,9 +853,9 @@ static int MdlChn_getData(Model *self, IN int aux, void *arg)
 				p_s16 = (int16_t *)arg;
 			#if TDD_SAVE_DATA == 1
 			if(aux == chnaux_upper_limit)
-				*p_s16 = 100;
+				*p_s16 = cthis->chni.upper_limit;
 			else
-				*p_s16 = 0;
+				*p_s16 = cthis->chni.lower_limit;
 			break;
 			#endif
 		
@@ -950,6 +957,10 @@ static int MdlChn_setData(  Model *self, IN int aux, void *arg)
 
 			sb_conf.signal_type = *p_u8;
 			sb_conf.decimal = cthis->chni.decimal;
+			
+			
+			cthis->chni.lower_limit = MdlChn_Get_def_lower_limit(sb_conf.signal_type);
+			cthis->chni.upper_limit = MdlChn_Get_def_up_limit(sb_conf.signal_type);
 		
 			//180113 smart bus的组态命令中对上下限的设置是无效的，因此填充0即可
 			sb_conf.lower_limit = 0;
@@ -981,8 +992,7 @@ static int MdlChn_setData(  Model *self, IN int aux, void *arg)
 				
 				return ERR_OPT_FAILED;
 			}
-			cthis->chni.lower_limit = MdlChn_Get_def_lower_limit(tmp_u8);
-			cthis->chni.upper_limit = MdlChn_Get_def_up_limit(tmp_u8);
+			
 			return RET_OK;
 			
 			
@@ -1118,7 +1128,7 @@ static char* MdlChn_to_string( Model *self, IN int aux, void *arg)
 			} else {
 				p = cthis->str_buf;
 			}
-			Pe_float(cthis->chni.value, 4, 1, p);
+			Print_float(cthis->chni.value, 4, 1, p);
 //			sprintf( p, "%4d.%d", cthis->chni.value/10, cthis->chni.value%10);
 			return p;
 			
@@ -1204,7 +1214,7 @@ static char* MdlChn_to_string( Model *self, IN int aux, void *arg)
 //			return p;
 			
 		case AUX_SIGNALTYPE:
-			Pe_singnaltype((e_signal_t)cthis->chni.signal_type, (char *)arg);
+			Print_singnaltype((e_signal_t)cthis->chni.signal_type, (char *)arg);
 			break;
 		case chnaux_record_mb:
 			sprintf(arg, "%d M", cthis->chni.MB);
@@ -1217,58 +1227,58 @@ static char* MdlChn_to_string( Model *self, IN int aux, void *arg)
 //			if(cthis->chni.signal_type <= AI_Cu50)
 //				sprintf(arg, "%-6d", cthis->chni.lower_limit);
 //			else
-				Pe_float(cthis->chni.lower_limit, 6, 1, (char *)arg);
+				Print_float(cthis->chni.lower_limit, 6, 1, (char *)arg);
 			break;
 		case chnaux_upper_limit:
 //			if(cthis->chni.signal_type <= AI_Cu50)
 //				sprintf(arg, "%-6d", cthis->chni.upper_limit);
 //			else
-				Pe_float(cthis->chni.upper_limit, 6, 1, (char *)arg);
+				Print_float(cthis->chni.upper_limit, 6, 1, (char *)arg);
 			break;
 		case chnaux_small_signal:
-			Pe_float(cthis->chni.small_signal, 2, 1, (char *)arg);
+			Print_float(cthis->chni.small_signal, 2, 1, (char *)arg);
 			strcat((char *)arg, " %");
 			break;
 		case chnaux_k:
-//			Pe_frefix_float(cthis->chni.k, 2, "K:",(char *)arg);
-			Pe_float(cthis->chni.k, 2 , 2, (char *)arg);
+//			Print_frefix_float(cthis->chni.k, 2, "K:",(char *)arg);
+			Print_float(cthis->chni.k, 2 , 2, (char *)arg);
 			break;
 		case chnaux_b:
-//			Pe_frefix_float(cthis->chni.b, 1, "B:", (char *)arg);
-//			Pe_float(cthis->chni.b, 1, (char *)arg);
+//			Print_frefix_float(cthis->chni.b, 1, "B:", (char *)arg);
+//			Print_float(cthis->chni.b, 1, (char *)arg);
 			sprintf(arg, "%-3d", cthis->chni.b);
 			break;	
 	
 		case alarm_hh:
 			sprintf(arg, "%-6d", cthis->alarm.alarm_hh);
-//			Pe_float(cthis->alarm.alarm_hh, 1, (char *)arg);
+//			Print_float(cthis->alarm.alarm_hh, 1, (char *)arg);
 			break;
 		case alarm_hi:
 			sprintf(arg, "%-6d", cthis->alarm.alarm_hi);
-//			Pe_float(cthis->alarm.alarm_hi, 1, (char *)arg);
+//			Print_float(cthis->alarm.alarm_hi, 1, (char *)arg);
 			break;
 		case alarm_lo:
 			sprintf(arg, "%-5d", cthis->alarm.alarm_lo);
-//			Pe_float(cthis->alarm.alarm_lo, 1, (char *)arg);
+//			Print_float(cthis->alarm.alarm_lo, 1, (char *)arg);
 			break;
 		case alarm_ll:
 			sprintf(arg, "%-5d", cthis->alarm.alarm_ll);
-//			Pe_float(cthis->alarm.alarm_ll, 1, (char *)arg);
+//			Print_float(cthis->alarm.alarm_ll, 1, (char *)arg);
 			break;
 		case tchspt_hh:
-			Pe_touch_spot(cthis->alarm.touch_spot_hh, (char *)arg);
+			Print_touch_spot(cthis->alarm.touch_spot_hh, (char *)arg);
 			break;
 		case tchspt_hi:
-			Pe_touch_spot(cthis->alarm.touch_spot_hi, (char *)arg);
+			Print_touch_spot(cthis->alarm.touch_spot_hi, (char *)arg);
 			break;
 		case tchspt_lo:
-			Pe_touch_spot(cthis->alarm.touch_spot_lo, (char *)arg);	
+			Print_touch_spot(cthis->alarm.touch_spot_lo, (char *)arg);	
 			break;
 		case tchspt_ll:
-			Pe_touch_spot(cthis->alarm.touch_spot_ll, (char *)arg);	
+			Print_touch_spot(cthis->alarm.touch_spot_ll, (char *)arg);	
 			break;	
 		case alarm_backlash:
-			Pe_float(cthis->alarm.alarm_backlash, 2, 1, (char *)arg);
+			Print_float(cthis->alarm.alarm_backlash, 2, 1, (char *)arg);
 			break;
 		default:
 			break;
@@ -1337,42 +1347,42 @@ static int MdlChn_modify_sconf(Model *self, IN int aux, char *s, int op, int val
 		case alarm_hh:
 			cthis->alarm.alarm_hh = Operate_in_tange(cthis->alarm.alarm_hh, op, val, 0, 0xffff);
 			self->to_string(self, aux, s);
-//			Pe_float(cthis->alarm.alarm_hh, 1, s);
+//			Print_float(cthis->alarm.alarm_hh, 1, s);
 			break;
 		case alarm_hi:
 			cthis->alarm.alarm_hi = Operate_in_tange(cthis->alarm.alarm_hi, op, val, 0, 0xffff);
-//			Pe_float(cthis->alarm.alarm_hi, 1, s);
+//			Print_float(cthis->alarm.alarm_hi, 1, s);
 			self->to_string(self, aux, s);
 			break;
 		case alarm_lo:
 			cthis->alarm.alarm_lo = Operate_in_tange(cthis->alarm.alarm_lo, op, val, 0, 0xffff);
-//			Pe_float(cthis->alarm.alarm_lo, 1, s);
+//			Print_float(cthis->alarm.alarm_lo, 1, s);
 			self->to_string(self, aux, s);
 			break;
 		case alarm_ll:
 			cthis->alarm.alarm_ll = Operate_in_tange(cthis->alarm.alarm_ll, op, val, 0, 0xffff);
-//			Pe_float(cthis->alarm.alarm_ll, 1, (char *)s);
+//			Print_float(cthis->alarm.alarm_ll, 1, (char *)s);
 			self->to_string(self, aux, s);
 			break;
 		case tchspt_hh:
 			cthis->alarm.touch_spot_hh = Operate_in_tange(cthis->alarm.touch_spot_hh, op, val, 1, MAX_TOUCHSPOT - 1);
-			Pe_touch_spot(cthis->alarm.touch_spot_hh, (char *)s);
+			Print_touch_spot(cthis->alarm.touch_spot_hh, (char *)s);
 			break;
 		case tchspt_hi:
 			cthis->alarm.touch_spot_hi = Operate_in_tange(cthis->alarm.touch_spot_hi, op, val, 1, MAX_TOUCHSPOT - 1);
-			Pe_touch_spot(cthis->alarm.touch_spot_hi, (char *)s);
+			Print_touch_spot(cthis->alarm.touch_spot_hi, (char *)s);
 			break;
 		case tchspt_lo:
 			cthis->alarm.touch_spot_lo = Operate_in_tange(cthis->alarm.touch_spot_lo, op, val, 1, MAX_TOUCHSPOT - 1);
-			Pe_touch_spot(cthis->alarm.touch_spot_lo, (char *)s);	
+			Print_touch_spot(cthis->alarm.touch_spot_lo, (char *)s);	
 			break;
 		case tchspt_ll:
 			cthis->alarm.touch_spot_ll = Operate_in_tange(cthis->alarm.touch_spot_ll, op, val, 1, MAX_TOUCHSPOT - 1);
-			Pe_touch_spot(cthis->alarm.touch_spot_ll, (char *)s);	
+			Print_touch_spot(cthis->alarm.touch_spot_ll, (char *)s);	
 			break;	
 		case alarm_backlash:
 			cthis->alarm.alarm_backlash = Operate_in_tange(cthis->alarm.alarm_backlash, op, val, 0, 100);
-			Pe_float(cthis->alarm.alarm_backlash, 2, 1, (char *)s);
+			Print_float(cthis->alarm.alarm_backlash, 2, 1, (char *)s);
 			break;
 		default:
 			
@@ -1442,23 +1452,23 @@ static int MdlChn_set_by_string(Model *self, IN int aux, void *arg)
 ////			return p;
 //			
 //		case AUX_SIGNALTYPE:
-//			Pe_singnaltype((e_signal_t)cthis->chni.signal_type, (char *)arg);
+//			Print_singnaltype((e_signal_t)cthis->chni.signal_type, (char *)arg);
 //			break;
 //		case chnaux_lower_limit:
-//			Pe_float(cthis->chni.lower_limit, 1, (char *)arg);
+//			Print_float(cthis->chni.lower_limit, 1, (char *)arg);
 //			break;
 //		case chnaux_upper_limit:
-//			Pe_float(cthis->chni.upper_limit, 1, (char *)arg);
+//			Print_float(cthis->chni.upper_limit, 1, (char *)arg);
 //			break;
 //		case chnauxsmall_signal:
-//			Pe_float(cthis->chni.small_signal, 1, (char *)arg);
+//			Print_float(cthis->chni.small_signal, 1, (char *)arg);
 //			strcat((char *)arg, " %");
 //			break;
 //		case chnaux_k:
-//			Pe_float(cthis->chni.k, 2, (char *)arg);
+//			Print_float(cthis->chni.k, 2, (char *)arg);
 //			break;
 //		case chnaux_b:
-//			Pe_float(cthis->chni.k, 1, (char *)arg);
+//			Print_float(cthis->chni.k, 1, (char *)arg);
 //			break;	
 //		
 //		default:
@@ -1476,8 +1486,20 @@ static int  MdlChn_to_percentage( Model *self, void *arg)
 {
 	Model_chn		*cthis = SUB_PTR( self, Model, Model_chn);
 	uint8_t			*p = (uint8_t *)arg;
+	uint8_t			prc = 0;
 	
-	*p = cthis->chni.value;
+	if(cthis->chni.value <= cthis->chni.lower_limit)
+		prc = 0;
+	else if(cthis->chni.value >= cthis->chni.upper_limit)
+		prc = 100;
+	else
+	{
+		prc = ((cthis->chni.value - cthis->chni.lower_limit) * 100) / (cthis->chni.upper_limit - cthis->chni.lower_limit);
+		
+	}
+	
+	
+	*p = prc;
 	
 	return RET_OK;
 }
@@ -1485,7 +1507,7 @@ static int  MdlChn_to_percentage( Model *self, void *arg)
 
 
 
-static void Pe_singnaltype(e_signal_t sgt, char *str)
+static void Print_singnaltype(e_signal_t sgt, char *str)
 {
 	switch(sgt)
 	{
@@ -1542,14 +1564,14 @@ static void Pe_singnaltype(e_signal_t sgt, char *str)
 //			break;		
 //		case DI_0_5_V:
 //			sprintf(str, "DI 0~5V");
-			break;	
+//			break;	
 //		case AO_4_20_mA:
 //			sprintf(str, "AO");
-			break;			
+//			break;			
 	}	
 }
 
-static void Pe_touch_spot(int spot, char *str)
+static void Print_touch_spot(int spot, char *str)
 {
 	
 	if(spot < MAX_TOUCHSPOT && spot >= 0)

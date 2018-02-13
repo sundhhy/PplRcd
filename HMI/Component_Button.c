@@ -15,13 +15,19 @@
 #define BTN_ICO_BAR				"21"
 #define BTN_ICO_DIGITAL			"22"
 #define BTN_ICO_TREND			"23"
-#define BTN_ICO_COPY			"27"
-#define BTN_ICO_STOP			"24"
-#define BTN_ICO_PGDN			"26"
-#define BTN_ICO_PGUP			"25"
-#define BTN_ICO_ERASE			"27"
-#define BTN_ICO_LOOP			"25"
-#define BTN_ICO_SEARCH			"25"
+#define BTN_ICO_PGUP			"24"
+#define BTN_ICO_PGDN			"25"
+
+#define BTN_ICO_COPY			"26"
+#define BTN_ICO_STOP			"27"
+
+
+#define BTN_ICO_ERASE			"28"
+
+#define BTN_ICO_CLEAN			"33"			//用于清除残留的按钮
+
+//#define BTN_ICO_LOOP			"25"
+//#define BTN_ICO_SEARCH			"24"
 //4个按钮的图形代码
 static ro_char *arr_btn_code[NUM_BUTTON] ={ \
 	"<bu vx0=10 vy0=212 bx=49 by=25 bkc=black clr=black><pic bx=48  by=24 >20</></bu>" , \
@@ -146,11 +152,12 @@ static int		BTN_Build_each_btn(uint8_t	seq, uint8_t btn_type, btn_hdl bh, void *
 		return -1;
 //	assert(p_self != NULL);
 	
-	Set_bit(p_set, seq);
+	
 	if(bh)
 	{
 		p_self->arr_p_arg[seq] = hdl_arg;
 		p_self->arr_hdl[seq] = bh;
+		Set_bit(p_set, seq);
 	}
 	btn_pic = Button_Get_subcnt(arr_p_btn_sht[seq]);
 	
@@ -200,14 +207,14 @@ static int		BTN_Build_each_btn(uint8_t	seq, uint8_t btn_type, btn_hdl bh, void *
 			btn_pic->data = BTN_ICO_ERASE;
 			arr_p_btn_sht[seq]->id = ICO_ID_ERASETOOL;
 			break;
-		case BTN_TYPE_LOOP:
-			btn_pic->data = BTN_ICO_LOOP;
-			arr_p_btn_sht[seq]->id = ICO_ID_LOOP;
-			break;
-		case BTN_TYPE_SEARCH:
-			btn_pic->data = BTN_ICO_SEARCH;
-			arr_p_btn_sht[seq]->id = ICO_ID_SEARCH;
-			break;	
+//		case BTN_TYPE_LOOP:
+//			btn_pic->data = BTN_ICO_LOOP;
+//			arr_p_btn_sht[seq]->id = ICO_ID_LOOP;
+//			break;
+//		case BTN_TYPE_SEARCH:
+//			btn_pic->data = BTN_ICO_SEARCH;
+//			arr_p_btn_sht[seq]->id = ICO_ID_SEARCH;
+//			break;	
 		default:
 			//只有匹配的上才清除
 			if(btn_type & BTN_FLAG_CLEAN)
@@ -215,21 +222,30 @@ static int		BTN_Build_each_btn(uint8_t	seq, uint8_t btn_type, btn_hdl bh, void *
 				if(arr_p_btn_sht[seq]->id  == (btn_type & 0x7f))
 				{
 					
-					Clear_bit(p_set, seq);
+					//清除残留的图像
 					arr_p_btn_sht[seq]->cnt.effects = GP_CLR_EFF(arr_p_btn_sht[seq]->cnt.effects, EFF_FOCUS);
+					arr_p_btn_sht[seq]->e_heifht = 1;
+					btn_pic->data = BTN_ICO_CLEAN;
+					Sheet_slide(arr_p_btn_sht[seq]);
+					arr_p_btn_sht[seq]->e_heifht = 0;
+					
+//					break;
+					
 					
 				}
 				
 				
-				
 			}
-			else
-			{
-				Clear_bit(p_set, seq);
-				arr_p_btn_sht[seq]->cnt.effects = GP_CLR_EFF(arr_p_btn_sht[seq]->cnt.effects, EFF_FOCUS);
+			
+			
+			
+			
+			
+			Clear_bit(p_set, seq);
+			
+			arr_p_btn_sht[seq]->cnt.effects = GP_CLR_EFF(arr_p_btn_sht[seq]->cnt.effects, EFF_FOCUS);
 				
-				
-			}
+			
 				
 			
 			break;

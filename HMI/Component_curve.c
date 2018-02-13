@@ -739,6 +739,8 @@ static void CRV_Clean_bkg(uint8_t	crv_fd)
 	CRV_Set_dirty(p_CRV_self->p_bkg_info[crv_fd].crv_bkg_id, 0);
 }
 
+//返回与指定索引相同的点数
+//点数不包括自身
 static int CRV_Rle(uint8_t  crv_fd, int cur_idx)
 {
 	crv_run_info_t	*p_run = p_CRV_self->p_run_info + crv_fd;
@@ -748,11 +750,11 @@ static int CRV_Rle(uint8_t  crv_fd, int cur_idx)
 	short	points = 0;
 	short	idx = 0;
 	
-	points = p_run->crv_num_points - (p_run->crv_start_index + cur_idx);
-	idx = cur_idx;
+	points = p_run->crv_num_points - (p_run->crv_start_index + cur_idx) - 1;
+	idx = cur_idx + 1;
 	
 	//对cur_idx之后所有的点进行计算
-	while(points --) {
+	while(points > 0) {
 		
 //		idx = cur_idx + i;
 //		idx %= p_att->crv_max_num_data;
@@ -768,9 +770,9 @@ static int CRV_Rle(uint8_t  crv_fd, int cur_idx)
 		
 		
 	}
-	if(len == 0)
-		len = 1;
-	return len;
+//	if(len < 1)
+//		len = 1;
+	return len ;
 }
 
 
@@ -853,12 +855,24 @@ static void CRV_Draw_left_to_right(uint8_t  crv_fd, uint8_t show_ctl)
 		//计算距离x1,y1的跳数
 
 		len = CRV_Rle(crv_fd, idx);
+		
+		if(len == 0)
+		{
+			//说明相邻的点是不一样的
+			len = 1;
+			
+		}
 		//计算x1, y1
 		p_CRV_line->area.x1 = p_CRV_line->area.x0 + p_att->crv_step_pix * (len);
 		idx += len;
 		p_CRV_line->area.y1 = *CRV_Get_val_y(crv_fd, idx);
+		
+		if(p_CRV_line->area.y0 < 50 || p_CRV_line->area.y1 < 50)
+			break;
 		p_CRV_line->p_gp->vdraw(p_CRV_line->p_gp, &p_CRV_line->cnt, &p_CRV_line->area);
 		
+		
+			
 	}
 	
 	

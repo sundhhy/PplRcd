@@ -239,10 +239,10 @@ static void HMI_CRV_Build_cmp(HMI *self)
 	short							i;
 	short				num = 0;
 	
-//	p->build_each_btn(0, BTN_TYPE_MENU, Main_btn_hdl, self);
+	p->build_each_btn(0, BTN_TYPE_MENU, Main_btn_hdl, self);
 //	p->build_each_btn(0, BTN_TYPE_PGUP, RLT_btn_hdl, self);
 //	p->build_each_btn(1, BTN_TYPE_PGDN, RLT_btn_hdl, self);
-	p->build_each_btn(2, BTN_TYPE_LOOP, RLT_btn_hdl, self);
+//	p->build_each_btn(2, BTN_TYPE_LOOP, RLT_btn_hdl, self);
 	
 	for(i = 0; i < NUM_CHANNEL; i++)
 	{
@@ -846,21 +846,21 @@ static void HMI_CRV_HST_Run(HMI *self)
 	if(count >= end) //说明可能还有记录
 	{
 		
-		p_btn->build_each_btn(1, BTN_TYPE_PGDN, RLT_btn_hdl, self);
+		p_btn->build_each_btn(2, BTN_TYPE_PGDN, RLT_btn_hdl, self);
 	}
 	else {		
-		p_btn->build_each_btn(1, BTN_TYPE_NONE, NULL, NULL);
-		need_clean = 1;
+		p_btn->build_each_btn(2, BTN_TYPE_NONE, NULL, NULL);
+//		need_clean = 1;
 	}
 	
 	if(hst_mgr.has_pgdn) //说明可能还有记录
 	{
 		
-		p_btn->build_each_btn(0, BTN_TYPE_PGUP, RLT_btn_hdl, self);
+		p_btn->build_each_btn(1, BTN_TYPE_PGUP, RLT_btn_hdl, self);
 	}
 	else {		
-		p_btn->build_each_btn(0, BTN_TYPE_NONE, NULL, NULL);
-		need_clean = 1;
+		p_btn->build_each_btn(1, BTN_TYPE_NONE, NULL, NULL);
+//		need_clean = 1;
 	}
 	if((cthis->chn_show_map & ((1 << NUM_CHANNEL) - 1)) == 0)
 		need_clean = 1;		//没有曲线需要显示的时候，把界面清除掉
@@ -906,9 +906,14 @@ static void HMI_CRV_RTV_Run(HMI *self)
 
 		
 		p_mdl = g_arr_p_chnData[i]->p_mdl;
-		p_mdl->getMdlData(p_mdl, AUX_DATA, &cval.val);
+		
 		p_mdl->getMdlData(p_mdl, chnaux_upper_limit, &cval.up_limit);
 		p_mdl->getMdlData(p_mdl, chnaux_lower_limit, &cval.lower_limit);
+		if(p_mdl->getMdlData(p_mdl, AUX_DATA, &cval.val) != RET_OK)
+		{
+			
+			cval.val = cval.lower_limit;
+		}
 
 		p_crv->add_point(cthis->arr_crv_fd[i], &cval);
 		

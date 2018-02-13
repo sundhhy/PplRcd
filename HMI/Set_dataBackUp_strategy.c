@@ -406,7 +406,7 @@ static void DBP_Copy(void *arg)
 	char				*copy_buf = arr_p_vram[5];
 	int						rd_len = 0;
 	int						usb_fd = 0;
-	
+	uint32_t				dbp_count_bytes = 0;
 //	usb_fd = USB_Open_file(arr_p_vram[4], USB_FM_WRITE | USB_FM_COVER);
 
 	total_sec = 100;
@@ -443,6 +443,7 @@ static void DBP_Copy(void *arg)
 		if(rd_len)
 		{
 			USB_Write_file(usb_fd, copy_buf, rd_len);
+			dbp_count_bytes += rd_len;
 		}
 		
 		
@@ -453,7 +454,14 @@ static void DBP_Copy(void *arg)
 		
 	}
 	if(usb_fd > 0)
+	{
 		USB_Colse_file(usb_fd);
+		//恢复出厂设置，应该不只是恢复系统设置，包括通道设置等，应该也要恢复
+		sprintf(arr_p_vram[5],"完成,写入:%d B", dbp_count_bytes);
+		Win_content(arr_p_vram[5]);
+		g_DBP_strategy.cmd_hdl(g_DBP_strategy.p_cmd_rcv, sycmd_win_tips, NULL);
+		
+	}
 	Cmd_del_recv(arr_DBP_fds[2]);
 	
 	

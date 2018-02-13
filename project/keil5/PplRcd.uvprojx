@@ -1008,6 +1008,11 @@
               <FileType>5</FileType>
               <FilePath>..\..\HMI\Component_tips.h</FilePath>
             </File>
+            <File>
+              <FileName>barGraphHmi.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\HMI\barGraphHmi.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

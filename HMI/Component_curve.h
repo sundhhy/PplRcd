@@ -51,9 +51,9 @@ typedef struct
 }curve_att_t;
 
 typedef struct {
-	uint16_t		up_limit;
-	uint16_t		lower_limit;
-	uint16_t		val;
+	int16_t		up_limit;
+	int16_t		lower_limit;
+	int16_t		val;
 	uint16_t		prc;
 }crv_val_t;
 typedef struct {

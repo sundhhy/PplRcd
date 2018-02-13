@@ -22,13 +22,13 @@ CLASS( barGhHMI)
 	EXTENDS( HMI);
 	IMPLEMENTS( shtCmd);
 //	sheet  			*p_bar_clean;		//棒图的擦除
-	sheet  			*arr_p_barshts[BARHMI_NUM_BARS];
+	sheet  			*arr_p_barshts[NUM_CHANNEL];
 //	sheet  			*arr_p_sht_textPrcn[BARHMI_NUM_BARS];
 //	sheet  			**pp_bar_unit;
 //	uint8_t		focusRow;
 //	uint8_t		focusCol;
 //	char		flag;
-//	uint8_t		none[3];
+	uint16_t		arr_bar_height[NUM_CHANNEL];		//180213 记录棒图的高度，用于优化棒图的刷新
 	
 };
 //------------------------------------------------------------------------------

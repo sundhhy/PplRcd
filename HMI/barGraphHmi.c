@@ -175,6 +175,8 @@ static void BarHmi_InitSheet( HMI *self )
 		Sheet_updown(g_arr_p_chnUtil[i], h++);
 //		Sheet_updown( cthis->arr_p_sht_textPrcn[i], h++);
 //		Sheet_updown( cthis->pp_bar_unit[i], h++);
+		
+		cthis->arr_bar_height[i] = 0xffff;
 	}
 	
 //	Sheet_updown(g_p_ico_memu, h++);
@@ -430,12 +432,12 @@ static void BarHmi_Init_chnSht(void)
 }
 
 
+
 static int BarHmi_Data_update(void *p_data, void *p_mdl)
 {
 	
-	barGhHMI *self = Get_barGhHMI();
+	barGhHMI *chis = Get_barGhHMI();
 	sheet	*p_sht = (sheet *)p_data;
-//	static	int test_chn = 0;
 
 	uint16_t bar_vx0[BARHMI_NUM_BARS] = { 30, 78, 126, 172, 220, 268};
 	
@@ -445,55 +447,81 @@ static int BarHmi_Data_update(void *p_data, void *p_mdl)
 	uint16_t i = p_sht->id;
 
 	
-	uint32_t 	j= 1000;
-	uint32_t	prcn = 0;
-	uint32_t	height = 0;
+	uint16_t	height = 0;
+	uint8_t		prcn = 0;
+
 	
 
-//	if(test_chn != i)
-//		return 0;
-//	test_chn ++;
-//	if(test_chn == 6)
-//		test_chn = 0;
+
 
 	if(IS_HMI_KEYHANDLE(g_p_barGhHmi->flag))
+		return 0;	
+	
+//	if(Sheet_is_hide(p_sht))
+//		return 0;
+	if(IS_HMI_HIDE(g_p_barGhHmi->flag))
 		return 0;
-	prcn = j;
+	
+	
 	p_sht->p_mdl->getMdlData( p_sht->p_mdl, p_sht->cnt.mdl_aux,  &prcn);
-	height = max_height * prcn / 1000;
-		
-	self->arr_p_barshts[i]->area.x0 = bar_vx0[i];
-	self->arr_p_barshts[i]->area.x1 = bar_vx0[i] + self->arr_p_barshts[i]->bxsize;
-	self->arr_p_barshts[i]->area.y0 = bar_vy1 - height;
-	self->arr_p_barshts[i]->area.y1 = bar_vy1;
+	height = max_height * prcn / 100;
 	
-	
-	g_p_cpic->area.x0 = bar_vx0[i];
-	g_p_cpic->area.x1 = bar_vx0[i] + self->arr_p_barshts[i]->bxsize + 5;
-	g_p_cpic->area.y0 = bar_vy1 - max_height;
-	g_p_cpic->area.y1 = bar_vy1;
-	g_p_cpic->area.offset_x = 0;
-	g_p_cpic->area.offset_y = 0;
-		
-		 
-	p_sht->p_mdl->to_string(p_sht->p_mdl, p_sht->cnt.mdl_aux, p_sht->cnt.data);
+	//	p_sht->p_mdl->to_string(p_sht->p_mdl, p_sht->cnt.mdl_aux, p_sht->cnt.data);
+	sprintf(p_sht->cnt.data, "%%%3d", prcn);
 	p_sht->cnt.len = strlen(p_sht->cnt.data);
 	p_sht->area.x0 = bar_vx0[i];
 	p_sht->area.y0 = text_vy0;
-	
-	//先清除之前的柱形图
-	if(Sheet_is_hide(p_sht))
-		return 0;
-	if(IS_HMI_HIDE(g_p_barGhHmi->flag))
-		return 0;
-	g_p_cpic->p_gp->vdraw(g_p_cpic->p_gp, &g_p_cpic->cnt, &g_p_cpic->area);
-	//显示柱形图和数值
 	Sheet_slide(p_sht);
-	Sheet_slide( self->arr_p_barshts[i]);
-	return 0;
 	
+	//180213 优化棒图的显示，根据当前高度与上一次高度来计算本次需要更改的部分
+	if(chis->arr_bar_height[i] == height)
+		return 0;
 	
-	
+	if(chis->arr_bar_height[i] > max_height)
+	{
+		//第一次显示
+		chis->arr_p_barshts[i]->area.x0 = bar_vx0[i];
+		chis->arr_p_barshts[i]->area.x1 = bar_vx0[i] + chis->arr_p_barshts[i]->bxsize;
+		
+		chis->arr_p_barshts[i]->area.y0 = bar_vy1 - height;
+		chis->arr_p_barshts[i]->area.y1 = bar_vy1;
+		
+		
+		Sheet_slide( chis->arr_p_barshts[i]);
+	}
+	else if(chis->arr_bar_height[i] > height)
+	{
+		//棒图变短
+		g_p_cpic->area.x0 = bar_vx0[i];
+		g_p_cpic->area.x1 = bar_vx0[i] + chis->arr_p_barshts[i]->bxsize + 5;
+		
+		
+//		g_p_cpic->area.y0 = bar_vy1 - max_height;
+//		g_p_cpic->area.y1 = bar_vy1;
+		g_p_cpic->area.y0 = bar_vy1 - chis->arr_bar_height[i];
+		g_p_cpic->area.y1 = bar_vy1 - height;
+
+		
+		g_p_cpic->area.offset_x = 0;
+		g_p_cpic->area.offset_y = 0;
+		g_p_cpic->p_gp->vdraw(g_p_cpic->p_gp, &g_p_cpic->cnt, &g_p_cpic->area);
+		
+	}
+	else
+	{
+		//棒图变长
+		chis->arr_p_barshts[i]->area.x0 = bar_vx0[i];
+		chis->arr_p_barshts[i]->area.x1 = bar_vx0[i] + chis->arr_p_barshts[i]->bxsize;
+		
+//		chis->arr_p_barshts[i]->area.y0 = bar_vy1 - height;
+//		chis->arr_p_barshts[i]->area.y1 = bar_vy1;
+		chis->arr_p_barshts[i]->area.y0 = bar_vy1 - height;
+		chis->arr_p_barshts[i]->area.y1 = bar_vy1 - chis->arr_bar_height[i];
+		
+		Sheet_slide( chis->arr_p_barshts[i]);
+	}
+	chis->arr_bar_height[i] = height;
+	return 0;	
 }
 
 static int BarHmi_Util_update(void *p_data, void *p_mdl)

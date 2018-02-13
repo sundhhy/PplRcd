@@ -201,7 +201,7 @@ sheet* Focus_Get_sht(focus_user_t *p_fcuu, int row, int col)
 	if(p_fcuu == NULL)
 		return NULL;
 	
-	if(row == p_fcuu->rows || col == p_fcuu->columns)
+	if(row >= p_fcuu->rows || col >= p_fcuu->columns)
 		return NULL;
 	return arr_p_focus_shts[p_fcuu->first_idx + row * p_fcuu->rows + col];
 }

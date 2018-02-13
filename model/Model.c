@@ -97,10 +97,10 @@ static void DoUpdate(void **x, void *cl)
 
 
 
-void Pe_float(int data, short int_len, short prec, char *str)
+void Print_float(int data, short int_len, short prec, char *str)
 {
 	int		d1, d2;
-	char		sign = 1;
+	short		sign = 1;
 	char		i, len;		//”√”⁄∂‘∆Î
 	if(data < 0)
 	{
@@ -147,7 +147,7 @@ void Pe_float(int data, short int_len, short prec, char *str)
 //		else if(int_len == 4)
 //			sprintf(str, "%2d.%d", d1, d2);
 //		else
-			sprintf(str, "%4d.%d", d1, d2);
+			sprintf(str, "%d.%d", d1, d2);
 	}
 	else 
 	{
@@ -156,7 +156,7 @@ void Pe_float(int data, short int_len, short prec, char *str)
 //		else if(int_len == 4)
 //			sprintf(str, "-%2d.%d", d1, d2);
 //		else
-			sprintf(str, "-%4d.%d", d1, d2);
+			sprintf(str, "-%d.%d", d1, d2);
 		
 		
 	}
@@ -170,7 +170,7 @@ void Pe_float(int data, short int_len, short prec, char *str)
 	
 }
 
-void Pe_frefix_float(int data, int prec, char *prefix, char *str)
+void Print_frefix_float(int data, int prec, char *prefix, char *str)
 {
 	
 	if(prec == 1)

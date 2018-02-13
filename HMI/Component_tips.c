@@ -10,12 +10,14 @@
 //------------------------------------------------------------------------------
 // const defines
 //------------------------------------------------------------------------------
+#define TIP_CLEAN_ICO		"32"
 
-
+#define	TIP_USB_NUM			30
+#define	TIP_ALARM_NUM			31
 //4个按钮的图形代码
 static ro_char *arr_tips_code[NUM_TIP_ICO] ={ \
-	"<pic vx0=120  vy0=0 >29</>" , \
-	"<pic  vx0=120  vy0=0 >30</>" ,\
+	"<pic vx0=120  vy0=0 >0</>" , \
+	"<pic  vx0=152  vy0=0 >0</>" ,\
 	
 };
 
@@ -145,7 +147,9 @@ static void		TIP_Show_ico_tips(uint8_t tips_seq, short pic_num)
 	else
 	{
 		if(tips_seq == 0)
-			sprintf(arr_s_ico[tips_seq], "29");
+			sprintf(arr_s_ico[tips_seq], "%d", TIP_USB_NUM);
+		else if(tips_seq == 1)
+			sprintf(arr_s_ico[tips_seq], "%d", TIP_ALARM_NUM);
 		
 	}
 	
@@ -160,13 +164,13 @@ static void		TIP_Show_ico_tips(uint8_t tips_seq, short pic_num)
 }
 static void		TIP_Clear_ico_tips(uint8_t tips_seq)
 {
-	char	pic_num[] = "30";
+//	char	pic_num[] = "32";
 	
 	if(tips_seq > NUM_TIP_ICO)
 		return;
 	
 	arr_p_tip_ico[tips_seq]->e_heifht = 1;
-	arr_p_tip_ico[tips_seq]->cnt.data = pic_num;
+	arr_p_tip_ico[tips_seq]->cnt.data = TIP_CLEAN_ICO;
 	Sheet_slide(arr_p_tip_ico[tips_seq]);
 	arr_p_tip_ico[tips_seq]->e_heifht = 0;
 	
