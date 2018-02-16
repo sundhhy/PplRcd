@@ -48,12 +48,13 @@ void	Hide_ico_tips(HMI *self);
 //const char menu_buttonCode[] = { "<bu bkc=white clr=white ><text f=12 bkc=white xali=m yali=m clr=black>总貌画面</></>" };
 //static ro_char *s_buttonText[NUM_BTNROW][NUM_BTNCOL] = { {"总貌画面", "棒图画面"}, {"数显画面", "实时趋势"}, \
 //	{"信息画面", "实时趋势"}, {"累计画面", "调节画面"}};
+//180216 累计画面与信息画面共用同一个信息选择界面,只是参数不同
 
 const char win_pic1_Code[] = { "<pic vx0=0 vy0=0 >5</>" };
 const char win_pic2_Code[] = { "<cpic vx0=0 vy0=0 >6</>" };
 
 static HMI **arr_pp_targetHmi[NUM_BTNROW][NUM_BTNCOL] = { { &g_p_mainHmi, &g_p_barGhHmi}, {&g_p_dataHmi, &g_p_RLT_trendHmi}, \
-	{&g_p_NewSlct_HMI, &g_p_RLT_trendHmi}, {&g_p_NewSlct_HMI, NULL}};
+	{&g_p_NewSlct_HMI, &g_p_RLT_trendHmi}, {NULL, NULL}};		
 
 //static const hmiAtt_t	menuHmiAtt = { 4,4, COLOUR_GRAY, NUM_BTNROW, NUM_BTNCOL};
 //static sheet *arr_p_menu_show[ NUM_BTNROW][NUM_BTNCOL] =  {NULL};
@@ -327,8 +328,10 @@ static void	MenuHitHandle( HMI *self, char *s)
 	{
 		pp_trgtHmi = arr_pp_targetHmi[cthis->focusRow][cthis->focusCol];
 		
+		if(pp_trgtHmi == NULL)
+			return;
 			
-			(*pp_trgtHmi)->arg[0] = 0;
+		(*pp_trgtHmi)->arg[0] = 0;
 		if(cthis->focusRow == 3 && cthis->focusCol == 0){
 			(*pp_trgtHmi)->arg[0] = 1;
 			

@@ -111,6 +111,7 @@ int ShtUpdate( void *p_sht, void *p);
 // void sheet_refresh( struct SHTCTL *p_ctl);
 void Sheet_refresh( struct SHEET *p_sht);
 void Sheet_slide(  struct SHEET *p_sht);
+void Sheet_force_slide( struct SHEET *p_sht);
 void Sheet_free( struct SHEET *p_sht);
 int Sheet_is_hide(sheet *p_sht);
 //shtDefCmd *Get_shtDefCmd(void);

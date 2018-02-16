@@ -56,7 +56,7 @@ static void Ctime_periodic (void const *arg);
 
 static osTimerId ctime_id;                                           // timer id
 static osTimerDef (ctime, Ctime_periodic);
-static void Ctime_Allco_time(uint16_t  all_time, uint8_t need);
+void Ctime_Allco_time(uint16_t  all_time, uint8_t need);
 //============================================================================//
 //            P U B L I C   F U N C T I O N S                                 //
 //============================================================================//
@@ -120,36 +120,31 @@ static void Ctime_periodic (void const *arg)
 //	p_md = ModelCreate("time");
 //	p_md->run(p_md);
 //	
-	if(phn_sys.save_chg_flga & CHG_SYSTEM_CONF)
-	{
-		stg->wr_stored_data(stg, STG_SYS_CONF, &phn_sys.sys_conf, sizeof(phn_sys.sys_conf));
-		
-		phn_sys.save_chg_flga &= ~CHG_SYSTEM_CONF;
-		Ctime_Allco_time(phn_sys.sys_conf.record_gap_s, NUM_CHANNEL);
-	}
-	for(i = 0; i < NUM_CHANNEL; i++)
-	{
-		if(phn_sys.save_chg_flga & CHG_MODCHN_CONF(i))
-		{
-			
-			
-			
-			stg->wr_stored_data(stg, STG_CHN_CONF(i), NULL, 0);
-			phn_sys.save_chg_flga &= ~CHG_MODCHN_CONF(i);
-			
-		}
-		
-		
-	}
+//	if(phn_sys.save_chg_flga & CHG_SYSTEM_CONF)
+//	{
+//		stg->wr_stored_data(stg, STG_SYS_CONF, &phn_sys.sys_conf, sizeof(phn_sys.sys_conf));
+//		
+//		phn_sys.save_chg_flga &= ~CHG_SYSTEM_CONF;
+//		Ctime_Allco_time(phn_sys.sys_conf.record_gap_s, NUM_CHANNEL);
+//	}
+//	for(i = 0; i < NUM_CHANNEL; i++)
+//	{
+//		if(phn_sys.save_chg_flga & CHG_MODCHN_CONF(i))
+//		{
+//			
+//			
+//			
+//			stg->wr_stored_data(stg, STG_CHN_CONF(i), NULL, 0);
+//			phn_sys.save_chg_flga &= ~CHG_MODCHN_CONF(i);
+//			
+//		}
+//		
+//		
+//	}
 	
 	
 	
-	if(time_smp < phn_sys.sys_conf.record_gap_s)
-	{
-		time_smp ++;
-	} 
-	else
-		time_smp = 0;
+	
 	
 	
 	
@@ -164,6 +159,13 @@ static void Ctime_periodic (void const *arg)
 		p_md->run(p_md);
 		
 	}
+	
+	if(time_smp < phn_sys.sys_conf.record_gap_s)
+	{
+		time_smp ++;
+	} 
+	else
+		time_smp = 0;
 	
 	for(i = 0; i < MAX_TOUCHSPOT; i++)
 	{
@@ -188,7 +190,7 @@ static void Ctime_periodic (void const *arg)
 
 //todo:180121 目前的实现方式是只考虑6通道的情况下
 //把每个通道的采集时间打散，让每次的处理负荷尽可能的平均
-static void Ctime_Allco_time(uint16_t  all_time, uint8_t need)
+void Ctime_Allco_time(uint16_t  all_time, uint8_t need)
 {
 	
 	int i = 0; 

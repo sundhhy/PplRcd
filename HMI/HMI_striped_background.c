@@ -47,8 +47,11 @@ HMI 	*g_p_HMI_striped;
 // local vars
 //------------------------------------------------------------------------------
 
- static strategy_t	*arr_p_setting_strategy[5][2] = {{&g_sys_strategy, &g_chn_strategy}, {&g_alarm_strategy, &g_art_strategy}, \
- {&g_view_strategy, &g_DBP_strategy},{&g_dataPrint_strategy, NULL}, {&g_news_alarm, &g_news_power}};
+// static strategy_t	*arr_p_setting_strategy[5][2] = {{&g_sys_strategy, &g_chn_strategy}, {&g_alarm_strategy, &g_art_strategy}, \
+// {&g_view_strategy, &g_DBP_strategy},{&g_dataPrint_strategy, NULL}, {&g_news_alarm, &g_news_power}};
+
+ static strategy_t	*arr_p_setting_strategy[5][2] = {{&g_sys_strategy, &g_chn_strategy}, {&g_alarm_strategy, NULL}, \
+ {NULL, &g_DBP_strategy},{NULL, NULL}, {&g_news_alarm, &g_news_power}};
  
 //------------------------------------------------------------------------------
 // local function prototypes
@@ -181,6 +184,17 @@ static void	HMI_SBG_Init_sheet(HMI *self)
 	if(((self->flag & HMIFLAG_WIN) == 0) && ((self->flag & HMIFLAG_KEYBOARD) == 0)) {
 		old_sty = cthis->p_sy;
 		cthis->p_sy = arr_p_setting_strategy[self->arg[0]][self->arg[1]];
+		if(cthis->p_sy == NULL)
+		{
+			
+			self->flag |= HMI_FLAG_ERR;
+			return;
+		}
+		else
+		{
+			self->flag &= ~HMI_FLAG_ERR;
+			
+		}
 		
 		
 		if(old_sty && old_sty != cthis->p_sy)
@@ -554,6 +568,9 @@ static void	HMI_SBG_Hit(HMI *self, char *s_key)
 			cthis->entry_start_row = 0;
 //			self->switchHMI(self, g_p_Setup_HMI);
 			cthis->p_sy->sty_exit();
+			
+			
+			
 			self->switchBack(self);
 			
 		}
@@ -574,7 +591,7 @@ static void	HMI_SBG_Hit(HMI *self, char *s_key)
 		//擦除掉原来这一行
 		Strategy_focus(cthis, &old_sf, 2);
 		//重新显示改行文本
-//		Strategy_focus_text(cthis, &cthis->p_sy->sf, 2);
+		Strategy_focus_text(cthis, &cthis->p_sy->sf, 2);
 		//显示新的选中效果
 		Strategy_focus(cthis, &cthis->p_sy->sf, 1);
 	}

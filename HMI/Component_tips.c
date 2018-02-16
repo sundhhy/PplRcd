@@ -10,10 +10,10 @@
 //------------------------------------------------------------------------------
 // const defines
 //------------------------------------------------------------------------------
-#define TIP_CLEAN_ICO		"32"
+#define TIP_CLEAN_ICO		"33"
 
-#define	TIP_USB_NUM			30
-#define	TIP_ALARM_NUM			31
+#define	TIP_USB_NUM			31
+#define	TIP_ALARM_NUM			32
 //4个按钮的图形代码
 static ro_char *arr_tips_code[NUM_TIP_ICO] ={ \
 	"<pic vx0=120  vy0=0 >0</>" , \
@@ -21,7 +21,7 @@ static ro_char *arr_tips_code[NUM_TIP_ICO] ={ \
 	
 };
 
-static const char TIP_code_box[] = { "<box ></>" };
+//static const char TIP_code_box[] = { "<box ></>" };
 //static const char TIP_code_tip_text[] = { "<text f=16 m=0 >0</>" };
 //------------------------------------------------------------------------------
 // module global vars

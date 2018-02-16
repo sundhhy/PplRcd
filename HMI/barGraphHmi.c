@@ -170,11 +170,10 @@ static void BarHmi_InitSheet( HMI *self )
 	Sheet_updown(g_p_sht_title, h++);
 	Sheet_updown(g_p_shtTime, h++);
 	for(i = 0; i < BARHMI_NUM_BARS; i++) {
-		Sheet_updown(cthis->arr_p_barshts[i], h++);
-		Sheet_updown(g_arr_p_chnData[i], h++);
-		Sheet_updown(g_arr_p_chnUtil[i], h++);
-//		Sheet_updown( cthis->arr_p_sht_textPrcn[i], h++);
-//		Sheet_updown( cthis->pp_bar_unit[i], h++);
+//		Sheet_updown(cthis->arr_p_barshts[i], h++);
+//		Sheet_updown(g_arr_p_chnData[i], h++);
+//		Sheet_updown(g_arr_p_chnUtil[i], h++);
+
 		
 		cthis->arr_bar_height[i] = 0xffff;
 	}
@@ -206,9 +205,9 @@ static void BarHmi_HideSheet( HMI *self )
 	for( i = BARHMI_NUM_BARS - 1; i >= 0; i--) {
 //		Sheet_updown( cthis->pp_bar_unit[i], -1);
 //		Sheet_updown( cthis->arr_p_sht_textPrcn[i], -1);
-		Sheet_updown(g_arr_p_chnUtil[i], -1);
-		Sheet_updown(g_arr_p_chnData[i], -1);
-		Sheet_updown( cthis->arr_p_barshts[i], -1);
+//		Sheet_updown(g_arr_p_chnUtil[i], -1);
+//		Sheet_updown(g_arr_p_chnData[i], -1);
+//		Sheet_updown( cthis->arr_p_barshts[i], -1);
 	}
 	Sheet_updown(g_p_shtTime, -1);
 	Sheet_updown(g_p_sht_title, -1);
@@ -425,8 +424,8 @@ static void BarHmi_Init_chnSht(void)
 		g_arr_p_chnUtil[i]->update = BarHmi_Util_update;
 
 		//这是为了初始化的时候，就能让数据得到正确的坐标
-		g_arr_p_chnData[i]->update(g_arr_p_chnData[i], NULL);
-		g_arr_p_chnUtil[i]->update(g_arr_p_chnUtil[i], NULL);
+//		g_arr_p_chnData[i]->update(g_arr_p_chnData[i], NULL);
+//		g_arr_p_chnUtil[i]->update(g_arr_p_chnUtil[i], NULL);
 	
 	}
 }
@@ -471,7 +470,7 @@ static int BarHmi_Data_update(void *p_data, void *p_mdl)
 	p_sht->cnt.len = strlen(p_sht->cnt.data);
 	p_sht->area.x0 = bar_vx0[i];
 	p_sht->area.y0 = text_vy0;
-	Sheet_slide(p_sht);
+	Sheet_force_slide(p_sht);
 	
 	//180213 优化棒图的显示，根据当前高度与上一次高度来计算本次需要更改的部分
 	if(chis->arr_bar_height[i] == height)
@@ -487,7 +486,7 @@ static int BarHmi_Data_update(void *p_data, void *p_mdl)
 		chis->arr_p_barshts[i]->area.y1 = bar_vy1;
 		
 		
-		Sheet_slide( chis->arr_p_barshts[i]);
+		Sheet_force_slide( chis->arr_p_barshts[i]);
 	}
 	else if(chis->arr_bar_height[i] > height)
 	{
@@ -518,7 +517,7 @@ static int BarHmi_Data_update(void *p_data, void *p_mdl)
 		chis->arr_p_barshts[i]->area.y0 = bar_vy1 - height;
 		chis->arr_p_barshts[i]->area.y1 = bar_vy1 - chis->arr_bar_height[i];
 		
-		Sheet_slide( chis->arr_p_barshts[i]);
+		Sheet_force_slide( chis->arr_p_barshts[i]);
 	}
 	chis->arr_bar_height[i] = height;
 	return 0;	
@@ -534,6 +533,8 @@ static int BarHmi_Util_update(void *p_data, void *p_mdl)
 	uint16_t i = p_sht->id;
 	
 	
+	if(IS_HMI_HIDE(g_p_barGhHmi->flag))
+		return 0;
 	if(IS_HMI_KEYHANDLE(g_p_barGhHmi->flag))
 		return 0;
 		
@@ -541,13 +542,12 @@ static int BarHmi_Util_update(void *p_data, void *p_mdl)
 	p_sht->cnt.len = strlen(p_sht->cnt.data);
 	p_sht->area.x0 = bar_vx0[i];
 	p_sht->area.y0 = utit_vy0;
-	if(Sheet_is_hide(p_sht))
-		return 0;
-	if(IS_HMI_HIDE(g_p_barGhHmi->flag))
-		return 0;
+//	if(Sheet_is_hide(p_sht))
+//		return 0;
 	
 	
-	Sheet_slide( p_sht);
+	
+	Sheet_force_slide( p_sht);
 	return 0;
 	
 }

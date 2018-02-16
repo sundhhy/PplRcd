@@ -1,6 +1,7 @@
 #include "HMI.h"
 #include "commHMI.h"
 #include <string.h>
+#include "os/os_depend.h"
 //提供 按键，事件，消息，窗口，报警，时间，复选框的图层
 //这些图层可能会被其他界面所使用
 //============================================================================//
@@ -74,9 +75,14 @@ static void		HMI_Btn_jumpout(HMI *self);
 //============================================================================//
 void Set_flag_show(uint8_t	*p_flag, int val)
 {
-	val &= 1;
-	*p_flag &= 0xfe;
-	*p_flag |= val;
+	
+	if(val)
+		*p_flag |= HMI_FLAG_HIDE;
+	else
+		*p_flag &= ~HMI_FLAG_HIDE;
+//	val &= 1;
+//	*p_flag &= 0xfe;
+//	*p_flag |= val;
 }
 
 //void Set_flag_keyhandle(uint8_t	*p_flag, int val)
@@ -139,29 +145,52 @@ static void	HMI_Run( HMI *self)
 
 static void	SwitchHMI( HMI *self, HMI *p_hmi)
 {
+	HMI		*save_last_case_err = NULL;		//如果切换发生错误，就要恢复之前的旧画面
 	if( p_hmi == NULL)
 		return;
 	if(p_hmi ==  g_p_winHmi ) {
 		
 		g_p_win_last = self;
 	} else if((self != p_hmi) && (self != g_p_winHmi)) {		//切换到不同的界面上，才更新
-		
+		save_last_case_err = g_p_lastHmi;
 		g_p_lastHmi = g_p_curHmi;
 		
 	}
 	phn_sys.key_weight = 1;
 	
 	g_p_curHmi = p_hmi;
+	
+	
+	if(Sem_wait(&phn_sys.hmi_mgr.hmi_sem, 1000) <= 0)
+		return;
+	
 	Set_flag_show(&self->flag, 0);
 	self->hide(self);
 	self->clean_cmp(self);
 	
+	re_show:
 	p_hmi->initSheet( p_hmi);
+	if(p_hmi->flag & HMI_FLAG_ERR)		//切换发生错误，就切回原画面
+	{
+		g_p_lastHmi = save_last_case_err;
+		g_p_curHmi = self;
+		p_hmi = self;
+		p_hmi->flag |= HMI_FLAG_KEEP;
+		goto re_show;
+		
+	}
+		
+	
 	p_hmi->build_component(p_hmi);
 	p_hmi->show( p_hmi);
-	p_hmi->show_cmp(p_hmi);
+	
 	
 	Set_flag_show(&p_hmi->flag, 1);
+	p_hmi->show_cmp(p_hmi);
+	
+	
+	p_hmi->flag &= ~HMI_FLAG_KEEP;
+	Sem_post(&phn_sys.hmi_mgr.hmi_sem);
 	
 }
 
@@ -169,6 +198,9 @@ static void	SwitchBack( HMI *self)
 {
 	HMI *nowHmi = g_p_lastHmi;
 	if(g_p_lastHmi == NULL)
+		return;
+	
+	if(Sem_wait(&phn_sys.hmi_mgr.hmi_sem, 1000) <= 0)
 		return;
 	
 	g_p_lastHmi = g_p_curHmi;
@@ -183,9 +215,12 @@ static void	SwitchBack( HMI *self)
 	nowHmi->initSheet( nowHmi);
 	nowHmi->build_component(nowHmi);
 	nowHmi->show( nowHmi);
-	nowHmi->show_cmp(nowHmi);
-	Set_flag_show(&nowHmi->flag, 1);
 	
+	
+	Set_flag_show(&nowHmi->flag, 1);
+	nowHmi->show_cmp(nowHmi);
+	
+	Sem_post(&phn_sys.hmi_mgr.hmi_sem);
 }
 
 
@@ -280,11 +315,24 @@ static void		HMI_Show_cmp(HMI *self)
 	Progress_bar		*p_bar = PGB_Get_Sington();
 	Curve 				*p_crv = CRV_Get_Sington();
 	CMP_tips 			*p_tips = TIP_Get_Sington();
+	int					i;
 	
 	p->show_vaild_btn();
 	p_bar->show_bar();
 	p_crv->crv_show_bkg();
 	p_tips->show_tips();
+	
+	for(i = 0; i < NUM_CHANNEL; i++)
+	{
+		if(g_arr_p_chnData[i]->update)
+			g_arr_p_chnData[i]->update(g_arr_p_chnData[i], NULL);
+		if(g_arr_p_chnUtil[i]->update)
+			g_arr_p_chnUtil[i]->update(g_arr_p_chnUtil[i], NULL);
+		if(g_arr_p_chnAlarm[i]->update)
+			g_arr_p_chnAlarm[i]->update(g_arr_p_chnAlarm[i], NULL);
+		
+		
+	}
 }
 
 static int		HMI_Btn_forward(HMI *self)

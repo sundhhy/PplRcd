@@ -23,8 +23,9 @@
 
 
 #define BTN_ICO_ERASE			"28"
+#define BTN_ICO_SAVE			"29"
 
-#define BTN_ICO_CLEAN			"33"			//用于清除残留的按钮
+#define BTN_ICO_CLEAN			"34"			//用于清除残留的按钮
 
 //#define BTN_ICO_LOOP			"25"
 //#define BTN_ICO_SEARCH			"24"
@@ -207,10 +208,10 @@ static int		BTN_Build_each_btn(uint8_t	seq, uint8_t btn_type, btn_hdl bh, void *
 			btn_pic->data = BTN_ICO_ERASE;
 			arr_p_btn_sht[seq]->id = ICO_ID_ERASETOOL;
 			break;
-//		case BTN_TYPE_LOOP:
-//			btn_pic->data = BTN_ICO_LOOP;
-//			arr_p_btn_sht[seq]->id = ICO_ID_LOOP;
-//			break;
+		case BTN_TYPE_SAVE:
+			btn_pic->data = BTN_ICO_SAVE;
+			arr_p_btn_sht[seq]->id = ICO_ID_SAVE;
+			break;
 //		case BTN_TYPE_SEARCH:
 //			btn_pic->data = BTN_ICO_SEARCH;
 //			arr_p_btn_sht[seq]->id = ICO_ID_SEARCH;
@@ -223,21 +224,19 @@ static int		BTN_Build_each_btn(uint8_t	seq, uint8_t btn_type, btn_hdl bh, void *
 				{
 					
 					//清除残留的图像
+					Clear_bit(p_set, seq);
 					arr_p_btn_sht[seq]->cnt.effects = GP_CLR_EFF(arr_p_btn_sht[seq]->cnt.effects, EFF_FOCUS);
 					arr_p_btn_sht[seq]->e_heifht = 1;
 					btn_pic->data = BTN_ICO_CLEAN;
 					Sheet_slide(arr_p_btn_sht[seq]);
 					arr_p_btn_sht[seq]->e_heifht = 0;
 					
-//					break;
-					
 					
 				}
-				
-				
+				break;
 			}
 			
-			
+			//不必清除残留影像，一般是切换界面时已经清除掉了
 			
 			
 			

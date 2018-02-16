@@ -44,7 +44,7 @@ HMI *g_p_winHmi;
 #define	WINT_PSD_SET				"密码设置"
 #define	WINT_PSD_INPUT				"输入密码"
 
-static ro_char winHim_code_bkpic[] =  {"<bpic m=1 vx0=80 vy0=60 >29</>" };
+static ro_char winHim_code_bkpic[] =  {"<bpic m=1 vx0=80 vy0=60 >30</>" };
 static ro_char winHim_code_title[] =  {"<text m=1 f=16 clr=white vx0=88 vy0=62 > </>" };
 static ro_char winHim_code_tips[] =  {"<text m=1 f=16 clr=white vx0=88 vy0=80 > </>" };
 static ro_char winhmi_code_cur[] ={ "<icon vx0=96 vy0=160 xn=5 yn=1 n=0>19</>" };		//在按钮或者多选条目中的选中标识
@@ -273,7 +273,7 @@ static void winHmi_ClearFocuse(HMI *self, uint8_t fouse_row, uint8_t fouse_col)
 		
 	} else if(self->arg[0] < WINTYPE_MUS_BND) {
 		
-		PopUp_focuse(cthis, fouse_row, 0);
+		PopUp_focuse(cthis, fouse_col, 0);
 	} else {
 		
 		MUS_focuse(cthis, fouse_row, fouse_col, 0);

@@ -15,6 +15,7 @@
 //------------------------------------------------------------------------------
 
 static int ChnStrategy_entry(int row, int col, void *pp_text);
+static void CNS_build_component(void *arg);
 static int Cns_key_up(void *arg);
 static int Cns_key_dn(void *arg);
 static int Cns_key_lt(void *arg);
@@ -28,7 +29,7 @@ static void CNS_Exit(void);
 strategy_t	g_chn_strategy = {
 	ChnStrategy_entry,
 	Cns_init,
-	STY_Duild_button,
+	CNS_build_component,
 	Cns_key_up,
 	Cns_key_dn,
 	Cns_key_lt,
@@ -155,7 +156,7 @@ static int Cns_init(void *arg)
 	g_chn_strategy.sf.num_byte = 1;
 	g_setting_chn = 0;
 	HMI_Ram_init();
-	for(i = 0; i < 11; i++) {
+	for(i = 0; i < 12; i++) {
 		
 		arr_p_vram[i] = HMI_Ram_alloc(48);
 		memset(arr_p_vram[i], 0, 48);
@@ -254,6 +255,54 @@ static int Cns_key_dn(void *arg)
 	return ret;
 }
 
+
+ static void	CNS_Btn_hdl(void *self, uint8_t	btn_id)
+ {
+	 int		i;
+	 if(btn_id == BTN_TYPE_SAVE)
+	 {
+		for(i = 0; i < NUM_CHANNEL; i++)
+		{
+			if(phn_sys.save_chg_flga & CHG_MODCHN_CONF(i))
+			{
+				
+				
+				
+				if(MdlChn_Commit_conf(i) == RET_OK)
+				{
+					phn_sys.save_chg_flga &=~ CHG_MODCHN_CONF(i);
+					sprintf(arr_p_vram[11],"通道[%d] 写入配置成功", i);
+					Win_content(arr_p_vram[11]);
+					g_chn_strategy.cmd_hdl(g_chn_strategy.p_cmd_rcv, sycmd_win_tips, NULL);
+				}
+				else
+				{
+					
+					sprintf(arr_p_vram[11],"通道[%d] 写入配置失败", i);
+					Win_content(arr_p_vram[11]);
+					g_chn_strategy.cmd_hdl(g_chn_strategy.p_cmd_rcv, sycmd_win_tips, NULL);
+				}
+				
+			}
+			
+			
+		}	
+
+		 
+	 }
+	
+	 
+ }
+static void CNS_build_component(void *arg)
+{
+	Button			*p_btn = BTN_Get_Sington();
+	p_btn->build_each_btn(0, BTN_TYPE_MENU, Setting_btn_hdl, arg);
+	p_btn->build_each_btn(1, BTN_TYPE_SAVE, CNS_Btn_hdl, arg);
+		
+	
+	
+}
+
 static int Cns_key_rt(void *arg)
 {
 	strategy_focus_t *p_syf = &g_chn_strategy.sf;
@@ -299,7 +348,7 @@ static int Cns_key_er(void *arg)
 
 static int CNS_commit(void *arg)
 {
-	return -1;
+	return 0;
 	
 }
 

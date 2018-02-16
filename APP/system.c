@@ -20,8 +20,8 @@
 //------------------------------------------------------------------------------
 // const defines
 //------------------------------------------------------------------------------
-#define 	PHN_MAJOR_VER				0
-#define 	PHN_MINOR_VER				5
+#define 	PHN_MAJOR_VER				1
+#define 	PHN_MINOR_VER				6
 
 
 const unsigned short daytab[13]={0,31,59,90,120,151,181,212,243,273,304,334,365};//非闰年月份累积天数
@@ -197,6 +197,16 @@ void System_init(void)
 
 #endif	
 	
+}
+
+extern void Ctime_Allco_time(uint16_t  all_time, uint8_t need);
+int SYS_Commit(void)
+{
+	Storage					*stg = Get_storage();
+	
+	stg->wr_stored_data(stg, STG_SYS_CONF, &phn_sys.sys_conf, sizeof(phn_sys.sys_conf));
+	Ctime_Allco_time(phn_sys.sys_conf.record_gap_s, NUM_CHANNEL);
+	return RET_OK;
 }
 void System_time(struct  tm *stime)
 {

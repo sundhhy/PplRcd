@@ -321,7 +321,7 @@ static void RT_trendHmi_InitSheet( HMI *self )
 	RLT_trendHMI	*cthis = SUB_PTR( self, HMI, RLT_trendHMI);
 	Expr 			*p_exp ;
 	shtctl 			*p_shtctl = NULL;
-	int 			i,  h = 0;
+	int 			h = 0;
 	
 	p_shtctl = GetShtctl();
 	
@@ -357,10 +357,10 @@ static void RT_trendHmi_InitSheet( HMI *self )
 //	Sheet_updown(g_p_ico_memu, h++);
 	Sheet_updown(cthis->p_div, h++);
 //	Sheet_updown( cthis->p_clean_chnifo, h++);
-	for(i = 0; i < RLTHMI_NUM_CURVE; i++) {
-		Sheet_updown(g_arr_p_chnData[i], h++);
-		Sheet_updown(g_arr_p_check[i], h++);
-	}
+//	for(i = 0; i < RLTHMI_NUM_CURVE; i++) {
+//		Sheet_updown(g_arr_p_chnData[i], h++);
+//		Sheet_updown(g_arr_p_check[i], h++);
+//	}
 	
 	RLTHmi_Init_chnSht();
 	RLT_Init_curve(cthis);
@@ -374,10 +374,10 @@ static void RT_trendHmi_HideSheet( HMI *self )
 	int i;
 	
 	
-	for( i = RLTHMI_NUM_CURVE - 1; i >= 0; i--) {
-		Sheet_updown(g_arr_p_check[i], -1);
-		Sheet_updown(g_arr_p_chnData[i], -1);
-	}
+//	for( i = RLTHMI_NUM_CURVE - 1; i >= 0; i--) {
+//		Sheet_updown(g_arr_p_check[i], -1);
+//		Sheet_updown(g_arr_p_chnData[i], -1);
+//	}
 //	Sheet_updown( cthis->p_clean_chnifo, -1);
 	Sheet_updown(cthis->p_div, -1);
 //	Sheet_updown(g_p_ico_memu, -1);
@@ -587,24 +587,48 @@ static void	RT_trendHmi_HitHandle( HMI *self, char *s)
 			if(cthis->chn_show_map & (1 << chn)) {
 				cthis->chn_show_map &= ~(1 << chn);
 				p_crv->crv_ctl(cthis->arr_crv_fd[chn], CRV_CTL_HIDE, 1);
-				p_crv->crv_show_curve(HMI_CMP_ALL, CRV_SHOW_WHOLE);
+				
 				p_focus->area.n = 2;
 				//清除数字显示
-				g_arr_p_chnData[chn]->cnt.data = "   ";
-				g_arr_p_chnData[chn]->cnt.len = 3;
+				sprintf(g_arr_p_chnData[chn]->cnt.data, "    ");
+//				g_arr_p_chnData[chn]->cnt.data = "   ";
+				g_arr_p_chnData[chn]->cnt.len = strlen(g_arr_p_chnData[chn]->cnt.data);
 				g_arr_p_chnData[chn]->p_gp->vdraw(g_arr_p_chnData[chn]->p_gp,\
 				&g_arr_p_chnData[chn]->cnt, &g_arr_p_chnData[chn]->area);
+				
+				if(self->arg[0] == 0)
+				{
+					p_crv->crv_show_curve(HMI_CMP_ALL, CRV_SHOW_WHOLE);
+				}
+				else
+				{
+					hst_mgr.hst_flags &= ~ HST_FLAG_DONE;
+					
+					
+				}
 			} else {
 				p_focus->area.n = 0;
 				cthis->chn_show_map |= 1 << chn;
 				p_crv->crv_ctl(cthis->arr_crv_fd[chn], CRV_CTL_HIDE, 0);
-				p_crv->crv_show_curve(HMI_CMP_ALL, CRV_SHOW_WHOLE);
+				
+				
+				
+				if(self->arg[0] == 0)
+				{
+					p_crv->crv_show_curve(HMI_CMP_ALL, CRV_SHOW_WHOLE);
+				}
+				else
+				{
+					hst_mgr.hst_flags &= ~ HST_FLAG_DONE;
+					
+					
+				}
 			}
 			p_focus->p_gp->vdraw(p_focus->p_gp, &p_focus->cnt, &p_focus->area);
 			Flush_LCD();
 			
 		} else if(p_focus->id == SHTID_RTL_MDIV) {
-			if(Sem_wait(&phn_sys.hmi_mgr.hmi_crv_sem, 1000) <= 0)
+			if(Sem_wait(&phn_sys.hmi_mgr.hmi_sem, 1000) <= 0)
 				goto exit;
 			new_mins = atoi(p_focus->cnt.data);
 			
@@ -614,7 +638,7 @@ static void	RT_trendHmi_HitHandle( HMI *self, char *s)
 			
 			
 			
-			Sem_post(&phn_sys.hmi_mgr.hmi_crv_sem);
+			Sem_post(&phn_sys.hmi_mgr.hmi_sem);
 //			if(p_focus) {
 //				p_cmd = p_focus->p_enterCmd;
 //				if(p_cmd)
@@ -803,11 +827,14 @@ static void HMI_CRV_HST_Run(HMI *self)
 	//读取一条就记录记录一条
 	//知道屏幕上容纳不下了，或者记录读完了
 	
+	if(IS_HMI_HIDE(self->flag))
+		return;
 	if(hst_mgr.hst_flags & HST_FLAG_DONE)
 		return;
 	
 	
-	
+	if(Sem_wait(&phn_sys.hmi_mgr.hmi_sem, 1000) <= 0)
+		return;
 	
 
 	
@@ -815,9 +842,17 @@ static void HMI_CRV_HST_Run(HMI *self)
 	
 	for(i = 0; i < RLTHMI_NUM_CURVE; i++)
 	{
+		
+		
+		
 		if((cthis->chn_show_map & (1 << i)) == 0) {
 			continue;
 		}	
+		
+		sprintf(g_arr_p_chnData[i]->cnt.data, "CLR");
+		g_arr_p_chnData[i]->cnt.len = strlen(g_arr_p_chnData[i]->cnt.data);
+		g_arr_p_chnData[i]->p_gp->vdraw(g_arr_p_chnData[i]->p_gp, &g_arr_p_chnData[i]->cnt, &g_arr_p_chnData[i]->area);
+		
 		count = 0;
 		
 		p_mdl = g_arr_p_chnData[i]->p_mdl;
@@ -829,7 +864,7 @@ static void HMI_CRV_HST_Run(HMI *self)
 		{
 			
 			if(stg->rd_stored_data(stg, STG_CHN_DATA(i), &d, sizeof(d)) != sizeof(d))
-				return;	//可能文件正在被其他线程访问，直接退出，下一次再尝试
+				goto exit;	//可能文件正在被其他线程访问，直接退出，下一次再尝试
 			if(d.rcd_time_s == 0xffffffff)
 				break;
 			
@@ -849,7 +884,7 @@ static void HMI_CRV_HST_Run(HMI *self)
 		p_btn->build_each_btn(2, BTN_TYPE_PGDN, RLT_btn_hdl, self);
 	}
 	else {		
-		p_btn->build_each_btn(2, BTN_TYPE_NONE, NULL, NULL);
+		p_btn->build_each_btn(2, BTN_FLAG_CLEAN | BTN_TYPE_PGDN, NULL, NULL);
 //		need_clean = 1;
 	}
 	
@@ -859,7 +894,7 @@ static void HMI_CRV_HST_Run(HMI *self)
 		p_btn->build_each_btn(1, BTN_TYPE_PGUP, RLT_btn_hdl, self);
 	}
 	else {		
-		p_btn->build_each_btn(1, BTN_TYPE_NONE, NULL, NULL);
+		p_btn->build_each_btn(1, BTN_FLAG_CLEAN | BTN_TYPE_PGUP, NULL, NULL);
 //		need_clean = 1;
 	}
 	if((cthis->chn_show_map & ((1 << NUM_CHANNEL) - 1)) == 0)
@@ -871,7 +906,8 @@ static void HMI_CRV_HST_Run(HMI *self)
 	hst_mgr.hst_flags |= HST_FLAG_DONE;
 	p_crv->crv_show_curve(HMI_CMP_ALL, CRV_SHOW_WHOLE);
 		
-
+	exit:
+	Sem_post(&phn_sys.hmi_mgr.hmi_sem);
 	
 }
 //实时曲线的运行方法
@@ -893,10 +929,12 @@ static void HMI_CRV_RTV_Run(HMI *self)
 	cthis->count ++;
 	if(cthis->count < cthis->min_div / 4)
 		return;
+	if(IS_HMI_HIDE(self->flag))
+		return;
 	cthis->count = 0;
 	//刷新时间未到就直接退出
 	
-	if(Sem_wait(&phn_sys.hmi_mgr.hmi_crv_sem, 1000) <= 0)
+	if(Sem_wait(&phn_sys.hmi_mgr.hmi_sem, 1000) <= 0)
 		return;
 	
 	for(i = 0; i < RLTHMI_NUM_CURVE; i++) {
@@ -929,7 +967,7 @@ static void HMI_CRV_RTV_Run(HMI *self)
 	
 //	if((self->flag & HMI_FLAG_DEAL_HIT) == 0)
 	p_crv->crv_show_curve(HMI_CMP_ALL, CRV_SHOW_LATEST);
-	Sem_post(&phn_sys.hmi_mgr.hmi_crv_sem);
+	Sem_post(&phn_sys.hmi_mgr.hmi_sem);
 //	Flush_LCD();
 	
 	

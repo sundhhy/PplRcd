@@ -62,7 +62,7 @@
 #define	ICO_ID_PGUP					0x24	//向上翻页
 #define	ICO_ID_PGDN					0x25	//向下翻页
 #define	ICO_ID_ERASETOOL			0x26	//擦除工具
-//#define	ICO_ID_SEARCH				0x27	//查找工具
+#define	ICO_ID_SAVE					0x27	//保存
 #define	ICO_ID_COPY					0x28	//复制
 #define	ICO_ID_STOP					0x29	//停止
 #define	ICO_ID_LOOP					0x2a	//循环显示
@@ -85,25 +85,27 @@
 /***************************************************************/
 
 
-#define	HMI_FLAG_HIDE			0
-#define	HMI_FLAG_SHOW			1
-#define	HMI_FLAG_DEAL_HIT		2	
-
-#define SY_KEYTYPE_HIT				0
-#define SY_KEYTYPE_DHIT				1
-#define SY_KEYTYPE_LONGPUSH			2
+#define	HMI_FLAG_HIDE			1
+#define	HMI_FLAG_SHOW			2
+#define	HMI_FLAG_DEAL_HIT		3	
+#define	HMI_FLAG_KEEP			4			//有些画面切换时，要求画面不要重新初始化状态
+#define	HMI_FLAG_ERR			0x10
 
 //窗口界面来负责对该位的操作
 //表示界面接下来要跟窗口进行交互，因此在窗口切换回界面的时候，会处理一些额外的交互信息
 //故每个需要与窗口交互的界面，在其show方法中，都应该有与窗口界面交互的处理 
-#define	HMIFLAG_WIN									0x10		
-#define	HMIFLAG_KEYBOARD						0x20
+#define	HMIFLAG_WIN				0x20		
+#define	HMIFLAG_KEYBOARD		0x40
 //界面当前的焦点位于按钮区间
-#define	HMIFLAG_FOCUS_IN_BTN				0x40
+#define	HMIFLAG_FOCUS_IN_BTN	0x80
+
 #define IS_HMI_HIDE(flag)	((flag&1) == 0)
 #define IS_HMI_KEYHANDLE(flag)	((flag&2))
 
 
+#define SY_KEYTYPE_HIT				0
+#define SY_KEYTYPE_DHIT				1
+#define SY_KEYTYPE_LONGPUSH			2
 
 //策略类
 

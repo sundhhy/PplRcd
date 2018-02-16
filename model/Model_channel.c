@@ -168,6 +168,22 @@ void MdlChn_Clean_Alamr(int chn_num)
 	
 }
 
+int MdlChn_Commit_conf(int chn_num)
+{
+	Model_chn *p_mdl= Get_Mode_chn(chn_num);
+	Model		*self = SUPER_PTR(p_mdl, Model);
+	Storage		*stg = Get_storage();
+	stg->wr_stored_data(stg, STG_CHN_CONF(chn_num), NULL, 0);
+	
+	self->setMdlData(self, AUX_SIGNALTYPE, NULL);
+	self->setMdlData(self, chnaux_lower_limit, NULL);
+	self->setMdlData(self, chnaux_upper_limit, NULL);
+	
+	STG_Resize(STG_CHN_DATA(chn_num), p_mdl->chni.MB * 1024 * 1024);
+	
+	return RET_OK;
+}
+
 CTOR( Model_chn)
 SUPER_CTOR( Model);
 FUNCTION_SETTING( Model.init, MdlChn_init);
@@ -489,11 +505,20 @@ static int MdlChn_init(Model *self, IN void *arg)
 
 		MdlChn_default_conf(chn_num);
 		MdlChn_default_alarm(chn_num);
+		MdlChn_Commit_conf(chn_num);		//保存默认设置到存储器
 	}		
 	else
 	{
 		MdlChn_Save_2_conf(&save, &cthis->chni, 0);
 		MdlChn_Save_2_alarm(&save, &cthis->alarm, 0);
+		
+		if(cthis->chni.signal_type > es_max)
+		{
+			
+			MdlChn_default_conf(chn_num);
+			MdlChn_default_alarm(chn_num);
+			MdlChn_Commit_conf(chn_num);
+		}
 		stg->wr_stored_data(stg, STG_CHN_CONF(cthis->chni.chn_NO), NULL, 0);
 		
 	}
@@ -673,8 +698,8 @@ static void MdlChn_run(Model *self)
 	test_val = cthis->chni.value;
 	
 	
-	cthis->chni.lower_limit = -10;
-	cthis->chni.upper_limit = 10;
+	cthis->chni.lower_limit = -50;
+	cthis->chni.upper_limit = 50;
 	
 	if(cthis->chni.none == 0)
 	{
@@ -1217,10 +1242,10 @@ static char* MdlChn_to_string( Model *self, IN int aux, void *arg)
 			Print_singnaltype((e_signal_t)cthis->chni.signal_type, (char *)arg);
 			break;
 		case chnaux_record_mb:
-			sprintf(arg, "%d M", cthis->chni.MB);
+			sprintf(arg, "%2d M", cthis->chni.MB);
 			break;
 		case chnaux_filter_ts:
-			sprintf(arg, "%d S", cthis->chni.filter_time_s);
+			sprintf(arg, "%2d S", cthis->chni.filter_time_s);
 			break;
 		case chnaux_lower_limit:
 			//温度信号没有小数点

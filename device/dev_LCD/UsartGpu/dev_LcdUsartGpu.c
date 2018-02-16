@@ -202,6 +202,10 @@ static int Dev_UsartInit( void)
 		//串口屏的反应时间最长好像是200ms
 		I_sendDev->ioctol(I_sendDev, DEVCMD_SET_RXWAITTIME_MS, 300);
 		
+		//关闭串口屏演示
+		sprintf( lcdBuf, "STDM\r\n");
+		GpuSend(lcdBuf);
+		
 	}
 	return ret;
 }

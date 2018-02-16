@@ -28,7 +28,7 @@
 #define		BTN_TYPE_PGUP			ICO_ID_PGUP
 #define		BTN_TYPE_PGDN			ICO_ID_PGDN
 #define		BTN_TYPE_ERASE			ICO_ID_ERASETOOL
-//#define		BTN_TYPE_LOOP			ICO_ID_LOOP		//循环显示
+#define		BTN_TYPE_SAVE			ICO_ID_SAVE		//循环显示
 //#define 	BTN_TYPE_SEARCH			ICO_ID_SEARCH
 #define		BTN_TYPE_STOP			ICO_ID_STOP
 #define		BTN_FLAG_CLEAN			0x80		//当按钮不需要了清除掉

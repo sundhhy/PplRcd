@@ -172,6 +172,9 @@ static void		CRV_Free(uint8_t  crv_fd)
 			Clear_bit(&p_CRV_self->set_vaild_curve, i);
 			Set_bit(&p_CRV_self->set_free_curve, i);
 			p_CRV_self->p_crv_att[i].crv_flag = 0;
+			p_CRV_self->p_run_info[i].crv_num_points = 0;
+			p_CRV_self->p_run_info[i].crv_start_index = 0;
+			p_CRV_self->p_run_info[i].next_index = 0;
 		}	
 	}
 }
@@ -754,7 +757,7 @@ static int CRV_Rle(uint8_t  crv_fd, int cur_idx)
 	idx = cur_idx + 1;
 	
 	//对cur_idx之后所有的点进行计算
-	while(points > 0) {
+	while(points-- > 0) {
 		
 //		idx = cur_idx + i;
 //		idx %= p_att->crv_max_num_data;
@@ -766,7 +769,6 @@ static int CRV_Rle(uint8_t  crv_fd, int cur_idx)
 		else
 			break;
 		idx ++;
-		
 		
 		
 	}

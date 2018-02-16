@@ -159,6 +159,18 @@ int	STG_Set_file_position(uint8_t	file_type, uint8_t rd_or_wr, uint32_t position
 	return STRG_SYS.fs.fs_lseek(fd, whn, whr);
 }
 
+void STG_Resize(uint8_t	file_type, uint32_t	new_size)
+{
+	Storage				*stg = Get_storage();
+	int						fd = -1;
+	
+	
+	fd = STG_Open_file(file_type, STG_DEF_FILE_SIZE);
+	
+	STRG_SYS.fs.fs_resize(fd, NULL, new_size);
+	
+}
+
 void STG_Erase_file(uint8_t	file_type)
 {
 	
@@ -329,7 +341,7 @@ static int	Strg_rd_stored_data(Storage *self, uint8_t	cfg_type, void *buf, int l
 		ret = STG_Acc_sys_conf(STG_DRC_READ, buf);
 		
 	}
-	else if(IS_SYS_CONF(cfg_type))
+	else if(IS_CHN_CONF(cfg_type))
 	{
 		ret = STG_Acc_chn_conf(cfg_type, STG_DRC_READ, buf);
 		
@@ -426,6 +438,7 @@ static int	STG_Acc_chn_conf(uint8_t	tp, uint8_t	drc, void *p)
 	int fd;
 	int	num = STG_GET_CHN(tp);
 	int	ret = -1;
+	mdl_chn_save_t	save;
 //	uint8_t chn_num = STG_GET_CHN(tp);
 	fd = STG_Open_file(tp, STG_DEF_FILE_SIZE);
 	
@@ -441,6 +454,12 @@ static int	STG_Acc_chn_conf(uint8_t	tp, uint8_t	drc, void *p)
 	}
 	else
 	{
+		
+		if(p == NULL)
+		{
+			p = &save;
+			MdlChn_save_data(num, p);
+		}
 		STRG_SYS.fs.fs_lseek(fd, WR_SEEK_SET, num * sizeof(mdl_chn_save_t));
 		if(STRG_SYS.fs.fs_write(fd, p, sizeof(mdl_chn_save_t)) == sizeof(mdl_chn_save_t))
 		{

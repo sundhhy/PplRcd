@@ -151,7 +151,7 @@ static int	Init_dataHMI( HMI *self, void *arg)
 static void DataHmi_InitSheet( HMI *self )
 {
 //	dataHMI			*cthis = SUB_PTR( self, HMI, dataHMI);
-	int i,  h = 0;
+	int  h = 0;
 
 	g_p_sht_bkpic->cnt.data = DATAHMI_BKPICNUM;
 
@@ -161,11 +161,11 @@ static void DataHmi_InitSheet( HMI *self )
 	Sheet_updown(g_p_sht_bkpic, h++);
 	Sheet_updown(g_p_sht_title, h++);
 	Sheet_updown(g_p_shtTime, h++);
-	for( i = 0; i < BARHMI_NUM_BARS; i++) {
-		Sheet_updown(g_arr_p_chnData[i], h++);
-		Sheet_updown(g_arr_p_chnUtil[i], h++);
-		Sheet_updown(g_arr_p_chnAlarm[i], h++);
-	}
+//	for( i = 0; i < BARHMI_NUM_BARS; i++) {
+//		Sheet_updown(g_arr_p_chnData[i], h++);
+//		Sheet_updown(g_arr_p_chnUtil[i], h++);
+//		Sheet_updown(g_arr_p_chnAlarm[i], h++);
+//	}
 	
 	DataHmi_Init_chnSht();
 	
@@ -180,11 +180,11 @@ static void DataHmi_HideSheet( HMI *self )
 	
 
 //	cthis->flags = 0;
-	for( i = BARHMI_NUM_BARS - 1; i >= 0; i--) {
-		Sheet_updown(g_arr_p_chnData[i], -1);
-		Sheet_updown(g_arr_p_chnUtil[i], -1);
-		Sheet_updown(g_arr_p_chnAlarm[i], -1);
-	}
+//	for( i = BARHMI_NUM_BARS - 1; i >= 0; i--) {
+//		Sheet_updown(g_arr_p_chnData[i], -1);
+//		Sheet_updown(g_arr_p_chnUtil[i], -1);
+//		Sheet_updown(g_arr_p_chnAlarm[i], -1);
+//	}
 	Sheet_updown(g_p_shtTime, -1);
 	Sheet_updown(g_p_sht_title, -1);
 	Sheet_updown(g_p_sht_bkpic, -1);
@@ -247,9 +247,9 @@ static void DataHmi_Init_chnSht(void)
 		g_arr_p_chnAlarm[i]->update = DataHmi_Alarm_update;
 
 		//这是为了初始化的时候，就能让数据得到正确的坐标
-		g_arr_p_chnData[i]->update(g_arr_p_chnData[i], NULL);
-		g_arr_p_chnAlarm[i]->update(g_arr_p_chnAlarm[i], NULL);
-		g_arr_p_chnUtil[i]->update(g_arr_p_chnUtil[i], NULL);
+//		g_arr_p_chnData[i]->update(g_arr_p_chnData[i], NULL);
+//		g_arr_p_chnAlarm[i]->update(g_arr_p_chnAlarm[i], NULL);
+//		g_arr_p_chnUtil[i]->update(g_arr_p_chnUtil[i], NULL);
 	
 	}
 }
@@ -389,7 +389,8 @@ static int DataHmi_Data_update(void *p_data, void *p_mdl)
 	sheet			*p_sht = (sheet *)p_data;
 	
 		
-	
+	if(IS_HMI_HIDE(g_p_dataHmi->flag))
+		return 0;
 	
 	row = p_sht->id / 2;
 	col = p_sht->id % 2;
@@ -403,11 +404,10 @@ static int DataHmi_Data_update(void *p_data, void *p_mdl)
 	p_sht->area.x0 = right_x +  (col ) * box_sizex - space_to_right - sizex;
 	p_sht->area.y0 = up_y + row * box_sizey + space_to_up;
 	
-	if(Sheet_is_hide(p_sht))
-		return 0;
-	if(IS_HMI_HIDE(g_p_dataHmi->flag))
-		return 0;
-	Sheet_slide( p_sht);
+//	if(Sheet_is_hide(p_sht))
+//		return 0;
+	
+	Sheet_force_slide( p_sht);
 	return 0;
 	
 	
@@ -434,6 +434,8 @@ static int DataHmi_Util_update(void *p_data, void *p_mdl)
 	
 		
 	
+	if(IS_HMI_HIDE(g_p_dataHmi->flag))
+		return 0;
 	
 	row = p_sht->id / 2;
 	col = p_sht->id % 2;
@@ -447,11 +449,10 @@ static int DataHmi_Util_update(void *p_data, void *p_mdl)
 	p_sht->area.x0 = right_x +  (col ) * box_sizex - space_to_right - sizex;
 	p_sht->area.y0 = up_y  + (row + 1) * box_sizey  -( sizey + space_to_bottom);
 	
-	if(Sheet_is_hide(p_sht))
-		return 0;
-	if(IS_HMI_HIDE(g_p_dataHmi->flag))
-		return 0;
-	Sheet_slide( p_sht);
+//	if(Sheet_is_hide(p_sht))
+//		return 0;
+	
+	Sheet_force_slide( p_sht);
 	return 0;
 	
 }
@@ -473,7 +474,8 @@ static int DataHmi_Alarm_update(void *p_data, void *p_mdl)
 	uint16_t 		sizey = 0;
 	sheet			*p_sht = (sheet *)p_data;
 		
-	
+	if(IS_HMI_HIDE(g_p_dataHmi->flag))
+		return 0;
 	
 	row = p_sht->id / 2;
 	col = p_sht->id % 2;
@@ -487,11 +489,11 @@ static int DataHmi_Alarm_update(void *p_data, void *p_mdl)
 	p_sht->area.x0 = (col ) * box_sizex + space_to_left;
 	p_sht->area.y0 =  up_y  + (row + 1) * box_sizey  -( sizey + space_to_bottom);
 	
-	if(Sheet_is_hide(p_sht))
-		return 0;
-	if(IS_HMI_HIDE(g_p_dataHmi->flag))
-		return 0;
-	Sheet_slide( p_sht);
+//	if(Sheet_is_hide(p_sht))
+//		return 0;
+//	if(IS_HMI_HIDE(g_p_dataHmi->flag))
+//		return 0;
+	Sheet_force_slide( p_sht);
 	return 0;
 	
 }

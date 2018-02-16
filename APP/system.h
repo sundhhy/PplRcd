@@ -79,7 +79,7 @@ typedef struct {
 
 //-----------HMI -----------------------------------------------
 typedef struct {
-	int			hmi_crv_sem;
+	int			hmi_sem;
 }hmi_mgr_t;
 //---------- flash驱动的定义 --------------------------------------
 
@@ -171,9 +171,6 @@ typedef struct {
 //--------------------------------------------------------------------------
 
 typedef struct {
-
-	
-	
 	uint8_t				major_ver;
 	uint8_t				minor_ver;
 	uint8_t				save_chg_flga;		//可存储的配置信息的变化标志
@@ -242,4 +239,6 @@ int Str_Password_match(char *p_s_psd);
 void Password_modify(char	*p_s_psd, int idx, int op);
 int Password_iteartor(char	*p_time_text, int idx, int director);
 int Get_str_data(char *s_data, char* separator, int num, uint8_t	*err);
+
+int SYS_Commit(void);
 #endif

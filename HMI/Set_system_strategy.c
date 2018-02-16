@@ -16,6 +16,8 @@
 // module global vars
 //------------------------------------------------------------------------------
 static int SysStrategy_entry(int row, int col, void *pp_text);
+static void SYS_build_component(void *arg);
+
 static int Sys_key_up(void *arg);
 static int Sys_key_dn(void *arg);
 static int Sys_key_lt(void *arg);
@@ -29,7 +31,7 @@ static void SYS_Exit(void);
 strategy_t	g_sys_strategy = {
 	SysStrategy_entry,
 	Sys_init,
-	STY_Duild_button,
+	SYS_build_component,
 	Sys_key_up,
 	Sys_key_dn,
 	Sys_key_lt,
@@ -167,11 +169,14 @@ static int Sys_init(void *arg)
 	g_sys_strategy.sf.num_byte = 1;
 	
 	HMI_Ram_init();
-	for(i = 0; i < 14; i++) {
+	
+	//第14个用于提示显示
+	for(i = 0; i < 15; i++) {
 		
 		arr_p_vram[i] = HMI_Ram_alloc(48);
 		memset(arr_p_vram[i], 0, 48);
 	}
+	
 	
 	return RET_OK;
 }
@@ -228,6 +233,52 @@ static int Sys_key_up(void *arg)
 	return ret;
 }
 
+
+ static void	SYS_Btn_hdl(void *self, uint8_t	btn_id)
+ {
+	 if(btn_id == BTN_TYPE_SAVE)
+	 {
+		
+		if(phn_sys.save_chg_flga & CHG_SYSTEM_CONF)
+		{
+			
+			
+			
+			if(SYS_Commit() == RET_OK)
+			{
+				sprintf(arr_p_vram[14],"系统设置写入成功");
+				Win_content(arr_p_vram[14]);
+				g_sys_strategy.cmd_hdl(g_sys_strategy.p_cmd_rcv, sycmd_win_tips, NULL);
+			}
+			else
+			{
+				
+				sprintf(arr_p_vram[14],"系统设置写入失败");
+				Win_content(arr_p_vram[14]);
+				g_sys_strategy.cmd_hdl(g_sys_strategy.p_cmd_rcv, sycmd_win_tips, NULL);
+			}
+				
+			
+			phn_sys.save_chg_flga &= ~CHG_SYSTEM_CONF;
+		}
+			
+			
+		
+
+		 
+	 }
+	
+	 
+ }
+static void SYS_build_component(void *arg)
+{
+	Button			*p_btn = BTN_Get_Sington();
+	p_btn->build_each_btn(0, BTN_TYPE_MENU, Setting_btn_hdl, arg);
+	p_btn->build_each_btn(3, BTN_TYPE_SAVE, SYS_Btn_hdl, arg);
+		
+	
+	
+}
 static int Sys_key_dn(void *arg)
 {
 	
@@ -412,23 +463,23 @@ static int Sys_commit(void *arg)
 		ret = model->set_by_string(model, 1, arr_p_vram[0]);
 			
 		break;
-	case 1:
-		Password_set_by_str(arr_p_vram[p_syf->f_row]);
-		break;
-	case 13:
-		System_default();
-		break;
-	default:
-		ret = ERR_OPT_FAILED;
-		break;
+//	case 1:
+//		Password_set_by_str(arr_p_vram[p_syf->f_row]);
+//		break;
+//	case 13:
+//		System_default();
+//		break;
+//	default:
+//		ret = ERR_OPT_FAILED;
+//		break;
 	
 	
 	
 	}
 
+//	
 	
-	
-	return ret;
+	return RET_OK;
 }
 
 static void Sys_update_syf(strategy_focus_t *p_syf)

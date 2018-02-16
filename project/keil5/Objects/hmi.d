@@ -59,3 +59,6 @@
 .\objects\hmi.o: ..\..\HMI\Component_tips.h
 .\objects\hmi.o: ..\..\HMI\commHMI.h
 .\objects\hmi.o: ..\..\HMI\keyboardHMI.h
+.\objects\hmi.o: E:\sdhLib\inc\os/os_depend.h
+.\objects\hmi.o: E:\sdhLib\inc\os/rtx/rtx_depend.h
+.\objects\hmi.o: d:\Keil_v5\ARM\PACK\ARM\CMSIS\4.4.0\CMSIS\RTOS\RTX\INC\cmsis_os.h

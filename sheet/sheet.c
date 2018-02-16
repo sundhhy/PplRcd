@@ -324,6 +324,15 @@ void Sheet_slide( struct SHEET *p_sht)
     
 }
 
+void Sheet_force_slide( struct SHEET *p_sht)
+{
+	
+	p_sht->p_gp->vdraw( p_sht->p_gp, &p_sht->cnt, &p_sht->area);
+	Sheet_refreshsub( p_sht);
+	Flush_LCD();
+    return;
+    
+}
 void Sheet_free( struct SHEET *p_sht)
 {
     if( p_sht->height >= 0)

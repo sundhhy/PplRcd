@@ -97,7 +97,7 @@ int main (void) {
 	Model 			*p_mdl_time;
 	uint8_t			main_count_1s = 0;
 
-	osKernelInitialize ();                    // initialize CMSIS-RTOS
+	
   // initialize peripherals here
 	
 	//BSP的初始化
@@ -107,6 +107,8 @@ int main (void) {
 	
 	
 	Init_LCD();
+	
+	osKernelInitialize ();                    // initialize CMSIS-RTOS
 	//各个外设驱动模块初始化
 	System_init();
 	
