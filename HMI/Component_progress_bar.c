@@ -42,7 +42,7 @@ typedef struct {
 	uint8_t			toward;
 	uint8_t			bar_val;
 	uint16_t		bar_len;
-	char			text_buf[4];
+	char			text_buf[8];
 	sheet			*p_border;
 	sheet			*p_shade;
 	sheet			*p_bar;
@@ -305,14 +305,18 @@ static void 	PGB_Update_bar(uint8_t	bar_fd, uint8_t prc)
 		arr_pgb[bar_fd].bar_val = 100;
 	
 	arr_cal[arr_pgb[bar_fd].toward](arr_pgb[bar_fd].p_bar, arr_pgb[bar_fd].bar_len, arr_pgb[bar_fd].bar_val);
-	sprintf(arr_pgb[bar_fd].text_buf, "%3d", arr_pgb[bar_fd].bar_val);
+	
+	sprintf(arr_pgb[bar_fd].text_buf, "%%%3d", arr_pgb[bar_fd].bar_val);
 	arr_pgb[bar_fd].p_tip_text->cnt.len = strlen(arr_pgb[bar_fd].text_buf);
 	
 	arr_pgb[bar_fd].p_shade->e_heifht = 1;
 	arr_pgb[bar_fd].p_bar->e_heifht = 1;
 	arr_pgb[bar_fd].p_tip_text->e_heifht = 1;
 	arr_pgb[bar_fd].p_border->e_heifht = 1;
-	Sheet_slide(arr_pgb[bar_fd].p_shade);
+	
+	//todo:180217 只考虑了百分比增加的情况
+	if(prc == 0)
+		Sheet_slide(arr_pgb[bar_fd].p_shade);
 	Sheet_slide(arr_pgb[bar_fd].p_bar);
 	Sheet_slide(arr_pgb[bar_fd].p_tip_text);
 	Sheet_slide(arr_pgb[bar_fd].p_border);

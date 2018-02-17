@@ -97,7 +97,7 @@ static ro_char timeCode[] = { "<time vx0=220 vy0=0 bx=60  by=24 f=24 xali=r m=0 
 typedef struct {
 	uint16_t		used_bytes;		//已经被使用
 	uint16_t		free_bytes;
-	uint8_t			vram_buf[1440];		//NUM_CHANNEL * CURVE_POINT
+	uint8_t			vram_buf[1448];		//NUM_CHANNEL * (CURVE_POINT + 1)
 }hmi_ram_mgr_t;
 //------------------------------------------------------------------------------
 // local vars
@@ -279,13 +279,21 @@ void HMI_Ram_init(void)
 	
 }
 
+uint16_t HMI_Ram_free_bytes(void)
+{
+	hmi_ram_mgr_t *p_ram = &hmi_ram;
+	return p_ram->free_bytes;
+}
+
 //分配算法是最简单的，第一个匹配地址
+
 void *HMI_Ram_alloc(int bytes)
 {
 	hmi_ram_mgr_t *p_ram = &hmi_ram;
 	void	*p;
 	
-	
+	if(bytes < 0 )
+		return NULL;
 	if(p_ram->free_bytes < bytes)
 		return NULL;
 	p = p_ram->vram_buf + p_ram->used_bytes;

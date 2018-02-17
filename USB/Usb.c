@@ -8,7 +8,6 @@
 //2 只支持对一个文件的操作
 //这来自ch376的限制:文件名长度不得超过11，主文件名不超过8，扩展名不超过3,必须是大写字母，数字
 #include "Usb.h"
-#include "Ch376.h"
 #include "os/os_depend.h"
 #include "deviceId.h"
 #include "sdhDef.h"
@@ -332,21 +331,25 @@ int USB_Write_file(int fd, char *buf, int len)
 	int	ret = RET_OK;
 	uint16_t	real_len = 0;
 //	uint8_t		s;
-	
-	CH376ByteWrite((uint8_t *)buf, len, &real_len);
-	usb_ctl.is_file_changed = 1; 
+//	
+//	
 //	uint8_t		num_bkls = 0;
 
 //	uint8_t		real_num_bkls = 0;
 //	
 //	
 //	
-//	num_bkls =len/ DEF_SECTOR_SIZE;
-//	
+//	num_bkls = len / DEF_SECTOR_SIZE;
+	
 //	if(len % DEF_SECTOR_SIZE)
 //		num_bkls ++;
+	
+//	if(num_bkls)
+//		CH376SecWrite((uint8_t *)buf, num_bkls, &real_num_bkls);
 //	
-//	CH376SecWrite((uint8_t *)buf, num_bkls, &real_num_bkls);
+//	len -= num_bkls * DEF_SECTOR_SIZE;
+	CH376ByteWrite((uint8_t *)buf, len, &real_len);
+	usb_ctl.is_file_changed = 1; 
 	
 	return ret;
 }

@@ -79,6 +79,8 @@
 .\objects\main.o: ..\..\..\PplRcd\HMI/HMI_striped_background.h
 .\objects\main.o: ..\..\..\PplRcd\HMI/windowsHMI.h
 .\objects\main.o: ..\..\usb\Usb.h
+.\objects\main.o: ..\..\usb\Ch376.h
+.\objects\main.o: ..\..\usb\Ch376INC.h
 .\objects\main.o: ..\..\..\PplRcd\control/CtlKey.h
 .\objects\main.o: ..\..\..\PplRcd\control/Controller.h
 .\objects\main.o: ..\..\..\PplRcd\utils/keyboard.h

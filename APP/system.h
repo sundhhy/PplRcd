@@ -160,7 +160,7 @@ typedef struct {
 	int		(*fs_direct_write)(int fd, uint8_t *p, int len);		//直接写入到硬件，不使用缓存
 	int		(*fs_read)(int fd, uint8_t *p, int len);
 	int		(*fs_resize)(int fd, char *name, int new_size);
-	int 	(*fs_lseek)(int fd, int whence, uint32_t offset);
+	int 	(*fs_lseek)(int fd, int whence, int32_t offset);
 	void 	(*fs_erase_file)(int fd, uint32_t start, uint32_t size);
 	void 	(*fs_shutdown)(void);
 	file_info_t*		(*fs_file_info)(int fd);

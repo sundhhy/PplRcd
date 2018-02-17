@@ -15,10 +15,10 @@
 #define TDD_EFS							0		//171231
 #define TDD_FM25						0		//171225
 #define TDD_W25Q						0
-#define TDD_MODCHANNEL 					1		
+#define TDD_MODCHANNEL 					0		
 #define TDD_DEV_UART3 					0		
 #define TDD_SMART_BUS					0
-#define TDD_USB							0
+#define TDD_USB							1
 #define TDD_SHEET						0
 #define TDD_KEYBOARD					0
 #define TDD_GPIO						0

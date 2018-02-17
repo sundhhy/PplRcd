@@ -265,13 +265,13 @@ static void HMI_CRV_Build_cmp(HMI *self)
 		crv.crv_x1 = 240;
 		crv.crv_y1 = 150 + i * 10;		//210
 		
-		crv.crv_buf_size = CRV_MAX_PIXS;
+		crv.crv_buf_size = CRV_MAX_PIXS + 1;
 		
 		
-		if( num <= CRV_MAX_PIXS)
+		if( num <= (CRV_MAX_PIXS + 1))
 			crv.crv_max_num_data = num;
 		else
-			crv.crv_max_num_data = CRV_MAX_PIXS;
+			crv.crv_max_num_data = CRV_MAX_PIXS + 1;
 		
 		cthis->arr_crv_fd[i] = p_crv->alloc(&crv);
 	}
@@ -322,6 +322,7 @@ static void RT_trendHmi_InitSheet( HMI *self )
 	Expr 			*p_exp ;
 	shtctl 			*p_shtctl = NULL;
 	int 			h = 0;
+	int				i;
 	
 	p_shtctl = GetShtctl();
 	
@@ -357,10 +358,10 @@ static void RT_trendHmi_InitSheet( HMI *self )
 //	Sheet_updown(g_p_ico_memu, h++);
 	Sheet_updown(cthis->p_div, h++);
 //	Sheet_updown( cthis->p_clean_chnifo, h++);
-//	for(i = 0; i < RLTHMI_NUM_CURVE; i++) {
+	for(i = 0; i < RLTHMI_NUM_CURVE; i++) {
 //		Sheet_updown(g_arr_p_chnData[i], h++);
-//		Sheet_updown(g_arr_p_check[i], h++);
-//	}
+		Sheet_updown(g_arr_p_check[i], h++);
+	}
 	
 	RLTHmi_Init_chnSht();
 	RLT_Init_curve(cthis);
@@ -374,10 +375,10 @@ static void RT_trendHmi_HideSheet( HMI *self )
 	int i;
 	
 	
-//	for( i = RLTHMI_NUM_CURVE - 1; i >= 0; i--) {
-//		Sheet_updown(g_arr_p_check[i], -1);
+	for( i = RLTHMI_NUM_CURVE - 1; i >= 0; i--) {
+		Sheet_updown(g_arr_p_check[i], -1);
 //		Sheet_updown(g_arr_p_chnData[i], -1);
-//	}
+	}
 //	Sheet_updown( cthis->p_clean_chnifo, -1);
 	Sheet_updown(cthis->p_div, -1);
 //	Sheet_updown(g_p_ico_memu, -1);
@@ -588,7 +589,7 @@ static void	RT_trendHmi_HitHandle( HMI *self, char *s)
 				cthis->chn_show_map &= ~(1 << chn);
 				p_crv->crv_ctl(cthis->arr_crv_fd[chn], CRV_CTL_HIDE, 1);
 				
-				p_focus->area.n = 2;
+				p_focus->area.n = 3;
 				//Çå³ýÊý×ÖÏÔÊ¾
 				sprintf(g_arr_p_chnData[chn]->cnt.data, "    ");
 //				g_arr_p_chnData[chn]->cnt.data = "   ";
@@ -607,7 +608,7 @@ static void	RT_trendHmi_HitHandle( HMI *self, char *s)
 					
 				}
 			} else {
-				p_focus->area.n = 0;
+				p_focus->area.n = 1;
 				cthis->chn_show_map |= 1 << chn;
 				p_crv->crv_ctl(cthis->arr_crv_fd[chn], CRV_CTL_HIDE, 0);
 				
@@ -721,9 +722,9 @@ static void RTV_midv_change(RLT_trendHMI *cthis, uint8_t new_mins)
 //	else
 //		s = new_mins / 4;
 	if(new_mins > cthis->min_div)
-		p_crv->crv_data_flex(HMI_CMP_ALL, FLEX_ZOOM_OUT, s, 60 * new_mins);
+		p_crv->crv_data_flex(HMI_CMP_ALL, FLEX_ZOOM_OUT, s, 60 * new_mins + 1);
 	else
-		p_crv->crv_data_flex(HMI_CMP_ALL, FLEX_ZOOM_IN, s, 60 * new_mins);
+		p_crv->crv_data_flex(HMI_CMP_ALL, FLEX_ZOOM_IN, s, 60 * new_mins + 1);
 	
 	cthis->min_div = new_mins;
 	p_crv->crv_show_curve(HMI_CMP_ALL, CRV_SHOW_WHOLE);
@@ -742,7 +743,7 @@ static void HST_midv_change(RLT_trendHMI *cthis, uint8_t new_mins)
 }
 static uint16_t HST_Num_rcds(uint8_t	mul)
 {
-	return 15 * mul;
+	return 15 * mul + 1;
 	
 	
 }
@@ -860,6 +861,7 @@ static void HMI_CRV_HST_Run(HMI *self)
 		p_mdl->getMdlData(p_mdl, chnaux_lower_limit, &cval.lower_limit);
 		
 		STG_Set_file_position(STG_CHN_DATA(i), STG_DRC_READ, hst_mgr.arr_hst_num[i] * sizeof(data_in_fsh_t));	
+		p_crv->reset(cthis->arr_crv_fd[i]);
 		while(1)
 		{
 			

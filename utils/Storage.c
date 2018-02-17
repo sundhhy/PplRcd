@@ -203,39 +203,67 @@ int	STG_Read_rcd_by_time(uint8_t	chn, uint32_t start_sec, uint32_t end_sec, char
 	int					fd = -1;
 	data_in_fsh_t		d;
 	struct  tm			t;
-	uint32_t			min_sec = 0xffffffff, max_sec = 0;	
+	uint32_t			max_sec = 0;	
 	int					buf_offset = 0;
+	char				tmp_buf[32];
 	
 	fd = STG_Open_file(STG_CHN_DATA(chn), STG_DEF_FILE_SIZE);
-	STRG_SYS.fs.fs_lseek(fd, RD_SEEK_SET, 0);
-	memset(buf, 0, buf_size);
+//	STRG_SYS.fs.fs_lseek(fd, RD_SEEK_SET, 0);
+//	memset(buf, 0, buf_size);
+	buf[0] = 0;
 	while(1)
 	{
 		
+//		if((buf_offset + 21)> buf_size)		//必须预留最大数据长度的空间
+//			break;
 		if(STRG_SYS.fs.fs_read(fd, (uint8_t *)&d, sizeof(data_in_fsh_t)) != sizeof(data_in_fsh_t))
 			break;
-		if((buf_offset + 21)> buf_size)		//必须预留最大数据长度的空间
-			break;
+
 		if(d.rcd_time_s == 0xffffffff)
 			break;
-		if((d.rcd_time_s < start_sec) || (d.rcd_time_s > end_sec))
+		if(d.rcd_time_s < start_sec)
 			continue;
-		if(min_sec > d.rcd_time_s)
-			min_sec = d.rcd_time_s;
+		if(d.rcd_time_s > end_sec)
+			continue;
+		
+		
+		Sec_2_tm(d.rcd_time_s, &t);
+		//放置csv格式的数据
+		sprintf(tmp_buf, "%2d/%02d/%02d,%02d:%02d:%02d,%d\r\n", t.tm_year,t.tm_mon, t.tm_mday, \
+				t.tm_hour, t.tm_min, t.tm_sec, d.rcd_val);
+		if(strlen(tmp_buf) > (buf_size - buf_offset))
+		{
+			STRG_SYS.fs.fs_lseek(fd, RD_SEEK_CUR, -sizeof(data_in_fsh_t));
+			break;
+			
+		}
+		
+		strcat(buf, tmp_buf);
+//		sprintf((char *)buf + buf_offset, "%2d/%02d/%02d,%02d:%02d:%02d,%d\r\n", t.tm_year,t.tm_mon, t.tm_mday, \
+//				t.tm_hour, t.tm_min, t.tm_sec, d.rcd_val);
+		buf_offset = strlen(buf);
+		
+		
+//		if(min_sec > d.rcd_time_s)
+//			min_sec = d.rcd_time_s;
 		if(max_sec < d.rcd_time_s)
 			max_sec = d.rcd_time_s;
 		
-		Sec_2_tm(d.rcd_time_s, &t);
 		
 		
 		
-		//放置csv格式的数据
-		sprintf((char *)buf + buf_offset, "%2d/%02d/%02d,%02d:%02d:%02d,%d\r\n", t.tm_year,t.tm_mon, t.tm_mday, \
-				t.tm_hour, t.tm_min, t.tm_sec, d.rcd_val);
-		buf_offset = strlen(buf);
+		
+		
 		
 	}
-	*rd_sec = max_sec - min_sec;
+	*rd_sec = max_sec - start_sec;
+	
+	//如果只读取了1次数据，就会出现这种情况
+	if((*rd_sec == 0) && (buf_offset > 0))
+	{
+		*rd_sec = 1;
+		
+	}
 	return buf_offset;
 		
 	

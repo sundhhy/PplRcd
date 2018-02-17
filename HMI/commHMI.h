@@ -111,6 +111,6 @@ extern int Stripe_vy(int row) ;
 
 extern void HMI_Ram_init(void);
 extern void *HMI_Ram_alloc(int bytes);
-
+extern uint16_t HMI_Ram_free_bytes(void);
 extern void Win_content(char *p_tips);
 #endif

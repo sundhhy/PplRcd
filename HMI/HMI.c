@@ -176,6 +176,7 @@ static void	SwitchHMI( HMI *self, HMI *p_hmi)
 		g_p_curHmi = self;
 		p_hmi = self;
 		p_hmi->flag |= HMI_FLAG_KEEP;
+		
 		goto re_show;
 		
 	}
@@ -188,8 +189,8 @@ static void	SwitchHMI( HMI *self, HMI *p_hmi)
 	Set_flag_show(&p_hmi->flag, 1);
 	p_hmi->show_cmp(p_hmi);
 	
-	
 	p_hmi->flag &= ~HMI_FLAG_KEEP;
+	
 	Sem_post(&phn_sys.hmi_mgr.hmi_sem);
 	
 }

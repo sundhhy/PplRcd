@@ -66,6 +66,8 @@ strategy_t	g_DBP_strategy = {
  
 static uint8_t		arr_DBP_fds[3];
 static uint8_t		DBP_copy;
+ 
+static uint16_t		usb_buf_size;
 //------------------------------------------------------------------------------
 // local function prototypes
 //------------------------------------------------------------------------------
@@ -160,10 +162,13 @@ static int DBP_init(void *arg)
 	HMI_Ram_init();
 	for(i = 0; i < 5; i++) {
 		
-		arr_p_vram[i] = HMI_Ram_alloc(64);
-		memset(arr_p_vram[i], 0, 64);
+		arr_p_vram[i] = HMI_Ram_alloc(48);
+		memset(arr_p_vram[i], 0, 48);
 	}
-	arr_p_vram[5] = HMI_Ram_alloc(240);		//这个缓存用于数据备份
+	
+//	usb_buf_size = HMI_Ram_free_bytes();
+	usb_buf_size = USB_MAX_WRITE_BYTE;
+	arr_p_vram[5] = HMI_Ram_alloc(usb_buf_size);		//这个缓存用于数据备份
 	
 	g_setting_chn = 0;
 	arr_DBP_fds[0] = USB_Rgt_event_hdl(DBP_Usb_event);
@@ -368,10 +373,15 @@ static int DBP_update_content(int op, int weight)
 {
 	strategy_focus_t 	*p_syf = &g_DBP_strategy.sf;
 	int					ret = RET_OK;
+	strategy_focus_t		pos;
 	switch(p_syf->f_row) {
 		case 1:
 			g_setting_chn = Operate_in_tange(g_setting_chn, op, 1, 0, NUM_CHANNEL - 1);
 			sprintf(arr_p_vram[1], "%d", g_setting_chn);
+			pos.f_col = 1;
+			pos.f_row = 4;
+			arr_p_vram[4][0] = 0;	//重新生成默认文件名
+			g_DBP_strategy.cmd_hdl(g_DBP_strategy.p_cmd_rcv, sycmd_reflush_position, &pos);
 			break;
 		case 2:		
 //			g_DBP_strategy.cmd_hdl(g_sys_strategy.p_cmd_rcv, sycmd_win_time, arr_p_vram[p_syf->f_row]);
@@ -402,14 +412,19 @@ static void DBP_Copy(void *arg)
 	uint32_t			total_sec = end_sec - start_sec + 1;
 	uint32_t			done_sec = 0;
 	uint32_t			rd_sec = 0;
+	
 	Progress_bar	*p_bar = PGB_Get_Sington();
 	char				*copy_buf = arr_p_vram[5];
 	int						rd_len = 0;
 	int						usb_fd = 0;
 	uint32_t				dbp_count_bytes = 0;
+	uint8_t				last_prc = 0, prc = 0;
 //	usb_fd = USB_Open_file(arr_p_vram[4], USB_FM_WRITE | USB_FM_COVER);
 
-	total_sec = 100;
+//	total_sec = 100;
+	
+	STG_Set_file_position(STG_CHN_DATA(g_setting_chn), STG_DRC_READ, 0);
+
 	while(done_sec < total_sec)
 	{
 
@@ -427,10 +442,12 @@ static void DBP_Copy(void *arg)
 				usb_fd = 0;
 				goto copy_wait;
 			}
+			sprintf(copy_buf,"日期,时间,值\r\n");
+			USB_Write_file(usb_fd, copy_buf, strlen(copy_buf));
 		}
 		
 		rd_sec = 0;
-		rd_len = STG_Read_rcd_by_time(g_setting_chn, start_sec, end_sec, copy_buf, 240, &rd_sec);
+		rd_len = STG_Read_rcd_by_time(g_setting_chn, start_sec, end_sec, copy_buf, usb_buf_size, &rd_sec);
 		if(rd_len <= 0)
 			done_sec = total_sec;
 		else
@@ -440,24 +457,35 @@ static void DBP_Copy(void *arg)
 			done_sec += rd_sec;
 		}
 //		
-		if(rd_len)
+		if(rd_len > 0)
 		{
+			
 			USB_Write_file(usb_fd, copy_buf, rd_len);
 			dbp_count_bytes += rd_len;
+			
+			
 		}
 		
 		
 		//用读取的时间与总时间的比值作为进度依据
 	copy_wait:
-		p_bar->update_bar(arr_DBP_fds[1], done_sec * 100 / total_sec);
-		delay_ms(500);
+		prc = done_sec * 100 / total_sec;
+		if(prc > last_prc)
+		{
+			p_bar->update_bar(arr_DBP_fds[1], prc);
+			last_prc = prc;
+			
+		}
+//		delay_ms(500);
 		
 	}
+	
+	delay_ms(500);		//让最后一次更新进度条被显示
 	if(usb_fd > 0)
 	{
 		USB_Colse_file(usb_fd);
 		//恢复出厂设置，应该不只是恢复系统设置，包括通道设置等，应该也要恢复
-		sprintf(arr_p_vram[5],"完成,写入:%d B", dbp_count_bytes);
+		sprintf(arr_p_vram[5],"完成,写入:%d kB", dbp_count_bytes / 1024);
 		Win_content(arr_p_vram[5]);
 		g_DBP_strategy.cmd_hdl(g_DBP_strategy.p_cmd_rcv, sycmd_win_tips, NULL);
 		

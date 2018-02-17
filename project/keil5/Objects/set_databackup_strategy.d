@@ -61,6 +61,9 @@
 .\objects\set_databackup_strategy.o: ..\..\HMI\commHMI.h
 .\objects\set_databackup_strategy.o: ..\..\HMI\keyboardHMI.h
 .\objects\set_databackup_strategy.o: ..\..\..\PplRcd\USB/Usb.h
+.\objects\set_databackup_strategy.o: ..\..\..\PplRcd\USB/Ch376.h
+.\objects\set_databackup_strategy.o: ..\..\..\PplRcd\USB/Ch376INC.h
+.\objects\set_databackup_strategy.o: ..\..\configs\hardwareConfig.h
 .\objects\set_databackup_strategy.o: E:\sdhLib\inc\os/os_depend.h
 .\objects\set_databackup_strategy.o: E:\sdhLib\inc\os/rtx/rtx_depend.h
 .\objects\set_databackup_strategy.o: d:\Keil_v5\ARM\PACK\ARM\CMSIS\4.4.0\CMSIS\RTOS\RTX\INC\cmsis_os.h

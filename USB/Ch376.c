@@ -443,6 +443,7 @@ uint8_t	CH376ByteWrite( uint8_t *buf, uint16_t ReqCount, uint16_t *RealCount )
 	uint8_t	u16_part;
 	
 	
+	Ch376_enbale_Irq(0);
 	xWriteCH376Cmd( CMD2H_BYTE_WRITE );
 	u16_part = ReqCount;
 	xWriteCH376Data(u16_part);
@@ -455,9 +456,9 @@ uint8_t	CH376ByteWrite( uint8_t *buf, uint16_t ReqCount, uint16_t *RealCount )
 
 	while ( 1 )
 	{
-		Ch376_enbale_Irq(0);
+		
 		s = Wait376Interrupt(0);
-		Ch376_enbale_Irq(1);
+		
 		if ( s == USB_INT_DISK_WRITE )
 		{
 			//向内部指定缓冲区写入请求的数据块,返回长度 
@@ -470,13 +471,13 @@ uint8_t	CH376ByteWrite( uint8_t *buf, uint16_t ReqCount, uint16_t *RealCount )
 		}
 		else
 		{
-			
+			Ch376_enbale_Irq(1);
 			return( s );  // 错误
 			
 		}
 	}
 	
-//	Ch376_enbale_Irq(1);
+	Ch376_enbale_Irq(1);
 	
 //	return 0;
 }
