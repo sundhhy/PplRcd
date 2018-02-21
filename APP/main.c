@@ -95,8 +95,9 @@ int main (void) {
 	Controller		*p_control;
 	HMI 			*p_mainHmi;
 	Model 			*p_mdl_time;
+	CMP_tips 		*p_tips;
 	uint8_t			main_count_1s = 0;
-
+	uint8_t			old_sys_flag = 0;
 	
   // initialize peripherals here
 	
@@ -162,11 +163,28 @@ int main (void) {
 	p_mdl_time = ModelCreate("time");
 	
 	USB_Rgt_event_hdl(Main_USB_event);
-	osKernelStart ();                        
+	osKernelStart ();  
+
+	p_tips = TIP_Get_Sington();
+	old_sys_flag = phn_sys.sys_flag;
 	while(1)
 	{
 		osDelay(100);
 		main_count_1s ++;
+		if(old_sys_flag != phn_sys.sys_flag)
+		{
+			if(phn_sys.sys_flag & SYSFLAG_EFS_NOTREADY)
+			{
+				p_tips->show_ico_tips(1, -1);
+				
+			}
+			else
+			{
+				
+				p_tips->clear_ico_tips(1);
+			}
+			old_sys_flag = phn_sys.sys_flag;
+		}
 		if(main_count_1s >= 9)
 		{
 			p_mdl_time->run(p_mdl_time);

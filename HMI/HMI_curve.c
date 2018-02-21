@@ -824,7 +824,7 @@ static void HMI_CRV_HST_Run(HMI *self)
 	data_in_fsh_t			d;
 	crv_val_t				cval;
 	uint16_t				i, count, end, need_clean = 0;
-
+	int						read_len = 0;
 	//读取一条就记录记录一条
 	//知道屏幕上容纳不下了，或者记录读完了
 	
@@ -841,6 +841,10 @@ static void HMI_CRV_HST_Run(HMI *self)
 	
 	end = HST_Num_rcds(cthis->min_div) - 1;
 	
+	
+	
+	//显示曲线
+	
 	for(i = 0; i < RLTHMI_NUM_CURVE; i++)
 	{
 		
@@ -849,10 +853,6 @@ static void HMI_CRV_HST_Run(HMI *self)
 		if((cthis->chn_show_map & (1 << i)) == 0) {
 			continue;
 		}	
-		
-		sprintf(g_arr_p_chnData[i]->cnt.data, "CLR");
-		g_arr_p_chnData[i]->cnt.len = strlen(g_arr_p_chnData[i]->cnt.data);
-		g_arr_p_chnData[i]->p_gp->vdraw(g_arr_p_chnData[i]->p_gp, &g_arr_p_chnData[i]->cnt, &g_arr_p_chnData[i]->area);
 		
 		count = 0;
 		
@@ -864,11 +864,14 @@ static void HMI_CRV_HST_Run(HMI *self)
 		p_crv->reset(cthis->arr_crv_fd[i]);
 		while(1)
 		{
+			read_len = stg->rd_stored_data(stg, STG_CHN_DATA(i), &d, sizeof(d));
 			
-			if(stg->rd_stored_data(stg, STG_CHN_DATA(i), &d, sizeof(d)) != sizeof(d))
+			if(read_len == 0)
+				break;
+			if(read_len != sizeof(d))
 				goto exit;	//可能文件正在被其他线程访问，直接退出，下一次再尝试
 			if(d.rcd_time_s == 0xffffffff)
-				break;
+				continue;
 			
 			cval.val = d.rcd_val;
 			p_crv->add_point(cthis->arr_crv_fd[i], &cval);
@@ -908,6 +911,18 @@ static void HMI_CRV_HST_Run(HMI *self)
 	hst_mgr.hst_flags |= HST_FLAG_DONE;
 	p_crv->crv_show_curve(HMI_CMP_ALL, CRV_SHOW_WHOLE);
 		
+	
+	//显示颜色标识
+	for(i = 0; i < RLTHMI_NUM_CURVE; i++)
+	{
+		if((cthis->chn_show_map & (1 << i)) == 0) {
+			continue;
+		}
+		sprintf(g_arr_p_chnData[i]->cnt.data, "CLR");
+		g_arr_p_chnData[i]->cnt.len = strlen(g_arr_p_chnData[i]->cnt.data);
+		g_arr_p_chnData[i]->p_gp->vdraw(g_arr_p_chnData[i]->p_gp, &g_arr_p_chnData[i]->cnt, &g_arr_p_chnData[i]->area);
+		
+	}
 	exit:
 	Sem_post(&phn_sys.hmi_mgr.hmi_sem);
 	

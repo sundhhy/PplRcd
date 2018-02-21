@@ -131,6 +131,7 @@ void MdlChn_default_conf(int chn_num)
 	
 	memset(&p_mdl->chni, 0, sizeof(p_mdl->chni));
 	p_mdl->chni.signal_type = AI_Pt100;
+	p_mdl->chni.unit = eu_oC;
 	p_mdl->chni.chn_NO = chn_num;
 	p_mdl->chni.tag_NO = chn_num;
 	p_mdl->chni.MB = 2;
@@ -727,7 +728,7 @@ static void MdlChn_run(Model *self)
 		
 	}
 	cthis->alarm.alarm_hh = cthis->chni.upper_limit - 20;
-	cthis->alarm.alarm_hi = cthis->chni.lower_limit - 10;
+	cthis->alarm.alarm_hi = cthis->chni.upper_limit - 10;
 	
 	cthis->alarm.alarm_lo = cthis->chni.lower_limit + 20;
 	cthis->alarm.alarm_ll = cthis->chni.lower_limit + 10;

@@ -25,6 +25,7 @@ V010 171226 :
 #endif
 #include "mem/CiiMem.h"
 #include "os/os_depend.h"
+#include "sys_cmd.h"
 
 //------------------------------------------------------------------------------
 // const defines
@@ -45,9 +46,11 @@ V010 171226 :
 
 
 #define EFS_FLAG_ALLOCED					1
-#define EFS_FLAG_USED							2
+#define EFS_FLAG_USED						2
 #define EFS_FLAG_OPENED						4		
 #define EFS_FLAG_RECYCLE					8
+#define EFS_FLAG_ERASE						0x10		//文件需要被擦除，因为擦除文件很费时，因此先做上标记，然后在专门的线程中执行
+
 
 #define EFS_WAIT_WR_MS						1000
 
@@ -107,8 +110,10 @@ static efs_mgr_t 		efs_mgr;
 int		EFS_open(uint8_t		prt, char *path, char *mode, int	file_size);
 int		EFS_close(int fd);
 int		EFS_write(int fd, uint8_t *p, int len);
-int		EFS_Direct_write(int fd, uint8_t *p, int len);
+int		EFS_Raw_write(int fd, uint8_t *p, int len);
 int		EFS_read(int fd, uint8_t *p, int len);
+int		EFS_Raw_read(int fd, uint8_t *p, int len);
+
 int 	EFS_Lseek(int fd, int whence, int32_t offset);
 int	EFS_resize(int fd, char *path, int new_size);
 file_info_t		*EFS_file_info(int fd);
@@ -127,6 +132,8 @@ static int EFS_malloc_file_mgr(void);
 static void	EFS_flush_mgr(int No);
 static void EFS_Change_file_size(int fd, uint32_t new_size);
 static void	EFS_Regain_space(void);
+
+static void EFS_run(void *arg);
 //============================================================================//
 //            P U B L I C   F U N C T I O N S                                 //
 //============================================================================//
@@ -163,13 +170,15 @@ int 	EFS_init(int arg)
 	EFS_FS.fs_read = EFS_read;
 	EFS_FS.fs_write = EFS_write;
 	
-	EFS_FS.fs_direct_write = EFS_Direct_write;
+	EFS_FS.fs_raw_write = EFS_Raw_write;
+	EFS_FS.fs_raw_read = EFS_Raw_read;
 	EFS_FS.fs_delete = EFS_delete;
 	EFS_FS.fs_resize = EFS_resize;
 	EFS_FS.fs_erase_file = EFS_Erase_file;
 	EFS_FS.fs_shutdown = EFS_Shutdown;
 	EFS_FS.fs_file_info = EFS_file_info;
 	
+	Cmd_Rgt_idle_task(EFS_run, NULL);
 	return EFS_format();
 	
 	
@@ -190,12 +199,25 @@ void 	EFS_Shutdown(void)
 	
 	
 }
-
+static void EFS_Init_file_sem(int fd)
+{
+	int sm;
+	if((fd >= 0) && (efs_mgr.arr_file_info[fd].file_sem == 0xff))
+	{
+		sm = Alloc_sem();
+		if(sm < 0)
+			Except_raise(&EFS_Failed, __FILE__, __LINE__);
+		Sem_init(&sm);
+		Sem_post(&sm);
+		efs_mgr.arr_file_info[fd].file_sem = sm;
+	}
+	
+}
 
 int	EFS_open(uint8_t prt, char *path, char *mode, int	file_size)
 {
 	int new_fd = 0;
-	int	i = 0;
+//	int	i = 0;
 	
 	//先看看有没有已经存在
 	new_fd = EFS_search_file(path);
@@ -206,7 +228,11 @@ int	EFS_open(uint8_t prt, char *path, char *mode, int	file_size)
 	{
 		new_fd = EFS_malloc_file_mgr();
 		new_fd = EFS_create_file(new_fd, prt, path, file_size);
-//		EFS_Erase_file(new_fd, 0, 0);
+		
+		EFS_Init_file_sem(new_fd);
+		
+		
+		EFS_Erase_file(new_fd, 0, 0);
 		
 	}
 	if(new_fd >= 0)
@@ -219,15 +245,16 @@ int	EFS_open(uint8_t prt, char *path, char *mode, int	file_size)
 		
 	}
 	
-	if((new_fd >= 0) && (efs_mgr.arr_file_info[new_fd].file_sem == 0xff))
-	{
-		i = Alloc_sem();
-		if(i < 0)
-			Except_raise(&EFS_Failed, __FILE__, __LINE__);
-		Sem_init(&i);
-		Sem_post(&i);
-		efs_mgr.arr_file_info[new_fd].file_sem = i;
-	}
+	EFS_Init_file_sem(new_fd);
+//	if((new_fd >= 0) && (efs_mgr.arr_file_info[new_fd].file_sem == 0xff))
+//	{
+//		i = Alloc_sem();
+//		if(i < 0)
+//			Except_raise(&EFS_Failed, __FILE__, __LINE__);
+//		Sem_init(&i);
+//		Sem_post(&i);
+//		efs_mgr.arr_file_info[new_fd].file_sem = i;
+//	}
 //		
 	
 	return new_fd;
@@ -321,8 +348,31 @@ int	EFS_delete(int fd, char *path)
 	exit:
 	return 0;
 }
+int		EFS_Raw_read(int fd, uint8_t *p, int len)
+{
+	
+	int   ret;
+	file_info_t *f = &efs_mgr.arr_file_info[fd];
+	int			start_addr = f->start_page * EFS_FSH(f->fsh_No).fnf.page_size;
 
-int		EFS_Direct_write(int fd, uint8_t *p, int len)
+	if(fd > EFS_MAX_NUM_FILES)
+		return -1;
+	if(f->file_flag & EFS_FLAG_ERASE)
+		return ERR_FS_NOT_READY;
+	while(Sem_wait(&f->file_sem, EFS_WAIT_WR_MS) <= 0)
+		delay_ms(1);
+	
+	if(len > f->num_page * EFS_FSH(f->fsh_No).fnf.page_size)
+		len = f->num_page * EFS_FSH(f->fsh_No).fnf.page_size;
+
+	ret =  EFS_FSH(f->fsh_No).fsh_raw_read(p, start_addr + f->read_position,len);
+	if(ret > 0)
+		f->read_position += ret;
+	Sem_post(&f->file_sem);
+	return ret;
+	
+}
+int		EFS_Raw_write(int fd, uint8_t *p, int len)
 {
 	
 	int   ret;
@@ -332,13 +382,15 @@ int		EFS_Direct_write(int fd, uint8_t *p, int len)
 
 	if(fd > EFS_MAX_NUM_FILES)
 		return -1;
+	if(f->file_flag & EFS_FLAG_ERASE)
+		return ERR_FS_NOT_READY;
 	while(Sem_wait(&f->file_sem, EFS_WAIT_WR_MS) <= 0)
 		delay_ms(1);
 	
 	if(len > f->num_page * EFS_FSH(f->fsh_No).fnf.page_size)
 		len = f->num_page * EFS_FSH(f->fsh_No).fnf.page_size;
 
-	ret =  EFS_FSH(f->fsh_No).fsh_direct_write(p, start_addr + f->write_position,len);
+	ret =  EFS_FSH(f->fsh_No).fsh_raw_write(p, start_addr + f->write_position,len);
 	if(ret > 0)
 		f->write_position += ret;
 	
@@ -364,6 +416,9 @@ int	EFS_write(int fd, uint8_t *p, int len)
 
 	if(fd > EFS_MAX_NUM_FILES)
 		return -1;
+	
+	if(f->file_flag & EFS_FLAG_ERASE)
+		return ERR_FS_NOT_READY;
 	
 	if(len > f->num_page * EFS_FSH(f->fsh_No).fnf.page_size)
 		len = f->num_page * EFS_FSH(f->fsh_No).fnf.page_size;
@@ -391,14 +446,20 @@ int	EFS_read(int fd, uint8_t *p, int len)
 
 	if(fd > EFS_MAX_NUM_FILES)
 		return -1;
+	if(f->file_flag & EFS_FLAG_ERASE)
+		return ERR_FS_NOT_READY;
+//	if(f->read_position >= f->write_position)
+//		return 0;
 	if(len > f->num_page * EFS_FSH(f->fsh_No).fnf.page_size)
 		len = f->num_page * EFS_FSH(f->fsh_No).fnf.page_size;
 	while(Sem_wait(&f->file_sem, EFS_WAIT_WR_MS) <= 0)
 		delay_ms(1);
 	ret =  EFS_FSH(f->fsh_No).fsh_read(p, start_addr + f->read_position,len);
-	Sem_post(&f->file_sem);
+	
 	if(ret > 0)
 		f->read_position += ret;
+	
+	Sem_post(&f->file_sem);
 	
 	return ret;
 }
@@ -406,28 +467,31 @@ int	EFS_read(int fd, uint8_t *p, int len)
 void 	EFS_Erase_file(int fd, uint32_t start, uint32_t size)
 {
 	file_info_t *f = &efs_mgr.arr_file_info[fd];
-	int			start_addr = f->start_page * EFS_FSH(f->fsh_No).fnf.page_size;
-	int			sz = f->file_size;
+//	int			start_addr = f->start_page * EFS_FSH(f->fsh_No).fnf.page_size;
+//	int			sz = f->file_size;
 
 	if(fd > EFS_MAX_NUM_FILES)
 		return;
 	
-	while(Sem_wait(&f->file_sem, EFS_WAIT_WR_MS) <= 0)
-		delay_ms(1);
+	f->file_flag |= EFS_FLAG_ERASE;
+	return;
+	
+//	while(Sem_wait(&f->file_sem, EFS_WAIT_WR_MS) <= 0)
+//		delay_ms(1);
 
-	
-	if((start + size) > 0)
-	{
-		start_addr += start;
-		
-		sz = size;
-	}
-	
-	
-	EFS_FSH(f->fsh_No).fsh_ersse_addr(start_addr, sz);
-	f->write_position = 0;
-	f->read_position = 0;
-	Sem_post(&f->file_sem);
+//	
+//	if((start + size) > 0)
+//	{
+//		start_addr += start;
+//		
+//		sz = size;
+//	}
+//	
+//	
+//	EFS_FSH(f->fsh_No).fsh_ersse_addr(start_addr, sz);
+//	f->write_position = 0;
+//	f->read_position = 0;
+//	Sem_post(&f->file_sem);
 }
 
 //用fd或者path来指定文件
@@ -536,20 +600,18 @@ static int EFS_format(void)
 {
 	
 	uint8_t		ver[2];
-	uint8_t		i = 0;
+//	uint8_t		i = 0;
 	
 	EFS_FSH(EFS_MGR_FSH_NO).fsh_read(ver, 0, 2);
 //	
 	if(ver[0] != EFS_SYS.major_ver || ver[1] != EFS_SYS.minor_ver)
 	{
-//		for(i = 0; i < EFS_MGR_NUM_FSH; i++)
 		
-		for(i = 0; i < NUM_FSH; i ++)
-		{
-			EFS_FSH(i).fsh_ersse(FSH_OPT_CHIP, 0);
-			
-		}
-//		EFS_FSH(i).fsh_ersse(FSH_OPT_CHIP, 0);
+//		for(i = 0; i < NUM_FSH; i ++)
+//		{
+//			EFS_FSH(i).fsh_ersse(FSH_OPT_CHIP, 0);
+//			
+//		}
 		ver[0] = EFS_SYS.major_ver ;
 		ver[1] = EFS_SYS.minor_ver;
 		EFS_FSH(EFS_MGR_FSH_NO).fsh_write(ver, 0, 2);
@@ -562,6 +624,54 @@ static int EFS_format(void)
 //	
 	EFS_FSH(EFS_MGR_FSH_NO).fsh_read((uint8_t *)efs_mgr.arr_efiles, 2, sizeof(efs_mgr.arr_efiles));
 	return RET_OK;
+}
+
+static void EFS_Erase(int fd)
+{
+	file_info_t *f = &efs_mgr.arr_file_info[fd];
+	int			start_addr = f->start_page * EFS_FSH(f->fsh_No).fnf.page_size;
+	int			sz = f->file_size;
+
+	if(fd > EFS_MAX_NUM_FILES)
+		return;
+	
+	
+//	while(Sem_wait(&f->file_sem, EFS_WAIT_WR_MS) <= 0)
+//		delay_ms(1);
+
+	EFS_FSH(f->fsh_No).fsh_ersse_addr(start_addr, sz);
+	f->write_position = 0;
+	f->read_position = 0;
+//	Sem_post(&f->file_sem);
+}
+
+static void EFS_run(void *arg)
+{
+	uint8_t		i = 0;
+	for(i = 0; i < EFS_MAX_NUM_FILES; i++)
+	{
+		if(efs_mgr.arr_file_info[i].file_flag & EFS_FLAG_ERASE)
+		{
+			EFS_SYS.sys_flag |= SYSFLAG_EFS_NOTREADY;
+			EFS_Erase(i);
+			
+			
+		}
+		
+	}
+	
+	//放在这里统一清除擦除标志，是为了避免系统在擦除文件的时候，其他线程发起对flash的读写操作导致错误
+	for(i = 0; i < EFS_MAX_NUM_FILES; i++)
+	{
+		if(efs_mgr.arr_file_info[i].file_flag & EFS_FLAG_ERASE)
+		{
+			
+			efs_mgr.arr_file_info[i].file_flag &=~ EFS_FLAG_ERASE;
+			
+		}
+		
+	}
+	EFS_SYS.sys_flag &= ~SYSFLAG_EFS_NOTREADY;
 }
 
 static void	EFS_flush_mgr(int No)

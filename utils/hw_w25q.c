@@ -130,6 +130,7 @@ static int w25q_Erase_Sector(uint32_t Sector_Number);
 static int w25q_Erase_block(uint16_t block_Number);
 static int w25q_Erase_chip_c7(void);
 static int	W25Q_wr_fsh(uint8_t *pBuffer, uint32_t WriteAddr, uint32_t WriteBytesNum);
+static int w25q_Read_flash(uint8_t *pBuffer, uint32_t rd_add, uint32_t len);
 //static int w25q_Erase_chip_60(void);
 
 void W25Q_WP(int protect);
@@ -183,8 +184,9 @@ int w25q_init(void)
 //	phn_sys.arr_fsh[FSH_W25Q_NUM].fsh_wr_sector = w25q_Write_Sector_Data;
 //	phn_sys.arr_fsh[FSH_W25Q_NUM].fsh_rd_sector = w25q_Read_Sector_Data;
 	phn_sys.arr_fsh[FSH_W25Q_NUM].fsh_write = w25q_Write;
-	phn_sys.arr_fsh[FSH_W25Q_NUM].fsh_direct_write = W25Q_wr_fsh;
+	phn_sys.arr_fsh[FSH_W25Q_NUM].fsh_raw_write = W25Q_wr_fsh;
 	phn_sys.arr_fsh[FSH_W25Q_NUM].fsh_read = w25q_rd_data;
+	phn_sys.arr_fsh[FSH_W25Q_NUM].fsh_raw_read = w25q_Read_flash;
 	W25Q_FSH.fsh_flush = W25Q_Flush;
 	W25Q_Disable_WP;
 	
@@ -608,6 +610,33 @@ static int	W25Q_wr_fsh(uint8_t *pBuffer, uint32_t WriteAddr, uint32_t WriteBytes
 	
 }
 
+static int w25q_Read_flash(uint8_t *pBuffer, uint32_t rd_add, uint32_t len)
+{
+	int read_len;
+	int	safe_count = 20;
+	while(safe_count)
+	{
+		W25Q_tx_buf[0] = W25Q_INSTR_READ_DATA;
+		W25Q_tx_buf[1] = (uint8_t)((rd_add&0x00ff0000)>>16);
+		W25Q_tx_buf[2] = (uint8_t)((rd_add&0x0000ff00)>>8);
+		W25Q_tx_buf[3] = (uint8_t)rd_add;
+		W25Q_Enable_CS;
+		
+		if( SPI_WRITE( W25Q_tx_buf, 4) != 4)
+			return ERR_DRI_OPTFAIL;
+		read_len = SPI_READ( pBuffer, len);
+		
+		W25Q_Disable_CS;
+		if(read_len == len)
+			break;
+		if(safe_count)
+			safe_count --;
+		else
+			break;
+	}
+	return read_len;
+}
+
 static int w25q_Write_Sector_Data(uint8_t *pBuffer, uint16_t Sector_Num)
 {
 	int wr_page = 0;
@@ -996,10 +1025,19 @@ static int	W25Q_Change_cache_sct(uint16_t	sct_num)
 	if(safe_count == 0)
 		return ERR_DEV_FAILED;
 	
+	safe_count = 1000;
 	if(sct_num != w25q_mgr.cur_sct)
 	{
-		
-		ret = w25q_Read_Sector_Data(w25q_mgr.p_sct_buf, sct_num);
+		while(1)
+		{
+			ret = w25q_Read_Sector_Data(w25q_mgr.p_sct_buf, sct_num);
+			if(ret == w25q_mgr.sct_size)
+				break;
+			if(safe_count)
+				safe_count --;
+			else
+				break;	
+		}
 		w25q_mgr.cur_sct = sct_num;
 
 	}

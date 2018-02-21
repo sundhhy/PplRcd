@@ -98,7 +98,11 @@ Storage		*Get_storage();
 //针对记录数据的特殊接口
 //读取某段时间内的记录数据，返回值是读取到的数据的长度
 //并且把数据转成csv格式
-int	STG_Read_rcd_by_time(uint8_t	chn, uint32_t start_sec, uint32_t end_sec, char *buf, int buf_size, uint32_t *rd_sec);			
+int	STG_Read_rcd_by_time(uint8_t	chn, uint32_t start_sec, uint32_t end_sec, char *buf, int buf_size, uint32_t *rd_sec);
+
+//chn 0 ~ NUM_CHANNELNUM 是报警信息,0xff是掉电信息
+int	STG_Read_alm_pwr(uint8_t	chn_pwr,short start, char *buf, int buf_size, uint32_t *rd_count);			
+
 int	STG_Set_file_position(uint8_t	file_type, uint8_t rd_or_wr, uint32_t position);
 void STG_Erase_file(uint8_t	file_type);
 void STG_Resize(uint8_t	file_type, uint32_t	new_size);

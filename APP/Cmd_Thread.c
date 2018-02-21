@@ -49,6 +49,7 @@ osThreadId tid_cmd_Thread;                                          // thread id
 osThreadDef (Cmd_Thread, osPriorityBelowNormal, 1, 0);   
 
 cmd_run_t 	cmd_run;
+cmd_run_t 	cmd_idle_run;
 //------------------------------------------------------------------------------
 // local function prototypes
 //------------------------------------------------------------------------------
@@ -57,6 +58,13 @@ int	Cmd_Rgt_recv(cmd_recv	crv, void *arg)
 {
 	cmd_run.func = crv;
 	cmd_run.arg = arg;
+	return 0;
+	
+}
+int	Cmd_Rgt_idle_task(cmd_recv	crv, void *arg)
+{
+	cmd_idle_run.func = crv;
+	cmd_idle_run.arg = arg;
 	return 0;
 	
 }
@@ -92,6 +100,8 @@ static void Cmd_Thread (void const *argument) {
     ; // Insert thread code here...
 		if(cmd_run.func)
 			cmd_run.func(cmd_run.arg);
+		else if(cmd_idle_run.func)
+			cmd_idle_run.func(cmd_idle_run.arg);
     osThreadYield ();  		// suspend thread
   }
 }

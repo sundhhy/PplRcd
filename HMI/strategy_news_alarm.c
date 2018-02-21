@@ -1,7 +1,7 @@
 #include <stdint.h>
 #include "HMI_striped_background.h"
 #include "utils/Storage.h"
-
+#include "os/os_depend.h"
 //============================================================================//
 //            G L O B A L   D E F I N I T I O N S                             //
 //============================================================================//
@@ -94,6 +94,7 @@ static int NLM_Entry(int row, int col, void *pp_text)
 	char 						**pp = (char **)pp_text;
 	Storage						*stg = Get_storage();
 	rcd_alm_pwr_t				stg_alm;
+	int							read_len = 0;
 	struct 		tm 				t;
 	short						r = 0, pic_num = 0;
 	if(col > 2)
@@ -108,15 +109,30 @@ static int NLM_Entry(int row, int col, void *pp_text)
 		//有可能是查询是否更多数据
 		//(row - 2 * pic_num) 每页的0，1两行显示的不是报警数据，因此要剪掉
 		STG_Set_file_position(STG_CHN_ALARM(g_setting_chn), STG_DRC_READ, (row - 2 * pic_num)* sizeof(rcd_alm_pwr_t));
-		if(stg->rd_stored_data(stg, STG_CHN_ALARM(g_setting_chn), \
-				&stg_alm, sizeof(rcd_alm_pwr_t)) != sizeof(rcd_alm_pwr_t))
-			{	
+		while(1)
+		{
+			read_len = stg->rd_stored_data(stg, STG_CHN_ALARM(g_setting_chn), \
+				&stg_alm, sizeof(rcd_alm_pwr_t));
+			if(read_len < 0)
+			{
+				//其他线程正在访问
+				delay_ms(1);
+				
+			}
+			else if((read_len == 0) || (stg_alm.alm_pwr_type == 0xff))
+			{
 				//或者已经读完了
 				return 0;
+				
 			}
+			else if(read_len == sizeof(rcd_alm_pwr_t))
+			{
+				break;
+			}				
 			
-		if(stg_alm.flag == 0xff)
-			return 0;		//记录结尾
+		}
+		
+		
 	
 	}
 	

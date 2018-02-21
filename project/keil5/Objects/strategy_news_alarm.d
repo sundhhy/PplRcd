@@ -61,3 +61,6 @@
 .\objects\strategy_news_alarm.o: ..\..\HMI\commHMI.h
 .\objects\strategy_news_alarm.o: ..\..\HMI\keyboardHMI.h
 .\objects\strategy_news_alarm.o: ..\..\..\PplRcd\utils/Storage.h
+.\objects\strategy_news_alarm.o: E:\sdhLib\inc\os/os_depend.h
+.\objects\strategy_news_alarm.o: E:\sdhLib\inc\os/rtx/rtx_depend.h
+.\objects\strategy_news_alarm.o: d:\Keil_v5\ARM\PACK\ARM\CMSIS\4.4.0\CMSIS\RTOS\RTX\INC\cmsis_os.h

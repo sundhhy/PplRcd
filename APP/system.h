@@ -40,6 +40,7 @@
 #define	CHG_MODCHN_CONF(n)			(1 << (n + 1))
 
 #define SYSFLAG_SETTING				1
+#define SYSFLAG_EFS_NOTREADY			2		//文件系统未就绪，可能正在擦除文件
 //------------------------------------------------------------------------------
 // typedef
 //------------------------------------------------------------------------------
@@ -109,8 +110,9 @@ typedef struct {
 //	int	(*fsh_wr_sector)(uint8_t *wr_buf, uint16_t num_sector);
 //	int	(*fsh_rd_sector)(uint8_t *rd_buf, uint16_t num_sector);
 	int (*fsh_write)(uint8_t *wr_buf, uint32_t wr_addr, uint32_t num_bytes);
-	int (*fsh_direct_write)(uint8_t *wr_buf, uint32_t wr_addr, uint32_t num_bytes);
+	int (*fsh_raw_write)(uint8_t *wr_buf, uint32_t wr_addr, uint32_t num_bytes);
 	int (*fsh_read)(uint8_t *wr_buf, uint32_t rd_addr, uint32_t num_bytes);
+	int (*fsh_raw_read)(uint8_t *wr_buf, uint32_t rd_addr, uint32_t num_bytes);
 	
 	void (*fsh_flush)(void);
 }flash_t;
@@ -157,8 +159,9 @@ typedef struct {
 	int		(*fs_close)(int fd);
 	int		(*fs_delete)(int fd, char *path);	//fd < 0的时候，通过path来查找文件
 	int		(*fs_write)(int fd, uint8_t *p, int len);
-	int		(*fs_direct_write)(int fd, uint8_t *p, int len);		//直接写入到硬件，不使用缓存
+	int		(*fs_raw_write)(int fd, uint8_t *p, int len);		//直接写入到硬件，不使用缓存
 	int		(*fs_read)(int fd, uint8_t *p, int len);
+	int		(*fs_raw_read)(int fd, uint8_t *p, int len);
 	int		(*fs_resize)(int fd, char *name, int new_size);
 	int 	(*fs_lseek)(int fd, int whence, int32_t offset);
 	void 	(*fs_erase_file)(int fd, uint32_t start, uint32_t size);

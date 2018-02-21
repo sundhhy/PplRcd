@@ -191,6 +191,8 @@ static void Win_initSheet(HMI *self )
 		MUS_init(cthis);
 	}
 	
+	self->init_focus(self);
+	
 
 	
 	

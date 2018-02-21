@@ -214,9 +214,17 @@ static void		CRV_Add_point(uint8_t  crv_fd, crv_val_t *cv)
 		
 	}
 	
+	
+	
 	range = p_CRV_self->p_crv_att[crv_fd].crv_y1 - p_CRV_self->p_crv_att[crv_fd].crv_y0;
 	height = cv->prc * range / 100;
 	val_y = p_CRV_self->p_crv_att[crv_fd].crv_y1 - height;
+	
+	if(val_y == *CRV_Get_val_y(crv_fd, p_CRV_self->p_run_info[crv_fd].next_index - 1))
+	{
+		val_y = *CRV_Get_val_y(crv_fd, p_CRV_self->p_run_info[crv_fd].next_index - 1);
+		
+	}
 	
 	*CRV_Get_val_y(crv_fd, p_CRV_self->p_run_info[crv_fd].next_index) = val_y;
 //	p_CRV_self->p_run_info[crv_fd].p_vals_y[CRV_abs_idx(p_CRV_self->p_run_info[crv_fd].next_index)] = val_y;

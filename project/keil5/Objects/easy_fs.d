@@ -37,3 +37,4 @@
 .\objects\easy_fs.o: E:\sdhLib\inc\os/rtx/rtx_depend.h
 .\objects\easy_fs.o: d:\Keil_v5\ARM\PACK\ARM\CMSIS\4.4.0\CMSIS\RTOS\RTX\INC\cmsis_os.h
 .\objects\easy_fs.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
+.\objects\easy_fs.o: ..\..\APP\sys_cmd.h

@@ -41,6 +41,17 @@ strategy_t	g_DBP_strategy = {
 	DBP_commit,
 	DBP_Exit,
 };
+
+enum {
+	row_usb_info,
+	row_file_type,
+	row_chn_num,
+	row_start_time,
+	row_end_time,
+	row_file_name,
+	DBP_row_max,
+	DBP_row_tips
+}DBP_rows;
 //------------------------------------------------------------------------------
 // global function prototypes
 //------------------------------------------------------------------------------
@@ -60,13 +71,13 @@ strategy_t	g_DBP_strategy = {
 //------------------------------------------------------------------------------
 // local vars
 //------------------------------------------------------------------------------
- static char *const arr_p_DBU_entry[6] = {"设备当前状态：", "备份数据通道：", "起始时间：", "终止时间：",\
+ static char *const arr_p_DBU_entry[7] = {"设备当前状态：", "备份类型：","备份数据通道：", "起始时间：", "终止时间：",\
 	 "文件名：", "备份进程"
  };
  
 static uint8_t		arr_DBP_fds[3];
 static uint8_t		DBP_copy;
- 
+static char			copy_file_type;	//0 数据 1 报警 2 掉电 
 static uint16_t		usb_buf_size;
 //------------------------------------------------------------------------------
 // local function prototypes
@@ -74,6 +85,8 @@ static uint16_t		usb_buf_size;
 static int	DBP_Usb_event(int type);
 static int DBP_update_content(int op, int weight);
 static void	DBP_Btn_hdl(void *self, uint8_t	btn_id); 
+static void DBP_Print_file_type(char *s, char ft);
+static void DBP_Default_file_name(char *s, char ft);
  
 static int	DBP_filename_commit(void *self, void *data, int len);
 //============================================================================//
@@ -98,7 +111,7 @@ static int Data_bacnup_Strategy_entry(int row, int col, void *pp_text)
 	Model	*model;
 	if(col == 0) {
 		
-		if(row > 5)
+		if(row > DBP_row_max)
 			return 0;
 		*pp = arr_p_DBU_entry[row];
 		return strlen(arr_p_DBU_entry[row]);
@@ -107,25 +120,31 @@ static int Data_bacnup_Strategy_entry(int row, int col, void *pp_text)
 	{
 		switch(row) 
 		{
-			case 0:
+			case row_usb_info:
 				if(phn_sys.usb_device)
 					sprintf(arr_p_vram[row], "设备已连接");
 				else
 					sprintf(arr_p_vram[row], "设备未连接");
 				break;
-			case 1:		//
+			case row_file_type:
+				DBP_Print_file_type(arr_p_vram[row], copy_file_type);
+				break;
+			case row_chn_num:		//
 				sprintf(arr_p_vram[row], "%d", g_setting_chn);
 				break;
-			case 2:	
-			case 3:		//单位
+			case row_start_time:	
+			case row_end_time:		//单位
 				if(arr_p_vram[row][0] != '\0')
 					break;		//这种情况是从设置窗口返回，所以就不要再赋值原始值了，下面的部分也是一样
 				model = ModelCreate("time");
 				model->to_string(model, 1, arr_p_vram[row]);
 				break;
-			case 4:		
+			case row_file_name:		
 				if(arr_p_vram[row][0] == '\0')
-					sprintf(arr_p_vram[row], "/CHN_%d.CSV", g_setting_chn);	//成72要求文件名必须大写
+				{
+//					sprintf(arr_p_vram[row], "/CHN_%d.CSV", g_setting_chn);	//成72要求文件名必须大写
+					DBP_Default_file_name(arr_p_vram[row], copy_file_type);
+				}
 				else {
 					
 					if( strstr(arr_p_vram[row], ".CSV") == NULL)
@@ -160,7 +179,7 @@ static int DBP_init(void *arg)
 	g_DBP_strategy.sf.start_byte = 0;
 	g_DBP_strategy.sf.num_byte = 1;
 	HMI_Ram_init();
-	for(i = 0; i < 5; i++) {
+	for(i = 0; i < DBP_row_max; i++) {
 		
 		arr_p_vram[i] = HMI_Ram_alloc(48);
 		memset(arr_p_vram[i], 0, 48);
@@ -168,8 +187,9 @@ static int DBP_init(void *arg)
 	
 //	usb_buf_size = HMI_Ram_free_bytes();
 	usb_buf_size = USB_MAX_WRITE_BYTE;
-	arr_p_vram[5] = HMI_Ram_alloc(usb_buf_size);		//这个缓存用于数据备份
+	arr_p_vram[DBP_row_max] = HMI_Ram_alloc(usb_buf_size);		//这个缓存用于数据备份
 	
+	arr_p_vram[DBP_row_tips] = HMI_Ram_alloc(48); //
 	g_setting_chn = 0;
 	arr_DBP_fds[0] = USB_Rgt_event_hdl(DBP_Usb_event);
 //	phn_sys.key_weight = 1;
@@ -180,7 +200,7 @@ static void DBP_build_component(void *arg)
 {
 	Button			*p_btn = BTN_Get_Sington();
 	Progress_bar	*p_bar = PGB_Get_Sington();
-	bar_object_t	bob = {{1, 130, 280, 16, 0, PGB_TWD_CROSS, FONT_16, PGB_TIP_RIGHT}, \
+	bar_object_t	bob = {{1, 146, 280, 16, 0, PGB_TWD_CROSS, FONT_16, PGB_TIP_RIGHT}, \
 		{COLOUR_GREN, COLOUR_GRAY, COLOUR_BLUE, COLOUR_YELLOW}};
 	p_btn->build_each_btn(0, BTN_TYPE_MENU, Setting_btn_hdl, arg);
 	p_btn->build_each_btn(1, BTN_TYPE_COPY, DBP_Btn_hdl, arg);
@@ -201,6 +221,48 @@ static void DBP_Exit(void)
 		DBP_copy = 0;
 	p_bar->delete_bar(arr_DBP_fds[1]);
 	kbr_cmt = NULL;
+}
+
+static void DBP_Default_file_name(char *s, char ft)
+{
+	switch(ft)
+	{
+		case 0:
+			sprintf(s,  "/CHN_%d.CSV", g_setting_chn);
+			break;
+		case 1:
+			sprintf(s, "/ALARM_%d.CSV", g_setting_chn);
+			break;
+		case 2:
+			sprintf(s, "/POWER.CSV  ");
+			break;
+		default:
+			sprintf(s, "        ");
+			break;
+		
+	}
+	
+}
+static void DBP_Print_file_type(char *s, char ft)
+{
+	switch(ft)
+	{
+		case 0:
+			sprintf(s, "历史数据");
+			break;
+		case 1:
+			sprintf(s, "报警信息");
+			break;
+		case 2:
+			sprintf(s, "掉电信息");
+			break;
+		default:
+			sprintf(s, "        ");
+			break;
+		
+	}
+	
+	
 }
 static int DBP_key_up(void *arg)
 {
@@ -245,20 +307,36 @@ static int DBP_key_dn(void *arg)
 	ret = DBP_update_content(OP_SUB, phn_sys.key_weight);
 	return ret;
 }
+
+
+
 static int DBP_key_lt(void *arg)
 {
 	
 	strategy_focus_t *p_syf = &g_DBP_strategy.sf;
 	int ret = RET_OK;
-	
-	if(p_syf->f_row > 1)
-		p_syf->f_row --;
-	else {
-		p_syf->f_row = 4;
-		ret = -1;
-		
+//	if(copy_file_type)
+//	{
+//		//非历史数据就只需要选择文件名和文件类型
+//		if(p_syf->f_row == row_file_name)
+//			p_syf->f_row = row_file_type;
+//		else
+//		{
+//			p_syf->f_row = row_file_name;
+//			ret = -1;
+//		}
+//		
+//	}
+//	else
+	{
+		if(p_syf->f_row > 1)
+			p_syf->f_row --;
+		else {
+			p_syf->f_row = DBP_row_max - 1;
+			ret = -1;
+			
+		}
 	}
-	
 	p_syf->num_byte = strlen(arr_p_vram[p_syf->f_row]);
 	if(p_syf->f_row == 4)
 		p_syf->num_byte -= strlen(".CSV");	//后缀不允许修改
@@ -270,12 +348,28 @@ static int DBP_key_rt(void *arg)
 	strategy_focus_t *p_syf = &g_DBP_strategy.sf;
 	int ret = RET_OK;
 	
-	if(p_syf->f_row < 4)
-		p_syf->f_row ++;
-	else {
-		p_syf->f_row = 1;
-		p_syf->f_col = 1;
-		ret = -1;
+//	if(copy_file_type)
+//	{
+//		//非历史数据就只需要选择文件名和文件类型
+//		if(p_syf->f_row == row_file_type)
+//			p_syf->f_row = row_file_name;
+//		else
+//		{
+//			p_syf->f_row = row_file_type;
+//			ret = -1;
+//		}
+//		
+//	}
+//	else
+	{
+	
+		if(p_syf->f_row < (DBP_row_max - 1))
+			p_syf->f_row ++;
+		else {
+			p_syf->f_row = 1;
+			p_syf->f_col = 1;
+			ret = -1;
+		}
 	}
 	
 	p_syf->num_byte = strlen(arr_p_vram[p_syf->f_row]);
@@ -288,6 +382,8 @@ static int DBP_key_er(void *arg)
 	return RET_OK;
 }
 
+
+
 static int DBP_get_focusdata(void *pp_data,  strategy_focus_t *p_in_syf)
 {
 	
@@ -295,7 +391,7 @@ static int DBP_get_focusdata(void *pp_data,  strategy_focus_t *p_in_syf)
 	char		**pp_vram = (char **)pp_data;
 	int ret = 0;
 	
-	if((p_syf->f_row < 1) || (p_syf->f_row > 4)) {
+	if((p_syf->f_row < 1) || (p_syf->f_row > (DBP_row_max - 1))) {
 		return -1;
 	}
 	
@@ -328,7 +424,7 @@ static int	DBP_Usb_event(int type)
 		return RET_OK;
 	
 	pos.f_col = 1;
-	pos.f_row = 0;
+	pos.f_row = row_usb_info;
 	g_DBP_strategy.cmd_hdl(g_DBP_strategy.p_cmd_rcv, sycmd_reflush_position, &pos);
 //	if(type == et_ready)
 //	{
@@ -374,24 +470,36 @@ static int DBP_update_content(int op, int weight)
 	strategy_focus_t 	*p_syf = &g_DBP_strategy.sf;
 	int					ret = RET_OK;
 	strategy_focus_t		pos;
+	
+	
+	
 	switch(p_syf->f_row) {
-		case 1:
-			g_setting_chn = Operate_in_tange(g_setting_chn, op, 1, 0, NUM_CHANNEL - 1);
-			sprintf(arr_p_vram[1], "%d", g_setting_chn);
+		case row_file_type:
+			copy_file_type = Operate_in_tange(copy_file_type, op, 1, 0, 2);
+			DBP_Print_file_type(arr_p_vram[row_file_type], copy_file_type);
 			pos.f_col = 1;
-			pos.f_row = 4;
-			arr_p_vram[4][0] = 0;	//重新生成默认文件名
+			pos.f_row = row_file_name;
+			arr_p_vram[row_file_name][0] = 0;	//重新生成默认文件名
 			g_DBP_strategy.cmd_hdl(g_DBP_strategy.p_cmd_rcv, sycmd_reflush_position, &pos);
 			break;
-		case 2:		
+		case row_chn_num:
+			g_setting_chn = Operate_in_tange(g_setting_chn, op, 1, 0, NUM_CHANNEL - 1);
+			sprintf(arr_p_vram[row_chn_num], "%d", g_setting_chn);
+			pos.f_col = 1;
+			pos.f_row = row_file_name;
+			arr_p_vram[row_file_name][0] = 0;	//重新生成默认文件名
+			g_DBP_strategy.cmd_hdl(g_DBP_strategy.p_cmd_rcv, sycmd_reflush_position, &pos);
+			break;
+
+		case row_start_time:		
 //			g_DBP_strategy.cmd_hdl(g_sys_strategy.p_cmd_rcv, sycmd_win_time, arr_p_vram[p_syf->f_row]);
 //			ret = 1;
 //			break;
-		case 3:
+		case row_end_time:
 			g_DBP_strategy.cmd_hdl(g_DBP_strategy.p_cmd_rcv, sycmd_win_time, arr_p_vram[p_syf->f_row]);
 			ret = 1;
 			break;
-		case 4:
+		case row_file_name:
 			
 			g_DBP_strategy.cmd_hdl(g_DBP_strategy.p_cmd_rcv, sycmd_keyboard, arr_p_vram[p_syf->f_row]);
 			ret = 1;
@@ -404,28 +512,42 @@ static int DBP_update_content(int op, int weight)
 	return ret;
 }
 
+
+
+
 static void DBP_Copy(void *arg)
 {
 	
-	uint32_t			start_sec = Str_time_2_u32(arr_p_vram[2]);
-	uint32_t			end_sec = Str_time_2_u32(arr_p_vram[3]);
-	uint32_t			total_sec = end_sec - start_sec + 1;
-	uint32_t			done_sec = 0;
+	uint32_t			start_sec = Str_time_2_u32(arr_p_vram[row_start_time]);
+	uint32_t			end_sec = Str_time_2_u32(arr_p_vram[row_end_time]);
+	uint32_t			total = end_sec - start_sec + 1;
+	uint32_t			done = 0;
 	uint32_t			rd_sec = 0;
 	
-	Progress_bar	*p_bar = PGB_Get_Sington();
-	char				*copy_buf = arr_p_vram[5];
-	int						rd_len = 0;
-	int						usb_fd = 0;
-	uint32_t				dbp_count_bytes = 0;
+	Progress_bar		*p_bar = PGB_Get_Sington();
+	char				*copy_buf = arr_p_vram[DBP_row_max];
+	int					rd_len = 0;
+	int					usb_fd = 0;
+	uint32_t			dbp_count_bytes = 0;
 	uint8_t				last_prc = 0, prc = 0;
 //	usb_fd = USB_Open_file(arr_p_vram[4], USB_FM_WRITE | USB_FM_COVER);
 
-//	total_sec = 100;
-	
-	STG_Set_file_position(STG_CHN_DATA(g_setting_chn), STG_DRC_READ, 0);
+	if(copy_file_type == 0)
+		STG_Set_file_position(STG_CHN_DATA(g_setting_chn), STG_DRC_READ, 0);
+	else if(copy_file_type == 1)
+	{
+		
+		total = STG_MAX_NUM_CHNALARM;
+		start_sec = 0;
+	}
+	else
+	{
+		
+		total = STG_MAX_NUM_LST_PWR;
+		start_sec = 0;
+	}
 
-	while(done_sec < total_sec)
+	while(done < total)
 	{
 
 			
@@ -435,27 +557,53 @@ static void DBP_Copy(void *arg)
 			goto copy_wait;
 		if(usb_fd == 0)
 		{
-			usb_fd = USB_Create_file(arr_p_vram[4], USB_FM_WRITE | USB_FM_COVER);
+			usb_fd = USB_Create_file(arr_p_vram[row_file_name], USB_FM_WRITE | USB_FM_COVER);
 			if(usb_fd == 0x42)
 			{
 				//todo: 文件名错误的处理要完善
 				usb_fd = 0;
 				goto copy_wait;
 			}
-			sprintf(copy_buf,"日期,时间,值\r\n");
+			if(copy_file_type == 0)
+				sprintf(copy_buf,"日期,时间,值\r\n");
+			else if(copy_file_type == 1)
+				sprintf(copy_buf,"报警类型,产生日期,产生时间,结束日期,结束时间\r\n");
+			else if(copy_file_type == 2)
+				sprintf(copy_buf,"上电日期,上电时间,掉电日期,掉电时间\r\n");
+				
 			USB_Write_file(usb_fd, copy_buf, strlen(copy_buf));
 		}
 		
-		rd_sec = 0;
-		rd_len = STG_Read_rcd_by_time(g_setting_chn, start_sec, end_sec, copy_buf, usb_buf_size, &rd_sec);
-		if(rd_len <= 0)
-			done_sec = total_sec;
-		else
+		if(copy_file_type == 0)
 		{
-			
-			start_sec += rd_sec;
-			done_sec += rd_sec;
+			rd_sec = 0;
+			rd_len = STG_Read_rcd_by_time(g_setting_chn, start_sec, end_sec, copy_buf, usb_buf_size, &rd_sec);
+			if(rd_len <= 0)
+				done = total;
+			else
+			{
+				
+				start_sec += rd_sec;
+				done += rd_sec;
+			}
 		}
+		else 
+		{
+			if(copy_file_type == 1)
+				rd_len = STG_Read_alm_pwr(g_setting_chn, start_sec, copy_buf, usb_buf_size, &rd_sec);
+			else
+				rd_len = STG_Read_alm_pwr(0xff, start_sec, copy_buf, usb_buf_size, &rd_sec);
+				
+			if(rd_len <= 0)
+				done = total;
+			else
+			{
+				
+				start_sec += rd_sec;
+				done += rd_sec;
+			}
+		}
+		
 //		
 		if(rd_len > 0)
 		{
@@ -469,7 +617,10 @@ static void DBP_Copy(void *arg)
 		
 		//用读取的时间与总时间的比值作为进度依据
 	copy_wait:
-		prc = done_sec * 100 / total_sec;
+		
+		prc = done * 100 / total;
+			
+		
 		if(prc > last_prc)
 		{
 			p_bar->update_bar(arr_DBP_fds[1], prc);
@@ -485,8 +636,11 @@ static void DBP_Copy(void *arg)
 	{
 		USB_Colse_file(usb_fd);
 		//恢复出厂设置，应该不只是恢复系统设置，包括通道设置等，应该也要恢复
-		sprintf(arr_p_vram[5],"完成,写入:%d kB", dbp_count_bytes / 1024);
-		Win_content(arr_p_vram[5]);
+		if(dbp_count_bytes > 10240)
+			sprintf(arr_p_vram[DBP_row_tips],"成功写入:%dkB", dbp_count_bytes / 1024);
+		else
+			sprintf(arr_p_vram[DBP_row_tips],"成功写入:%dB", dbp_count_bytes);
+		Win_content(arr_p_vram[DBP_row_tips]);
 		g_DBP_strategy.cmd_hdl(g_DBP_strategy.p_cmd_rcv, sycmd_win_tips, NULL);
 		
 	}

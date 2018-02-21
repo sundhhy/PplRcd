@@ -197,9 +197,104 @@ void STG_Erase_file(uint8_t	file_type)
 	STRG_SYS.fs.fs_erase_file(fd, erase_addr[0] , erase_addr[1]);
 	
 }
+
+int	STG_Read_alm_pwr(uint8_t	chn_pwr,short start, char *buf, int buf_size, uint32_t *rd_count)		
+{
+	Storage				*stg = Get_storage();
+//	file_info_t			*fnf ;
+	int					fd = -1;
+	rcd_alm_pwr_t		ap;
+	struct  tm			st,et;
+//	uint32_t			max_sec = 0;	
+	int					buf_offset = 0;
+	char				tmp_buf[32];
+	char				alarm_code[4];
+	uint8_t				ct;
+	if(chn_pwr < NUM_CHANNEL)
+	{
+		ct = STG_CHN_ALARM(chn_pwr);
+		
+	}
+	else
+	{
+		ct = STG_LOSE_PWR;
+
+	}		
+	
+//	fnf = STRG_SYS.fs.fs_file_info(fd);
+
+//	fd = STG_Open_file(ct, STG_DEF_FILE_SIZE);
+//	STRG_SYS.fs.fs_lseek(fd, RD_SEEK_SET, start * sizeof(rcd_alm_pwr_t));
+	STG_Set_file_position(ct, STG_DRC_READ, start * sizeof(rcd_alm_pwr_t));
+//	memset(buf, 0, buf_size);
+	buf[0] = 0;
+	while(1)
+	{
+		
+//		if((buf_offset + 21)> buf_size)		//必须预留最大数据长度的空间
+//			break;
+		
+//		if(fnf->read_position >= fnf->write_position)
+//			break;
+		
+		
+		if(stg->rd_stored_data(stg, ct, (uint8_t *)&ap, sizeof(rcd_alm_pwr_t)) != sizeof(rcd_alm_pwr_t))
+			break;
+
+		
+		if(ap.happen_time_s == 0xffffffff)
+			continue;
+		if(ap.disapper_time_s == 0xffffffff)
+			continue;
+		
+		
+		
+		Sec_2_tm(ap.happen_time_s, &st);
+		Sec_2_tm(ap.disapper_time_s, &et);
+		//放置csv格式的数据
+		
+		switch(ap.alm_pwr_type)
+		{
+			case ALM_CODE_HH:
+				sprintf(alarm_code, "HH,");
+				break;
+			case ALM_CODE_HI:
+				sprintf(alarm_code, "HI,");
+				break;
+			case ALM_CODE_LO:
+				sprintf(alarm_code, "LO,");
+				break;
+			case ALM_CODE_LL:
+				sprintf(alarm_code, "LL,");
+				break;
+			
+			
+		}
+		if(chn_pwr > NUM_CHANNEL)
+			alarm_code[0] = 0;
+		sprintf(tmp_buf, "%s%2d/%02d/%02d,%02d:%02d:%02d,%2d/%02d/%02d,%02d:%02d:%02d\r\n", alarm_code,\
+			st.tm_year,st.tm_mon, st.tm_mday, st.tm_hour, st.tm_min, st.tm_sec, \
+			et.tm_year,et.tm_mon, et.tm_mday, et.tm_hour, et.tm_min, et.tm_sec);
+		if(strlen(tmp_buf) > (buf_size - buf_offset))
+		{
+			STRG_SYS.fs.fs_lseek(fd, RD_SEEK_CUR, -sizeof(rcd_alm_pwr_t));
+			break;
+			
+		}
+		
+		strcat(buf, tmp_buf);
+		buf_offset = strlen(buf);
+		(*rd_count) ++;
+	}
+	
+	return buf_offset;
+	
+	
+}
 int	STG_Read_rcd_by_time(uint8_t	chn, uint32_t start_sec, uint32_t end_sec, char *buf, int buf_size, uint32_t *rd_sec)
 {
 	Storage				*stg = Get_storage();
+	file_info_t			*fnf ;
 	int					fd = -1;
 	data_in_fsh_t		d;
 	struct  tm			t;
@@ -208,19 +303,19 @@ int	STG_Read_rcd_by_time(uint8_t	chn, uint32_t start_sec, uint32_t end_sec, char
 	char				tmp_buf[32];
 	
 	fd = STG_Open_file(STG_CHN_DATA(chn), STG_DEF_FILE_SIZE);
-//	STRG_SYS.fs.fs_lseek(fd, RD_SEEK_SET, 0);
-//	memset(buf, 0, buf_size);
+	fnf = STRG_SYS.fs.fs_file_info(fd);
+
 	buf[0] = 0;
 	while(1)
 	{
-		
-//		if((buf_offset + 21)> buf_size)		//必须预留最大数据长度的空间
-//			break;
-		if(STRG_SYS.fs.fs_read(fd, (uint8_t *)&d, sizeof(data_in_fsh_t)) != sizeof(data_in_fsh_t))
+		if(fnf->read_position >= fnf->write_position)
+			break;
+		if(STRG_SYS.fs.fs_raw_read(fd, (uint8_t *)&d, sizeof(data_in_fsh_t)) != sizeof(data_in_fsh_t))
 			break;
 
+		
 		if(d.rcd_time_s == 0xffffffff)
-			break;
+			continue;
 		if(d.rcd_time_s < start_sec)
 			continue;
 		if(d.rcd_time_s > end_sec)
@@ -590,13 +685,23 @@ static int	STG_Acc_chn_data(uint8_t	type, uint8_t	drc, void *p, int len)
 	Storage				*stg = Get_storage();
 	int						fd = -1;
 	int					acc_len = 0;
+	file_info_t			*fnf ;
 	uint8_t				chn_num = STG_GET_CHN(type);
+
+	
+	
+	
+
+	
 	
 	fd = STG_Open_file(type, STG_DEF_FILE_SIZE);
 	
 	if(drc == STG_DRC_READ)
 	{
-		acc_len = STRG_SYS.fs.fs_read(fd, (uint8_t *)p, len);
+		fnf = STRG_SYS.fs.fs_file_info(fd);
+		if(fnf->read_position >= fnf->write_position)
+			goto exit;
+		acc_len = STRG_SYS.fs.fs_raw_read(fd, (uint8_t *)p, len);
 		
 	}
 	else
@@ -606,12 +711,20 @@ static int	STG_Acc_chn_data(uint8_t	type, uint8_t	drc, void *p, int len)
 			STRG_SYS.fs.fs_erase_file(fd, 0, 0);
 			stg->arr_rcd_mgr[chn_num].rcd_count = 0;
 		}
+//		if(chn_num == 0)
+//		{
+//			STRG_SYS.fs.fs_erase_file(fd, 0, 0);
+//			stg->arr_rcd_mgr[chn_num].rcd_count = 0;
+//			
+//		}
 		dinf.rcd_time_s = SYS_time_sec();
 		dinf.rcd_val = *(uint16_t *)p;
-		stg->arr_rcd_mgr[chn_num].rcd_count ++;
-		acc_len = STRG_SYS.fs.fs_direct_write(fd, (uint8_t *)&dinf, sizeof(dinf));
+		acc_len = STRG_SYS.fs.fs_raw_write(fd, (uint8_t *)&dinf, sizeof(dinf));
+		if(acc_len == sizeof(dinf))
+			stg->arr_rcd_mgr[chn_num].rcd_count ++;
+
 	}
-	
+	exit:
 	return acc_len;
 	
 		

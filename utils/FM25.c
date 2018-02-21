@@ -106,7 +106,8 @@ int FM25_init(void)
 	phn_sys.arr_fsh[FM25_SPI_NO].fsh_ersse_addr = FM25_Erase_addr;
 
 	phn_sys.arr_fsh[FM25_SPI_NO].fsh_write = FM25_Write;
-	phn_sys.arr_fsh[FM25_SPI_NO].fsh_direct_write = FM25_Write;
+	phn_sys.arr_fsh[FM25_SPI_NO].fsh_raw_write = FM25_Write;
+	phn_sys.arr_fsh[FM25_SPI_NO].fsh_raw_read = FM25_rd_data;
 	phn_sys.arr_fsh[FM25_SPI_NO].fsh_read = FM25_rd_data;
 	phn_sys.arr_fsh[FM25_SPI_NO].fsh_flush = FM25_Flush;
 	

@@ -30,5 +30,6 @@ typedef struct {
 //------------------------------------------------------------------------------
 int Init_Cmd_Thread (void);
 int	Cmd_Rgt_recv(cmd_recv	crv, void *arg);
+int	Cmd_Rgt_idle_task(cmd_recv	crv, void *arg);
 void Cmd_del_recv(int	cmd_fd);
 #endif
