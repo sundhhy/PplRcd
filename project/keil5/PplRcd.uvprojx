@@ -458,6 +458,16 @@
               <FileType>5</FileType>
               <FilePath>..\..\APP\sys_cmd.h</FilePath>
             </File>
+            <File>
+              <FileName>Modbus_app.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\APP\Modbus_app.c</FilePath>
+            </File>
+            <File>
+              <FileName>Modbus_app.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\APP\Modbus_app.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -562,6 +572,26 @@
               <FileName>sdhError.h</FileName>
               <FileType>5</FileType>
               <FilePath>E:\sdhLib\inc\basis\sdhError.h</FilePath>
+            </File>
+            <File>
+              <FileName>modbusRTU_cli.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>E:\sdhLib\src\Communication\modbusRTU_cli.c</FilePath>
+            </File>
+            <File>
+              <FileName>modbusRTU_cli.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>E:\sdhLib\inc\Communication\modbusRTU_cli.h</FilePath>
+            </File>
+            <File>
+              <FileName>crc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>E:\sdhLib\src\arithmetic\crc.c</FilePath>
+            </File>
+            <File>
+              <FileName>crc.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>E:\sdhLib\inc\arithmetic\crc.h</FilePath>
             </File>
           </Files>
         </Group>
