@@ -544,6 +544,7 @@ void System_to_string(void *p_data, char	*p_s, int len, int aux)
 				p_u8 = (uint8_t *)p_data;
 			else 
 				p_u8 = &phn_sys.sys_conf.CJC;
+			sprintf(p_s, "%2d", *p_u8);
 			break;
 			
 		case es_cold_end_way:

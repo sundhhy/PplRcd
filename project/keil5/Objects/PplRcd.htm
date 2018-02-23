@@ -3,7 +3,7 @@
 <title>Static Call Graph - [.\Objects\PplRcd.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image .\Objects\PplRcd.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060061: Last Updated: Fri Feb 23 17:47:03 2018
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5050106: Last Updated: Fri Feb 23 22:08:11 2018
 <BR><P>
 <H3>Maximum Stack Usage =        432 bytes + Unknown(Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -1917,7 +1917,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[1b3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;KeyboardHitHandle
 </UL>
 
-<P><STRONG><a name="[2b7]"></a>Except_raise</STRONG> (Thumb, 128 bytes, Stack size 0 bytes, except.o(i.Except_raise))
+<P><STRONG><a name="[2b7]"></a>Except_raise</STRONG> (Thumb, 130 bytes, Stack size 0 bytes, except.o(i.Except_raise))
 <BR><BR>[Stack]<UL><LI>Max Depth = 24 + In Cycle
 <LI>Call Chain = Except_raise &rArr;  Except_raise (Cycle)
 </UL>
@@ -3013,8 +3013,8 @@ Global Symbols
 </UL>
 <BR>[Calls]<UL><LI><a href="#[225]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;BTN_Get_Sington
 </UL>
-<BR>[Address Reference Count : 2]<UL><LI> mainhmi.o(i.mainHmi_ctor)
-<LI> bargraphhmi.o(i.barGhHMI_ctor)
+<BR>[Address Reference Count : 2]<UL><LI> bargraphhmi.o(i.barGhHMI_ctor)
+<LI> mainhmi.o(i.mainHmi_ctor)
 </UL>
 <P><STRONG><a name="[18d]"></a>Main_HMI_hit</STRONG> (Thumb, 98 bytes, Stack size 16 bytes, mainhmi.o(i.Main_HMI_hit))
 <BR><BR>[Stack]<UL><LI>Max Depth = 88<LI>Call Chain = Main_HMI_hit &rArr; BTN_Get_Sington &rArr; Button_new &rArr; malloc &rArr; internal_alloc
@@ -3022,8 +3022,8 @@ Global Symbols
 <BR>[Calls]<UL><LI><a href="#[225]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;BTN_Get_Sington
 <LI><a href="#[20d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strcmp
 </UL>
-<BR>[Address Reference Count : 2]<UL><LI> mainhmi.o(i.mainHmi_ctor)
-<LI> bargraphhmi.o(i.barGhHMI_ctor)
+<BR>[Address Reference Count : 2]<UL><LI> bargraphhmi.o(i.barGhHMI_ctor)
+<LI> mainhmi.o(i.mainHmi_ctor)
 </UL>
 <P><STRONG><a name="[109]"></a>Main_btn_hdl</STRONG> (Thumb, 78 bytes, Stack size 16 bytes, mainhmi.o(i.Main_btn_hdl))
 <BR><BR>[Stack]<UL><LI>Max Depth = 16<LI>Call Chain = Main_btn_hdl
@@ -3865,10 +3865,10 @@ Global Symbols
 </UL>
 <BR>[Calls]<UL><LI><a href="#[31e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HMI_SBG_Turn_page
 </UL>
-<BR>[Address Reference Count : 7]<UL><LI> set_databackup_strategy.o(i.DBP_build_component)
-<LI> hmi_striped_background.o(i.HMI_SBG_Show_entry)
-<LI> set_channel_strategy.o(i.CNS_build_component)
+<BR>[Address Reference Count : 7]<UL><LI> set_channel_strategy.o(i.CNS_build_component)
 <LI> set_system_strategy.o(i.SYS_build_component)
+<LI> set_databackup_strategy.o(i.DBP_build_component)
+<LI> hmi_striped_background.o(i.HMI_SBG_Show_entry)
 <LI> hmi_striped_background.o(i.STY_Duild_button)
 <LI> strategy_news_power.o(i.NPW_Build_component)
 <LI> strategy_news_alarm.o(i.NLM_Build_component)
@@ -4323,7 +4323,7 @@ Global Symbols
 <LI><a href="#[135]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MdlTime_init
 </UL>
 
-<P><STRONG><a name="[3b8]"></a>System_to_string</STRONG> (Thumb, 246 bytes, Stack size 32 bytes, system.o(i.System_to_string))
+<P><STRONG><a name="[3b8]"></a>System_to_string</STRONG> (Thumb, 256 bytes, Stack size 32 bytes, system.o(i.System_to_string))
 <BR><BR>[Stack]<UL><LI>Max Depth = 72<LI>Call Chain = System_to_string &rArr; Disable_string &rArr; __2sprintf
 </UL>
 <BR>[Calls]<UL><LI><a href="#[2b4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Disable_string
@@ -4432,8 +4432,8 @@ Global Symbols
 <P><STRONG><a name="[3d9]"></a>USART_DeInit</STRONG> (Thumb, 134 bytes, Stack size 8 bytes, stm32f10x_usart.o(i.USART_DeInit))
 <BR><BR>[Stack]<UL><LI>Max Depth = 8<LI>Call Chain = USART_DeInit
 </UL>
-<BR>[Calls]<UL><LI><a href="#[3da]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RCC_APB2PeriphResetCmd
-<LI><a href="#[324]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RCC_APB1PeriphResetCmd
+<BR>[Calls]<UL><LI><a href="#[324]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RCC_APB1PeriphResetCmd
+<LI><a href="#[3da]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RCC_APB2PeriphResetCmd
 </UL>
 <BR>[Called By]<UL><LI><a href="#[1a3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UartInit
 <LI><a href="#[1a4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UartDeInit
@@ -5607,7 +5607,7 @@ Global Symbols
 <LI><a href="#[69]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SysTick_Handler
 </UL>
 
-<P><STRONG><a name="[446]"></a>rt_tsk_create</STRONG> (Thumb, 118 bytes, Stack size 24 bytes, rt_task.o(i.rt_tsk_create))
+<P><STRONG><a name="[446]"></a>rt_tsk_create</STRONG> (Thumb, 120 bytes, Stack size 24 bytes, rt_task.o(i.rt_tsk_create))
 <BR><BR>[Stack]<UL><LI>Max Depth = 56<LI>Call Chain = rt_tsk_create &rArr; rt_init_context &rArr; rt_init_stack
 </UL>
 <BR>[Calls]<UL><LI><a href="#[447]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;dbg_task_notify
@@ -5618,7 +5618,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[1cc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;svcThreadCreate
 </UL>
 
-<P><STRONG><a name="[448]"></a>rt_tsk_delete</STRONG> (Thumb, 352 bytes, Stack size 40 bytes, rt_task.o(i.rt_tsk_delete))
+<P><STRONG><a name="[448]"></a>rt_tsk_delete</STRONG> (Thumb, 346 bytes, Stack size 40 bytes, rt_task.o(i.rt_tsk_delete))
 <BR><BR>[Stack]<UL><LI>Max Depth = 68<LI>Call Chain = rt_tsk_delete &rArr; rt_dispatch &rArr; rt_put_prio
 </UL>
 <BR>[Calls]<UL><LI><a href="#[1f0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_stk_check
@@ -7537,8 +7537,8 @@ Local Symbols
 <BR>[Calls]<UL><LI><a href="#[228]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Sheet_force_slide
 <LI><a href="#[206]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strlen
 </UL>
-<BR>[Address Reference Count : 2]<UL><LI> mainhmi.o(i.Build_ChnSheets)
-<LI> mainhmi.o(i.MainHmi_Init_chnShet)
+<BR>[Address Reference Count : 2]<UL><LI> mainhmi.o(i.MainHmi_Init_chnShet)
+<LI> mainhmi.o(i.Build_ChnSheets)
 </UL>
 <P><STRONG><a name="[b2]"></a>MainHmi_Data_update</STRONG> (Thumb, 178 bytes, Stack size 56 bytes, mainhmi.o(i.MainHmi_Data_update))
 <BR><BR>[Stack]<UL><LI>Max Depth = 88<LI>Call Chain = MainHmi_Data_update &rArr; Sheet_force_slide &rArr; Sheet_refreshsub
@@ -7546,8 +7546,8 @@ Local Symbols
 <BR>[Calls]<UL><LI><a href="#[228]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Sheet_force_slide
 <LI><a href="#[206]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strlen
 </UL>
-<BR>[Address Reference Count : 2]<UL><LI> mainhmi.o(i.Build_ChnSheets)
-<LI> mainhmi.o(i.MainHmi_Init_chnShet)
+<BR>[Address Reference Count : 2]<UL><LI> mainhmi.o(i.MainHmi_Init_chnShet)
+<LI> mainhmi.o(i.Build_ChnSheets)
 </UL>
 <P><STRONG><a name="[345]"></a>MainHmi_Init_chnShet</STRONG> (Thumb, 156 bytes, Stack size 16 bytes, mainhmi.o(i.MainHmi_Init_chnShet))
 <BR><BR>[Stack]<UL><LI>Max Depth = 104<LI>Call Chain = MainHmi_Init_chnShet &rArr; ExpCreate &rArr; GetPictExpr &rArr; PicExpr_new &rArr; malloc &rArr; internal_alloc
@@ -7563,8 +7563,8 @@ Local Symbols
 <BR>[Calls]<UL><LI><a href="#[228]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Sheet_force_slide
 <LI><a href="#[206]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strlen
 </UL>
-<BR>[Address Reference Count : 2]<UL><LI> mainhmi.o(i.Build_ChnSheets)
-<LI> mainhmi.o(i.MainHmi_Init_chnShet)
+<BR>[Address Reference Count : 2]<UL><LI> mainhmi.o(i.MainHmi_Init_chnShet)
+<LI> mainhmi.o(i.Build_ChnSheets)
 </UL>
 <P><STRONG><a name="[1ba]"></a>MaininitSheet</STRONG> (Thumb, 80 bytes, Stack size 16 bytes, mainhmi.o(i.MaininitSheet))
 <BR><BR>[Stack]<UL><LI>Max Depth = 192<LI>Call Chain = MaininitSheet &rArr; Sheet_updown &rArr; GetShtctl &rArr; Dev_open &rArr; DevChar_open &rArr; Get_Dev_IIC &rArr; Dev_IIC_new &rArr; malloc &rArr; internal_alloc
@@ -9740,7 +9740,7 @@ Local Symbols
 <LI><a href="#[41c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;isrSemaphoreRelease
 </UL>
 
-<P><STRONG><a name="[44e]"></a>rt_ms2tick</STRONG> (Thumb, 58 bytes, Stack size 0 bytes, rt_cmsis.o(i.rt_ms2tick))
+<P><STRONG><a name="[44e]"></a>rt_ms2tick</STRONG> (Thumb, 60 bytes, Stack size 0 bytes, rt_cmsis.o(i.rt_ms2tick))
 <BR><BR>[Called By]<UL><LI><a href="#[1cb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;svcSemaphoreWait
 <LI><a href="#[1c8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;svcMessageGet
 <LI><a href="#[1c5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;svcDelay
