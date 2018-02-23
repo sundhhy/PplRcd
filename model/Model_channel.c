@@ -800,7 +800,11 @@ static void MdlChn_run(Model *self)
 	
 	rst.val = Zero_shift_K_B(&cthis->chni, rst.val);
 	rst.val = Cut_small_signal(&cthis->chni, rst.val);
-	
+	if(phn_sys.sys_conf.cold_end_way)
+	{
+		
+		rst.val += phn_sys.sys_conf.CJC;
+	}
 	if(rst.val != cthis->chni.value)
 	{
 		

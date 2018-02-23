@@ -62,8 +62,8 @@ strategy_t	g_sys_strategy = {
 // local vars
 //------------------------------------------------------------------------------
 
- static char *const arr_p_sys_entry[14] = {"时间设定", "用户密码", "通道数目", "记录间隔", \
-	"断偶处理", "断阻处理", "通信方式", "波特率", "本机地址", "调节参数修改", "冷端补偿", "通道状态显示", \
+ static char *const arr_p_sys_entry[15] = {"时间设定", "用户密码", "通道数目", "记录间隔", \
+	"断偶处理", "断阻处理", "通信方式", "波特率", "本机地址", "调节参数修改","冷端方式",  "冷端温度", "通道状态显示", \
 	 "按键声音", "恢复出厂设置"};
  
 static int	sys_page = 0;
@@ -88,7 +88,7 @@ static int SysStrategy_entry(int row, int col, void *pp_text)
 	Model	*model;
 	strategy_focus_t *p_syf = &g_sys_strategy.sf;
 	if(col == 0) {
-		if(row > 13)
+		if(row > 14)
 			return 0;
 		*pp = arr_p_sys_entry[row];
 		return strlen(arr_p_sys_entry[row]);
@@ -132,16 +132,19 @@ static int SysStrategy_entry(int row, int col, void *pp_text)
 				System_to_string(NULL, arr_p_vram[row], 48, es_mdfy_prm);
 				break;
 			case 10:
-				System_to_string(NULL, arr_p_vram[row], 48, es_CJC);
+				System_to_string(NULL, arr_p_vram[row], 48, es_cold_end_way);
 				break;
 			case 11:
+				System_to_string(NULL, arr_p_vram[row], 48, es_CJC);
+				break;
+			case 12:
 				
 				System_to_string(NULL, arr_p_vram[row], 48, es_vcs);
 				break;
-			case 12:
+			case 13:
 				System_to_string(NULL, arr_p_vram[row], 48, es_beep);
 				break;
-			case 13:
+			case 14:
 				
 				sprintf(arr_p_vram[row], "....");
 			
@@ -171,7 +174,7 @@ static int Sys_init(void *arg)
 	HMI_Ram_init();
 	
 	//第14个用于提示显示
-	for(i = 0; i < 15; i++) {
+	for(i = 0; i < 16; i++) {
 		
 		arr_p_vram[i] = HMI_Ram_alloc(48);
 		memset(arr_p_vram[i], 0, 48);
@@ -194,7 +197,7 @@ static int Sys_get_focusdata(void *pp_data, strategy_focus_t *p_in_syf)
 		p_syf = p_in_syf;
 	
 	
-	if(p_syf->f_row < 14) {
+	if(p_syf->f_row < 15) {
 		*pp_vram = arr_p_vram[p_syf->f_row] + p_syf->start_byte;
 		p_syf->num_byte = strlen(arr_p_vram[p_syf->f_row]);
 		ret = p_syf->num_byte;
@@ -246,15 +249,15 @@ static int Sys_key_up(void *arg)
 			
 			if(SYS_Commit() == RET_OK)
 			{
-				sprintf(arr_p_vram[14],"系统设置写入成功");
-				Win_content(arr_p_vram[14]);
+				sprintf(arr_p_vram[15],"系统设置写入成功");
+				Win_content(arr_p_vram[15]);
 				g_sys_strategy.cmd_hdl(g_sys_strategy.p_cmd_rcv, sycmd_win_tips, NULL);
 			}
 			else
 			{
 				
-				sprintf(arr_p_vram[14],"系统设置写入失败");
-				Win_content(arr_p_vram[14]);
+				sprintf(arr_p_vram[15],"系统设置写入失败");
+				Win_content(arr_p_vram[15]);
 				g_sys_strategy.cmd_hdl(g_sys_strategy.p_cmd_rcv, sycmd_win_tips, NULL);
 			}
 				
@@ -538,12 +541,15 @@ static int Sys_update_content(int op, int weight)
 		System_modify_string(arr_p_vram[p_syf->f_row], es_mdfy_prm, op, weight);
 		break;
 	case 10:
-		System_modify_string(arr_p_vram[p_syf->f_row], es_CJC, op, weight);
+		System_modify_string(arr_p_vram[p_syf->f_row], es_cold_end_way, op, weight);
 		break;
 	case 11:
-		System_modify_string(arr_p_vram[p_syf->f_row], es_vcs, op, weight);
+		System_modify_string(arr_p_vram[p_syf->f_row], es_CJC, op, weight);
 		break;
 	case 12:
+		System_modify_string(arr_p_vram[p_syf->f_row], es_vcs, op, weight);
+		break;
+	case 13:
 		System_modify_string(arr_p_vram[p_syf->f_row], es_beep, op, weight);
 		break;
 	default:

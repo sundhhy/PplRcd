@@ -139,6 +139,7 @@ void System_default(void)
 	memset(p_sc, 0, sizeof(system_conf_t));
 	p_sc->sys_flag = 0;
 	p_sc->num_chn = NUM_CHANNEL;
+	p_sc->cold_end_way = 0;
 	stg->wr_stored_data(stg, STG_SYS_CONF, &phn_sys.sys_conf, sizeof(phn_sys.sys_conf));
 	
 	
@@ -543,11 +544,18 @@ void System_to_string(void *p_data, char	*p_s, int len, int aux)
 				p_u8 = (uint8_t *)p_data;
 			else 
 				p_u8 = &phn_sys.sys_conf.CJC;
-			if(*p_u8 < 100) {
+			break;
+			
+		case es_cold_end_way:
+			if(p_data)
+				p_u8 = (uint8_t *)p_data;
+			else 
+				p_u8 = &phn_sys.sys_conf.cold_end_way;
+			if(*p_u8 ==0) {
 				
-				sprintf(p_s, "设定: %d", *p_u8);
+				sprintf(p_s, "外部");
 			} else {
-				sprintf(p_s, "外部    ");
+				sprintf(p_s, "设定");
 			}
 			break;
 			
@@ -580,7 +588,7 @@ void System_modify_string(char	*p_s, int aux, int op, int val)
 	switch(aux)
 	{
 		case es_rcd_t_s:
-			phn_sys.sys_conf.record_gap_s = Operate_in_tange(phn_sys.sys_conf.record_gap_s, op, val, 0, 99);
+			phn_sys.sys_conf.record_gap_s = Operate_in_tange(phn_sys.sys_conf.record_gap_s, op, val, 0, 240);
 			sprintf(p_s, "%d", phn_sys.sys_conf.record_gap_s);
 			break;
 		case es_brk_cpl:
@@ -613,16 +621,14 @@ void System_modify_string(char	*p_s, int aux, int op, int val)
 			phn_sys.sys_conf.disable_modify_adjust_paramter = Operate_in_tange(phn_sys.sys_conf.disable_modify_adjust_paramter, op, val, 0, 1);
 			Disable_string(p_s, phn_sys.sys_conf.disable_modify_adjust_paramter );
 			break;
+		case es_cold_end_way:
+			phn_sys.sys_conf.cold_end_way = Operate_in_tange(phn_sys.sys_conf.cold_end_way, op, val, 0, 1);
+			System_to_string(NULL, p_s, 0xff, es_cold_end_way);
+			break;
 			
 		case es_CJC:
-			phn_sys.sys_conf.CJC = Operate_in_tange(phn_sys.sys_conf.CJC, op, val, 0, 100);
+			phn_sys.sys_conf.CJC = Operate_in_tange(phn_sys.sys_conf.CJC, op, val, 0, 99);
 			System_to_string(NULL, p_s, 0xff, es_CJC);
-//			if(phn_sys.sys_conf.CJC < 100) {
-//				
-//				sprintf(p_s, "设定 %d", phn_sys.sys_conf.CJC);
-//			} else {
-//				sprintf(p_s, "外部    ");
-//			}
 			break;
 			
 			

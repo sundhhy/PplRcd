@@ -14,6 +14,8 @@
 // const defines
 //------------------------------------------------------------------------------
 
+#define HRD_VER						10		//1位小数
+
 //系统配置类宏定义
 #define CONF_KEYSCAN_POLL		1		//按键扫描：轮询方式,该值为0，则为中断触发式
 #define	CONF_KEYSCAN_CYCLEMS	100
@@ -53,6 +55,7 @@ typedef enum {
 	es_baud,
 	es_id,
 	es_mdfy_prm,
+	es_cold_end_way,
 	es_CJC,
 	es_vcs,
 	es_beep,
@@ -62,20 +65,28 @@ typedef struct {
 	uint8_t		num_chn;
 	uint8_t		password[3];
 	
-	uint16_t	record_gap_s;
+	//record_gap_s:sec 0:1 1:2 2:4 3:8 4:12 5:24 6:36 7:60 8:120 9:180 10:240 
+	uint8_t		record_gap_s;		
 	uint8_t		break_couple;		//断偶处理方式: 始点，保持，终点
 	uint8_t		break_resistor;		//断阻处理
-	
 	uint8_t		communication_mode;			//仪表与pc连接： 通讯； 仪表与打印机连接: 打印
+	
 	uint8_t		id;											// 1 - 63
 	uint8_t		baud_idx;
 	uint8_t		sys_flag;
-	int 		baud_rate;
+	uint8_t			cold_end_way;				//0 外部， 1 设定
+	uint8_t		CJC;								//冷端补偿 0-99 为设定模式
 	
-	uint8_t		CJC;								//冷端补偿 0-99 为设定模式， 100为外部，通过冷端补偿器温度进行补偿
+	
+	
+	
+	
 	uint8_t		disable_modify_adjust_paramter;		//禁止修改调节参数
 	uint8_t		disable_view_chn_status;					//禁止通道状态显示
 	uint8_t		enable_beep;											//按键声音允许
+	
+		int 		baud_rate;
+
 }system_conf_t;
 
 //-----------HMI -----------------------------------------------
