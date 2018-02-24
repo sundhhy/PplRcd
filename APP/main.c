@@ -11,6 +11,7 @@
 #include "hardwareConfig.h"
 #include "mySystemClock.h"
 #include "pinmux.h"
+#include "power.h"
 #include "intrInit.h"
 #include "sys_cmd.h"
 
@@ -104,6 +105,7 @@ int main (void) {
 	//BSPµÄ³õÊ¼»¯
 	OpenPrpClock();
 	Pin_init();
+	PVD_Init();
 	NVIC_Configuration();
 	
 	

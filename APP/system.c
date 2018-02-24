@@ -129,6 +129,9 @@ void System_power_off(void)
 			break;
 		
 	}
+	
+	
+	phn_sys.fs.fs_shutdown();
 }
 
 void System_default(void)

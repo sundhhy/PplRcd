@@ -15,7 +15,7 @@ static void UartPostTxSem( void *self);
 static void UartPostRxSem(void *self);
 static void UartLedRxHdl(void *self);
 static void UartLedTxHdl(void *self);
-static Dev_Uart *devUart[DEV_UART_MAX];
+static Dev_Uart *devUart[NUM_UARTS];
 
 
 
@@ -24,7 +24,7 @@ Dev_Uart *Get_DevUart( int minor)
 //	uint8_t	*prxSem, *ptxSem;
 //	uint8_t	*p_lock;
 	I_dev_Char *devChar;
-	if( ( minor +1) > DEV_UART_MAX)
+	if( ( minor +1) > NUM_UARTS)
 		return NULL;
 	
 	if( devUart[ minor] == NULL)

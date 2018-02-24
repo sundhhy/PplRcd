@@ -123,6 +123,15 @@ USART_InitTypeDef g_Cfg_Uart3 = {
 		USART_HardwareFlowControl_None,
 };
 
+USART_InitTypeDef g_Cfg_Uart4 = {
+		19200,
+		USART_WordLength_8b,
+		USART_StopBits_1,
+		USART_Parity_No,
+		USART_Mode_Rx | USART_Mode_Tx,
+		USART_HardwareFlowControl_None,
+};
+
 CfgUart_t g_confUart1 = {
 	&g_Cfg_Uart1,
 	&g_DmaUart1,
@@ -145,6 +154,15 @@ CfgUart_t g_confUart3 = {
 };
 
 
+CfgUart_t g_confUart4 = {
+	
+	&g_Cfg_Uart4,
+	NULL,
+	3,
+	UART_MODE_INTR,
+};
+
+
 
 
 gpio_pins pin_keyRight = {
@@ -162,7 +180,7 @@ gpio_pins pin_keyLeft = {
 	GPIO_PIN_KEY_LEFT,
 	GPIO_DIR_IN,
 	1,
-	GPIO_IRQ_BOTHEDGE,
+	GPIO_IRQ_DISABLE,
 	GPIO_PORTSOURCE_LEFT,
 	GPIO_PINSOURCE_LEFT
 	

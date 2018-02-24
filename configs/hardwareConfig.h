@@ -59,12 +59,24 @@
 #define GPIO_PORT_UART2RX                               GPIOA    					 
 #define GPIO_PIN_UART2RX                                GPIO_Pin_3
 
+//#define GPIO_PORT_UART2TX                               GPIOC    					 
+//#define GPIO_PIN_UART2TX                                GPIO_Pin_10					 
+
+//#define GPIO_PORT_UART2RX                               GPIOC    					 
+//#define GPIO_PIN_UART2RX                                GPIO_Pin_11
+
+
 #define GPIO_PORT_UART3TX                               GPIOB    					 
 #define GPIO_PIN_UART3TX                                GPIO_Pin_10					 
 
 #define GPIO_PORT_UART3RX                               GPIOB    					 
 #define GPIO_PIN_UART3RX                                GPIO_Pin_11
 
+#define GPIO_PORT_UART4TX                               GPIOC    					 
+#define GPIO_PIN_UART4TX                                GPIO_Pin_10					 
+
+#define GPIO_PORT_UART4RX                               GPIOC    					 
+#define GPIO_PIN_UART4RX                                GPIO_Pin_11
 //*********keyboard	********************************
 #define RCC_KEY_RIGHT                                    RCC_APB2Periph_GPIOD		 
 #define GPIO_PORT_KEY_RIGHT                              GPIOD    					 
@@ -200,7 +212,7 @@ typedef struct {
 #define GPIO_IRQ_RISING		1
 #define GPIO_IRQ_FAILING	2
 #define GPIO_IRQ_BOTHEDGE	3
-
+#define GPIO_IRQ_DISABLE	4
 
 typedef struct 
 {
@@ -219,7 +231,7 @@ typedef struct
 }gpio_pins;
 
 
-extern CfgUart_t g_confUart1, g_confUart2, g_confUart3;
+extern CfgUart_t g_confUart1, g_confUart2, g_confUart3, g_confUart4;
 extern iic_conf_t arr_conf_IIC[2];
 //extern gpio_pins Dir_485_pin1 , Dir_485_pin2;
 

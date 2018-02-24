@@ -23,7 +23,7 @@ CLASS( Dev_Uart)
 	
 };
 
-#define DEV_UART_MAX		4
+
 
 Dev_Uart *Get_DevUart(int minor);
 #endif

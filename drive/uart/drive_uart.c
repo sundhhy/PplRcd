@@ -23,7 +23,7 @@
 
 
 //用在中断程序中，找到对应的设备
-static driveUart	*devArry[ 3];
+static driveUart	*devArry[NUM_UARTS];
 
 
 static void UartDma_Init( driveUart *self);

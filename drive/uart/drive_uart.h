@@ -11,7 +11,7 @@
 
 
 
-
+#define NUM_UARTS		4
 #define UART_RXCACHE_SIZE		512
 #define UART_TXCACHE_SIZE		64
 

@@ -29,8 +29,8 @@
 //------------------------------------------------------------------------------
 // const defines
 //------------------------------------------------------------------------------
-#define MBA_UART_ID				DEVID_SPI2
-#define MBA_UART_CONF			g_confUart1
+#define MBA_UART_ID				DEVID_UART4
+#define MBA_UART_CONF			g_confUart4
 #define MBA_SYSTEM				phn_sys
 
 #define MBA_ACC_READ				0

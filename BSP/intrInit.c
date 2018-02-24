@@ -22,6 +22,26 @@ void NVIC_Configuration(void)
 #endif
 
     NVIC_PriorityGroupConfig(NVIC_PriorityGroup_1);//设置优先级分组形式1，即抢占级占一位，优先级占3位
+	
+	
+	
+		/* PVD 优先级最高 
+		PVD through EXTI Line detection Interrupt
+		
+		*/
+		NVIC_InitStructure.NVIC_IRQChannel = PVD_IRQn;
+		NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority=0;
+    NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
+    NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+    NVIC_Init(&NVIC_InitStructure);
+	
+		/* Enable the USART1 Interrupt */
+	//用于lcd，故优先级要高
+    NVIC_InitStructure.NVIC_IRQChannel = USART1_IRQn;
+	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority=0;
+    NVIC_InitStructure.NVIC_IRQChannelSubPriority = 1;
+    NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+    NVIC_Init(&NVIC_InitStructure);
 
     NVIC_InitStructure.NVIC_IRQChannel = TIM2_IRQn;
 	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority=1;
@@ -29,13 +49,7 @@ void NVIC_Configuration(void)
 	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
 	NVIC_Init(&NVIC_InitStructure);
 	
-	/* Enable the USART1 Interrupt */
-	//用于lcd，故优先级要高
-    NVIC_InitStructure.NVIC_IRQChannel = USART1_IRQn;
-	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority=0;
-    NVIC_InitStructure.NVIC_IRQChannelSubPriority = 1;
-    NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
-    NVIC_Init(&NVIC_InitStructure);
+
 
 
     /* Enable the USART2 Interrupt*/

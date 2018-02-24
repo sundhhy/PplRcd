@@ -216,13 +216,15 @@ static int GpioInit( driveGpio *self, void *p_base, void *cfg)
 		case GPIO_IRQ_BOTHEDGE:
 			self->p_exit->EXTI_Trigger = EXTI_Trigger_Rising_Falling;
 			break;
+		default:
+			goto exit;
 		
 	}
 	GPIO_EXTILineConfig( p_gpio->portSource, p_gpio->pinSource);
 	EXTI_ClearITPendingBit( arr_extiLine[ p_gpio->extiLine]);
 	EXTI_Init( self->p_exit);
 
-	
+	exit:
 	return ERR_OK;
 	
 }
