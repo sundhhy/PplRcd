@@ -6,6 +6,8 @@
 #include "power.h"
 #include "system.h"
 #include "sdhDef.h"
+#include "device.h"
+#include "glyph.h"
 //------------------------------------------------------------------------------
 // const defines
 //------------------------------------------------------------------------------
@@ -49,26 +51,37 @@ int PVD_Init(void)
 {
 	EXTI_InitTypeDef exti_param;
 	
-	PWR_PVDLevelConfig(PWR_PVDLevel_2V8); 
+	RCC_APB1PeriphClockCmd(RCC_APB1Periph_PWR, ENABLE);
+	PWR_PVDLevelConfig(PWR_PVDLevel_2V9); 
 	PWR_PVDCmd(ENABLE); 
 	
+	EXTI_DeInit();
+	
 	EXTI_StructInit(&exti_param);
-	exti_param.EXTI_Line = EXTI_Line1; // PVD through EXTI Line detection Interrupt
+	exti_param.EXTI_Line = EXTI_Line16; 
 	exti_param.EXTI_Mode = EXTI_Mode_Interrupt; //??????
-	exti_param.EXTI_Trigger = EXTI_Trigger_Rising; //电压从高下降到低于设定阀值时产生中断
+	exti_param.EXTI_Trigger = EXTI_Trigger_Rising_Falling; //电压从高下降到低于设定阀值时产生中断
 	exti_param.EXTI_LineCmd = ENABLE; // ?????
+	EXTI_ClearITPendingBit(EXTI_Line16);
 	EXTI_Init(&exti_param); // ??
+	
+	
 	
 	return RET_OK;
 	
 }
 
-
-
 void PVD_IRQHandler(void)
 {
-	EXTI_ClearITPendingBit(EXTI_Line1);
-	System_power_off();
+//	I_dev_lcd 				*tdd_lcd;
+
+//	Dev_open(LCD_DEVID, (void *)&tdd_lcd);
+//	tdd_lcd->Clear( COLOUR_YELLOW);
+	
+	phn_sys.sys_flag |= SYSFLAG_POWERON;
+	
+//	System_power_off();
+	EXTI_ClearITPendingBit(EXTI_Line16);
 	
 }
 //=========================================================================//

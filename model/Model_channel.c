@@ -242,6 +242,7 @@ static void	MdlChn_Check_new_alarm(Model_chn *cthis, uint8_t new_flag, uint8_t a
 {
 	uint8_t *p_index = NULL;
 	Storage	*stg = NULL;
+	int		ret_len;
 	rcd_alm_pwr_t		rap;
 	uint8_t					alm_code = 0;
 	uint8_t					retry = 5;
@@ -282,12 +283,23 @@ static void	MdlChn_Check_new_alarm(Model_chn *cthis, uint8_t new_flag, uint8_t a
 	rap.alm_pwr_type = alm_code;
 	rap.flag = 1;
 	rap.happen_time_s = SYS_time_sec();
-	rap.disapper_time_s = 0;
+	rap.disapper_time_s = 0xffffffff;
+	
 	
 	while(STG_Set_file_position(STG_CHN_ALARM(cthis->chni.chn_NO), STG_DRC_WRITE, *p_index * sizeof(rcd_alm_pwr_t)) < 0)
 		delay_ms(1);
-	while(stg->wr_stored_data(stg, STG_CHN_ALARM(cthis->chni.chn_NO), &rap, sizeof(rcd_alm_pwr_t)) != sizeof(rcd_alm_pwr_t))
+	while(1)
 	{
+		
+		ret_len = stg->wr_stored_data(stg, STG_CHN_ALARM(cthis->chni.chn_NO), &rap, sizeof(rcd_alm_pwr_t));
+		if(ret_len == 0)
+		{
+			while(STG_Set_file_position(STG_CHN_ALARM(cthis->chni.chn_NO), STG_DRC_WRITE, 0) < 0)
+				delay_ms(1);
+			cthis->alarm.num_alms_in_stg = 0;
+		}
+		if(ret_len == sizeof(rcd_alm_pwr_t))
+			break;
 		if(retry)
 			retry --;
 		else
@@ -348,6 +360,7 @@ static void	MdlChn_Cancle_alarm(Model_chn *cthis, uint8_t new_flag, uint8_t alm_
 	STG_Set_file_position(STG_CHN_ALARM(cthis->chni.chn_NO), STG_DRC_WRITE, *p_index * sizeof(rcd_alm_pwr_t) +(int)(&((rcd_alm_pwr_t *)0)->disapper_time_s));
 	while(stg->wr_stored_data(stg, STG_CHN_ALARM(cthis->chni.chn_NO), &dsp_time, sizeof(uint32_t)) != sizeof(uint32_t))
 	{
+		
 		if(retry)
 			retry --;
 		else

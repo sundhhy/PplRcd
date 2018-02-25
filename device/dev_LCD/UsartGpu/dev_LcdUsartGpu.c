@@ -219,18 +219,18 @@ static int Dev_UsartdeInit( void)
 
 static int ClearLcd( int c)
 {
-#if USE_CMD_BUF == 1
-	if(Sem_wait(&gpu_sem, phn_sys.lcd_sem_wait_ms) <= 0)
-		return RET_FAILED;
-	sprintf( lcdBuf, "CLS(%d);", c);
-	Cmdbuf_manager(lcdBuf);
-	GpuSend(lcdBuf);
-	Sem_post(&gpu_sem);
-#else	
+//#if USE_CMD_BUF == 1
+//	if(Sem_wait(&gpu_sem, phn_sys.lcd_sem_wait_ms) <= 0)
+//		return RET_FAILED;
+//	sprintf( lcdBuf, "CLS(%d);", c);
+//	Cmdbuf_manager(lcdBuf);
+//	GpuSend(lcdBuf);
+//	Sem_post(&gpu_sem);
+//#else	
 	sprintf( lcdBuf, "CLS(%d);\r\n", c);
 	GpuSend(lcdBuf);
 	osDelay(20);
-#endif	
+//#endif	
 	
 	
 	

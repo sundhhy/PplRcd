@@ -100,14 +100,15 @@ void System_power_on(void)
 	
 	if(num_pwr == STG_MAX_NUM_LST_PWR)
 		num_pwr = 0;		
-	if(num_pwr)
-		phn_sys.pwr_rcd_index = num_pwr + 1;
-	else
-		phn_sys.pwr_rcd_index = 0;
+//	if(num_pwr)
+	phn_sys.pwr_rcd_index = num_pwr;
+//	else
+//		phn_sys.pwr_rcd_index = 0;
 	//记录上电时间
 	STG_Set_file_position(STG_LOSE_PWR, STG_DRC_WRITE, phn_sys.pwr_rcd_index * sizeof(rcd_alm_pwr_t));
 	stg_pwr.flag = 1;
 	stg_pwr.happen_time_s = SYS_time_sec();
+	stg_pwr.disapper_time_s = 0xffffffff;
 	stg->wr_stored_data(stg, STG_LOSE_PWR, &stg_pwr, sizeof(rcd_alm_pwr_t));
 	
 }
@@ -118,16 +119,25 @@ void System_power_off(void)
 	uint32_t		dsp_time = 0;
 	Storage			*stg = Get_storage();
 	
-	dsp_time = SYS_time_sec();
-	STG_Set_file_position(STG_LOSE_PWR, STG_DRC_WRITE, phn_sys.pwr_rcd_index * sizeof(rcd_alm_pwr_t) +(int)(&((rcd_alm_pwr_t *)0)->disapper_time_s));
 	
-	while(stg->wr_stored_data(stg, STG_LOSE_PWR, &dsp_time, sizeof(uint32_t)) != sizeof(uint32_t))
+	//掉电信息无效时，就不要存储掉电时间了
+	//当擦执行了擦除掉电信息操作的时候，会出现这种情况
+	if(phn_sys.pwr_rcd_index != 0xff)
 	{
-		if(retry)
-			retry --;
-		else
-			break;
+	
 		
+	
+		dsp_time = SYS_time_sec();
+		STG_Set_file_position(STG_LOSE_PWR, STG_DRC_WRITE, phn_sys.pwr_rcd_index * sizeof(rcd_alm_pwr_t) +(int)(&((rcd_alm_pwr_t *)0)->disapper_time_s));
+		
+		while(stg->wr_stored_data(stg, STG_LOSE_PWR, &dsp_time, sizeof(uint32_t)) != sizeof(uint32_t))
+		{
+			if(retry)
+				retry --;
+			else
+				break;
+			
+		}
 	}
 	
 	
@@ -220,10 +230,18 @@ void System_time(struct  tm *stime)
 
 uint32_t  SYS_time_sec(void)
 {
-	struct tm  t;
-	sys_rtc->get(sys_rtc, &t);
 	
-	return Time_2_u32(&t);
+	
+	Model 		*m;
+	uint32_t	sec = 0;
+	m = ModelCreate("time");
+	m->getMdlData(m, TIME_U32, &sec);
+	
+	return sec;
+//	struct tm  t;
+//	sys_rtc->get(sys_rtc, &t);
+//	
+//	return Time_2_u32(&t);
 }
 
 

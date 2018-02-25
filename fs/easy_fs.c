@@ -94,7 +94,8 @@ typedef struct {
 	
 typedef struct {
 	uint8_t					free_spac_num;
-	uint8_t					none[3];
+	uint8_t					none;
+	uint16_t				run_idel_count;			//run空运行计数
 	uint8_t					*pg_buf;
 	efs_file_mgt_t  	arr_efiles[EFS_MAX_NUM_FILES + EFS_NUM_IDLE_FILES];			//文件管理要留一点空间
 	file_info_t			arr_file_info[EFS_MAX_NUM_FILES];
@@ -187,6 +188,14 @@ int 	EFS_init(int arg)
 void 	EFS_Shutdown(void)
 {
 	int i;
+	
+	for(i = 0; i < NUM_FSH; i ++)
+	{
+		EFS_FSH(i).fsh_flush();
+		
+	}
+	
+	
 	for(i = 0; i < EFS_MAX_NUM_FILES; i++)
 	{
 		if(efs_mgr.arr_file_info[i].file_flag & EFS_FLAG_OPENED)
@@ -196,6 +205,7 @@ void 	EFS_Shutdown(void)
 		}
 		
 	}
+	
 	
 	
 }
@@ -467,31 +477,36 @@ int	EFS_read(int fd, uint8_t *p, int len)
 void 	EFS_Erase_file(int fd, uint32_t start, uint32_t size)
 {
 	file_info_t *f = &efs_mgr.arr_file_info[fd];
-//	int			start_addr = f->start_page * EFS_FSH(f->fsh_No).fnf.page_size;
-//	int			sz = f->file_size;
+	int			start_addr = f->start_page * EFS_FSH(f->fsh_No).fnf.page_size;
+	int			sz = f->file_size;
 
 	if(fd > EFS_MAX_NUM_FILES)
 		return;
 	
-	f->file_flag |= EFS_FLAG_ERASE;
-	return;
+	if((start + size) == 0)
+	{
+		//只擦除部分文件的时候就只能直接进行擦除了
+		//因为外部线程无法获取部分擦除的信息
+		f->file_flag |= EFS_FLAG_ERASE;
+		return;
+	}
 	
-//	while(Sem_wait(&f->file_sem, EFS_WAIT_WR_MS) <= 0)
-//		delay_ms(1);
+	while(Sem_wait(&f->file_sem, EFS_WAIT_WR_MS) <= 0)
+		delay_ms(1);
 
-//	
-//	if((start + size) > 0)
-//	{
-//		start_addr += start;
-//		
-//		sz = size;
-//	}
-//	
-//	
-//	EFS_FSH(f->fsh_No).fsh_ersse_addr(start_addr, sz);
-//	f->write_position = 0;
-//	f->read_position = 0;
-//	Sem_post(&f->file_sem);
+	
+	if((start + size) > 0)
+	{
+		start_addr += start;
+		
+		sz = size;
+	}
+	
+	
+	EFS_FSH(f->fsh_No).fsh_ersse_addr(start_addr, sz);
+	f->write_position = 0;
+	f->read_position = 0;
+	Sem_post(&f->file_sem);
 }
 
 //用fd或者path来指定文件
@@ -648,13 +663,13 @@ static void EFS_Erase(int fd)
 static void EFS_run(void *arg)
 {
 	uint8_t		i = 0;
+	uint8_t		efs_ilde = 1;
 	for(i = 0; i < EFS_MAX_NUM_FILES; i++)
 	{
 		if(efs_mgr.arr_file_info[i].file_flag & EFS_FLAG_ERASE)
 		{
 			EFS_SYS.sys_flag |= SYSFLAG_EFS_NOTREADY;
 			EFS_Erase(i);
-			
 			
 		}
 		
@@ -667,11 +682,32 @@ static void EFS_run(void *arg)
 		{
 			
 			efs_mgr.arr_file_info[i].file_flag &=~ EFS_FLAG_ERASE;
-			
+			efs_ilde = 0;
 		}
 		
 	}
 	EFS_SYS.sys_flag &= ~SYSFLAG_EFS_NOTREADY;
+	
+	if(efs_ilde)
+	{
+		efs_mgr.run_idel_count ++;
+		
+	}
+	
+	if(efs_mgr.run_idel_count < 10000)
+	{
+		
+		return;
+		
+	}
+	
+	for(i = 0; i < NUM_FSH; i ++)
+	{
+		EFS_FSH(i).fsh_flush();
+		
+	}
+	
+	efs_mgr.run_idel_count = 0;
 }
 
 static void	EFS_flush_mgr(int No)

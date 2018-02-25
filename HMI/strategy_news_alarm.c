@@ -197,6 +197,13 @@ static int NLM_Entry(int row, int col, void *pp_text)
 			}
 			break;
 		case 1:
+			
+		
+			if((stg_alm.happen_time_s == 0xffffffff) || (stg_alm.flag == 0xff))
+			{
+				sprintf(arr_p_vram[r], "                ");
+				break;
+			}
 			Sec_2_tm(stg_alm.happen_time_s, &t);
 			sprintf(arr_p_vram[r], "%2d%02d%02d-%02d:%02d:%02d", t.tm_year,t.tm_mon, t.tm_mday, \
 					t.tm_hour, t.tm_min, t.tm_sec);
@@ -204,6 +211,12 @@ static int NLM_Entry(int row, int col, void *pp_text)
 //			sprintf(arr_p_vram[r], "%02d:%02d:%02d", t.tm_hour, t.tm_min, t.tm_sec);
 			break;
 		case 2:
+			
+			if((stg_alm.disapper_time_s == 0xffffffff) || (stg_alm.flag == 0xff))
+			{
+				sprintf(arr_p_vram[r], "                ");
+				break;
+			}
 			Sec_2_tm(stg_alm.disapper_time_s, &t);
 			sprintf(arr_p_vram[r], "%2d%02d%02d-%02d:%02d:%02d", t.tm_year,t.tm_mon, t.tm_mday, \
 					t.tm_hour, t.tm_min, t.tm_sec);

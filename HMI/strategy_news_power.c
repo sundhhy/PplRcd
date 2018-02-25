@@ -131,11 +131,22 @@ static int NPW_Entry(int row, int col, void *pp_text)
 			sprintf(arr_p_vram[r], "%d", row - 1 * pic_num);
 			break;
 		case 1:
+			if((stg_alm.happen_time_s == 0xffffffff) || (stg_alm.flag == 0xff))
+			{
+				sprintf(arr_p_vram[r], "                ");
+				break;
+			}
 			Sec_2_tm(stg_alm.happen_time_s, &t);
+
 			sprintf(arr_p_vram[r], "%2d%02d%02d-%02d:%02d:%02d", t.tm_year,t.tm_mon, t.tm_mday, \
 					t.tm_hour, t.tm_min, t.tm_sec);
 			break;
 		case 2:
+			if((stg_alm.disapper_time_s == 0xffffffff) || (stg_alm.flag == 0xff))
+			{
+				sprintf(arr_p_vram[r], "                ");
+				break;
+			}
 			Sec_2_tm(stg_alm.disapper_time_s, &t);
 			sprintf(arr_p_vram[r], "%2d%02d%02d-%02d:%02d:%02d", t.tm_year,t.tm_mon, t.tm_mday, \
 					t.tm_hour, t.tm_min, t.tm_sec);
@@ -226,6 +237,7 @@ static void	NPW_Btn_hdl(void *self, uint8_t	btn_id)
 	if(btn_id == ICO_ID_ERASETOOL)
 	{
 		STG_Erase_file(STG_LOSE_PWR);
+		phn_sys.pwr_rcd_index = 0xff;
 		g_news_power.cmd_hdl(g_news_power.p_cmd_rcv, sycmd_reflush, NULL);
 	}
 	

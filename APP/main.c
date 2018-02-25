@@ -78,7 +78,7 @@ osThreadDef (ThrdKeyRun, osPriorityNormal, 1, 0);                   // thread ob
 //------------------------------------------------------------------------------
 
 static int	Main_USB_event(int type);
-static void 	Init_LCD(void);
+void 	Init_LCD(void);
 
 //============================================================================//
 //            P U B L I C   F U N C T I O N S                                 //
@@ -98,16 +98,17 @@ int main (void) {
 	Model 			*p_mdl_time;
 	CMP_tips 		*p_tips;
 	uint8_t			main_count_1s = 0;
-	uint8_t			old_sys_flag = 0;
+	uint8_t			old_sys_flag = phn_sys.sys_flag;
 	
   // initialize peripherals here
 	
 	//BSP的初始化
 	OpenPrpClock();
 	Pin_init();
-	PVD_Init();
 	NVIC_Configuration();
 	
+	
+	PVD_Init();
 	
 	Init_LCD();
 	
@@ -168,7 +169,7 @@ int main (void) {
 	osKernelStart ();  
 
 	p_tips = TIP_Get_Sington();
-	old_sys_flag = phn_sys.sys_flag;
+	
 	while(1)
 	{
 		osDelay(100);
@@ -176,6 +177,11 @@ int main (void) {
 		if(old_sys_flag != phn_sys.sys_flag)
 		{
 			if(phn_sys.sys_flag & SYSFLAG_EFS_NOTREADY)
+			{
+				p_tips->show_ico_tips(1, -1);
+				
+			}
+			else if(phn_sys.sys_flag & SYSFLAG_POWERON)
 			{
 				p_tips->show_ico_tips(1, -1);
 				
@@ -336,13 +342,14 @@ static int	Main_USB_event(int type)
 	return 0;
 }
 
-static void 	Init_LCD(void)
+void 	Init_LCD(void)
 {
 	I_dev_lcd 				*tdd_lcd;
 
-	Dev_open( LCD_DEVID, (void *)&tdd_lcd);
+	Dev_open(LCD_DEVID, (void *)&tdd_lcd);
 	tdd_lcd->open();
-	tdd_lcd->Clear( COLOUR_BLACK);
-	Flush_LCD();
-	LCD_Run();	//立即执行lcd指令
+	tdd_lcd->Clear(COLOUR_BLUE);
+//	tdd_lcd->done();
+//	Flush_LCD();
+//	LCD_Run();	//立即执行lcd指令
 }

@@ -368,8 +368,14 @@ void W25Q_Erase_addr(uint32_t st, uint32_t sz)
 	
 	if(n1 != w25q_mgr.cur_sct)
 	{
+	
 		W25Q_Flush();
 		w25q_Read_Sector_Data(w25q_mgr.p_sct_buf, n1);
+	}
+	else
+	{
+		w25q_mgr.cache_earse = 1;
+		
 	}
 	//²Á³ý¸ÃÉÈÇø
 	W25Q_erase(FSH_OPT_SECTOR, n1);

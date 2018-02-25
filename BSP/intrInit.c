@@ -26,12 +26,11 @@ void NVIC_Configuration(void)
 	
 	
 		/* PVD 优先级最高 
-		PVD through EXTI Line detection Interrupt
 		
 		*/
-		NVIC_InitStructure.NVIC_IRQChannel = PVD_IRQn;
-		NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority=0;
-    NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
+	NVIC_InitStructure.NVIC_IRQChannel = PVD_IRQn;
+	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority=0;
+    NVIC_InitStructure.NVIC_IRQChannelSubPriority = 1;
     NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
     NVIC_Init(&NVIC_InitStructure);
 	

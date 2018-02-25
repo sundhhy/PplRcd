@@ -50,8 +50,8 @@ typedef struct {
 }rcd_mgr_t;
 
 typedef struct {
-	uint8_t			alm_pwr_type;
 	uint8_t			flag;
+	uint8_t			alm_pwr_type;
 	uint8_t			none[2];
 	uint32_t		happen_time_s;
 	uint32_t		disapper_time_s;

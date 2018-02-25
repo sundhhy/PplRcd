@@ -11,8 +11,12 @@
 
 //记录文件结构：[通道报警记录 * NUM_CHANNEL | 掉电记录]
 #define STG_CHN_ALARM_FILE_SIZE 		STG_MAX_NUM_CHNALARM * sizeof(rcd_alm_pwr_t)
-#define STG_LSTPWR_FILE_OFFSET			STG_CHN_ALARM_FILE_SIZE * NUM_CHANNEL
-#define	STG_LSTPWR_FILE_SIZE				4096 - STG_LSTPWR_FILE_OFFSET
+	
+#define STG_LSTPWR_FILE_OFFSET			0
+#define	STG_LSTPWR_FILE_SIZE			STG_MAX_NUM_CHNALARM * sizeof(rcd_alm_pwr_t)
+#define STG_ALARM_FILE_OFFSET			STG_LSTPWR_FILE_SIZE
+#define	STG_ALARM_FILE_SIZE				4096 - STG_ALARM_FILE_OFFSET
+
 //------------------------------------------------------------------------------
 // module global vars
 //------------------------------------------------------------------------------
@@ -141,13 +145,13 @@ int	STG_Set_file_position(uint8_t	file_type, uint8_t rd_or_wr, uint32_t position
 			
 		}
 		
-		whr = chn_num * STG_CHN_ALARM_FILE_SIZE + position;
+		whr = chn_num * STG_CHN_ALARM_FILE_SIZE + STG_ALARM_FILE_OFFSET + position;
 	}
-	if(IS_LOSE_PWR(file_type))
+	else if(IS_LOSE_PWR(file_type))
 	{
 		if(position > STG_LSTPWR_FILE_SIZE)
 		{
-			return STG_LSTPWR_FILE_SIZE;
+			return ERR_PARAM_BAD;
 			
 		}
 		
@@ -184,14 +188,14 @@ void STG_Erase_file(uint8_t	file_type)
 	
 	if(IS_CHN_ALARM(file_type))
 	{
-		erase_addr[0] = chn_num * STG_CHN_ALARM_FILE_SIZE;
+		erase_addr[0] = chn_num * STG_CHN_ALARM_FILE_SIZE + STG_ALARM_FILE_OFFSET;
 		erase_addr[1] = STG_CHN_ALARM_FILE_SIZE;
 	}
 	if(IS_LOSE_PWR(file_type))
 	{
 		
 		erase_addr[0] = STG_LSTPWR_FILE_OFFSET;
-		erase_addr[1] = 4096 - STG_LSTPWR_FILE_OFFSET;
+		erase_addr[1] = STG_LSTPWR_FILE_SIZE;
 	}
 	
 	STRG_SYS.fs.fs_erase_file(fd, erase_addr[0] , erase_addr[1]);
@@ -638,13 +642,19 @@ static int	STG_Acc_lose_pwr(uint8_t	drc, void *p, int len)
 {
 	
 	int fd = STG_Open_file(STG_LOSE_PWR, STG_DEF_FILE_SIZE);
+	file_info_t	*p_fnf = STRG_SYS.fs.fs_file_info(fd);
 	
 	if(drc == STG_DRC_READ)
 	{
+		if((len + p_fnf->read_position) >= (STG_LSTPWR_FILE_SIZE + STG_LSTPWR_FILE_OFFSET))
+			return 0;
+		
 		return STRG_SYS.fs.fs_read(fd, p, len);
 	}
 	else
 	{
+		if((len + p_fnf->write_position) >= (STG_LSTPWR_FILE_SIZE + STG_LSTPWR_FILE_OFFSET))
+			return 0;
 		return STRG_SYS.fs.fs_write(fd, p, len);
 	}
 	
@@ -663,14 +673,14 @@ static int	STG_Acc_chn_alarm(uint8_t	type, uint8_t	drc, void *p, int len)
 	
 	if(drc == STG_DRC_READ)
 	{
-		if((len + p_fnf->read_position) > (chn_num + 1)* STG_CHN_ALARM_FILE_SIZE)
+		if((len + p_fnf->read_position) >= ((chn_num + 1)* STG_CHN_ALARM_FILE_SIZE) + STG_ALARM_FILE_OFFSET)
 			return 0;
 		return STRG_SYS.fs.fs_read(fd, p, len);
 		
 	}
 	else
 	{
-		if((len + p_fnf->write_position) > (chn_num + 1) * STG_CHN_ALARM_FILE_SIZE)
+		if((len + p_fnf->write_position) >= ((chn_num + 1)* STG_CHN_ALARM_FILE_SIZE) + STG_ALARM_FILE_OFFSET)
 			return 0;
 		return STRG_SYS.fs.fs_write(fd, p, len);
 	}
