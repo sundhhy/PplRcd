@@ -17,13 +17,16 @@ void OpenPrpClock( void)
 	RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2, ENABLE);
     RCC_APB1PeriphClockCmd(RCC_APB1Periph_USART2, ENABLE);
     RCC_APB1PeriphClockCmd(RCC_APB1Periph_USART3, ENABLE);  
+	RCC_APB1PeriphClockCmd(RCC_APB1Periph_UART4, ENABLE);  
+
 	
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_SPI1, ENABLE);
 
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_AFIO, ENABLE);		//外部中断使用
 	
 	RCC_AHBPeriphClockCmd(RCC_AHBPeriph_DMA1, ENABLE); // ??DMA1??
-	
+	RCC_AHBPeriphClockCmd(RCC_AHBPeriph_DMA2, ENABLE); // ??DMA1??
+
 	
 	
 }

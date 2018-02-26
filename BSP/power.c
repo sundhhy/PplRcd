@@ -49,11 +49,29 @@
 //============================================================================//
 int PVD_Init(void)
 {
+//	FlagStatus	s;
+//	NVIC_InitTypeDef NVIC_InitStructure;
 	EXTI_InitTypeDef exti_param;
+
+	
+//	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_1);//设置优先级分组形式1，即抢占级占一位，优先级占3位
+//	
+//	
+//	
+//		/* PVD 优先级最高 
+//		
+//		*/
+//	NVIC_InitStructure.NVIC_IRQChannel = PVD_IRQn;
+//	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority=0;
+//    NVIC_InitStructure.NVIC_IRQChannelSubPriority = 1;
+//    NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
 	
 	RCC_APB1PeriphClockCmd(RCC_APB1Periph_PWR, ENABLE);
-	PWR_PVDLevelConfig(PWR_PVDLevel_2V9); 
-	PWR_PVDCmd(ENABLE); 
+//    NVIC_Init(&NVIC_InitStructure);
+	
+	
+	
+	 
 	
 	EXTI_DeInit();
 	
@@ -66,6 +84,12 @@ int PVD_Init(void)
 	EXTI_Init(&exti_param); // ??
 	
 	
+	PWR_PVDLevelConfig(PWR_PVDLevel_2V9); 
+	PWR_PVDCmd(ENABLE);
+	
+//	s = PWR_GetFlagStatus(PWR_FLAG_WU);
+//	s = PWR_GetFlagStatus(PWR_FLAG_SB);
+//	s = PWR_GetFlagStatus(PWR_FLAG_PVDO);
 	
 	return RET_OK;
 	
@@ -77,9 +101,8 @@ void PVD_IRQHandler(void)
 
 //	Dev_open(LCD_DEVID, (void *)&tdd_lcd);
 //	tdd_lcd->Clear( COLOUR_YELLOW);
-	
 	phn_sys.sys_flag |= SYSFLAG_POWERON;
-	
+		
 //	System_power_off();
 	EXTI_ClearITPendingBit(EXTI_Line16);
 	

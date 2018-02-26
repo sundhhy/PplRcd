@@ -267,6 +267,11 @@ static int UartRead( driveUart *self, void *buf, int rdLen)
 	
 	if( ret > 0)
 	{
+		if(myCfg->uartNum == 3)
+		{
+			safe_count = 0;
+			
+		}
 		if( len > self->ctl.recv_size)
 			len = self->ctl.recv_size;
 		playloadbuf = (uint8_t *)get_playloadbuf( &self->ctl.pingpong);
@@ -654,6 +659,16 @@ void USART1_IRQHandler(void)
 	Usart_irq( thisDev);
 }
 
+void UART4_IRQHandler(void)
+{
+	
+	driveUart	*thisDev = devArry[3];
+	
+	Usart_irq( thisDev);
+}
+
+
+
 
 //ÖÐ¶Ï´¦Àí³ÌÐò¸ù¾Ý×ÊÔ´Óë´®¿ÚµÄ°ó¶¨Çé¿öÀ´Ñ¡ÔñÉè±¸
 void DMA1_Channel4_IRQHandler(void)
@@ -762,6 +777,23 @@ void DMA1_Channel2_IRQHandler(void)
 //			thisDev->txIdp( thisDev->argTxIdp);
 //		thisDev->status = UARTSTATUS_IDLE;
 //		thisDev->ioctol( thisDev, DRICMD_SET_DIR_RX);
+		
+	}
+}
+
+void DMA2_Channel4_5_IRQHandler(void)
+{
+	driveUart	*thisDev = devArry[3];
+	CfgUart_t *myCfg = ( CfgUart_t *)thisDev->cfg;
+	if(DMA_GetITStatus(DMA2_FLAG_TC5))
+	{
+
+		DMA_ClearFlag( myCfg->dma->dma_tx_flag);         // ??3y±ê??
+		DMA_Cmd( myCfg->dma->dma_tx_base, DISABLE);   // 1?±?DMAí¨µà
+		
+		USART_ClearFlag( thisDev->devUartBase,USART_IT_TC );
+		USART_ITConfig( thisDev->devUartBase, USART_IT_TC, ENABLE);
+
 		
 	}
 }

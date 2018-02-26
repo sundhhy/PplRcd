@@ -81,6 +81,12 @@ Dev_Uart *Get_DevUart( int minor)
 			devUart[ minor]->dri->dirPin = NULL;
 			devChar->open(devChar, &g_confUart3);	
 		}
+		else if( minor == 3) 
+		{
+			devUart[ minor]->dri->devUartBase = UART4;
+			devUart[ minor]->dri->dirPin = NULL;
+			devChar->open(devChar, &g_confUart4);	
+		}
 		
 	}
 	return devUart[minor];

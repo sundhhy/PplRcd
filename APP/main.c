@@ -14,6 +14,7 @@
 #include "power.h"
 #include "intrInit.h"
 #include "sys_cmd.h"
+#include "Modbus_app.h"
 
 #include "basis/macros.h"
 #include "basis/sdhError.h"
@@ -101,14 +102,14 @@ int main (void) {
 	uint8_t			old_sys_flag = phn_sys.sys_flag;
 	
   // initialize peripherals here
-	
+
 	//BSPµÄ³õÊ¼»¯
 	OpenPrpClock();
 	Pin_init();
 	NVIC_Configuration();
 	
-	
 	PVD_Init();
+
 	
 	Init_LCD();
 	
@@ -167,6 +168,9 @@ int main (void) {
 	
 	USB_Rgt_event_hdl(Main_USB_event);
 	osKernelStart ();  
+
+	MBA_Init();
+
 
 	p_tips = TIP_Get_Sington();
 	

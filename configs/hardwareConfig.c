@@ -22,16 +22,7 @@
 //*dma_tx_base;
 //dma_tx_flag;
 //dma_tx_irq;
-Dma_source g_DmaUart2 = {
-	DMA1_Channel6,
-	DMA1_FLAG_GL6,
-	DMA1_Channel6_IRQn,
-	
-	DMA1_Channel7,
-	DMA1_FLAG_GL7,
-	DMA1_Channel7_IRQn,
-	
-};
+
 
 
 Dma_source g_DmaUart1 = {
@@ -45,13 +36,15 @@ Dma_source g_DmaUart1 = {
 	
 };
 
-USART_InitTypeDef g_Cfg_Uart2 = {
-		115200,
-		USART_WordLength_8b,
-		USART_StopBits_1,
-		USART_Parity_No,
-		USART_Mode_Rx | USART_Mode_Tx,
-		USART_HardwareFlowControl_None,
+Dma_source g_DmaUart2 = {
+	DMA1_Channel6,
+	DMA1_FLAG_GL6,
+	DMA1_Channel6_IRQn,
+	
+	DMA1_Channel7,
+	DMA1_FLAG_GL7,
+	DMA1_Channel7_IRQn,
+	
 };
 
 Dma_source g_DmaUart3 = {
@@ -65,37 +58,16 @@ Dma_source g_DmaUart3 = {
 	
 };
 
-
-
-iic_conf_t arr_conf_IIC[2] ={
-	{400000, 1, 1, 7, 0},
-	{400000, 2, 1, 7, 0}
+Dma_source g_DmaUart4 = {
+	DMA2_Channel3,
+	DMA2_FLAG_GL3,
+	DMA2_Channel3_IRQn,
+	
+	DMA2_Channel5,
+	DMA2_FLAG_GL5,
+	DMA2_Channel4_5_IRQn,
+	
 };
-
-
-spi_conf_t arr_conf_spi[NUM_SPIS] ={
-	{
-		0,
-		0,
-		0,
-		8,
-		
-	},
-	{
-		0,
-		3,
-		0,
-		8,
-		
-	},
-	{
-		0,
-		0,
-		0,
-		8,
-	}
-};
-
 
 
 
@@ -112,7 +84,14 @@ USART_InitTypeDef g_Cfg_Uart1 = {
 		USART_HardwareFlowControl_None,
 };
 
-
+USART_InitTypeDef g_Cfg_Uart2 = {
+		115200,
+		USART_WordLength_8b,
+		USART_StopBits_1,
+		USART_Parity_No,
+		USART_Mode_Rx | USART_Mode_Tx,
+		USART_HardwareFlowControl_None,
+};
 
 USART_InitTypeDef g_Cfg_Uart3 = {
 		19200,
@@ -157,10 +136,46 @@ CfgUart_t g_confUart3 = {
 CfgUart_t g_confUart4 = {
 	
 	&g_Cfg_Uart4,
-	NULL,
+	&g_DmaUart4,
 	3,
-	UART_MODE_INTR,
+	UART_MODE_DMA,
 };
+
+
+
+
+iic_conf_t arr_conf_IIC[2] ={
+	{400000, 1, 1, 7, 0},
+	{400000, 2, 1, 7, 0}
+};
+
+
+spi_conf_t arr_conf_spi[NUM_SPIS] ={
+	{
+		0,
+		0,
+		0,
+		8,
+		
+	},
+	{
+		0,
+		3,
+		0,
+		8,
+		
+	},
+	{
+		0,
+		0,
+		0,
+		8,
+	}
+};
+
+
+
+
 
 
 
