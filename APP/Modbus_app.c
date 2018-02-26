@@ -8,7 +8,7 @@
 #include "device.h"
 #include "hardwareConfig.h"
 #include "ModelFactory.h"
-
+#include "channel_accumulated.h"
 //------------------------------------------------------------------------------
 // const defines
 //------------------------------------------------------------------------------
@@ -39,13 +39,13 @@
 
 
 const	uint16_t	param_system_area[2] = {0x7000, 0x7009};
-const	uint16_t	param_channel_area[2] = {0x6000, 0x6120};		//6个通道，每个通道0x30个寄存器
-const	uint16_t	param_transmitting_area[2] = {0x5000, 0x5005};		
-const	uint16_t	param_accumulation_area[2] = {0x5030, 0x5031};
-const	uint16_t	param_PID_area[2] = {0x5050, 0x506F};
-const	uint16_t	param_flow_area[2] = {0x5150, 0x516F};
+const	uint16_t	param_channel_area[2] = {0x6000, 0x62ff};		//6个通道，每个通道0x30个寄存器
+const	uint16_t	param_transmitting_area[2] = {0x5000, 0x502f};		
+const	uint16_t	param_accumulation_area[2] = {0x5030, 0x504f};
+const	uint16_t	param_PID_area[2] = {0x5050, 0x514F};
+const	uint16_t	param_flow_area[2] = {0x5150, 0x534F};
 const	uint16_t	data_real_time_area[2] = {0x7FFA, 0x801F};
-const	uint16_t	data_accumulation_area[2] = {0x8100, 0x8187};	
+const	uint16_t	data_accumulation_area[2] = {0x8100, 0x897f};	
 const	uint16_t	*arr_areas[8] = {param_system_area, param_channel_area, param_transmitting_area, \
 		param_accumulation_area, param_PID_area, param_flow_area, data_real_time_area, data_accumulation_area};
 //------------------------------------------------------------------------------
@@ -148,7 +148,7 @@ int			MBC_reg_2_ram(uint16_t	reg, uint16_t reg_num, char mbc_cmd, void *ram_ptr)
 				goto exit;
 				
 			}
-			ram_ptr = &mba_ram;
+			*pp_u16 = &mba_ram;
 			break;
 			
 			//因为涉及到字节序的问题，因此就不支持连续的写了
@@ -451,7 +451,7 @@ static int MBA_Acc_param_system(uint16_t	offset, char rd_or_wr, uint16_t *p)
 static int MBA_Acc_param_channel(uint16_t	offset, char rd_or_wr, uint16_t *p)
 {
 	Model_chn			*p_mc;
-	Model					*p_md;
+//	Model					*p_md;
 	int							ret = RET_OK;
 	int16_t				*p_s16 = (int16_t *)p;
 	uint8_t				chn_offset = 0;
@@ -470,7 +470,7 @@ static int MBA_Acc_param_channel(uint16_t	offset, char rd_or_wr, uint16_t *p)
 	chn_offset = offset % 0x30;
 	
 	p_mc = Get_Mode_chn(chn_num);
-	p_md = SUPER_PTR(p_mc, Model);
+//	p_md = SUPER_PTR(p_mc, Model);
 	
 	switch(chn_offset)
 	{
@@ -848,33 +848,146 @@ static int MBA_Acc_param_channel(uint16_t	offset, char rd_or_wr, uint16_t *p)
 }
 static int MBA_Acc_param_transmitting(uint16_t	offset, char rd_or_wr, uint16_t *p)
 {
-	
+	if(rd_or_wr == MBA_ACC_READ)
+	{
+
+		*p = 0;
+	}
+	return RET_OK;
 	
 }
 static int MBA_Acc_param_accumulation(uint16_t	offset, char rd_or_wr, uint16_t *p)
 {
 	
-	return ERR_NOT_SUPPORT;
+	if(rd_or_wr == MBA_ACC_READ)
+	{
+
+		*p = 0;
+	}
+	return RET_OK;
 }
 static int MBA_Acc_param_PID(uint16_t	offset, char rd_or_wr, uint16_t *p)
 {
-	
+	if(rd_or_wr == MBA_ACC_READ)
+	{
+
+		*p = 0;
+	}
+	return RET_OK;
 	
 }
 static int MBA_Acc_param_flow(uint16_t	offset, char rd_or_wr, uint16_t *p)
 {
-	
+	if(rd_or_wr == MBA_ACC_READ)
+	{
+
+		*p = 0;
+	}
+	return RET_OK;
 	
 }
 static int MBA_Acc_data_real_time(uint16_t	offset, char rd_or_wr, uint16_t *p)
 {
+	Model_chn			*p_mc;
+	Model					*p_md;
+	struct  tm		time;
+
 	
+	
+	if(rd_or_wr == MBA_ACC_READ)
+	{
+		
+		return ERR_NOT_SUPPORT;
+	}
+
+	
+
+	
+	
+	if(offset < 6)
+	{
+		p_md = ModelCreate("time");
+		p_md->getMdlData(p_md, TIME_TM, &time);
+	}
+	switch(offset)
+	{
+		case 0:
+			*p = time.tm_year;
+			break;
+		case 1:
+			*p = time.tm_mon;
+			break;
+		case 2:
+			*p = time.tm_mday;
+			break;
+		case 3:
+			*p = time.tm_hour;
+			break;
+		case 4:
+			*p = time.tm_min;
+			break;
+		case 5:
+			*p = time.tm_sec;
+			break;
+		case 6:
+		case 7:
+		case 8:
+		case 9:
+		case 10:
+		case 11:
+			p_mc = Get_Mode_chn(offset - 6);
+			p_md = SUPER_PTR(p_mc, Model);
+			p_md->getMdlData(p_md, AUX_DATA, p);
+			break;
+		default:
+			*p = 0;
+			break;
+	}
+	
+	return RET_OK;
 	
 }
 static int MBA_Acc_data_accumulation(uint16_t	offset, char rd_or_wr, uint16_t *p)
 {
 	
+	chn_accumlated_t	*p_cna;
+	char					chn_num = offset / 0x88;
+	char					chn_offset = offset % 0x88;
+	char					day_or_month = 0;
+	char					part = 0;
 	
+	if(rd_or_wr == MBA_ACC_READ)
+	{
+		
+		return ERR_NOT_SUPPORT;
+	}
+	
+	p_cna = arr_chn_acc + chn_num;
+	
+	if(chn_offset < 0x5d)
+	{
+		day_or_month = chn_offset / 3;
+		part = chn_offset % 3;
+		*p = p_cna->accumlated_day[day_or_month][part];
+		
+	}
+	else if((chn_offset > 0x5c) && (chn_offset < 0x81))
+	{
+		day_or_month = (offset - 0x5d) / 3;
+		part = (offset - 0x5d)  % 3;
+		*p = p_cna->accumlated_month[day_or_month][part];
+	}
+	else if((chn_offset > 0x80) && (chn_offset < 0x84))
+	{
+		part = (offset - 0x81)  % 3;
+		*p = p_cna->accumlated_year[part];
+	}
+	else if((chn_offset > 0x83) && (chn_offset < 0x88))
+	{
+		part = (offset - 0x84)  % 3;
+		*p = p_cna->accumlated_total[part];
+	}
+	return RET_OK;
 }
 
 
@@ -882,50 +995,7 @@ static int MBA_Acc_data_accumulation(uint16_t	offset, char rd_or_wr, uint16_t *p
 
 
 
-//static int MBA_Write_param_system(uint16_t	offset, uint16_t v)
-//{
-//	
-//	
-//}
-//static int MBA_Write_param_channel(uint16_t	offset, uint16_t v)
-//{
-//	
-//	
-//}
-//static int MBA_Write_param_transmitting(uint16_t	offset, uint16_t v)
-//{
-//	
-//	
-//	
-//}
-//static int MBA_Write_param_accumulation(uint16_t	offset, uint16_t v)
-//{
-//	
-//	
-//}
-//static int MBA_Write_param_PID(uint16_t	offset, uint16_t v)
-//{
-//	
-//	
-//	
-//}
-//static int MBA_Write_param_flow(uint16_t	offset, uint16_t v)
-//{
-//	
-//	
-//	
-//}
-//static int MBA_Write_data_real_time(uint16_t	offset, uint16_t v)
-//{
-//	
-//	
-//	
-//}
-//static int MBA_Write_data_accumulation(uint16_t	offset, uint16_t v)
-//{
-//	
-//	
-//}
+
 
 
 

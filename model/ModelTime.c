@@ -96,6 +96,9 @@ int MdlTime_getData(  Model *self, IN int aux, void *arg)
 	{
 		
 		tm2 = ( struct  tm	*) arg;
+		tm2->tm_year = tm->tm_year;
+		tm2->tm_mon = tm->tm_mon;
+		tm2->tm_mday = tm->tm_mday;
 		tm2->tm_hour = tm->tm_hour;
 		tm2->tm_min = tm->tm_min;
 		tm2->tm_sec = tm->tm_sec;

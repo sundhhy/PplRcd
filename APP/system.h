@@ -44,6 +44,9 @@
 #define SYSFLAG_SETTING				1
 #define SYSFLAG_EFS_NOTREADY			2		//文件系统未就绪，可能正在擦除文件
 #define SYSFLAG_POWERON				4
+//#define	STSFLAG_TIME_CHANGE		8
+//#define	STSFLAG_PARAM_SYSTEM_CHANGE		0x10
+//#define	STSFLAG_PARAM_CHANNEL_CHANGE		0x20
 //------------------------------------------------------------------------------
 // typedef
 //------------------------------------------------------------------------------
