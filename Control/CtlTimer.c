@@ -5,7 +5,7 @@
 #include "ModelFactory.h"
 #include "utils/Storage.h"
 #include "arithmetic/bit.h"
-
+#include "channel_accumulated.h"
 #ifdef NO_ASSERT
 #include "basis/assert.h"
 #else
@@ -159,6 +159,9 @@ static void Ctime_periodic (void const *arg)
 		p_md->run(p_md);
 		
 	}
+	
+	
+	CNA_Run(1000);
 	
 	if(time_smp < phn_sys.sys_conf.record_gap_s)
 	{

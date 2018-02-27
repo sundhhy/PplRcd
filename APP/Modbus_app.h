@@ -23,6 +23,6 @@
 // function prototypes
 //------------------------------------------------------------------------------
 int MBA_Init(void);
-
+void MBA_Init_uart(int baud);
 
 #endif

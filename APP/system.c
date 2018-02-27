@@ -16,6 +16,8 @@
 #include "fs/easy_fs.h"
 #include "utils/Storage.h"
 
+#include "Modbus_app.h"
+#include "channel_accumulated.h"
 #include "TDD.h"
 //------------------------------------------------------------------------------
 // const defines
@@ -199,7 +201,7 @@ void System_init(void)
 	if(phn_sys.sys_conf.num_chn != NUM_CHANNEL)
 		System_default();
 	
-	
+	CNA_Init();
 	for(i = 0; i < NUM_CHANNEL; i++)
 	{
 
@@ -220,6 +222,9 @@ int SYS_Commit(void)
 	
 	stg->wr_stored_data(stg, STG_SYS_CONF, &phn_sys.sys_conf, sizeof(phn_sys.sys_conf));
 	Ctime_Allco_time(phn_sys.sys_conf.record_gap_s, NUM_CHANNEL);
+	
+	//Modbus的串口参数也可能被修改了，所有要重新初始化MODBUS的串口
+	MBA_Init_uart(phn_sys.sys_conf.baud_rate);
 	return RET_OK;
 }
 void System_time(struct  tm *stime)

@@ -28,12 +28,11 @@ static driveUart	*devArry[NUM_UARTS];
 
 static void UartDma_Init( driveUart *self);
 
-static int UartInit( driveUart *self, void *device, void *cfg)
+static int UartInit( driveUart *self, void *cfg)
 {
 	CfgUart_t *myCfg = ( CfgUart_t *)cfg;
 	devArry[ myCfg->uartNum] = self;
 	self->cfg = cfg;
-	self->devUartBase = device;
 	self->rxCache = calloc( 1, UART_RXCACHE_SIZE);
 	
 	if(myCfg->opt_mode != UART_MODE_CPU)
@@ -44,9 +43,9 @@ static int UartInit( driveUart *self, void *device, void *cfg)
 	
 	
 	USART_Cmd( self->devUartBase, DISABLE);
-	USART_DeInit( device);
+	USART_DeInit( self->devUartBase);
 	
-	USART_Init( device, myCfg->cfguart);
+	USART_Init( self->devUartBase, myCfg->cfguart);
 	if(myCfg->opt_mode == UART_MODE_DMA)
 	{
 		
@@ -56,24 +55,43 @@ static int UartInit( driveUart *self, void *device, void *cfg)
 
 	if(myCfg->opt_mode != UART_MODE_CPU)
 	{
-		USART_ClearFlag( device,USART_IT_IDLE );
+		USART_ClearFlag( self->devUartBase,USART_IT_IDLE );
 		
-		USART_ITConfig( device, USART_IT_RXNE, ENABLE);
-		USART_ITConfig( device, USART_IT_IDLE, ENABLE);
+		USART_ITConfig( self->devUartBase, USART_IT_RXNE, ENABLE);
+		USART_ITConfig( self->devUartBase, USART_IT_IDLE, ENABLE);
 	}
 	
 	if(myCfg->opt_mode == UART_MODE_DMA)
-		USART_DMACmd( device, USART_DMAReq_Tx, ENABLE);  // 开启DMA发送
+		USART_DMACmd( self->devUartBase, USART_DMAReq_Tx, ENABLE);  // 开启DMA发送
 	if(myCfg->opt_mode == UART_MODE_DMA)
-		USART_DMACmd( device, USART_DMAReq_Rx, ENABLE); // 开启DMA接收
+		USART_DMACmd( self->devUartBase, USART_DMAReq_Rx, ENABLE); // 开启DMA接收
 	
-	USART_Cmd( device, ENABLE);
+	USART_Cmd( self->devUartBase, ENABLE);
 	self->ctl.rx_block = 1;
 	self->ctl.tx_block = 1;
 	self->ctl.rx_waittime_ms = 100;
 	self->ctl.tx_waittime_ms = 100;
 	
 	return ERR_OK;
+	
+}
+
+
+void DRI_Uart_Change_baud(driveUart *p_dri, int new_baud)
+{
+	
+	CfgUart_t *myCfg = ( CfgUart_t *)p_dri->cfg;
+	
+	if(myCfg->cfguart->USART_BaudRate == new_baud)
+		return;
+	myCfg->cfguart->USART_BaudRate = new_baud;
+	
+	USART_Cmd( p_dri->devUartBase, DISABLE);
+	USART_DeInit( p_dri->devUartBase);
+	
+	USART_Init(p_dri->devUartBase, myCfg->cfguart);
+	
+	
 	
 }
 

@@ -16,13 +16,15 @@
 #define STG_SYS_CONF					0x10
 #define STG_CHN_DATA(n)					(0x20 + n)
 #define STG_CHN_ALARM(n)				(0x30 + n)
-#define STG_LOSE_PWR					(0x40)
+#define STG_CHN_SUM(n)				(0x40 + n)
+#define STG_LOSE_PWR					(0x50)
 
 #define	IS_CHN_CONF(type)				(type < NUM_CHANNEL)
 #define	IS_SYS_CONF(type)				(type == 0x10)
 #define	IS_CHN_DATA(type)				((type & 0xf0) == 0x20)
 #define	IS_CHN_ALARM(type)			((type & 0xf0) == 0x30)
-#define	IS_LOSE_PWR(type)				(type == 0x40)
+#define	IS_CHN_SUM(type)			((type & 0xf0) == 0x30)
+#define	IS_LOSE_PWR(type)				(type == 0x50)
 
 #define STG_GET_CHN(type)				(type & 0x0f)
 
@@ -56,6 +58,21 @@ typedef struct {
 	uint32_t		happen_time_s;
 	uint32_t		disapper_time_s;
 }rcd_alm_pwr_t;
+
+typedef struct {
+	char		enable_sum;
+	uint8_t		sum_start_year;
+	uint8_t		sum_start_month;
+	uint8_t		sum_start_day;
+	
+	uint16_t	accumlated_day[31][3];		/*???*/
+	uint16_t	accumlated_month[12][3];	/*???*/
+	uint16_t	accumlated_year[3];			/*???*/
+	uint16_t	accumlated_total[3];			/*总累积*/
+	uint16_t	accumlated_remain;			/*累积余量*/
+}rcd_chn_accumlated_t;
+
+
 typedef struct
 {
 	mdl_chn_save_t		mdlchn[NUM_CHANNEL];

@@ -4,6 +4,8 @@
 #ifndef __INC_channel_accumulated_H__
 #define __INC_channel_accumulated_H__
 #include <stdint.h>
+#include "utils/Storage.h"
+
 //------------------------------------------------------------------------------
 // check for correct compilation options
 //------------------------------------------------------------------------------
@@ -15,26 +17,18 @@
 //------------------------------------------------------------------------------
 // typedef
 //------------------------------------------------------------------------------
-typedef struct {
-	char		enable_sum;
-	uint8_t		sum_start_year;
-	uint8_t		sum_start_month;
-	uint8_t		sum_start_day;
-	
-	uint16_t	accumlated_day[31][3];		/*???*/
-	uint16_t	accumlated_month[12][3];	/*???*/
-	uint16_t	accumlated_year[3];			/*???*/
-	uint16_t	accumlated_total[3];			/*总累积*/
-	uint16_t	accumlated_remain;			/*累积余量*/
-}chn_accumlated_t;
+
 //------------------------------------------------------------------------------
 // global variable declarations
 //------------------------------------------------------------------------------
-extern chn_accumlated_t	arr_chn_acc[NUM_CHANNEL];
+extern rcd_chn_accumlated_t	arr_chn_acc[NUM_CHANNEL];
 //------------------------------------------------------------------------------
 // function prototypes
 //------------------------------------------------------------------------------
 int CNA_Init(void);
 
-
+void CNA_Run(int cyc_ms);
+void CNA_Print_enable(char *s, char	enable);
+int		CNA_Commit(char chn_num);
+int		CNA_Clear(char chn_num);
 #endif

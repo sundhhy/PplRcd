@@ -92,6 +92,9 @@ int MBA_Init(void)
 {
 	int ret = RET_OK;
 	
+	
+	MBA_UART_CONF.cfguart->USART_BaudRate = MBA_SYSTEM.sys_conf.baud_rate;
+	
 	ret = Dev_open(MBA_UART_ID, (void *)&p_MBA_uart);
 	if(ret != RET_OK)
 		goto exit;
@@ -116,6 +119,12 @@ int MBA_Init(void)
 	exit:
 	return ret;
 	
+	
+}
+
+void MBA_Init_uart(int baud)
+{
+	p_MBA_uart->ioctol(p_MBA_uart, DEVCMD_SET_BAUD, baud);
 	
 }
 
@@ -950,7 +959,7 @@ static int MBA_Acc_data_real_time(uint16_t	offset, char rd_or_wr, uint16_t *p)
 static int MBA_Acc_data_accumulation(uint16_t	offset, char rd_or_wr, uint16_t *p)
 {
 	
-	chn_accumlated_t	*p_cna;
+	rcd_chn_accumlated_t	*p_cna;
 	char					chn_num = offset / 0x88;
 	char					chn_offset = offset % 0x88;
 	char					day_or_month = 0;

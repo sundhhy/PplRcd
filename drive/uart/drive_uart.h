@@ -69,7 +69,7 @@ CLASS( driveUart)
 	uint8_t			status;
 	uint8_t			none[3];
 	
-	int ( *init)( driveUart *self, void *dev, void *cfg);
+	int ( *init)( driveUart *self, void *cfg);
 	int ( *deInit)( driveUart *self);
 	int ( *read)( driveUart *self, void *buf, int rdLen);
 	int	( *takeUpPlayloadBuf)( driveUart *self, void **buf);
@@ -88,7 +88,7 @@ CLASS( driveUart)
 	
 };
 
-
+void DRI_Uart_Change_baud(driveUart *p_dri, int new_baud);
 
 
 #endif

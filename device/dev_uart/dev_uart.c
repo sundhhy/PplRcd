@@ -112,7 +112,7 @@ int Dev_Uart_open( I_dev_Char *self, void *conf)
 	driUart->setPostSem( driUart, DRCT_TX, UartPostTxSem);
 	driUart->setLedHdl( driUart, DRCT_RX, UartLedRxHdl);
 	driUart->setLedHdl( driUart, DRCT_TX, UartLedTxHdl);
-	if( driUart->init( driUart, cthis->dri->devUartBase, conf) != RET_OK)
+	if( driUart->init( driUart, conf) != RET_OK)
 		goto errExit2;
 	
 	driUart->ioctol( driUart, DRICMD_SET_DIR_RX);
@@ -221,7 +221,11 @@ int Dev_Uart_ioctol( I_dev_Char *self ,int cmd, ...)
 			va_end(arg_ptr); 
 			driUart->giveBackPlayloadBuf( driUart, arg);
 			break;
-		
+		case DEVCMD_SET_BAUD:
+			int_data = va_arg(arg_ptr, int);
+			va_end(arg_ptr); 
+			DRI_Uart_Change_baud(driUart, int_data);
+			break;
 		default: break;
 		
 	}
