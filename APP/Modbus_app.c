@@ -92,8 +92,8 @@ int MBA_Init(void)
 {
 	int ret = RET_OK;
 	
-	
-	MBA_UART_CONF.cfguart->USART_BaudRate = MBA_SYSTEM.sys_conf.baud_rate;
+	if(MBA_SYSTEM.sys_conf.baud_rate)
+		MBA_UART_CONF.cfguart->USART_BaudRate = MBA_SYSTEM.sys_conf.baud_rate;
 	
 	ret = Dev_open(MBA_UART_ID, (void *)&p_MBA_uart);
 	if(ret != RET_OK)
@@ -145,6 +145,13 @@ int			MBC_reg_2_ram(uint16_t	reg, uint16_t reg_num, char mbc_cmd, void *ram_ptr)
 		goto exit;
 		
 	}
+	if(ram_ptr == NULL)
+	{
+		//只是查询地址范围是否正确的时候会传入NULL
+		ret = RET_OK;
+		goto exit;
+		
+	}
 	//然后再依次访问数据
 	acc_func = MBA_Get_acc_func(ret);
 	switch(mbc_cmd)
@@ -157,6 +164,7 @@ int			MBC_reg_2_ram(uint16_t	reg, uint16_t reg_num, char mbc_cmd, void *ram_ptr)
 				goto exit;
 				
 			}
+			ret = RET_OK;
 			*pp_u16 = &mba_ram;
 			break;
 			
@@ -171,6 +179,7 @@ int			MBC_reg_2_ram(uint16_t	reg, uint16_t reg_num, char mbc_cmd, void *ram_ptr)
 				goto exit;
 				
 			}
+			ret = RET_OK;
 			break;
 		default:
 			ret = ERR_CMM_CMDERR;
@@ -195,7 +204,7 @@ int			MBC_reg_2_ram(uint16_t	reg, uint16_t reg_num, char mbc_cmd, void *ram_ptr)
 static void MBA_Run(void *arg)
 {
 	uint8_t		modbus_buf[96];  //系统最长的连续寄存器数量是32个，所以这么多字节能放下了
-	uint8_t		modbus_ack_buf[96];  //系统最长的连续寄存器数量是32个，所以这么多字节能放下了
+	uint8_t		modbus_ack_buf[280];  //系统最长的连续寄存器数量是32个，所以这么多字节能放下了
 	int			read_len;
 	
 	read_len = p_MBA_uart->read(p_MBA_uart, modbus_buf, 96);
@@ -204,7 +213,7 @@ static void MBA_Run(void *arg)
 	if(MBC_Get_pkt_addr(modbus_buf) != MBA_SYSTEM.sys_conf.id)
 		return;
 	
-	read_len = MBC_Decode_pkt(modbus_buf, read_len, modbus_ack_buf, 96);
+	read_len = MBC_Decode_pkt(modbus_buf, read_len, modbus_ack_buf, 280);
 	
 	if(read_len <= 0)
 		return;
@@ -903,7 +912,7 @@ static int MBA_Acc_data_real_time(uint16_t	offset, char rd_or_wr, uint16_t *p)
 
 	
 	
-	if(rd_or_wr == MBA_ACC_READ)
+	if(rd_or_wr == MBA_ACC_WRITE)
 	{
 		
 		return ERR_NOT_SUPPORT;
@@ -961,11 +970,11 @@ static int MBA_Acc_data_accumulation(uint16_t	offset, char rd_or_wr, uint16_t *p
 	
 	rcd_chn_accumlated_t	*p_cna;
 	char					chn_num = offset / 0x88;
-	char					chn_offset = offset % 0x88;
+	uint8_t					chn_offset = offset % 0x88;
 	char					day_or_month = 0;
 	char					part = 0;
 	
-	if(rd_or_wr == MBA_ACC_READ)
+	if(rd_or_wr == MBA_ACC_WRITE)
 	{
 		
 		return ERR_NOT_SUPPORT;

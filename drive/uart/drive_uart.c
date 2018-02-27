@@ -27,6 +27,7 @@ static driveUart	*devArry[NUM_UARTS];
 
 
 static void UartDma_Init( driveUart *self);
+static void DRI_Uart_clean_idle(USART_TypeDef* USARTx);
 
 static int UartInit( driveUart *self, void *cfg)
 {
@@ -55,7 +56,7 @@ static int UartInit( driveUart *self, void *cfg)
 
 	if(myCfg->opt_mode != UART_MODE_CPU)
 	{
-		USART_ClearFlag( self->devUartBase,USART_IT_IDLE );
+//		USART_ClearFlag( self->devUartBase,USART_IT_IDLE );
 		
 		USART_ITConfig( self->devUartBase, USART_IT_RXNE, ENABLE);
 		USART_ITConfig( self->devUartBase, USART_IT_IDLE, ENABLE);
@@ -72,6 +73,11 @@ static int UartInit( driveUart *self, void *cfg)
 	self->ctl.rx_waittime_ms = 100;
 	self->ctl.tx_waittime_ms = 100;
 	
+	if(myCfg->opt_mode != UART_MODE_CPU)
+	{
+		USART_ClearFlag( self->devUartBase,USART_IT_RXNE );
+		DRI_Uart_clean_idle(self->devUartBase);
+	}
 	return ERR_OK;
 	
 }
@@ -172,7 +178,7 @@ static int UartWrite( driveUart *self, void *buf, int wrLen)
 		self->status = UARTSTATUS_TXBUSY;
 		if((wrLen  < UART_TXCACHE_SIZE))
 		{
-			memset( self->txCache, 0, UART_TXCACHE_SIZE);
+//			memset( self->txCache, 0, UART_TXCACHE_SIZE);
 			memcpy( self->txCache, buf, wrLen);
 			sendbuf = self->txCache;
 		
@@ -574,7 +580,14 @@ void UartDma_Init( driveUart *self)
    
 
 }
-
+static void DRI_Uart_clean_idle(USART_TypeDef* USARTx)
+{
+	uint8_t 	clear_idle = clear_idle;
+	clear_idle = USARTx->SR;
+	clear_idle = USARTx->DR;
+	USART_ReceiveData( USARTx); // Clear IDLE interrupt flag bit
+	
+}
 void Usart_irq( driveUart *thisDev)
 {
 	short rxbuflen;
@@ -584,7 +597,7 @@ void Usart_irq( driveUart *thisDev)
 //	int i = 500;
 	
 	CfgUart_t 	*myCfg = ( CfgUart_t *)thisDev->cfg;
-	uint8_t 	clear_idle = clear_idle;
+//	uint8_t 	clear_idle = clear_idle;
 //	uint16_t	cntdr = 0;
 	
 	if(USART_GetITStatus( thisDev->devUartBase, USART_IT_IDLE) != RESET)  // ¿ÕÏÐÖÐ¶Ï
@@ -601,10 +614,11 @@ void Usart_irq( driveUart *thisDev)
 		DMA_Cmd(  myCfg->dma->dma_rx_base, ENABLE);
 		
 	
-		clear_idle = devUartBase->SR;
-		clear_idle = devUartBase->DR;
-		USART_ReceiveData( devUartBase); // Clear IDLE interrupt flag bit
+//		clear_idle = devUartBase->SR;
+//		clear_idle = devUartBase->DR;
+//		USART_ReceiveData( devUartBase); // Clear IDLE interrupt flag bit
 
+		DRI_Uart_clean_idle(devUartBase);
 
 		if( thisDev->rxLedHdl)
 			thisDev->rxLedHdl(thisDev);
