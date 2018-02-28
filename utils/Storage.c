@@ -703,14 +703,14 @@ static int	STG_Acc_chn_alarm(uint8_t	type, uint8_t	drc, void *p, int len)
 	
 	if(drc == STG_DRC_READ)
 	{
-		if((len + p_fnf->read_position) >= ((chn_num + 1)* STG_CHN_ALARM_FILE_SIZE) + STG_ALARM_FILE_OFFSET)
+		if((len + p_fnf->read_position) > ((chn_num + 1)* STG_CHN_ALARM_FILE_SIZE + STG_ALARM_FILE_OFFSET))
 			return 0;
 		return STRG_SYS.fs.fs_read(fd, p, len);
 		
 	}
 	else
 	{
-		if((len + p_fnf->write_position) >= ((chn_num + 1)* STG_CHN_ALARM_FILE_SIZE) + STG_ALARM_FILE_OFFSET)
+		if((len + p_fnf->write_position) > ((chn_num + 1)* STG_CHN_ALARM_FILE_SIZE + STG_ALARM_FILE_OFFSET))
 			return 0;
 		return STRG_SYS.fs.fs_write(fd, p, len);
 	}
@@ -730,14 +730,14 @@ static int	STG_Acc_chn_sum(uint8_t	type, uint8_t	drc, void *p, int len)
 	
 	if(drc == STG_DRC_READ)
 	{
-		if((len + p_fnf->read_position) >= ((chn_num + 1)* STG_CHN_SUM_FILE_SIZE) + STG_SUM_FILE_OFFSET)
+		if((len + p_fnf->read_position) > ((chn_num + 1)* STG_CHN_SUM_FILE_SIZE + STG_SUM_FILE_OFFSET))
 			return 0;
 		return STRG_SYS.fs.fs_read(fd, p, len);
 		
 	}
 	else
 	{
-		if((len + p_fnf->write_position) >= ((chn_num + 1)* STG_CHN_SUM_FILE_SIZE) + STG_ALARM_FILE_OFFSET)
+		if((len + p_fnf->write_position) > ((chn_num + 1)* STG_CHN_SUM_FILE_SIZE + STG_SUM_FILE_OFFSET))
 			return 0;
 		return STRG_SYS.fs.fs_write(fd, p, len);
 	}

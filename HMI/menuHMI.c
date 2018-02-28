@@ -54,7 +54,7 @@ const char win_pic1_Code[] = { "<pic vx0=0 vy0=0 >5</>" };
 const char win_pic2_Code[] = { "<cpic vx0=0 vy0=0 >6</>" };
 
 static HMI **arr_pp_targetHmi[NUM_BTNROW][NUM_BTNCOL] = { { &g_p_mainHmi, &g_p_barGhHmi}, {&g_p_dataHmi, &g_p_RLT_trendHmi}, \
-	{&g_p_NewSlct_HMI, &g_p_RLT_trendHmi}, {NULL, NULL}};		
+	{&g_p_NewSlct_HMI, &g_p_RLT_trendHmi}, {&g_p_NewSlct_HMI, NULL}};		
 
 //static const hmiAtt_t	menuHmiAtt = { 4,4, COLOUR_GRAY, NUM_BTNROW, NUM_BTNCOL};
 //static sheet *arr_p_menu_show[ NUM_BTNROW][NUM_BTNCOL] =  {NULL};
@@ -311,17 +311,6 @@ static void	MenuHitHandle( HMI *self, char *s)
 		self->clear_focus(self, focusRow, focusCol);
 		self->show_focus(self, cthis->focusRow, cthis->focusCol);
 
-//		arr_p_menu_show[focusRow][ focusCol]->cnt.effects = GP_CLR_EFF( arr_p_menu_show[focusRow][ focusCol]->cnt.effects, EFF_FOCUS);
-//		Sheet_slide( arr_p_menu_show[focusRow][ focusCol]);
-		
-		//显示新的焦点
-//		p_sheets[ cthis->focusRow][ cthis->focusCol]->cnt.effects = \
-//			GP_SET_EFF( p_sheets[ cthis->focusRow][ cthis->focusCol]->cnt.effects, EFF_FOCUS);
-//		Sheet_slide( p_sheets[ cthis->focusRow][ cthis->focusCol]);
-		
-//		arr_p_menu_show[ cthis->focusRow][ cthis->focusCol]->cnt.effects = \
-//			GP_SET_EFF( arr_p_menu_show[ cthis->focusRow][ cthis->focusCol]->cnt.effects, EFF_FOCUS);
-//		Sheet_slide( arr_p_menu_show[ cthis->focusRow][ cthis->focusCol]);
 	}
 	
 	if( !strcmp( s, HMIKEY_ENTER))

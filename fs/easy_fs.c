@@ -694,7 +694,7 @@ static void EFS_run(void *arg)
 		
 	}
 	
-	if(efs_mgr.run_idel_count < 10000)
+	if(efs_mgr.run_idel_count < 500)
 	{
 		
 		return;

@@ -18,9 +18,10 @@
 //------------------------------------------------------------------------------
 //#define HAS_PGUP		1
 //#define HAS_PGDN		2
+#define HMI_SBG_COL_MAX		6
 
 #define HMI_SBG_SELECT_NEWS		4
-
+#define HMI_SBG_SELECT_ACC		5
 
 #define FOCUS_IN_STARTEGY		0x10
 
@@ -45,7 +46,7 @@ CLASS(HMI_striped_background)
 	//多个规则同时满足，则以后面的规则为准
 	uint8_t	col_max;	
 
-	uint8_t	col_vx0[5];		//每一列的x起始位置
+	uint8_t	col_vx0[9];		//每一列的x起始位置 数组成员要多于HMI_SBG_COL_MAX
 };
 
 
@@ -55,7 +56,8 @@ CLASS(HMI_striped_background)
 // global variable declarations
 //------------------------------------------------------------------------------
 extern strategy_t	g_sys_strategy, g_dataPrint_strategy;
-extern strategy_t	g_chn_strategy, g_alarm_strategy, g_art_strategy, g_view_strategy, g_DBP_strategy;
+extern strategy_t	g_chn_strategy, g_alarm_strategy, g_art_strategy, \
+	g_view_strategy, g_DBP_strategy, g_set_ACC;
 
 extern strategy_t g_news_alarm, g_news_power;
 extern strategy_t g_st_acc_day, g_st_acc_month;

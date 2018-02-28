@@ -238,11 +238,15 @@ static void	Nws_HMI_hitHandle(HMI *self, char *s_key)
 			if(self->p_fcuu->focus_row == 0) 
 			{
 				
-				self->switchHMI(self, g_p_Accm_HMI);
+				g_p_HMI_striped->arg[0] = HMI_SBG_SELECT_ACC;
+				g_p_HMI_striped->arg[1] = self->p_fcuu->focus_row;
+				self->switchHMI(self, g_p_HMI_striped);
 			}
 			else if(self->p_fcuu->focus_row == 1) 
 			{
-				self->switchHMI(self, g_p_Accm_HMI);
+				g_p_HMI_striped->arg[0] = HMI_SBG_SELECT_ACC;
+				g_p_HMI_striped->arg[1] = self->p_fcuu->focus_row;
+				self->switchHMI(self, g_p_HMI_striped);
 			}
 			
 		}

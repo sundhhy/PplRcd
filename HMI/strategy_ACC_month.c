@@ -136,7 +136,7 @@ static int SAD_Entry(int row, int col, void *pp_text)
 		switch(col)
 		{
 			case 0:
-				*pp = "月累积";
+				*pp = "年份";
 				break;
 			case 1:
 				sprintf(arr_p_vram[SAD_RAM_SDATE], "%02d", arr_chn_acc[g_setting_chn].sum_year);

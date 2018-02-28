@@ -1,6 +1,6 @@
 #include <stdint.h>
 #include "HMI_striped_background.h"
-#include "utils/Storage.h"
+//#include "utils/Storage.h"
 #include "channel_accumulated.h"
 
 //============================================================================//
@@ -11,6 +11,7 @@
 // const defines
 //------------------------------------------------------------------------------
 #define ST_SELF			 g_set_ACC
+#define SSA_CLEAR_NUM	NUM_CHANNEL
 //------------------------------------------------------------------------------
 // module global vars
 //------------------------------------------------------------------------------
@@ -44,7 +45,7 @@ strategy_t	ST_SELF = {
 
 //static int Cns_init(void *arg);
 //static int Cns_get_focusdata(void *pp_data, strategy_focus_t *p_in_syf);
-//strategy_t	g_chn_strategy = {
+//strategy_t	ST_SELF = {
 //	ChnStrategy_entry,
 //	Cns_init,
 //	Cns_key_up,
@@ -82,7 +83,8 @@ enum {
 
 #define SSA_NUM_RAM							(row_max	+ 2)
 #define SSA_TIPS_RAM_NUM				row_max	
-#define SSA_TEMP_RAM_NUM				row_max	+ 1		//前6个字节用于保存对应通道的累积配置是否被修改，第7个字节用于保存当前焦点是否位于编辑区
+#define SSA_TEMP_RAM_NUM				row_max	+ 1		//前6个字节用于保存对应通道的累积配置是否被修改
+//，第7个字节用于表示是否是清除数据
 //------------------------------------------------------------------------------
 // local vars
 //------------------------------------------------------------------------------
@@ -106,7 +108,7 @@ static void	SSA_Btn_hdl(void *self, uint8_t	btn_id);
 static int SSA_Entry(int row, int col, void *pp_text)
 {
 	char 						**pp = (char **)pp_text;
-	if(col >2)
+	if(col > 1)
 		return 0;
 	
 	if(row >= row_max)
@@ -128,7 +130,8 @@ static int SSA_Entry(int row, int col, void *pp_text)
 			CNA_Print_enable(arr_p_vram[row], arr_chn_acc[g_setting_chn].enable_sum);
 			break;
 		case row_start_year:
-			sprintf(arr_p_vram[row], "%2d", arr_chn_acc[g_setting_chn].sum_start_day);
+			
+			sprintf(arr_p_vram[row], "%2d", arr_chn_acc[g_setting_chn].sum_start_year);
 			break;
 		case row_start_month:
 			sprintf(arr_p_vram[row], "%2d", arr_chn_acc[g_setting_chn].sum_start_month);
@@ -185,15 +188,12 @@ static void	SSA_Btn_hdl(void *self, uint8_t	btn_id)
 	 {
 		for(i = 0; i < NUM_CHANNEL; i++)
 		{
-			if(arr_p_vram[i])
+			if(arr_p_vram[SSA_TEMP_RAM_NUM][i])
 			{
-				
-				
-				
 				if(CNA_Commit(i) == RET_OK)
 				{
 					arr_p_vram[SSA_TEMP_RAM_NUM][i] = 0;
-					sprintf(arr_p_vram[SSA_TIPS_RAM_NUM],"通道[%d] 写入配置成功", i);
+					sprintf(arr_p_vram[SSA_TIPS_RAM_NUM],"写入配置成功");
 					Win_content(arr_p_vram[SSA_TIPS_RAM_NUM]);
 					ST_SELF.cmd_hdl(ST_SELF.p_cmd_rcv, sycmd_win_tips, NULL);
 				}
@@ -206,7 +206,7 @@ static void	SSA_Btn_hdl(void *self, uint8_t	btn_id)
 				}
 				
 			}
-			
+			arr_p_vram[SSA_TEMP_RAM_NUM][i] = 0;
 			
 		}	
 
@@ -219,26 +219,7 @@ static void SSA_Exit(void)
 {
 	
 }
-static int SSA_Commit(void *arg)
-{
-	strategy_focus_t *p_syf = &ST_SELF.sf;
-	if(arr_p_vram[SSA_TEMP_RAM_NUM][NUM_CHANNEL] == 0)
-	{
-		//焦点不在编辑区内
-		goto exit;
-		
-	}
-	if(p_syf->f_row == row_clear)
-	{
-		
-		CNA_Clear(g_setting_chn);
-		
-		
-	}
-	exit:
-	return RET_OK;
-	
-}
+
 
 static int SSA_Get_focus_data(void *pp_data, strategy_focus_t *p_in_syf)
 {
@@ -271,7 +252,7 @@ static int SSA_Key_DN(void *arg)
 	SSA_update_content(OP_SUB, phn_sys.key_weight);
 	return RET_OK;
 }
-static int SSA_Key_LT(void *arg)
+static int SSA_Key_RT(void *arg)
 {
 	strategy_focus_t *p_syf = &ST_SELF.sf;
 	int ret = RET_OK;
@@ -279,19 +260,17 @@ static int SSA_Key_LT(void *arg)
 	if(p_syf->f_row < (row_max - 1))
 	{
 		p_syf->f_row ++;
-		arr_p_vram[SSA_TEMP_RAM_NUM][NUM_CHANNEL] = 1;
 	}
 	else {
 		p_syf->f_row = 0;
 		p_syf->f_col = 1;
 		ret = -1;
-		arr_p_vram[SSA_TEMP_RAM_NUM][NUM_CHANNEL] = 0;
 	}
 	p_syf->num_byte = strlen(arr_p_vram[p_syf->f_row]);
 	return ret;
 }
 
-static int SSA_Key_RT(void *arg)
+static int SSA_Key_LT(void *arg)
 {
 	
 	strategy_focus_t *p_syf = &ST_SELF.sf;
@@ -299,13 +278,11 @@ static int SSA_Key_RT(void *arg)
 	
 	if(p_syf->f_row )
 	{
-		arr_p_vram[SSA_TEMP_RAM_NUM][NUM_CHANNEL] = 1;
 		p_syf->f_row --;
 	}
 	else {
 		p_syf->f_row = row_max - 1;
 		ret = -1;
-		arr_p_vram[SSA_TEMP_RAM_NUM][NUM_CHANNEL] = 0;
 	}
 	
 	p_syf->num_byte = strlen(arr_p_vram[p_syf->f_row]);
@@ -318,11 +295,39 @@ static int SSA_Key_ET(void *arg)
 	if(p_syf->f_row == row_clear)
 	{
 		Win_content("确认删除累积值？");
-		g_sys_strategy.cmd_hdl(ST_SELF.p_cmd_rcv, sycmd_win_tips, arr_p_vram[SSA_TIPS_RAM_NUM]);
-		
+		ST_SELF.cmd_hdl(ST_SELF.p_cmd_rcv, sycmd_win_tips, arr_p_vram[SSA_TIPS_RAM_NUM]);
+		arr_p_vram[SSA_TEMP_RAM_NUM][SSA_CLEAR_NUM] = 1;
+
 		return RET_OK;
 	}
 	return RET_FAILED;
+}
+
+static int SSA_Commit(void *arg)
+{
+	strategy_focus_t *p_syf = &ST_SELF.sf;
+	
+	
+	
+	if(arr_p_vram[SSA_TEMP_RAM_NUM][SSA_CLEAR_NUM])
+	{
+		
+		CNA_Clear(g_setting_chn);
+		
+		arr_p_vram[SSA_TEMP_RAM_NUM][SSA_CLEAR_NUM] = 0;
+
+	}
+	else
+	{
+		CNA_Commit(g_setting_chn);
+		
+	}
+	
+	
+	
+	exit:
+	return RET_OK;
+	
 }
 
 static void SSA_update_content(int op, int weight)
@@ -336,7 +341,7 @@ static void SSA_update_content(int op, int weight)
 	{
 		case row_chn_num:
 			g_setting_chn = Operate_in_tange(g_setting_chn, op, 1, 0, NUM_CHANNEL - 1);
-			g_chn_strategy.cmd_hdl(ST_SELF.p_cmd_rcv, sycmd_reflush, NULL);
+			ST_SELF.cmd_hdl(ST_SELF.p_cmd_rcv, sycmd_reflush, NULL);
 			arr_p_vram[SSA_TEMP_RAM_NUM][g_setting_chn] = 0;
 			break;
 		case row_sum_enable:	
@@ -348,11 +353,11 @@ static void SSA_update_content(int op, int weight)
 			sprintf(arr_p_vram[p_syf->f_row], "%2d", p_acc->sum_start_year);
 			break;
 		case row_start_month:	
-			p_acc->sum_start_month = Operate_in_tange(p_acc->sum_start_month, op, 1, 0, 12);
+			p_acc->sum_start_month = Operate_in_tange(p_acc->sum_start_month, op, 1, 1, 12);
 			sprintf(arr_p_vram[p_syf->f_row], "%2d", p_acc->sum_start_month);
 			break;
 		case row_start_day:	
-			p_acc->sum_start_day = Operate_in_tange(p_acc->sum_start_day, op, 1, 0, 31);
+			p_acc->sum_start_day = Operate_in_tange(p_acc->sum_start_day, op, 1, 1, 31);
 			sprintf(arr_p_vram[p_syf->f_row], "%2d", p_acc->sum_start_day);
 			break;
 		default:

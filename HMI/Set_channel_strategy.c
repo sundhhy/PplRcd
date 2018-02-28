@@ -271,7 +271,7 @@ static int Cns_key_dn(void *arg)
 				if(MdlChn_Commit_conf(i) == RET_OK)
 				{
 					phn_sys.save_chg_flga &=~ CHG_MODCHN_CONF(i);
-					sprintf(arr_p_vram[11],"通道[%d] 写入配置成功", i);
+					sprintf(arr_p_vram[11],"写入配置成功");
 					Win_content(arr_p_vram[11]);
 					g_chn_strategy.cmd_hdl(g_chn_strategy.p_cmd_rcv, sycmd_win_tips, NULL);
 				}

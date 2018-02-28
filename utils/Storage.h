@@ -23,7 +23,7 @@
 #define	IS_SYS_CONF(type)				(type == 0x10)
 #define	IS_CHN_DATA(type)				((type & 0xf0) == 0x20)
 #define	IS_CHN_ALARM(type)			((type & 0xf0) == 0x30)
-#define	IS_CHN_SUM(type)			((type & 0xf0) == 0x30)
+#define	IS_CHN_SUM(type)			((type & 0xf0) == 0x40)
 #define	IS_LOSE_PWR(type)				(type == 0x50)
 
 #define STG_GET_CHN(type)				(type & 0x0f)

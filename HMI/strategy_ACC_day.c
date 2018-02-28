@@ -107,27 +107,36 @@ static int SAD_Entry(int row, int col, void *pp_text)
 	char						day = 0;
 	char						data_rows = STRIPE_MAX_ROWS - 1; //每个画面上的第一行不是用来显示数据的
 	uint64_t				acc_val = 0;
-	if(col > 5)		//最多6列
+	if(col > 3)		//最多4列
 		return 0;
 	
-	if(row > 18)
-	{
-		//31天数据分2列显示共16行
-		//再加上第0行显示额外信息，共18行
-		
-		return 0;
-		
-	}
 	
-	if((row > 0) && (col > 3))
-	{
-		//第0行有6列，其他行就只有4列
-		return 0;
-		
-	}
+	
+//	if(row > 18)
+//	{
+//		//31天数据共
+//		//再加上第0行显示额外信息，共18行
+//		
+//		return 0;
+//		
+//	}
 	r = row % STRIPE_MAX_ROWS;		//条纹界面上的行数是11
-	
 	pic_num = row / STRIPE_MAX_ROWS + 1;  //第几副画面
+	//计算当前行 列下对应的日子
+	if(row > 0)
+		day = row - pic_num ;		
+	if(day > 30)
+		return 0;
+	if((r > 1) && (col > 1))
+	{
+		//第0，1行有4列
+		//其他行只有2列
+		return 0;
+		
+	}
+	
+	
+	
 	
 	
 	if(r == 0)
@@ -136,7 +145,7 @@ static int SAD_Entry(int row, int col, void *pp_text)
 		switch(col)
 		{
 			case 0:
-				*pp = "日累积";
+				*pp = "月份";
 				break;
 			case 1:
 				sprintf(arr_p_vram[SAD_RAM_SDATE], "%02d.%02d", arr_chn_acc[g_setting_chn].sum_year, arr_chn_acc[g_setting_chn].sum_month);
@@ -149,39 +158,58 @@ static int SAD_Entry(int row, int col, void *pp_text)
 				sprintf(arr_p_vram[SAD_RAM_ACC_SCHN], "%d", g_setting_chn);
 				*pp = arr_p_vram[SAD_RAM_ACC_SCHN];
 				break;
-			case 4:
+			
+			
+		}
+		
+		
+	}
+	else if(r == 1)
+	{
+		
+		
+		//显示累积的月份与通道号
+		switch(col)
+		{
+			case 0:
+				sprintf(arr_p_vram[SAD_RAM_SDAY], "%02d", day + 1);
+				*pp = arr_p_vram[SAD_RAM_SDAY];
+				break;
+			case 1:
+				CNA_Print_acc_val(arr_chn_acc[g_setting_chn].accumlated_day[day], arr_p_vram[SAD_RAM_ACC_SDATA], 1);
+				*pp = arr_p_vram[SAD_RAM_ACC_SDATA];
+				break;
+			case 2:
 				*pp = "单位";
 				break;
-			case 5:
+			case 3:
 				p_md->to_string(p_md, AUX_UNIT, arr_p_vram[SAD_RAM_UNIT]);
 				*pp = arr_p_vram[SAD_RAM_UNIT];
 				break;
 			
 		}
 		
-		
 	}
 	else 
 	{
-		//计算当前行 列下对应的日子
-		//每页显示两组数据，且每页第一行不现实数据
-		day = row - pic_num +  col / 2 * data_rows;		
-		if(day > 30)
-			return 0;
+		
+
+		
 		//显示：日 日累积
-		if(col == 0 || col == 2)
+		if(col == 0)
 		{
 			//显示日子
 			sprintf(arr_p_vram[SAD_RAM_SDAY], "%02d", day + 1);
-			*pp = arr_p_vram[SAD_RAM_SDATE];
+			*pp = arr_p_vram[SAD_RAM_SDAY];
 			
 			
 		}
 		else 
 		{
 			
-			acc_val = CNA_arr_u16_2_u64(arr_chn_acc[g_setting_chn].accumlated_day[day], 3);
-			sprintf(arr_p_vram[SAD_RAM_ACC_SDATA], "%12d.%d", acc_val/10, acc_val % 10);
+//			acc_val = CNA_arr_u16_2_u64(arr_chn_acc[g_setting_chn].accumlated_day[day], 3);
+//			sprintf(arr_p_vram[SAD_RAM_ACC_SDATA], "%12d.%d", acc_val/10, acc_val % 10);
+			CNA_Print_acc_val(arr_chn_acc[g_setting_chn].accumlated_day[day], arr_p_vram[SAD_RAM_ACC_SDATA], 1);
 			*pp = arr_p_vram[SAD_RAM_ACC_SDATA];
 		}
 	}
