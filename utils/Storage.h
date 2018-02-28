@@ -60,16 +60,21 @@ typedef struct {
 }rcd_alm_pwr_t;
 
 typedef struct {
-	char		enable_sum;
+	char			enable_sum;
 	uint8_t		sum_start_year;
 	uint8_t		sum_start_month;
 	uint8_t		sum_start_day;
 	
+	uint8_t		sum_year;
+	uint8_t		sum_month;
+	uint16_t	accumlated_remain;			/*累积余量*/
+	
+	//累计值是1位小数，低位在前
 	uint16_t	accumlated_day[31][3];		/*???*/
 	uint16_t	accumlated_month[12][3];	/*???*/
 	uint16_t	accumlated_year[3];			/*???*/
 	uint16_t	accumlated_total[3];			/*总累积*/
-	uint16_t	accumlated_remain;			/*累积余量*/
+	
 }rcd_chn_accumlated_t;
 
 

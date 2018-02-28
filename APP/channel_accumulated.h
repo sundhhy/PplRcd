@@ -31,4 +31,6 @@ void CNA_Run(int cyc_ms);
 void CNA_Print_enable(char *s, char	enable);
 int		CNA_Commit(char chn_num);
 int		CNA_Clear(char chn_num);
+uint64_t CNA_arr_u16_2_u64(uint16_t *p_u16, char num_data);
+
 #endif

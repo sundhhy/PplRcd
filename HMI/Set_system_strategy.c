@@ -508,6 +508,7 @@ static int Sys_update_content(int op, int weight)
 {
 	strategy_focus_t 	*p_syf = &g_sys_strategy.sf;
 	int					ret = RET_OK;
+	phn_sys.save_chg_flga |= CHG_SYSTEM_CONF;
 	switch(p_syf->f_row) {
 	case 0:		
 		g_sys_strategy.cmd_hdl(g_sys_strategy.p_cmd_rcv, sycmd_win_time, arr_p_vram[0]);
@@ -518,6 +519,7 @@ static int Sys_update_content(int op, int weight)
 		ret = 1;
 		break;
 	case 2:		//通道数目不允许配置
+		phn_sys.save_chg_flga &= ~CHG_SYSTEM_CONF;
 		break;
 	case 3:
 		System_modify_string(arr_p_vram[p_syf->f_row], es_rcd_t_s, op, weight);
@@ -553,6 +555,7 @@ static int Sys_update_content(int op, int weight)
 		System_modify_string(arr_p_vram[p_syf->f_row], es_beep, op, weight);
 		break;
 	default:
+		phn_sys.save_chg_flga &= ~CHG_SYSTEM_CONF;
 		break;
 	
 	

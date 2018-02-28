@@ -58,6 +58,7 @@ extern strategy_t	g_sys_strategy, g_dataPrint_strategy;
 extern strategy_t	g_chn_strategy, g_alarm_strategy, g_art_strategy, g_view_strategy, g_DBP_strategy;
 
 extern strategy_t g_news_alarm, g_news_power;
+extern strategy_t g_st_acc_day, g_st_acc_month;
 //------------------------------------------------------------------------------
 // function prototypes
 //------------------------------------------------------------------------------

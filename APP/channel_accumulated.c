@@ -92,6 +92,33 @@ void CNA_Print_enable(char *s, char	enable)
 	
 }
 
+//prec 表示有几位小数
+uint64_t CNA_arr_u16_2_u64(uint16_t *p_u16, char num_data)
+{
+	
+	uint64_t rst = 0;
+	int 		i;
+	
+	for(i = num_data - 1; i >= 0; i--)
+	{
+		rst <<= 16;
+		rst |= p_u16[i];
+		
+	}
+	
+	return rst;
+	
+}
+
+void CNA_u64_2_arr_u16(uint16_t *p_u16, uint64_t val, char prec)
+{
+	
+	
+	
+	
+	
+}
+
 int		CNA_Commit(char chn_num)
 {
 	Storage			*stg = Get_storage();
@@ -110,9 +137,9 @@ int		CNA_Clear(char chn_num)
 	Storage			*stg = Get_storage();
 	
 	p_clear = (char *)(arr_chn_acc + chn_num);
-	p_clear += 4;
+	p_clear += 6;
 	
-	memset(p_clear, 0, sizeof(rcd_chn_accumlated_t) - 4);
+	memset(p_clear, 0, sizeof(rcd_chn_accumlated_t) - 6);
 	
 	STG_Set_file_position(STG_CHN_SUM(chn_num), STG_DRC_WRITE, 0);
 	stg->wr_stored_data(stg, STG_CHN_SUM(chn_num), arr_chn_acc + chn_num, sizeof(rcd_chn_accumlated_t));

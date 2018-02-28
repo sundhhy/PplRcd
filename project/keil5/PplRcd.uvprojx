@@ -10,6 +10,7 @@
       <TargetName>Target 1</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
+      <pCCUsed>5060061::V5.06 update 1 (build 61)::ARMCC</pCCUsed>
       <TargetOption>
         <TargetCommonOption>
           <Device>STM32F103VC</Device>
@@ -84,6 +85,8 @@
             <UserProg2Name></UserProg2Name>
             <UserProg1Dos16Mode>0</UserProg1Dos16Mode>
             <UserProg2Dos16Mode>0</UserProg2Dos16Mode>
+            <nStopA1X>0</nStopA1X>
+            <nStopA2X>0</nStopA2X>
           </AfterMake>
           <SelectedForBatchBuild>0</SelectedForBatchBuild>
           <SVCSIdString></SVCSIdString>
@@ -227,6 +230,7 @@
             <useUlib>1</useUlib>
             <EndSel>0</EndSel>
             <uLtcg>0</uLtcg>
+            <nSecure>0</nSecure>
             <RoSelD>3</RoSelD>
             <RwSelD>3</RwSelD>
             <CodeSel>0</CodeSel>
@@ -361,6 +365,10 @@
             <uSurpInc>0</uSurpInc>
             <uC99>0</uC99>
             <useXO>0</useXO>
+            <v6Lang>0</v6Lang>
+            <v6LangP>0</v6LangP>
+            <vShortEn>0</vShortEn>
+            <vShortWch>0</vShortWch>
             <VariousControls>
               <MiscControls>--diag_suppress=1295;--diag_suppress=1;--diag_suppress=177-D</MiscControls>
               <Define>USE_STDPERIPH_DRIVER, STM32F10X_HD, USE_STM3210B_EVAL,HSE_VALUE=8000000,_MCU_ENDIAN=1</Define>
@@ -869,16 +877,6 @@
           <GroupName>HMI</GroupName>
           <Files>
             <File>
-              <FileName>Acc_day.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\HMI\Acc_day.c</FilePath>
-            </File>
-            <File>
-              <FileName>Acc_month.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\HMI\Acc_month.c</FilePath>
-            </File>
-            <File>
               <FileName>Accumulate_HMI .c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\HMI\Accumulate_HMI .c</FilePath>
@@ -1077,6 +1075,16 @@
               <FileName>strategy_set_accumulate.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\HMI\strategy_set_accumulate.c</FilePath>
+            </File>
+            <File>
+              <FileName>strategy_ACC_day.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\HMI\strategy_ACC_day.c</FilePath>
+            </File>
+            <File>
+              <FileName>strategy_ACC_month.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\HMI\strategy_ACC_month.c</FilePath>
             </File>
           </Files>
         </Group>

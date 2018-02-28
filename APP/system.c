@@ -473,7 +473,6 @@ void Password_set_by_str(char	*p_s_psd)
 		
 		p_s_psd += 3;
 	}
-	phn_sys.save_chg_flga |= CHG_SYSTEM_CONF;
 	
 	
 }
@@ -611,7 +610,6 @@ void System_to_string(void *p_data, char	*p_s, int len, int aux)
 
 void System_modify_string(char	*p_s, int aux, int op, int val)
 {
-	phn_sys.save_chg_flga |= CHG_SYSTEM_CONF;
 	switch(aux)
 	{
 		case es_rcd_t_s:
@@ -668,7 +666,7 @@ void System_modify_string(char	*p_s, int aux, int op, int val)
 			Disable_string(p_s, phn_sys.sys_conf.enable_beep);
 			break;
 		default:
-			phn_sys.save_chg_flga &= ~CHG_SYSTEM_CONF;
+			
 			break;
 	}
 	

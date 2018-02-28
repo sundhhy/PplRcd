@@ -148,10 +148,10 @@ static void	Alarm_initSheet(HMI *self)
 	g_p_sht_bkpic->cnt.data = ACCM_PICNUM;
 	if(self->arg[0] == 0) {
 		g_p_sht_title->cnt.data = ACCM_DAY_TITLE;
-		cthis->p_stt = &g_AccDay_strategy;
+//		cthis->p_stt = &g_AccDay_strategy;
 	} else if(self->arg[0] == 1) {
 		g_p_sht_title->cnt.data = ACCM_MONTH_TITLE;
-		cthis->p_stt = &g_AccMonth_strategy;
+//		cthis->p_stt = &g_AccMonth_strategy;
 	}
 	g_p_sht_title->cnt.len = strlen(g_p_sht_title->cnt.data);
 	
