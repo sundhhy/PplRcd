@@ -69,7 +69,7 @@ typedef struct {
 	uint8_t		sum_month;
 	uint16_t	accumlated_remain;			/*累积余量*/
 	
-	//累计值是1位小数，低位在前
+	//累计值是1位小数，高字节在前，即大端。
 	uint16_t	accumlated_day[31][3];		/*???*/
 	uint16_t	accumlated_month[12][3];	/*???*/
 	uint16_t	accumlated_year[3];			/*???*/

@@ -44,6 +44,8 @@
 #define SYSFLAG_SETTING				1
 #define SYSFLAG_EFS_NOTREADY			2		//文件系统未就绪，可能正在擦除文件
 #define SYSFLAG_POWERON				4
+
+#define SYS_TIME				phn_sys.sys_time
 //#define	STSFLAG_TIME_CHANGE		8
 //#define	STSFLAG_PARAM_SYSTEM_CHANGE		0x10
 //#define	STSFLAG_PARAM_CHANNEL_CHANGE		0x20
@@ -200,6 +202,8 @@ typedef struct {
 	//显示相关
 	uint16_t			lcd_cmd_bytes;
 	uint32_t			lcd_sem_wait_ms;
+	
+	struct  tm		sys_time;
 	
 	//通道板子上的信息
 	uint8_t				DO_val;				//DO的实时值

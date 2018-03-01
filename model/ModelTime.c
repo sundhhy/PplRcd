@@ -50,7 +50,8 @@ static int MdlTime_set_by_string( Model *self, IN int aux, void *arg);
 int MdlTime_init( Model *self, IN void *arg)
 {
 //	UtlRtc *rtc = ( UtlRtc *)Pcf8563_new();
-	struct  tm	*tm = CALLOC( 1, sizeof( *tm));
+//	struct  tm	*tm = CALLOC( 1, sizeof( *tm));
+	struct  tm	*tm = &phn_sys.sys_time;
 //	self->dataSource = Pcf8563_new();
 //	rtc->init( rtc, NULL);
 //	

@@ -105,21 +105,10 @@ static int SAD_Entry(int row, int col, void *pp_text)
 	Model						*p_md = SUPER_PTR(p_mc, Model);
 	short						r = 0, pic_num = 0;
 	char						day = 0;
-	char						data_rows = STRIPE_MAX_ROWS - 1; //每个画面上的第一行不是用来显示数据的
-	uint64_t				acc_val = 0;
+
 	if(col > 3)		//最多4列
 		return 0;
 	
-	
-	
-//	if(row > 18)
-//	{
-//		//31天数据共
-//		//再加上第0行显示额外信息，共18行
-//		
-//		return 0;
-//		
-//	}
 	r = row % STRIPE_MAX_ROWS;		//条纹界面上的行数是11
 	pic_num = row / STRIPE_MAX_ROWS + 1;  //第几副画面
 	//计算当前行 列下对应的日子

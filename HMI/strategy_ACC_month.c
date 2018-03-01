@@ -13,41 +13,41 @@
 //------------------------------------------------------------------------------
 #define ST_SELF		g_st_acc_month
 
-#define SAD_RAM_ACC_SDATA				0
-#define SAD_RAM_ACC_SCHN				1
-#define SAD_RAM_SDATE					2
-#define SAD_RAM_SDAY					3
-#define SAD_RAM_SCHN_NUM				4
-#define SAD_RAM_UNIT						5
-#define SAD_RAM_MAX							6
+#define SAM_RAM_ACC_SDATA				0
+#define SAM_RAM_ACC_SCHN				1
+#define SAM_RAM_SDATE					2
+#define SAM_RAM_SDAY					3
+#define SAM_RAM_SCHN_NUM				4
+#define SAM_RAM_UNIT						5
+#define SAM_RAM_MAX							6
 //------------------------------------------------------------------------------
 // module global vars
 //------------------------------------------------------------------------------
 
-static int SAD_Entry(int row, int col, void *pp_text);
-static int SAD_Init(void *arg);
-static void SAD_Build_component(void *arg);
-static int SAD_Key_UP(void *arg);
-static int SAD_Key_DN(void *arg);
-static int SAD_Key_LT(void *arg);
-static int SAD_Key_RT(void *arg);
-static int SAD_Key_ET(void *arg);
-static int SAD_Get_focus_data(void *pp_data, strategy_focus_t *p_in_syf);
-static int SAD_Commit(void *arg);
-static void SAD_Exit(void);
+static int SAM_Entry(int row, int col, void *pp_text);
+static int SAM_Init(void *arg);
+static void SAM_Build_component(void *arg);
+static int SAM_Key_UP(void *arg);
+static int SAM_Key_DN(void *arg);
+static int SAM_Key_LT(void *arg);
+static int SAM_Key_RT(void *arg);
+static int SAM_Key_ET(void *arg);
+static int SAM_Get_focus_data(void *pp_data, strategy_focus_t *p_in_syf);
+static int SAM_Commit(void *arg);
+static void SAM_Exit(void);
 
 strategy_t	ST_SELF = {
-	SAD_Entry,
-	SAD_Init,
-	SAD_Build_component,
-	SAD_Key_UP,
-	SAD_Key_DN,
-	SAD_Key_LT,
-	SAD_Key_RT,
-	SAD_Key_ET,
-	SAD_Get_focus_data,	
-	SAD_Commit,
-	SAD_Exit,
+	SAM_Entry,
+	SAM_Init,
+	SAM_Build_component,
+	SAM_Key_UP,
+	SAM_Key_DN,
+	SAM_Key_LT,
+	SAM_Key_RT,
+	SAM_Key_ET,
+	SAM_Get_focus_data,	
+	SAM_Commit,
+	SAM_Exit,
 };
 
 
@@ -87,7 +87,7 @@ strategy_t	ST_SELF = {
 //------------------------------------------------------------------------------
 // local function prototypes
 //------------------------------------------------------------------------------
-
+static void SAM_Print_ACC(char m, char type, char *s);
 //============================================================================//
 //            P U B L I C   F U N C T I O N S                                 //
 //============================================================================//
@@ -98,36 +98,33 @@ strategy_t	ST_SELF = {
 //                                                                         //
 //=========================================================================//
 
-static int SAD_Entry(int row, int col, void *pp_text)
+static int SAM_Entry(int row, int col, void *pp_text)
 {
 	char 						**pp = (char **)pp_text;
 	Model_chn				*p_mc = Get_Mode_chn(g_setting_chn);
 	Model						*p_md = SUPER_PTR(p_mc, Model);
 	short						r = 0, pic_num = 0;
 	char						month = 0;
-	char						data_rows = STRIPE_MAX_ROWS - 1; //每个画面上的第一行不是用来显示数据的
-	uint64_t				acc_val = 0;
-	if(col > 5)		//最多6列
+	if(col > 3)		
 		return 0;
 	
-	if(row > 18)
-	{
-		//31天数据分2列显示共16行
-		//再加上第0行显示额外信息，共18行
-		
-		return 0;
-		
-	}
-	
-	if((row > 0) && (col > 3))
-	{
-		//第0行有6列，其他行就只有4列
-		return 0;
-		
-	}
 	r = row % STRIPE_MAX_ROWS;		//条纹界面上的行数是11
-	
 	pic_num = row / STRIPE_MAX_ROWS + 1;  //第几副画面
+	//计算当前行 列下对应的日子
+	if(row > 0)
+		month = row - pic_num ;		
+	if(month > 14)
+		return 0;
+	if((r > 1) && (col > 1))
+	{
+		//第0，1行有4列
+		//其他行只有2列
+		return 0;
+		
+	}
+	
+	
+	
 	
 	
 	if(r == 0)
@@ -139,109 +136,108 @@ static int SAD_Entry(int row, int col, void *pp_text)
 				*pp = "年份";
 				break;
 			case 1:
-				sprintf(arr_p_vram[SAD_RAM_SDATE], "%02d", arr_chn_acc[g_setting_chn].sum_year);
-				*pp = arr_p_vram[SAD_RAM_SDATE];
+				sprintf(arr_p_vram[SAM_RAM_SDATE], "%02d", arr_chn_acc[g_setting_chn].sum_year);
+				*pp = arr_p_vram[SAM_RAM_SDATE];
 				break;
 			case 2:
 				*pp = "通道";
 				break;
 			case 3:
-				sprintf(arr_p_vram[SAD_RAM_ACC_SCHN], "%d", g_setting_chn);
-				*pp = arr_p_vram[SAD_RAM_ACC_SCHN];
+				sprintf(arr_p_vram[SAM_RAM_ACC_SCHN], "%d", g_setting_chn);
+				*pp = arr_p_vram[SAM_RAM_ACC_SCHN];
 				break;
-			case 4:
-				*pp = "单位";
-				break;
-			case 5:
-				p_md->to_string(p_md, AUX_UNIT, arr_p_vram[SAD_RAM_UNIT]);
-				*pp = arr_p_vram[SAD_RAM_UNIT];
-				break;
+			
 			
 		}
 		
+		
+	}
+	else if(r == 1)
+	{
+		switch(col)
+		{
+			case 0:
+				SAM_Print_ACC(month, SAM_RAM_SDAY, arr_p_vram[SAM_RAM_SDAY]);
+				*pp = arr_p_vram[SAM_RAM_SDAY];
+				break;
+			case 1:
+				SAM_Print_ACC(month, SAM_RAM_ACC_SDATA, arr_p_vram[SAM_RAM_ACC_SDATA]);
+				*pp = arr_p_vram[SAM_RAM_ACC_SDATA];
+				break;
+			case 2:
+				*pp = "单位";
+				break;
+			case 3:
+				p_md->to_string(p_md, AUX_UNIT, arr_p_vram[SAM_RAM_UNIT]);
+				*pp = arr_p_vram[SAM_RAM_UNIT];
+				break;
+			
+		}
 		
 	}
 	else 
 	{
-		//计算当前行 列下对应的日子
-		//每页显示两组数据，且每页第一行不现实数据
-		month = row - pic_num +  col / 2 * data_rows;	
-		if(month < 12)
-		{
-			if(col == 0 || col == 2)
-			{
-				//显示日子
-				sprintf(arr_p_vram[SAD_RAM_SDAY], "%02d", month + 1);
-				*pp = arr_p_vram[SAD_RAM_SDATE];
-				
-				
-			}
-			else 
-			{
-				
-				acc_val = CNA_arr_u16_2_u64(arr_chn_acc[g_setting_chn].accumlated_month[month], 3);
-				sprintf(arr_p_vram[SAD_RAM_ACC_SDATA], "%12d.%d", acc_val/10, acc_val % 10);
-				*pp = arr_p_vram[SAD_RAM_ACC_SDATA];
-			}
-			
-			
-			
-		}
-		else if( month == 12)
-		{
-			
-			if(col == 0 || col == 2)
-			{
-				//显示日子
-				*pp = "本年度总累计";
-				
-			}
-			else 
-			{
-				
-				acc_val = CNA_arr_u16_2_u64(arr_chn_acc[g_setting_chn].accumlated_year, 3);
-				sprintf(arr_p_vram[SAD_RAM_ACC_SDATA], "%12d.%d", acc_val/10, acc_val % 10);
-				*pp = arr_p_vram[SAD_RAM_ACC_SDATA];
-			}
-			
-			
-		}
-		else if( month == 13)
-		{
-			
-			if(col == 0 || col == 2)
-			{
-				//显示日子
-				*pp = "总累计";
-				
-			}
-			else 
-			{
-				
-				acc_val = CNA_arr_u16_2_u64(arr_chn_acc[g_setting_chn].accumlated_total, 3);
-				sprintf(arr_p_vram[SAD_RAM_ACC_SDATA], "%12d.%d", acc_val/10, acc_val % 10);
-				*pp = arr_p_vram[SAD_RAM_ACC_SDATA];
-			}
-			
-			
-		}
-		else
-			return 0;
 		
+
+		
+		//显示：日 日累积
+		if(col == 0)
+		{
+
+			SAM_Print_ACC(month, SAM_RAM_SDAY, arr_p_vram[SAM_RAM_SDAY]);
+			*pp = arr_p_vram[SAM_RAM_SDAY];
+			
+		}
+		else 
+		{
+			SAM_Print_ACC(month, SAM_RAM_ACC_SDATA, arr_p_vram[SAM_RAM_ACC_SDATA]);
+			*pp = arr_p_vram[SAM_RAM_ACC_SDATA];
+		}
 	}
 	
 
-	return strlen(*pp);
-		
+	return strlen(*pp);		
 }
 
-static int SAD_Init(void *arg)
+//调用者保证m小于14
+static void SAM_Print_ACC(char m, char type, char *s)
+{
+	if(m < 12)
+	{
+		if(type ==  SAM_RAM_ACC_SDATA)
+			CNA_Print_acc_val(arr_chn_acc[g_setting_chn].accumlated_month[m], s, 1);
+		else 
+			sprintf(s, "%02d", m + 1);
+	}
+	else if(m == 12)
+	{
+		
+		if(type ==  SAM_RAM_ACC_SDATA)
+			CNA_Print_acc_val(arr_chn_acc[g_setting_chn].accumlated_year, s, 1);
+		else 
+			sprintf(s, "年度总累计");
+		
+	}
+	else if(m == 13)
+	{
+		if(type ==  SAM_RAM_ACC_SDATA)
+			CNA_Print_acc_val(arr_chn_acc[g_setting_chn].accumlated_total, s, 1);
+		else 
+			sprintf(s, "总累计");
+		
+		
+	}
+
+	
+}
+
+static int SAM_Init(void *arg)
 {
 	int i = 0;
 	
 	
 	HMI_Ram_init();
-	for(i = 0; i < SAD_RAM_MAX; i++) {
+	for(i = 0; i < SAM_RAM_MAX; i++) {
 		arr_p_vram[i] = HMI_Ram_alloc(48);
 		memset(arr_p_vram[i], 0, 48);
 	}
@@ -251,24 +247,24 @@ static int SAD_Init(void *arg)
 	return RET_OK;
 }
 
-static void SAD_Build_component(void *arg)
+static void SAM_Build_component(void *arg)
 {
 	Button			*p_btn = BTN_Get_Sington();
 
 	p_btn->build_each_btn(0, BTN_TYPE_MENU, Setting_btn_hdl, arg);
 		
 }
-static void SAD_Exit(void)
+static void SAM_Exit(void)
 {
 	
 }
-static int SAD_Commit(void *arg)
+static int SAM_Commit(void *arg)
 {
 	return RET_OK;
 	
 }
 
-static int SAD_Get_focus_data(void *pp_data, strategy_focus_t *p_in_syf)
+static int SAM_Get_focus_data(void *pp_data, strategy_focus_t *p_in_syf)
 {
 
 	
@@ -277,7 +273,7 @@ static int SAD_Get_focus_data(void *pp_data, strategy_focus_t *p_in_syf)
 	
 }
 
-static int SAD_Key_UP(void *arg)
+static int SAM_Key_UP(void *arg)
 {
 	
 	g_setting_chn ++;
@@ -288,7 +284,7 @@ static int SAD_Key_UP(void *arg)
 	
 	return -1;
 }
-static int SAD_Key_DN(void *arg)
+static int SAM_Key_DN(void *arg)
 {
 	if(g_setting_chn)
 		g_setting_chn --;
@@ -297,18 +293,18 @@ static int SAD_Key_DN(void *arg)
 	ST_SELF.cmd_hdl(ST_SELF.p_cmd_rcv, sycmd_reflush, NULL);
 	return -1;
 }
-static int SAD_Key_LT(void *arg)
+static int SAM_Key_LT(void *arg)
 {
 	
 	return -1;
 }
 
-static int SAD_Key_RT(void *arg)
+static int SAM_Key_RT(void *arg)
 {
 	
 	return -1;
 }
-static int SAD_Key_ET(void *arg)
+static int SAM_Key_ET(void *arg)
 {
 	return -1;
 	
