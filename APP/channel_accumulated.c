@@ -42,7 +42,7 @@ rcd_chn_accumlated_t	arr_chn_acc[NUM_CHANNEL];
 //------------------------------------------------------------------------------
 // local function prototypes
 //------------------------------------------------------------------------------
-static void CNA_u64_add(uint16_t *p_u16, uint32_t val, char num_u16);
+static void CNA_u64_add(uint16_t *p_u16, int32_t val, char num_u16);
 
 		
 //============================================================================//
@@ -91,10 +91,10 @@ void CNA_Run(int cyc_ms)
 	uint32_t				start_time_s;
 	struct  tm			t = {0};
 	Model_chn				*p_mc;
-	uint32_t				sum = 0;
+	int32_t				sum = 0;
 	uint32_t				temp = 0;
 	cur_time_s = Time_2_u32(&SYS_TIME);
-	for(chn_num = 0; chn_num < NUM_CHANNEL; i++)
+	for(chn_num = 0; chn_num < NUM_CHANNEL; chn_num ++)
 	{
 		t.tm_year = arr_chn_acc[chn_num].sum_start_year;
 		t.tm_mon = arr_chn_acc[chn_num].sum_start_month;
@@ -106,7 +106,6 @@ void CNA_Run(int cyc_ms)
 		//判断当前时间是否已经大于设置的开始累积时间
 		if(cur_time_s <= start_time_s)
 			continue;
-		
 		
 		if(SYS_TIME.tm_year != arr_chn_acc[chn_num].sum_year)
 		{
@@ -169,7 +168,7 @@ void CNA_Run(int cyc_ms)
 			}      		
 		}
 		
-		p_mc = Get_Mode_chn(i);
+		p_mc = Get_Mode_chn(chn_num);
 		temp = p_mc->chni.value + arr_chn_acc[chn_num].accumlated_remain;
 		//根据单位，计算每秒的增量
 		
@@ -198,8 +197,8 @@ void CNA_Run(int cyc_ms)
 			
 		}
 		
-		CNA_u64_add(arr_chn_acc[chn_num].accumlated_day[SYS_TIME.tm_mday], sum, 3);
-		CNA_u64_add(arr_chn_acc[chn_num].accumlated_month[SYS_TIME.tm_mon], sum, 3);
+		CNA_u64_add(arr_chn_acc[chn_num].accumlated_day[SYS_TIME.tm_mday - 1], sum, 3);
+		CNA_u64_add(arr_chn_acc[chn_num].accumlated_month[SYS_TIME.tm_mon - 1], sum, 3);
 		CNA_u64_add(arr_chn_acc[chn_num].accumlated_year, sum, 3);
 		CNA_u64_add(arr_chn_acc[chn_num].accumlated_total, sum, 3);
 		
@@ -267,9 +266,9 @@ void CNA_Print_acc_val(uint16_t *p_val, char *s, char pos)
 	temd2=*(p_val+1);
 	temd3=*(p_val+2);
 
-	temd1 = 0;
-	temd2 = 0;
-	temd3 = 11;
+//	temd1 = 0xffff;
+//	temd2 = 0xffff;
+//	temd3 = 0xffff;
 		
 	for(i=0;i<STR_BYTES;i++)
 	{
@@ -286,13 +285,26 @@ void CNA_Print_acc_val(uint16_t *p_val, char *s, char pos)
 		temd3=templong2/10;
 		*(s+STR_END_NUM-j)=templong2%10 + '0';
 		j++;
+		if(j > STR_END_NUM)
+			break;
 	}
+	
+	if(j == 0)
+	{
+		s[STR_END_NUM] = '0';
+		j = 1;
+	}
+	
+	
+	num_bytes = j;
+	first_data_num = STR_BYTES - j;
 	
 	//加上小数点
 	if(pos == 0)
 		goto aligin_left;
-	j=13;
 	m = pos;
+	first_data_num --; //要把小数点这一位加上
+	num_bytes ++;
 	
 	for(i=0;i<STR_END_NUM - m;i++)
 	{
@@ -301,20 +313,20 @@ void CNA_Print_acc_val(uint16_t *p_val, char *s, char pos)
 	*(s+i)= '.';
 	//避免出现.1这种情况，所以如果小数点前面要加0
 	if(*(s+i - 1)== 0) 
+	{
 		*(s+i - 1)= '0';
+		first_data_num --; //要把小数点这一位加上
+		num_bytes ++;
+		
+	}
 	aligin_left:
 	//靠左对齐
 	
-	first_data_num = STR_END_NUM - j; 
-	num_bytes = j + 1;
-	if(m)
-	{
-		first_data_num --; //要把小数点这一位加上
-		
-		num_bytes ++;
-	}
 	if(num_bytes == STR_BYTES)
 		return;
+	
+	
+	
 		//把数据往左边移动
 	for(i = 0; i < num_bytes; i++)
 	{
@@ -369,7 +381,7 @@ int		CNA_Clear(char chn_num)
 /// \{
 //前置条件:num_u16 > 2
 //高字节在前
-static void CNA_u64_add(uint16_t *p_u16, uint32_t val, char num_u16)
+static void CNA_u64_add(uint16_t *p_u16, int32_t val, char num_u16)
 {
 	uint32_t old_val;
 	uint32_t tmp_u32;

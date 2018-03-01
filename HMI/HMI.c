@@ -217,7 +217,7 @@ static void	SwitchBack( HMI *self)
 	nowHmi->build_component(nowHmi);
 	nowHmi->show( nowHmi);
 	
-	
+	nowHmi->flag &= ~HMI_FLAG_KEEP;
 	Set_flag_show(&nowHmi->flag, 1);
 	nowHmi->show_cmp(nowHmi);
 	

@@ -3,7 +3,7 @@
 <title>Static Call Graph - [.\Objects\PplRcd.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image .\Objects\PplRcd.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060061: Last Updated: Thu Mar 01 14:00:23 2018
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5050106: Last Updated: Thu Mar 01 22:30:00 2018
 <BR><P>
 <H3>Maximum Stack Usage =        528 bytes + Unknown(Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -1359,7 +1359,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[419]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;System_init
 </UL>
 
-<P><STRONG><a name="[3e3]"></a>CNA_Print_acc_val</STRONG> (Thumb, 346 bytes, Stack size 44 bytes, channel_accumulated.o(i.CNA_Print_acc_val))
+<P><STRONG><a name="[3e3]"></a>CNA_Print_acc_val</STRONG> (Thumb, 342 bytes, Stack size 44 bytes, channel_accumulated.o(i.CNA_Print_acc_val))
 <BR><BR>[Stack]<UL><LI>Max Depth = 44<LI>Call Chain = CNA_Print_acc_val
 </UL>
 <BR>[Called By]<UL><LI><a href="#[3e4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SAM_Print_ACC
@@ -1375,7 +1375,7 @@ Global Symbols
 <LI><a href="#[59]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SSA_Entry
 </UL>
 
-<P><STRONG><a name="[281]"></a>CNA_Run</STRONG> (Thumb, 948 bytes, Stack size 64 bytes, channel_accumulated.o(i.CNA_Run))
+<P><STRONG><a name="[281]"></a>CNA_Run</STRONG> (Thumb, 952 bytes, Stack size 64 bytes, channel_accumulated.o(i.CNA_Run))
 <BR><BR>[Stack]<UL><LI>Max Depth = 256<LI>Call Chain = CNA_Run &rArr; CNA_Commit &rArr; STG_Set_file_position &rArr; STG_Open_file &rArr; Strg_Updata_rcd_mgr &rArr;  STG_Open_file (Cycle)
 </UL>
 <BR>[Calls]<UL><LI><a href="#[284]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CNA_u64_add
@@ -2068,7 +2068,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[1dc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;KeyboardHitHandle
 </UL>
 
-<P><STRONG><a name="[2ef]"></a>Except_raise</STRONG> (Thumb, 128 bytes, Stack size 0 bytes, except.o(i.Except_raise))
+<P><STRONG><a name="[2ef]"></a>Except_raise</STRONG> (Thumb, 130 bytes, Stack size 0 bytes, except.o(i.Except_raise))
 <BR><BR>[Stack]<UL><LI>Max Depth = 24 + In Cycle
 <LI>Call Chain = Except_raise &rArr;  Except_raise (Cycle)
 </UL>
@@ -4110,15 +4110,15 @@ Global Symbols
 </UL>
 <BR>[Calls]<UL><LI><a href="#[355]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HMI_SBG_Turn_page
 </UL>
-<BR>[Address Reference Count : 10]<UL><LI> set_channel_strategy.o(i.CNS_build_component)
-<LI> set_databackup_strategy.o(i.DBP_build_component)
-<LI> strategy_set_accumulate.o(i.SSA_Build_component)
+<BR>[Address Reference Count : 10]<UL><LI> strategy_acc_day.o(i.SAD_Build_component)
 <LI> set_system_strategy.o(i.SYS_build_component)
+<LI> set_databackup_strategy.o(i.DBP_build_component)
+<LI> set_channel_strategy.o(i.CNS_build_component)
 <LI> hmi_striped_background.o(i.HMI_SBG_Show_entry)
 <LI> hmi_striped_background.o(i.STY_Duild_button)
 <LI> strategy_news_power.o(i.NPW_Build_component)
 <LI> strategy_news_alarm.o(i.NLM_Build_component)
-<LI> strategy_acc_day.o(i.SAD_Build_component)
+<LI> strategy_set_accumulate.o(i.SSA_Build_component)
 <LI> strategy_acc_month.o(i.SAM_Build_component)
 </UL>
 <P><STRONG><a name="[3fe]"></a>Setup_HMI_ctor</STRONG> (Thumb, 44 bytes, Stack size 8 bytes, setup_hmi.o(i.Setup_HMI_ctor))
@@ -5885,7 +5885,7 @@ Global Symbols
 <LI><a href="#[88]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SysTick_Handler
 </UL>
 
-<P><STRONG><a name="[489]"></a>rt_tsk_create</STRONG> (Thumb, 118 bytes, Stack size 24 bytes, rt_task.o(i.rt_tsk_create))
+<P><STRONG><a name="[489]"></a>rt_tsk_create</STRONG> (Thumb, 120 bytes, Stack size 24 bytes, rt_task.o(i.rt_tsk_create))
 <BR><BR>[Stack]<UL><LI>Max Depth = 56<LI>Call Chain = rt_tsk_create &rArr; rt_init_context &rArr; rt_init_stack
 </UL>
 <BR>[Calls]<UL><LI><a href="#[476]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_init_context
@@ -5896,7 +5896,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[1f5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;svcThreadCreate
 </UL>
 
-<P><STRONG><a name="[48b]"></a>rt_tsk_delete</STRONG> (Thumb, 352 bytes, Stack size 40 bytes, rt_task.o(i.rt_tsk_delete))
+<P><STRONG><a name="[48b]"></a>rt_tsk_delete</STRONG> (Thumb, 346 bytes, Stack size 40 bytes, rt_task.o(i.rt_tsk_delete))
 <BR><BR>[Stack]<UL><LI>Max Depth = 68<LI>Call Chain = rt_tsk_delete &rArr; rt_dispatch &rArr; rt_put_prio
 </UL>
 <BR>[Calls]<UL><LI><a href="#[474]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_rmv_dly
@@ -7634,7 +7634,7 @@ Local Symbols
 <P><STRONG><a name="[130]"></a>LngpshHandle</STRONG> (Thumb, 2 bytes, Stack size 0 bytes, hmi.o(i.LngpshHandle))
 <BR>[Address Reference Count : 1]<UL><LI> hmi.o(i.HMI_ctor)
 </UL>
-<P><STRONG><a name="[12e]"></a>SwitchBack</STRONG> (Thumb, 112 bytes, Stack size 16 bytes, hmi.o(i.SwitchBack))
+<P><STRONG><a name="[12e]"></a>SwitchBack</STRONG> (Thumb, 120 bytes, Stack size 16 bytes, hmi.o(i.SwitchBack))
 <BR><BR>[Stack]<UL><LI>Max Depth = 64<LI>Call Chain = SwitchBack &rArr; Sem_post &rArr; osSemaphoreRelease &rArr; isrSemaphoreRelease &rArr; isr_sem_send &rArr; rt_psq_enq
 </UL>
 <BR>[Calls]<UL><LI><a href="#[2ed]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Sem_wait
@@ -8545,7 +8545,7 @@ Local Symbols
 <LI><a href="#[147]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Setup_HMI_cmd
 </UL>
 
-<P><STRONG><a name="[19c]"></a>Setup_initSheet</STRONG> (Thumb, 338 bytes, Stack size 24 bytes, setup_hmi.o(i.Setup_initSheet))
+<P><STRONG><a name="[19c]"></a>Setup_initSheet</STRONG> (Thumb, 318 bytes, Stack size 24 bytes, setup_hmi.o(i.Setup_initSheet))
 <BR><BR>[Stack]<UL><LI>Max Depth = 200<LI>Call Chain = Setup_initSheet &rArr; Sheet_updown &rArr; GetShtctl &rArr; Dev_open &rArr; DevChar_open &rArr; Get_Dev_IIC &rArr; Dev_IIC_new &rArr; malloc &rArr; internal_alloc
 </UL>
 <BR>[Calls]<UL><LI><a href="#[3ff]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;System_to_string
@@ -8673,7 +8673,7 @@ Local Symbols
 <LI><a href="#[3c5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Password_init
 </UL>
 
-<P><STRONG><a name="[20b]"></a>WinHmi_hit</STRONG> (Thumb, 354 bytes, Stack size 32 bytes, windownshmi.o(i.WinHmi_hit))
+<P><STRONG><a name="[20b]"></a>WinHmi_hit</STRONG> (Thumb, 378 bytes, Stack size 32 bytes, windownshmi.o(i.WinHmi_hit))
 <BR><BR>[Stack]<UL><LI>Max Depth = 216<LI>Call Chain = WinHmi_hit &rArr; Win_CUR_move &rArr; Password_modify &rArr; Str_Calculations &rArr; atoi &rArr; strtol &rArr; _strtoul
 </UL>
 <BR>[Calls]<UL><LI><a href="#[446]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Win_CUR_move
@@ -8826,7 +8826,7 @@ Local Symbols
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> hmi_striped_background.o(i.HMI_striped_background_ctor)
 </UL>
-<P><STRONG><a name="[140]"></a>HMI_SBG_Hit</STRONG> (Thumb, 574 bytes, Stack size 40 bytes, hmi_striped_background.o(i.HMI_SBG_Hit))
+<P><STRONG><a name="[140]"></a>HMI_SBG_Hit</STRONG> (Thumb, 590 bytes, Stack size 40 bytes, hmi_striped_background.o(i.HMI_SBG_Hit))
 <BR><BR>[Stack]<UL><LI>Max Depth = 112<LI>Call Chain = HMI_SBG_Hit &rArr; BTN_Get_Sington &rArr; Button_new &rArr; malloc &rArr; internal_alloc
 </UL>
 <BR>[Calls]<UL><LI><a href="#[24e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;BTN_Get_Sington
@@ -10301,7 +10301,7 @@ Local Symbols
 <LI><a href="#[45f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;isrSemaphoreRelease
 </UL>
 
-<P><STRONG><a name="[491]"></a>rt_ms2tick</STRONG> (Thumb, 58 bytes, Stack size 0 bytes, rt_cmsis.o(i.rt_ms2tick))
+<P><STRONG><a name="[491]"></a>rt_ms2tick</STRONG> (Thumb, 60 bytes, Stack size 0 bytes, rt_cmsis.o(i.rt_ms2tick))
 <BR><BR>[Called By]<UL><LI><a href="#[1f4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;svcSemaphoreWait
 <LI><a href="#[1f1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;svcMessageGet
 <LI><a href="#[1ee]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;svcDelay

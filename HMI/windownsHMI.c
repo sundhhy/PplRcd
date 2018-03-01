@@ -359,6 +359,7 @@ static void	WinHmi_hit(HMI *self, char *s)
 				cthis->cmd_hdl(cthis->p_cmd_rcv, wincmd_commit, NULL);
 			}
 			self->arg[1] = 0;
+			p_src_hmi->flag |= HMI_FLAG_KEEP;
 			self->switchHMI(self, p_src_hmi);
 			p_src_hmi->flag &= ~HMIFLAG_WIN;
 			
@@ -370,6 +371,7 @@ static void	WinHmi_hit(HMI *self, char *s)
 				//取消则直接返回
 				p_src_hmi = g_p_win_last;
 				p_src_hmi->flag |= HMIFLAG_WIN;
+				p_src_hmi->flag |= HMI_FLAG_KEEP;
 				self->switchHMI(self, p_src_hmi);
 				p_src_hmi->flag &= ~HMIFLAG_WIN;
 			}
@@ -383,6 +385,7 @@ static void	WinHmi_hit(HMI *self, char *s)
 
 		p_src_hmi = g_p_win_last;
 		p_src_hmi->flag |= HMIFLAG_WIN;
+		p_src_hmi->flag |= HMI_FLAG_KEEP;
 		self->switchHMI(self, p_src_hmi);
 		p_src_hmi->flag &= ~HMIFLAG_WIN;
 	}

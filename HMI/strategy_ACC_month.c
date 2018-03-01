@@ -113,7 +113,7 @@ static int SAM_Entry(int row, int col, void *pp_text)
 	//计算当前行 列下对应的日子
 	if(row > 0)
 		month = row - pic_num ;		
-	if(month > 14)
+	if(month > 13)
 		return 0;
 	if((r > 1) && (col > 1))
 	{
@@ -215,7 +215,7 @@ static void SAM_Print_ACC(char m, char type, char *s)
 		if(type ==  SAM_RAM_ACC_SDATA)
 			CNA_Print_acc_val(arr_chn_acc[g_setting_chn].accumlated_year, s, 1);
 		else 
-			sprintf(s, "年度总累计");
+			sprintf(s, "年累计");
 		
 	}
 	else if(m == 13)

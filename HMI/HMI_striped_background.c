@@ -182,6 +182,7 @@ static void	HMI_SBG_Init_sheet(HMI *self)
 	p_shtctl = GetShtctl();
 	
 	if(((self->flag & HMIFLAG_WIN) == 0) && ((self->flag & HMIFLAG_KEYBOARD) == 0)) {
+		//按钮或者键盘返回的时候就保持原样，不进行初始化
 		old_sty = cthis->p_sy;
 		cthis->p_sy = arr_p_setting_strategy[self->arg[0]][self->arg[1]];
 		if(cthis->p_sy == NULL)
@@ -570,7 +571,7 @@ static void	HMI_SBG_Hit(HMI *self, char *s_key)
 			cthis->p_sy->sty_exit();
 			
 			
-			
+			g_p_lastHmi->flag |= HMI_FLAG_KEEP;
 			self->switchBack(self);
 			
 		}
