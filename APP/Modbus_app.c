@@ -62,7 +62,7 @@ static I_dev_Char *p_MBA_uart;
 // local function prototypes
 //------------------------------------------------------------------------------
 
-static void MBA_Run(void *arg);
+static void MBA_Run(void);
 static int MBA_reg_2_area(uint16_t reg_addr, uint16_t num_reg);
 static MBA_access_area MBA_Get_acc_func(char area);
 //static MBA_write_area MBA_Get_write_func(char area);
@@ -108,7 +108,7 @@ int MBA_Init(void)
 	p_MBA_uart->ioctol(p_MBA_uart, DEVCMD_SET_TXWAITTIME_MS, 1000);
 	p_MBA_uart->ioctol(p_MBA_uart, DEVCMD_SET_TXWAITTIME_MS, 100);
 	
-	ret = Cmd_Rgt_recv(MBA_Run, NULL);
+	ret = Cmd_Rgt_recv(MBA_Run);
 	if(ret < 0)
 	{
 		ret = ERR_RSU_UNAVAILABLE;
@@ -201,7 +201,7 @@ int			MBC_reg_2_ram(uint16_t	reg, uint16_t reg_num, char mbc_cmd, void *ram_ptr)
 //=========================================================================//
 /// \name Private Functions
 /// \{
-static void MBA_Run(void *arg)
+static void MBA_Run(void)
 {
 	uint8_t		modbus_buf[96];  //系统最长的连续寄存器数量是32个，所以这么多字节能放下了
 	uint8_t		modbus_ack_buf[280];  //系统最长的连续寄存器数量是32个，所以这么多字节能放下了

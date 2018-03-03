@@ -89,7 +89,9 @@ typedef struct
 typedef struct {
 	uint32_t		rcd_time_s;
 	int16_t			rcd_val;
-	uint16_t		none;
+	uint8_t			decimal_places;
+	uint8_t			none;
+
 }data_in_fsh_t;
 
 CLASS(Storage)

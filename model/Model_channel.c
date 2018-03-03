@@ -35,6 +35,24 @@ const int16_t	def_lower_up_limit[14][2] = {
 	{0,1000},			//4 - 20mA
 		
 };
+
+const uint8_t	def_decimal_places[14] = {
+	1,			//B
+	1,		//E
+	1,		//J
+	1,		//K
+	1,			//S
+	1,		//T
+	1,		//pt100
+	1,		//Cu50	
+	0,			//0 - 20 mv
+	0,			//0 - 10 mv
+	0,			//0 - 5V
+	0,			//1 - 5V
+	0,			//0 - 10mA
+	0,			//4 - 20mA
+		
+};
 //------------------------------------------------------------------------------
 // module global vars
 //------------------------------------------------------------------------------
@@ -139,7 +157,7 @@ void MdlChn_default_conf(int chn_num)
 	p_mdl->chni.b = 0;
 	p_mdl->chni.lower_limit = MdlChn_Get_def_lower_limit(p_mdl->chni.signal_type);
 	p_mdl->chni.upper_limit = MdlChn_Get_def_up_limit(p_mdl->chni.signal_type);
-	
+	p_mdl->chni.decimal_places = def_decimal_places[p_mdl->chni.signal_type];
 }
 
 
@@ -513,7 +531,6 @@ static int MdlChn_init(Model *self, IN void *arg)
 	cthis->alarm_buf = CALLOC(1,8);
 	self->mdl_id = MDLID_CHN(chn_num);
 	cthis->chni.chn_NO = chn_num;
-	
 	if(stg->rd_stored_data(stg, STG_CHN_CONF(cthis->chni.chn_NO), &save, sizeof(save)) != RET_OK) 
 	{
 
@@ -538,6 +555,7 @@ static int MdlChn_init(Model *self, IN void *arg)
 	}
 	
 	MdlChn_Init_alm_mgr_by_STG_alm(cthis);
+	cthis->chni.decimal_places = def_decimal_places[cthis->chni.signal_type];
 
 	stg->open_file(STG_CHN_DATA(cthis->chni.chn_NO), cthis->chni.MB * 1024 * 1024);
 	return RET_OK;
@@ -699,6 +717,7 @@ static void MdlChn_run(Model *self)
 	Model_chn					*cthis = SUB_PTR(self, Model, Model_chn);
 	Storage						*stg = Get_storage();
 	uint8_t						chk_buf[16];
+	uint16_t					save_buf[2];  //存放实时值及小数点位数
 	SmBus_result_t		rst;
 //	do_out_t			d = {0};
 	
@@ -708,20 +727,20 @@ static void MdlChn_run(Model *self)
 	
 #if TDD_SAVE_DATA == 1
 	short	test_val;
-	
+	static int mdl_sub = 0;
 	test_val = cthis->chni.value;
 	
 	
 	cthis->chni.lower_limit = -50;
 	cthis->chni.upper_limit = 50;
-	
-	if(cthis->chni.none == 0)
+	//decimal_places 在这里用于测试
+	if(mdl_sub == 0)
 	{
 		test_val ++;
 		if(test_val > cthis->chni.upper_limit)
 		{
 			test_val = cthis->chni.upper_limit - 1;
-			cthis->chni.none = 1;
+			mdl_sub = 1;
 		}
 	}
 	else
@@ -735,7 +754,7 @@ static void MdlChn_run(Model *self)
 		{
 //			test_val = cthis->chni.lower_limit + 1;
 			test_val = 0;
-			cthis->chni.none = 0;
+			mdl_sub = 0;
 			
 		}
 		
@@ -755,7 +774,9 @@ static void MdlChn_run(Model *self)
 	Signal_Alarm(cthis);
 	
 	self->notify(self);
-	stg->wr_stored_data(stg, STG_CHN_DATA(cthis->chni.chn_NO), &cthis->chni.value, 2);
+	save_buf[0] = cthis->chni.value;
+	save_buf[0] = cthis->chni.decimal_places;
+	stg->wr_stored_data(stg, STG_CHN_DATA(cthis->chni.chn_NO), save_buf, 4);
 #else	
 	
 	
@@ -831,7 +852,9 @@ static void MdlChn_run(Model *self)
 		
 	}
 	
-	stg->wr_stored_data(stg, STG_CHN_DATA(cthis->chni.chn_NO), &cthis->chni.value, 2);
+	save_buf[0] = cthis->chni.value;
+	save_buf[0] = cthis->chni.decimal_places;
+	stg->wr_stored_data(stg, STG_CHN_DATA(cthis->chni.chn_NO), save_buf, 4);
 	
 
 	return;
@@ -1171,7 +1194,7 @@ static char* MdlChn_to_string( Model *self, IN int aux, void *arg)
 			} else {
 				p = cthis->str_buf;
 			}
-			Print_float(cthis->chni.value, 4, 1, p);
+			Print_float(cthis->chni.value, 4,  cthis->chni.decimal_places, p);
 //			sprintf( p, "%4d.%d", cthis->chni.value/10, cthis->chni.value%10);
 			return p;
 			

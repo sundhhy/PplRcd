@@ -134,11 +134,11 @@ void Print_float(int data, short int_len, short prec, char *str)
 //			sprintf(str, "-%d.%02d", d1, d2);
 		
 	}
-	else
-	{
-		return;
-		
-	}
+//	else
+//	{
+//			d1 = data;
+//		
+//	}
 	
 	if(sign > 0)
 	{
@@ -147,7 +147,10 @@ void Print_float(int data, short int_len, short prec, char *str)
 //		else if(int_len == 4)
 //			sprintf(str, "%2d.%d", d1, d2);
 //		else
+		if(prec)
 			sprintf(str, "%d.%d", d1, d2);
+		else
+			sprintf(str, "%d", data);
 	}
 	else 
 	{
@@ -156,7 +159,10 @@ void Print_float(int data, short int_len, short prec, char *str)
 //		else if(int_len == 4)
 //			sprintf(str, "-%2d.%d", d1, d2);
 //		else
+		if(prec)
 			sprintf(str, "-%d.%d", d1, d2);
+		else
+			sprintf(str, "-%d", data);
 		
 		
 	}

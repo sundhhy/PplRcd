@@ -325,7 +325,7 @@ int	STG_Read_rcd_by_time(uint8_t	chn, uint32_t start_sec, uint32_t end_sec, char
 	uint32_t			max_sec = 0;	
 	int					buf_offset = 0;
 	char				tmp_buf[32];
-	
+	char				str_data[8];
 	fd = STG_Open_file(STG_CHN_DATA(chn), STG_DEF_FILE_SIZE);
 	fnf = STRG_SYS.fs.fs_file_info(fd);
 
@@ -348,8 +348,18 @@ int	STG_Read_rcd_by_time(uint8_t	chn, uint32_t start_sec, uint32_t end_sec, char
 		
 		Sec_2_tm(d.rcd_time_s, &t);
 		//放置csv格式的数据
-		sprintf(tmp_buf, "%2d/%02d/%02d,%02d:%02d:%02d,%d\r\n", t.tm_year,t.tm_mon, t.tm_mday, \
-				t.tm_hour, t.tm_min, t.tm_sec, d.rcd_val);
+		sprintf(tmp_buf, "%2d/%02d/%02d,%02d:%02d:%02d,", t.tm_year,t.tm_mon, t.tm_mday, t.tm_hour, t.tm_min, t.tm_sec);
+		if(d.decimal_places == 0)
+		{
+			Print_float(d.rcd_val, 0, 0, str_data);
+		}
+		else
+		{
+			Print_float(d.rcd_val, 0, 1, str_data);
+			
+		}
+		strcat(tmp_buf, str_data);
+		strcat(tmp_buf, "\r\n");
 		if(strlen(tmp_buf) > (buf_size - buf_offset))
 		{
 			STRG_SYS.fs.fs_lseek(fd, RD_SEEK_CUR, -sizeof(data_in_fsh_t));
@@ -750,6 +760,7 @@ static int	STG_Acc_chn_data(uint8_t	type, uint8_t	drc, void *p, int len)
 #if STG_RCD_FULL_ACTION == STG_ERASE
 	data_in_fsh_t		dinf;
 	Storage				*stg = Get_storage();
+	uint8_t				*p_u16 = p;
 	int						fd = -1;
 	int					acc_len = 0;
 	file_info_t			*fnf ;
@@ -785,7 +796,10 @@ static int	STG_Acc_chn_data(uint8_t	type, uint8_t	drc, void *p, int len)
 //			
 //		}
 		dinf.rcd_time_s = SYS_time_sec();
-		dinf.rcd_val = *(uint16_t *)p;
+		dinf.rcd_val = p_u16[0];
+		if(len == 4)
+			dinf.decimal_places = p_u16[1];
+		
 		acc_len = STRG_SYS.fs.fs_raw_write(fd, (uint8_t *)&dinf, sizeof(dinf));
 		if(acc_len == sizeof(dinf))
 			stg->arr_rcd_mgr[chn_num].rcd_count ++;

@@ -53,6 +53,7 @@ V010 171226 :
 
 
 #define EFS_WAIT_WR_MS						1000
+#define EFS_FLUSH_CYCLE_S					180
 
 const Except_T EFS_Failed = { "Alloc Sheet Failed" };
 //------------------------------------------------------------------------------
@@ -94,8 +95,7 @@ typedef struct {
 	
 typedef struct {
 	uint8_t					free_spac_num;
-	uint8_t					none;
-	uint16_t				run_idel_count;			//run空运行计数
+	uint8_t					none[3];
 	uint8_t					*pg_buf;
 	efs_file_mgt_t  	arr_efiles[EFS_MAX_NUM_FILES + EFS_NUM_IDLE_FILES];			//文件管理要留一点空间
 	file_info_t			arr_file_info[EFS_MAX_NUM_FILES];
@@ -134,7 +134,8 @@ static void	EFS_flush_mgr(int No);
 static void EFS_Change_file_size(int fd, uint32_t new_size);
 static void	EFS_Regain_space(void);
 
-static void EFS_run(void *arg);
+static void EFS_run(void);
+static void EFS_Flush(void);
 //============================================================================//
 //            P U B L I C   F U N C T I O N S                                 //
 //============================================================================//
@@ -179,7 +180,8 @@ int 	EFS_init(int arg)
 	EFS_FS.fs_shutdown = EFS_Shutdown;
 	EFS_FS.fs_file_info = EFS_file_info;
 	
-	Cmd_Rgt_idle_task(EFS_run, NULL);
+	Cmd_Rgt_idle_task(EFS_run);
+	Cmd_Rgt_time_task(EFS_Flush, EFS_FLUSH_CYCLE_S);
 	return EFS_format();
 	
 	
@@ -641,6 +643,23 @@ static int EFS_format(void)
 	return RET_OK;
 }
 
+static void 	EFS_Flush(void)
+{
+	int i;
+	Cmd_Rgt_time_task(EFS_Flush, EFS_FLUSH_CYCLE_S);
+	for(i = 0; i < NUM_FSH; i ++)
+	{
+		EFS_FSH(i).fsh_flush();
+		
+	}
+	
+	
+	
+	
+	
+	
+}
+
 static void EFS_Erase(int fd)
 {
 	file_info_t *f = &efs_mgr.arr_file_info[fd];
@@ -660,10 +679,9 @@ static void EFS_Erase(int fd)
 //	Sem_post(&f->file_sem);
 }
 
-static void EFS_run(void *arg)
+static void EFS_run()
 {
 	uint8_t		i = 0;
-	uint8_t		efs_ilde = 1;
 	for(i = 0; i < EFS_MAX_NUM_FILES; i++)
 	{
 		if(efs_mgr.arr_file_info[i].file_flag & EFS_FLAG_ERASE)
@@ -682,32 +700,10 @@ static void EFS_run(void *arg)
 		{
 			
 			efs_mgr.arr_file_info[i].file_flag &=~ EFS_FLAG_ERASE;
-			efs_ilde = 0;
 		}
 		
 	}
 	EFS_SYS.sys_flag &= ~SYSFLAG_EFS_NOTREADY;
-	
-	if(efs_ilde)
-	{
-		efs_mgr.run_idel_count ++;
-		
-	}
-	
-	if(efs_mgr.run_idel_count < 500)
-	{
-		
-		return;
-		
-	}
-	
-	for(i = 0; i < NUM_FSH; i ++)
-	{
-		EFS_FSH(i).fsh_flush();
-		
-	}
-	
-	efs_mgr.run_idel_count = 0;
 }
 
 static void	EFS_flush_mgr(int No)

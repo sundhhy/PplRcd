@@ -245,6 +245,7 @@ void Main_btn_hdl(void *arg, uint8_t btn_id);
 void Main_HMI_build_button(HMI *self);
 void Main_HMI_hit( HMI *self, char *s);
 
+int HMI_Init(void);
 
 
 #endif

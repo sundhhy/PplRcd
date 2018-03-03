@@ -2,7 +2,7 @@
 #include "cmsis_os.h"                                           // CMSIS RTOS header file
 #include "sys_cmd.h"
 #include "arithmetic/bit.h"
-
+#include "system.h"
 /*----------------------------------------------------------------------------
  *      Thread 1 'Thread_Name': Sample thread
  *---------------------------------------------------------------------------*/
@@ -39,16 +39,28 @@
 // const defines
 //------------------------------------------------------------------------------
 #define NUM_RUN		2
+#define NUM_TIME_TASK		2
 //------------------------------------------------------------------------------
 // local types
 //------------------------------------------------------------------------------
+typedef struct {
+	uint32_t		run_times;
+	cmd_recv	task;
+}time_task_t;
+
+
 struct {
 	uint8_t		set_free_run;
+	uint8_t		set_free_tts;
 	uint8_t		set_free_idle_run;
-	uint8_t		none[2];
-	cmd_run_t 	arr_cmd_run[NUM_RUN];
-	cmd_run_t 	cmd_idle_run;
+	uint8_t		none;
+	time_task_t	arr_tts[NUM_TIME_TASK];
+	cmd_recv 	arr_cmd_run[NUM_RUN];
+	cmd_recv 	cmd_idle_run;
 }run_mgr;
+
+
+
 //------------------------------------------------------------------------------
 // local vars
 //------------------------------------------------------------------------------
@@ -61,42 +73,7 @@ osThreadDef (Cmd_Thread, osPriorityBelowNormal, 1, 0);
 // local function prototypes
 //------------------------------------------------------------------------------
 
-int	Cmd_Rgt_recv(cmd_recv	crv, void *arg)
-{
-	int i;
-	for(i = 0; i < NUM_RUN; i++)
-	{
-		
-		if(Check_bit(&run_mgr.set_free_run, i))
-		{
-			
-			
-			run_mgr.arr_cmd_run[i].func = crv;
-			run_mgr.arr_cmd_run[i].arg = arg;
-			Clear_bit(&run_mgr.set_free_run, i);
-			return i;
-		}
-	}
-	
-	return -1;
-	
-}
-int	Cmd_Rgt_idle_task(cmd_recv	crv, void *arg)
-{
-	run_mgr.cmd_idle_run.func = crv;
-	run_mgr.cmd_idle_run.arg = arg;
-	return 0;
-	
-}
-void Cmd_del_recv(int	cmd_fd)
-{
-	if(cmd_fd >= NUM_RUN)
-		return;
-	
-	run_mgr.arr_cmd_run[cmd_fd].func= NULL;
-	Set_bit(&run_mgr.set_free_run, cmd_fd);
-	
-}
+
 
 //============================================================================//
 //            P U B L I C   F U N C T I O N S                                 //
@@ -107,11 +84,68 @@ int Init_Cmd_Thread (void) {
   if (!tid_cmd_Thread) return(-1);
   
 	run_mgr.set_free_run = (1 << NUM_RUN) - 1;
+	run_mgr.set_free_tts = (1 << NUM_TIME_TASK) - 1;
 	run_mgr.set_free_idle_run = 0xff;
   return(0);
 }
 
-
+int	Cmd_Rgt_recv(cmd_recv	crv)
+{
+	int i;
+	for(i = 0; i < NUM_RUN; i++)
+	{
+		
+		if(Check_bit(&run_mgr.set_free_run, i))
+		{
+			
+			
+			run_mgr.arr_cmd_run[i] = crv;
+			Clear_bit(&run_mgr.set_free_run, i);
+			return i;
+		}
+	}
+	
+	return -1;
+	
+}
+int	Cmd_Rgt_time_task(cmd_recv	crv, int time_s)
+{
+	
+	int i;
+	uint32_t cur_s = SYS_time_sec();
+	for(i = 0; i < NUM_TIME_TASK; i++)
+	{
+		
+		if(Check_bit(&run_mgr.set_free_tts, i))
+		{
+			
+			
+			run_mgr.arr_tts[i].run_times = cur_s + time_s;
+			run_mgr.arr_tts[i].task = crv;
+//			run_mgr.arr_cmd_run[i].arg = arg;
+			Clear_bit(&run_mgr.set_free_tts, i);
+			return i;
+		}
+	}
+	
+	return -1;
+	
+}
+int	Cmd_Rgt_idle_task(cmd_recv	crv)
+{
+	run_mgr.cmd_idle_run = crv;
+	return 0;
+	
+}
+void Cmd_del_recv(int	cmd_fd)
+{
+	if(cmd_fd >= NUM_RUN)
+		return;
+	
+	run_mgr.arr_cmd_run[cmd_fd]= NULL;
+	Set_bit(&run_mgr.set_free_run, cmd_fd);
+	
+}
 
 //=========================================================================//
 //                                                                         //
@@ -123,16 +157,28 @@ int Init_Cmd_Thread (void) {
 static void Cmd_Thread (void const *argument) {
 
 	int i;
-  while (1) {
-    ; // Insert thread code here...
-	  for(i = 0; i < NUM_RUN; i++)
-	  {
-		if(run_mgr.arr_cmd_run[i].func)
-			run_mgr.arr_cmd_run[i].func(run_mgr.arr_cmd_run[i].arg);
+	uint32_t cur_s ;
+	while (1) {
+
+		cur_s = SYS_time_sec();
+		for(i = 0; i < NUM_RUN; i++)
+		{
+			if(run_mgr.arr_cmd_run[i])
+			run_mgr.arr_cmd_run[i]();
 		}
-	  
-		 if(run_mgr.cmd_idle_run.func)
-			run_mgr.cmd_idle_run.func(run_mgr.cmd_idle_run.arg);
+
+		if(run_mgr.cmd_idle_run)
+			run_mgr.cmd_idle_run();
+
+		for(i = 0; i < NUM_TIME_TASK; i++)
+		{
+			if(Check_bit(&run_mgr.set_free_tts, i))
+				continue;
+			if(cur_s < run_mgr.arr_tts[i].run_times)
+				continue;
+			run_mgr.arr_tts[i].task();	
+			Set_bit(&run_mgr.set_free_tts, i);
+		}
     osThreadYield ();  		// suspend thread
   }
 }

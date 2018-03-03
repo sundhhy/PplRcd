@@ -95,7 +95,7 @@ void 	Init_LCD(void);
 int main (void) {
 	Keyboard		*p_kb;
 	Controller		*p_control;
-	HMI 			*p_mainHmi;
+	
 	Model 			*p_mdl_time;
 	CMP_tips 		*p_tips;
 	uint8_t			main_count_1s = 0;
@@ -120,14 +120,6 @@ int main (void) {
 #if TDD_ON == 1
 	Tdd_Init();
 #endif		
-
-	
-	
-	
-//	InitTimer( TIM2, 1000);		//180210 用不到
-//	clean_time_flags();
-
-
 	//控制器初始化
 #if TDD_ON == 0
 
@@ -135,11 +127,7 @@ int main (void) {
 	assert(USB_Init(NULL) == RET_OK);
 
 	//界面初始化
-	p_mainHmi = CreateHMI( HMI_MAIN);
-	p_mainHmi->init( p_mainHmi, NULL);
-	p_mainHmi->switchHMI(p_mainHmi, p_mainHmi);
-
-
+	HMI_Init();
 	//按键初始化
 	p_kb = GetKeyInsance();
 	
@@ -148,9 +136,6 @@ int main (void) {
 	p_kb->init( p_kb, &phn_sys.lcd_cmd_bytes);
 	phn_sys.lcd_cmd_bytes  = 0;
 
-	
-	
-	
 	//创建控制器
 	p_control = SUPER_PTR( Get_CtlKey(), Controller);
 	p_control->init(p_control, p_kb);

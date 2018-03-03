@@ -142,7 +142,7 @@ typedef struct {
 	int16_t			value;					//20
 	uint16_t		sample_value;				//	22
 	uint8_t			smp_flag;				//23	0 采样值无效  1 采样值有效
-	uint8_t			none;
+	uint8_t			decimal_places;		//只有测温的才是1位小时，其他都是整数
 }chn_info_t;
 
 typedef struct {

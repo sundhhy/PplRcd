@@ -14,13 +14,9 @@
 //------------------------------------------------------------------------------
 // typedef
 //------------------------------------------------------------------------------
-typedef void (*cmd_recv)(void *arg);
+typedef void (*cmd_recv)(void);
 
-typedef struct {
-	cmd_recv 		func;
-	void 			*arg;
-	
-}cmd_run_t;
+
 //------------------------------------------------------------------------------
 // global variable declarations
 //------------------------------------------------------------------------------
@@ -29,7 +25,8 @@ typedef struct {
 // function prototypes
 //------------------------------------------------------------------------------
 int Init_Cmd_Thread (void);
-int	Cmd_Rgt_recv(cmd_recv	crv, void *arg);
-int	Cmd_Rgt_idle_task(cmd_recv	crv, void *arg);
+int	Cmd_Rgt_recv(cmd_recv	crv);
+int	Cmd_Rgt_idle_task(cmd_recv	crv);
+int	Cmd_Rgt_time_task(cmd_recv	crv, int time_s);		//只执行一次
 void Cmd_del_recv(int	cmd_fd);
 #endif

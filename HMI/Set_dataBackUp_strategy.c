@@ -515,7 +515,7 @@ static int DBP_update_content(int op, int weight)
 
 
 
-static void DBP_Copy(void *arg)
+static void DBP_Copy(void)
 {
 	
 	uint32_t			start_sec = Str_time_2_u32(arr_p_vram[row_start_time]);
@@ -654,7 +654,7 @@ static void DBP_Copy(void *arg)
 	 if(btn_id == ICO_ID_COPY)
 	 {
 		 DBP_copy = 1;
-		 arr_DBP_fds[2] = Cmd_Rgt_recv(DBP_Copy, NULL);		 
+		 arr_DBP_fds[2] = Cmd_Rgt_recv(DBP_Copy);		 
 	 }
 	 else if(btn_id == ICO_ID_STOP)
 	 {

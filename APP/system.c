@@ -236,13 +236,15 @@ void System_time(struct  tm *stime)
 uint32_t  SYS_time_sec(void)
 {
 	
+	return Time_2_u32(&phn_sys.sys_time);
+//	Model 		*m;
+//	uint32_t	sec = 0;
+//	m = ModelCreate("time");
+//	m->getMdlData(m, TIME_U32, &sec);
 	
-	Model 		*m;
-	uint32_t	sec = 0;
-	m = ModelCreate("time");
-	m->getMdlData(m, TIME_U32, &sec);
+//	return sec;
 	
-	return sec;
+	
 //	struct tm  t;
 //	sys_rtc->get(sys_rtc, &t);
 //	

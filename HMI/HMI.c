@@ -2,6 +2,9 @@
 #include "commHMI.h"
 #include <string.h>
 #include "os/os_depend.h"
+#include "sys_cmd.h"
+#include "HMIFactory.h"
+
 //提供 按键，事件，消息，窗口，报警，时间，复选框的图层
 //这些图层可能会被其他界面所使用
 //============================================================================//
@@ -13,7 +16,7 @@
 //------------------------------------------------------------------------------
 const Except_T Hmi_Failed = { "HMI Failed" };
 
-
+#define HMI_FLUSH_CYCLE_S				3600
 //------------------------------------------------------------------------------
 // module global vars
 //------------------------------------------------------------------------------
@@ -69,7 +72,7 @@ static int		HMI_Btn_forward(HMI *self);
 static int		HMI_Btn_backward(HMI *self);
 static void		HMI_Btn_jumpout(HMI *self);
 //static void		HMI_Btn_hit(HMI *self);
-
+static void HMI_Flush(void);		//定期刷屏
 //============================================================================//
 //            P U B L I C   F U N C T I O N S                                 //
 //============================================================================//
@@ -83,6 +86,18 @@ void Set_flag_show(uint8_t	*p_flag, int val)
 //	val &= 1;
 //	*p_flag &= 0xfe;
 //	*p_flag |= val;
+}
+
+int HMI_Init(void)
+{
+	
+	HMI 			*p_mainHmi;
+	p_mainHmi = CreateHMI( HMI_MAIN);
+	p_mainHmi->init( p_mainHmi, NULL);
+	p_mainHmi->switchHMI(p_mainHmi, p_mainHmi);
+	Cmd_Rgt_time_task(HMI_Flush, HMI_FLUSH_CYCLE_S);
+	
+	return RET_OK;
 }
 
 //void Set_flag_keyhandle(uint8_t	*p_flag, int val)
@@ -128,7 +143,13 @@ END_ABS_CTOR
 //                                                                         //
 //=========================================================================//
 
-
+static void HMI_Flush(void)
+{
+	Cmd_Rgt_time_task(HMI_Flush, HMI_FLUSH_CYCLE_S);
+	g_p_curHmi->show(g_p_curHmi);
+	
+	
+}
 
 
 static void	HmiShow( HMI *self)
