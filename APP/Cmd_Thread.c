@@ -176,8 +176,9 @@ static void Cmd_Thread (void const *argument) {
 				continue;
 			if(cur_s < run_mgr.arr_tts[i].run_times)
 				continue;
-			run_mgr.arr_tts[i].task();	
 			Set_bit(&run_mgr.set_free_tts, i);
+			run_mgr.arr_tts[i].task();	
+			
 		}
     osThreadYield ();  		// suspend thread
   }

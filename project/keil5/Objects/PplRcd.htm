@@ -3,7 +3,7 @@
 <title>Static Call Graph - [.\Objects\PplRcd.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image .\Objects\PplRcd.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060061: Last Updated: Sat Mar 03 14:56:09 2018
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5050106: Last Updated: Sun Mar 04 17:26:02 2018
 <BR><P>
 <H3>Maximum Stack Usage =        520 bytes + Unknown(Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -2089,7 +2089,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[1de]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;KeyboardHitHandle
 </UL>
 
-<P><STRONG><a name="[2f3]"></a>Except_raise</STRONG> (Thumb, 128 bytes, Stack size 0 bytes, except.o(i.Except_raise))
+<P><STRONG><a name="[2f3]"></a>Except_raise</STRONG> (Thumb, 130 bytes, Stack size 0 bytes, except.o(i.Except_raise))
 <BR><BR>[Stack]<UL><LI>Max Depth = 24 + In Cycle
 <LI>Call Chain = Except_raise &rArr;  Except_raise (Cycle)
 </UL>
@@ -3932,8 +3932,8 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[ed]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;DBP_Copy
 </UL>
 
-<P><STRONG><a name="[2c4]"></a>STG_Read_rcd_by_time</STRONG> (Thumb, 300 bytes, Stack size 136 bytes, storage.o(i.STG_Read_rcd_by_time))
-<BR><BR>[Stack]<UL><LI>Max Depth = 272<LI>Call Chain = STG_Read_rcd_by_time &rArr; STG_Open_file &rArr; Strg_Updata_rcd_mgr &rArr;  STG_Open_file (Cycle)
+<P><STRONG><a name="[2c4]"></a>STG_Read_rcd_by_time</STRONG> (Thumb, 284 bytes, Stack size 144 bytes, storage.o(i.STG_Read_rcd_by_time))
+<BR><BR>[Stack]<UL><LI>Max Depth = 280<LI>Call Chain = STG_Read_rcd_by_time &rArr; STG_Open_file &rArr; Strg_Updata_rcd_mgr &rArr;  STG_Open_file (Cycle)
 </UL>
 <BR>[Calls]<UL><LI><a href="#[27d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Get_storage
 <LI><a href="#[3b2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Sec_2_tm
@@ -4046,6 +4046,7 @@ Global Symbols
 <LI><a href="#[1e3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Init_mainHmi
 <LI><a href="#[12f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SwitchHMI
 <LI><a href="#[130]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SwitchBack
+<LI><a href="#[12b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HMI_Flush
 <LI><a href="#[198]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RT_trendHmi_HitHandle
 <LI><a href="#[194]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HMI_CRV_RTV_Run
 <LI><a href="#[19a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HMI_CRV_HST_Run
@@ -4076,6 +4077,7 @@ Global Symbols
 <LI><a href="#[7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GpuBKColor
 <LI><a href="#[12f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SwitchHMI
 <LI><a href="#[130]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SwitchBack
+<LI><a href="#[12b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HMI_Flush
 <LI><a href="#[198]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RT_trendHmi_HitHandle
 <LI><a href="#[194]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HMI_CRV_RTV_Run
 <LI><a href="#[19a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HMI_CRV_HST_Run
@@ -4144,15 +4146,15 @@ Global Symbols
 </UL>
 <BR>[Calls]<UL><LI><a href="#[35a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HMI_SBG_Turn_page
 </UL>
-<BR>[Address Reference Count : 10]<UL><LI> set_channel_strategy.o(i.CNS_build_component)
+<BR>[Address Reference Count : 10]<UL><LI> strategy_acc_day.o(i.SAD_Build_component)
+<LI> set_channel_strategy.o(i.CNS_build_component)
 <LI> set_databackup_strategy.o(i.DBP_build_component)
-<LI> strategy_news_power.o(i.NPW_Build_component)
 <LI> set_system_strategy.o(i.SYS_build_component)
 <LI> hmi_striped_background.o(i.HMI_SBG_Show_entry)
 <LI> hmi_striped_background.o(i.STY_Duild_button)
+<LI> strategy_news_power.o(i.NPW_Build_component)
 <LI> strategy_news_alarm.o(i.NLM_Build_component)
 <LI> strategy_set_accumulate.o(i.SSA_Build_component)
-<LI> strategy_acc_day.o(i.SAD_Build_component)
 <LI> strategy_acc_month.o(i.SAM_Build_component)
 </UL>
 <P><STRONG><a name="[402]"></a>Setup_HMI_ctor</STRONG> (Thumb, 44 bytes, Stack size 8 bytes, setup_hmi.o(i.Setup_HMI_ctor))
@@ -5920,7 +5922,7 @@ Global Symbols
 <LI><a href="#[88]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SysTick_Handler
 </UL>
 
-<P><STRONG><a name="[48d]"></a>rt_tsk_create</STRONG> (Thumb, 118 bytes, Stack size 24 bytes, rt_task.o(i.rt_tsk_create))
+<P><STRONG><a name="[48d]"></a>rt_tsk_create</STRONG> (Thumb, 120 bytes, Stack size 24 bytes, rt_task.o(i.rt_tsk_create))
 <BR><BR>[Stack]<UL><LI>Max Depth = 56<LI>Call Chain = rt_tsk_create &rArr; rt_init_context &rArr; rt_init_stack
 </UL>
 <BR>[Calls]<UL><LI><a href="#[474]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_dispatch
@@ -5931,7 +5933,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[1f7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;svcThreadCreate
 </UL>
 
-<P><STRONG><a name="[48f]"></a>rt_tsk_delete</STRONG> (Thumb, 352 bytes, Stack size 40 bytes, rt_task.o(i.rt_tsk_delete))
+<P><STRONG><a name="[48f]"></a>rt_tsk_delete</STRONG> (Thumb, 346 bytes, Stack size 40 bytes, rt_task.o(i.rt_tsk_delete))
 <BR><BR>[Stack]<UL><LI>Max Depth = 68<LI>Call Chain = rt_tsk_delete &rArr; rt_dispatch &rArr; rt_put_prio
 </UL>
 <BR>[Calls]<UL><LI><a href="#[478]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_rmv_dly
@@ -7423,8 +7425,8 @@ Local Symbols
 <BR>[Called By]<UL><LI><a href="#[1b5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;BarHmi_InitSheet
 </UL>
 
-<P><STRONG><a name="[1b7]"></a>BarHmi_Show</STRONG> (Thumb, 18 bytes, Stack size 8 bytes, bargraphhmi.o(i.BarHmi_Show))
-<BR><BR>[Stack]<UL><LI>Max Depth = 184<LI>Call Chain = BarHmi_Show &rArr; Sheet_refresh &rArr; GetShtctl &rArr; Dev_open &rArr; DevChar_open &rArr; Get_Dev_IIC &rArr; Dev_IIC_new &rArr; malloc &rArr; internal_alloc
+<P><STRONG><a name="[1b7]"></a>BarHmi_Show</STRONG> (Thumb, 42 bytes, Stack size 16 bytes, bargraphhmi.o(i.BarHmi_Show))
+<BR><BR>[Stack]<UL><LI>Max Depth = 192<LI>Call Chain = BarHmi_Show &rArr; Sheet_refresh &rArr; GetShtctl &rArr; Dev_open &rArr; DevChar_open &rArr; Get_Dev_IIC &rArr; Dev_IIC_new &rArr; malloc &rArr; internal_alloc
 </UL>
 <BR>[Calls]<UL><LI><a href="#[255]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Sheet_refresh
 </UL>
@@ -7652,10 +7654,12 @@ Local Symbols
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> hmi.o(i.HMI_ctor)
 </UL>
-<P><STRONG><a name="[12b]"></a>HMI_Flush</STRONG> (Thumb, 26 bytes, Stack size 8 bytes, hmi.o(i.HMI_Flush))
-<BR><BR>[Stack]<UL><LI>Max Depth = 48<LI>Call Chain = HMI_Flush &rArr; Cmd_Rgt_time_task &rArr; SYS_time_sec &rArr; Time_2_u32
+<P><STRONG><a name="[12b]"></a>HMI_Flush</STRONG> (Thumb, 62 bytes, Stack size 8 bytes, hmi.o(i.HMI_Flush))
+<BR><BR>[Stack]<UL><LI>Max Depth = 56<LI>Call Chain = HMI_Flush &rArr; Sem_post &rArr; osSemaphoreRelease &rArr; isrSemaphoreRelease &rArr; isr_sem_send &rArr; rt_psq_enq
 </UL>
 <BR>[Calls]<UL><LI><a href="#[2a6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Cmd_Rgt_time_task
+<LI><a href="#[2f1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Sem_wait
+<LI><a href="#[2e7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Sem_post
 </UL>
 <BR>[Address Reference Count : 2]<UL><LI> hmi.o(i.HMI_Flush)
 <LI> hmi.o(i.HMI_Init)
@@ -8365,7 +8369,7 @@ Local Symbols
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> set_databackup_strategy.o(i.DBP_build_component)
 </UL>
-<P><STRONG><a name="[ed]"></a>DBP_Copy</STRONG> (Thumb, 490 bytes, Stack size 64 bytes, set_databackup_strategy.o(i.DBP_Copy))
+<P><STRONG><a name="[ed]"></a>DBP_Copy</STRONG> (Thumb, 464 bytes, Stack size 64 bytes, set_databackup_strategy.o(i.DBP_Copy))
 <BR><BR>[Stack]<UL><LI>Max Depth = 432<LI>Call Chain = DBP_Copy &rArr; STG_Read_alm_pwr &rArr; STG_Set_file_position &rArr; STG_Open_file &rArr; Strg_Updata_rcd_mgr &rArr;  STG_Open_file (Cycle)
 </UL>
 <BR>[Calls]<UL><LI><a href="#[2a9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Cmd_del_recv
@@ -9070,7 +9074,7 @@ Local Symbols
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> hmi_curve.o(i.RT_trendHmi_InitSheet)
 </UL>
-<P><STRONG><a name="[194]"></a>HMI_CRV_RTV_Run</STRONG> (Thumb, 280 bytes, Stack size 32 bytes, hmi_curve.o(i.HMI_CRV_RTV_Run))
+<P><STRONG><a name="[194]"></a>HMI_CRV_RTV_Run</STRONG> (Thumb, 304 bytes, Stack size 32 bytes, hmi_curve.o(i.HMI_CRV_RTV_Run))
 <BR><BR>[Stack]<UL><LI>Max Depth = 104<LI>Call Chain = HMI_CRV_RTV_Run &rArr; CRV_Get_Sington &rArr; Curve_new &rArr; malloc &rArr; internal_alloc
 </UL>
 <BR>[Calls]<UL><LI><a href="#[2f1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Sem_wait
@@ -9228,7 +9232,7 @@ Local Symbols
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> hmi_curve.o(i.RLT_trendHMI_ctor)
 </UL>
-<P><STRONG><a name="[193]"></a>RT_trendHmi_Show</STRONG> (Thumb, 38 bytes, Stack size 16 bytes, hmi_curve.o(i.RT_trendHmi_Show))
+<P><STRONG><a name="[193]"></a>RT_trendHmi_Show</STRONG> (Thumb, 62 bytes, Stack size 16 bytes, hmi_curve.o(i.RT_trendHmi_Show))
 <BR><BR>[Stack]<UL><LI>Max Depth = 192<LI>Call Chain = RT_trendHmi_Show &rArr; Sheet_refresh &rArr; GetShtctl &rArr; Dev_open &rArr; DevChar_open &rArr; Get_Dev_IIC &rArr; Dev_IIC_new &rArr; malloc &rArr; internal_alloc
 </UL>
 <BR>[Calls]<UL><LI><a href="#[2a0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Flush_LCD
@@ -10357,7 +10361,7 @@ Local Symbols
 <LI><a href="#[463]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;isrSemaphoreRelease
 </UL>
 
-<P><STRONG><a name="[495]"></a>rt_ms2tick</STRONG> (Thumb, 58 bytes, Stack size 0 bytes, rt_cmsis.o(i.rt_ms2tick))
+<P><STRONG><a name="[495]"></a>rt_ms2tick</STRONG> (Thumb, 60 bytes, Stack size 0 bytes, rt_cmsis.o(i.rt_ms2tick))
 <BR><BR>[Called By]<UL><LI><a href="#[1f6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;svcSemaphoreWait
 <LI><a href="#[1f3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;svcMessageGet
 <LI><a href="#[1f0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;svcDelay

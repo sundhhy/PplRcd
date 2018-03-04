@@ -53,7 +53,7 @@ V010 171226 :
 
 
 #define EFS_WAIT_WR_MS						1000
-#define EFS_FLUSH_CYCLE_S					180
+#define EFS_FLUSH_CYCLE_S					18
 
 const Except_T EFS_Failed = { "Alloc Sheet Failed" };
 //------------------------------------------------------------------------------

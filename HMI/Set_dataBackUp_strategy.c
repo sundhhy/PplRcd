@@ -565,11 +565,11 @@ static void DBP_Copy(void)
 				goto copy_wait;
 			}
 			if(copy_file_type == 0)
-				sprintf(copy_buf,"日期,时间,值\r\n");
-			else if(copy_file_type == 1)
-				sprintf(copy_buf,"报警类型,产生日期,产生时间,结束日期,结束时间\r\n");
-			else if(copy_file_type == 2)
-				sprintf(copy_buf,"上电日期,上电时间,掉电日期,掉电时间\r\n");
+				sprintf(copy_buf,"通道号,日期,时间,值\r\n");
+			else 
+				sprintf(copy_buf,"通道号,事件类型,产生日期,产生时间,结束日期,结束时间\r\n");
+//			else if(copy_file_type == 2)
+//				sprintf(copy_buf,"上电日期,上电时间,掉电日期,掉电时间\r\n");
 				
 			USB_Write_file(usb_fd, copy_buf, strlen(copy_buf));
 		}

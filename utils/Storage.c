@@ -348,12 +348,12 @@ int	STG_Read_rcd_by_time(uint8_t	chn, uint32_t start_sec, uint32_t end_sec, char
 		
 		Sec_2_tm(d.rcd_time_s, &t);
 		//放置csv格式的数据
-		sprintf(tmp_buf, "%2d/%02d/%02d,%02d:%02d:%02d,", t.tm_year,t.tm_mon, t.tm_mday, t.tm_hour, t.tm_min, t.tm_sec);
-		if(d.decimal_places == 0)
-		{
-			Print_float(d.rcd_val, 0, 0, str_data);
-		}
-		else
+		sprintf(tmp_buf, "%d,%2d/%02d/%02d,%02d:%02d:%02d,", chn, t.tm_year,t.tm_mon, t.tm_mday, t.tm_hour, t.tm_min, t.tm_sec);
+//		if(d.decimal_places == 0)
+//		{
+//			Print_float(d.rcd_val, 0, 0, str_data);
+//		}
+//		else
 		{
 			Print_float(d.rcd_val, 0, 1, str_data);
 			

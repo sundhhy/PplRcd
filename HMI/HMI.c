@@ -146,9 +146,11 @@ END_ABS_CTOR
 static void HMI_Flush(void)
 {
 	Cmd_Rgt_time_task(HMI_Flush, HMI_FLUSH_CYCLE_S);
+	if(Sem_wait(&phn_sys.hmi_mgr.hmi_sem, 1000) <= 0)
+		return;
 	g_p_curHmi->show(g_p_curHmi);
-	
-	
+	g_p_curHmi->show_cmp(g_p_curHmi);
+	Sem_post(&phn_sys.hmi_mgr.hmi_sem);
 }
 
 

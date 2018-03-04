@@ -113,7 +113,9 @@ int main (void) {
 	
 	Init_LCD();
 	
-	osKernelInitialize ();                    // initialize CMSIS-RTOS
+	osKernelInitialize (); 
+	Init_Cmd_Thread();
+	// initialize CMSIS-RTOS
 	//各个外设驱动模块初始化
 	System_init();
 	
@@ -145,7 +147,7 @@ int main (void) {
 	p_control->init(p_control, NULL);
 	
 //	创建线程
-	Init_Cmd_Thread();
+	
 	tid_Thread_key = osThreadCreate (osThread(ThrdKeyRun), p_kb);
 	if (!tid_Thread_key) return(-1);
 	
@@ -158,11 +160,11 @@ int main (void) {
 
 
 	p_tips = TIP_Get_Sington();
-	
 	while(1)
 	{
 		osDelay(100);
 		main_count_1s ++;
+		
 		if(old_sys_flag != phn_sys.sys_flag)
 		{
 			if(phn_sys.sys_flag & SYSFLAG_EFS_NOTREADY)

@@ -79,7 +79,8 @@ struct {
 	uint32_t			arr_hst_num[NUM_CHANNEL];
 	uint8_t				hst_flags;
 	uint8_t				has_pgdn;		//执行过向下翻页
-	uint8_t				none[2];
+	uint8_t				rtv_reflush;	//为1时，实时曲线重绘。用于页面定期刷新
+	uint8_t				none;
 }hst_mgr;
 					
 	
@@ -471,6 +472,20 @@ static void	RT_trendHmi_Show( HMI *self )
 	Sheet_refresh(g_p_sht_bkpic);
 //	self->dataVisual(self, NULL);
 	self->show_focus( self, 0, 0);
+	
+	//刷新了背景，就要重新开始绘制
+	if(self->arg[0] == 0)
+	{
+//		p_crv->crv_show_curve(HMI_CMP_ALL, CRV_SHOW_WHOLE);
+		hst_mgr.rtv_reflush = 1;
+	}
+	else
+	{
+		hst_mgr.hst_flags &= ~ HST_FLAG_DONE;
+		
+		
+	}
+	
 	Flush_LCD();
 //	
 }
@@ -983,7 +998,14 @@ static void HMI_CRV_RTV_Run(HMI *self)
 	}
 	
 //	if((self->flag & HMI_FLAG_DEAL_HIT) == 0)
-	p_crv->crv_show_curve(HMI_CMP_ALL, CRV_SHOW_LATEST);
+	if(hst_mgr.rtv_reflush == 0)
+		p_crv->crv_show_curve(HMI_CMP_ALL, CRV_SHOW_LATEST);
+	else
+	{
+		hst_mgr.rtv_reflush = 0;
+		p_crv->crv_show_curve(HMI_CMP_ALL, CRV_SHOW_WHOLE);
+		
+	}
 	Sem_post(&phn_sys.hmi_mgr.hmi_sem);
 //	Flush_LCD();
 	

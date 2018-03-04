@@ -223,9 +223,16 @@ static void BarHmi_HideSheet( HMI *self )
 
 static void	BarHmi_Show( HMI *self )
 {
-//	barGhHMI		*cthis = SUB_PTR( self, HMI, barGhHMI);
+	barGhHMI		*cthis = SUB_PTR( self, HMI, barGhHMI);
+	int 			i;
 	g_p_curHmi = self;
 	
+	//刷新了背景，就要重新开始绘制
+	for(i = 0; i < NUM_CHANNEL; i++)
+	{
+		
+		cthis->arr_bar_height[i] = 0xffff;
+	}
 	
 //	Cal_bar( cthis);
 	
