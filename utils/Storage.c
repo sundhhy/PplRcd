@@ -232,7 +232,7 @@ int	STG_Read_alm_pwr(uint8_t	chn_pwr,short start, char *buf, int buf_size, uint3
 //	uint32_t			max_sec = 0;	
 	int					buf_offset = 0;
 	char				tmp_buf[32];
-	char				alarm_code[4];
+	char				alarm_code[7];
 	uint8_t				ct;
 	if(chn_pwr < NUM_CHANNEL)
 	{
@@ -280,23 +280,25 @@ int	STG_Read_alm_pwr(uint8_t	chn_pwr,short start, char *buf, int buf_size, uint3
 		switch(ap.alm_pwr_type)
 		{
 			case ALM_CODE_HH:
-				sprintf(alarm_code, "HH,");
+				sprintf(alarm_code, "%d,HH",chn_pwr);
 				break;
 			case ALM_CODE_HI:
-				sprintf(alarm_code, "HI,");
+				sprintf(alarm_code, "%d,HI",chn_pwr);
 				break;
 			case ALM_CODE_LO:
-				sprintf(alarm_code, "LO,");
+				sprintf(alarm_code, "%d,LO",chn_pwr);
 				break;
 			case ALM_CODE_LL:
-				sprintf(alarm_code, "LL,");
+				sprintf(alarm_code, "%d,LL",chn_pwr);
 				break;
-			
+			default:
+				sprintf(alarm_code, "0,PWR");
+				break;
 			
 		}
 		if(chn_pwr > NUM_CHANNEL)
 			alarm_code[0] = 0;
-		sprintf(tmp_buf, "%s%2d/%02d/%02d,%02d:%02d:%02d,%2d/%02d/%02d,%02d:%02d:%02d\r\n", alarm_code,\
+		sprintf(tmp_buf, "%s,%2d/%02d/%02d,%02d:%02d:%02d,%2d/%02d/%02d,%02d:%02d:%02d\r\n", alarm_code,\
 			st.tm_year,st.tm_mon, st.tm_mday, st.tm_hour, st.tm_min, st.tm_sec, \
 			et.tm_year,et.tm_mon, et.tm_mday, et.tm_hour, et.tm_min, et.tm_sec);
 		if(strlen(tmp_buf) > (buf_size - buf_offset))

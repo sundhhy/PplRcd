@@ -23,7 +23,7 @@
 // const defines
 //------------------------------------------------------------------------------
 #define 	PHN_MAJOR_VER				1
-#define 	PHN_MINOR_VER				10
+#define 	PHN_MINOR_VER				12
 
 
 const unsigned short daytab[13]={0,31,59,90,120,151,181,212,243,273,304,334,365};//非闰年月份累积天数

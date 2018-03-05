@@ -775,7 +775,7 @@ static void MdlChn_run(Model *self)
 	
 	self->notify(self);
 	save_buf[0] = cthis->chni.value;
-	save_buf[0] = cthis->chni.decimal_places;
+	save_buf[1] = cthis->chni.decimal_places;
 	stg->wr_stored_data(stg, STG_CHN_DATA(cthis->chni.chn_NO), save_buf, 4);
 #else	
 	
@@ -853,7 +853,7 @@ static void MdlChn_run(Model *self)
 	}
 	
 	save_buf[0] = cthis->chni.value;
-	save_buf[0] = cthis->chni.decimal_places;
+	save_buf[1] = cthis->chni.decimal_places;
 	stg->wr_stored_data(stg, STG_CHN_DATA(cthis->chni.chn_NO), save_buf, 4);
 	
 

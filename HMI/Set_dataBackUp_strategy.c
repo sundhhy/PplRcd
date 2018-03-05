@@ -211,9 +211,9 @@ static void DBP_build_component(void *arg)
 	Progress_bar	*p_bar = PGB_Get_Sington();
 	
 	
-	bar_object_t	bob = {{1, 32, 280, STRIPE_SIZE_Y, 0, PGB_TWD_CROSS, FONT_16, PGB_TIP_RIGHT}, \
+	bar_object_t	bob = {{1, 0, 280, STRIPE_SIZE_Y, 0, PGB_TWD_CROSS, FONT_16, PGB_TIP_RIGHT}, \
 		{COLOUR_GREN, COLOUR_GRAY, COLOUR_BLUE, COLOUR_YELLOW}};
-	bob.bar_frm.bar_y0 = DBP_row_max * STRIPE_SIZE_Y;
+	bob.bar_frm.bar_y0 = Stripe_vy(DBP_row_max + 1);
 	p_btn->build_each_btn(0, BTN_TYPE_MENU, Setting_btn_hdl, arg);
 	p_btn->build_each_btn(1, BTN_TYPE_COPY, DBP_Btn_hdl, arg);
 	p_btn->build_each_btn(2, BTN_TYPE_STOP, DBP_Btn_hdl, arg);
@@ -415,7 +415,7 @@ static int DBP_get_focusdata(void *pp_data,  strategy_focus_t *p_in_syf)
 	
 	
 	p_syf->num_byte = strlen(arr_p_vram[p_syf->f_row]);
-	if(p_syf->f_row == 4)
+	if(p_syf->f_row == row_file_name)
 		p_syf->num_byte -= strlen(".CSV");	//后缀不允许修改
 	
 	ret = p_syf->num_byte;
@@ -537,8 +537,8 @@ static int DBP_update_content(int op, int weight)
 
 static void DBP_Copy(void)
 {
-	
-	uint32_t			start_sec = Str_time_2_u32(arr_p_vram[row_start_time]);
+	uint32_t			start_sec;
+	uint32_t			old_start = Str_time_2_u32(arr_p_vram[row_start_time]);
 	uint32_t			end_sec = Str_time_2_u32(arr_p_vram[row_end_time]);
 	uint32_t			total = end_sec - start_sec + 1;
 	uint32_t			done = 0;
@@ -550,27 +550,33 @@ static void DBP_Copy(void)
 	int					usb_fd = 0;
 	uint32_t			dbp_count_bytes = 0;
 	uint8_t				last_prc = 0, prc = 0;
-	uint8_t				copy_num_chn = DBP_FIRST_CHN - DBP_LAST_CHN + 1;
+	uint8_t				copy_num_chn = DBP_LAST_CHN - DBP_FIRST_CHN  + 1;
 	uint8_t				copy_chn = DBP_FIRST_CHN;
-
+	uint8_t				done_chn = 1;
 //	usb_fd = USB_Open_file(arr_p_vram[4], USB_FM_WRITE | USB_FM_COVER);
 
-	if(copy_file_type == 0)
-		STG_Set_file_position(STG_CHN_DATA(copy_chn), STG_DRC_READ, 0);
-	else if(copy_file_type == 1)
+	
+	
+	while(done_chn <= copy_num_chn)
 	{
 		
-		total = STG_MAX_NUM_CHNALARM;
-		start_sec = 0;
-	}
-	else
-	{
+		done = 0;
+		start_sec = old_start;
+		if(copy_file_type == 0)
+			STG_Set_file_position(STG_CHN_DATA(copy_chn), STG_DRC_READ, 0);
+		else if(copy_file_type == 1)
+		{
+			
+			total = STG_MAX_NUM_CHNALARM;
+			start_sec = 0;
+		}
+		else
+		{
+			
+			total = STG_MAX_NUM_LST_PWR;
+			start_sec = 0;
+		}
 		
-		total = STG_MAX_NUM_LST_PWR;
-		start_sec = 0;
-	}
-	while(copy_chn < copy_num_chn)
-	{
 		while(done < total)
 		{
 			if(DBP_copy == 0)
@@ -614,7 +620,12 @@ static void DBP_Copy(void)
 				if(copy_file_type == 1)
 					rd_len = STG_Read_alm_pwr(copy_chn, start_sec, copy_buf, usb_buf_size, &rd_sec);
 				else
+				{
+					copy_chn = DBP_FIRST_CHN;
+					copy_num_chn = 1;
 					rd_len = STG_Read_alm_pwr(0xff, start_sec, copy_buf, usb_buf_size, &rd_sec);
+					
+				}
 					
 				if(rd_len <= 0)
 					done = total;
@@ -639,10 +650,12 @@ static void DBP_Copy(void)
 			
 			//用读取的时间与总时间的比值作为进度依据
 		copy_wait:
+//			if(copy_num_chn > 1)
+			prc = done * done_chn * 100 / ( total * copy_num_chn);
+//			else
+//				prc = done * 100 / total;
 			
-			prc = done * 100 / total;
-			
-			prc = prc * copy_chn / copy_num_chn;
+//			prc = prc * (copy_chn - DBP_FIRST_CHN)/ copy_num_chn;
 			
 			if(prc > last_prc)
 			{
@@ -652,6 +665,7 @@ static void DBP_Copy(void)
 			}			
 		}	//while(done < total)
 		copy_chn ++;
+		done_chn ++;
 	}
 	
 	delay_ms(500);		//让最后一次更新进度条被显示

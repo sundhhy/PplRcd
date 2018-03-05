@@ -173,7 +173,7 @@
           <Type>0</Type>
           <LineNumber>284</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>134320508</Address>
+          <Address>134320672</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
@@ -216,25 +216,30 @@
         <Ww>
           <count>0</count>
           <WinNumber>2</WinNumber>
-          <ItemText>devArry</ItemText>
+          <ItemText>p_mdl_time</ItemText>
         </Ww>
         <Ww>
           <count>1</count>
           <WinNumber>2</WinNumber>
-          <ItemText>hst_mgr</ItemText>
+          <ItemText>devArry</ItemText>
         </Ww>
         <Ww>
           <count>2</count>
           <WinNumber>2</WinNumber>
-          <ItemText>g_arr_p_chnData</ItemText>
+          <ItemText>hst_mgr</ItemText>
         </Ww>
         <Ww>
           <count>3</count>
           <WinNumber>2</WinNumber>
-          <ItemText>hst_mgr</ItemText>
+          <ItemText>g_arr_p_chnData</ItemText>
         </Ww>
         <Ww>
           <count>4</count>
+          <WinNumber>2</WinNumber>
+          <ItemText>hst_mgr</ItemText>
+        </Ww>
+        <Ww>
+          <count>5</count>
           <WinNumber>2</WinNumber>
           <ItemText>w25q_mgr</ItemText>
         </Ww>
@@ -283,11 +288,11 @@
         <AscS3>0</AscS3>
         <aSer3>0</aSer3>
         <eProf>0</eProf>
-        <aLa>1</aLa>
+        <aLa>0</aLa>
         <aPa1>0</aPa1>
         <AscS4>0</AscS4>
         <aSer4>0</aSer4>
-        <StkLoc>0</StkLoc>
+        <StkLoc>1</StkLoc>
         <TrcWin>0</TrcWin>
         <newCpu>0</newCpu>
         <uProt>0</uProt>
@@ -2305,7 +2310,7 @@
 
   <Group>
     <GroupName>::Device</GroupName>
-    <tvExp>1</tvExp>
+    <tvExp>0</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
     <RteFlg>1</RteFlg>
