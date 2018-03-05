@@ -13,6 +13,8 @@
 // const defines
 //------------------------------------------------------------------------------
 #define DBP_ID		0x01
+#define DBP_FIRST_CHN		arr_p_vram[DBP_row_temp][0]
+#define DBP_LAST_CHN		arr_p_vram[DBP_row_temp][1]
 //------------------------------------------------------------------------------
 // module global vars
 //------------------------------------------------------------------------------
@@ -45,12 +47,14 @@ strategy_t	g_DBP_strategy = {
 enum {
 	row_usb_info,
 	row_file_type,
-	row_chn_num,
+	row_first_chn,
+	row_last_chn,
 	row_start_time,
 	row_end_time,
 	row_file_name,
 	DBP_row_max,
-	DBP_row_tips
+	DBP_row_tips,
+	DBP_row_temp,
 }DBP_rows;
 //------------------------------------------------------------------------------
 // global function prototypes
@@ -71,7 +75,7 @@ enum {
 //------------------------------------------------------------------------------
 // local vars
 //------------------------------------------------------------------------------
- static char *const arr_p_DBU_entry[7] = {"设备当前状态：", "备份类型：","备份数据通道：", "起始时间：", "终止时间：",\
+ static char *const arr_p_DBU_entry[8] = {"设备当前状态：", "备份类型：","起始通道：", "结尾通道：", "起始时间：", "终止时间：",\
 	 "文件名：", "备份进程"
  };
  
@@ -129,8 +133,11 @@ static int Data_bacnup_Strategy_entry(int row, int col, void *pp_text)
 			case row_file_type:
 				DBP_Print_file_type(arr_p_vram[row], copy_file_type);
 				break;
-			case row_chn_num:		//
-				sprintf(arr_p_vram[row], "%d", g_setting_chn);
+			case row_first_chn:		//
+				sprintf(arr_p_vram[row], "%d", DBP_FIRST_CHN);
+				break;
+			case row_last_chn:		//
+				sprintf(arr_p_vram[row], "%d", DBP_LAST_CHN);
 				break;
 			case row_start_time:	
 			case row_end_time:		//单位
@@ -184,13 +191,15 @@ static int DBP_init(void *arg)
 		arr_p_vram[i] = HMI_Ram_alloc(48);
 		memset(arr_p_vram[i], 0, 48);
 	}
-	
 //	usb_buf_size = HMI_Ram_free_bytes();
 	usb_buf_size = USB_MAX_WRITE_BYTE;
 	arr_p_vram[DBP_row_max] = HMI_Ram_alloc(usb_buf_size);		//这个缓存用于数据备份
 	
 	arr_p_vram[DBP_row_tips] = HMI_Ram_alloc(48); //
-	g_setting_chn = 0;
+	arr_p_vram[DBP_row_temp] = HMI_Ram_alloc(48); //
+	DBP_FIRST_CHN = 0;
+	DBP_LAST_CHN = NUM_CHANNEL - 1;
+	
 	arr_DBP_fds[0] = USB_Rgt_event_hdl(DBP_Usb_event);
 //	phn_sys.key_weight = 1;
 	return RET_OK;
@@ -200,8 +209,11 @@ static void DBP_build_component(void *arg)
 {
 	Button			*p_btn = BTN_Get_Sington();
 	Progress_bar	*p_bar = PGB_Get_Sington();
-	bar_object_t	bob = {{1, 146, 280, 16, 0, PGB_TWD_CROSS, FONT_16, PGB_TIP_RIGHT}, \
+	
+	
+	bar_object_t	bob = {{1, 32, 280, STRIPE_SIZE_Y, 0, PGB_TWD_CROSS, FONT_16, PGB_TIP_RIGHT}, \
 		{COLOUR_GREN, COLOUR_GRAY, COLOUR_BLUE, COLOUR_YELLOW}};
+	bob.bar_frm.bar_y0 = DBP_row_max * STRIPE_SIZE_Y;
 	p_btn->build_each_btn(0, BTN_TYPE_MENU, Setting_btn_hdl, arg);
 	p_btn->build_each_btn(1, BTN_TYPE_COPY, DBP_Btn_hdl, arg);
 	p_btn->build_each_btn(2, BTN_TYPE_STOP, DBP_Btn_hdl, arg);
@@ -228,10 +240,10 @@ static void DBP_Default_file_name(char *s, char ft)
 	switch(ft)
 	{
 		case 0:
-			sprintf(s,  "/CHN_%d.CSV", g_setting_chn);
+			sprintf(s,  "/DATA.CSV");
 			break;
 		case 1:
-			sprintf(s, "/ALARM_%d.CSV", g_setting_chn);
+			sprintf(s, "/ALARM.CSV");
 			break;
 		case 2:
 			sprintf(s, "/POWER.CSV  ");
@@ -482,13 +494,21 @@ static int DBP_update_content(int op, int weight)
 			arr_p_vram[row_file_name][0] = 0;	//重新生成默认文件名
 			g_DBP_strategy.cmd_hdl(g_DBP_strategy.p_cmd_rcv, sycmd_reflush_position, &pos);
 			break;
-		case row_chn_num:
-			g_setting_chn = Operate_in_tange(g_setting_chn, op, 1, 0, NUM_CHANNEL - 1);
-			sprintf(arr_p_vram[row_chn_num], "%d", g_setting_chn);
-			pos.f_col = 1;
-			pos.f_row = row_file_name;
-			arr_p_vram[row_file_name][0] = 0;	//重新生成默认文件名
-			g_DBP_strategy.cmd_hdl(g_DBP_strategy.p_cmd_rcv, sycmd_reflush_position, &pos);
+		case row_first_chn:
+			DBP_FIRST_CHN = Operate_in_tange(DBP_FIRST_CHN, op, 1, 0, NUM_CHANNEL - 1);
+			sprintf(arr_p_vram[row_first_chn], "%d", DBP_FIRST_CHN);
+//			pos.f_col = 1;
+//			pos.f_row = row_file_name;
+//			arr_p_vram[row_file_name][0] = 0;	//重新生成默认文件名
+//			g_DBP_strategy.cmd_hdl(g_DBP_strategy.p_cmd_rcv, sycmd_reflush_position, &pos);
+			break;
+		case row_last_chn:
+			DBP_LAST_CHN = Operate_in_tange(DBP_LAST_CHN, op, 1, DBP_FIRST_CHN, NUM_CHANNEL - 1);
+			sprintf(arr_p_vram[row_last_chn], "%d", DBP_FIRST_CHN);
+//			pos.f_col = 1;
+//			pos.f_row = row_file_name;
+//			arr_p_vram[row_file_name][0] = 0;	//重新生成默认文件名
+//			g_DBP_strategy.cmd_hdl(g_DBP_strategy.p_cmd_rcv, sycmd_reflush_position, &pos);
 			break;
 
 		case row_start_time:		
@@ -530,10 +550,13 @@ static void DBP_Copy(void)
 	int					usb_fd = 0;
 	uint32_t			dbp_count_bytes = 0;
 	uint8_t				last_prc = 0, prc = 0;
+	uint8_t				copy_num_chn = DBP_FIRST_CHN - DBP_LAST_CHN + 1;
+	uint8_t				copy_chn = DBP_FIRST_CHN;
+
 //	usb_fd = USB_Open_file(arr_p_vram[4], USB_FM_WRITE | USB_FM_COVER);
 
 	if(copy_file_type == 0)
-		STG_Set_file_position(STG_CHN_DATA(g_setting_chn), STG_DRC_READ, 0);
+		STG_Set_file_position(STG_CHN_DATA(copy_chn), STG_DRC_READ, 0);
 	else if(copy_file_type == 1)
 	{
 		
@@ -546,89 +569,89 @@ static void DBP_Copy(void)
 		total = STG_MAX_NUM_LST_PWR;
 		start_sec = 0;
 	}
-
-	while(done < total)
+	while(copy_chn < copy_num_chn)
 	{
-
-			
-		if(DBP_copy == 0)
-			break;
-		if(phn_sys.usb_device == 0)
-			goto copy_wait;
-		if(usb_fd == 0)
+		while(done < total)
 		{
-			usb_fd = USB_Create_file(arr_p_vram[row_file_name], USB_FM_WRITE | USB_FM_COVER);
-			if(usb_fd == 0x42)
-			{
-				//todo: 文件名错误的处理要完善
-				usb_fd = 0;
+			if(DBP_copy == 0)
+				break;
+			if(phn_sys.usb_device == 0)
 				goto copy_wait;
+			if(usb_fd == 0)
+			{
+				usb_fd = USB_Create_file(arr_p_vram[row_file_name], USB_FM_WRITE | USB_FM_COVER);
+				if(usb_fd == 0x42)
+				{
+					//todo: 文件名错误的处理要完善
+					usb_fd = 0;
+					goto copy_wait;
+				}
+				if(copy_file_type == 0)
+					sprintf(copy_buf,"通道号,日期,时间,值\r\n");
+				else 
+					sprintf(copy_buf,"通道号,事件类型,产生日期,产生时间,结束日期,结束时间\r\n");
+	//			else if(copy_file_type == 2)
+	//				sprintf(copy_buf,"上电日期,上电时间,掉电日期,掉电时间\r\n");
+					
+				USB_Write_file(usb_fd, copy_buf, strlen(copy_buf));
 			}
+			
 			if(copy_file_type == 0)
-				sprintf(copy_buf,"通道号,日期,时间,值\r\n");
+			{
+				rd_sec = 0;
+				rd_len = STG_Read_rcd_by_time(copy_chn, start_sec, end_sec, copy_buf, usb_buf_size, &rd_sec);
+				if(rd_len <= 0)
+					done = total;
+				else
+				{
+					
+					start_sec += rd_sec;
+					done += rd_sec;
+				}
+			}
 			else 
-				sprintf(copy_buf,"通道号,事件类型,产生日期,产生时间,结束日期,结束时间\r\n");
-//			else if(copy_file_type == 2)
-//				sprintf(copy_buf,"上电日期,上电时间,掉电日期,掉电时间\r\n");
-				
-			USB_Write_file(usb_fd, copy_buf, strlen(copy_buf));
-		}
-		
-		if(copy_file_type == 0)
-		{
-			rd_sec = 0;
-			rd_len = STG_Read_rcd_by_time(g_setting_chn, start_sec, end_sec, copy_buf, usb_buf_size, &rd_sec);
-			if(rd_len <= 0)
-				done = total;
-			else
+			{
+				if(copy_file_type == 1)
+					rd_len = STG_Read_alm_pwr(copy_chn, start_sec, copy_buf, usb_buf_size, &rd_sec);
+				else
+					rd_len = STG_Read_alm_pwr(0xff, start_sec, copy_buf, usb_buf_size, &rd_sec);
+					
+				if(rd_len <= 0)
+					done = total;
+				else
+				{
+					
+					start_sec += rd_sec;
+					done += rd_sec;
+				}
+			}
+			
+	//		
+			if(rd_len > 0)
 			{
 				
-				start_sec += rd_sec;
-				done += rd_sec;
-			}
-		}
-		else 
-		{
-			if(copy_file_type == 1)
-				rd_len = STG_Read_alm_pwr(g_setting_chn, start_sec, copy_buf, usb_buf_size, &rd_sec);
-			else
-				rd_len = STG_Read_alm_pwr(0xff, start_sec, copy_buf, usb_buf_size, &rd_sec);
+				USB_Write_file(usb_fd, copy_buf, rd_len);
+				dbp_count_bytes += rd_len;
 				
-			if(rd_len <= 0)
-				done = total;
-			else
+				
+			}
+			
+			
+			//用读取的时间与总时间的比值作为进度依据
+		copy_wait:
+			
+			prc = done * 100 / total;
+			
+			prc = prc * copy_chn / copy_num_chn;
+			
+			if(prc > last_prc)
 			{
+				p_bar->update_bar(arr_DBP_fds[1], prc);
+				last_prc = prc;
 				
-				start_sec += rd_sec;
-				done += rd_sec;
-			}
-		}
-		
-//		
-		if(rd_len > 0)
-		{
-			
-			USB_Write_file(usb_fd, copy_buf, rd_len);
-			dbp_count_bytes += rd_len;
-			
-			
-		}
-		
-		
-		//用读取的时间与总时间的比值作为进度依据
-	copy_wait:
-		
-		prc = done * 100 / total;
-			
-		
-		if(prc > last_prc)
-		{
-			p_bar->update_bar(arr_DBP_fds[1], prc);
-			last_prc = prc;
-			
-		}
-//		delay_ms(500);
-		
+			}			
+		}	//while(done < total)
+		copy_chn ++;
 	}
 	
 	delay_ms(500);		//让最后一次更新进度条被显示

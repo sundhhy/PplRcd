@@ -3,7 +3,7 @@
 <title>Static Call Graph - [.\Objects\PplRcd.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image .\Objects\PplRcd.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5050106: Last Updated: Sun Mar 04 17:26:02 2018
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060061: Last Updated: Mon Mar 05 14:17:10 2018
 <BR><P>
 <H3>Maximum Stack Usage =        520 bytes + Unknown(Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -2089,7 +2089,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[1de]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;KeyboardHitHandle
 </UL>
 
-<P><STRONG><a name="[2f3]"></a>Except_raise</STRONG> (Thumb, 130 bytes, Stack size 0 bytes, except.o(i.Except_raise))
+<P><STRONG><a name="[2f3]"></a>Except_raise</STRONG> (Thumb, 128 bytes, Stack size 0 bytes, except.o(i.Except_raise))
 <BR><BR>[Stack]<UL><LI>Max Depth = 24 + In Cycle
 <LI>Call Chain = Except_raise &rArr;  Except_raise (Cycle)
 </UL>
@@ -4146,15 +4146,15 @@ Global Symbols
 </UL>
 <BR>[Calls]<UL><LI><a href="#[35a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HMI_SBG_Turn_page
 </UL>
-<BR>[Address Reference Count : 10]<UL><LI> strategy_acc_day.o(i.SAD_Build_component)
-<LI> set_channel_strategy.o(i.CNS_build_component)
+<BR>[Address Reference Count : 10]<UL><LI> set_channel_strategy.o(i.CNS_build_component)
 <LI> set_databackup_strategy.o(i.DBP_build_component)
+<LI> strategy_news_power.o(i.NPW_Build_component)
 <LI> set_system_strategy.o(i.SYS_build_component)
 <LI> hmi_striped_background.o(i.HMI_SBG_Show_entry)
 <LI> hmi_striped_background.o(i.STY_Duild_button)
-<LI> strategy_news_power.o(i.NPW_Build_component)
 <LI> strategy_news_alarm.o(i.NLM_Build_component)
 <LI> strategy_set_accumulate.o(i.SSA_Build_component)
+<LI> strategy_acc_day.o(i.SAD_Build_component)
 <LI> strategy_acc_month.o(i.SAM_Build_component)
 </UL>
 <P><STRONG><a name="[402]"></a>Setup_HMI_ctor</STRONG> (Thumb, 44 bytes, Stack size 8 bytes, setup_hmi.o(i.Setup_HMI_ctor))
@@ -5922,7 +5922,7 @@ Global Symbols
 <LI><a href="#[88]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SysTick_Handler
 </UL>
 
-<P><STRONG><a name="[48d]"></a>rt_tsk_create</STRONG> (Thumb, 120 bytes, Stack size 24 bytes, rt_task.o(i.rt_tsk_create))
+<P><STRONG><a name="[48d]"></a>rt_tsk_create</STRONG> (Thumb, 118 bytes, Stack size 24 bytes, rt_task.o(i.rt_tsk_create))
 <BR><BR>[Stack]<UL><LI>Max Depth = 56<LI>Call Chain = rt_tsk_create &rArr; rt_init_context &rArr; rt_init_stack
 </UL>
 <BR>[Calls]<UL><LI><a href="#[474]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_dispatch
@@ -5933,7 +5933,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[1f7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;svcThreadCreate
 </UL>
 
-<P><STRONG><a name="[48f]"></a>rt_tsk_delete</STRONG> (Thumb, 346 bytes, Stack size 40 bytes, rt_task.o(i.rt_tsk_delete))
+<P><STRONG><a name="[48f]"></a>rt_tsk_delete</STRONG> (Thumb, 352 bytes, Stack size 40 bytes, rt_task.o(i.rt_tsk_delete))
 <BR><BR>[Stack]<UL><LI>Max Depth = 68<LI>Call Chain = rt_tsk_delete &rArr; rt_dispatch &rArr; rt_put_prio
 </UL>
 <BR>[Calls]<UL><LI><a href="#[478]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_rmv_dly
@@ -8369,8 +8369,8 @@ Local Symbols
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> set_databackup_strategy.o(i.DBP_build_component)
 </UL>
-<P><STRONG><a name="[ed]"></a>DBP_Copy</STRONG> (Thumb, 464 bytes, Stack size 64 bytes, set_databackup_strategy.o(i.DBP_Copy))
-<BR><BR>[Stack]<UL><LI>Max Depth = 432<LI>Call Chain = DBP_Copy &rArr; STG_Read_alm_pwr &rArr; STG_Set_file_position &rArr; STG_Open_file &rArr; Strg_Updata_rcd_mgr &rArr;  STG_Open_file (Cycle)
+<P><STRONG><a name="[ed]"></a>DBP_Copy</STRONG> (Thumb, 518 bytes, Stack size 72 bytes, set_databackup_strategy.o(i.DBP_Copy))
+<BR><BR>[Stack]<UL><LI>Max Depth = 440<LI>Call Chain = DBP_Copy &rArr; STG_Read_alm_pwr &rArr; STG_Set_file_position &rArr; STG_Open_file &rArr; Strg_Updata_rcd_mgr &rArr;  STG_Open_file (Cycle)
 </UL>
 <BR>[Calls]<UL><LI><a href="#[2a9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Cmd_del_recv
 <LI><a href="#[27e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;STG_Set_file_position
@@ -8388,7 +8388,7 @@ Local Symbols
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> set_databackup_strategy.o(i.DBP_Btn_hdl)
 </UL>
-<P><STRONG><a name="[2c7]"></a>DBP_Default_file_name</STRONG> (Thumb, 70 bytes, Stack size 16 bytes, set_databackup_strategy.o(i.DBP_Default_file_name))
+<P><STRONG><a name="[2c7]"></a>DBP_Default_file_name</STRONG> (Thumb, 62 bytes, Stack size 16 bytes, set_databackup_strategy.o(i.DBP_Default_file_name))
 <BR><BR>[Stack]<UL><LI>Max Depth = 40<LI>Call Chain = DBP_Default_file_name &rArr; __2sprintf
 </UL>
 <BR>[Calls]<UL><LI><a href="#[239]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2sprintf
@@ -8418,7 +8418,7 @@ Local Symbols
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> set_databackup_strategy.o(i.DBP_init)
 </UL>
-<P><STRONG><a name="[38]"></a>DBP_build_component</STRONG> (Thumb, 76 bytes, Stack size 40 bytes, set_databackup_strategy.o(i.DBP_build_component))
+<P><STRONG><a name="[38]"></a>DBP_build_component</STRONG> (Thumb, 82 bytes, Stack size 40 bytes, set_databackup_strategy.o(i.DBP_build_component))
 <BR><BR>[Stack]<UL><LI>Max Depth = 112<LI>Call Chain = DBP_build_component &rArr; BTN_Get_Sington &rArr; Button_new &rArr; malloc &rArr; internal_alloc
 </UL>
 <BR>[Calls]<UL><LI><a href="#[250]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;BTN_Get_Sington
@@ -8444,7 +8444,7 @@ Local Symbols
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> set_databackup_strategy.o(.data)
 </UL>
-<P><STRONG><a name="[37]"></a>DBP_init</STRONG> (Thumb, 130 bytes, Stack size 16 bytes, set_databackup_strategy.o(i.DBP_init))
+<P><STRONG><a name="[37]"></a>DBP_init</STRONG> (Thumb, 148 bytes, Stack size 16 bytes, set_databackup_strategy.o(i.DBP_init))
 <BR><BR>[Stack]<UL><LI>Max Depth = 24<LI>Call Chain = DBP_init &rArr; HMI_Ram_alloc
 </UL>
 <BR>[Calls]<UL><LI><a href="#[2ca]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USB_Rgt_event_hdl
@@ -8485,7 +8485,7 @@ Local Symbols
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> set_databackup_strategy.o(.data)
 </UL>
-<P><STRONG><a name="[2cb]"></a>DBP_update_content</STRONG> (Thumb, 234 bytes, Stack size 32 bytes, set_databackup_strategy.o(i.DBP_update_content))
+<P><STRONG><a name="[2cb]"></a>DBP_update_content</STRONG> (Thumb, 258 bytes, Stack size 32 bytes, set_databackup_strategy.o(i.DBP_update_content))
 <BR><BR>[Stack]<UL><LI>Max Depth = 72<LI>Call Chain = DBP_update_content &rArr; DBP_Print_file_type &rArr; __2sprintf
 </UL>
 <BR>[Calls]<UL><LI><a href="#[24d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Operate_in_tange
@@ -8496,7 +8496,7 @@ Local Symbols
 <LI><a href="#[3a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;DBP_key_dn
 </UL>
 
-<P><STRONG><a name="[36]"></a>Data_bacnup_Strategy_entry</STRONG> (Thumb, 256 bytes, Stack size 24 bytes, set_databackup_strategy.o(i.Data_bacnup_Strategy_entry))
+<P><STRONG><a name="[36]"></a>Data_bacnup_Strategy_entry</STRONG> (Thumb, 282 bytes, Stack size 24 bytes, set_databackup_strategy.o(i.Data_bacnup_Strategy_entry))
 <BR><BR>[Stack]<UL><LI>Max Depth = 120<LI>Call Chain = Data_bacnup_Strategy_entry &rArr; ModelCreate &rArr; Get_Mode_chn &rArr; Model_chn_new &rArr; malloc &rArr; internal_alloc
 </UL>
 <BR>[Calls]<UL><LI><a href="#[25f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ModelCreate
@@ -10361,7 +10361,7 @@ Local Symbols
 <LI><a href="#[463]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;isrSemaphoreRelease
 </UL>
 
-<P><STRONG><a name="[495]"></a>rt_ms2tick</STRONG> (Thumb, 60 bytes, Stack size 0 bytes, rt_cmsis.o(i.rt_ms2tick))
+<P><STRONG><a name="[495]"></a>rt_ms2tick</STRONG> (Thumb, 58 bytes, Stack size 0 bytes, rt_cmsis.o(i.rt_ms2tick))
 <BR><BR>[Called By]<UL><LI><a href="#[1f6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;svcSemaphoreWait
 <LI><a href="#[1f3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;svcMessageGet
 <LI><a href="#[1f0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;svcDelay
