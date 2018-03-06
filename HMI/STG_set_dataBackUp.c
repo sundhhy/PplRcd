@@ -540,7 +540,7 @@ static void DBP_Copy(void)
 	uint32_t			start_sec;
 	uint32_t			old_start = Str_time_2_u32(arr_p_vram[row_start_time]);
 	uint32_t			end_sec = Str_time_2_u32(arr_p_vram[row_end_time]);
-	uint32_t			total = end_sec - start_sec + 1;
+	uint32_t			total = end_sec - old_start + 1;
 	uint32_t			done = 0;
 	uint32_t			rd_sec = 0;
 	
@@ -552,7 +552,7 @@ static void DBP_Copy(void)
 	uint8_t				last_prc = 0, prc = 0;
 	uint8_t				copy_num_chn = DBP_LAST_CHN - DBP_FIRST_CHN  + 1;
 	uint8_t				copy_chn = DBP_FIRST_CHN;
-	uint8_t				done_chn = 1;
+	uint8_t				done_chn = 0;
 //	usb_fd = USB_Open_file(arr_p_vram[4], USB_FM_WRITE | USB_FM_COVER);
 
 	
@@ -651,7 +651,9 @@ static void DBP_Copy(void)
 			//用读取的时间与总时间的比值作为进度依据
 		copy_wait:
 //			if(copy_num_chn > 1)
-			prc = done * done_chn * 100 / ( total * copy_num_chn);
+			prc = done * 100 / total ;
+			prc /= copy_num_chn; 
+			prc += done_chn * 100 / copy_num_chn;
 //			else
 //				prc = done * 100 / total;
 			

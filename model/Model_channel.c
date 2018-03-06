@@ -717,7 +717,7 @@ static void MdlChn_run(Model *self)
 	Model_chn					*cthis = SUB_PTR(self, Model, Model_chn);
 	Storage						*stg = Get_storage();
 	uint8_t						chk_buf[16];
-	uint16_t					save_buf[2];  //存放实时值及小数点位数
+	int16_t					save_buf[2];  //存放实时值及小数点位数
 	SmBus_result_t		rst;
 //	do_out_t			d = {0};
 	
