@@ -1,5 +1,5 @@
 #include "HMI.h"
-#include "commHMI.h"
+#include "HMI_comm.h"
 #include <string.h>
 #include "os/os_depend.h"
 #include "sys_cmd.h"

@@ -1,7 +1,7 @@
 #include "HMI_striped_background.h"
 #include "sdhDef.h"
 #include "ExpFactory.h"
-#include "windowsHmi.h"
+#include "HMI_windows.h"
 
 #include <string.h>
 

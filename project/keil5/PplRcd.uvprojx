@@ -10,6 +10,7 @@
       <TargetName>Target 1</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
+      <pCCUsed>5060061::V5.06 update 1 (build 61)::ARMCC</pCCUsed>
       <TargetOption>
         <TargetCommonOption>
           <Device>STM32F103VC</Device>
@@ -84,6 +85,8 @@
             <UserProg2Name></UserProg2Name>
             <UserProg1Dos16Mode>0</UserProg1Dos16Mode>
             <UserProg2Dos16Mode>0</UserProg2Dos16Mode>
+            <nStopA1X>0</nStopA1X>
+            <nStopA2X>0</nStopA2X>
           </AfterMake>
           <SelectedForBatchBuild>0</SelectedForBatchBuild>
           <SVCSIdString></SVCSIdString>
@@ -227,6 +230,7 @@
             <useUlib>1</useUlib>
             <EndSel>0</EndSel>
             <uLtcg>0</uLtcg>
+            <nSecure>0</nSecure>
             <RoSelD>3</RoSelD>
             <RwSelD>3</RwSelD>
             <CodeSel>0</CodeSel>
@@ -361,6 +365,10 @@
             <uSurpInc>0</uSurpInc>
             <uC99>0</uC99>
             <useXO>0</useXO>
+            <v6Lang>0</v6Lang>
+            <v6LangP>0</v6LangP>
+            <vShortEn>0</vShortEn>
+            <vShortWch>0</vShortWch>
             <VariousControls>
               <MiscControls>--diag_suppress=1295;--diag_suppress=1;--diag_suppress=177-D</MiscControls>
               <Define>USE_STDPERIPH_DRIVER, STM32F10X_HD, USE_STM3210B_EVAL,HSE_VALUE=8000000,_MCU_ENDIAN=1</Define>
@@ -869,34 +877,14 @@
           <GroupName>HMI</GroupName>
           <Files>
             <File>
-              <FileName>Accumulate_HMI .c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\HMI\Accumulate_HMI .c</FilePath>
-            </File>
-            <File>
-              <FileName>barGraphHmi.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\HMI\barGraphHmi.c</FilePath>
-            </File>
-            <File>
               <FileName>chnInfoPic.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\HMI\chnInfoPic.c</FilePath>
             </File>
             <File>
-              <FileName>commHMI.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\HMI\commHMI.c</FilePath>
-            </File>
-            <File>
               <FileName>Component_Button.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\HMI\Component_Button.c</FilePath>
-            </File>
-            <File>
-              <FileName>dataHmi.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\HMI\dataHmi.c</FilePath>
             </File>
             <File>
               <FileName>focus.c</FileName>
@@ -917,71 +905,6 @@
               <FileName>HMIFactory.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\HMI\HMIFactory.c</FilePath>
-            </File>
-            <File>
-              <FileName>keyboardHMI.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\HMI\keyboardHMI.c</FilePath>
-            </File>
-            <File>
-              <FileName>mainHMI.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\HMI\mainHMI.c</FilePath>
-            </File>
-            <File>
-              <FileName>menuHMI.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\HMI\menuHMI.c</FilePath>
-            </File>
-            <File>
-              <FileName>news_select_HMI.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\HMI\news_select_HMI.c</FilePath>
-            </File>
-            <File>
-              <FileName>Set_alarm_strategy.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\HMI\Set_alarm_strategy.c</FilePath>
-            </File>
-            <File>
-              <FileName>Set_arithmetic_strategy.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\HMI\Set_arithmetic_strategy.c</FilePath>
-            </File>
-            <File>
-              <FileName>Set_channel_strategy.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\HMI\Set_channel_strategy.c</FilePath>
-            </File>
-            <File>
-              <FileName>Set_dataPrint_strategy.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\HMI\Set_dataPrint_strategy.c</FilePath>
-            </File>
-            <File>
-              <FileName>Set_system_strategy.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\HMI\Set_system_strategy.c</FilePath>
-            </File>
-            <File>
-              <FileName>Set_view_strategy.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\HMI\Set_view_strategy.c</FilePath>
-            </File>
-            <File>
-              <FileName>Set_dataBackUp_strategy.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\HMI\Set_dataBackUp_strategy.c</FilePath>
-            </File>
-            <File>
-              <FileName>Setup_HMI.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\HMI\Setup_HMI.c</FilePath>
-            </File>
-            <File>
-              <FileName>windownsHMI.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\HMI\windownsHMI.c</FilePath>
             </File>
             <File>
               <FileName>HMI.h</FileName>
@@ -1019,11 +942,6 @@
               <FilePath>..\..\HMI\HMI_striped_background.c</FilePath>
             </File>
             <File>
-              <FileName>strategy_news_alarm.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\HMI\strategy_news_alarm.c</FilePath>
-            </File>
-            <File>
               <FileName>HMI_curve.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\HMI\HMI_curve.c</FilePath>
@@ -1054,29 +972,114 @@
               <FilePath>..\..\HMI\Component_tips.h</FilePath>
             </File>
             <File>
-              <FileName>strategy_news_power.c</FileName>
+              <FileName>HMI_Accumulate .c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\HMI\strategy_news_power.c</FilePath>
+              <FilePath>..\..\HMI\HMI_Accumulate .c</FilePath>
             </File>
             <File>
-              <FileName>barGraphHmi.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\..\HMI\barGraphHmi.h</FilePath>
+              <FileName>HMI_barGraph.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\HMI\HMI_barGraph.c</FilePath>
             </File>
             <File>
-              <FileName>strategy_set_accumulate.c</FileName>
+              <FileName>HMI_comm.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\HMI\strategy_set_accumulate.c</FilePath>
+              <FilePath>..\..\HMI\HMI_comm.c</FilePath>
             </File>
             <File>
-              <FileName>strategy_ACC_day.c</FileName>
+              <FileName>HMI_data.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\HMI\strategy_ACC_day.c</FilePath>
+              <FilePath>..\..\HMI\HMI_data.c</FilePath>
             </File>
             <File>
-              <FileName>strategy_ACC_month.c</FileName>
+              <FileName>HMI_keyboard.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\HMI\strategy_ACC_month.c</FilePath>
+              <FilePath>..\..\HMI\HMI_keyboard.c</FilePath>
+            </File>
+            <File>
+              <FileName>HMI_main.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\HMI\HMI_main.c</FilePath>
+            </File>
+            <File>
+              <FileName>HMI_menu.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\HMI\HMI_menu.c</FilePath>
+            </File>
+            <File>
+              <FileName>HMI_news_select.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\HMI\HMI_news_select.c</FilePath>
+            </File>
+            <File>
+              <FileName>HMI_setup.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\HMI\HMI_setup.c</FilePath>
+            </File>
+            <File>
+              <FileName>HMI_windowns.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\HMI\HMI_windowns.c</FilePath>
+            </File>
+            <File>
+              <FileName>STG_ACC_day.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\HMI\STG_ACC_day.c</FilePath>
+            </File>
+            <File>
+              <FileName>STG_ACC_month.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\HMI\STG_ACC_month.c</FilePath>
+            </File>
+            <File>
+              <FileName>STG_news_alarm.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\HMI\STG_news_alarm.c</FilePath>
+            </File>
+            <File>
+              <FileName>STG_news_power.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\HMI\STG_news_power.c</FilePath>
+            </File>
+            <File>
+              <FileName>STG_set_accumulate.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\HMI\STG_set_accumulate.c</FilePath>
+            </File>
+            <File>
+              <FileName>STG_set_alarm.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\HMI\STG_set_alarm.c</FilePath>
+            </File>
+            <File>
+              <FileName>STG_set_arithmetic.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\HMI\STG_set_arithmetic.c</FilePath>
+            </File>
+            <File>
+              <FileName>STG_set_channel.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\HMI\STG_set_channel.c</FilePath>
+            </File>
+            <File>
+              <FileName>STG_set_dataBackUp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\HMI\STG_set_dataBackUp.c</FilePath>
+            </File>
+            <File>
+              <FileName>STG_set_dataPrint.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\HMI\STG_set_dataPrint.c</FilePath>
+            </File>
+            <File>
+              <FileName>STG_set_system.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\HMI\STG_set_system.c</FilePath>
+            </File>
+            <File>
+              <FileName>STG_set_view.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\HMI\STG_set_view.c</FilePath>
             </File>
           </Files>
         </Group>

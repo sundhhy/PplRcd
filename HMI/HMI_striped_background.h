@@ -5,7 +5,7 @@
 // includes
 //------------------------------------------------------------------------------
 #include "HMI.h"
-#include "commHMI.h"
+#include "HMI_comm.h"
 #include <stdint.h>
 
 

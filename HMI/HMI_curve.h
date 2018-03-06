@@ -1,7 +1,7 @@
 #ifndef _INC_real_time_trendHmi_H_
 #define _INC_real_time_trendHmi_H_
 #include "HMI.h"
-#include "commHMI.h"
+#include "HMI_comm.h"
 //------------------------------------------------------------------------------
 // includes
 //------------------------------------------------------------------------------

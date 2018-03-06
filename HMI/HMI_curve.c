@@ -1,5 +1,5 @@
 #include "HMI_curve.h"
-#include "menuHMI.h"
+#include "HMI_menu.h"
 #include "HMIFactory.h"
 #include "sdhDef.h"
 #include "ExpFactory.h"

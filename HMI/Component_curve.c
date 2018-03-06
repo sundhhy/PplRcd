@@ -4,7 +4,7 @@
 #include "Component_curve.h"
 #include "ExpFactory.h"
 #include "HMI.h"
-#include "commHMI.h"
+#include "HMI_comm.h"
 #include "sdhDef.h"
 #include "arithmetic/bit.h"
 #include "mem/CiiMem.h"
