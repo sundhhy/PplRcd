@@ -305,7 +305,7 @@ static int SSA_Key_ET(void *arg)
 
 static int SSA_Commit(void *arg)
 {
-	strategy_focus_t *p_syf = &ST_SELF.sf;
+//	strategy_focus_t *p_syf = &ST_SELF.sf;
 	
 	
 	
@@ -325,7 +325,7 @@ static int SSA_Commit(void *arg)
 	
 	
 	
-	exit:
+//	exit:
 	return RET_OK;
 	
 }

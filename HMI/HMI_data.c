@@ -176,7 +176,7 @@ static void DataHmi_HideSheet( HMI *self )
 {
 //	dataHMI			*cthis = SUB_PTR( self, HMI, dataHMI);
 	
-	int i;
+//	int i;
 	
 
 //	cthis->flags = 0;

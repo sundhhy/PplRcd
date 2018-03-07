@@ -105,7 +105,7 @@ static int SysStrategy_entry(int row, int col, void *pp_text)
 				p_syf->num_byte = strlen(arr_p_vram[0]);
 				break;
 			case 1:
-				System_to_string(NULL, arr_p_vram[row], 48, es_psd);
+				Print_sys_param(NULL, arr_p_vram[row], 48, es_psd);
 				break;
 			case 2:
 				sprintf(arr_p_vram[row], "%d", phn_sys.sys_conf.num_chn);
@@ -114,13 +114,13 @@ static int SysStrategy_entry(int row, int col, void *pp_text)
 				sprintf(arr_p_vram[row], "%d", phn_sys.sys_conf.record_gap_s);
 				break;
 			case 4:
-				System_to_string(NULL, arr_p_vram[row], 48, es_brk_cpl);
+				Print_sys_param(NULL, arr_p_vram[row], 48, es_brk_cpl);
 				break;
 			case 5:
-				System_to_string(NULL, arr_p_vram[row], 48, es_brk_rss);
+				Print_sys_param(NULL, arr_p_vram[row], 48, es_brk_rss);
 				break;
 			case 6:
-				System_to_string(NULL, arr_p_vram[row], 48, es_cmn_md);
+				Print_sys_param(NULL, arr_p_vram[row], 48, es_cmn_md);
 				break;
 			case 7:
 				sprintf(arr_p_vram[row], "%d", phn_sys.sys_conf.baud_rate);
@@ -129,20 +129,20 @@ static int SysStrategy_entry(int row, int col, void *pp_text)
 				sprintf(arr_p_vram[row], "%d", phn_sys.sys_conf.id);
 				break;
 			case 9:
-				System_to_string(NULL, arr_p_vram[row], 48, es_mdfy_prm);
+				Print_sys_param(NULL, arr_p_vram[row], 48, es_mdfy_prm);
 				break;
 			case 10:
-				System_to_string(NULL, arr_p_vram[row], 48, es_cold_end_way);
+				Print_sys_param(NULL, arr_p_vram[row], 48, es_cold_end_way);
 				break;
 			case 11:
-				System_to_string(NULL, arr_p_vram[row], 48, es_CJC);
+				Print_sys_param(NULL, arr_p_vram[row], 48, es_CJC);
 				break;
 			case 12:
 				
-				System_to_string(NULL, arr_p_vram[row], 48, es_vcs);
+				Print_sys_param(NULL, arr_p_vram[row], 48, es_vcs);
 				break;
 			case 13:
-				System_to_string(NULL, arr_p_vram[row], 48, es_beep);
+				Print_sys_param(NULL, arr_p_vram[row], 48, es_beep);
 				break;
 			case 14:
 				
@@ -467,7 +467,7 @@ static int Sys_commit(void *arg)
 			
 		break;
 //	case 1:
-//		Password_set_by_str(arr_p_vram[p_syf->f_row]);
+//		Str_set_password(arr_p_vram[p_syf->f_row]);
 //		break;
 //	case 13:
 //		System_default();
@@ -522,37 +522,37 @@ static int Sys_update_content(int op, int weight)
 		phn_sys.save_chg_flga &= ~CHG_SYSTEM_CONF;
 		break;
 	case 3:
-		System_modify_string(arr_p_vram[p_syf->f_row], es_rcd_t_s, op, weight);
+		Str_set_sys_param(arr_p_vram[p_syf->f_row], es_rcd_t_s, op, weight);
 		break;
 	case 4:
-		System_modify_string(arr_p_vram[p_syf->f_row], es_brk_cpl, op, weight);
+		Str_set_sys_param(arr_p_vram[p_syf->f_row], es_brk_cpl, op, weight);
 		break;
 	case 5:
-		System_modify_string(arr_p_vram[p_syf->f_row], es_brk_rss, op, weight);
+		Str_set_sys_param(arr_p_vram[p_syf->f_row], es_brk_rss, op, weight);
 		break;
 	case 6:
-		System_modify_string(arr_p_vram[p_syf->f_row], es_cmn_md, op, weight);
+		Str_set_sys_param(arr_p_vram[p_syf->f_row], es_cmn_md, op, weight);
 		break;
 	case 7:
-		System_modify_string(arr_p_vram[p_syf->f_row], es_baud, op, weight);
+		Str_set_sys_param(arr_p_vram[p_syf->f_row], es_baud, op, weight);
 		break;
 	case 8:
-		System_modify_string(arr_p_vram[p_syf->f_row], es_id, op, weight);
+		Str_set_sys_param(arr_p_vram[p_syf->f_row], es_id, op, weight);
 		break;
 	case 9:
-		System_modify_string(arr_p_vram[p_syf->f_row], es_mdfy_prm, op, weight);
+		Str_set_sys_param(arr_p_vram[p_syf->f_row], es_mdfy_prm, op, weight);
 		break;
 	case 10:
-		System_modify_string(arr_p_vram[p_syf->f_row], es_cold_end_way, op, weight);
+		Str_set_sys_param(arr_p_vram[p_syf->f_row], es_cold_end_way, op, weight);
 		break;
 	case 11:
-		System_modify_string(arr_p_vram[p_syf->f_row], es_CJC, op, weight);
+		Str_set_sys_param(arr_p_vram[p_syf->f_row], es_CJC, op, weight);
 		break;
 	case 12:
-		System_modify_string(arr_p_vram[p_syf->f_row], es_vcs, op, weight);
+		Str_set_sys_param(arr_p_vram[p_syf->f_row], es_vcs, op, weight);
 		break;
 	case 13:
-		System_modify_string(arr_p_vram[p_syf->f_row], es_beep, op, weight);
+		Str_set_sys_param(arr_p_vram[p_syf->f_row], es_beep, op, weight);
 		break;
 	default:
 		phn_sys.save_chg_flga &= ~CHG_SYSTEM_CONF;

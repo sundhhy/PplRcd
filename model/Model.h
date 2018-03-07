@@ -133,8 +133,6 @@ extern const	char	g_moth_day[12];
 
 
 
-void Mdl_unit_to_string( char unit, char *buf, int len);
-void Print_float(int data, short int_len, short prec, char *str);
-void Print_frefix_float(int data, int prec, char *prefix, char *str);
+
 
 #endif

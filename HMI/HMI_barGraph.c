@@ -190,7 +190,7 @@ static void BarHmi_InitSheet( HMI *self )
 
 static void BarHmi_HideSheet( HMI *self )
 {
-	barGhHMI			*cthis = SUB_PTR( self, HMI, barGhHMI);
+//	barGhHMI			*cthis = SUB_PTR( self, HMI, barGhHMI);
 	
 	int i;
 	

@@ -21,13 +21,13 @@ Model *ModelCreate( char *type)
 		return aMdl[0];
 	}
 	
-	p = strstr( type, "test");
-	
-	if( p)
-	{
-		
-		return SUPER_PTR( Get_ModeTest(), Model);
-	}
+//	p = strstr( type, "test");
+//	
+//	if( p)
+//	{
+//		
+//		return SUPER_PTR( Get_ModeTest(), Model);
+//	}
 	
 	p = strstr( type, "chn_0");
 	if( p)

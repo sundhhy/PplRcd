@@ -91,11 +91,11 @@ Dev_Uart *Get_DevUart( int minor)
 	}
 	return devUart[minor];
 	
-	errExit0:
+//	errExit0:
+//	
+//	errExit1:
 	
-	errExit1:
-	
-	return NULL;
+//	return NULL;
 }
 
 int Dev_Uart_open( I_dev_Char *self, void *conf)

@@ -150,7 +150,7 @@ static char* MdlTest_to_string( Model *self, IN int aux, void *arg)
 			} else {
 				p = cthis->unit_buf;
 			}
-			Mdl_unit_to_string( self->uint, p, 8);
+			Print_unit( self->uint, p, 8);
 			return p;
 		case AUX_ALARM:
 			if( arg) {

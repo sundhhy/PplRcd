@@ -93,8 +93,7 @@ static char* MdlChn_to_string( Model *self, IN int aux, void *arg);
 static int  MdlChn_to_percentage( Model *self, void *arg);
 static int MdlChn_set_by_string( Model *self, IN int aux, void *arg);
 static int MdlChn_modify_sconf(Model *self, IN int aux, char *s, int op, int val);
-static void Print_singnaltype(e_signal_t sgt, char *str);
-static void Print_touch_spot(int spot, char *str);
+
 
 static void MdlChn_Init_alm_mgr_by_STG_alm(Model_chn *cthis);
 
@@ -1205,7 +1204,7 @@ static char* MdlChn_to_string( Model *self, IN int aux, void *arg)
 			} else {
 				p = cthis->unit_buf;
 			}
-			Mdl_unit_to_string( cthis->chni.unit, p, 8);
+			Print_unit( cthis->chni.unit, p, 8);
 			return p;
 		case AUX_ALARM:
 			if( arg) {
@@ -1474,7 +1473,7 @@ static int MdlChn_set_by_string(Model *self, IN int aux, void *arg)
 //			} else {
 //				p = cthis->unit_buf;
 //			}
-//			Mdl_unit_to_string( cthis->chni.unit, p, 8);
+//			Print_unit( cthis->chni.unit, p, 8);
 //			return p;
 //		case AUX_ALARM:
 //			if( arg) {
@@ -1573,78 +1572,9 @@ static int  MdlChn_to_percentage( Model *self, void *arg)
 
 
 
-static void Print_singnaltype(e_signal_t sgt, char *str)
-{
-	switch(sgt)
-	{
-		case AI_0_5_V:
-			sprintf(str, "0~5V");
-			break;
-		case AI_0_10_mA:
-			sprintf(str, "0~10mA");
-			break;		
-		case AI_1_5_V:
-			sprintf(str, "1~5V");
-			break;
-		case AI_4_20_mA:
-			sprintf(str, "4~20mA");
-			break;	
-		case AI_0_20_mV:
-			sprintf(str, "0~20mV");
-			break;
-		case AI_0_100_mV:
-			sprintf(str, "0~100mV");
-			break;	
-		case AI_Pt100:
-			sprintf(str, "Pt100");
-			break;
-		case AI_Cu50:
-			sprintf(str, "Cu50");
-			break;
-		case AI_B:
-			sprintf(str, "B");
-			break;		
-		case AI_E:
-			sprintf(str, "E");
-			break;
-		case AI_J:
-			sprintf(str, "J");
-			break;		
-		case AI_K:
-			sprintf(str, "K");
-			break;
-		case AI_S:
-			sprintf(str, "S");
-			break;	
-		case AI_T:
-			sprintf(str, "T");
-			break;
-//		case AI_0_400_ohm:
-//			sprintf(str, "0-400¦¸");
-//			break;		
-//		case PI_0_30_kHz:
-//			sprintf(str, "PI");
-//			break;
-//		case DI_8_30_V:
-//			sprintf(str, "DI 8~30V");
-//			break;		
-//		case DI_0_5_V:
-//			sprintf(str, "DI 0~5V");
-//			break;	
-//		case AO_4_20_mA:
-//			sprintf(str, "AO");
-//			break;			
-	}	
-}
 
-static void Print_touch_spot(int spot, char *str)
-{
-	
-	if(spot < MAX_TOUCHSPOT && spot >= 0)
-		sprintf(str, "%d", spot);
-	else
-		sprintf(str, "ÎÞ");
-}
+
+
 
 static void MdlChn_Save_2_conf(mdl_chn_save_t *p_mcs, chn_info_t *p_cnf, uint8_t direct)
 {

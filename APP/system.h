@@ -5,6 +5,8 @@
 #define __INC_system_H_
 #include <stdint.h>
 #include "utils/time.h"
+#include "utils/PHN_string.h"
+
 //#include "HMI/HMI.h"
 //------------------------------------------------------------------------------
 // check for correct compilation options
@@ -237,7 +239,6 @@ extern system_t			phn_sys;
 //------------------------------------------------------------------------------
 // function prototypes
 //------------------------------------------------------------------------------
-void Str_Calculations(char *p_str, int len,  int op, int val, int rangel, int rangeh);
 int	Operate_in_tange(int	arg1, int op, int arg2, int rangel, int rangeh);
 
 void System_init(void);
@@ -253,14 +254,10 @@ int 			System_set_time(struct  tm *stime);
 
 
 extern void System_default(void);
-void System_modify_string(char	*p_s, int aux, int op, int val);
-void System_to_string(void *p_data, char	*p_s, int len, int aux);
-void Password_set_by_str(char	*p_s_psd);
 
-int Str_Password_match(char *p_s_psd);
-void Password_modify(char	*p_s_psd, int idx, int op);
-int Password_iteartor(char	*p_time_text, int idx, int director);
-int Get_str_data(char *s_data, char* separator, int num, uint8_t	*err);
+
+
+
 
 int SYS_Commit(void);
 #endif

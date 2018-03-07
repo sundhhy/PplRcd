@@ -56,7 +56,7 @@ system_t		phn_sys;
 //------------------------------------------------------------------------------
 // const defines
 //------------------------------------------------------------------------------
-static const int	arr_baud[7] = {1200, 4800, 9600, 19200, 38400, 57200, 115200};
+
 //------------------------------------------------------------------------------
 // local types
 //------------------------------------------------------------------------------
@@ -69,8 +69,7 @@ static const int	arr_baud[7] = {1200, 4800, 9600, 19200, 38400, 57200, 115200};
 //------------------------------------------------------------------------------
 // local function prototypes
 //------------------------------------------------------------------------------
-static void Break_deal_string(char *p, int deal);
-static void Disable_string(char *p, int able);
+
 
 //============================================================================//
 //            P U B L I C   F U N C T I O N S                                 //
@@ -422,305 +421,18 @@ int  System_set_time(struct  tm *stime)
 	return ret;
 }
 
-//"** ** **"
-void Password_modify(char	*p_s_psd, int idx, int op)
-{
-	
-	switch(idx) {
-		case 0:		
-		case 1:
-		case 3:
-		case 4:		
-		case 6:
-		case 7:
-			Str_Calculations(p_s_psd + idx, 1, op, 1, 0, 9);
-			break;
-		default:
-			break;
-	}
-	
-	
-}
-
-int Str_Password_match(char *p_s_psd)
-{
-	
-	
-	short	i, data;
-	int			ret = 0;
-	
-	for(i = 0; i < 3; i++) {
-		data = atoi(p_s_psd);
-	
-		if( phn_sys.sys_conf.password[i] != data) {
-			ret = 1;
-			break;
-		}
-		
-		p_s_psd += 3;
-	}
-	
-	return ret;
-	
-}
-
-//"** ** **"
-void Password_set_by_str(char	*p_s_psd)
-{
-	short	i, data;
-	
-	for(i = 0; i < 3; i++) {
-		data = atoi(p_s_psd);
-	
-		phn_sys.sys_conf.password[i] = data;
-		
-		p_s_psd += 3;
-	}
-	
-	
-}
-
-//对时间显示的字符上移动
-//返回新的位置
-int Password_iteartor(char	*p_time_text, int idx, int director)
-{
-	int	new_idx = 0;
-	if(director == 0) {
-		//左移
-		if(idx == 0)
-			new_idx = 7;
-		else
-			new_idx = idx - 1;
-		//跳过非数字字符
-		while(p_time_text[new_idx] > '9' || p_time_text[new_idx] < '0')
-			new_idx --;
-		
-		
-	} else {
-		//右移
-		if(idx >= 7)
-			new_idx = 0;
-		else
-			new_idx = idx + 1;
-		//跳过非数字字符
-		while(p_time_text[new_idx] > '9' || p_time_text[new_idx] < '0')
-			new_idx ++;
-	
-		
-	}
-	
-	return new_idx;
-	
-}
-
-
-void System_to_string(void *p_data, char	*p_s, int len, int aux)
-{
-	uint8_t *p_u8;
-	switch(aux)
-	{
-		case es_psd:
-			if(p_data)
-				p_u8 = (uint8_t *)p_data;
-			else 
-				p_u8 = phn_sys.sys_conf.password;
-			
-			sprintf(p_s, "%02d %02d %02d", p_u8[0], p_u8[1], p_u8[2]);
-			break;
-		
-		case es_brk_cpl:
-			if(p_data)
-				p_u8 = (uint8_t *)p_data;
-			else 
-				p_u8 = &phn_sys.sys_conf.break_couple;
-			
-			Break_deal_string(p_s, *p_u8);
-			break;
-		case es_brk_rss:
-			if(p_data)
-				p_u8 = (uint8_t *)p_data;
-			else 
-				p_u8 = &phn_sys.sys_conf.break_resistor;
-			
-			Break_deal_string(p_s, *p_u8);
-			break;
-		case es_baud:
-			
-			break;
-		case es_cmn_md:
-			if(p_data)
-				p_u8 = (uint8_t *)p_data;
-			else 
-				p_u8 = &phn_sys.sys_conf.communication_mode;
-			
-			if(*p_u8 == 0)
-				sprintf(p_s, "通讯");
-			else 
-				sprintf(p_s, "打印");
-			break;
-		case es_mdfy_prm:
-			if(p_data)
-				p_u8 = (uint8_t *)p_data;
-			else 
-				p_u8 = &phn_sys.sys_conf.disable_modify_adjust_paramter;
-			
-			Disable_string(p_s, *p_u8);
-			break;
-			
-		case es_CJC:
-			if(p_data)
-				p_u8 = (uint8_t *)p_data;
-			else 
-				p_u8 = &phn_sys.sys_conf.CJC;
-			sprintf(p_s, "%2d", *p_u8);
-			break;
-			
-		case es_cold_end_way:
-			if(p_data)
-				p_u8 = (uint8_t *)p_data;
-			else 
-				p_u8 = &phn_sys.sys_conf.cold_end_way;
-			if(*p_u8 ==0) {
-				
-				sprintf(p_s, "外部");
-			} else {
-				sprintf(p_s, "设定");
-			}
-			break;
-			
-		case es_vcs:
-			if(p_data)
-				p_u8 = (uint8_t *)p_data;
-			else 
-				p_u8 = &phn_sys.sys_conf.disable_view_chn_status;
-			
-			Disable_string(p_s, *p_u8);
-			break;
-		case es_beep:
-			if(p_data)
-				p_u8 = (uint8_t *)p_data;
-			else 
-				p_u8 = &phn_sys.sys_conf.enable_beep;
-			
-			Disable_string(p_s, *p_u8);
-			break;
-	}
-	
-	
-}
 
 
 
-void System_modify_string(char	*p_s, int aux, int op, int val)
-{
-	switch(aux)
-	{
-		case es_rcd_t_s:
-			phn_sys.sys_conf.record_gap_s = Operate_in_tange(phn_sys.sys_conf.record_gap_s, op, val, 0, 240);
-			sprintf(p_s, "%d", phn_sys.sys_conf.record_gap_s);
-			break;
-		case es_brk_cpl:
-			
-			phn_sys.sys_conf.break_couple = Operate_in_tange(phn_sys.sys_conf.break_couple, op, val, 0, 2);
-			Break_deal_string(p_s, phn_sys.sys_conf.break_couple);
-			break;
-		case es_brk_rss:
-			phn_sys.sys_conf.break_resistor = Operate_in_tange(phn_sys.sys_conf.break_resistor, op, val, 0, 2);
-			Break_deal_string(p_s, phn_sys.sys_conf.break_resistor);
-			break;
-		case es_baud:
-			phn_sys.sys_conf.baud_idx = Operate_in_tange(phn_sys.sys_conf.baud_idx, op, val, 0, 6);
-			phn_sys.sys_conf.baud_rate = arr_baud[phn_sys.sys_conf.baud_idx];
-			sprintf(p_s, "%d", phn_sys.sys_conf.baud_rate);
-			break;
-		case es_id:
-			phn_sys.sys_conf.id = Operate_in_tange(phn_sys.sys_conf.id, op, val, 1, 63);
-			sprintf(p_s, "%d", phn_sys.sys_conf.id);
-			break;
-		case es_cmn_md:
-			phn_sys.sys_conf.communication_mode = Operate_in_tange(phn_sys.sys_conf.communication_mode, op, val, 0, 1);
-			if(phn_sys.sys_conf.communication_mode == 0)
-				sprintf(p_s, "通讯");
-			else 
-				sprintf(p_s, "打印");
-			break;
-		case es_mdfy_prm:
-		
-			phn_sys.sys_conf.disable_modify_adjust_paramter = Operate_in_tange(phn_sys.sys_conf.disable_modify_adjust_paramter, op, val, 0, 1);
-			Disable_string(p_s, phn_sys.sys_conf.disable_modify_adjust_paramter );
-			break;
-		case es_cold_end_way:
-			phn_sys.sys_conf.cold_end_way = Operate_in_tange(phn_sys.sys_conf.cold_end_way, op, val, 0, 1);
-			System_to_string(NULL, p_s, 0xff, es_cold_end_way);
-			break;
-			
-		case es_CJC:
-			phn_sys.sys_conf.CJC = Operate_in_tange(phn_sys.sys_conf.CJC, op, val, 0, 99);
-			System_to_string(NULL, p_s, 0xff, es_CJC);
-			break;
-			
-			
-		case es_vcs:
-			phn_sys.sys_conf.disable_view_chn_status = Operate_in_tange(phn_sys.sys_conf.disable_view_chn_status, op, val, 0, 1);
-			Disable_string(p_s, phn_sys.sys_conf.disable_view_chn_status);
-			break;
-		case es_beep:
-			phn_sys.sys_conf.enable_beep = Operate_in_tange(phn_sys.sys_conf.enable_beep, op, val, 0, 1);
-			Disable_string(p_s, phn_sys.sys_conf.enable_beep);
-			break;
-		default:
-			
-			break;
-	}
-	
-	
-}
-//从字符串中返回指定顺序的数字
-//如果有错误，设置err为1
-int Get_str_data(char *s_data, char* separator, int num, uint8_t	*err)
-{
-	int 		tmp;
-	int			rst = 0;
-	char		*p;
-	uint16_t	num_spt = 0;
 
-	
-	*err = 1;
-	
-	tmp = strcspn(s_data, "0123456789");
-	if((tmp == 0) && (s_data[0] > '9' || s_data[0] <'0'))
-		goto exit;
-	p = tmp + s_data;
-	if(num == 0)
-	{
-		*err = 0;
-		rst = atoi(p);
-		goto exit;
-	}
-	
-	while(1)
-	{
-		tmp = strcspn(p, separator);
-		if(tmp)
-		{
-			p += tmp + 1;
-			num_spt ++;
-		}
-		
-		if(num_spt == num)		//分隔符与序号相等说明当前的数字符合要求
-		{
-			*err = 0;
-			rst = atoi(p);
-			goto exit;
-		}
-		
-		if(tmp == 0 || p[0] == '\0')
-			goto exit;
-	}
-	
-	exit:
-	return rst;
-}
+
+
+
+
+
+
+
+
 
 //=========================================================================//
 //                                                                         //
@@ -729,36 +441,7 @@ int Get_str_data(char *s_data, char* separator, int num, uint8_t	*err)
 //=========================================================================//
 /// \name Private Functions
 /// \{
-static void Break_deal_string(char *p, int deal)
-{
-	
-	switch(deal)
-	{
-		case 0:
-			sprintf(p, "始点");
-			break;
-		case 1:
-			sprintf(p, "保持");
-			break;
-		case 2:
-			sprintf(p, "终点");
-			break;
-		default:
-			break;
-		
-	}
-	
-}
 
-static void Disable_string(char *p, int able)
-{
-	
-	if(able == 0)
-		sprintf(p, "禁止");
-	else 
-		sprintf(p, "允许");
-	
-}
 
 
 

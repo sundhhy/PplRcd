@@ -159,7 +159,7 @@ static void	Setup_initSheet(HMI *self)
 	arr_p_vram[0] = HMI_Ram_alloc(4);				//用来放数值的密码
 	arr_p_vram[1] = HMI_Ram_alloc(16);				//用来放密码对应的字符串
 	memset(arr_p_vram[0], 0, 4);
-	System_to_string(arr_p_vram[0], arr_p_vram[1] , 16, es_psd); 
+	Print_sys_param(arr_p_vram[0], arr_p_vram[1] , 16, es_psd); 
 		
 		
 //	if(((self->flag & HMIFLAG_WIN) == 0) && (g_p_lastHmi != g_p_HMI_striped) \
