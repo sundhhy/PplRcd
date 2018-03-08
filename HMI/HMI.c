@@ -270,9 +270,16 @@ static void ConposeKeyHandle(HMI *self, char *s_key1, char *s_key2)
 
 		phn_sys.sys_flag |= SYSFLAG_SETTING;
 		self->switchHMI(self, g_p_Setup_HMI);
-	} else if( !strcmp( s_key1, HMIKEY_RIGHT) && !strcmp( s_key2, HMIKEY_LEFT)) {
+	} 
+	else if( !strcmp( s_key1, HMIKEY_RIGHT) && !strcmp( s_key2, HMIKEY_LEFT)) {
 		phn_sys.sys_flag |= SYSFLAG_SETTING;
 		self->switchHMI(self, g_p_Setup_HMI);
+	}
+	else if( !strcmp( s_key1, HMIKEY_UP) && !strcmp( s_key2, HMIKEY_DOWN)) {
+		self->switchBack(self);
+	}
+	else if( !strcmp( s_key2, HMIKEY_UP) && !strcmp( s_key1, HMIKEY_DOWN)) {
+		self->switchBack(self);
 	}
 	
 	

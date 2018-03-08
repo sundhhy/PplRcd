@@ -146,10 +146,10 @@ typedef struct {
 }chn_info_t;
 
 typedef struct {
-	uint16_t				alarm_hh;
-	uint16_t				alarm_hi;
-	uint16_t				alarm_lo;
-	uint16_t				alarm_ll;
+	int16_t				alarm_hh;
+	int16_t				alarm_hi;
+	int16_t				alarm_lo;
+	int16_t				alarm_ll;
 	
 	//±¨¾¯Êä³ö´¥µã
 	uint8_t				touch_spot_hh;

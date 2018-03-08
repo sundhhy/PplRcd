@@ -726,16 +726,17 @@ static void MdlChn_run(Model *self)
 	
 #if TDD_SAVE_DATA == 1
 	short	test_val;
-	static int mdl_sub = 0;
+	static short mdl_sub = 0;
+	static short mdl_step = 20;
 	test_val = cthis->chni.value;
 	
 	
-	cthis->chni.lower_limit = -50;
-	cthis->chni.upper_limit = 50;
+	cthis->chni.lower_limit = -1000;
+	cthis->chni.upper_limit = 1000;
 	//decimal_places 在这里用于测试
 	if(mdl_sub == 0)
 	{
-		test_val ++;
+		test_val += mdl_step;
 		if(test_val > cthis->chni.upper_limit)
 		{
 			test_val = cthis->chni.upper_limit - 1;
@@ -746,23 +747,23 @@ static void MdlChn_run(Model *self)
 	{
 		if(test_val > cthis->chni.lower_limit)
 		{
-			test_val --;
+			test_val -= mdl_step;
 			
 		}
 		else
 		{
-//			test_val = cthis->chni.lower_limit + 1;
-			test_val = 0;
+			test_val = cthis->chni.lower_limit + 1;
+//			test_val = 0;
 			mdl_sub = 0;
 			
 		}
 		
 	}
-	cthis->alarm.alarm_hh = cthis->chni.upper_limit - 20;
-	cthis->alarm.alarm_hi = cthis->chni.upper_limit - 10;
+	cthis->alarm.alarm_hh = cthis->chni.upper_limit - 2 * mdl_step;
+	cthis->alarm.alarm_hi = cthis->chni.upper_limit - 1 * mdl_step;
 	
-	cthis->alarm.alarm_lo = cthis->chni.lower_limit + 20;
-	cthis->alarm.alarm_ll = cthis->chni.lower_limit + 10;
+	cthis->alarm.alarm_lo = cthis->chni.lower_limit + 2 * mdl_step;
+	cthis->alarm.alarm_ll = cthis->chni.lower_limit + 1 * mdl_step;
 	
 	
 	
@@ -1292,13 +1293,13 @@ static char* MdlChn_to_string( Model *self, IN int aux, void *arg)
 //			if(cthis->chni.signal_type <= AI_Cu50)
 //				sprintf(arg, "%-6d", cthis->chni.lower_limit);
 //			else
-				Print_float(cthis->chni.lower_limit, 6, 1, (char *)arg);
+				Print_float(cthis->chni.lower_limit, 6, cthis->chni.decimal_places, (char *)arg);
 			break;
 		case chnaux_upper_limit:
 //			if(cthis->chni.signal_type <= AI_Cu50)
 //				sprintf(arg, "%-6d", cthis->chni.upper_limit);
 //			else
-				Print_float(cthis->chni.upper_limit, 6, 1, (char *)arg);
+				Print_float(cthis->chni.upper_limit, 6, cthis->chni.decimal_places, (char *)arg);
 			break;
 		case chnaux_small_signal:
 			Print_float(cthis->chni.small_signal, 2, 1, (char *)arg);
