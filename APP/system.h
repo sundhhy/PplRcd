@@ -44,8 +44,12 @@
 #define	CHG_MODCHN_CONF(n)			(1 << (n + 1))
 
 #define SYSFLAG_SETTING				1
-#define SYSFLAG_EFS_NOTREADY			2		//文件系统未就绪，可能正在擦除文件
-#define SYSFLAG_POWERON				4
+#define SYSFLAG_EFS_NOTREADY		2		//文件系统未就绪，可能正在擦除文件
+#define SYSFLAG_POWEON				4
+#define SYSFLAG_POWEROFF			8
+
+#define SYSFLAG_ERR					0x10
+#define SYSFLAG_URGENCY				0x20
 
 #define SYS_TIME				phn_sys.sys_time
 //#define	STSFLAG_TIME_CHANGE		8
@@ -92,9 +96,10 @@ typedef struct {
 	uint8_t		disable_modify_adjust_paramter;		//禁止修改调节参数
 	uint8_t		disable_view_chn_status;					//禁止通道状态显示
 	uint8_t		enable_beep;											//按键声音允许
+	int 		baud_rate;
 	
-		int 		baud_rate;
-
+	uint32_t	power_on_time;
+	uint32_t	power_off_time;
 }system_conf_t;
 
 //-----------HMI -----------------------------------------------

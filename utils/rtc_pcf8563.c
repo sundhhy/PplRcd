@@ -140,7 +140,9 @@ int	Pcf8563_get( UtlRtc *self, OUT struct  tm *tm)
 	tm->tm_wday  = BCD2BIN(date[4] & 0x07);
 	tm->tm_mon  = BCD2BIN(date[5] & 0x1f)-1;
 	tm->tm_year  = BCD2BIN(date[6] & 0xff);
-		
+	
+	if(tm->tm_mon < 1)
+		tm->tm_mon = 1;
 	return RET_OK;
 	
 }

@@ -126,7 +126,7 @@ int main (void) {
 #if TDD_ON == 0
 
 	
-	assert(USB_Init(NULL) == RET_OK);
+	
 
 	//界面初始化
 	HMI_Init();
@@ -157,9 +157,16 @@ int main (void) {
 	osKernelStart ();  
 
 	MBA_Init();
-
-
+	if(USB_Init(NULL) != RET_OK)
+	{
+		phn_sys.sys_flag |= SYSFLAG_ERR;
+	}
+	phn_sys.sys_flag |= SYSFLAG_POWEON;
 	p_tips = TIP_Get_Sington();
+	
+	
+//	p_tips->show_ico_tips(2, -1);
+	
 	while(1)
 	{
 		osDelay(100);
@@ -167,20 +174,26 @@ int main (void) {
 		
 		if(old_sys_flag != phn_sys.sys_flag)
 		{
-			if(phn_sys.sys_flag & SYSFLAG_EFS_NOTREADY)
+			if(phn_sys.sys_flag & SYSFLAG_POWEROFF)
 			{
 				p_tips->show_ico_tips(1, -1);
 				
 			}
-			else if(phn_sys.sys_flag & SYSFLAG_POWERON)
+			else if(phn_sys.sys_flag & SYSFLAG_POWEROFF)
 			{
 				p_tips->show_ico_tips(1, -1);
+				
+			}
+			else if(phn_sys.sys_flag & SYSFLAG_ERR)
+			{
+				p_tips->show_ico_tips(2, -1);
 				
 			}
 			else
 			{
 				
 				p_tips->clear_ico_tips(1);
+				p_tips->clear_ico_tips(2);
 			}
 			old_sys_flag = phn_sys.sys_flag;
 		}

@@ -28,7 +28,7 @@
 //------------------------------------------------------------------------------
 // const defines
 //------------------------------------------------------------------------------
-
+#define PWR_PIN_CODE		0xbb
 //------------------------------------------------------------------------------
 // local types
 //------------------------------------------------------------------------------
@@ -41,7 +41,7 @@
 //------------------------------------------------------------------------------
 // local function prototypes
 //------------------------------------------------------------------------------
-
+//static void PWR_pin_irq( void *arg, int type, int encode);
 
 
 //============================================================================//
@@ -49,43 +49,30 @@
 //============================================================================//
 int PVD_Init(void)
 {
-//	FlagStatus	s;
-//	NVIC_InitTypeDef NVIC_InitStructure;
+//	I_dev_Char		*gpio_pwr;
+	int			pwr_code = PWR_PIN_CODE;
+	
 	EXTI_InitTypeDef exti_param;
-
-	
-//	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_1);//设置优先级分组形式1，即抢占级占一位，优先级占3位
-//	
-//	
-//	
-//		/* PVD 优先级最高 
-//		
-//		*/
-//	NVIC_InitStructure.NVIC_IRQChannel = PVD_IRQn;
-//	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority=0;
-//    NVIC_InitStructure.NVIC_IRQChannelSubPriority = 1;
-//    NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
-	
 	RCC_APB1PeriphClockCmd(RCC_APB1Periph_PWR, ENABLE);
-//    NVIC_Init(&NVIC_InitStructure);
 	
 	
-	
-	 
-	
+//	Dev_open(DEVID_GPIO_PWR, ( void *)&gpio_pwr);
+//	gpio_pwr->ioctol(gpio_pwr, DEVCMD_SET_IRQHDL, PWR_pin_irq, (void *)gpio_pwr);
+//	gpio_pwr->ioctol(gpio_pwr, DEVGPIOCMD_SET_ENCODE, pwr_code);
+//	gpio_pwr->ioctol(gpio_pwr,DEVCMD_ENABLE_IRQ);
 	EXTI_DeInit();
-	
 	EXTI_StructInit(&exti_param);
 	exti_param.EXTI_Line = EXTI_Line16; 
 	exti_param.EXTI_Mode = EXTI_Mode_Interrupt; //??????
-	exti_param.EXTI_Trigger = EXTI_Trigger_Rising_Falling; //电压从高下降到低于设定阀值时产生中断
+	exti_param.EXTI_Trigger = EXTI_Trigger_Rising; //电压从高下降到低于设定阀值时产生中断
 	exti_param.EXTI_LineCmd = ENABLE; // ?????
 	EXTI_ClearITPendingBit(EXTI_Line16);
 	EXTI_Init(&exti_param); // ??
 	
-	
 	PWR_PVDLevelConfig(PWR_PVDLevel_2V9); 
 	PWR_PVDCmd(ENABLE);
+//	
+
 	
 //	s = PWR_GetFlagStatus(PWR_FLAG_WU);
 //	s = PWR_GetFlagStatus(PWR_FLAG_SB);
@@ -95,16 +82,27 @@ int PVD_Init(void)
 	
 }
 
+//extern void System_power_on(void);
 void PVD_IRQHandler(void)
 {
 //	I_dev_lcd 				*tdd_lcd;
 
 //	Dev_open(LCD_DEVID, (void *)&tdd_lcd);
 //	tdd_lcd->Clear( COLOUR_YELLOW);
-	phn_sys.sys_flag |= SYSFLAG_POWERON;
+	
+	
+//	if(PWR_GetFlagStatus(PWR_FLAG_PVDO) == 0)
+//		phn_sys.sys_flag |= SYSFLAG_POWEON;
+//	else
+		phn_sys.sys_flag |= SYSFLAG_POWEROFF;
+	
+	
+	
 		
-//	System_power_off();
+	
 	EXTI_ClearITPendingBit(EXTI_Line16);
+	
+//	System_power_on();
 	
 }
 //=========================================================================//
@@ -114,3 +112,15 @@ void PVD_IRQHandler(void)
 //=========================================================================//
 /// \name Private Functions
 /// \{
+
+//static void PWR_pin_irq( void *arg, int type, int encode)
+//{
+//	
+//	if(encode == PWR_PIN_CODE)
+//	{
+//		
+//		phn_sys.sys_flag |= SYSFLAG_POWEROFF;
+//	}
+//	
+//}
+

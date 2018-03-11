@@ -33,12 +33,12 @@
 //------------------------------------------------------------------------------
 // const defines
 //------------------------------------------------------------------------------
-#define NUMPIN		7
+#define NUMPIN		8
 const gpio_pins *arr_Gpiocfg[NUMPIN] ={ &pin_keyRight, &pin_keyLeft, &pin_keyUp, \
-	&pin_keyDown, &pin_keyEnter, &pin_keyEsc, &pin_UsbInt};
+	&pin_keyDown, &pin_keyEnter, &pin_keyEsc, &pin_UsbInt, &pin_pwr};
 
 const GPIO_TypeDef *arr_Gpiobase[NUMPIN] ={ GPIO_PORT_KEY_RIGHT, GPIO_PORT_KEY_LEFT, GPIO_PORT_KEY_UP, \
-	GPIO_PORT_KEY_DOWN, GPIO_PORT_KEY_ENTER, GPIO_PORT_KEY_ESC, GPIO_PORT_USBINT};
+	GPIO_PORT_KEY_DOWN, GPIO_PORT_KEY_ENTER, GPIO_PORT_KEY_ESC, GPIO_PORT_USBINT, PORT_PWR};
 
 //------------------------------------------------------------------------------
 // local types

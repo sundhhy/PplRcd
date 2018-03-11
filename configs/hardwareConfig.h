@@ -19,6 +19,12 @@
 #define UART_MODE_CPU		2
 //各种外设的引脚配置
 
+/************* PWR	*********************************************/
+#define PORT_PWR                               GPIOA    					 
+#define PIN_PWR                                GPIO_Pin_9	
+#define GPIO_PORTSOURCE_PWR                              GPIO_PortSourceGPIOA					 
+#define GPIO_PINSOURCE_PWR                               GPIO_PinSource9
+
 /************* spi flash ****************************************/
 #define PORT_FSH_nWP                               GPIOD    					 
 #define PIN_FSH_nWP                                GPIO_Pin_10	
@@ -242,6 +248,7 @@ extern gpio_pins pin_keyDown;
 extern gpio_pins pin_keyEnter;
 extern gpio_pins pin_keyEsc;
 extern gpio_pins pin_UsbInt;
+extern gpio_pins pin_pwr;
 extern spi_conf_t arr_conf_spi[NUM_SPIS];
 
 #endif

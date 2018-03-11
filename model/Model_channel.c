@@ -69,7 +69,7 @@ Model		*arr_p_mdl_chn[NUM_CHANNEL];
 //------------------------------------------------------------------------------
 // const defines
 //------------------------------------------------------------------------------
-#define  TDD_SAVE_DATA		1
+#define  TDD_SAVE_DATA		0
 //------------------------------------------------------------------------------
 // local types
 //------------------------------------------------------------------------------
@@ -393,6 +393,9 @@ static void Signal_Alarm(Model_chn *cthis)
 	uint8_t flag, new_flag = 0;
 	int16_t tempS2,tempS3,bjhc, prc_data;
 	int32_t temps4;
+	
+	if(phn_sys.sys_flag & SYSFLAG_POWEROFF)
+		return;
 
 	flag = p_alm->alm_flag;
 	
@@ -523,7 +526,7 @@ static int MdlChn_init(Model *self, IN void *arg)
 	
 	Dev_open(DEVID_UART3, ( void *)&I_uart3);
 	I_uart3->ioctol(I_uart3, DEVCMD_SET_TXWAITTIME_MS, 1000);
-	I_uart3->ioctol(I_uart3, DEVCMD_SET_TXWAITTIME_MS, 50);
+	I_uart3->ioctol(I_uart3, DEVCMD_SET_RXWAITTIME_MS, 200);
 	
 	cthis->str_buf = CALLOC(1,8);
 	cthis->unit_buf = CALLOC(1,8);
@@ -817,6 +820,7 @@ static void MdlChn_run(Model *self)
 	i = SmBus_AI_Read(SMBUS_MAKE_CHN(SMBUS_CHN_AI, cthis->chni.chn_NO), AI_READ_ENGVAL, chk_buf, 16);
 	if( I_uart3->write(I_uart3, chk_buf, i) != RET_OK)
 		goto err;
+	delay_ms(100);
 	i = I_uart3->read(I_uart3, chk_buf, 16);
 	if(i <= 0)
 		goto err;
@@ -1194,7 +1198,7 @@ static char* MdlChn_to_string( Model *self, IN int aux, void *arg)
 			} else {
 				p = cthis->str_buf;
 			}
-			Print_float(cthis->chni.value, 4,  cthis->chni.decimal_places, p);
+			Print_float(cthis->chni.value, 6,  cthis->chni.decimal_places, p);
 //			sprintf( p, "%4d.%d", cthis->chni.value/10, cthis->chni.value%10);
 			return p;
 			

@@ -53,7 +53,7 @@ V010 171226 :
 
 
 #define EFS_WAIT_WR_MS						1000
-#define EFS_FLUSH_CYCLE_S					18
+#define EFS_FLUSH_CYCLE_S					5
 
 const Except_T EFS_Failed = { "Alloc Sheet Failed" };
 //------------------------------------------------------------------------------
@@ -191,11 +191,11 @@ void 	EFS_Shutdown(void)
 {
 	int i;
 	
-	for(i = 0; i < NUM_FSH; i ++)
-	{
-		EFS_FSH(i).fsh_flush();
-		
-	}
+//	for(i = 0; i < NUM_FSH; i ++)
+//	{
+//		EFS_FSH(i).fsh_flush();
+//		
+//	}
 	
 	
 	for(i = 0; i < EFS_MAX_NUM_FILES; i++)
@@ -303,10 +303,15 @@ int 	EFS_Lseek(int fd, int whence, int32_t offset)
 	switch( whence)
 	{
 		case WR_SEEK_SET:
+			if(EFS_SYS.sys_flag & SYSFLAG_URGENCY)
+				goto urgency;
 			if(Sem_wait(&f->file_sem, EFS_WAIT_WR_MS) <= 0)
 				return -1;
+			urgency:
 			f->write_position = offset;
 			f_mgr->efile_wr_position = offset;
+			if(EFS_SYS.sys_flag & SYSFLAG_URGENCY)
+				break;
 			Sem_post(&f->file_sem);
 			break;
 		case WR_SEEK_CUR:
@@ -426,6 +431,9 @@ int	EFS_write(int fd, uint8_t *p, int len)
 	file_info_t *f = &efs_mgr.arr_file_info[fd];
 	int			start_addr = f->start_page * EFS_FSH(f->fsh_No).fnf.page_size;
 
+	if(EFS_SYS.sys_flag & SYSFLAG_URGENCY)
+		goto urgency_wr;
+	
 	if(fd > EFS_MAX_NUM_FILES)
 		return -1;
 	
@@ -437,11 +445,16 @@ int	EFS_write(int fd, uint8_t *p, int len)
 	
 	
 	if(Sem_wait(&f->file_sem, EFS_WAIT_WR_MS) <= 0)
+	{
 		return -1;
+	}
+	
+	urgency_wr:
 	ret =  EFS_FSH(f->fsh_No).fsh_write(p, start_addr + f->write_position,len);
 	if(ret > 0)
 		f->write_position += ret;
-	
+	if(EFS_SYS.sys_flag & SYSFLAG_URGENCY)		//紧急情况下，没有获取信号量，也就不用执行释放信号量了
+		return ret;
 	if((f->num_page - f->write_position / EFS_FSH(f->fsh_No).fnf.page_size) < f->low_pg)
 		EFS_FS.err_code |= FS_ALARM_LOWSPACE;
 	else
@@ -567,6 +580,8 @@ int	EFS_resize(int fd, char *path, int new_size)
 		//把原来的读写位置复制给新的文件区
 		new_start_addr = efs_mgr.arr_efiles[fd].efile_start_pg * pg_size;
 		end_pg = tmp_file_info.write_position / pg_size + 1;		 //只复制已经被写入的部分
+		if(tmp_file_info.write_position == 0)		//如果没有写入过，就不必拷贝
+			end_pg = 0;
 		for(i = 0; i < end_pg; i ++)
 		{
 			ret = EFS_FSH(f->fsh_No).fsh_read(efs_mgr.pg_buf, start_addr + pg_size * i, pg_size);

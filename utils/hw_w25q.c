@@ -287,6 +287,7 @@ int W25Q_Cal_area(uint32_t start, uint32_t size, uint32_t area_sz, uint32_t rst[
 	return 0;
 }
 
+//如果当前的缓存扇区位于擦除地址范围之内，会将当前缓存扇区数据刷到flash中
 void W25Q_Erase_addr(uint32_t st, uint32_t sz)
 {
 	uint32_t		head_area[2] ;
@@ -648,9 +649,20 @@ static int w25q_Write_Sector_Data(uint8_t *pBuffer, uint16_t Sector_Num)
 	int wr_page = 0;
 	int		ret;
 	int		sum = 0;
+	int		retry = 10;
 	while(1)
 	{
 		ret = W25Q_wr_fsh(pBuffer + wr_page*PAGE_SIZE, Sector_Num*SECTOR_SIZE + wr_page * PAGE_SIZE, PAGE_SIZE);
+		if(ret != PAGE_SIZE)
+		{
+			if(retry)
+			{
+				retry --;
+				continue;
+			}
+			
+		}
+		retry = 10;
 		if( ret != PAGE_SIZE)
 			return sum;
 		sum += ret;
@@ -1009,10 +1021,13 @@ static int	W25Q_Change_cache_sct(uint16_t	sct_num)
 {
 	int	ret = 1;
 	int	safe_count = 1000;
+	
 	if(w25q_mgr.w25q_flag & W25Q_FLAG_DATA_CHANGED)
 	{
 		while(ret)
 		{
+			
+			
 			w25q_Erase_Sector(w25q_mgr.cur_sct);
 			w25q_Write_Sector_Data(w25q_mgr.p_sct_buf, w25q_mgr.cur_sct);
 			if(W25Q_FSH.fnf.fnf_flag & FSH_FLAG_READBACK_CHECK)

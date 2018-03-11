@@ -149,10 +149,25 @@ void Print_sys_param(void *p_data, char	*p_s, int len, int aux)
 			
 		case es_CJC:
 			if(p_data)
+			{
 				p_u8 = (uint8_t *)p_data;
+				sprintf(p_s, "%2d", *p_u8);
+			}
 			else 
-				p_u8 = &phn_sys.sys_conf.CJC;
-			sprintf(p_s, "%2d", *p_u8);
+			{
+				if(phn_sys.sys_conf.cold_end_way)
+				{
+
+					sprintf(p_s, "%2d", phn_sys.sys_conf.CJC);
+				}
+				else
+				{
+					sprintf(p_s, "%2d", phn_sys.code_end_temperature);
+				}
+				
+			}
+			
+			
 			break;
 			
 		case es_cold_end_way:

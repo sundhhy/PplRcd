@@ -9,6 +9,13 @@ void Pin_init(void)
 {
 	GPIO_InitTypeDef GPIO_InitStructure;
 	
+	
+	/*** pwr ***/
+	GPIO_InitStructure.GPIO_Pin = PIN_PWR;
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
+    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
+    GPIO_Init( PORT_PWR, &GPIO_InitStructure);
+	
 	/******* flash spi pin	************************************/
 	
 	GPIO_InitStructure.GPIO_Pin = PIN_FSH_nWP; 

@@ -27,3 +27,11 @@
 .\objects\cmd_thread.o: d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\StdPeriph_Driver\inc\stm32f10x_usart.h
 .\objects\cmd_thread.o: d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\StdPeriph_Driver\inc\misc.h
 .\objects\cmd_thread.o: ..\..\..\PplRcd\utils/PHN_string.h
+.\objects\cmd_thread.o: ..\..\device\device.h
+.\objects\cmd_thread.o: ..\..\device\deviceId.h
+.\objects\cmd_thread.o: ..\..\device\dev_cmd.h
+.\objects\cmd_thread.o: ..\..\device\dev_char.h
+.\objects\cmd_thread.o: E:\sdhLib\inc\lw_oopc.h
+.\objects\cmd_thread.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
+.\objects\cmd_thread.o: ..\..\device\dev_lcd.h
+.\objects\cmd_thread.o: ..\..\APP\TDD.h

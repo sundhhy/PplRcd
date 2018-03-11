@@ -203,6 +203,7 @@ static int GpioInit( driveGpio *self, void *p_base, void *cfg)
 	
 	self->p_exit->EXTI_Line = arr_extiLine[ p_gpio->extiLine];
 	self->p_exit->EXTI_LineCmd = ENABLE;
+	self->p_exit->EXTI_Mode = EXTI_Mode_Interrupt;
 	
 	switch( p_gpio->irqType)
 	{

@@ -72,7 +72,7 @@ static I_dev_Char *p_fm25_spi;
 
 void FM25_WP(int protect);
 void FM25_info(fsh_info_t *info);
-void FM25_Erase_addr(uint32_t s, uint32_t si);
+void FM25_Erase_addr(uint32_t s, uint32_t size);
 int FM25_Erase(int opt, uint32_t Sector_Number);
 int FM25_Write(uint8_t *pBuffer, uint32_t WriteAddr, uint32_t WriteBytesNum);
 int FM25_rd_data(uint8_t *pBuffer, uint32_t rd_add, uint32_t len);
@@ -152,7 +152,7 @@ int FM25_rd_data(uint8_t *pBuffer, uint32_t rd_add, uint32_t len)
 ///这个函数要在w25q_init成功之后调用才有用
 void FM25_info(fsh_info_t *info)
 {
-	//FM25L64 4KB = 512 * 8
+	//FM25L64 4Kb = 512 * 8
 #if FM25_DEVTYPE == FM25L04B
 	info->page_size = 64;
 	info->total_pagenum = 8;
@@ -190,9 +190,38 @@ void FM25_Flush(void)
 	
 }
 
-void FM25_Erase_addr(uint32_t s, uint32_t si)
+void FM25_Erase_addr(uint32_t s, uint32_t size)
 {
+	short		wr_size = 	size;		
+	uint8_t		retry = 5;
+	uint8_t		tmp = 0xff;
+
+
+	while( wr_size > 0)
+	{
+		if(FM25_Write(&tmp, s, 1)== 1)
+		{
+			s ++;
+			wr_size --;
+			retry = 5;
+			continue;
+		}
+		
+		if(retry)
+		{
+			retry --;
+		}
+		else
+		{
+			s ++;
+			wr_size --;
+			retry = 5;
+			
+		}
+		
 	
+	}
+		
 	
 }
 
@@ -200,7 +229,7 @@ int FM25_Erase(int opt, uint32_t num)
 {
 
 	int ret = ERR_DEV_FAILED;
-	uint8_t		*tmp_buf;
+	uint8_t		tmp_buf[512];
 	fsh_info_t 	info;
 	int 		pg = 0;
 	switch(opt)
@@ -214,7 +243,6 @@ int FM25_Erase(int opt, uint32_t num)
 			break;
 		case FSH_OPT_CHIP:
 			FM25_info(&info);
-			tmp_buf = malloc(info.page_size);
 			memset(tmp_buf, 0xff, info.page_size);
 			ret = RET_OK;
 			for(pg = 0; pg < info.total_pagenum; pg ++)

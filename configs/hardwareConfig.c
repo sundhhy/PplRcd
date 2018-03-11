@@ -256,4 +256,15 @@ gpio_pins pin_UsbInt = {
 	
 };
 
+gpio_pins pin_pwr = {
+	PORT_PWR,
+	PIN_PWR,
+	GPIO_DIR_IN,
+	9,
+	GPIO_IRQ_FAILING,
+	GPIO_PortSourceGPIOD,
+	GPIO_PINSOURCE_PWR
+	
+};
+
 

@@ -848,6 +848,11 @@
               <FileType>5</FileType>
               <FilePath>..\..\utils\PHN_string.h</FilePath>
             </File>
+            <File>
+              <FileName>FM25.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\utils\FM25.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
