@@ -166,16 +166,13 @@ static void Cmd_Thread (void const *argument) {
 	
 	while (1) {
 //		gpio_pwr->read(gpio_pwr, &pwr_val, 1);
-		if(phn_sys.sys_flag & SYSFLAG_POWEROFF)
-//		if(pwr_val == 0)
-		{
-//			if(PWR_GetFlagStatus(PWR_FLAG_PVDO))
-//			if(pwr_val == 0)
-			if(phn_sys.sys_flag & SYSFLAG_POWEON)		//上过电 才认为需要保存，否则可能是假掉电
-				System_power_off();
-//			phn_sys.sys_flag &= ~SYSFLAG_POWEROFF;
-			break;
-		}
+//		if(phn_sys.sys_flag & SYSFLAG_POWEROFF)
+//		{
+
+//			if(phn_sys.sys_flag & SYSFLAG_POWEON)		//上过电 才认为需要保存，否则可能是假掉电
+//				System_power_off();
+//			break;
+//		}
 
 		cur_s = SYS_time_sec();
 		for(i = 0; i < NUM_RUN; i++)

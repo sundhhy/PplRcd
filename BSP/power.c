@@ -97,7 +97,8 @@ void PVD_IRQHandler(void)
 		phn_sys.sys_flag |= SYSFLAG_POWEROFF;
 	
 	
-	
+	if(phn_sys.sys_flag & SYSFLAG_POWEON)		//上过电 才认为需要保存，否则可能是假掉电
+		System_power_off();
 		
 	
 	EXTI_ClearITPendingBit(EXTI_Line16);

@@ -148,7 +148,8 @@ static void Ctime_periodic (void const *arg)
 	
 	
 	
-	
+	if((cthis->time_count % 30) == 0)
+		MdlChn_Read_code_end_temperature();
 
 	for(i = 0; i < NUM_CHANNEL; i++)
 	{

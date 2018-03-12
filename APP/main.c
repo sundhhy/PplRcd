@@ -165,7 +165,7 @@ int main (void) {
 	p_tips = TIP_Get_Sington();
 	
 	
-//	p_tips->show_ico_tips(2, -1);
+//	p_tips->show_ico_tips(1, -1);
 	
 	while(1)
 	{
@@ -179,7 +179,7 @@ int main (void) {
 				p_tips->show_ico_tips(1, -1);
 				
 			}
-			else if(phn_sys.sys_flag & SYSFLAG_POWEROFF)
+			else if(phn_sys.sys_flag & SYSFLAG_EFS_NOTREADY)
 			{
 				p_tips->show_ico_tips(1, -1);
 				
@@ -215,8 +215,8 @@ int main (void) {
 	TDD_Time_sec();
 #elif TDD_EFS == 1
 	TDD_Efs();
-#elif TDD_Fm25 == 1
-	TDD_FM25();
+#elif TDD_FM25 == 1
+	TDD_Fm25();
 #elif TDD_W25Q == 1
 	TDD_W25q();
 #elif TDD_MODCHANNEL == 1

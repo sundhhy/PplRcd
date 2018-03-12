@@ -70,6 +70,7 @@ Model		*arr_p_mdl_chn[NUM_CHANNEL];
 // const defines
 //------------------------------------------------------------------------------
 #define  TDD_SAVE_DATA		0
+#define UART_WAIT_AFTER_WRITE_MS		10
 //------------------------------------------------------------------------------
 // local types
 //------------------------------------------------------------------------------
@@ -200,6 +201,14 @@ int MdlChn_Commit_conf(int chn_num)
 	STG_Resize(STG_CHN_DATA(chn_num), p_mdl->chni.MB * 1024 * 1024);
 	
 	return RET_OK;
+}
+
+//只是把读取冷端温度的请求记录，在定时器采集时才会真正读取
+//这么做是为了避免多个线程对串口产生竞争
+void MdlChn_Read_code_end_temperature()
+{
+	phn_sys.sys_flag |= SYSFLAG_READ_CET;
+	
 }
 
 CTOR( Model_chn)
@@ -525,8 +534,8 @@ static int MdlChn_init(Model *self, IN void *arg)
 	I_dev_Char 		*I_uart3 = NULL;
 	
 	Dev_open(DEVID_UART3, ( void *)&I_uart3);
-	I_uart3->ioctol(I_uart3, DEVCMD_SET_TXWAITTIME_MS, 1000);
-	I_uart3->ioctol(I_uart3, DEVCMD_SET_RXWAITTIME_MS, 200);
+	I_uart3->ioctol(I_uart3, DEVCMD_SET_TXWAITTIME_MS, 100);
+	I_uart3->ioctol(I_uart3, DEVCMD_SET_RXWAITTIME_MS, 10);
 	
 	cthis->str_buf = CALLOC(1,8);
 	cthis->unit_buf = CALLOC(1,8);
@@ -785,12 +794,12 @@ static void MdlChn_run(Model *self)
 	
 	Dev_open(DEVID_UART3, ( void *)&I_uart3);
 	
-	//在通道0上要采集冷端温度
-	if(cthis->chni.chn_NO == 0)
+	if(phn_sys.sys_flag & SYSFLAG_READ_CET)
 	{
 		i = SmBus_AI_Read(CDT_CHN, AI_READ_ENGVAL, chk_buf, 16);
 		if( I_uart3->write(I_uart3, chk_buf, i) != RET_OK)
 			goto rd_smpval;
+		delay_ms(UART_WAIT_AFTER_WRITE_MS);
 		i = I_uart3->read(I_uart3, chk_buf, 16);
 		if(i <= 0)
 			goto rd_smpval;
@@ -798,7 +807,7 @@ static void MdlChn_run(Model *self)
 			goto rd_smpval;
 		
 		phn_sys.code_end_temperature = rst.val;
-			
+		phn_sys.sys_flag &= ~SYSFLAG_READ_CET;	
 	}
 //	
 //	//读取采样值
@@ -820,7 +829,8 @@ static void MdlChn_run(Model *self)
 	i = SmBus_AI_Read(SMBUS_MAKE_CHN(SMBUS_CHN_AI, cthis->chni.chn_NO), AI_READ_ENGVAL, chk_buf, 16);
 	if( I_uart3->write(I_uart3, chk_buf, i) != RET_OK)
 		goto err;
-	delay_ms(100);
+	delay_ms(UART_WAIT_AFTER_WRITE_MS);
+	read_again:
 	i = I_uart3->read(I_uart3, chk_buf, 16);
 	if(i <= 0)
 		goto err;
@@ -829,7 +839,8 @@ static void MdlChn_run(Model *self)
 
 	if(rst.chn_num != cthis->chni.chn_NO)
 	{
-		goto err;
+		//可能数据传了，重新读就行了
+		goto read_again;
 	}
 	else
 	{

@@ -23,7 +23,7 @@
 // const defines
 //------------------------------------------------------------------------------
 #define 	PHN_MAJOR_VER				2
-#define 	PHN_MINOR_VER				6
+#define 	PHN_MINOR_VER				20
 
 
 const unsigned short daytab[13]={0,31,59,90,120,151,181,212,243,273,304,334,365};//非闰年月份累积天数
@@ -84,7 +84,6 @@ void System_power_on(void)
 	
 	
 	
-	phn_sys.sys_conf.power_on_time = SYS_time_sec();
 	
 	
 	STG_Set_file_position(STG_LOSE_PWR, STG_DRC_READ, 0);
@@ -114,7 +113,7 @@ void System_power_on(void)
 //		phn_sys.pwr_rcd_index = 0;
 	//记录上电时间
 	stg_pwr.flag = 1;
-	stg_pwr.happen_time_s = phn_sys.sys_conf.power_on_time;
+	stg_pwr.happen_time_s = SYS_time_sec();
 	stg_pwr.disapper_time_s = 0xffffffff;
 	STG_Set_file_position(STG_LOSE_PWR, STG_DRC_WRITE, phn_sys.pwr_rcd_index * sizeof(rcd_alm_pwr_t));
 	
@@ -131,30 +130,31 @@ void System_power_off(void)
 	phn_sys.sys_flag |= SYSFLAG_URGENCY;
 	//掉电信息无效时，就不要存储掉电时间了
 	//当擦执行了擦除掉电信息操作的时候，会出现这种情况
-//	if(phn_sys.pwr_rcd_index != 0xff)
-//	{
-//	
-//		
-//	
-//		dsp_time = SYS_time_sec();
-//		STG_Set_file_position(STG_LOSE_PWR, STG_DRC_WRITE, phn_sys.pwr_rcd_index * sizeof(rcd_alm_pwr_t) +(int)(&((rcd_alm_pwr_t *)0)->disapper_time_s));
-//		
-//		while(stg->wr_stored_data(stg, STG_LOSE_PWR, &dsp_time, sizeof(uint32_t)) != sizeof(uint32_t))
-//		{
-//			if(retry)
-//				retry --;
-//			else
-//				break;
-//			
-//		}
-//	}
+	if(phn_sys.pwr_rcd_index != 0xff)
+	{
+	
+		
+	
+		dsp_time = SYS_time_sec();
+		STG_Set_file_position(STG_LOSE_PWR, STG_DRC_WRITE, \
+		phn_sys.pwr_rcd_index * sizeof(rcd_alm_pwr_t) +(int)(&((rcd_alm_pwr_t *)0)->disapper_time_s));
+		
+		while(stg->wr_stored_data(stg, STG_LOSE_PWR, &dsp_time, sizeof(uint32_t)) != sizeof(uint32_t))
+		{
+			if(retry)
+				retry --;
+			else
+				break;
+			
+		}
+	}
 
-	phn_sys.sys_conf.power_off_time = SYS_time_sec();
 	
-	stg->wr_stored_data(stg, STG_SYS_CONF, &phn_sys.sys_conf, sizeof(phn_sys.sys_conf));
+//	stg->wr_stored_data(stg, STG_SYS_CONF, &phn_sys.sys_conf, sizeof(phn_sys.sys_conf));
 	
-	phn_sys.sys_flag &= ~SYSFLAG_URGENCY;
 	phn_sys.fs.fs_shutdown();
+	phn_sys.sys_flag &= ~SYSFLAG_URGENCY;
+
 }
 
 void System_default(void)
@@ -213,25 +213,7 @@ void System_init(void)
 	stg->rd_stored_data(stg, STG_SYS_CONF, &phn_sys.sys_conf, sizeof(phn_sys.sys_conf));
 	if(phn_sys.sys_conf.num_chn != NUM_CHANNEL)
 		System_default();
-	else
-	{
-		
-		if(phn_sys.pwr_rcd_index)	//把暂存在系统配置中的掉电时间保存到上一条记录中
-		{
-			STG_Set_file_position(STG_LOSE_PWR, STG_DRC_WRITE, \
-			(phn_sys.pwr_rcd_index - 1) * sizeof(rcd_alm_pwr_t) +(int)(&((rcd_alm_pwr_t *)0)->disapper_time_s));
-			
-			while(stg->wr_stored_data(stg, STG_LOSE_PWR, &phn_sys.sys_conf.power_off_time, sizeof(uint32_t)) != sizeof(uint32_t))
-			{
-				if(retry)
-					retry --;
-				else
-					break;
-				
-			}
-		}
-		
-	}
+
 	
 	CNA_Init();
 	for(i = 0; i < NUM_CHANNEL; i++)
@@ -242,6 +224,8 @@ void System_init(void)
 		m->init(m, &i);
 		
 	}
+	
+	MdlChn_Read_code_end_temperature();
 //	System_power_off();
 #endif	
 	
