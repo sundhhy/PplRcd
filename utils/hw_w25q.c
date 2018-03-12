@@ -195,6 +195,7 @@ int w25q_init(void)
 	w25q_mgr.w25q_flag  = 0;
 	w25q_mgr.cache_earse = 0;
 	w25q_mgr.p_sct_buf = malloc(w25q_mgr.sct_size);
+	
 	return ret;
 }
 

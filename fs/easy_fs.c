@@ -133,7 +133,7 @@ static int EFS_malloc_file_mgr(void);
 static void	EFS_flush_mgr(int No);
 static void EFS_Change_file_size(int fd, uint32_t new_size);
 static void	EFS_Regain_space(void);
-
+static void	EFS_flush_wr_position(int fd);
 static void EFS_run(void);
 static void EFS_Flush(void);
 //============================================================================//
@@ -273,8 +273,8 @@ int	EFS_open(uint8_t prt, char *path, char *mode, int	file_size)
 }
 int	EFS_close(int fd)
 {
-	file_info_t *f = &efs_mgr.arr_file_info[fd];
-	efs_file_mgt_t	*f_mgr = &efs_mgr.arr_efiles[fd];
+//	file_info_t *f = &efs_mgr.arr_file_info[fd];
+//	efs_file_mgt_t	*f_mgr = &efs_mgr.arr_efiles[fd];
 	
 	if(fd > EFS_MAX_NUM_FILES)
 		return -1;
@@ -282,15 +282,16 @@ int	EFS_close(int fd)
 	
 	efs_mgr.arr_file_info[fd].read_position = 0;
 	
+	EFS_flush_wr_position(fd);
 	//¸üÐÂÐ´Î»ÖÃ
 //	if(Sem_wait(&f->file_sem, EFS_WAIT_WR_MS) <= 0)												
 //		return -1;
-	if(f_mgr->efile_wr_position != f->write_position)
-	{
-		
-		f_mgr->efile_wr_position = f->write_position;
-		EFS_flush_mgr(fd);
-	}
+//	if(f_mgr->efile_wr_position != f->write_position)
+//	{
+//		
+//		f_mgr->efile_wr_position = f->write_position;
+//		EFS_flush_mgr(fd);
+//	}
 	efs_mgr.arr_file_info[fd].file_flag &= ~EFS_FLAG_OPENED;
 //	Sem_post(&f->file_sem);
 	return 0;
@@ -658,6 +659,26 @@ static int EFS_format(void)
 	return RET_OK;
 }
 
+
+
+static void	EFS_flush_wr_position(int fd)
+{
+	file_info_t *f = &efs_mgr.arr_file_info[fd];
+	efs_file_mgt_t	*f_mgr = &efs_mgr.arr_efiles[fd];
+	
+	if(fd > EFS_MAX_NUM_FILES)
+		return;
+	
+	
+
+	if(f_mgr->efile_wr_position != f->write_position)
+	{
+		
+		f_mgr->efile_wr_position = f->write_position;
+		EFS_flush_mgr(fd);
+	}
+}
+
 static void 	EFS_Flush(void)
 {
 	int i;
@@ -667,7 +688,8 @@ static void 	EFS_Flush(void)
 		EFS_FSH(i).fsh_flush();
 		
 	}
-	
+	for(i = 0; i < EFS_MAX_NUM_FILES; i++)
+		EFS_flush_wr_position(i);
 	
 	
 	

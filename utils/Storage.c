@@ -9,17 +9,21 @@
 // const defines
 //------------------------------------------------------------------------------
 
-//记录文件结构：[通道报警记录 * NUM_CHANNEL | 掉电记录]
-	
+//记录文件结构：[ 掉电记录 | 通道报警记录 * NUM_CHANNEL | 累计值]
+
 #define STG_LSTPWR_FILE_OFFSET			0
-#define	STG_LSTPWR_FILE_SIZE				STG_MAX_NUM_CHNALARM * sizeof(rcd_alm_pwr_t)
+#define	STG_CHN_PWR_SIZE				STG_MAX_NUM_CHNALARM * sizeof(rcd_alm_pwr_t)
 	
-#define STG_ALARM_FILE_OFFSET				STG_LSTPWR_FILE_SIZE
+#define STG_ALARM_FILE_OFFSET				STG_CHN_PWR_SIZE
 #define STG_CHN_ALARM_FILE_SIZE 		STG_MAX_NUM_CHNALARM * sizeof(rcd_alm_pwr_t)
 	
 #define STG_SUM_FILE_OFFSET				STG_ALARM_FILE_OFFSET + NUM_CHANNEL * STG_CHN_ALARM_FILE_SIZE
 #define STG_CHN_SUM_FILE_SIZE 		sizeof(rcd_chn_accumlated_t)
 #define STG_SUM_FILE_SIZE 				NUM_CHANNEL * STG_CHN_SUM_FILE_SIZE
+
+
+#define STG_PAS_SIZE								(STG_CHN_PWR_SIZE + STG_CHN_PWR_SIZE + STG_CHN_SUM_FILE_SIZE) * NUM_CHANNEL
+
 //------------------------------------------------------------------------------
 // module global vars
 //------------------------------------------------------------------------------
@@ -37,9 +41,8 @@
 // const defines
 //------------------------------------------------------------------------------
 #define STRG_SYS				phn_sys
-#define STRG_RCD_FSH_NUM		FSH_W25Q_NUM
+#define STRG_RCD_FSH_NUM		FSH_FM25_NUM
 #define STRG_CFG_FSH_NUM		FSH_FM25_NUM
-#define RCD_ALARM_NUM				100   //记录容量少于这个数值时，要产生报警
 
 #define RCD_ERR					1
 #define RCD_READED			2
@@ -164,7 +167,7 @@ int	STG_Set_file_position(uint8_t	file_type, uint8_t rd_or_wr, uint32_t position
 	}
 	else if(IS_LOSE_PWR(file_type))
 	{
-		if(position > STG_LSTPWR_FILE_SIZE)
+		if(position > STG_CHN_PWR_SIZE)
 		{
 			return ERR_PARAM_BAD;
 			
@@ -215,7 +218,7 @@ void STG_Erase_file(uint8_t	file_type)
 	{
 		
 		erase_addr[0] = STG_LSTPWR_FILE_OFFSET;
-		erase_addr[1] = STG_LSTPWR_FILE_SIZE;
+		erase_addr[1] = STG_CHN_PWR_SIZE;
 	}
 	
 	STRG_SYS.fs.fs_erase_file(fd, erase_addr[0] , erase_addr[1]);
@@ -689,14 +692,14 @@ static int	STG_Acc_lose_pwr(uint8_t	drc, void *p, int len)
 	
 	if(drc == STG_DRC_READ)
 	{
-		if((len + p_fnf->read_position) >= (STG_LSTPWR_FILE_SIZE + STG_LSTPWR_FILE_OFFSET))
+		if((len + p_fnf->read_position) >= (STG_CHN_PWR_SIZE + STG_LSTPWR_FILE_OFFSET))
 			return 0;
 		
 		return STRG_SYS.fs.fs_read(fd, p, len);
 	}
 	else
 	{
-		if((len + p_fnf->write_position) >= (STG_LSTPWR_FILE_SIZE + STG_LSTPWR_FILE_OFFSET))
+		if((len + p_fnf->write_position) >= (STG_CHN_PWR_SIZE + STG_LSTPWR_FILE_OFFSET))
 			return 0;
 		return STRG_SYS.fs.fs_write(fd, p, len);
 	}
@@ -1033,17 +1036,17 @@ static int 	STG_Open_file(uint8_t type, uint32_t file_size)
 	}
 	else if(IS_LOSE_PWR(type))
 	{
-		fd = STRG_SYS.fs.fs_open(STRG_RCD_FSH_NUM, "alm_lost_pwr", "r", 4096);
+		fd = STRG_SYS.fs.fs_open(STRG_RCD_FSH_NUM, "alm_lost_pwr", "r", STG_PAS_SIZE);
 		
 	}
 	else if(IS_CHN_ALARM(type))
 	{
-		fd = STRG_SYS.fs.fs_open(STRG_RCD_FSH_NUM, "alm_lost_pwr", "r", 4096);
+		fd = STRG_SYS.fs.fs_open(STRG_RCD_FSH_NUM, "alm_lost_pwr", "r", STG_PAS_SIZE);
 		
 	}
 	else if(IS_CHN_SUM(type))
 	{
-		fd = STRG_SYS.fs.fs_open(STRG_RCD_FSH_NUM, "alm_lost_pwr", "r", 4096);
+		fd = STRG_SYS.fs.fs_open(STRG_RCD_FSH_NUM, "alm_lost_pwr", "r", STG_PAS_SIZE);
 		
 	}
 	else if(IS_CHN_DATA(type))

@@ -157,8 +157,8 @@ void FM25_info(fsh_info_t *info)
 	info->page_size = 64;
 	info->total_pagenum = 8;
 #else
-	info->page_size = 512;
-	info->total_pagenum = 8;
+	info->page_size = 64;
+	info->total_pagenum = 128;
 #endif
 	info->num_sct = 0;
 	info->num_blk = 0;
@@ -346,11 +346,13 @@ static void FM25_cmd_addr(uint8_t cmd, uint16_t addr)
 	tmp_u8 = addr & 0x00ff;
 	FM25_SPI_WRITE(&tmp_u8, 1);
 	
-#else
+#else FM25_DEVTYPE == FM25L64B
+	// op-code (8-bit) | address(16 -bit ,高3位被忽视)
 	tmp_u8 = cmd;
 	FM25_SPI_WRITE(&tmp_u8, 1);
 	
-	tmp_u8 = (addr & 0x100) >> 5;
+	
+	tmp_u8 = (addr & 0xff00) >> 8;
 	FM25_SPI_WRITE(&tmp_u8, 1);
 	
 	tmp_u8 = addr & 0x00ff;

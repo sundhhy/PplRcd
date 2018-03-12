@@ -14,9 +14,9 @@
 //------------------------------------------------------------------------------
 // const defines
 //------------------------------------------------------------------------------
-#define FM25L04B					0
-#define FM25L64B					1
-#define FM25_DEVTYPE				FM25L64B
+#define FM25L04B					0		//512 * 8 bit
+#define FM25L64B					1		//8192 * 8 bit
+#define FM25_DEVTYPE				FM25L64B		
 
 #define FM25CL64_WREN				0x06
 #define FM25CL64_WRDI				0x04
