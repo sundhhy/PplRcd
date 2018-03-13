@@ -837,9 +837,10 @@ static void HMI_CRV_HST_Run(HMI *self)
 	Model						*p_mdl ;
 	Button					*p_btn = BTN_Get_Sington();
 	data_in_fsh_t			d;
-	crv_val_t				cval;
+//	crv_val_t				cval;
 	uint16_t				i, count, end, need_clean = 0;
 	int						read_len = 0;
+	uint8_t					crv_prc;
 	//读取一条就记录记录一条
 	//知道屏幕上容纳不下了，或者记录读完了
 	
@@ -872,8 +873,9 @@ static void HMI_CRV_HST_Run(HMI *self)
 		count = 0;
 		
 		p_mdl = g_arr_p_chnData[i]->p_mdl;
-		p_mdl->getMdlData(p_mdl, chnaux_upper_limit, &cval.up_limit);
-		p_mdl->getMdlData(p_mdl, chnaux_lower_limit, &cval.lower_limit);
+//		p_mdl->getMdlData(p_mdl, chnaux_upper_limit, &cval.up_limit);
+//		p_mdl->getMdlData(p_mdl, chnaux_lower_limit, &cval.lower_limit);
+//		p_mdl->getMdlData(p_mdl, AUX_PERCENTAGE, &crv_prc);
 		
 		STG_Set_file_position(STG_CHN_DATA(i), STG_DRC_READ, hst_mgr.arr_hst_num[i] * sizeof(data_in_fsh_t));	
 		p_crv->reset(cthis->arr_crv_fd[i]);
@@ -888,8 +890,10 @@ static void HMI_CRV_HST_Run(HMI *self)
 			if(d.rcd_time_s == 0xffffffff)
 				continue;
 			
-			cval.val = d.rcd_val;
-			p_crv->add_point(cthis->arr_crv_fd[i], &cval);
+//			cval.val = d.rcd_val;
+//			p_mdl->getMdlData(p_mdl, AUX_PERCENTAGE, &crv_prc);
+			crv_prc = MdlChn_Cal_prc(p_mdl, d.rcd_val);
+			p_crv->add_point(cthis->arr_crv_fd[i], crv_prc);
 			count ++;
 			if(count > end)
 				break;
@@ -949,8 +953,9 @@ static void HMI_CRV_RTV_Run(HMI *self)
 	Curve 					*p_crv = CRV_Get_Sington();
 //	HMI				*p_hmi = SUPER_PTR(cthis, HMI);
 	Model						*p_mdl ;
-	crv_val_t				cval;
+//	crv_val_t				cval;
 	int							i;
+	uint8_t			crv_prc;
 //	int				range = 100;
 //	
 //	uint8_t			vy0 = 208;
@@ -977,20 +982,22 @@ static void HMI_CRV_RTV_Run(HMI *self)
 		
 		p_mdl = g_arr_p_chnData[i]->p_mdl;
 		
-		p_mdl->getMdlData(p_mdl, chnaux_upper_limit, &cval.up_limit);
-		p_mdl->getMdlData(p_mdl, chnaux_lower_limit, &cval.lower_limit);
-		if(p_mdl->getMdlData(p_mdl, AUX_DATA, &cval.val) != RET_OK)
-		{
-			
-			cval.val = cval.lower_limit;
-		}
+//		p_mdl->getMdlData(p_mdl, chnaux_upper_limit, &cval.up_limit);
+//		p_mdl->getMdlData(p_mdl, chnaux_lower_limit, &cval.lower_limit);
+//		if(p_mdl->getMdlData(p_mdl, AUX_DATA, &cval.val) != RET_OK)
+//		{
+//			
+//			cval.val = cval.lower_limit;
+//		}
 
-		p_crv->add_point(cthis->arr_crv_fd[i], &cval);
+		p_mdl->getMdlData(p_mdl, AUX_PERCENTAGE, &crv_prc);
+		
+		p_crv->add_point(cthis->arr_crv_fd[i], crv_prc);
 		
 		if((cthis->chn_show_map & (1 << i)) == 0) {
 			continue;
 		}		
-		sprintf(g_arr_p_chnData[i]->cnt.data, "%%%3d", cval.prc);
+		sprintf(g_arr_p_chnData[i]->cnt.data, "%%%3d",crv_prc);
 		g_arr_p_chnData[i]->cnt.len = strlen(g_arr_p_chnData[i]->cnt.data);
 		g_arr_p_chnData[i]->p_gp->vdraw(g_arr_p_chnData[i]->p_gp, &g_arr_p_chnData[i]->cnt, &g_arr_p_chnData[i]->area);
 		

@@ -242,7 +242,7 @@ void MdlChn_default_conf(int chn_num);
 void MdlChn_default_alarm(int chn_num);
 void MdlChn_Clean_Alamr(int chn_num);
 int MdlChn_Commit_conf(int chn_num);			//提交修改,会把通道的配置写入存储和发送给通道版
-
+uint8_t  MdlChn_Cal_prc( Model *self, int val);
 
 
 #endif

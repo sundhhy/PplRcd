@@ -469,7 +469,7 @@ static int BarHmi_Data_update(void *p_data, void *p_mdl)
 		return 0;
 	
 	
-	p_sht->p_mdl->getMdlData( p_sht->p_mdl, p_sht->cnt.mdl_aux,  &prcn);
+	p_sht->p_mdl->getMdlData( p_sht->p_mdl, AUX_PERCENTAGE,  &prcn);
 	height = max_height * prcn / 100;
 	
 	//	p_sht->p_mdl->to_string(p_sht->p_mdl, p_sht->cnt.mdl_aux, p_sht->cnt.data);

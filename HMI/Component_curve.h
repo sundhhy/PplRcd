@@ -87,7 +87,7 @@ CLASS(Curve)
 	int			(*alloc)(curve_att_t  *c);
 	void		(*free)(uint8_t  crv_fd);
 	void		(*reset)(uint8_t  crv_fd);
-	void		(*add_point)(uint8_t  crv_fd, crv_val_t *cv);
+	void		(*add_point)(uint8_t  crv_fd, uint8_t prc);
 	void		(*crv_ctl)(uint8_t  crv_fd, uint8_t	ctl, uint16_t val);
 	void		(*crv_show_bkg)(void);
 	void		(*crv_show_curve)(uint8_t  crv_fd, uint8_t show_ctl);

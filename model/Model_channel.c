@@ -143,6 +143,26 @@ int	MdlChn_save_data(uint8_t chn_num, mdl_chn_save_t *p)
 	return (sizeof(p_mdl->chni) + sizeof(p_mdl->alarm));
 }
 
+
+uint8_t  MdlChn_Cal_prc(Model *self, int val)
+{
+	Model_chn		*cthis = SUB_PTR( self, Model, Model_chn);
+	uint8_t			prc = 0;
+	
+	if(val <= cthis->chni.lower_limit)
+		prc = 0;
+	else if(val >= cthis->chni.upper_limit)
+		prc = 100;
+	else
+	{
+		prc = ((val - cthis->chni.lower_limit) * 100) / (cthis->chni.upper_limit - cthis->chni.lower_limit);
+		
+	}
+	
+	
+	
+	return prc;
+}
 void MdlChn_default_conf(int chn_num)
 {
 	Model_chn *p_mdl= Get_Mode_chn(chn_num);
@@ -852,7 +872,7 @@ static void MdlChn_run(Model *self)
 	if(phn_sys.sys_conf.cold_end_way)
 	{
 		
-		rst.val += phn_sys.sys_conf.CJC;
+		rst.val -= phn_sys.sys_conf.CJC;
 	}
 	if(rst.val != cthis->chni.value)
 	{
@@ -1567,20 +1587,20 @@ static int  MdlChn_to_percentage( Model *self, void *arg)
 {
 	Model_chn		*cthis = SUB_PTR( self, Model, Model_chn);
 	uint8_t			*p = (uint8_t *)arg;
-	uint8_t			prc = 0;
+//	uint8_t			prc = 0;
+//	
+//	if(cthis->chni.value <= cthis->chni.lower_limit)
+//		prc = 0;
+//	else if(cthis->chni.value >= cthis->chni.upper_limit)
+//		prc = 100;
+//	else
+//	{
+//		prc = ((cthis->chni.value - cthis->chni.lower_limit) * 100) / (cthis->chni.upper_limit - cthis->chni.lower_limit);
+//		
+//	}
 	
-	if(cthis->chni.value <= cthis->chni.lower_limit)
-		prc = 0;
-	else if(cthis->chni.value >= cthis->chni.upper_limit)
-		prc = 100;
-	else
-	{
-		prc = ((cthis->chni.value - cthis->chni.lower_limit) * 100) / (cthis->chni.upper_limit - cthis->chni.lower_limit);
-		
-	}
 	
-	
-	*p = prc;
+	*p = MdlChn_Cal_prc(self, cthis->chni.value);
 	
 	return RET_OK;
 }

@@ -56,7 +56,7 @@ static void 	CRV_Init(Curve *self, uint8_t	num_curve);
 static int 		CRV_Alloc(curve_att_t  *c);
 static void		CRV_Free(uint8_t  crv_fd);
 static void		CRV_Reset(uint8_t  crv_fd);
-static void		CRV_Add_point(uint8_t  crv_fd, crv_val_t *cv);
+static void		CRV_Add_point(uint8_t  crv_fd, uint8_t prc);
 static void		CRV_Ctl(uint8_t  crv_fd, uint8_t	ctl, uint16_t val);
 static void		CRV_Show_bkg(void);
 static void		CRV_Show_curve(uint8_t  crv_fd, uint8_t show_ctl);
@@ -189,7 +189,7 @@ static void		CRV_Reset(uint8_t  crv_fd)
 }
 
 
-static void		CRV_Add_point(uint8_t  crv_fd, crv_val_t *cv)
+static void		CRV_Add_point(uint8_t  crv_fd, uint8_t	prc)
 {
 	uint16_t		val_y = 0;
 	uint16_t		range;
@@ -204,20 +204,21 @@ static void		CRV_Add_point(uint8_t  crv_fd, crv_val_t *cv)
 	
 	CRV_Deal_full(crv_fd);
 		
-	if(cv->val <= cv->lower_limit)
-		cv->prc = 0;
-	else if(cv->val >= cv->up_limit)
-		cv->prc = 100;
-	else
-	{
-		cv->prc = ((cv->val - cv->lower_limit) * 100) / (cv->up_limit - cv->lower_limit);
-		
-	}
-	
+//	if(cv->val <= cv->lower_limit)
+//		cv->prc = 0;
+//	else if(cv->val >= cv->up_limit)
+//		cv->prc = 100;
+//	else
+//	{
+//		cv->prc = ((cv->val - cv->lower_limit) * 100) / (cv->up_limit - cv->lower_limit);
+//		
+//	}
+	if(prc > 100)
+		prc = 100;
 	
 	
 	range = p_CRV_self->p_crv_att[crv_fd].crv_y1 - p_CRV_self->p_crv_att[crv_fd].crv_y0;
-	height = cv->prc * range / 100;
+	height = prc * range / 100;
 	val_y = p_CRV_self->p_crv_att[crv_fd].crv_y1 - height;
 	
 	if(val_y == *CRV_Get_val_y(crv_fd, p_CRV_self->p_run_info[crv_fd].next_index - 1))
