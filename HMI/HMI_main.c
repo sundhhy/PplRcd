@@ -46,10 +46,10 @@ HMI *g_p_mainHmi;
 #define	MAINHMI_TITLE		"总貌画面"
 
 //每个通道的单位
-static ro_char MAIN_hmi_code_data[] = { "<text f=24 m=0 aux=0>100</>" };
-static ro_char MAIN_hmi_code_unit[] = { "<text f=16 m=0 aux=1>m3/h</>" };
+static ro_char MAIN_hmi_code_data[] = { "<text f=24 m=0>100</>" };
+static ro_char MAIN_hmi_code_unit[] = { "<text f=16 m=0>m3/h</>" };
 //通道报警:HH HI LI LL
-static ro_char MAIN_hmi_code_alarm[] = { "<text f=16 m=0 aux=2> </>" };
+static ro_char MAIN_hmi_code_alarm[] = { "<text f=16 m=0> </>" };
 
 //------------------------------------------------------------------------------
 // local types

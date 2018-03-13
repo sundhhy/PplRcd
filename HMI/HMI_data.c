@@ -42,7 +42,7 @@ HMI *g_p_dataHmi;
 #define		DATAHMI_TITLE	"ÊıÏÔ»­Ãæ"
 
 //static const char datahmi_code_bkPic[] =  {"<bpic vx0=0 vy0=0 m=0 >21</>" };
-static const char datahmi_code_data[] = { "<text f=32 m=0 aux=0>100</>" };
+static const char datahmi_code_data[] = { "<text f=32 m=0>100</>" };
 
 
 

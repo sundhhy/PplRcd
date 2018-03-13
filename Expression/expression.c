@@ -32,7 +32,7 @@ vx0,vy0:	在屏幕上的起始坐标
 grap: 		矩形中心与边框的间距
 m		: 背景图片编号
 mdl : 要绑定的模型的种类
-aux:	与模型相关的参数
+//aux:	与模型相关的参数
 
 gr	:	grid
 bndx1/y1/x2/y2 : bonduary x1/y1/x2/y2

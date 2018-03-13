@@ -322,7 +322,7 @@ void CNA_Print_acc_val(uint16_t *p_val, char *s, char pos)
 	aligin_left:
 	//¿¿×ó¶ÔÆë
 	
-	if(num_bytes == STR_BYTES)
+	if(num_bytes >= STR_BYTES)
 		return;
 	
 	
