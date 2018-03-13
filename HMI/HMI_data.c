@@ -396,7 +396,7 @@ static int DataHmi_Data_update(void *p_data, void *p_mdl)
 	col = p_sht->id % 2;
 
 	p_sht->cnt.data = \
-		p_sht->p_mdl->to_string( p_sht->p_mdl, p_sht->cnt.mdl_aux, NULL);
+		p_sht->p_mdl->to_string( p_sht->p_mdl, AUX_DATA, NULL);
 	p_sht->cnt.len = strlen( p_sht->cnt.data);
 	p_sht->p_gp->getSize( p_sht->p_gp, p_sht->cnt.font, &sizex, &sizey);
 	sizex = sizex * p_sht->cnt.len;	
@@ -441,7 +441,7 @@ static int DataHmi_Util_update(void *p_data, void *p_mdl)
 	col = p_sht->id % 2;
 
 	p_sht->cnt.data = \
-		p_sht->p_mdl->to_string( p_sht->p_mdl, p_sht->cnt.mdl_aux, NULL);
+		p_sht->p_mdl->to_string( p_sht->p_mdl, AUX_UNIT, NULL);
 	p_sht->cnt.len = strlen( p_sht->cnt.data);
 	p_sht->p_gp->getSize( p_sht->p_gp, p_sht->cnt.font, &sizex, &sizey);
 	sizex = sizex * p_sht->cnt.len;	
@@ -481,7 +481,7 @@ static int DataHmi_Alarm_update(void *p_data, void *p_mdl)
 	col = p_sht->id % 2;
 
 	p_sht->cnt.data = \
-		p_sht->p_mdl->to_string( p_sht->p_mdl, p_sht->cnt.mdl_aux, NULL);
+		p_sht->p_mdl->to_string( p_sht->p_mdl, AUX_ALARM, NULL);
 	p_sht->cnt.len = strlen( p_sht->cnt.data);
 	p_sht->p_gp->getSize( p_sht->p_gp, p_sht->cnt.font, &sizex, &sizey);
 	sizex = sizex * p_sht->cnt.len;	

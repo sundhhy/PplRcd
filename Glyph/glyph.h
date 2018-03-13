@@ -40,7 +40,8 @@ typedef struct {
 	uint8_t		bkc;			//背景色
 	
 	uint8_t		subType;
-	uint8_t		mdl_aux;		//模型的功能参数
+	uint8_t		none;
+//	uint8_t		mdl_aux;		//模型的功能参数
 }dspContent_t;
 
 typedef struct {

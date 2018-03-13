@@ -455,7 +455,7 @@ static int MainHmi_Data_update(void *p_data, void *p_mdl)
 		return 0;
 
 	p_sht->cnt.data = \
-		p_sht->p_mdl->to_string( p_sht->p_mdl, p_sht->cnt.mdl_aux, NULL);
+		p_sht->p_mdl->to_string( p_sht->p_mdl, AUX_DATA, NULL);
 	p_sht->cnt.len = strlen( p_sht->cnt.data);
 	p_sht->p_gp->getSize( p_sht->p_gp, p_sht->cnt.font, &sizex, &sizey);
 	sizex = sizex * p_sht->cnt.len;	
@@ -496,7 +496,7 @@ static int MainHmi_Util_update(void *p_data, void *p_mdl)
 	j = p_sht->id / 3;
 
 	p_sht->cnt.data = \
-		p_sht->p_mdl->to_string( p_sht->p_mdl, p_sht->cnt.mdl_aux, NULL);
+		p_sht->p_mdl->to_string( p_sht->p_mdl, AUX_UNIT, NULL);
 	p_sht->cnt.len = strlen( p_sht->cnt.data);
 	p_sht->p_gp->getSize( p_sht->p_gp, p_sht->cnt.font, &sizex, &sizey);
 	sizex = sizex * p_sht->cnt.len;	
@@ -537,7 +537,7 @@ static int MainHmi_Alarm_update(void *p_data, void *p_mdl)
 	j = p_sht->id / 3;
 
 	p_sht->cnt.data = \
-		p_sht->p_mdl->to_string( p_sht->p_mdl, p_sht->cnt.mdl_aux, NULL);
+		p_sht->p_mdl->to_string( p_sht->p_mdl, AUX_ALARM, NULL);
 	p_sht->cnt.len = strlen( p_sht->cnt.data);
 	p_sht->p_gp->getSize( p_sht->p_gp, p_sht->cnt.font, &sizex, &sizey);
 	sizex = sizex * p_sht->cnt.len;	

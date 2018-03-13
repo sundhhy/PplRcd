@@ -53,7 +53,7 @@ sheet  		*g_arr_p_check[NUM_CHANNEL]; 		//是否显示的指示图形
 
 #define HISTORY_TITLE		"历史趋势"
 
-#define DEFAULT_MIN_DIV		'1'
+#define DEFAULT_MIN_DIV		1
 
 #define CHNSHOW_ROW_SPACE		32
 
@@ -203,8 +203,8 @@ static int	Init_RT_trendHMI( HMI *self, void *arg)
 	
 	
 	
-	cthis->str_div[0] = DEFAULT_MIN_DIV;
-
+//	cthis->str_div[0] = DEFAULT_MIN_DIV;
+	cthis->min_div = DEFAULT_MIN_DIV ;
 	
 	
 
@@ -333,7 +333,8 @@ static void RT_trendHmi_InitSheet( HMI *self )
 	p_exp = ExpCreate( "text");
 	cthis->p_div = Sheet_alloc(p_shtctl);
 	p_exp->inptSht( p_exp, (void *)RT_hmi_code_div, cthis->p_div);
-	cthis->min_div = atoi(cthis->str_div);
+//	cthis->min_div = atoi(cthis->str_div);
+	sprintf(cthis->str_div, "%d", cthis->min_div);
 	cthis->p_div->cnt.data = cthis->str_div;
 	cthis->p_div->cnt.len = strlen(cthis->p_div->cnt.data);
 //	cthis->p_div ->p_enterCmd = &g_keyHmi->shtCmd;

@@ -45,8 +45,7 @@ HMI *g_p_barGhHmi;
 
 static const char barhmi_code_clean[] = { "<cpic vx0=0 vy0=0 >12</>" };
 static const char barhmi_code_bar[] = { "<box bx=35 ></>" };
-static const char barhmi_code_textPrcn[] = { "<text f=16 m=0 mdl=chn_0 aux=3>100</>" };
-
+static const char barhmi_code_textPrcn[] = { "<text f=16 m=0>100</>" };
 
 
 //static const hmiAtt_t	barHmiAtt = { 4,4, COLOUR_GRAY, BARHMI_NUM_BTNROW, BARHMI_NUM_BTNCOL};
@@ -536,7 +535,7 @@ static int BarHmi_Util_update(void *p_data, void *p_mdl)
 	barGhHMI *self = Get_barGhHMI();
 	uint16_t bar_vx0[BARHMI_NUM_BARS] = { 30, 78, 126, 172, 220, 268};
 	
-	uint16_t utit_vy0 = 46;
+	uint16_t utit_vy0 = 48;
 	uint16_t i = p_sht->id;
 	
 	
@@ -545,7 +544,7 @@ static int BarHmi_Util_update(void *p_data, void *p_mdl)
 	if(IS_HMI_KEYHANDLE(g_p_barGhHmi->flag))
 		return 0;
 		
-	p_sht->cnt.data = p_sht->p_mdl->to_string( p_sht->p_mdl, p_sht->cnt.mdl_aux, NULL);
+	p_sht->cnt.data = p_sht->p_mdl->to_string(p_sht->p_mdl, AUX_UNIT, NULL);
 	p_sht->cnt.len = strlen(p_sht->cnt.data);
 	p_sht->area.x0 = bar_vx0[i];
 	p_sht->area.y0 = utit_vy0;

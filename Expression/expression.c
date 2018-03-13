@@ -140,16 +140,16 @@ int Set_shtContextAtt( char *p_att, sheet *p_sht)
 //		
 //	}
 	
-	if( GetKeyVal( p_att, "aux", tmpbuf, 8))
-	{
-		p_sht->cnt.mdl_aux = atoi(tmpbuf); 
-		
-		
-	}
-	else {
-		p_sht->cnt.mdl_aux = 0xff;
-		
-	}
+//	if( GetKeyVal( p_att, "aux", tmpbuf, 8))
+//	{
+//		p_sht->cnt.mdl_aux = atoi(tmpbuf); 
+//		
+//		
+//	}
+//	else {
+//		p_sht->cnt.mdl_aux = 0xff;
+//		
+//	}
 	
 	return SET_ATT_OK;
 }

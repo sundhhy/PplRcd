@@ -874,6 +874,8 @@ static void MdlChn_run(Model *self)
 		
 		rst.val -= phn_sys.sys_conf.CJC;
 	}
+	
+	
 	if(rst.val != cthis->chni.value)
 	{
 		
