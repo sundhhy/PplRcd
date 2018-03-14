@@ -3,7 +3,7 @@
 .\objects\cmd_thread.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
 .\objects\cmd_thread.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
 .\objects\cmd_thread.o: ..\..\APP\sys_cmd.h
-.\objects\cmd_thread.o: E:\sdhLib\inc\arithmetic/bit.h
+.\objects\cmd_thread.o: ..\..\sdhLib\inc\arithmetic/bit.h
 .\objects\cmd_thread.o: ..\..\APP\system.h
 .\objects\cmd_thread.o: ..\..\..\PplRcd\utils/time.h
 .\objects\cmd_thread.o: E:\PaperlessRecorder\myCode\PplRcd\project\keil5\RTE\Device\STM32F103VC\stm32f10x_conf.h
@@ -31,7 +31,7 @@
 .\objects\cmd_thread.o: ..\..\device\deviceId.h
 .\objects\cmd_thread.o: ..\..\device\dev_cmd.h
 .\objects\cmd_thread.o: ..\..\device\dev_char.h
-.\objects\cmd_thread.o: E:\sdhLib\inc\lw_oopc.h
+.\objects\cmd_thread.o: ..\..\sdhLib\inc\lw_oopc.h
 .\objects\cmd_thread.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
 .\objects\cmd_thread.o: ..\..\device\dev_lcd.h
 .\objects\cmd_thread.o: ..\..\APP\TDD.h

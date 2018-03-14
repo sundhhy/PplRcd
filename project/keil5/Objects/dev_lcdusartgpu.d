@@ -4,7 +4,7 @@
 .\objects\dev_lcdusartgpu.o: ..\..\device\deviceId.h
 .\objects\dev_lcdusartgpu.o: ..\..\device\dev_cmd.h
 .\objects\dev_lcdusartgpu.o: ..\..\device\dev_char.h
-.\objects\dev_lcdusartgpu.o: E:\sdhLib\inc\lw_oopc.h
+.\objects\dev_lcdusartgpu.o: ..\..\sdhLib\inc\lw_oopc.h
 .\objects\dev_lcdusartgpu.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
 .\objects\dev_lcdusartgpu.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
 .\objects\dev_lcdusartgpu.o: ..\..\device\dev_lcd.h
@@ -35,11 +35,11 @@
 .\objects\dev_lcdusartgpu.o: d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\StdPeriph_Driver\inc\misc.h
 .\objects\dev_lcdusartgpu.o: ..\..\..\PplRcd\utils/PHN_string.h
 .\objects\dev_lcdusartgpu.o: ..\..\device\dev_LCD/UsartGpu/dev_LcdUsartGpu.h
-.\objects\dev_lcdusartgpu.o: E:\sdhLib\inc\os/os_depend.h
+.\objects\dev_lcdusartgpu.o: ..\..\sdhLib\inc\os/os_depend.h
 .\objects\dev_lcdusartgpu.o: ..\..\APP\sdhlibConf.h
-.\objects\dev_lcdusartgpu.o: E:\sdhLib\inc\os/rtx/rtx_depend.h
-.\objects\dev_lcdusartgpu.o: E:\sdhLib\inc\basis/sdhDebug.h
+.\objects\dev_lcdusartgpu.o: ..\..\sdhLib\inc\os/rtx/rtx_depend.h
+.\objects\dev_lcdusartgpu.o: ..\..\sdhLib\inc\basis/sdhDebug.h
 .\objects\dev_lcdusartgpu.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
-.\objects\dev_lcdusartgpu.o: E:\sdhLib\inc\sdhDef.h
-.\objects\dev_lcdusartgpu.o: E:\sdhLib\inc\basis/sdhError.h
-.\objects\dev_lcdusartgpu.o: E:\sdhLib\inc\basis/macros.h
+.\objects\dev_lcdusartgpu.o: ..\..\sdhLib\inc\sdhDef.h
+.\objects\dev_lcdusartgpu.o: ..\..\sdhLib\inc\basis/sdhError.h
+.\objects\dev_lcdusartgpu.o: ..\..\sdhLib\inc\basis/macros.h

@@ -3,6 +3,7 @@
 #include "sdhDef.h"
 #include "system.h"
 #include "ModelFactory.h"
+#include "os/os_depend.h"
 #include "utils/Storage.h"
 #include "arithmetic/bit.h"
 #include "channel_accumulated.h"
@@ -158,7 +159,6 @@ static void Ctime_periodic (void const *arg)
 		sprintf(chn_name,"chn_%d", i);
 		p_md = ModelCreate(chn_name);
 		p_md->run(p_md);
-		
 	}
 	
 	

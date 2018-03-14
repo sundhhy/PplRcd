@@ -11,5 +11,5 @@
 .\objects\testglyph.o: ..\..\device\deviceId.h
 .\objects\testglyph.o: ..\..\device\dev_cmd.h
 .\objects\testglyph.o: ..\..\device\dev_char.h
-.\objects\testglyph.o: E:\sdhLib\inc\lw_oopc.h
+.\objects\testglyph.o: ..\..\sdhLib\inc\lw_oopc.h
 .\objects\testglyph.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h

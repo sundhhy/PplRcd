@@ -21,9 +21,9 @@
 .\objects\hardwareconfig.o: d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\StdPeriph_Driver\inc\stm32f10x_tim.h
 .\objects\hardwareconfig.o: d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\StdPeriph_Driver\inc\stm32f10x_usart.h
 .\objects\hardwareconfig.o: d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\StdPeriph_Driver\inc\misc.h
-.\objects\hardwareconfig.o: E:\sdhLib\inc\sdhDef.h
+.\objects\hardwareconfig.o: ..\..\sdhLib\inc\sdhDef.h
 .\objects\hardwareconfig.o: ..\..\APP\sdhlibConf.h
-.\objects\hardwareconfig.o: E:\sdhLib\inc\basis/sdhDebug.h
+.\objects\hardwareconfig.o: ..\..\sdhLib\inc\basis/sdhDebug.h
 .\objects\hardwareconfig.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
-.\objects\hardwareconfig.o: E:\sdhLib\inc\basis/sdhError.h
-.\objects\hardwareconfig.o: E:\sdhLib\inc\basis/macros.h
+.\objects\hardwareconfig.o: ..\..\sdhLib\inc\basis/sdhError.h
+.\objects\hardwareconfig.o: ..\..\sdhLib\inc\basis/macros.h

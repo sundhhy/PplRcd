@@ -1,7 +1,7 @@
 .\objects\gh_none.o: ..\..\Glyph\Gh_None.c
 .\objects\gh_none.o: ..\..\Glyph\Gh_none.h
 .\objects\gh_none.o: ..\..\Glyph\Glyph.h
-.\objects\gh_none.o: E:\sdhLib\inc\lw_oopc.h
+.\objects\gh_none.o: ..\..\sdhLib\inc\lw_oopc.h
 .\objects\gh_none.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
 .\objects\gh_none.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
 .\objects\gh_none.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h

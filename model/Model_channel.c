@@ -70,7 +70,7 @@ Model		*arr_p_mdl_chn[NUM_CHANNEL];
 // const defines
 //------------------------------------------------------------------------------
 #define  TDD_SAVE_DATA		0
-#define UART_WAIT_AFTER_WRITE_MS		10
+#define UART_WAIT_AFTER_WRITE_MS		50
 //------------------------------------------------------------------------------
 // local types
 //------------------------------------------------------------------------------
@@ -158,6 +158,7 @@ uint8_t  MdlChn_Cal_prc(Model *self, int val)
 		prc = ((val - cthis->chni.lower_limit) * 100) / (cthis->chni.upper_limit - cthis->chni.lower_limit);
 		
 	}
+	
 	
 	
 	
@@ -869,6 +870,13 @@ static void MdlChn_run(Model *self)
 	
 	rst.val = Zero_shift_K_B(&cthis->chni, rst.val);
 	rst.val = Cut_small_signal(&cthis->chni, rst.val);
+	
+	//test
+//	if((rst.val < 5000) && (cthis->chni.chn_NO == 1))
+//	{
+//		rst.val ++;
+//		
+//	}
 	if(phn_sys.sys_conf.cold_end_way)
 	{
 		

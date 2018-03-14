@@ -365,7 +365,7 @@
               <MiscControls>--diag_suppress=1295;--diag_suppress=1;--diag_suppress=177-D</MiscControls>
               <Define>USE_STDPERIPH_DRIVER, STM32F10X_HD, USE_STM3210B_EVAL,HSE_VALUE=8000000,_MCU_ENDIAN=1</Define>
               <Undefine></Undefine>
-              <IncludePath>..\..\configs;..\..\BSP;E:\sdhLib\inc;..\..\device\dev_LCD\nokia_5110;..\..\..\PplRcd;..\..\drive;..\..\device;..\..\Glyph;..\..\Expression;..\..\Views;..\..\REEC;..\..\model;..\..\sheet;..\..\usb;..\..\APP</IncludePath>
+              <IncludePath>..\..\configs;..\..\BSP;..\..\sdhLib\inc;..\..\device\dev_LCD\nokia_5110;..\..\..\PplRcd;..\..\drive;..\..\device;..\..\Glyph;..\..\Expression;..\..\Views;..\..\REEC;..\..\model;..\..\sheet;..\..\usb;..\..\APP</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -531,87 +531,62 @@
             <File>
               <FileName>marco.c</FileName>
               <FileType>1</FileType>
-              <FilePath>E:\sdhLib\src\basis\marco.c</FilePath>
+              <FilePath>..\..\sdhLib\src\basis\marco.c</FilePath>
             </File>
             <File>
               <FileName>assert.c</FileName>
               <FileType>1</FileType>
-              <FilePath>E:\sdhLib\src\basis\assert.c</FilePath>
+              <FilePath>..\..\sdhLib\src\basis\assert.c</FilePath>
             </File>
             <File>
               <FileName>except.c</FileName>
               <FileType>1</FileType>
-              <FilePath>E:\sdhLib\src\basis\except.c</FilePath>
-            </File>
-            <File>
-              <FileName>cycQueue.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>E:\sdhLib\src\arithmetic\cycQueue.c</FilePath>
-            </File>
-            <File>
-              <FileName>smart_bus.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>E:\sdhLib\src\Communication\smart_bus.c</FilePath>
-            </File>
-            <File>
-              <FileName>list.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>E:\sdhLib\src\arithmetic\list.c</FilePath>
-            </File>
-            <File>
-              <FileName>rtx_depend.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>E:\sdhLib\src\os\RTX\rtx_depend.c</FilePath>
+              <FilePath>..\..\sdhLib\src\basis\except.c</FilePath>
             </File>
             <File>
               <FileName>mem.c</FileName>
               <FileType>1</FileType>
-              <FilePath>E:\sdhLib\src\mem\mem.c</FilePath>
+              <FilePath>..\..\sdhLib\src\mem\mem.c</FilePath>
             </File>
             <File>
-              <FileName>Ping_PongBuf.c</FileName>
+              <FileName>cycQueue.c</FileName>
               <FileType>1</FileType>
-              <FilePath>E:\sdhLib\src\mem\Ping_PongBuf.c</FilePath>
+              <FilePath>..\..\sdhLib\src\arithmetic\cycQueue.c</FilePath>
+            </File>
+            <File>
+              <FileName>list.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\sdhLib\src\arithmetic\list.c</FilePath>
             </File>
             <File>
               <FileName>bit.c</FileName>
               <FileType>1</FileType>
-              <FilePath>E:\sdhLib\src\arithmetic\bit.c</FilePath>
+              <FilePath>..\..\sdhLib\src\arithmetic\bit.c</FilePath>
             </File>
             <File>
-              <FileName>bit.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>E:\sdhLib\inc\arithmetic\bit.h</FilePath>
+              <FileName>Ping_PongBuf.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\sdhLib\src\mem\Ping_PongBuf.c</FilePath>
             </File>
             <File>
-              <FileName>assert.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>E:\sdhLib\inc\basis\assert.h</FilePath>
+              <FileName>smart_bus.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\sdhLib\src\Communication\smart_bus.c</FilePath>
             </File>
             <File>
-              <FileName>sdhError.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>E:\sdhLib\inc\basis\sdhError.h</FilePath>
+              <FileName>rtx_depend.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\sdhLib\src\os\RTX\rtx_depend.c</FilePath>
             </File>
             <File>
               <FileName>modbusRTU_cli.c</FileName>
               <FileType>1</FileType>
-              <FilePath>E:\sdhLib\src\Communication\modbusRTU_cli.c</FilePath>
-            </File>
-            <File>
-              <FileName>modbusRTU_cli.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>E:\sdhLib\inc\Communication\modbusRTU_cli.h</FilePath>
+              <FilePath>..\..\sdhLib\src\Communication\modbusRTU_cli.c</FilePath>
             </File>
             <File>
               <FileName>crc.c</FileName>
               <FileType>1</FileType>
-              <FilePath>E:\sdhLib\src\arithmetic\crc.c</FilePath>
-            </File>
-            <File>
-              <FileName>crc.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>E:\sdhLib\inc\arithmetic\crc.h</FilePath>
+              <FilePath>..\..\sdhLib\src\arithmetic\crc.c</FilePath>
             </File>
           </Files>
         </Group>

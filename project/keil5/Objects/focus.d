@@ -3,7 +3,7 @@
 .\objects\focus.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
 .\objects\focus.o: ..\..\sheet\sheet.h
 .\objects\focus.o: ..\..\Glyph\glyph.h
-.\objects\focus.o: E:\sdhLib\inc\lw_oopc.h
+.\objects\focus.o: ..\..\sdhLib\inc\lw_oopc.h
 .\objects\focus.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
 .\objects\focus.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
 .\objects\focus.o: ..\..\device\device.h
@@ -14,15 +14,15 @@
 .\objects\focus.o: ..\..\APP\TDD.h
 .\objects\focus.o: ..\..\model\ModelFactory.h
 .\objects\focus.o: ..\..\model\Model.h
-.\objects\focus.o: E:\sdhLib\inc\arithmetic/list.h
-.\objects\focus.o: E:\sdhLib\inc\basis/macros.h
-.\objects\focus.o: E:\sdhLib\inc\sdhDef.h
+.\objects\focus.o: ..\..\sdhLib\inc\arithmetic/list.h
+.\objects\focus.o: ..\..\sdhLib\inc\basis/macros.h
+.\objects\focus.o: ..\..\sdhLib\inc\sdhDef.h
 .\objects\focus.o: ..\..\APP\sdhlibConf.h
-.\objects\focus.o: E:\sdhLib\inc\basis/sdhDebug.h
+.\objects\focus.o: ..\..\sdhLib\inc\basis/sdhDebug.h
 .\objects\focus.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
-.\objects\focus.o: E:\sdhLib\inc\basis/sdhError.h
-.\objects\focus.o: E:\sdhLib\inc\basis/assert.h
-.\objects\focus.o: E:\sdhLib\inc\basis/except.h
+.\objects\focus.o: ..\..\sdhLib\inc\basis/sdhError.h
+.\objects\focus.o: ..\..\sdhLib\inc\basis/assert.h
+.\objects\focus.o: ..\..\sdhLib\inc\basis/except.h
 .\objects\focus.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\setjmp.h
 .\objects\focus.o: ..\..\model\Model_channel.h
 .\objects\focus.o: ..\..\APP\system.h
@@ -51,4 +51,4 @@
 .\objects\focus.o: ..\..\model\ModelTime.h
 .\objects\focus.o: ..\..\..\PplRcd\utils/rtc_pcf8563.h
 .\objects\focus.o: ..\..\..\PplRcd\utils/rtc.h
-.\objects\focus.o: E:\sdhLib\inc\basis/assert.h
+.\objects\focus.o: ..\..\sdhLib\inc\basis/assert.h

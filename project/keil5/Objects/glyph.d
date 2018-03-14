@@ -2,7 +2,7 @@
 .\objects\glyph.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
 .\objects\glyph.o: ..\..\Glyph\testGlyph.h
 .\objects\glyph.o: ..\..\Glyph\Glyph.h
-.\objects\glyph.o: E:\sdhLib\inc\lw_oopc.h
+.\objects\glyph.o: ..\..\sdhLib\inc\lw_oopc.h
 .\objects\glyph.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
 .\objects\glyph.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
 .\objects\glyph.o: ..\..\device\device.h
@@ -12,12 +12,12 @@
 .\objects\glyph.o: ..\..\device\dev_lcd.h
 .\objects\glyph.o: ..\..\APP\TDD.h
 .\objects\glyph.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
-.\objects\glyph.o: E:\sdhLib\inc\basis/sdhDebug.h
+.\objects\glyph.o: ..\..\sdhLib\inc\basis/sdhDebug.h
 .\objects\glyph.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
-.\objects\glyph.o: E:\sdhLib\inc\sdhDef.h
+.\objects\glyph.o: ..\..\sdhLib\inc\sdhDef.h
 .\objects\glyph.o: ..\..\APP\sdhlibConf.h
-.\objects\glyph.o: E:\sdhLib\inc\basis/sdhError.h
-.\objects\glyph.o: E:\sdhLib\inc\basis/macros.h
+.\objects\glyph.o: ..\..\sdhLib\inc\basis/sdhError.h
+.\objects\glyph.o: ..\..\sdhLib\inc\basis/macros.h
 .\objects\glyph.o: ..\..\APP\system.h
 .\objects\glyph.o: ..\..\..\PplRcd\utils/time.h
 .\objects\glyph.o: E:\PaperlessRecorder\myCode\PplRcd\project\keil5\RTE\Device\STM32F103VC\stm32f10x_conf.h

@@ -24,8 +24,8 @@
 .\objects\times.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
 .\objects\times.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
 .\objects\times.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
-.\objects\times.o: E:\sdhLib\inc\basis/sdhError.h
+.\objects\times.o: ..\..\sdhLib\inc\basis/sdhError.h
 .\objects\times.o: ..\..\BSP\mySystemClock.h
-.\objects\times.o: E:\sdhLib\inc\mem/CiiMem.h
-.\objects\times.o: E:\sdhLib\inc\basis/except.h
+.\objects\times.o: ..\..\sdhLib\inc\mem/CiiMem.h
+.\objects\times.o: ..\..\sdhLib\inc\basis/except.h
 .\objects\times.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\setjmp.h
