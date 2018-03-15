@@ -847,6 +847,8 @@ static void MdlChn_run(Model *self)
 	
 	//读取工程值
 //	rd_engval:	
+	
+	//test
 	i = SmBus_AI_Read(SMBUS_MAKE_CHN(SMBUS_CHN_AI, cthis->chni.chn_NO), AI_READ_ENGVAL, chk_buf, 16);
 	if( I_uart3->write(I_uart3, chk_buf, i) != RET_OK)
 		goto err;

@@ -777,12 +777,12 @@ static void HST_Init(void)
 
 static void HST_Flex(uint8_t new_mdiv, uint8_t old_mdiv)
 {
-	uint8_t		i = 0;
+//	uint8_t		i = 0;
 		
-	for(i = 0; i < NUM_CHANNEL; i++)
-	{
-		hst_mgr.arr_hst_num[i] = 0;
-	}
+//	for(i = 0; i < NUM_CHANNEL; i++)
+//	{
+//		hst_mgr.arr_hst_num[i] = 0;
+//	}
 	hst_mgr.hst_flags &= ~HST_FLAG_DONE;
 
 	

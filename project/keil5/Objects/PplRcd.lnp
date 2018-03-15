@@ -102,7 +102,7 @@
 ".\objects\usb.o"
 ".\objects\easy_fs.o"
 ".\objects\rtx_conf_cm.o"
-"d:\Keil_v5\ARM\PACK\ARM\CMSIS\4.4.0\CMSIS\RTOS\RTX\LIB\ARM\RTX_CM3.lib"
+"d:\Keil_v5\ARM\PACK\ARM\CMSIS\5.0.0\CMSIS\RTOS\RTX\LIB\ARM\RTX_CM3.lib"
 ".\objects\startup_stm32f10x_hd.o"
 ".\objects\system_stm32f10x.o"
 ".\objects\misc.o"

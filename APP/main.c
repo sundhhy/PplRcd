@@ -153,7 +153,7 @@ int main (void) {
 	
 	p_mdl_time = ModelCreate("time");
 	
-	USB_Rgt_event_hdl(Main_USB_event);
+	
 	osKernelStart ();  
 
 	MBA_Init();
@@ -161,6 +161,13 @@ int main (void) {
 	{
 		phn_sys.sys_flag |= SYSFLAG_ERR;
 	}
+	else
+	{
+		
+		USB_Rgt_event_hdl(Main_USB_event);
+	}
+	
+	
 	phn_sys.sys_flag |= SYSFLAG_POWEON;
 	p_tips = TIP_Get_Sington();
 	

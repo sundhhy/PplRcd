@@ -554,8 +554,8 @@ ARM Macro Assembler    Page 9
 Command Line: --debug --xref --cpu=Cortex-M3 --apcs=interwork --depend=.\object
 s\startup_stm32f10x_hd.d -o.\objects\startup_stm32f10x_hd.o -IE:\PaperlessRecor
 der\myCode\PplRcd\project\keil5\RTE -IE:\PaperlessRecorder\myCode\PplRcd\projec
-t\keil5\RTE\Device\STM32F103VC -Id:\Keil_v5\ARM\PACK\ARM\CMSIS\4.4.0\CMSIS\Incl
-ude -Id:\Keil_v5\ARM\PACK\ARM\CMSIS\4.4.0\CMSIS\RTOS\RTX\INC -Id:\Keil_v5\ARM\P
+t\keil5\RTE\Device\STM32F103VC -Id:\Keil_v5\ARM\PACK\ARM\CMSIS\5.0.0\CMSIS\Incl
+ude -Id:\Keil_v5\ARM\PACK\ARM\CMSIS\5.0.0\CMSIS\RTOS\RTX\INC -Id:\Keil_v5\ARM\P
 ACK\Keil\STM32F1xx_DFP\2.1.0 -Id:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Dev
 ice\Include -Id:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\StdPeriph_Dri
 ver\inc --predefine="__RTX SETA 1" --predefine="__MICROLIB SETA 1" --predefine=
