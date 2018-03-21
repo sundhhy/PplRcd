@@ -6,7 +6,7 @@
 //< name> val </>
 #define BEGIN_FLAG	'<'
 #define	BEGIN_STR	"<"
-
+#define	END_STR	"</>"
 #define END_FLAG	'>'
 #define ATT_SPLIT_CHAR	' '
 #define TAIL_FLAG	'/'
@@ -217,6 +217,8 @@ void *GetNameVale( char *context, char *name, char **value, int *len)
 {
 	
 	char	*pp;
+	char	*p_end;
+	int		name_len = 0;
 	pp = strstr((const char*)context, name);
 	if( pp == NULL)
 	{
@@ -227,14 +229,14 @@ void *GetNameVale( char *context, char *name, char **value, int *len)
 		pp ++;
 	pp ++;
 	*value = pp;
-//	while( *pp++ != BEGIN_FLAG)
-//	{
-//			(*len) ++;
-//	}
-	*len =  strcspn( pp, BEGIN_STR);	
+
+//	*len =  strcspn( pp, BEGIN_STR);	
 	
-//	while( *pp != END_FLAG)
-	pp += *len;
+	p_end = strstr( pp, END_STR);
+	if(p_end)
+		name_len = p_end - pp;
+	*len = name_len;	
+	pp += name_len;
 	
 	
 	return pp;
