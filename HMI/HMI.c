@@ -38,6 +38,7 @@ keyboard_commit	kbr_cmt = NULL;
 // const defines
 //------------------------------------------------------------------------------
 
+#define KEEP_NUM_HMI		8			//记录的历史HMI数量，当超过的时候，把最后一个替换掉，用于返回操作
 
 //------------------------------------------------------------------------------
 // local types
@@ -47,7 +48,7 @@ keyboard_commit	kbr_cmt = NULL;
 // local vars
 //------------------------------------------------------------------------------
 
-
+static HMI *arr_him_histroy[KEEP_NUM_HMI];
  
 //------------------------------------------------------------------------------
 // local function prototypes
@@ -56,10 +57,10 @@ static void	HmiShow( HMI *self);
 static void	HMI_Run( HMI *self);
 static void	SwitchHMI( HMI *self, HMI *p_hmi);
 static void	SwitchBack( HMI *self);
-static void HitHandle( HMI *self, char *s_key);
-static void LngpshHandle( HMI *self, char *s_key);
-static void DHitHandle( HMI *self, char *s_key);
-static void ConposeKeyHandle(HMI *self, char *s_key1, char *s_key2);
+static void HitHandle( HMI *self, char kcd);
+static void LngpshHandle( HMI *self, char kcd);
+static void DHitHandle( HMI *self, char kcd);
+static void ConposeKeyHandle(HMI *self, char kcd_1, char kcd_2);
 
 void	Init_focus(HMI *self);
 void	Clear_focus(HMI *self, uint8_t fouse_row, uint8_t fouse_col);
@@ -73,6 +74,10 @@ static int		HMI_Btn_backward(HMI *self);
 static void		HMI_Btn_jumpout(HMI *self);
 //static void		HMI_Btn_hit(HMI *self);
 static void HMI_Flush(void);		//定期刷屏
+
+
+static void HMI_Push_hmi(HMI *h);
+static HMI* HMI_Pop_hmi(void);
 //============================================================================//
 //            P U B L I C   F U N C T I O N S                                 //
 //============================================================================//
@@ -248,39 +253,59 @@ static void	SwitchBack( HMI *self)
 }
 
 
-static void HitHandle( HMI *self, char *s_key)
+static void HitHandle( HMI *self, char kcd)
 {
 	
 }
 
-static void LngpshHandle( HMI *self, char *s_key)
+static void LngpshHandle( HMI *self, char kcd)
 {
 	
 }
 
-static void DHitHandle( HMI *self, char *s_key)
+static void DHitHandle( HMI *self, char kcd)
 {
 	
 }
 
-static void ConposeKeyHandle(HMI *self, char *s_key1, char *s_key2)
+static void ConposeKeyHandle(HMI *self, char kcd_1, char kcd_2)
 {
-	if( !strcmp( s_key1, HMIKEY_LEFT) && !strcmp( s_key2, HMIKEY_RIGHT))
-	{
+		if(kcd_1 == KEYCODE_RIGHT && kcd_2 == KEYCODE_LEFT)
+		{
+			phn_sys.sys_flag |= SYSFLAG_SETTING;
+			self->switchHMI(self, g_p_Setup_HMI);
 
-		phn_sys.sys_flag |= SYSFLAG_SETTING;
-		self->switchHMI(self, g_p_Setup_HMI);
-	} 
-	else if( !strcmp( s_key1, HMIKEY_RIGHT) && !strcmp( s_key2, HMIKEY_LEFT)) {
-		phn_sys.sys_flag |= SYSFLAG_SETTING;
-		self->switchHMI(self, g_p_Setup_HMI);
-	}
-	else if( !strcmp( s_key1, HMIKEY_UP) && !strcmp( s_key2, HMIKEY_DOWN)) {
-		self->switchBack(self);
-	}
-	else if( !strcmp( s_key2, HMIKEY_UP) && !strcmp( s_key1, HMIKEY_DOWN)) {
-		self->switchBack(self);
-	}
+		} 
+		else if(kcd_2 == KEYCODE_RIGHT && kcd_1 == KEYCODE_LEFT) {
+			phn_sys.sys_flag |= SYSFLAG_SETTING;
+			self->switchHMI(self, g_p_Setup_HMI);
+		}
+		else if(kcd_2 == KEYCODE_UP && kcd_1 == KEYCODE_DOWN) {
+			self->switchBack(self);
+
+		}
+		else if(kcd_2 == KEYCODE_DOWN && kcd_1 == KEYCODE_UP) {
+			self->switchBack(self);
+
+		}
+	
+	
+//	if( !strcmp( s_key1, HMIKEY_LEFT) && !strcmp( s_key2, HMIKEY_RIGHT))
+//	{
+
+//		phn_sys.sys_flag |= SYSFLAG_SETTING;
+//		self->switchHMI(self, g_p_Setup_HMI);
+//	} 
+//	else if( !strcmp( s_key1, HMIKEY_RIGHT) && !strcmp( s_key2, HMIKEY_LEFT)) {
+//		phn_sys.sys_flag |= SYSFLAG_SETTING;
+//		self->switchHMI(self, g_p_Setup_HMI);
+//	}
+//	else if( !strcmp( s_key1, HMIKEY_UP) && !strcmp( s_key2, HMIKEY_DOWN)) {
+//		self->switchBack(self);
+//	}
+//	else if( !strcmp( s_key2, HMIKEY_UP) && !strcmp( s_key1, HMIKEY_DOWN)) {
+//		self->switchBack(self);
+//	}
 	
 	
 }
@@ -407,6 +432,46 @@ static void		HMI_Btn_jumpout(HMI *self)
 //	p->hit();
 //	
 //}
-
+static void HMI_Push_hmi(HMI *h)
+{
+	int i = 0;
+	while(i < KEEP_NUM_HMI)
+	{
+		
+		if(arr_him_histroy[i] == NULL)
+			break;
+		i ++;
+	}
+	
+	if(i == KEEP_NUM_HMI)
+		i = KEEP_NUM_HMI - 1;
+	
+	arr_him_histroy[i] = h;
+}
+static HMI* HMI_Pop_hmi(void)
+{
+	HMI	*r = NULL;
+	int i = 0;
+	while(i < KEEP_NUM_HMI)
+	{
+		
+		if(arr_him_histroy[i] == NULL)
+			break;
+		i ++;
+	}
+	
+	
+	
+	if(i > 0)
+	{
+		i --;
+		r = arr_him_histroy[i];
+		
+		arr_him_histroy[i] = NULL;
+	}
+	
+	return r;
+	
+}
 
 

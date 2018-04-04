@@ -60,7 +60,7 @@ static void	Setup_initSheet(HMI *self);
 static void	Setup_HMI_init_focus(HMI *self);
 static void	Setup_HMI_clear_focus(HMI *self, uint8_t fouse_row, uint8_t fouse_col);
 static void	Setup_HMI_show_focus(HMI *self, uint8_t fouse_row, uint8_t fouse_col);
-static void	Setup_HMI_hitHandle( HMI *self, char *s_key);
+static void	Setup_HMI_hitHandle( HMI *self, char kcd);
 
 
 
@@ -308,7 +308,7 @@ static void	Setup_HMI_show_focus(HMI *self, uint8_t fouse_row, uint8_t fouse_col
 }
 
 
-static void	Setup_HMI_hitHandle(HMI *self, char *s_key)
+static void	Setup_HMI_hitHandle(HMI *self, char kcd)
 {
 	
 	Setup_HMI	*cthis = SUB_PTR( self, HMI, Setup_HMI);
@@ -335,63 +335,118 @@ static void	Setup_HMI_hitHandle(HMI *self, char *s_key)
 //		return;
 //	}
 
-	if( !strcmp( s_key, HMIKEY_LEFT) )
+
+	switch(kcd)
 	{
-		if(Focus_move_left(self->p_fcuu) != RET_OK)
-			Focus_move_left(self->p_fcuu);
-		chgFouse = 1;
-	}
-	
-	if( !strcmp( s_key, HMIKEY_RIGHT) )
-	{
-		if(Focus_move_right(self->p_fcuu) != RET_OK)
-			Focus_move_right(self->p_fcuu);
-		chgFouse = 1;
-	}
-	if( !strcmp( s_key, HMIKEY_UP) )
-	{
-		if(Focus_move_up(self->p_fcuu) != RET_OK)
-			Focus_move_up(self->p_fcuu);		//焦点不允许出现在外部
-		chgFouse = 1;
-	}
-	
-	if( !strcmp( s_key, HMIKEY_DOWN) )
-	{
-		if(Focus_move_down(self->p_fcuu) != RET_OK)
-			Focus_move_down(self->p_fcuu);
-		chgFouse = 1;
-	}
-	if( !strcmp(s_key, HMIKEY_ENTER))
-	{
-		p_focus = Focus_Get_focus(self->p_fcuu);
-		if(p_focus == NULL) 
-				goto exit;
-		
-		if(p_focus->id == SHEET_PSD_TEXT) {
-//			p_cmd = p_focus->p_enterCmd;
-//			p_cmd->shtExcute(p_cmd, p_focus, self);
-			Input_Password(self);
-			goto exit;
-		} else if(cthis->unlock == 0){
+
+			case KEYCODE_UP:
+					if(Focus_move_up(self->p_fcuu) != RET_OK)
+						Focus_move_up(self->p_fcuu);		//焦点不允许出现在外部
+					chgFouse = 1;
+					break;
+			case KEYCODE_DOWN:
+					if(Focus_move_down(self->p_fcuu) != RET_OK)
+						Focus_move_down(self->p_fcuu);
+					chgFouse = 1;					
+					break;
+			case KEYCODE_LEFT:
+					if(Focus_move_left(self->p_fcuu) != RET_OK)
+						Focus_move_left(self->p_fcuu);
+					chgFouse = 1;					 
+					break;
+			case KEYCODE_RIGHT:
+					if(Focus_move_right(self->p_fcuu) != RET_OK)
+						Focus_move_right(self->p_fcuu);
+					chgFouse = 1;					 
+					break;
+
+			case KEYCODE_ENTER:
+					p_focus = Focus_Get_focus(self->p_fcuu);
+					if(p_focus == NULL) 
+							goto exit;
+					
+					if(p_focus->id == SHEET_PSD_TEXT) {
+						Input_Password(self);
+						goto exit;
+					} else if(cthis->unlock == 0){
+						
+						if(self->p_fcuu->focus_row == 3 && self->p_fcuu->focus_col) {
+							self->switchHMI(self, g_p_HMI_menu);
+						} else 
+						
+						
+						{
+							g_p_HMI_striped->arg[0] = self->p_fcuu->focus_row - 0;
+							g_p_HMI_striped->arg[1] = self->p_fcuu->focus_col;
+							
+							self->switchHMI(self, g_p_HMI_striped);
+						}
+					}					
+					break;		
+			case KEYCODE_ESC:
+					self->switchBack(self);
+					break;	
 			
-			if(self->p_fcuu->focus_row == 3 && self->p_fcuu->focus_col) {
-				self->switchHMI(self, g_p_HMI_menu);
-			} else 
-			
-			
-			{
-				g_p_HMI_striped->arg[0] = self->p_fcuu->focus_row - 0;
-				g_p_HMI_striped->arg[1] = self->p_fcuu->focus_col;
-				
-				self->switchHMI(self, g_p_HMI_striped);
-			}
-		}
 	}
-	
-	if( !strcmp(s_key, HMIKEY_ESC))
-	{
-		self->switchBack(self);
-	}
+
+
+//	if( !strcmp( s_key, HMIKEY_LEFT) )
+//	{
+//		if(Focus_move_left(self->p_fcuu) != RET_OK)
+//			Focus_move_left(self->p_fcuu);
+//		chgFouse = 1;
+//	}
+//	
+//	if( !strcmp( s_key, HMIKEY_RIGHT) )
+//	{
+//		if(Focus_move_right(self->p_fcuu) != RET_OK)
+//			Focus_move_right(self->p_fcuu);
+//		chgFouse = 1;
+//	}
+//	if( !strcmp( s_key, HMIKEY_UP) )
+//	{
+//		if(Focus_move_up(self->p_fcuu) != RET_OK)
+//			Focus_move_up(self->p_fcuu);		//焦点不允许出现在外部
+//		chgFouse = 1;
+//	}
+//	
+//	if( !strcmp( s_key, HMIKEY_DOWN) )
+//	{
+//		if(Focus_move_down(self->p_fcuu) != RET_OK)
+//			Focus_move_down(self->p_fcuu);
+//		chgFouse = 1;
+//	}
+//	if( !strcmp(s_key, KEYCODE_ENTER))
+//	{
+//		p_focus = Focus_Get_focus(self->p_fcuu);
+//		if(p_focus == NULL) 
+//				goto exit;
+//		
+//		if(p_focus->id == SHEET_PSD_TEXT) {
+////			p_cmd = p_focus->p_enterCmd;
+////			p_cmd->shtExcute(p_cmd, p_focus, self);
+//			Input_Password(self);
+//			goto exit;
+//		} else if(cthis->unlock == 0){
+//			
+//			if(self->p_fcuu->focus_row == 3 && self->p_fcuu->focus_col) {
+//				self->switchHMI(self, g_p_HMI_menu);
+//			} else 
+//			
+//			
+//			{
+//				g_p_HMI_striped->arg[0] = self->p_fcuu->focus_row - 0;
+//				g_p_HMI_striped->arg[1] = self->p_fcuu->focus_col;
+//				
+//				self->switchHMI(self, g_p_HMI_striped);
+//			}
+//		}
+//	}
+//	
+//	if( !strcmp(s_key, HMIKEY_ESC))
+//	{
+//		self->switchBack(self);
+//	}
 	
 	if( chgFouse)
 	{	

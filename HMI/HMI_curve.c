@@ -108,7 +108,7 @@ static void RT_trendHmi_HideSheet( HMI *self );
 static void	RT_trendHmi_Show( HMI *self);
 
 
-static void	RT_trendHmi_HitHandle( HMI *self, char *s);
+static void	RT_trendHmi_HitHandle( HMI *self, char kcd);
 
 //焦点
 
@@ -491,7 +491,7 @@ static void	RT_trendHmi_Show( HMI *self )
 //	
 }
 
-static void	RT_trendHmi_HitHandle( HMI *self, char *s)
+static void	RT_trendHmi_HitHandle( HMI *self, char kcd)
 {
 	RLT_trendHMI		*cthis = SUB_PTR( self, HMI, RLT_trendHMI);
 	Curve						*p_crv = CRV_Get_Sington();
@@ -505,168 +505,311 @@ static void	RT_trendHmi_HitHandle( HMI *self, char *s)
 	uint8_t		chn = 0;
 	
 	uint8_t		new_mins = 0;
+	
+	
+	switch(kcd)
+	{
+
+			case KEYCODE_UP:
+					p_focus = Focus_Get_focus(self->p_fcuu);
+					if(p_focus != NULL && p_focus->id == SHTID_RTL_MDIV)
+					{
+						Str_Calculations(p_focus->cnt.data, 2, OP_MUX, 2, 1, 16);
+						p_focus->cnt.len = strlen(p_focus->cnt.data);
+						chgFouse = 1;
+					}					 
+					break;
+			case KEYCODE_DOWN:
+					p_focus = Focus_Get_focus(self->p_fcuu);
+					if(p_focus != NULL && p_focus->id == SHTID_RTL_MDIV)
+					{
+						
+						Str_Calculations(p_focus->cnt.data, 2, OP_DIV, 2, 1, 16);
+						p_focus->cnt.len = strlen(p_focus->cnt.data);
+						chgFouse = 1;
+					}					
+					break;
+			case KEYCODE_LEFT:
+					if(self->flag & HMIFLAG_FOCUS_IN_BTN)
+					{
+						if(self->btn_backward(self) != RET_OK)
+						{
+							Focus_move_right(self->p_fcuu);
+							chgFouse = 1;
+						}
+						
+					}
+					else if(Focus_move_left(self->p_fcuu) != RET_OK)
+					{
+						self->btn_forward(self);	//跳到第一个按钮
+						chgFouse = 1;
+					}
+					else
+					{
+						chgFouse = 1;
+					}					 
+					break;
+			case KEYCODE_RIGHT:
+					if(self->flag & HMIFLAG_FOCUS_IN_BTN)
+					{
+						if(self->btn_forward(self) != RET_OK)
+						{
+							Focus_move_left(self->p_fcuu);	//移动到最左端
+							chgFouse = 1;
+						}
+						
+					}
+					else if(Focus_move_right(self->p_fcuu) != RET_OK)
+					{
+						self->btn_forward(self);	//跳到第一个按钮
+						chgFouse = 1;
+					}
+					else
+					{
+						chgFouse = 1;
+					}					 
+					break;
+
+			case KEYCODE_ENTER:
+					if(self->flag & HMIFLAG_FOCUS_IN_BTN)
+					{
+						p->hit();
+					}
+					
+					//处于按钮区的话p_focus 肯定是NULL
+					p_focus = Focus_Get_focus(self->p_fcuu);
+					if(p_focus == NULL)
+						goto exit;
+					
+					if(IS_CHECK(p_focus->id)) {
+						chn = GET_CHN_FROM_ID(p_focus->id);
+						
+						if(cthis->chn_show_map & (1 << chn)) {
+							cthis->chn_show_map &= ~(1 << chn);
+							p_crv->crv_ctl(cthis->arr_crv_fd[chn], CRV_CTL_HIDE, 1);
+							
+							p_focus->area.n = 3;
+							//清除数字显示
+							sprintf(g_arr_p_chnData[chn]->cnt.data, "    ");
+							g_arr_p_chnData[chn]->cnt.len = strlen(g_arr_p_chnData[chn]->cnt.data);
+							g_arr_p_chnData[chn]->p_gp->vdraw(g_arr_p_chnData[chn]->p_gp,\
+							&g_arr_p_chnData[chn]->cnt, &g_arr_p_chnData[chn]->area);
+							
+							if(self->arg[0] == 0)
+							{
+								p_crv->crv_show_curve(HMI_CMP_ALL, CRV_SHOW_WHOLE);
+							}
+							else
+							{
+								hst_mgr.hst_flags &= ~ HST_FLAG_DONE;
+								
+								
+							}
+						} else {
+							p_focus->area.n = 1;
+							cthis->chn_show_map |= 1 << chn;
+							p_crv->crv_ctl(cthis->arr_crv_fd[chn], CRV_CTL_HIDE, 0);
+							
+							
+							
+							if(self->arg[0] == 0)
+							{
+								p_crv->crv_show_curve(HMI_CMP_ALL, CRV_SHOW_WHOLE);
+							}
+							else
+							{
+								hst_mgr.hst_flags &= ~ HST_FLAG_DONE;
+								
+								
+							}
+						}
+						p_focus->p_gp->vdraw(p_focus->p_gp, &p_focus->cnt, &p_focus->area);
+						Flush_LCD();
+						
+					} else if(p_focus->id == SHTID_RTL_MDIV) {
+						if(Sem_wait(&phn_sys.hmi_mgr.hmi_sem, 1000) <= 0)
+							goto exit;
+						new_mins = atoi(p_focus->cnt.data);
+						
+						arr_mdiv_change[self->arg[0]](cthis, new_mins);
+						Sem_post(&phn_sys.hmi_mgr.hmi_sem);
+					} else {
+						
+						self->switchHMI(self, g_p_HMI_menu);
+					}					
+					break;		
+			case KEYCODE_ESC:
+					
+					break;	
+			
+	}	
+	
 
 	
-//	cthis->flags |= 2;
-//	Set_flag_keyhandle(&self->flag, 1);
-//	self->flag |= HMI_FLAG_DEAL_HIT;
-	if(!strcmp(s, HMIKEY_UP))
-	{
-		p_focus = Focus_Get_focus(self->p_fcuu);
-		if(p_focus != NULL && p_focus->id == SHTID_RTL_MDIV)
-		{
-			Str_Calculations(p_focus->cnt.data, 2, OP_MUX, 2, 1, 16);
-//			if(cthis->min_div < 16)
-//				cthis->min_div *= 2;
-//			else
-//				cthis->min_div = 1;
-//			sprintf(p_focus->cnt.data, "%2d", cthis->min_div);
-			p_focus->cnt.len = strlen(p_focus->cnt.data);
-			chgFouse = 1;
-		}
-	}
-	else if( !strcmp( s, HMIKEY_DOWN) )
-	{
-		p_focus = Focus_Get_focus(self->p_fcuu);
-		if(p_focus != NULL && p_focus->id == SHTID_RTL_MDIV)
-		{
-			
-			Str_Calculations(p_focus->cnt.data, 2, OP_DIV, 2, 1, 16);
-//			if(cthis->min_div > 1)
-//				cthis->min_div /= 2;
-//			else
-//				cthis->min_div = 16;
-//			sprintf(p_focus->cnt.data, "%2d", cthis->min_div);
-			p_focus->cnt.len = strlen(p_focus->cnt.data);
-			chgFouse = 1;
-		}
-	}
-	else if( !strcmp( s, HMIKEY_LEFT))
-	{
-		if(self->flag & HMIFLAG_FOCUS_IN_BTN)
-		{
-			if(self->btn_backward(self) != RET_OK)
-			{
-				Focus_move_right(self->p_fcuu);
-				chgFouse = 1;
-			}
-			
-		}
-		else if(Focus_move_left(self->p_fcuu) != RET_OK)
-		{
-			self->btn_forward(self);	//跳到第一个按钮
-			chgFouse = 1;
-		}
-		else
-		{
-			chgFouse = 1;
-		}
-	}
-	else if( !strcmp( s, HMIKEY_RIGHT))
-	{
-		
-		if(self->flag & HMIFLAG_FOCUS_IN_BTN)
-		{
-			if(self->btn_forward(self) != RET_OK)
-			{
-				Focus_move_left(self->p_fcuu);	//移动到最左端
-				chgFouse = 1;
-			}
-			
-		}
-		else if(Focus_move_right(self->p_fcuu) != RET_OK)
-		{
-			self->btn_forward(self);	//跳到第一个按钮
-			chgFouse = 1;
-		}
-		else
-		{
-			chgFouse = 1;
-		}
-	}
+////	cthis->flags |= 2;
+////	Set_flag_keyhandle(&self->flag, 1);
+////	self->flag |= HMI_FLAG_DEAL_HIT;
+//	if(!strcmp(s, HMIKEY_UP))
+//	{
+//		p_focus = Focus_Get_focus(self->p_fcuu);
+//		if(p_focus != NULL && p_focus->id == SHTID_RTL_MDIV)
+//		{
+//			Str_Calculations(p_focus->cnt.data, 2, OP_MUX, 2, 1, 16);
+////			if(cthis->min_div < 16)
+////				cthis->min_div *= 2;
+////			else
+////				cthis->min_div = 1;
+////			sprintf(p_focus->cnt.data, "%2d", cthis->min_div);
+//			p_focus->cnt.len = strlen(p_focus->cnt.data);
+//			chgFouse = 1;
+//		}
+//	}
+//	else if( !strcmp( s, HMIKEY_DOWN) )
+//	{
+//		p_focus = Focus_Get_focus(self->p_fcuu);
+//		if(p_focus != NULL && p_focus->id == SHTID_RTL_MDIV)
+//		{
+//			
+//			Str_Calculations(p_focus->cnt.data, 2, OP_DIV, 2, 1, 16);
+////			if(cthis->min_div > 1)
+////				cthis->min_div /= 2;
+////			else
+////				cthis->min_div = 16;
+////			sprintf(p_focus->cnt.data, "%2d", cthis->min_div);
+//			p_focus->cnt.len = strlen(p_focus->cnt.data);
+//			chgFouse = 1;
+//		}
+//	}
+//	else if( !strcmp( s, HMIKEY_LEFT))
+//	{
+//		if(self->flag & HMIFLAG_FOCUS_IN_BTN)
+//		{
+//			if(self->btn_backward(self) != RET_OK)
+//			{
+//				Focus_move_right(self->p_fcuu);
+//				chgFouse = 1;
+//			}
+//			
+//		}
+//		else if(Focus_move_left(self->p_fcuu) != RET_OK)
+//		{
+//			self->btn_forward(self);	//跳到第一个按钮
+//			chgFouse = 1;
+//		}
+//		else
+//		{
+//			chgFouse = 1;
+//		}
+//	}
+//	else if( !strcmp( s, HMIKEY_RIGHT))
+//	{
+//		
+//		if(self->flag & HMIFLAG_FOCUS_IN_BTN)
+//		{
+//			if(self->btn_forward(self) != RET_OK)
+//			{
+//				Focus_move_left(self->p_fcuu);	//移动到最左端
+//				chgFouse = 1;
+//			}
+//			
+//		}
+//		else if(Focus_move_right(self->p_fcuu) != RET_OK)
+//		{
+//			self->btn_forward(self);	//跳到第一个按钮
+//			chgFouse = 1;
+//		}
+//		else
+//		{
+//			chgFouse = 1;
+//		}
+//	}
 
-	if( !strcmp( s, HMIKEY_ENTER))
-	{
-		if(self->flag & HMIFLAG_FOCUS_IN_BTN)
-		{
-			p->hit();
-//			self->btn_hit(self);
-		}
-		
-		//处于按钮区的话p_focus 肯定是NULL
-		p_focus = Focus_Get_focus(self->p_fcuu);
-		if(p_focus == NULL)
-			goto exit;
-		
-		if(IS_CHECK(p_focus->id)) {
-			chn = GET_CHN_FROM_ID(p_focus->id);
-			
-			if(cthis->chn_show_map & (1 << chn)) {
-				cthis->chn_show_map &= ~(1 << chn);
-				p_crv->crv_ctl(cthis->arr_crv_fd[chn], CRV_CTL_HIDE, 1);
-				
-				p_focus->area.n = 3;
-				//清除数字显示
-				sprintf(g_arr_p_chnData[chn]->cnt.data, "    ");
-//				g_arr_p_chnData[chn]->cnt.data = "   ";
-				g_arr_p_chnData[chn]->cnt.len = strlen(g_arr_p_chnData[chn]->cnt.data);
-				g_arr_p_chnData[chn]->p_gp->vdraw(g_arr_p_chnData[chn]->p_gp,\
-				&g_arr_p_chnData[chn]->cnt, &g_arr_p_chnData[chn]->area);
-				
-				if(self->arg[0] == 0)
-				{
-					p_crv->crv_show_curve(HMI_CMP_ALL, CRV_SHOW_WHOLE);
-				}
-				else
-				{
-					hst_mgr.hst_flags &= ~ HST_FLAG_DONE;
-					
-					
-				}
-			} else {
-				p_focus->area.n = 1;
-				cthis->chn_show_map |= 1 << chn;
-				p_crv->crv_ctl(cthis->arr_crv_fd[chn], CRV_CTL_HIDE, 0);
-				
-				
-				
-				if(self->arg[0] == 0)
-				{
-					p_crv->crv_show_curve(HMI_CMP_ALL, CRV_SHOW_WHOLE);
-				}
-				else
-				{
-					hst_mgr.hst_flags &= ~ HST_FLAG_DONE;
-					
-					
-				}
-			}
-			p_focus->p_gp->vdraw(p_focus->p_gp, &p_focus->cnt, &p_focus->area);
-			Flush_LCD();
-			
-		} else if(p_focus->id == SHTID_RTL_MDIV) {
-			if(Sem_wait(&phn_sys.hmi_mgr.hmi_sem, 1000) <= 0)
-				goto exit;
-			new_mins = atoi(p_focus->cnt.data);
-			
-			arr_mdiv_change[self->arg[0]](cthis, new_mins);
-//			self->switchHMI(self, self);
-//			HMI_Ram_init();
-			
-			
-			
-			Sem_post(&phn_sys.hmi_mgr.hmi_sem);
-//			if(p_focus) {
-//				p_cmd = p_focus->p_enterCmd;
-//				if(p_cmd)
-//					p_cmd->shtExcute( p_cmd, p_focus, self);
-//			} else
-//				self->switchHMI(self, g_p_HMI_menu);
-		} else {
-			
-			self->switchHMI(self, g_p_HMI_menu);
-		}
-	}
+//	if( !strcmp( s, KEYCODE_ENTER))
+//	{
+//		if(self->flag & HMIFLAG_FOCUS_IN_BTN)
+//		{
+//			p->hit();
+////			self->btn_hit(self);
+//		}
+//		
+//		//处于按钮区的话p_focus 肯定是NULL
+//		p_focus = Focus_Get_focus(self->p_fcuu);
+//		if(p_focus == NULL)
+//			goto exit;
+//		
+//		if(IS_CHECK(p_focus->id)) {
+//			chn = GET_CHN_FROM_ID(p_focus->id);
+//			
+//			if(cthis->chn_show_map & (1 << chn)) {
+//				cthis->chn_show_map &= ~(1 << chn);
+//				p_crv->crv_ctl(cthis->arr_crv_fd[chn], CRV_CTL_HIDE, 1);
+//				
+//				p_focus->area.n = 3;
+//				//清除数字显示
+//				sprintf(g_arr_p_chnData[chn]->cnt.data, "    ");
+////				g_arr_p_chnData[chn]->cnt.data = "   ";
+//				g_arr_p_chnData[chn]->cnt.len = strlen(g_arr_p_chnData[chn]->cnt.data);
+//				g_arr_p_chnData[chn]->p_gp->vdraw(g_arr_p_chnData[chn]->p_gp,\
+//				&g_arr_p_chnData[chn]->cnt, &g_arr_p_chnData[chn]->area);
+//				
+//				if(self->arg[0] == 0)
+//				{
+//					p_crv->crv_show_curve(HMI_CMP_ALL, CRV_SHOW_WHOLE);
+//				}
+//				else
+//				{
+//					hst_mgr.hst_flags &= ~ HST_FLAG_DONE;
+//					
+//					
+//				}
+//			} else {
+//				p_focus->area.n = 1;
+//				cthis->chn_show_map |= 1 << chn;
+//				p_crv->crv_ctl(cthis->arr_crv_fd[chn], CRV_CTL_HIDE, 0);
+//				
+//				
+//				
+//				if(self->arg[0] == 0)
+//				{
+//					p_crv->crv_show_curve(HMI_CMP_ALL, CRV_SHOW_WHOLE);
+//				}
+//				else
+//				{
+//					hst_mgr.hst_flags &= ~ HST_FLAG_DONE;
+//					
+//					
+//				}
+//			}
+//			p_focus->p_gp->vdraw(p_focus->p_gp, &p_focus->cnt, &p_focus->area);
+//			Flush_LCD();
+//			
+//		} else if(p_focus->id == SHTID_RTL_MDIV) {
+//			if(Sem_wait(&phn_sys.hmi_mgr.hmi_sem, 1000) <= 0)
+//				goto exit;
+//			new_mins = atoi(p_focus->cnt.data);
+//			
+//			arr_mdiv_change[self->arg[0]](cthis, new_mins);
+////			self->switchHMI(self, self);
+////			HMI_Ram_init();
+//			
+//			
+//			
+//			Sem_post(&phn_sys.hmi_mgr.hmi_sem);
+////			if(p_focus) {
+////				p_cmd = p_focus->p_enterCmd;
+////				if(p_cmd)
+////					p_cmd->shtExcute( p_cmd, p_focus, self);
+////			} else
+////				self->switchHMI(self, g_p_HMI_menu);
+//		} else {
+//			
+//			self->switchHMI(self, g_p_HMI_menu);
+//		}
+//	}
+//	if( !strcmp( s, HMIKEY_ESC))
+//	{
+//		self->switchBack(self);
+//	}
 	
 	exit:
 	if( chgFouse)
@@ -677,10 +820,7 @@ static void	RT_trendHmi_HitHandle( HMI *self, char *s)
 	
 
 	
-	if( !strcmp( s, HMIKEY_ESC))
-	{
-		self->switchBack(self);
-	}
+
 	
 //	cthis->flags &= ~2;
 //	Set_flag_keyhandle(&self->flag, 0);

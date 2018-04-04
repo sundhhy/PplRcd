@@ -103,41 +103,69 @@ void Main_HMI_build_button(HMI *self)
 	p->build_each_btn(3, BTN_TYPE_TREND, Main_btn_hdl, self);
 }
 
-void	Main_HMI_hit( HMI *self, char *s)
+void	Main_HMI_hit( HMI *self, char kcd)
 {
 
 	Button	*p = BTN_Get_Sington();
-
-	if( !strcmp( s, HMIKEY_UP) )
-	{
-
-	}
-	else if( !strcmp( s, HMIKEY_DOWN) )
-	{
-		
-	}
-	else if( !strcmp( s, HMIKEY_LEFT))
-	{
-		self->btn_backward(self);
-
-	}
-	else if( !strcmp( s, HMIKEY_RIGHT))
-	{
-
-		self->btn_forward(self);
-	}
 	
 	
 	
-	if( !strcmp( s, HMIKEY_ENTER))
+	
+	switch(kcd)
 	{
-		p->hit();
-//		self->btn_hit(self);
+
+			case KEYCODE_UP:
+					 
+					break;
+			case KEYCODE_DOWN:
+					
+					break;
+			case KEYCODE_LEFT:
+					self->btn_backward(self); 
+					break;
+			case KEYCODE_RIGHT:
+					self->btn_forward(self); 
+					break;
+
+			case KEYCODE_ENTER:
+					p->hit();
+					break;		
+			case KEYCODE_ESC:
+					self->switchBack(self);
+					break;	
+			
 	}
-	if( !strcmp( s, HMIKEY_ESC))
-	{
-		self->switchBack(self);
-	}
+
+//	if( !strcmp( s, HMIKEY_UP) )
+//	{
+
+//	}
+//	else if( !strcmp( s, HMIKEY_DOWN) )
+//	{
+//		
+//	}
+//	else if( !strcmp( s, HMIKEY_LEFT))
+//	{
+//		self->btn_backward(self);
+
+//	}
+//	else if( !strcmp( s, HMIKEY_RIGHT))
+//	{
+
+//		self->btn_forward(self);
+//	}
+//	
+//	
+//	
+//	if( !strcmp( s, KEYCODE_ENTER))
+//	{
+//		p->hit();
+////		self->btn_hit(self);
+//	}
+//	if( !strcmp( s, HMIKEY_ESC))
+//	{
+//		self->switchBack(self);
+//	}
 	
 }
 

@@ -69,7 +69,7 @@ static void DataHmi_HideSheet( HMI *self );
 static void	DataHmi_Show( HMI *self);
 
 
-static void	DataHmi_HitHandle( HMI *self, char *s);
+static void	DataHmi_HitHandle( HMI *self, char kcd);
 
 //½¹µã
 
@@ -207,22 +207,44 @@ static void	DataHmi_Show( HMI *self )
 //	self->show_focus( self, 0, 0);
 }
 
-static void	DataHmi_HitHandle( HMI *self, char *s)
+static void	DataHmi_HitHandle( HMI *self, char kcd)
 {
-//	dataHMI		*cthis = SUB_PTR( self, HMI, dataHMI);
-//	shtCmd		*p_cmd;
 
+	switch(kcd)
+	{
 
-	if( !strcmp( s, HMIKEY_ENTER))
-	{
-		self->switchHMI(self, g_p_HMI_menu);
-		
+			case KEYCODE_UP:
+					 
+					break;
+			case KEYCODE_DOWN:
+					
+					break;
+			case KEYCODE_LEFT:
+					 
+					break;
+			case KEYCODE_RIGHT:
+					 
+					break;
+
+			case KEYCODE_ENTER:
+					self->switchHMI(self, g_p_HMI_menu);
+					break;		
+			case KEYCODE_ESC:
+					self->switchBack(self);
+					break;	
+			
 	}
-	if( !strcmp( s, HMIKEY_ESC))
-	{
-		self->switchBack(self);
-	}
-	
+
+//	if( !strcmp( s, KEYCODE_ENTER))
+//	{
+//		self->switchHMI(self, g_p_HMI_menu);
+//		
+//	}
+//	if( !strcmp( s, HMIKEY_ESC))
+//	{
+//		self->switchBack(self);
+//	}
+//	
 }
 
 static void DataHmi_Init_chnSht(void)

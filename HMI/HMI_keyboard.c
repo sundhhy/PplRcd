@@ -179,9 +179,9 @@ static void	KeyboardShow( HMI *self );
 static void KBHide( HMI *self );
 static void KBInitSheet( HMI *self );
 
-static void	KeyboardHitHandle( HMI *self, char *s);
-static void	KeyboardLngpshHandle( HMI *self,  char *s_key);
-static void	KeyboardDouHitHandle( HMI *self,  char *s_key);
+static void	KeyboardHitHandle( HMI *self, char kcd);
+static void	KeyboardLngpshHandle( HMI *self,  char kcd);
+static void	KeyboardDouHitHandle( HMI *self,  char kcd);
 
 
 //----- vir key -------------
@@ -404,10 +404,10 @@ static void DrawFocus( char vkeytype, virKeyInfo_t *p_focus)
 	p_keyboardFocusPic->p_gp->vdraw( p_keyboardFocusPic->p_gp, &p_keyboardFocusPic->cnt, &p_keyboardFocusPic->area);
 	Flush_LCD();
 }
-static void	KeyboardLngpshHandle( HMI *self,  char *s_key)
+static void	KeyboardLngpshHandle( HMI *self,  char kcd)
 {
 	keyboardHMI		*cthis = SUB_PTR( self, HMI, keyboardHMI);
-	if( !strcmp( s_key, HMIKEY_ENTER)) {
+	if(kcd == KEYCODE_ENTER) {
 		//大小写切换
 		if( keyEdit.inputMethod == INPUTMETHOD_LOWER) {
 			
@@ -419,10 +419,10 @@ static void	KeyboardLngpshHandle( HMI *self,  char *s_key)
 	}
 	
 }
-static void	KeyboardDouHitHandle( HMI *self,  char *s_key)
+static void	KeyboardDouHitHandle( HMI *self,  char kcd)
 {
 	keyboardHMI		*cthis = SUB_PTR( self, HMI, keyboardHMI);
-	if( !strcmp( s_key, HMIKEY_ENTER)) {
+	if(kcd == KEYCODE_ENTER) {
 		//大小写切换
 		if( keyEdit.inputMethod == INPUTMETHOD_LOWER) {
 			
@@ -434,7 +434,7 @@ static void	KeyboardDouHitHandle( HMI *self,  char *s_key)
 	}
 	
 }
-static void	KeyboardHitHandle( HMI *self, char *s)
+static void	KeyboardHitHandle( HMI *self, char kcd)
 {
 	keyboardHMI		*cthis = SUB_PTR( self, HMI, keyboardHMI);
 	virKeyOp_t		*p_op;
@@ -442,86 +442,165 @@ static void	KeyboardHitHandle( HMI *self, char *s)
 	int				cmt_ret = 0;
 	
 	
-	if( !strcmp( s, HMIKEY_UP) )
+	switch(kcd)
 	{
-		//清除原来的选中效果
-		
-		CleanFocus( keyEdit.inputMethod, &actKeyBlk.vkenCenter);
-		
-		//计算新的选中位置
-		FocusKey_move( p_vko[ keyEdit.inputMethod], &actKeyBlk, DIRE_UP);
-		
-		//绘制新的选中效果
-		DrawFocus( keyEdit.inputMethod, &actKeyBlk.vkenCenter);
-		
-	}
-	else if( !strcmp( s, HMIKEY_DOWN) )
-	{
-		CleanFocus( keyEdit.inputMethod, &actKeyBlk.vkenCenter);
-		FocusKey_move( p_vko[ keyEdit.inputMethod], &actKeyBlk, DIRE_DOWN);
-		DrawFocus( keyEdit.inputMethod, &actKeyBlk.vkenCenter);
-	}
-	else if( !strcmp( s, HMIKEY_LEFT))
-	{
-		CleanFocus( keyEdit.inputMethod, &actKeyBlk.vkenCenter);
-		FocusKey_move( p_vko[ keyEdit.inputMethod], &actKeyBlk, DIRE_LEFT);
-		DrawFocus( keyEdit.inputMethod, &actKeyBlk.vkenCenter);
-	}
-	else if( !strcmp( s, HMIKEY_RIGHT))
-	{
-		CleanFocus( keyEdit.inputMethod, &actKeyBlk.vkenCenter);
-		FocusKey_move( p_vko[ keyEdit.inputMethod], &actKeyBlk, DIRE_RIGHT);
-		DrawFocus( keyEdit.inputMethod, &actKeyBlk.vkenCenter);
+
+		case KEYCODE_UP:
+			//清除原来的选中效果
+			
+			CleanFocus( keyEdit.inputMethod, &actKeyBlk.vkenCenter);
+			
+			//计算新的选中位置
+			FocusKey_move( p_vko[ keyEdit.inputMethod], &actKeyBlk, DIRE_UP);
+			
+			//绘制新的选中效果
+			DrawFocus( keyEdit.inputMethod, &actKeyBlk.vkenCenter);
+			break;
+		case KEYCODE_DOWN:
+			CleanFocus( keyEdit.inputMethod, &actKeyBlk.vkenCenter);
+			FocusKey_move( p_vko[ keyEdit.inputMethod], &actKeyBlk, DIRE_DOWN);
+			DrawFocus( keyEdit.inputMethod, &actKeyBlk.vkenCenter);
+			break;
+		case KEYCODE_LEFT:
+			CleanFocus( keyEdit.inputMethod, &actKeyBlk.vkenCenter);
+			FocusKey_move( p_vko[ keyEdit.inputMethod], &actKeyBlk, DIRE_LEFT);
+			DrawFocus( keyEdit.inputMethod, &actKeyBlk.vkenCenter);
+			break;
+		case KEYCODE_RIGHT:
+			CleanFocus( keyEdit.inputMethod, &actKeyBlk.vkenCenter);
+			FocusKey_move( p_vko[ keyEdit.inputMethod], &actKeyBlk, DIRE_RIGHT);
+			DrawFocus( keyEdit.inputMethod, &actKeyBlk.vkenCenter);
+			break;
+
+		case KEYCODE_ENTER:
+			if( actKeyBlk.vkenCenter.val == KEY_123 ) {
+				SwitchVirKey( cthis->p_shtVkey, cthis->p_shtvKeyCursor, INPUTMETHOD_DIGIT);
+
+				p_op = p_vko[ keyEdit.inputMethod];
+				p_op->vkey_init( &actKeyBlk);  
+
+				CleanFocus( keyEdit.inputMethod, &actKeyBlk.vkenCenter);			
+				DrawFocus( 0, &actKeyBlk.vkenCenter);
+			} else if( actKeyBlk.vkenCenter.val == KEY_Return) {
+				SwitchVirKey( cthis->p_shtVkey, cthis->p_shtvKeyCursor, INPUTMETHOD_LOWER);
+
+				p_op = p_vko[ keyEdit.inputMethod];
+				p_op->vkey_init( &actKeyBlk);  
+
+				CleanFocus( keyEdit.inputMethod, &actKeyBlk.vkenCenter);			
+				DrawFocus( 0, &actKeyBlk.vkenCenter);
+			} else if( actKeyBlk.vkenCenter.val == KEY_GO) {
+
+				if(kbr_cmt)
+				{
+
+					cmt_ret = kbr_cmt(cthis->p_shtInput, keyEdit.keybrdbuf, keyEdit.bufidx);
+				}
+				else
+				{
+					cmt_ret = Default_input(cthis->p_shtInput, keyEdit.keybrdbuf, keyEdit.bufidx);
+
+				}
+				if(cmt_ret == RET_OK) {
+					src_hmi = g_p_lastHmi;
+					src_hmi->flag |= HMIFLAG_KEYBOARD;
+					self->switchBack(self);
+					src_hmi->flag &= ~HMIFLAG_KEYBOARD;
+				} else {
+					//todo: 提示错误
+				}
+			} else if( actKeyBlk.vkenCenter.val == KEY_backspace) {
+				Edit_pop (&keyEdit);
+			} else {
+				Edit_push( &keyEdit, &actKeyBlk.vkenCenter);
+			}
+			break;		
+		case KEYCODE_ESC:
+			self->switchBack(self);
+			break;	
+			
 	}
 	
-	if( !strcmp( s, HMIKEY_ESC))
-	{
-		self->switchBack(self);
-	}
-	if( !strcmp( s, HMIKEY_ENTER))
-	{
-		if( actKeyBlk.vkenCenter.val == KEY_123 ) {
-			SwitchVirKey( cthis->p_shtVkey, cthis->p_shtvKeyCursor, INPUTMETHOD_DIGIT);
-			
-			p_op = p_vko[ keyEdit.inputMethod];
-			p_op->vkey_init( &actKeyBlk);  
+//	if( !strcmp( s, HMIKEY_UP) )
+//	{
+//		//清除原来的选中效果
+//		
+//		CleanFocus( keyEdit.inputMethod, &actKeyBlk.vkenCenter);
+//		
+//		//计算新的选中位置
+//		FocusKey_move( p_vko[ keyEdit.inputMethod], &actKeyBlk, DIRE_UP);
+//		
+//		//绘制新的选中效果
+//		DrawFocus( keyEdit.inputMethod, &actKeyBlk.vkenCenter);
+//		
+//	}
+//	else if( !strcmp( s, HMIKEY_DOWN) )
+//	{
+//		CleanFocus( keyEdit.inputMethod, &actKeyBlk.vkenCenter);
+//		FocusKey_move( p_vko[ keyEdit.inputMethod], &actKeyBlk, DIRE_DOWN);
+//		DrawFocus( keyEdit.inputMethod, &actKeyBlk.vkenCenter);
+//	}
+//	else if( !strcmp( s, HMIKEY_LEFT))
+//	{
+//		CleanFocus( keyEdit.inputMethod, &actKeyBlk.vkenCenter);
+//		FocusKey_move( p_vko[ keyEdit.inputMethod], &actKeyBlk, DIRE_LEFT);
+//		DrawFocus( keyEdit.inputMethod, &actKeyBlk.vkenCenter);
+//	}
+//	else if( !strcmp( s, HMIKEY_RIGHT))
+//	{
+//		CleanFocus( keyEdit.inputMethod, &actKeyBlk.vkenCenter);
+//		FocusKey_move( p_vko[ keyEdit.inputMethod], &actKeyBlk, DIRE_RIGHT);
+//		DrawFocus( keyEdit.inputMethod, &actKeyBlk.vkenCenter);
+//	}
+//	
+//	if( !strcmp( s, HMIKEY_ESC))
+//	{
+//		self->switchBack(self);
+//	}
+//	if( !strcmp( s, KEYCODE_ENTER))
+//	{
+//		if( actKeyBlk.vkenCenter.val == KEY_123 ) {
+//			SwitchVirKey( cthis->p_shtVkey, cthis->p_shtvKeyCursor, INPUTMETHOD_DIGIT);
+//			
+//			p_op = p_vko[ keyEdit.inputMethod];
+//			p_op->vkey_init( &actKeyBlk);  
 
-			CleanFocus( keyEdit.inputMethod, &actKeyBlk.vkenCenter);			
-			DrawFocus( 0, &actKeyBlk.vkenCenter);
-		} else if( actKeyBlk.vkenCenter.val == KEY_Return) {
-			SwitchVirKey( cthis->p_shtVkey, cthis->p_shtvKeyCursor, INPUTMETHOD_LOWER);
-			
-			p_op = p_vko[ keyEdit.inputMethod];
-			p_op->vkey_init( &actKeyBlk);  
+//			CleanFocus( keyEdit.inputMethod, &actKeyBlk.vkenCenter);			
+//			DrawFocus( 0, &actKeyBlk.vkenCenter);
+//		} else if( actKeyBlk.vkenCenter.val == KEY_Return) {
+//			SwitchVirKey( cthis->p_shtVkey, cthis->p_shtvKeyCursor, INPUTMETHOD_LOWER);
+//			
+//			p_op = p_vko[ keyEdit.inputMethod];
+//			p_op->vkey_init( &actKeyBlk);  
 
-			CleanFocus( keyEdit.inputMethod, &actKeyBlk.vkenCenter);			
-			DrawFocus( 0, &actKeyBlk.vkenCenter);
-		} else if( actKeyBlk.vkenCenter.val == KEY_GO) {
-			
-			if(kbr_cmt)
-			{
-				
-				cmt_ret = kbr_cmt(cthis->p_shtInput, keyEdit.keybrdbuf, keyEdit.bufidx);
-			}
-			else
-			{
-				cmt_ret = Default_input(cthis->p_shtInput, keyEdit.keybrdbuf, keyEdit.bufidx);
-				
-			}
-			if(cmt_ret == RET_OK) {
-				src_hmi = g_p_lastHmi;
-				src_hmi->flag |= HMIFLAG_KEYBOARD;
-				self->switchBack(self);
-				src_hmi->flag &= ~HMIFLAG_KEYBOARD;
-			} else {
-				//todo: 提示错误
-			}
-		} else if( actKeyBlk.vkenCenter.val == KEY_backspace) {
-			Edit_pop (&keyEdit);
-		} else {
-			Edit_push( &keyEdit, &actKeyBlk.vkenCenter);
-		}
-	}
+//			CleanFocus( keyEdit.inputMethod, &actKeyBlk.vkenCenter);			
+//			DrawFocus( 0, &actKeyBlk.vkenCenter);
+//		} else if( actKeyBlk.vkenCenter.val == KEY_GO) {
+//			
+//			if(kbr_cmt)
+//			{
+//				
+//				cmt_ret = kbr_cmt(cthis->p_shtInput, keyEdit.keybrdbuf, keyEdit.bufidx);
+//			}
+//			else
+//			{
+//				cmt_ret = Default_input(cthis->p_shtInput, keyEdit.keybrdbuf, keyEdit.bufidx);
+//				
+//			}
+//			if(cmt_ret == RET_OK) {
+//				src_hmi = g_p_lastHmi;
+//				src_hmi->flag |= HMIFLAG_KEYBOARD;
+//				self->switchBack(self);
+//				src_hmi->flag &= ~HMIFLAG_KEYBOARD;
+//			} else {
+//				//todo: 提示错误
+//			}
+//		} else if( actKeyBlk.vkenCenter.val == KEY_backspace) {
+//			Edit_pop (&keyEdit);
+//		} else {
+//			Edit_push( &keyEdit, &actKeyBlk.vkenCenter);
+//		}
+//	}
 	
 	
 }

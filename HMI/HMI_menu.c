@@ -74,7 +74,7 @@ static menuHMI *singal_menu;
 //------------------------------------------------------------------------------
 static int	Init_menuHMI( HMI *self, void *arg);
 static void	MenuHmiShow( HMI *self);
-static void	MenuHitHandle( HMI *self, char *s);
+static void	MenuHitHandle( HMI *self, char kcd);
 static void MenuHmiHide( HMI *self );
 static void MenuinitSheet( HMI *self );
 
@@ -256,7 +256,7 @@ static void MenuShowFocuse( HMI *self, uint8_t fouse_row, uint8_t fouse_col)
 	Flush_LCD();
 }
 
-static void	MenuHitHandle( HMI *self, char *s)
+static void	MenuHitHandle( HMI *self, char kcd)
 {
 	menuHMI		*cthis = SUB_PTR( self, HMI, menuHMI);
 //	shtCmd		*p_cmd;
@@ -267,41 +267,128 @@ static void	MenuHitHandle( HMI *self, char *s)
 	char			row_max = NUM_BTNROW - 1;
 	char			col_max = NUM_BTNCOL - 1;
 	
+	
+	
+	switch(kcd)
+	{
 
-	if( !strcmp( s, HMIKEY_UP) )
-	{
-		if( cthis->focusRow > 0)
-			cthis->focusRow --;
-		else
-		{
-			cthis->focusRow = row_max;
-		}
-		chgFouse = 1;
+			case KEYCODE_UP:
+					if( cthis->focusRow > 0)
+						cthis->focusRow --;
+					else
+					{
+						cthis->focusRow = row_max;
+					}
+					chgFouse = 1; 
+					break;
+			case KEYCODE_DOWN:
+					cthis->focusRow ++;
+					if( cthis->focusRow >  row_max)
+						cthis->focusRow = 0;
+					chgFouse = 1;
+					break;
+			case KEYCODE_LEFT:
+					if( cthis->focusCol > 0)
+						cthis->focusCol --;
+					else
+					{
+						cthis->focusCol = col_max;
+					}
+					chgFouse = 1; 
+					break;
+			case KEYCODE_RIGHT:
+					cthis->focusCol ++;
+					if( cthis->focusCol > col_max)
+						cthis->focusCol = 0;
+					chgFouse = 1; 
+					break;
+
+			case KEYCODE_ENTER:
+					pp_trgtHmi = arr_pp_targetHmi[cthis->focusRow][cthis->focusCol];
+		
+					if(pp_trgtHmi == NULL)
+						return;
+						
+					(*pp_trgtHmi)->arg[0] = 0;
+					if(cthis->focusRow == 3 && cthis->focusCol == 0){
+						(*pp_trgtHmi)->arg[0] = 1;
+						
+					}
+					if(cthis->focusRow == 2 && cthis->focusCol == 1){
+						(*pp_trgtHmi)->arg[0] = 1;
+						
+					}
+					SwitchToHmi(self, pp_trgtHmi);
+					break;		
+			case KEYCODE_ESC:
+					self->switchBack(self);
+					break;	
+			
 	}
-	else if( !strcmp( s, HMIKEY_DOWN) )
-	{
-		cthis->focusRow ++;
-		if( cthis->focusRow >  row_max)
-			cthis->focusRow = 0;
-		chgFouse = 1;
-	}
-	else if( !strcmp( s, HMIKEY_LEFT))
-	{
-		if( cthis->focusCol > 0)
-			cthis->focusCol --;
-		else
-		{
-			cthis->focusCol = col_max;
-		}
-		chgFouse = 1;
-	}
-	else if( !strcmp( s, HMIKEY_RIGHT))
-	{
-		cthis->focusCol ++;
-		if( cthis->focusCol > col_max)
-			cthis->focusCol = 0;
-		chgFouse = 1;
-	}
+	
+
+//	if( !strcmp( s, HMIKEY_UP) )
+//	{
+//		if( cthis->focusRow > 0)
+//			cthis->focusRow --;
+//		else
+//		{
+//			cthis->focusRow = row_max;
+//		}
+//		chgFouse = 1;
+//	}
+//	else if( !strcmp( s, HMIKEY_DOWN) )
+//	{
+//		cthis->focusRow ++;
+//		if( cthis->focusRow >  row_max)
+//			cthis->focusRow = 0;
+//		chgFouse = 1;
+//	}
+//	else if( !strcmp( s, HMIKEY_LEFT))
+//	{
+//		if( cthis->focusCol > 0)
+//			cthis->focusCol --;
+//		else
+//		{
+//			cthis->focusCol = col_max;
+//		}
+//		chgFouse = 1;
+//	}
+//	else if( !strcmp( s, HMIKEY_RIGHT))
+//	{
+//		cthis->focusCol ++;
+//		if( cthis->focusCol > col_max)
+//			cthis->focusCol = 0;
+//		chgFouse = 1;
+//	}
+//	
+//	
+//	
+//	if( !strcmp( s, KEYCODE_ENTER))
+//	{
+//		pp_trgtHmi = arr_pp_targetHmi[cthis->focusRow][cthis->focusCol];
+//		
+//		if(pp_trgtHmi == NULL)
+//			return;
+//			
+//		(*pp_trgtHmi)->arg[0] = 0;
+//		if(cthis->focusRow == 3 && cthis->focusCol == 0){
+//			(*pp_trgtHmi)->arg[0] = 1;
+//			
+//		}
+//		if(cthis->focusRow == 2 && cthis->focusCol == 1){
+//			(*pp_trgtHmi)->arg[0] = 1;
+//			
+//		}
+//		SwitchToHmi(self, pp_trgtHmi);
+////		p_cmd = p_sheets[ cthis->focusRow][ cthis->focusCol]->p_enterCmd;
+////		p_cmd->shtExcute( p_cmd, p_sheets[ cthis->focusRow][ cthis->focusCol], self);
+//	}
+//	if( !strcmp( s, HMIKEY_ESC))
+//	{
+//		self->switchBack(self);
+//	}
+	
 	
 	if( chgFouse)
 	{
@@ -313,30 +400,6 @@ static void	MenuHitHandle( HMI *self, char *s)
 
 	}
 	
-	if( !strcmp( s, HMIKEY_ENTER))
-	{
-		pp_trgtHmi = arr_pp_targetHmi[cthis->focusRow][cthis->focusCol];
-		
-		if(pp_trgtHmi == NULL)
-			return;
-			
-		(*pp_trgtHmi)->arg[0] = 0;
-		if(cthis->focusRow == 3 && cthis->focusCol == 0){
-			(*pp_trgtHmi)->arg[0] = 1;
-			
-		}
-		if(cthis->focusRow == 2 && cthis->focusCol == 1){
-			(*pp_trgtHmi)->arg[0] = 1;
-			
-		}
-		SwitchToHmi(self, pp_trgtHmi);
-//		p_cmd = p_sheets[ cthis->focusRow][ cthis->focusCol]->p_enterCmd;
-//		p_cmd->shtExcute( p_cmd, p_sheets[ cthis->focusRow][ cthis->focusCol], self);
-	}
-	if( !strcmp( s, HMIKEY_ESC))
-	{
-		self->switchBack(self);
-	}
 	
 }
 

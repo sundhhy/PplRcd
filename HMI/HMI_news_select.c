@@ -60,7 +60,7 @@ static void	Nws_initSheet(HMI *self);
 static void	Nws_HMI_init_focus(HMI *self);
 static void	Nws_HMI_clear_focus(HMI *self, uint8_t fouse_row, uint8_t fouse_col);
 static void	Nws_HMI_show_focus(HMI *self, uint8_t fouse_row, uint8_t fouse_col);
-static void	Nws_HMI_hitHandle( HMI *self, char *s_key);
+static void	Nws_HMI_hitHandle( HMI *self, char kcd);
 //============================================================================//
 //            P U B L I C   F U N C T I O N S                                 //
 //============================================================================//
@@ -192,7 +192,7 @@ static void	Nws_HMI_show_focus(HMI *self, uint8_t fouse_row, uint8_t fouse_col)
 }
 
 
-static void	Nws_HMI_hitHandle(HMI *self, char *s_key)
+static void	Nws_HMI_hitHandle(HMI *self, char kcd)
 {
 	
 //	NewSlct_HMI		*cthis = SUB_PTR( self, HMI, NewSlct_HMI);
@@ -200,63 +200,126 @@ static void	Nws_HMI_hitHandle(HMI *self, char *s_key)
 	uint8_t		focusRow = self->p_fcuu->focus_row;
 	uint8_t		chgFouse = 0;
 
-	if( !strcmp( s_key, HMIKEY_UP) )
-	{
-		Focus_move_up(self->p_fcuu);
-		chgFouse = 1;
-	}
 	
-	if( !strcmp( s_key, HMIKEY_DOWN) )
-	{
-		Focus_move_down(self->p_fcuu);
-		chgFouse = 1;
-	}
 	
-	//arg[0]用来指示当前选择的是信息画面，还是选择累积画面
-	if( !strcmp(s_key, HMIKEY_ENTER))
+	switch(kcd)
 	{
-		
-		if(self->p_fcuu->focus_row >= 2)
-		{
-			self->switchHMI(self, g_p_HMI_menu);
-			return;
-		}
-		
-		if(self->arg[0] == 0)
-		{
-			
-			//选择信息
-			g_p_HMI_striped->arg[0] = HMI_SBG_SELECT_NEWS;
-			g_p_HMI_striped->arg[1] = self->p_fcuu->focus_row;
-			self->switchHMI(self, g_p_HMI_striped);
-			
-		}
-		else
-		{
-			//选择累积信息
-			
-			if(self->p_fcuu->focus_row == 0) 
-			{
-				
-				g_p_HMI_striped->arg[0] = HMI_SBG_SELECT_ACC;
-				g_p_HMI_striped->arg[1] = self->p_fcuu->focus_row;
-				self->switchHMI(self, g_p_HMI_striped);
-			}
-			else if(self->p_fcuu->focus_row == 1) 
-			{
-				g_p_HMI_striped->arg[0] = HMI_SBG_SELECT_ACC;
-				g_p_HMI_striped->arg[1] = self->p_fcuu->focus_row;
-				self->switchHMI(self, g_p_HMI_striped);
-			}
-			
-		}
-		
-	}
 
-	if( !strcmp(s_key, HMIKEY_ESC))
-	{
-		self->switchBack(self);
+			case KEYCODE_UP:
+					Focus_move_up(self->p_fcuu);
+					chgFouse = 1; 
+					break;
+			case KEYCODE_DOWN:
+					Focus_move_down(self->p_fcuu);
+					chgFouse = 1;
+					break;
+			case KEYCODE_LEFT:
+					 
+					break;
+			case KEYCODE_RIGHT:
+					 
+					break;
+
+			case KEYCODE_ENTER:
+					if(self->p_fcuu->focus_row >= 2)
+					{
+						self->switchHMI(self, g_p_HMI_menu);
+						return;
+					}
+					
+					if(self->arg[0] == 0)
+					{
+						
+						//选择信息
+						g_p_HMI_striped->arg[0] = HMI_SBG_SELECT_NEWS;
+						g_p_HMI_striped->arg[1] = self->p_fcuu->focus_row;
+						self->switchHMI(self, g_p_HMI_striped);
+						
+					}
+					else
+					{
+						//选择累积信息
+						
+						if(self->p_fcuu->focus_row == 0) 
+						{
+							
+							g_p_HMI_striped->arg[0] = HMI_SBG_SELECT_ACC;
+							g_p_HMI_striped->arg[1] = self->p_fcuu->focus_row;
+							self->switchHMI(self, g_p_HMI_striped);
+						}
+						else if(self->p_fcuu->focus_row == 1) 
+						{
+							g_p_HMI_striped->arg[0] = HMI_SBG_SELECT_ACC;
+							g_p_HMI_striped->arg[1] = self->p_fcuu->focus_row;
+							self->switchHMI(self, g_p_HMI_striped);
+						}
+						
+					}
+					break;		
+			case KEYCODE_ESC:
+					self->switchBack(self);
+					break;	
+			
 	}
+	
+	
+	
+//	if( !strcmp( s_key, HMIKEY_UP) )
+//	{
+//		Focus_move_up(self->p_fcuu);
+//		chgFouse = 1;
+//	}
+//	
+//	if( !strcmp( s_key, HMIKEY_DOWN) )
+//	{
+//		Focus_move_down(self->p_fcuu);
+//		chgFouse = 1;
+//	}
+//	//arg[0]用来指示当前选择的是信息画面，还是选择累积画面
+//	if( !strcmp(s_key, KEYCODE_ENTER))
+//	{
+//		
+//		if(self->p_fcuu->focus_row >= 2)
+//		{
+//			self->switchHMI(self, g_p_HMI_menu);
+//			return;
+//		}
+//		
+//		if(self->arg[0] == 0)
+//		{
+//			
+//			//选择信息
+//			g_p_HMI_striped->arg[0] = HMI_SBG_SELECT_NEWS;
+//			g_p_HMI_striped->arg[1] = self->p_fcuu->focus_row;
+//			self->switchHMI(self, g_p_HMI_striped);
+//			
+//		}
+//		else
+//		{
+//			//选择累积信息
+//			
+//			if(self->p_fcuu->focus_row == 0) 
+//			{
+//				
+//				g_p_HMI_striped->arg[0] = HMI_SBG_SELECT_ACC;
+//				g_p_HMI_striped->arg[1] = self->p_fcuu->focus_row;
+//				self->switchHMI(self, g_p_HMI_striped);
+//			}
+//			else if(self->p_fcuu->focus_row == 1) 
+//			{
+//				g_p_HMI_striped->arg[0] = HMI_SBG_SELECT_ACC;
+//				g_p_HMI_striped->arg[1] = self->p_fcuu->focus_row;
+//				self->switchHMI(self, g_p_HMI_striped);
+//			}
+//			
+//		}
+//		
+//	}
+
+//	if( !strcmp(s_key, HMIKEY_ESC))
+//	{
+//		self->switchBack(self);
+//	}
 	
 	if( chgFouse)
 	{	

@@ -25,6 +25,9 @@
 #define	KEYCODE_DOWN	0x04
 #define	KEYCODE_ENTER	0x05
 #define	KEYCODE_ESC		0x06
+#define KEYCODE_NONE				0xff
+#define IS_LEGAL_KCD(k)			(k >= KEYCODE_RIGHT && k <= KEYCODE_ESC)
+
 
 //根据原理图来设置
 /*

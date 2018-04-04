@@ -85,10 +85,8 @@ static void CtlKey_init( Controller *self, void *arg)
 
 static int KeyUpdate( keyObservice *self,  uint8_t num, keyMsg_t arr_msg[])
 {
-//	CtlKey *cthis = SUB_PTR(self, keyObservice, CtlKey);
-	
-	int i = 0;
-	char  *p[2];
+int i = 0;
+	uint8_t  k[2] = {KEYCODE_NONE, KEYCODE_NONE};
 	uint8_t eventCode;
 	
 	
@@ -101,40 +99,16 @@ static int KeyUpdate( keyObservice *self,  uint8_t num, keyMsg_t arr_msg[])
 	
 	for( i = 0; i < num; i++)
 	{
-		p[i] = NULL;
-		switch( arr_msg[i].keyCode)
-		{
-			case KEYCODE_RIGHT:
-				p[i] = HMIKEY_RIGHT;
-				break;	
-			case KEYCODE_LEFT:
-				p[i] = HMIKEY_LEFT;
-				break;
-			case KEYCODE_UP:
-				p[i] = HMIKEY_UP;
-				break;
-			
-			case KEYCODE_DOWN:
-				p[i] = HMIKEY_DOWN;
-				break;
-			
-			case KEYCODE_ENTER:
-				p[i] = HMIKEY_ENTER;
-				break;
-			case KEYCODE_ESC:
-				p[i] = HMIKEY_ESC;
-				break;
-			default:
-				p[i] = NULL;
-				break;
-			
-		}
+		
+		if(IS_LEGAL_KCD(arr_msg[i].keyCode))
+			k[i] = arr_msg[i].keyCode;
+		
 	}
 	
-	if(p[0] == NULL)
+	if(k[0] == KEYCODE_NONE)
 		goto exit;
 	if(num == 2) {
-		g_p_curHmi->conposeKeyHandle(g_p_curHmi, p[0], p[1]);
+		g_p_curHmi->conposeKeyHandle(g_p_curHmi, k[0], k[1]);
 		goto exit;
 	}
 	
@@ -142,13 +116,13 @@ static int KeyUpdate( keyObservice *self,  uint8_t num, keyMsg_t arr_msg[])
 	switch( eventCode)
 	{
 		case KEYEVENT_HIT:
-			g_p_curHmi->hitHandle( g_p_curHmi, p[0]);
+			g_p_curHmi->hitHandle( g_p_curHmi, k[0]);
 			break;	
 		case KEYEVENT_DHIT:
-			g_p_curHmi->dhitHandle( g_p_curHmi, p[0]);
+			g_p_curHmi->dhitHandle( g_p_curHmi, k[0]);
 			break;
 		case KEYEVENT_LPUSH:
-			g_p_curHmi->longpushHandle( g_p_curHmi, p[0]);
+			g_p_curHmi->longpushHandle( g_p_curHmi, k[0]);
 			break;
 		
 	}

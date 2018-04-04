@@ -68,7 +68,7 @@ static char		*win_content;
 //------------------------------------------------------------------------------
 static int	Init_winHmi( HMI *self, void *arg);
 static void	winHmiShow( HMI *self);
-static void	WinHmi_hit( HMI *self, char *s);
+static void	WinHmi_hit( HMI *self, char kcd);
 static void winHmiHide( HMI *self );
 static void Win_initSheet( HMI *self );
 
@@ -303,7 +303,7 @@ static void winHmi_ShowFocuse( HMI *self, uint8_t fouse_row, uint8_t fouse_col)
 	}
 }
 
-static void	WinHmi_hit(HMI *self, char *s)
+static void	WinHmi_hit(HMI *self, char kcd)
 {
 	winHmi		*cthis = SUB_PTR( self, HMI, winHmi);
 	HMI			*p_src_hmi;
@@ -313,82 +313,157 @@ static void	WinHmi_hit(HMI *self, char *s)
 	char			chgFouse = 0;
 	
 
-	if( !strcmp( s, HMIKEY_UP) )
-	{
-		if(Win_CUR_move(cthis, HMI_KEYCODE_UP) == RET_OK) {
-			chgFouse = 1;
-		}
-	}
-	else if( !strcmp( s, HMIKEY_DOWN) )
-	{
-		if(Win_CUR_move(cthis, HMI_KEYCODE_DN) == RET_OK) {
-			chgFouse = 1;
-		}
-	}
-	else if( !strcmp( s, HMIKEY_LEFT))
-	{
-
-		if(Win_CUR_move(cthis, HMI_KEYCODE_LT) == RET_OK) {
-			chgFouse = 1;
-		}
-	}
-	else if( !strcmp( s, HMIKEY_RIGHT))
+	
+	switch(kcd)
 	{
 		
-		if(Win_CUR_move(cthis, HMI_KEYCODE_RT) == RET_OK) {
-			chgFouse = 1;
-		}
-	}
-	
-	
-	if( !strcmp( s, HMIKEY_ENTER))
-	{
-		if((cthis->win_type & WINTYPE_SETTING) && cthis->f_row == 0) {
-			//时间设置窗口有2行
-			//确认时，切换到第二行
-			cthis->f_row = 1;
-			cthis->f_col = 0;
-			chgFouse = 1;
-		} else if((self->arg[1] &WINFLAG_RETURN) ){
-			
-			p_src_hmi = g_p_win_last;
-			p_src_hmi->flag |= HMIFLAG_WIN;
-			if((self->arg[1] &WINFLAG_COMMIT) && (cthis->f_col == 0))
-			{
-				
-				cthis->cmd_hdl(cthis->p_cmd_rcv, wincmd_commit, NULL);
+		case KEYCODE_UP:
+			if(Win_CUR_move(cthis, KEYCODE_UP) == RET_OK) {
+				chgFouse = 1;
 			}
-			self->arg[1] = 0;
-			p_src_hmi->flag |= HMI_FLAG_KEEP;
-			self->switchHMI(self, p_src_hmi);
-			p_src_hmi->flag &= ~HMIFLAG_WIN;
-			
-		} else {
-
-			if(cthis->f_col == 0)		//确认按键
-				cthis->cmd_hdl(cthis->p_cmd_rcv, wincmd_commit, NULL);
-			else {
-				//取消则直接返回
+			break;
+		case KEYCODE_DOWN:
+			if(Win_CUR_move(cthis, KEYCODE_DOWN) == RET_OK) {
+				chgFouse = 1;
+			}
+			break;
+		
+		case KEYCODE_LEFT:
+			if(Win_CUR_move(cthis, KEYCODE_LEFT) == RET_OK) {
+				chgFouse = 1;
+			}
+			break;
+		case KEYCODE_RIGHT:
+			if(Win_CUR_move(cthis, KEYCODE_RIGHT) == RET_OK) {
+				chgFouse = 1;
+			}
+			break;
+		
+		
+		case KEYCODE_ENTER:
+			if((cthis->win_type & WINTYPE_SETTING) && cthis->f_row == 0) {
+				//时间设置窗口有2行
+				//确认时，切换到第二行
+				cthis->f_row = 1;
+				cthis->f_col = 0;
+				chgFouse = 1;
+			} else if((self->arg[1] &WINFLAG_RETURN) ){
+				
 				p_src_hmi = g_p_win_last;
 				p_src_hmi->flag |= HMIFLAG_WIN;
+				if((self->arg[1] &WINFLAG_COMMIT) && (cthis->f_col == 0))
+				{
+					
+					cthis->cmd_hdl(cthis->p_cmd_rcv, wincmd_commit, NULL);
+				}
+				self->arg[1] = 0;
 				p_src_hmi->flag |= HMI_FLAG_KEEP;
 				self->switchHMI(self, p_src_hmi);
 				p_src_hmi->flag &= ~HMIFLAG_WIN;
-			}
 				
-		}
-		
-	}
-	if( !strcmp( s, HMIKEY_ESC))
-	{
-		
+			} else {
 
-		p_src_hmi = g_p_win_last;
-		p_src_hmi->flag |= HMIFLAG_WIN;
-		p_src_hmi->flag |= HMI_FLAG_KEEP;
-		self->switchHMI(self, p_src_hmi);
-		p_src_hmi->flag &= ~HMIFLAG_WIN;
+				if(cthis->f_col == 0)		//确认按键
+					cthis->cmd_hdl(cthis->p_cmd_rcv, wincmd_commit, NULL);
+				else {
+					//取消则直接返回
+					p_src_hmi = g_p_win_last;
+					p_src_hmi->flag |= HMIFLAG_WIN;
+					p_src_hmi->flag |= HMI_FLAG_KEEP;
+					self->switchHMI(self, p_src_hmi);
+					p_src_hmi->flag &= ~HMIFLAG_WIN;
+				}
+					
+			}
+			break;		
+		case KEYCODE_ESC:
+			
+			
+			p_src_hmi = g_p_win_last;
+			p_src_hmi->flag |= HMIFLAG_WIN;
+			p_src_hmi->flag |= HMI_FLAG_KEEP;
+			self->switchHMI(self, p_src_hmi);
+			p_src_hmi->flag &= ~HMIFLAG_WIN;
+			break;	
+		
 	}
+	
+//	if( !strcmp( s, HMIKEY_UP) )
+//	{
+//		if(Win_CUR_move(cthis, KEYCODE_UP) == RET_OK) {
+//			chgFouse = 1;
+//		}
+//	}
+//	else if( !strcmp( s, HMIKEY_DOWN) )
+//	{
+//		if(Win_CUR_move(cthis, HMI_KEYCODE_DN) == RET_OK) {
+//			chgFouse = 1;
+//		}
+//	}
+//	else if( !strcmp( s, HMIKEY_LEFT))
+//	{
+
+//		if(Win_CUR_move(cthis, HMI_KEYCODE_LT) == RET_OK) {
+//			chgFouse = 1;
+//		}
+//	}
+//	else if( !strcmp( s, HMIKEY_RIGHT))
+//	{
+//		
+//		if(Win_CUR_move(cthis, HMI_KEYCODE_RT) == RET_OK) {
+//			chgFouse = 1;
+//		}
+//	}
+//	
+//	
+//	if( !strcmp( s, KEYCODE_ENTER))
+//	{
+//		if((cthis->win_type & WINTYPE_SETTING) && cthis->f_row == 0) {
+//			//时间设置窗口有2行
+//			//确认时，切换到第二行
+//			cthis->f_row = 1;
+//			cthis->f_col = 0;
+//			chgFouse = 1;
+//		} else if((self->arg[1] &WINFLAG_RETURN) ){
+//			
+//			p_src_hmi = g_p_win_last;
+//			p_src_hmi->flag |= HMIFLAG_WIN;
+//			if((self->arg[1] &WINFLAG_COMMIT) && (cthis->f_col == 0))
+//			{
+//				
+//				cthis->cmd_hdl(cthis->p_cmd_rcv, wincmd_commit, NULL);
+//			}
+//			self->arg[1] = 0;
+//			p_src_hmi->flag |= HMI_FLAG_KEEP;
+//			self->switchHMI(self, p_src_hmi);
+//			p_src_hmi->flag &= ~HMIFLAG_WIN;
+//			
+//		} else {
+
+//			if(cthis->f_col == 0)		//确认按键
+//				cthis->cmd_hdl(cthis->p_cmd_rcv, wincmd_commit, NULL);
+//			else {
+//				//取消则直接返回
+//				p_src_hmi = g_p_win_last;
+//				p_src_hmi->flag |= HMIFLAG_WIN;
+//				p_src_hmi->flag |= HMI_FLAG_KEEP;
+//				self->switchHMI(self, p_src_hmi);
+//				p_src_hmi->flag &= ~HMIFLAG_WIN;
+//			}
+//				
+//		}
+//		
+//	}
+//	if( !strcmp( s, HMIKEY_ESC))
+//	{
+//		
+
+//		p_src_hmi = g_p_win_last;
+//		p_src_hmi->flag |= HMIFLAG_WIN;
+//		p_src_hmi->flag |= HMI_FLAG_KEEP;
+//		self->switchHMI(self, p_src_hmi);
+//		p_src_hmi->flag &= ~HMIFLAG_WIN;
+//	}
 	
 	
 	if( chgFouse)
@@ -415,7 +490,7 @@ static int Win_CUR_move(winHmi *cthis, int kc)
 		
 	} else if(cthis->win_type == WINTYPE_TIME_SET){
 		switch(kc) {
-			case HMI_KEYCODE_UP:
+			case KEYCODE_UP:
 				if(cthis->f_row == 0) {
 					MdlTime_text_modify(win_content, cthis->f_col, OP_ADD);
 					
@@ -423,14 +498,14 @@ static int Win_CUR_move(winHmi *cthis, int kc)
 				else 
 					cthis->f_row = 0;
 				break;
-			case HMI_KEYCODE_DN:
+			case KEYCODE_DOWN:
 				if(cthis->f_row == 0) {
 					MdlTime_text_modify(win_content, cthis->f_col, OP_SUB);
 				}
 				else 
 					cthis->f_row = 0;
 				break;
-			case HMI_KEYCODE_LT:
+			case KEYCODE_LEFT:
 				if(cthis->f_row == 0) {
 					cthis->f_col = MdlTime_text_iteartor(win_content, cthis->f_col, 0);
 				} else {
@@ -440,7 +515,7 @@ static int Win_CUR_move(winHmi *cthis, int kc)
 						cthis->f_col = 0;
 				}
 				break;
-			case HMI_KEYCODE_RT:
+			case KEYCODE_RIGHT:
 				if(cthis->f_row == 0) {
 					cthis->f_col = MdlTime_text_iteartor(win_content, cthis->f_col, 1);
 				} else {
@@ -457,7 +532,7 @@ static int Win_CUR_move(winHmi *cthis, int kc)
 		
 	} else if((cthis->win_type == WINTYPE_PASSWORD_SET) || (cthis->win_type == WINTYPE_PASSWORD_INPUT)){
 		switch(kc) {
-			case HMI_KEYCODE_UP:
+			case KEYCODE_UP:
 				if(cthis->f_row == 0) {
 					Password_modify(win_content, cthis->f_col, OP_ADD);
 					
@@ -465,14 +540,14 @@ static int Win_CUR_move(winHmi *cthis, int kc)
 				else 
 					cthis->f_row = 0;
 				break;
-			case HMI_KEYCODE_DN:
+			case KEYCODE_DOWN:
 				if(cthis->f_row == 0) {
 					Password_modify(win_content, cthis->f_col, OP_SUB);
 				}
 				else 
 					cthis->f_row = 0;
 				break;
-			case HMI_KEYCODE_LT:
+			case KEYCODE_LEFT:
 				if(cthis->f_row == 0) {
 					cthis->f_col = Password_iteartor(win_content, cthis->f_col, 0);
 				} else {
@@ -482,7 +557,7 @@ static int Win_CUR_move(winHmi *cthis, int kc)
 						cthis->f_col = 0;
 				}
 				break;
-			case HMI_KEYCODE_RT:
+			case KEYCODE_RIGHT:
 				if(cthis->f_row == 0) {
 					cthis->f_col = Password_iteartor(win_content, cthis->f_col, 1);
 				} else {

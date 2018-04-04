@@ -63,8 +63,8 @@ static void	HMI_SBG_Init_sheet(HMI *self);
 static void	HMI_SBG_Init_focus(HMI *self);
 static void	HMI_SBG_Clear_focus(HMI *self, uint8_t fouse_row, uint8_t fouse_col);
 static void	HMI_SBG_Show_focus(HMI *self, uint8_t fouse_row, uint8_t fouse_col);
-static void	HMI_SBG_Hit( HMI *self, char *s_key);
-static void	HMI_SBG_Long_hit( HMI *self, char *s_key);
+static void	HMI_SBG_Hit( HMI *self, char kcd);
+static void	HMI_SBG_Long_hit( HMI *self, char kcd);
 static void	HMI_SBG_Build_component(HMI *self);
 
 static void	HMI_SBG_Show_entry(HMI *self, strategy_t *p_st);
@@ -411,7 +411,7 @@ static void Strategy_focus(HMI_striped_background *self, strategy_focus_t *p_syf
 	self->p_sht_text->cnt.colour = COLOUR_WHITE;
 }
 
-static void	HMI_SBG_Hit(HMI *self, char *s_key)
+static void	HMI_SBG_Hit(HMI *self, char kcd)
 {
 	
 	HMI_striped_background				*cthis = SUB_PTR( self, HMI, HMI_striped_background);
@@ -429,154 +429,249 @@ static void	HMI_SBG_Hit(HMI *self, char *s_key)
 	old_sf.start_byte = p_sy->sf.start_byte;
 	old_sf.num_byte = p_sy->sf.num_byte;
 	
-	if( !strcmp( s_key, HMIKEY_LEFT) )
-	{
-		
-		
-		if(cthis->sub_flag & FOCUS_IN_STARTEGY) {
-			
-			if(p_sy->key_hit_lt(NULL) == RET_OK) {
-			
-				sy_chgFouse = 1;
-			} else {
-				sy_chgFouse = 2;
-				CLR_PG_FLAG(cthis->sub_flag, FOCUS_IN_STARTEGY);
-				
-				
-			}
-		}
-		if((cthis->sub_flag & FOCUS_IN_STARTEGY) == 0) {
-			self->btn_backward(self);
-//			chgFouse = 1;
-		}
-		
-	}
 	
-	if( !strcmp( s_key, HMIKEY_RIGHT) )
+	
+	switch(kcd)
 	{
-		if(cthis->sub_flag & FOCUS_IN_STARTEGY) {
-			
-			if(p_sy->key_hit_rt(NULL) == RET_OK) {
-			
-				sy_chgFouse = 1;
-			}  else {
-				sy_chgFouse = 2;
-				CLR_PG_FLAG(cthis->sub_flag, FOCUS_IN_STARTEGY);
-				
-				
-			}
-		}
+		case KEYCODE_UP:
+				phn_sys.key_weight = 1;
+				if(phn_sys.hit_count < 10)
+					phn_sys.hit_count ++;
+				else
+					phn_sys.hit_count = 0;
+				if(cthis->sub_flag & FOCUS_IN_STARTEGY) {
 
-		if((cthis->sub_flag & FOCUS_IN_STARTEGY) == 0) {
-			self->btn_forward(self);
-//			chgFouse = 1;
-		}
+					if(p_sy->key_hit_up(NULL) == RET_OK) {
+						//编辑区内的上下操作是用来修改参数的
+						//因此在修改参数成功之后，要重新显示被选中区的值
+						sy_chgFouse = 3;
+					} 
+				} else {
+
+					//在界面中，只有一行，因此任何的行切换操作，都意味将光标切到编辑区内
+					//吧光标切回编辑区之前，先将编辑区之外的光标清除掉
+					self->clear_focus(self, 0, focusCol);
+					Strategy_focus(cthis, &cthis->p_sy->sf, 1);
+					SET_PG_FLAG(cthis->sub_flag, FOCUS_IN_STARTEGY);
+				}
+				break;
+		case KEYCODE_DOWN:
+				phn_sys.key_weight = 1;
+				if(phn_sys.hit_count < 10)
+					phn_sys.hit_count ++;
+				else
+					phn_sys.hit_count = 0;
+
+				if(cthis->sub_flag & FOCUS_IN_STARTEGY) {
+
+					if(p_sy->key_hit_dn(NULL) == RET_OK) {
+
+						sy_chgFouse = 3;
+					} 
+				} else {
+
+					//在界面中，只有一行，因此任何的行切换操作，都意味将光标切到编辑区内
+					//吧光标切回编辑区之前，先将编辑区之外的光标清除掉
+					self->clear_focus(self, 0, focusCol);
+					Strategy_focus(cthis, &cthis->p_sy->sf, 1);
+					SET_PG_FLAG(cthis->sub_flag, FOCUS_IN_STARTEGY);
+				}				
+				break;
 		
-	}
-	if( !strcmp( s_key, HMIKEY_UP) )
-	{
-//		if(phn_sys.key_weight == 0)
-			phn_sys.key_weight = 1;
-		if(phn_sys.hit_count < 10)
-			phn_sys.hit_count ++;
-		else
-			phn_sys.hit_count = 0;
-		if(cthis->sub_flag & FOCUS_IN_STARTEGY) {
-			
-			if(p_sy->key_hit_up(NULL) == RET_OK) {
-				//编辑区内的上下操作是用来修改参数的
-				//因此在修改参数成功之后，要重新显示被选中区的值
-				sy_chgFouse = 3;
-			} 
-		} else {
-			
-			//在界面中，只有一行，因此任何的行切换操作，都意味将光标切到编辑区内
-			//吧光标切回编辑区之前，先将编辑区之外的光标清除掉
-			self->clear_focus(self, 0, focusCol);
-			Strategy_focus(cthis, &cthis->p_sy->sf, 1);
-			SET_PG_FLAG(cthis->sub_flag, FOCUS_IN_STARTEGY);
-		}
+		case KEYCODE_LEFT:
+				if(cthis->sub_flag & FOCUS_IN_STARTEGY) {
+					
+					if(p_sy->key_hit_lt(NULL) == RET_OK) {
+					
+						sy_chgFouse = 1;
+					} else {
+						sy_chgFouse = 2;
+						CLR_PG_FLAG(cthis->sub_flag, FOCUS_IN_STARTEGY);
+						
+						
+					}
+				}
+				if((cthis->sub_flag & FOCUS_IN_STARTEGY) == 0) {
+					self->btn_backward(self);
+				}				 
+				break;
+		case KEYCODE_RIGHT:
+				if(cthis->sub_flag & FOCUS_IN_STARTEGY) {
+					
+					if(p_sy->key_hit_rt(NULL) == RET_OK) {
+					
+						sy_chgFouse = 1;
+					}  else {
+						sy_chgFouse = 2;
+						CLR_PG_FLAG(cthis->sub_flag, FOCUS_IN_STARTEGY);
+						
+						
+					}
+				}
+
+				if((cthis->sub_flag & FOCUS_IN_STARTEGY) == 0) {
+					self->btn_forward(self);
+				}				 
+				break;
 		
-	}
-	
-	if( !strcmp( s_key, HMIKEY_DOWN) )
-	{
-//		if(phn_sys.key_weight == 0)
-			phn_sys.key_weight = 1;
-//		phn_sys.hit_count = 0;
-		if(phn_sys.hit_count < 10)
-			phn_sys.hit_count ++;
-		else
-			phn_sys.hit_count = 0;
 		
-		if(cthis->sub_flag & FOCUS_IN_STARTEGY) {
-			
-			if(p_sy->key_hit_dn(NULL) == RET_OK) {
+		case KEYCODE_ENTER:
 				
-				sy_chgFouse = 3;
-			} 
-		} else {
-			
-			//在界面中，只有一行，因此任何的行切换操作，都意味将光标切到编辑区内
-			//吧光标切回编辑区之前，先将编辑区之外的光标清除掉
-			self->clear_focus(self, 0, focusCol);
-			Strategy_focus(cthis, &cthis->p_sy->sf, 1);
-			SET_PG_FLAG(cthis->sub_flag, FOCUS_IN_STARTEGY);
-		}
+				break;		
+		case KEYCODE_ESC:
+				
+				break;	
+		
 	}
 	
-	
-	if( !strcmp(s_key, HMIKEY_ENTER))
-	{	
-		
-		
-		if(cthis->sub_flag & FOCUS_IN_STARTEGY) {
-			cthis->p_sy->key_hit_er(NULL) ;
-			
-		} else {
-			if(self->flag & HMIFLAG_FOCUS_IN_BTN)
-			{
-				p->hit();
-//				self->btn_hit(self);
-			}
-//			p_focus = HMI_SBG_Get_focus(cthis, -1);
-//			if(HMI_SBG_Turn_page(self, p_focus->id) == ERR_OPT_FAILED) {
-//				if(p_focus->id == ICO_ID_MENU)
-//				{
-//					cthis->entry_start_row = 0;
-//					self->switchHMI(self, g_p_HMI_menu);
-//				}
+//	if( !strcmp( s_key, HMIKEY_LEFT) )
+//	{
+//		
+//		
+//		if(cthis->sub_flag & FOCUS_IN_STARTEGY) {
+//			
+//			if(p_sy->key_hit_lt(NULL) == RET_OK) {
+//			
+//				sy_chgFouse = 1;
+//			} else {
+//				sy_chgFouse = 2;
+//				CLR_PG_FLAG(cthis->sub_flag, FOCUS_IN_STARTEGY);
+//				
 //				
 //			}
-		}
-	}
-	
-	if( !strcmp(s_key, HMIKEY_ESC))
-	{
-		
-		if(cthis->sub_flag & FOCUS_IN_STARTEGY) {
-			
-			//按esc键跳出编辑区
-			
-			sy_chgFouse = 2;
-			CLR_PG_FLAG(cthis->sub_flag, FOCUS_IN_STARTEGY);
-			
-			//180202 将光标移动到外部
-			self->btn_forward(self);
-			cthis->f_col = 0;
-		} else {
-			
-			cthis->entry_start_row = 0;
-//			self->switchHMI(self, g_p_Setup_HMI);
-			cthis->p_sy->sty_exit();
-			
-			
-			g_p_lastHmi->flag |= HMI_FLAG_KEEP;
-			self->switchBack(self);
-			
-		}
-		
-	}
+//		}
+//		if((cthis->sub_flag & FOCUS_IN_STARTEGY) == 0) {
+//			self->btn_backward(self);
+////			chgFouse = 1;
+//		}
+//		
+//	}
+//	
+//	if( !strcmp( s_key, HMIKEY_RIGHT) )
+//	{
+//		if(cthis->sub_flag & FOCUS_IN_STARTEGY) {
+//			
+//			if(p_sy->key_hit_rt(NULL) == RET_OK) {
+//			
+//				sy_chgFouse = 1;
+//			}  else {
+//				sy_chgFouse = 2;
+//				CLR_PG_FLAG(cthis->sub_flag, FOCUS_IN_STARTEGY);
+//				
+//				
+//			}
+//		}
+
+//		if((cthis->sub_flag & FOCUS_IN_STARTEGY) == 0) {
+//			self->btn_forward(self);
+////			chgFouse = 1;
+//		}
+//		
+//	}
+//	if( !strcmp( s_key, HMIKEY_UP) )
+//	{
+////		if(phn_sys.key_weight == 0)
+//			phn_sys.key_weight = 1;
+//		if(phn_sys.hit_count < 10)
+//			phn_sys.hit_count ++;
+//		else
+//			phn_sys.hit_count = 0;
+//		if(cthis->sub_flag & FOCUS_IN_STARTEGY) {
+//			
+//			if(p_sy->key_hit_up(NULL) == RET_OK) {
+//				//编辑区内的上下操作是用来修改参数的
+//				//因此在修改参数成功之后，要重新显示被选中区的值
+//				sy_chgFouse = 3;
+//			} 
+//		} else {
+//			
+//			//在界面中，只有一行，因此任何的行切换操作，都意味将光标切到编辑区内
+//			//吧光标切回编辑区之前，先将编辑区之外的光标清除掉
+//			self->clear_focus(self, 0, focusCol);
+//			Strategy_focus(cthis, &cthis->p_sy->sf, 1);
+//			SET_PG_FLAG(cthis->sub_flag, FOCUS_IN_STARTEGY);
+//		}
+//		
+//	}
+//	
+//	if( !strcmp( s_key, HMIKEY_DOWN) )
+//	{
+////		if(phn_sys.key_weight == 0)
+//			phn_sys.key_weight = 1;
+////		phn_sys.hit_count = 0;
+//		if(phn_sys.hit_count < 10)
+//			phn_sys.hit_count ++;
+//		else
+//			phn_sys.hit_count = 0;
+//		
+//		if(cthis->sub_flag & FOCUS_IN_STARTEGY) {
+//			
+//			if(p_sy->key_hit_dn(NULL) == RET_OK) {
+//				
+//				sy_chgFouse = 3;
+//			} 
+//		} else {
+//			
+//			//在界面中，只有一行，因此任何的行切换操作，都意味将光标切到编辑区内
+//			//吧光标切回编辑区之前，先将编辑区之外的光标清除掉
+//			self->clear_focus(self, 0, focusCol);
+//			Strategy_focus(cthis, &cthis->p_sy->sf, 1);
+//			SET_PG_FLAG(cthis->sub_flag, FOCUS_IN_STARTEGY);
+//		}
+//	}
+//	
+//	
+//	if( !strcmp(s_key, KEYCODE_ENTER))
+//	{	
+//		
+//		
+//		if(cthis->sub_flag & FOCUS_IN_STARTEGY) {
+//			cthis->p_sy->key_hit_er(NULL) ;
+//			
+//		} else {
+//			if(self->flag & HMIFLAG_FOCUS_IN_BTN)
+//			{
+//				p->hit();
+////				self->btn_hit(self);
+//			}
+////			p_focus = HMI_SBG_Get_focus(cthis, -1);
+////			if(HMI_SBG_Turn_page(self, p_focus->id) == ERR_OPT_FAILED) {
+////				if(p_focus->id == ICO_ID_MENU)
+////				{
+////					cthis->entry_start_row = 0;
+////					self->switchHMI(self, g_p_HMI_menu);
+////				}
+////				
+////			}
+//		}
+//	}
+//	
+//	if( !strcmp(s_key, HMIKEY_ESC))
+//	{
+//		
+//		if(cthis->sub_flag & FOCUS_IN_STARTEGY) {
+//			
+//			//按esc键跳出编辑区
+//			
+//			sy_chgFouse = 2;
+//			CLR_PG_FLAG(cthis->sub_flag, FOCUS_IN_STARTEGY);
+//			
+//			//180202 将光标移动到外部
+//			self->btn_forward(self);
+//			cthis->f_col = 0;
+//		} else {
+//			
+//			cthis->entry_start_row = 0;
+////			self->switchHMI(self, g_p_Setup_HMI);
+//			cthis->p_sy->sty_exit();
+//			
+//			
+//			g_p_lastHmi->flag |= HMI_FLAG_KEEP;
+//			self->switchBack(self);
+//			
+//		}
+//		
+//	}
 	
 	if(sy_chgFouse == 1) {
 		Strategy_focus(cthis, &old_sf, 0);
@@ -610,7 +705,7 @@ static void	HMI_SBG_Hit(HMI *self, char *s_key)
 
 
 
-static void	HMI_SBG_Long_hit( HMI *self, char *s_key)
+static void	HMI_SBG_Long_hit( HMI *self, char kcd)
 {
 	HMI_striped_background			*cthis = SUB_PTR( self, HMI, HMI_striped_background);
 	strategy_keyval_t	skt = {SY_KEYTYPE_LONGPUSH};
@@ -636,18 +731,44 @@ static void	HMI_SBG_Long_hit( HMI *self, char *s_key)
 //		return;
 	}
 	
-	if( !strcmp( s_key, HMIKEY_UP) )
+	
+	switch(kcd)
 	{
-		p_sy->key_hit_up(&skt);
-		
-		
+
+			case KEYCODE_UP:
+					p_sy->key_hit_up(&skt); 
+					break;
+			case KEYCODE_DOWN:
+					p_sy->key_hit_dn(&skt);
+					break;
+			case KEYCODE_LEFT:
+					 
+					break;
+			case KEYCODE_RIGHT:
+					 
+					break;
+
+			case KEYCODE_ENTER:
+					
+					break;		
+			case KEYCODE_ESC:
+					
+					break;	
+			
 	}
 	
-	if( !strcmp( s_key, HMIKEY_DOWN) )
-	{
-		p_sy->key_hit_dn(&skt);
-		
-	}
+//	if( !strcmp( s_key, HMIKEY_UP) )
+//	{
+//		p_sy->key_hit_up(&skt);
+//		
+//		
+//	}
+//	
+//	if( !strcmp( s_key, HMIKEY_DOWN) )
+//	{
+//		p_sy->key_hit_dn(&skt);
+//		
+//	}
 	
 	
 

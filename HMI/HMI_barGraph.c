@@ -263,7 +263,7 @@ static void	BarHmi_Show( HMI *self )
 //	
 //	
 //	
-//	if( !strcmp( s, HMIKEY_ENTER))
+//	if( !strcmp( s, KEYCODE_ENTER))
 //	{
 //		
 //		self->btn_hit(self);

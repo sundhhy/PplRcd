@@ -53,7 +53,7 @@ static void	Alarm_initSheet(HMI *self);
 static void	Accm_HMI_init_focus(HMI *self);
 
 static void	Accm_show_info(Accm_HMI *self, strategy_t *p);
-static void	Accm_HMI_hitHandle( HMI *self, char *s_key);
+static void	Accm_HMI_hitHandle( HMI *self, char kcd);
 //============================================================================//
 //            P U B L I C   F U N C T I O N S                                 //
 //============================================================================//
@@ -201,7 +201,7 @@ static void	Accm_HMI_init_focus(HMI *self)
 
 
 
-static void	Accm_HMI_hitHandle(HMI *self, char *s_key)
+static void	Accm_HMI_hitHandle(HMI *self, char kcd)
 {
 	
 	Accm_HMI		*cthis = SUB_PTR( self, HMI, Accm_HMI);
@@ -209,85 +209,155 @@ static void	Accm_HMI_hitHandle(HMI *self, char *s_key)
 	dspContent_t	*p_cnt;	
 	uint8_t		focusCol = self->p_fcuu->focus_col;
 	uint8_t		chgFouse = 0;
-	
-	if( !strcmp( s_key, HMIKEY_UP) )
+	switch(kcd)
 	{
-		if(p_focus == NULL) {
-			goto exit;
-		}
-		if(p_focus->id != SHEET_BOXLIST) {
-			goto exit;
-		}
-		if(cthis->cur_chn < NUM_CHANNEL) {
-			cthis->cur_chn ++;
-			p_cnt = Button_Get_subcnt(p_focus);
-			sprintf(p_cnt->data, "%02d", cthis->cur_chn);
-			p_cnt->len = strlen(p_cnt->data);
-			
-		}
-		chgFouse = 1;			//为了刷新一下方框
-	}
-	
-	if( !strcmp( s_key, HMIKEY_DOWN) )
-	{
-		
-		if(p_focus == NULL) {
-			goto exit;
-		}
-		if(p_focus->id != SHEET_BOXLIST) {
-			goto exit;
-		}
-		if(cthis->cur_chn ) {
-			cthis->cur_chn --;
-			p_cnt = Button_Get_subcnt(p_focus);
-			sprintf(p_cnt->data, "%02d", cthis->cur_chn);
-			p_cnt->len = strlen(p_cnt->data);
-			
-		}
-		chgFouse = 1;
-	}
 
-	if( !strcmp( s_key, HMIKEY_LEFT) )
-	{
-		Focus_move_left(self->p_fcuu);
-		chgFouse = 1;
-	}
-	
-	if( !strcmp( s_key, HMIKEY_RIGHT) )
-	{
-		Focus_move_right(self->p_fcuu);
-		chgFouse = 1;
-	}
-	if( !strcmp(s_key, HMIKEY_ENTER))
-	{
-		p_focus = Focus_Get_focus(self->p_fcuu);
-		if(p_focus == NULL)
-			goto exit;
-		switch(p_focus->id)
-		{
-			case ICO_ID_MENU:
-				self->switchHMI(self, g_p_HMI_menu);
-				break;
-			case ICO_ID_PGUP:
-				break;
-			case ICO_ID_PGDN:
-				break;
-			case ICO_ID_ERASETOOL:
-				break;
-			
-			default:
-				break;
+			case KEYCODE_UP:
+					if(p_focus == NULL) {
+						goto exit;
+					}
+					if(p_focus->id != SHEET_BOXLIST) {
+						goto exit;
+					}
+					if(cthis->cur_chn < NUM_CHANNEL) {
+						cthis->cur_chn ++;
+						p_cnt = Button_Get_subcnt(p_focus);
+						sprintf(p_cnt->data, "%02d", cthis->cur_chn);
+						p_cnt->len = strlen(p_cnt->data);
 						
+					}
+					chgFouse = 1;			//为了刷新一下方框 
+					break;
+			case KEYCODE_DOWN:
+					if(p_focus == NULL) {
+						goto exit;
+					}
+					if(p_focus->id != SHEET_BOXLIST) {
+						goto exit;
+					}
+					if(cthis->cur_chn ) {
+						cthis->cur_chn --;
+						p_cnt = Button_Get_subcnt(p_focus);
+						sprintf(p_cnt->data, "%02d", cthis->cur_chn);
+						p_cnt->len = strlen(p_cnt->data);
+						
+					}
+					chgFouse = 1;
+					break;
+			case KEYCODE_LEFT:
+					Focus_move_left(self->p_fcuu);
+					chgFouse = 1;
+					break;
+			case KEYCODE_RIGHT:
+					Focus_move_right(self->p_fcuu);
+					chgFouse = 1; 
+					break;
+
+			case KEYCODE_ENTER:
+					p_focus = Focus_Get_focus(self->p_fcuu);
+					if(p_focus == NULL)
+						goto exit;
+					switch(p_focus->id)
+					{
+						case ICO_ID_MENU:
+							self->switchHMI(self, g_p_HMI_menu);
+							break;
+						case ICO_ID_PGUP:
+							break;
+						case ICO_ID_PGDN:
+							break;
+						case ICO_ID_ERASETOOL:
+							break;
+						
+						default:
+							break;
+									
+						
+					}
+					break;		
+			case KEYCODE_ESC:
+					self->switchBack(self);
+					break;	
 			
-		}
-		
-		
-	}
-	
-	if( !strcmp(s_key, HMIKEY_ESC))
-	{
-		self->switchBack(self);
-	}
+	}	
+//	if( !strcmp( s_key, HMIKEY_UP) )
+//	{
+//		if(p_focus == NULL) {
+//			goto exit;
+//		}
+//		if(p_focus->id != SHEET_BOXLIST) {
+//			goto exit;
+//		}
+//		if(cthis->cur_chn < NUM_CHANNEL) {
+//			cthis->cur_chn ++;
+//			p_cnt = Button_Get_subcnt(p_focus);
+//			sprintf(p_cnt->data, "%02d", cthis->cur_chn);
+//			p_cnt->len = strlen(p_cnt->data);
+//			
+//		}
+//		chgFouse = 1;			//为了刷新一下方框
+//	}
+//	
+//	if( !strcmp( s_key, HMIKEY_DOWN) )
+//	{
+//		
+//		if(p_focus == NULL) {
+//			goto exit;
+//		}
+//		if(p_focus->id != SHEET_BOXLIST) {
+//			goto exit;
+//		}
+//		if(cthis->cur_chn ) {
+//			cthis->cur_chn --;
+//			p_cnt = Button_Get_subcnt(p_focus);
+//			sprintf(p_cnt->data, "%02d", cthis->cur_chn);
+//			p_cnt->len = strlen(p_cnt->data);
+//			
+//		}
+//		chgFouse = 1;
+//	}
+
+//	if( !strcmp( s_key, HMIKEY_LEFT) )
+//	{
+//		Focus_move_left(self->p_fcuu);
+//		chgFouse = 1;
+//	}
+//	
+//	if( !strcmp( s_key, HMIKEY_RIGHT) )
+//	{
+//		Focus_move_right(self->p_fcuu);
+//		chgFouse = 1;
+//	}
+//	if( !strcmp(s_key, KEYCODE_ENTER))
+//	{
+//		p_focus = Focus_Get_focus(self->p_fcuu);
+//		if(p_focus == NULL)
+//			goto exit;
+//		switch(p_focus->id)
+//		{
+//			case ICO_ID_MENU:
+//				self->switchHMI(self, g_p_HMI_menu);
+//				break;
+//			case ICO_ID_PGUP:
+//				break;
+//			case ICO_ID_PGDN:
+//				break;
+//			case ICO_ID_ERASETOOL:
+//				break;
+//			
+//			default:
+//				break;
+//						
+//			
+//		}
+//		
+//		
+//	}
+//	
+//	if( !strcmp(s_key, HMIKEY_ESC))
+//	{
+//		self->switchBack(self);
+//	}
 	
 	if( chgFouse)
 	{	
