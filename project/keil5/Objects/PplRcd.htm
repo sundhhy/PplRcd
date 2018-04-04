@@ -3,7 +3,7 @@
 <title>Static Call Graph - [.\Objects\PplRcd.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image .\Objects\PplRcd.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060061: Last Updated: Wed Apr 04 17:08:23 2018
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5050106: Last Updated: Wed Apr 04 23:10:35 2018
 <BR><P>
 <H3>Maximum Stack Usage =        584 bytes + Unknown(Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -849,8 +849,8 @@ Global Symbols
 <P><STRONG><a name="[21f]"></a>__aeabi_memclr</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, memseta.o(.text))
 <BR><BR>[Calls]<UL><LI><a href="#[220]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memset
 </UL>
-<BR>[Called By]<UL><LI><a href="#[42e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;free_playloadbuf
-<LI><a href="#[277]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CNA_Clear
+<BR>[Called By]<UL><LI><a href="#[277]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CNA_Clear
+<LI><a href="#[42e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;free_playloadbuf
 <LI><a href="#[1cb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UartRead
 <LI><a href="#[17a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;BuInptSht
 <LI><a href="#[253]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GetAttribute
@@ -2061,7 +2061,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[1d9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;KeyboardHitHandle
 </UL>
 
-<P><STRONG><a name="[2f1]"></a>Except_raise</STRONG> (Thumb, 128 bytes, Stack size 0 bytes, except.o(i.Except_raise))
+<P><STRONG><a name="[2f1]"></a>Except_raise</STRONG> (Thumb, 130 bytes, Stack size 0 bytes, except.o(i.Except_raise))
 <BR><BR>[Stack]<UL><LI>Max Depth = 24 + In Cycle
 <LI>Call Chain = Except_raise &rArr;  Except_raise (Cycle)
 </UL>
@@ -2722,7 +2722,8 @@ Global Symbols
 </UL>
 <BR>[Calls]<UL><LI><a href="#[33b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Storage_new
 </UL>
-<BR>[Called By]<UL><LI><a href="#[279]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;STG_Set_file_position
+<BR>[Called By]<UL><LI><a href="#[277]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CNA_Clear
+<LI><a href="#[279]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;STG_Set_file_position
 <LI><a href="#[27b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CNA_Init
 <LI><a href="#[41e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;System_power_on
 <LI><a href="#[3bf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;System_power_off
@@ -2730,7 +2731,6 @@ Global Symbols
 <LI><a href="#[3f3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SYS_Commit
 <LI><a href="#[41c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;System_init
 <LI><a href="#[27a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CNA_Commit
-<LI><a href="#[277]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CNA_Clear
 <LI><a href="#[38b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;STG_Resize
 <LI><a href="#[2c0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;STG_Read_rcd_by_time
 <LI><a href="#[2c1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;STG_Read_alm_pwr
@@ -3220,22 +3220,22 @@ Global Symbols
 </UL>
 <BR>[Calls]<UL><LI><a href="#[24b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;BTN_Get_Sington
 </UL>
-<BR>[Address Reference Count : 2]<UL><LI> hmi_bargraph.o(i.barGhHMI_ctor)
-<LI> hmi_main.o(i.mainHmi_ctor)
+<BR>[Address Reference Count : 2]<UL><LI> hmi_main.o(i.mainHmi_ctor)
+<LI> hmi_bargraph.o(i.barGhHMI_ctor)
 </UL>
 <P><STRONG><a name="[1b3]"></a>Main_HMI_hit</STRONG> (Thumb, 66 bytes, Stack size 16 bytes, hmi_main.o(i.Main_HMI_hit))
 <BR><BR>[Stack]<UL><LI>Max Depth = 88<LI>Call Chain = Main_HMI_hit &rArr; BTN_Get_Sington &rArr; Button_new &rArr; malloc &rArr; internal_alloc
 </UL>
 <BR>[Calls]<UL><LI><a href="#[24b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;BTN_Get_Sington
 </UL>
-<BR>[Address Reference Count : 2]<UL><LI> hmi_bargraph.o(i.barGhHMI_ctor)
-<LI> hmi_main.o(i.mainHmi_ctor)
+<BR>[Address Reference Count : 2]<UL><LI> hmi_main.o(i.mainHmi_ctor)
+<LI> hmi_bargraph.o(i.barGhHMI_ctor)
 </UL>
 <P><STRONG><a name="[128]"></a>Main_btn_hdl</STRONG> (Thumb, 78 bytes, Stack size 16 bytes, hmi_main.o(i.Main_btn_hdl))
 <BR><BR>[Stack]<UL><LI>Max Depth = 16<LI>Call Chain = Main_btn_hdl
 </UL>
-<BR>[Address Reference Count : 2]<UL><LI> hmi_curve.o(i.HMI_CRV_Build_cmp)
-<LI> hmi_main.o(i.Main_HMI_build_button)
+<BR>[Address Reference Count : 2]<UL><LI> hmi_main.o(i.Main_HMI_build_button)
+<LI> hmi_curve.o(i.HMI_CRV_Build_cmp)
 </UL>
 <P><STRONG><a name="[350]"></a>MdlChn_Cal_prc</STRONG> (Thumb, 56 bytes, Stack size 16 bytes, model_channel.o(i.MdlChn_Cal_prc))
 <BR><BR>[Stack]<UL><LI>Max Depth = 16<LI>Call Chain = MdlChn_Cal_prc
@@ -3948,11 +3948,11 @@ Global Symbols
 <BR>[Calls]<UL><LI><a href="#[278]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Get_storage
 <LI><a href="#[1a4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;STG_Open_file
 </UL>
-<BR>[Called By]<UL><LI><a href="#[27b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CNA_Init
+<BR>[Called By]<UL><LI><a href="#[277]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CNA_Clear
+<LI><a href="#[27b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CNA_Init
 <LI><a href="#[41e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;System_power_on
 <LI><a href="#[3bf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;System_power_off
 <LI><a href="#[27a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CNA_Commit
-<LI><a href="#[277]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CNA_Clear
 <LI><a href="#[2c1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;STG_Read_alm_pwr
 <LI><a href="#[195]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HMI_CRV_HST_Run
 <LI><a href="#[38]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;NPW_Entry
@@ -4134,15 +4134,15 @@ Global Symbols
 </UL>
 <BR>[Calls]<UL><LI><a href="#[357]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HMI_SBG_Turn_page
 </UL>
-<BR>[Address Reference Count : 10]<UL><LI> hmi_striped_background.o(i.HMI_SBG_Show_entry)
-<LI> stg_set_accumulate.o(i.SSA_Build_component)
+<BR>[Address Reference Count : 10]<UL><LI> stg_set_accumulate.o(i.SSA_Build_component)
+<LI> stg_set_channel.o(i.CNS_build_component)
+<LI> stg_set_databackup.o(i.DBP_build_component)
+<LI> hmi_striped_background.o(i.HMI_SBG_Show_entry)
 <LI> hmi_striped_background.o(i.STY_Duild_button)
 <LI> stg_acc_month.o(i.SAM_Build_component)
 <LI> stg_news_alarm.o(i.NLM_Build_component)
 <LI> stg_news_power.o(i.NPW_Build_component)
 <LI> stg_acc_day.o(i.SAD_Build_component)
-<LI> stg_set_channel.o(i.CNS_build_component)
-<LI> stg_set_databackup.o(i.DBP_build_component)
 <LI> stg_set_system.o(i.SYS_build_component)
 </UL>
 <P><STRONG><a name="[402]"></a>Setup_HMI_ctor</STRONG> (Thumb, 44 bytes, Stack size 8 bytes, hmi_setup.o(i.Setup_HMI_ctor))
@@ -5602,10 +5602,10 @@ Global Symbols
 <P><STRONG><a name="[c4]"></a>rt_alloc_box</STRONG> (Thumb, 26 bytes, Stack size 0 bytes, rt_membox.o(i.rt_alloc_box))
 <BR><BR>[Calls]<UL><LI><a href="#[c4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_alloc_box
 </UL>
-<BR>[Called By]<UL><LI><a href="#[c4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_alloc_box
+<BR>[Called By]<UL><LI><a href="#[48c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_tsk_create
+<LI><a href="#[c4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_alloc_box
 <LI><a href="#[47b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_mbx_psh
 <LI><a href="#[479]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_init_context
-<LI><a href="#[48c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_tsk_create
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> hal_cm3.o(.emb_text)
 </UL>
@@ -5652,11 +5652,11 @@ Global Symbols
 <LI><a href="#[474]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_put_rdy_first
 <LI><a href="#[46f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_switch_req
 </UL>
-<BR>[Called By]<UL><LI><a href="#[482]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_sem_send
-<LI><a href="#[47e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_mbx_wait
-<LI><a href="#[492]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_tsk_prio
+<BR>[Called By]<UL><LI><a href="#[492]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_tsk_prio
 <LI><a href="#[48e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_tsk_delete
 <LI><a href="#[48c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_tsk_create
+<LI><a href="#[482]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_sem_send
+<LI><a href="#[47e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_mbx_wait
 </UL>
 
 <P><STRONG><a name="[475]"></a>rt_dly_wait</STRONG> (Thumb, 6 bytes, Stack size 0 bytes, rt_time.o(i.rt_dly_wait))
@@ -5688,7 +5688,9 @@ Global Symbols
 </UL>
 
 <P><STRONG><a name="[46e]"></a>rt_get_first</STRONG> (Thumb, 40 bytes, Stack size 0 bytes, rt_list.o(i.rt_get_first))
-<BR><BR>[Called By]<UL><LI><a href="#[482]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_sem_send
+<BR><BR>[Called By]<UL><LI><a href="#[492]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_tsk_prio
+<LI><a href="#[48e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_tsk_delete
+<LI><a href="#[482]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_sem_send
 <LI><a href="#[47e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_mbx_wait
 <LI><a href="#[473]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_dispatch
 <LI><a href="#[46c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_block
@@ -5697,8 +5699,6 @@ Global Symbols
 <LI><a href="#[470]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_chk_robin
 <LI><a href="#[219]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_systick
 <LI><a href="#[218]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_pop_req
-<LI><a href="#[492]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_tsk_prio
-<LI><a href="#[48e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_tsk_delete
 </UL>
 
 <P><STRONG><a name="[491]"></a>rt_get_same_rdy_prio</STRONG> (Thumb, 26 bytes, Stack size 0 bytes, rt_list.o(i.rt_get_same_rdy_prio))
@@ -5792,7 +5792,10 @@ Global Symbols
 <P><STRONG><a name="[471]"></a>rt_put_prio</STRONG> (Thumb, 54 bytes, Stack size 12 bytes, rt_list.o(i.rt_put_prio))
 <BR><BR>[Stack]<UL><LI>Max Depth = 12<LI>Call Chain = rt_put_prio
 </UL>
-<BR>[Called By]<UL><LI><a href="#[483]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_sem_wait
+<BR>[Called By]<UL><LI><a href="#[492]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_tsk_prio
+<LI><a href="#[490]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_tsk_pass
+<LI><a href="#[48e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_tsk_delete
+<LI><a href="#[483]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_sem_wait
 <LI><a href="#[47e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_mbx_wait
 <LI><a href="#[473]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_dispatch
 <LI><a href="#[47f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_sem_psh
@@ -5801,9 +5804,6 @@ Global Symbols
 <LI><a href="#[472]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_dec_dly
 <LI><a href="#[470]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_chk_robin
 <LI><a href="#[480]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_resort_prio
-<LI><a href="#[492]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_tsk_prio
-<LI><a href="#[490]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_tsk_pass
-<LI><a href="#[48e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_tsk_delete
 </UL>
 
 <P><STRONG><a name="[474]"></a>rt_put_rdy_first</STRONG> (Thumb, 14 bytes, Stack size 0 bytes, rt_list.o(i.rt_put_rdy_first))
@@ -5822,11 +5822,11 @@ Global Symbols
 </UL>
 
 <P><STRONG><a name="[47c]"></a>rt_ret_val</STRONG> (Thumb, 6 bytes, Stack size 0 bytes, hal_cm.o(i.rt_ret_val))
-<BR><BR>[Called By]<UL><LI><a href="#[482]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_sem_send
+<BR><BR>[Called By]<UL><LI><a href="#[48e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_tsk_delete
+<LI><a href="#[482]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_sem_send
 <LI><a href="#[47e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_mbx_wait
 <LI><a href="#[47f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_sem_psh
 <LI><a href="#[47b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_mbx_psh
-<LI><a href="#[48e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_tsk_delete
 </UL>
 
 <P><STRONG><a name="[478]"></a>rt_ret_val2</STRONG> (Thumb, 8 bytes, Stack size 0 bytes, hal_cm.o(i.rt_ret_val2))
@@ -5837,17 +5837,17 @@ Global Symbols
 <P><STRONG><a name="[477]"></a>rt_rmv_dly</STRONG> (Thumb, 40 bytes, Stack size 8 bytes, rt_list.o(i.rt_rmv_dly))
 <BR><BR>[Stack]<UL><LI>Max Depth = 8<LI>Call Chain = rt_rmv_dly
 </UL>
-<BR>[Called By]<UL><LI><a href="#[482]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_sem_send
+<BR>[Called By]<UL><LI><a href="#[48e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_tsk_delete
+<LI><a href="#[482]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_sem_send
 <LI><a href="#[47e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_mbx_wait
 <LI><a href="#[47f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_sem_psh
 <LI><a href="#[47b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_mbx_psh
 <LI><a href="#[476]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_evt_psh
-<LI><a href="#[48e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_tsk_delete
 </UL>
 
 <P><STRONG><a name="[481]"></a>rt_rmv_list</STRONG> (Thumb, 44 bytes, Stack size 0 bytes, rt_list.o(i.rt_rmv_list))
-<BR><BR>[Called By]<UL><LI><a href="#[480]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_resort_prio
-<LI><a href="#[48e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_tsk_delete
+<BR><BR>[Called By]<UL><LI><a href="#[48e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_tsk_delete
+<LI><a href="#[480]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_resort_prio
 </UL>
 
 <P><STRONG><a name="[498]"></a>rt_sem_init</STRONG> (Thumb, 12 bytes, Stack size 0 bytes, rt_semaphore.o(i.rt_sem_init))
@@ -5888,19 +5888,19 @@ Global Symbols
 <P><STRONG><a name="[217]"></a>rt_stk_check</STRONG> (Thumb, 28 bytes, Stack size 0 bytes, rt_system.o(i.rt_stk_check))
 <BR><BR>[Calls]<UL><LI><a href="#[47d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;os_error
 </UL>
-<BR>[Called By]<UL><LI><a href="#[86]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;PendSV_Handler
+<BR>[Called By]<UL><LI><a href="#[48e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_tsk_delete
+<LI><a href="#[86]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;PendSV_Handler
 <LI><a href="#[84]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SVC_Handler
-<LI><a href="#[48e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_tsk_delete
 </UL>
 
 <P><STRONG><a name="[46f]"></a>rt_switch_req</STRONG> (Thumb, 30 bytes, Stack size 0 bytes, rt_task.o(i.rt_switch_req))
 <BR><BR>[Calls]<UL><LI><a href="#[484]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;dbg_task_switch
 </UL>
-<BR>[Called By]<UL><LI><a href="#[473]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_dispatch
+<BR>[Called By]<UL><LI><a href="#[490]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_tsk_pass
+<LI><a href="#[473]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_dispatch
 <LI><a href="#[46c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_block
 <LI><a href="#[219]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_systick
 <LI><a href="#[218]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_pop_req
-<LI><a href="#[490]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_tsk_pass
 </UL>
 
 <P><STRONG><a name="[485]"></a>rt_sys_init</STRONG> (Thumb, 138 bytes, Stack size 16 bytes, rt_task.o(i.rt_sys_init))
@@ -6012,8 +6012,8 @@ Global Symbols
 <P><STRONG><a name="[1ed]"></a>svcKernelStart</STRONG> (Thumb, 62 bytes, Stack size 16 bytes, rt_cmsis.o(i.svcKernelStart))
 <BR><BR>[Stack]<UL><LI>Max Depth = 60<LI>Call Chain = svcKernelStart &rArr; rt_tsk_prio &rArr; rt_dispatch &rArr; rt_put_prio
 </UL>
-<BR>[Calls]<UL><LI><a href="#[489]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_sys_start
-<LI><a href="#[492]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_tsk_prio
+<BR>[Calls]<UL><LI><a href="#[492]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_tsk_prio
+<LI><a href="#[489]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_sys_start
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> rt_cmsis.o(i.osKernelStart)
 </UL>
@@ -6062,9 +6062,9 @@ Global Symbols
 <P><STRONG><a name="[1f2]"></a>svcThreadCreate</STRONG> (Thumb, 96 bytes, Stack size 16 bytes, rt_cmsis.o(i.svcThreadCreate))
 <BR><BR>[Stack]<UL><LI>Max Depth = 72<LI>Call Chain = svcThreadCreate &rArr; rt_tsk_create &rArr; rt_init_context &rArr; rt_init_stack
 </UL>
-<BR>[Calls]<UL><LI><a href="#[49a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_free_mem
+<BR>[Calls]<UL><LI><a href="#[48c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_tsk_create
+<LI><a href="#[49a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_free_mem
 <LI><a href="#[499]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_alloc_mem
-<LI><a href="#[48c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_tsk_create
 </UL>
 <BR>[Called By]<UL><LI><a href="#[215]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osThreadCreate
 <LI><a href="#[1ec]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;svcKernelInitialize
@@ -6081,9 +6081,9 @@ Global Symbols
 <P><STRONG><a name="[1f4]"></a>svcThreadTerminate</STRONG> (Thumb, 50 bytes, Stack size 8 bytes, rt_cmsis.o(i.svcThreadTerminate))
 <BR><BR>[Stack]<UL><LI>Max Depth = 76<LI>Call Chain = svcThreadTerminate &rArr; rt_tsk_delete &rArr; rt_dispatch &rArr; rt_put_prio
 </UL>
-<BR>[Calls]<UL><LI><a href="#[49a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_free_mem
+<BR>[Calls]<UL><LI><a href="#[48e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_tsk_delete
+<LI><a href="#[49a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_free_mem
 <LI><a href="#[49c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_tid2ptcb
-<LI><a href="#[48e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_tsk_delete
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> rt_cmsis.o(i.osThreadExit)
 </UL>
@@ -7580,7 +7580,7 @@ Local Symbols
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> hmi_striped_background.o(i.HMI_striped_background_ctor)
 </UL>
-<P><STRONG><a name="[141]"></a>HMI_SBG_Hit</STRONG> (Thumb, 478 bytes, Stack size 40 bytes, hmi_striped_background.o(i.HMI_SBG_Hit))
+<P><STRONG><a name="[141]"></a>HMI_SBG_Hit</STRONG> (Thumb, 582 bytes, Stack size 40 bytes, hmi_striped_background.o(i.HMI_SBG_Hit))
 <BR><BR>[Stack]<UL><LI>Max Depth = 112<LI>Call Chain = HMI_SBG_Hit &rArr; BTN_Get_Sington &rArr; Button_new &rArr; malloc &rArr; internal_alloc
 </UL>
 <BR>[Calls]<UL><LI><a href="#[24b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;BTN_Get_Sington
@@ -8553,8 +8553,8 @@ Local Symbols
 <BR>[Calls]<UL><LI><a href="#[24e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Sheet_force_slide
 <LI><a href="#[235]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strlen
 </UL>
-<BR>[Address Reference Count : 2]<UL><LI> hmi_main.o(i.MainHmi_Init_chnShet)
-<LI> hmi_main.o(i.Build_ChnSheets)
+<BR>[Address Reference Count : 2]<UL><LI> hmi_main.o(i.Build_ChnSheets)
+<LI> hmi_main.o(i.MainHmi_Init_chnShet)
 </UL>
 <P><STRONG><a name="[d0]"></a>MainHmi_Data_update</STRONG> (Thumb, 176 bytes, Stack size 56 bytes, hmi_main.o(i.MainHmi_Data_update))
 <BR><BR>[Stack]<UL><LI>Max Depth = 88<LI>Call Chain = MainHmi_Data_update &rArr; Sheet_force_slide &rArr; Sheet_refreshsub
@@ -8562,8 +8562,8 @@ Local Symbols
 <BR>[Calls]<UL><LI><a href="#[24e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Sheet_force_slide
 <LI><a href="#[235]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strlen
 </UL>
-<BR>[Address Reference Count : 2]<UL><LI> hmi_main.o(i.MainHmi_Init_chnShet)
-<LI> hmi_main.o(i.Build_ChnSheets)
+<BR>[Address Reference Count : 2]<UL><LI> hmi_main.o(i.Build_ChnSheets)
+<LI> hmi_main.o(i.MainHmi_Init_chnShet)
 </UL>
 <P><STRONG><a name="[387]"></a>MainHmi_Init_chnShet</STRONG> (Thumb, 156 bytes, Stack size 16 bytes, hmi_main.o(i.MainHmi_Init_chnShet))
 <BR><BR>[Stack]<UL><LI>Max Depth = 104<LI>Call Chain = MainHmi_Init_chnShet &rArr; ExpCreate &rArr; GetPictExpr &rArr; PicExpr_new &rArr; malloc &rArr; internal_alloc
@@ -8579,8 +8579,8 @@ Local Symbols
 <BR>[Calls]<UL><LI><a href="#[24e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Sheet_force_slide
 <LI><a href="#[235]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strlen
 </UL>
-<BR>[Address Reference Count : 2]<UL><LI> hmi_main.o(i.MainHmi_Init_chnShet)
-<LI> hmi_main.o(i.Build_ChnSheets)
+<BR>[Address Reference Count : 2]<UL><LI> hmi_main.o(i.Build_ChnSheets)
+<LI> hmi_main.o(i.MainHmi_Init_chnShet)
 </UL>
 <P><STRONG><a name="[1e0]"></a>MaininitSheet</STRONG> (Thumb, 80 bytes, Stack size 16 bytes, hmi_main.o(i.MaininitSheet))
 <BR><BR>[Stack]<UL><LI>Max Depth = 192<LI>Call Chain = MaininitSheet &rArr; Sheet_updown &rArr; GetShtctl &rArr; Dev_open &rArr; DevChar_open &rArr; Get_Dev_IIC &rArr; Dev_IIC_new &rArr; malloc &rArr; internal_alloc
@@ -9237,8 +9237,8 @@ Local Symbols
 <P><STRONG><a name="[4c]"></a>SSA_Commit</STRONG> (Thumb, 42 bytes, Stack size 8 bytes, stg_set_accumulate.o(i.SSA_Commit))
 <BR><BR>[Stack]<UL><LI>Max Depth = 208<LI>Call Chain = SSA_Commit &rArr; CNA_Clear &rArr; STG_Set_file_position &rArr; STG_Open_file &rArr; Strg_Updata_rcd_mgr &rArr;  STG_Open_file (Cycle)
 </UL>
-<BR>[Calls]<UL><LI><a href="#[27a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CNA_Commit
-<LI><a href="#[277]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CNA_Clear
+<BR>[Calls]<UL><LI><a href="#[277]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CNA_Clear
+<LI><a href="#[27a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CNA_Commit
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> stg_set_accumulate.o(.data)
 </UL>
@@ -9486,9 +9486,9 @@ Local Symbols
 </UL>
 <BR>[Calls]<UL><LI><a href="#[235]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strlen
 </UL>
-<BR>[Called By]<UL><LI><a href="#[2a7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Cns_update_content
-<LI><a href="#[5f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Cns_key_rt
+<BR>[Called By]<UL><LI><a href="#[5f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Cns_key_rt
 <LI><a href="#[5e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Cns_key_lt
+<LI><a href="#[2a7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Cns_update_content
 </UL>
 
 <P><STRONG><a name="[ed]"></a>DBP_Btn_hdl</STRONG> (Thumb, 40 bytes, Stack size 16 bytes, stg_set_databackup.o(i.DBP_Btn_hdl))
@@ -10364,8 +10364,8 @@ Local Symbols
 <BR>[Calls]<UL><LI><a href="#[c4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_alloc_box
 <LI><a href="#[47a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_init_stack
 </UL>
-<BR>[Called By]<UL><LI><a href="#[485]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_sys_init
-<LI><a href="#[48c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_tsk_create
+<BR>[Called By]<UL><LI><a href="#[48c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_tsk_create
+<LI><a href="#[485]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_sys_init
 </UL>
 
 <P><STRONG><a name="[451]"></a>_printf_core</STRONG> (Thumb, 996 bytes, Stack size 104 bytes, printf8.o(i._printf_core), UNUSED)

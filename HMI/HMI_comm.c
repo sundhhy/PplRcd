@@ -69,7 +69,7 @@ keyboardHMI		*g_keyHmi;
 static ro_char code_bkPic[] =  {"<bpic vx0=0 vy0=0 m=0 >23</>" };
 static ro_char code_title[] =  {"<text vx0=0 vy0=4 m=0 clr=white f=24> </>" };
 
-static ro_char timeCode[] = { "<time vx0=220 vy0=0 bx=60  by=24 f=24 xali=r m=0 clr=yellow spr=/> </time>" };
+static ro_char timeCode[] = { "<text vx0=220 vy0=0 bx=60  by=24 f=24 xali=r m=0 clr=yellow spr=/> </>" };
 
 ////进入主菜单
 //static ro_char ico_memu[] = { "<bu vx0=10 vy0=212 bx=49 by=25 bkc=black clr=black><pic bx=48  by=24 >20</></bu>" };

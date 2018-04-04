@@ -516,10 +516,48 @@ static void	HMI_SBG_Hit(HMI *self, char kcd)
 		
 		
 		case KEYCODE_ENTER:
-				
+		if(cthis->sub_flag & FOCUS_IN_STARTEGY) {
+			cthis->p_sy->key_hit_er(NULL) ;
+			
+		} else {
+			if(self->flag & HMIFLAG_FOCUS_IN_BTN)
+			{
+				p->hit();
+//				self->btn_hit(self);
+			}
+//			p_focus = HMI_SBG_Get_focus(cthis, -1);
+//			if(HMI_SBG_Turn_page(self, p_focus->id) == ERR_OPT_FAILED) {
+//				if(p_focus->id == ICO_ID_MENU)
+//				{
+//					cthis->entry_start_row = 0;
+//					self->switchHMI(self, g_p_HMI_menu);
+//				}
+//				
+//			}
+		}				
 				break;		
 		case KEYCODE_ESC:
-				
+		if(cthis->sub_flag & FOCUS_IN_STARTEGY) {
+			
+			//按esc键跳出编辑区
+			
+			sy_chgFouse = 2;
+			CLR_PG_FLAG(cthis->sub_flag, FOCUS_IN_STARTEGY);
+			
+			//180202 将光标移动到外部
+			self->btn_forward(self);
+			cthis->f_col = 0;
+		} else {
+			
+			cthis->entry_start_row = 0;
+//			self->switchHMI(self, g_p_Setup_HMI);
+			cthis->p_sy->sty_exit();
+			
+			
+			g_p_lastHmi->flag |= HMI_FLAG_KEEP;
+			self->switchBack(self);
+			
+		}				
 				break;	
 		
 	}
