@@ -70,7 +70,7 @@ typedef struct {
 //------------------------------------------------------------------------------
 // local vars
 //------------------------------------------------------------------------------
-//Observer		strg_mdl_ob;
+//mdl_observer		strg_mdl_ob;
 #if STG_RCD_FULL_ACTION != STG_ERASE
 static uint8_t			stg_buf[4096];
 static STG_wr_buf_mgr_t stg_wr_mgr = {0, 4096, stg_buf};
@@ -413,14 +413,14 @@ int	STG_Read_rcd_by_time(uint8_t	chn, uint32_t start_sec, uint32_t end_sec, char
 
 
 
-//int Save_channel_data( Observer *self, void *p_srcMdl)
+//int Save_channel_data( mdl_observer *self, void *p_srcMdl)
 //{
 //	
-//	Storage 				*cthis = SUB_PTR(self, Observer, Storage);
+//	Storage 				*cthis = SUB_PTR(self, mdl_observer, Storage);
 //	Model 						*p_mdl;
 //	rcd_channel_t			rchn = {0};
 //	
-//	p_mdl = ModelCreate("time");
+//	p_mdl = Create_model("time");
 //	p_mdl->getMdlData(p_mdl, TIME_U32, &rchn.rcd_time_s);
 //	
 //	p_mdl = (Model *)p_srcMdl;
@@ -448,7 +448,7 @@ FUNCTION_SETTING(rd_stored_data, Strg_rd_stored_data);
 FUNCTION_SETTING(wr_stored_data, Strg_WR_stored_data);
 FUNCTION_SETTING(open_file, STG_Open_file);
 
-//FUNCTION_SETTING(Observer.update, Save_channel_data);
+//FUNCTION_SETTING(mdl_observer.update, Save_channel_data);
 
 
 END_CTOR
@@ -470,7 +470,7 @@ static int Strg_init(Storage *self)
 //	for(i = 0; i < NUM_CHANNEL; i++)
 //	{
 //		sprintf(chn_name,"chn_%d", i);
-//		p_md = ModelCreate(chn_name);
+//		p_md = Create_model(chn_name);
 //	}
 //	
 //	pg_size = STRG_SYS.arr_fsh[STRG_FSH_NUM].fnf.page_size;

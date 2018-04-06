@@ -23,6 +23,7 @@
 .\objects\channel_accumulated.o: d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\StdPeriph_Driver\inc\stm32f10x_usart.h
 .\objects\channel_accumulated.o: d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\StdPeriph_Driver\inc\misc.h
 .\objects\channel_accumulated.o: ..\..\..\PplRcd\utils/PHN_string.h
+.\objects\channel_accumulated.o: ..\..\configs\model_conf.h
 .\objects\channel_accumulated.o: ..\..\sdhLib\inc\Communication/modbusRTU_cli.h
 .\objects\channel_accumulated.o: ..\..\sdhLib\inc\sdhDef.h
 .\objects\channel_accumulated.o: ..\..\APP\sdhlibConf.h

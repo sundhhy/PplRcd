@@ -158,10 +158,10 @@ static void		TIP_Show_ico_tips(uint8_t tips_seq, short pic_num)
 		
 	}
 	
-	arr_p_tip_ico[tips_seq]->e_heifht = 1;
+//	arr_p_tip_ico[tips_seq]->e_heifht = 1;
 	arr_p_tip_ico[tips_seq]->cnt.data = arr_s_ico[tips_seq];
-	Sheet_slide(arr_p_tip_ico[tips_seq]);
-	arr_p_tip_ico[tips_seq]->e_heifht = 0;
+	Sheet_force_slide(arr_p_tip_ico[tips_seq]);
+//	arr_p_tip_ico[tips_seq]->e_heifht = 0;
 	
 	
 	Set_bit(&p_TIP_self->set_ico_vaild_tip, tips_seq);
@@ -178,10 +178,10 @@ static void		TIP_Clear_ico_tips(uint8_t tips_seq)
 	
 	
 	
-	arr_p_tip_ico[tips_seq]->e_heifht = 1;
+//	arr_p_tip_ico[tips_seq]->e_heifht = 1;
 	arr_p_tip_ico[tips_seq]->cnt.data = TIP_CLEAN_ICO;
-	Sheet_slide(arr_p_tip_ico[tips_seq]);
-	arr_p_tip_ico[tips_seq]->e_heifht = 0;
+	Sheet_force_slide(arr_p_tip_ico[tips_seq]);
+//	arr_p_tip_ico[tips_seq]->e_heifht = 0;
 	
 //	Set_bit(&p_TIP_self->set_ico_hide_tip, tips_seq);
 	Clear_bit(&p_TIP_self->set_ico_vaild_tip, tips_seq);
@@ -211,9 +211,9 @@ static void		TIP_Show_tips()
 		if(Check_bit(&p_TIP_self->set_ico_vaild_tip, i) == 0)
 			continue;
 		
-		arr_p_tip_ico[i]->e_heifht = 1;
-		Sheet_slide(arr_p_tip_ico[i]);
-		arr_p_tip_ico[i]->e_heifht = 0;
+//		arr_p_tip_ico[i]->e_heifht = 1;
+		Sheet_force_slide(arr_p_tip_ico[i]);
+//		arr_p_tip_ico[i]->e_heifht = 0;
 			
 		
 		

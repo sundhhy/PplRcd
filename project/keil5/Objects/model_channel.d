@@ -15,6 +15,7 @@
 .\objects\model_channel.o: ..\..\sdhLib\inc\basis/assert.h
 .\objects\model_channel.o: ..\..\sdhLib\inc\basis/except.h
 .\objects\model_channel.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\setjmp.h
+.\objects\model_channel.o: ..\..\configs\model_conf.h
 .\objects\model_channel.o: ..\..\APP\system.h
 .\objects\model_channel.o: ..\..\..\PplRcd\utils/time.h
 .\objects\model_channel.o: E:\PaperlessRecorder\myCode\PplRcd\project\keil5\RTE\Device\STM32F103VC\stm32f10x_conf.h

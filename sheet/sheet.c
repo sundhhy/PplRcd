@@ -56,7 +56,7 @@ static struct SHTCTL	sht_rsc;
 // local function prototypes
 //------------------------------------------------------------------------------
 static void Sheet_refreshsub( struct SHEET *p_sht);
-void ShtDefualtExc( shtCmd *self, struct SHEET *p_sht, void *arg);
+//void ShtDefualtExc( shtCmd *self, struct SHEET *p_sht, void *arg);
 //============================================================================//
 //            P U B L I C   F U N C T I O N S                                 //
 //============================================================================//
@@ -93,7 +93,7 @@ struct SHTCTL* Shtctl_init(   uint16_t vxsize, uint16_t vysize)
     
     for( i = 0; i < MAX_SHEETS; i++)
     {
-		p_ctl->arr_sheets[i].update = ShtUpdate;
+//		p_ctl->arr_sheets[i].update = ShtUpdate;
         p_ctl->arr_sheets[i].flags = 0;
 //        p_ctl->arr_sheets[i].p_shtctl = p_ctl;
         
@@ -122,7 +122,7 @@ struct SHEET *Sheet_alloc( struct SHTCTL *p_ctl)
             p_sht->height = -1; 
 			p_sht->id = 0xff;
 			p_sht->pp_sub = NULL;
-			p_sht->e_heifht = 0;
+//			p_sht->e_heifht = 0;
 			
 			p_sht->cnt.subType = 0;
 			p_sht->cnt.effects = 0;
@@ -161,19 +161,19 @@ void Sheet_setbuf( struct SHEET *p_sht, uint8_t *buf, int bxsize, int bysize, in
     
 }
 
-int ShtUpdate( void *p_sht, void *p_mdl)
-{
-	struct SHEET *p = ( struct SHEET *)p_sht;
-	
-	if(Sheet_is_hide(p_sht))
-		return RET_OK;
-		
-	p->cnt.data = p->p_mdl->to_string( p->p_mdl, 0, NULL);
-	p->cnt.len = strlen( p->cnt.data);
-	Sheet_slide( p_sht);
-	return RET_OK;
-	
-}
+//int ShtUpdate( void *p_sht, void *p_mdl)
+//{
+//	struct SHEET *p = ( struct SHEET *)p_sht;
+//	
+//	if(Sheet_is_hide(p_sht))
+//		return RET_OK;
+//		
+//	p->cnt.data = p->p_mdl->to_string( p->p_mdl, 0, NULL);
+//	p->cnt.len = strlen( p->cnt.data);
+//	Sheet_slide( p_sht);
+//	return RET_OK;
+//	
+//}
 
 
 
@@ -315,7 +315,7 @@ void Sheet_refresh( struct SHEET *p_sht)
 void Sheet_slide( struct SHEET *p_sht)
 {
 	//todo: 增加坐标是否重叠判断，如果重叠要把比他更高的图层也要显示
-	if((p_sht->height +  p_sht->e_heifht)< 0)
+	if((p_sht->height)< 0)
 		return;
 	p_sht->p_gp->vdraw( p_sht->p_gp, &p_sht->cnt, &p_sht->area);
 	Sheet_refreshsub( p_sht);

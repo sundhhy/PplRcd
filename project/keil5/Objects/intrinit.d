@@ -27,3 +27,4 @@
 .\objects\intrinit.o: ..\..\APP\system.h
 .\objects\intrinit.o: ..\..\..\PplRcd\utils/time.h
 .\objects\intrinit.o: ..\..\..\PplRcd\utils/PHN_string.h
+.\objects\intrinit.o: ..\..\configs\model_conf.h

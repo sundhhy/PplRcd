@@ -31,8 +31,6 @@ bx/by : 图像在x/y轴上的长度
 vx0,vy0:	在屏幕上的起始坐标
 grap: 		矩形中心与边框的间距
 m		: 背景图片编号
-mdl : 要绑定的模型的种类
-//aux:	与模型相关的参数
 
 gr	:	grid
 bndx1/y1/x2/y2 : bonduary x1/y1/x2/y2
@@ -129,12 +127,12 @@ int Set_shtContextAtt( char *p_att, sheet *p_sht)
 	
 	p_sht->cnt.font = String2Font( p_att);
 	
-	if( GetKeyVal( p_att, "mdl", tmpbuf, 8))
-	{
-		p_sht->p_mdl = ModelCreate(tmpbuf); 
-		
-		
-	}
+//	if( GetKeyVal( p_att, "mdl", tmpbuf, 8))
+//	{
+//		p_sht->p_mdl = Create_model(tmpbuf); 
+//		
+//		
+//	}
 //	else {
 //		p_sht->p_mdl = NULL;
 //		

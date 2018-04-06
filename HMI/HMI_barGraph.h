@@ -17,10 +17,11 @@
  //------------------------------------------------------------------------------
 // typedef
 //------------------------------------------------------------------------------
-CLASS( barGhHMI)
+CLASS( HMI_bar)
 {
-	EXTENDS( HMI);
-	IMPLEMENTS( shtCmd);
+	EXTENDS(HMI);
+	IMPLEMENTS(mdl_observer);
+
 //	sheet  			*p_bar_clean;		//°ôÍ¼µÄ²Á³ý
 	sheet  			*arr_p_barshts[NUM_CHANNEL];
 //	sheet  			*arr_p_sht_textPrcn[BARHMI_NUM_BARS];
@@ -37,6 +38,6 @@ CLASS( barGhHMI)
 //------------------------------------------------------------------------------
 // function prototypes
 //------------------------------------------------------------------------------
-barGhHMI *Get_barGhHMI(void);
+HMI_bar *Get_barGhHMI(void);
 
 #endif

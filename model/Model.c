@@ -1,4 +1,8 @@
 #include "Model.h"
+#include "sys_cmd.h"
+
+
+
 #include "sdhDef.h"
 
 #include <string.h>
@@ -43,13 +47,11 @@ const Except_T model_Failed = { "MDL Failed" };
 // local function prototypes
 //------------------------------------------------------------------------------
 /* Cycle/Sync Callback functions */
-static void DoUpdate(void **x, void *cl)
-{
-	Observer *s = ( Observer *)*x;
-	s->update(s, cl);
-	
-}
 
+
+//static void DoUpdate(void **x, void *cl);
+//在模型数据更新失败的时候，注册到定时任务中执行，用于重新显示
+static void MDL_Retry(void *arg);	
 //============================================================================//
 //            P U B L I C   F U N C T I O N S                                 //
 //============================================================================//
@@ -71,18 +73,57 @@ static void DoUpdate(void **x, void *cl)
 
 
 
-void Mdl_attach(  Model *self, Observer *s)
+int Mdl_attach(  Model *self, mdl_observer *s)
 {
 	
-	self->tObs = List_push( self->tObs, s);
-	
+//	self->tObs = List_push( self->tObs, s);
+	int i = 0;
+	while(i < MDL_OBS_NUM)
+	{
+		if(self->arr_mdl_obs[i] == NULL)
+		{
+			
+			self->arr_mdl_obs[i] = s;
+			return i;
+		}
+		
+		i ++;
+		
+	}
+		
+	return -1;
 	
 }
 
-void Mdl_detach(  Model *self, Observer *s)
+void Mdl_detach(  Model *self, int fd)
 {
 	
+	if(fd < MDL_OBS_NUM)
+	{
+		
+		self->arr_mdl_obs[fd] = NULL;
+	}
 	
+}
+
+void Mdl_notify (Model *self)
+{
+	
+	int i = 0;
+	
+	
+	for(i = 0; i < MDL_OBS_NUM; i++)
+	{
+		if(self->arr_mdl_obs[i] == NULL)
+			continue;
+		if(self->arr_mdl_obs[i]->update(self->arr_mdl_obs[i], self) != RET_OK)
+		{
+//			self->retry_time_tsk_fd =  Cmd_Rgt_time_task(MDL_Retry, self, 3);
+			Cmd_Rgt_time_task(MDL_Retry, self, 3);
+			
+		}
+		
+	}
 	
 }
 
@@ -117,13 +158,7 @@ int Mdl_delTmMdl( Model *self, Model *m)
 //	return RET_OK;
 //}
 
-void Mdl_notify (Model *self)
-{
-	
-	
-	
-	List_map(self->tObs, DoUpdate, self);
-}
+
 
 
 
@@ -147,4 +182,22 @@ FUNCTION_SETTING( notify, Mdl_notify);
 
 END_ABS_CTOR
 
+//static void DoUpdate(void **x, void *cl)
+//{
+//	mdl_observer *s = ( mdl_observer *)*x;
+//	s->update(s, cl);
+//	
+//}
 
+static void MDL_Retry(void *arg)
+{
+	
+	
+	Model		*p_mdl = (Model *)arg;
+
+	
+	
+	p_mdl->notify(p_mdl);
+	
+	
+}

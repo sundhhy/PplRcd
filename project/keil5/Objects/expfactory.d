@@ -27,6 +27,7 @@
 .\objects\expfactory.o: ..\..\model\Model.h
 .\objects\expfactory.o: ..\..\sdhLib\inc\arithmetic/list.h
 .\objects\expfactory.o: ..\..\sdhLib\inc\basis/assert.h
+.\objects\expfactory.o: ..\..\configs\model_conf.h
 .\objects\expfactory.o: ..\..\model\Model_channel.h
 .\objects\expfactory.o: ..\..\APP\system.h
 .\objects\expfactory.o: ..\..\..\PplRcd\utils/time.h

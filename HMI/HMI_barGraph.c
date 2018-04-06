@@ -39,6 +39,7 @@ HMI *g_p_barGhHmi;
 
 #define BARHMI_NUM_BTNROW		1
 #define BARHMI_NUM_BTNCOL		4
+#define VRAM_NUM				0
 
 #define BARHMI_BKPICNUM		"12"
 #define BARHMI_TITLE		"棒图画面"
@@ -58,7 +59,11 @@ static const char barhmi_code_textPrcn[] = { "<text f=16 m=0>100</>" };
 //------------------------------------------------------------------------------
 // local vars
 //------------------------------------------------------------------------------
-
+typedef struct {
+	int			mdf_fd[NUM_CHANNEL];
+	
+	
+}bar_run_t;
 
 	
 //static sheet  *arr_p_sht_select[BARHMI_NUM_BTNCOL];
@@ -66,31 +71,31 @@ static const char barhmi_code_textPrcn[] = { "<text f=16 m=0>100</>" };
 // local function prototypes
 //------------------------------------------------------------------------------
 static int	Init_barGhHMI( HMI *self, void *arg);
-static void BarHmi_InitSheet( HMI *self );
+static void BarHmi_InitSheet( HMI *self, uint32_t att );
 static void BarHmi_HideSheet( HMI *self );
 
 static void	BarHmi_Show( HMI *self);
-
+static int HBR_Update_mdl_chn_data(mdl_observer *self, void *p_srcMdl);
 
 //static void	BarHmi_HitHandle( HMI *self, char *s);
 
 
 //柱形图操作函数
 static void BarHmi_Init_chnSht(void);
-static void Init_bar( barGhHMI *self);
-static int BarHmi_Data_update(void *p_data, void *p_mdl);
-static int BarHmi_Util_update(void *p_data, void *p_mdl);
+static void Init_bar( HMI_bar *self);
+static int BarHmi_Data_update(void *p_data, Model *p_mdl);
+static int BarHmi_Util_update(void *p_data, Model *p_mdl);
 
 //============================================================================//
 //            P U B L I C   F U N C T I O N S                                 //
 //============================================================================//
 
-barGhHMI *Get_barGhHMI(void)
+HMI_bar *Get_barGhHMI(void)
 {
-	static barGhHMI *singal_barHmi = NULL;
+	static HMI_bar *singal_barHmi = NULL;
 	if( singal_barHmi == NULL)
 	{
-		singal_barHmi = barGhHMI_new();
+		singal_barHmi = HMI_bar_new();
 		if(singal_barHmi  == NULL) while(1);
 		g_p_barGhHmi = SUPER_PTR( singal_barHmi, HMI);
 		
@@ -100,7 +105,7 @@ barGhHMI *Get_barGhHMI(void)
 	
 }
 
-CTOR( barGhHMI)
+CTOR( HMI_bar)
 SUPER_CTOR( HMI);
 FUNCTION_SETTING( HMI.init, Init_barGhHMI);
 FUNCTION_SETTING( HMI.initSheet, BarHmi_InitSheet);
@@ -109,6 +114,7 @@ FUNCTION_SETTING( HMI.show, BarHmi_Show);
 
 FUNCTION_SETTING( HMI.hitHandle, Main_HMI_hit);
 FUNCTION_SETTING(HMI.build_component, Main_HMI_build_button);
+FUNCTION_SETTING( mdl_observer.update, HBR_Update_mdl_chn_data);
 
 END_CTOR
 //=========================================================================//
@@ -119,7 +125,7 @@ END_CTOR
 
 static int	Init_barGhHMI( HMI *self, void *arg)
 {
-	barGhHMI		*cthis = SUB_PTR( self, HMI, barGhHMI);
+	HMI_bar		*cthis = SUB_PTR( self, HMI, HMI_bar);
 //	Expr 			*p_exp ;
 //	shtctl 			*p_shtctl = NULL;
 	
@@ -146,11 +152,12 @@ static int	Init_barGhHMI( HMI *self, void *arg)
 
 
 
-static void BarHmi_InitSheet( HMI *self )
+static void BarHmi_InitSheet( HMI *self, uint32_t att )
 {
-	barGhHMI			*cthis = SUB_PTR( self, HMI, barGhHMI);
+	HMI_bar			*cthis = SUB_PTR( self, HMI, HMI_bar);
 	int i,  h = 0;
 	Expr 			*p_exp ;
+	bar_run_t 		*p_run;
 	
 	p_exp = ExpCreate( "pic");
 	p_exp->inptSht( p_exp, (void *)barhmi_code_clean, g_p_cpic) ;
@@ -182,6 +189,12 @@ static void BarHmi_InitSheet( HMI *self )
 //	Sheet_updown(g_p_ico_digital, h++);
 //	Sheet_updown(g_p_ico_trend, h++);
 	
+	
+	HMI_Ram_init();
+		
+	arr_p_vram[VRAM_NUM] = HMI_Ram_alloc(48);
+	p_run = (bar_run_t *)arr_p_vram[VRAM_NUM];
+	HMI_Attach_model_chn(p_run->mdf_fd, &cthis->mdl_observer);
 	BarHmi_Init_chnSht();
 	//初始化焦点
 	self->init_focus(self);
@@ -189,25 +202,16 @@ static void BarHmi_InitSheet( HMI *self )
 
 static void BarHmi_HideSheet( HMI *self )
 {
-//	barGhHMI			*cthis = SUB_PTR( self, HMI, barGhHMI);
+//	HMI_bar			*cthis = SUB_PTR( self, HMI, HMI_bar);
+	bar_run_t 		*p_run;
 	
-	int i;
-	
-//	self->clear_focus(self, cthis->focusRow, cthis->focusCol);
+
 	
 	
-//	Sheet_updown(g_p_ico_trend, -1);
-//	Sheet_updown(g_p_ico_digital, -1);
-//	Sheet_updown(g_p_ico_bar, -1);
-//	Sheet_updown(g_p_ico_memu, -1);
+	p_run = (bar_run_t *)arr_p_vram[VRAM_NUM];
+	HMI_detach_model_chn(p_run->mdf_fd);
 	
-	for( i = BARHMI_NUM_BARS - 1; i >= 0; i--) {
-//		Sheet_updown( cthis->pp_bar_unit[i], -1);
-//		Sheet_updown( cthis->arr_p_sht_textPrcn[i], -1);
-//		Sheet_updown(g_arr_p_chnUtil[i], -1);
-//		Sheet_updown(g_arr_p_chnData[i], -1);
-//		Sheet_updown( cthis->arr_p_barshts[i], -1);
-	}
+
 	Sheet_updown(g_p_shtTime, -1);
 	Sheet_updown(g_p_sht_title, -1);
 	Sheet_updown(g_p_sht_bkpic, -1);
@@ -222,9 +226,13 @@ static void BarHmi_HideSheet( HMI *self )
 
 static void	BarHmi_Show( HMI *self )
 {
-	barGhHMI		*cthis = SUB_PTR( self, HMI, barGhHMI);
+	HMI_bar		*cthis = SUB_PTR( self, HMI, HMI_bar);
 	int 			i;
-	g_p_curHmi = self;
+	char		chn_name[8];
+	Model		*p_mdl;
+	
+	
+//	g_p_curHmi = self;
 	
 	//刷新了背景，就要重新开始绘制
 	for(i = 0; i < NUM_CHANNEL; i++)
@@ -237,92 +245,18 @@ static void	BarHmi_Show( HMI *self )
 	
 	Sheet_refresh(g_p_sht_bkpic);
 //	self->show_focus( self, 0, 0);
+	
+	for(i = 0; i < NUM_CHANNEL; i++)
+	{
+		
+		sprintf(chn_name,"chn_%d", i);
+		p_mdl = Create_model(chn_name);
+		cthis->mdl_observer.update(&cthis->mdl_observer, p_mdl);
+	}
 }
 
-//static void	BarHmi_HitHandle( HMI *self, char *s)
-//{
-//	Set_flag_keyhandle(&self->flag, 1);
-//	if( !strcmp( s, HMIKEY_UP) )
-//	{
 
-//	}
-//	else if( !strcmp( s, HMIKEY_DOWN) )
-//	{
-//		
-//	}
-//	else if( !strcmp( s, HMIKEY_LEFT))
-//	{
-//		self->btn_backward(self);
-
-//	}
-//	else if( !strcmp( s, HMIKEY_RIGHT))
-//	{
-
-//		self->btn_forward(self);
-//	}
-//	
-//	
-//	
-//	if( !strcmp( s, KEYCODE_ENTER))
-//	{
-//		
-//		self->btn_hit(self);
-//	}
-//	
-//	if( !strcmp( s, HMIKEY_ESC))
-//	{
-//		self->switchBack(self);
-//	}
-//	
-//	Set_flag_keyhandle(&self->flag, 0);
-//	
-//}
-
-
-//static void BarHmi_CalFocuse( HMI *self, uint8_t fouse_row, uint8_t fouse_col)
-//{
-//	barGhHMI			*cthis = SUB_PTR( self, HMI, barGhHMI);
-//	
-//	
-//	uint8_t		vx0[BARHMI_NUM_BTNCOL] = { 10, 50, 90, 130};
-//	uint8_t		vy0 = 205;
-//	uint8_t		bx = 32;
-//	uint8_t		by = 32;
-//	uint8_t		grap = 1;	//方框要比图标大一点
-//	
-//	
-//	
-//	cthis->p_focus->area.x0 = vx0[ fouse_col] - grap;
-//	cthis->p_focus->area.x1 = vx0[ fouse_col] + bx + grap;
-//	cthis->p_focus->area.y0 = vy0 - grap;
-//	cthis->p_focus->area.y1 = vy0 + by + grap;
-//	
-//	
-//}
-
-//static void BarHmi_ClearFocuse( HMI *self, uint8_t fouse_row, uint8_t fouse_col)
-//{
-//	sheet  			*p_fouse = arr_p_sht_select[fouse_col];
-//	
-//	p_fouse->cnt.effects = GP_CLR_EFF( p_fouse->cnt.effects, EFF_FOCUS);
-//	Sheet_slide( p_fouse);
-////	p_fouse->p_gp->vdraw ( p_fouse->p_gp, &p_fouse->cnt, &p_fouse->area);
-//}
-//static void BarHmi_ShowFocuse( HMI *self, uint8_t fouse_row, uint8_t fouse_col)
-//{
-//	sheet  			*p_fouse = arr_p_sht_select[fouse_col];
-//	
-//	p_fouse->cnt.effects = GP_SET_EFF( p_fouse->cnt.effects, EFF_FOCUS);
-//	Sheet_slide( p_fouse);
-////	p_fouse->p_gp->vdraw ( p_fouse->p_gp, &p_fouse->cnt, &p_fouse->area);
-//}
-
-
-
-
-// 
-
-static void Init_bar( barGhHMI *self)
+static void Init_bar( HMI_bar *self)
 {
 	
 	Expr 			*p_exp ;
@@ -336,112 +270,64 @@ static void Init_bar( barGhHMI *self)
 		p_exp = ExpCreate("box");
 		self->arr_p_barshts[i] = Sheet_alloc( p_shtctl);
 		p_exp->inptSht( p_exp, (void *)barhmi_code_bar, self->arr_p_barshts[i]) ;
-		
-//		p_exp = ExpCreate("text");
-//		self->arr_p_sht_textPrcn[i] = Sheet_alloc( p_shtctl);
-//		p_exp->inptSht( p_exp, (void *)barhmi_code_textPrcn, self->arr_p_sht_textPrcn[i]) ;
-		
-		
-		
-//		sprintf(chn_name,"chn_%d", i);
-//		self->arr_p_sht_textPrcn[i]->p_mdl = ModelCreate(chn_name);
-//		self->pp_bar_unit[i]->p_mdl = ModelCreate(chn_name);
-//		
-		
-		
+				
 		self->arr_p_barshts[i]->cnt.bkc = arr_clrs[i];
 		self->arr_p_barshts[i]->cnt.colour = arr_clrs[i];
 		
-//		self->arr_p_sht_textPrcn[i]->cnt.colour = arr_clrs[i];
-//		
-//		self->pp_bar_unit[i]->cnt.colour = arr_clrs[i];
-		
 	}
 	
-	
-//	Cal_bar( self);
 }
 
-//竖向柱形图在屏幕上的位置计算，注意数据都是从特定的背景图片上测量得到的
-//static void Cal_bar( barGhHMI *self)
-//{
-//	
-//	uint16_t bar_vx0[BARHMI_NUM_BARS] = { 30, 78, 126, 172, 220, 268};
-//	
-//	uint16_t bar_vy1= 187;
-//	uint16_t max_height= 116;
-//	uint16_t text_vy0 = 30;
-//	uint16_t unit_vy0 = 42;
-//	
-//	
-//	uint32_t 	i = 0, j= 1000;
-//	uint32_t	prcn = 0;
-//	uint32_t	height = 0;
-//	
-//	
-//	for( i = 0; i < BARHMI_NUM_BARS; i++)
-//	{
-//		
-//		prcn = self->arr_p_sht_textPrcn[i]->p_mdl->getMdlData( self->arr_p_sht_textPrcn[i]->p_mdl, \
-//			self->arr_p_sht_textPrcn[i]->cnt.mdl_aux,  &j);
-//		height = max_height * prcn / 1000;
-//		
-//		self->arr_p_barshts[i]->area.x0 = bar_vx0[i];
-//		self->arr_p_barshts[i]->area.x1 = bar_vx0[i] + self->arr_p_barshts[i]->bxsize;
-//		self->arr_p_barshts[i]->area.y0 = bar_vy1 - height;
-//		self->arr_p_barshts[i]->area.y1 = bar_vy1;
-//		
-//		 
-//		self->arr_p_sht_textPrcn[i]->p_mdl->to_string( self->arr_p_sht_textPrcn[i]->p_mdl, 0, self->arr_p_sht_textPrcn[i]->cnt.data);
-//		self->arr_p_sht_textPrcn[i]->cnt.len = strlen( self->arr_p_sht_textPrcn[i]->cnt.data);
-//		self->arr_p_sht_textPrcn[i]->area.x0 = bar_vx0[i];
-//		self->arr_p_sht_textPrcn[i]->area.y0 = text_vy0;
-//		
-//		self->pp_bar_unit[i]->cnt.data = \
-//			self->pp_bar_unit[i]->p_mdl->to_string( self->pp_bar_unit[i]->p_mdl, 1, NULL);
-//		self->pp_bar_unit[i]->cnt.len = strlen( self->pp_bar_unit[i]->cnt.data);
-//		self->pp_bar_unit[i]->area.x0 = bar_vx0[i];
-//		self->pp_bar_unit[i]->area.y0 = unit_vy0;
-//		
-//		
-//	}
-//	
-//	
-//}
+
 
 static void BarHmi_Init_chnSht(void)
 {
 	Expr 		*p_exp ;
-//	Model		*p_mdl = NULL;
 	int			i = 0;
 	p_exp = ExpCreate( "text");
 	for(i = 0; i < NUM_CHANNEL; i++) {
 		p_exp->inptSht( p_exp, (void *)barhmi_code_textPrcn, g_arr_p_chnData[i]) ;
 		
-		
-		
-		
 		g_arr_p_chnData[i]->cnt.colour = arr_clrs[i];
 		g_arr_p_chnData[i]->cnt.data = prn_buf[i];
-		
-		
-		
-		g_arr_p_chnData[i]->update = BarHmi_Data_update;
-		g_arr_p_chnUtil[i]->update = BarHmi_Util_update;
-
-		//这是为了初始化的时候，就能让数据得到正确的坐标
-//		g_arr_p_chnData[i]->update(g_arr_p_chnData[i], NULL);
-//		g_arr_p_chnUtil[i]->update(g_arr_p_chnUtil[i], NULL);
 	
 	}
 }
 
 
+static int HBR_Update_mdl_chn_data(mdl_observer *self, void *p_srcMdl)
+{
+	HMI_bar		*cthis = SUB_PTR( self, mdl_observer, HMI_bar);
+	HMI		*p_hmi = SUPER_PTR(cthis, HMI);
+	Model	*p_mdl = (Model *)p_srcMdl;
+	short	chn_num = GET_MDL_CHN(p_mdl->mdl_id);
+	
+	if((p_hmi->flag & HMI_FLAG_HSA_SEM) == 0)
+	{
+		if(Sem_wait(&phn_sys.hmi_mgr.hmi_sem, 1000) <= 0) 
+			return ERR_RSU_BUSY;
+	
+	}
+	//更新实时值
+	BarHmi_Data_update(g_arr_p_chnData[chn_num], p_srcMdl);
+	
+	//更新单位
+	BarHmi_Util_update(g_arr_p_chnData[chn_num], p_srcMdl);
+	
+	
+	if((p_hmi->flag & HMI_FLAG_HSA_SEM) == 0)
+		Sem_post(&phn_sys.hmi_mgr.hmi_sem);
+	
+	
+	return RET_OK;
+}
 
-static int BarHmi_Data_update(void *p_data, void *p_mdl)
+
+
+static int BarHmi_Data_update(void *p_data, Model *p_mdl)
 {
 	
-	barGhHMI *chis = Get_barGhHMI();
+	HMI_bar *chis = Get_barGhHMI();
 	sheet	*p_sht = (sheet *)p_data;
 
 	uint16_t bar_vx0[BARHMI_NUM_BARS] = { 30, 78, 126, 172, 220, 268};
@@ -459,16 +345,16 @@ static int BarHmi_Data_update(void *p_data, void *p_mdl)
 
 
 
-	if(IS_HMI_KEYHANDLE(g_p_barGhHmi->flag))
-		return 0;	
-	
+//	if(IS_HMI_KEYHANDLE(g_p_barGhHmi->flag))
+//		return 0;	
+//	
 //	if(Sheet_is_hide(p_sht))
 //		return 0;
-	if(IS_HMI_HIDE(g_p_barGhHmi->flag))
-		return 0;
+//	if(IS_HMI_HIDE(g_p_barGhHmi->flag))
+//		return 0;
+//	
 	
-	
-	p_sht->p_mdl->getMdlData( p_sht->p_mdl, AUX_PERCENTAGE,  &prcn);
+	p_mdl->getMdlData(p_mdl, AUX_PERCENTAGE,  &prcn);
 	height = max_height * prcn / 100;
 	
 	//	p_sht->p_mdl->to_string(p_sht->p_mdl, p_sht->cnt.mdl_aux, p_sht->cnt.data);
@@ -529,22 +415,22 @@ static int BarHmi_Data_update(void *p_data, void *p_mdl)
 	return 0;	
 }
 
-static int BarHmi_Util_update(void *p_data, void *p_mdl)
+static int BarHmi_Util_update(void *p_data, Model *p_mdl)
 {
 	sheet		*p_sht = (sheet *)p_data;
-	barGhHMI *self = Get_barGhHMI();
+	HMI_bar *self = Get_barGhHMI();
 	uint16_t bar_vx0[BARHMI_NUM_BARS] = { 30, 78, 126, 172, 220, 268};
 	
 	uint16_t utit_vy0 = 48;
 	uint16_t i = p_sht->id;
 	
 	
-	if(IS_HMI_HIDE(g_p_barGhHmi->flag))
-		return 0;
-	if(IS_HMI_KEYHANDLE(g_p_barGhHmi->flag))
-		return 0;
+//	if(IS_HMI_HIDE(g_p_barGhHmi->flag))
+//		return 0;
+//	if(IS_HMI_KEYHANDLE(g_p_barGhHmi->flag))
+//		return 0;
 		
-	p_sht->cnt.data = p_sht->p_mdl->to_string(p_sht->p_mdl, AUX_UNIT, NULL);
+	p_sht->cnt.data = p_mdl->to_string(p_mdl, AUX_UNIT, NULL);
 	p_sht->cnt.len = strlen(p_sht->cnt.data);
 	p_sht->area.x0 = bar_vx0[i];
 	p_sht->area.y0 = utit_vy0;

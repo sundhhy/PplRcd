@@ -143,7 +143,7 @@ static int Data_bacnup_Strategy_entry(int row, int col, void *pp_text)
 			case row_end_time:		//单位
 				if(arr_p_vram[row][0] != '\0')
 					break;		//这种情况是从设置窗口返回，所以就不要再赋值原始值了，下面的部分也是一样
-				model = ModelCreate("time");
+				model = Create_model("time");
 				model->to_string(model, 1, arr_p_vram[row]);
 				break;
 			case row_file_name:		
@@ -462,7 +462,7 @@ static int	DBP_filename_commit(void *self, void *data, int len)
 	if(len > 7)
 		len = 7;
 	
-	memset(arr_p_vram[4], 0, strlen(arr_p_vram[4]));
+	memset(arr_p_vram[row_file_name], 0, strlen(arr_p_vram[row_file_name]));
 	for(i = 0; i < len; i ++)
 	{
 		//把小写转化成大写
@@ -471,7 +471,7 @@ static int	DBP_filename_commit(void *self, void *data, int len)
 			p[i] -= 32;
 			
 		}
-		arr_p_vram[4][i] = p[i];
+		arr_p_vram[row_file_name][i] = p[i];
 		
 	}
 	return RET_OK;

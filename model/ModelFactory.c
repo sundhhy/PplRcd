@@ -3,7 +3,7 @@
 
 
 Model *aMdl[4] ;
-Model *ModelCreate( char *type)
+Model *Create_model( char *type)
 {
 	char *p;
 	

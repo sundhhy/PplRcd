@@ -49,7 +49,7 @@ static ro_char accm_code_info[] =  {"<text  f=16 clr=white m=0> </>" };
 static int	Init_Accm_HMI(HMI *self, void *arg);
 static void Show_Accm_HMI(HMI *self);
 static void	Accm_HMI_hide(HMI *self);
-static void	Alarm_initSheet(HMI *self);
+static void	Alarm_initSheet(HMI *self, uint32_t att);
 static void	Accm_HMI_init_focus(HMI *self);
 
 static void	Accm_show_info(Accm_HMI *self, strategy_t *p);
@@ -114,7 +114,7 @@ static void Show_Accm_HMI(HMI *self)
 	Accm_show_info(cthis, cthis->p_stt);
 	self->show_focus( self,self->p_fcuu->focus_row, 0);
 }
-static void	Alarm_initSheet(HMI *self)
+static void	Alarm_initSheet(HMI *self, uint32_t att)
 {
 	Accm_HMI		*cthis = SUB_PTR( self, HMI, Accm_HMI);
 	dspContent_t	*p_cnt;
@@ -260,7 +260,7 @@ static void	Accm_HMI_hitHandle(HMI *self, char kcd)
 					switch(p_focus->id)
 					{
 						case ICO_ID_MENU:
-							self->switchHMI(self, g_p_HMI_menu);
+							self->switchHMI(self, g_p_HMI_menu, 0);
 							break;
 						case ICO_ID_PGUP:
 							break;
@@ -276,7 +276,7 @@ static void	Accm_HMI_hitHandle(HMI *self, char kcd)
 					}
 					break;		
 			case KEYCODE_ESC:
-					self->switchBack(self);
+					self->switchBack(self, 0);
 					break;	
 			
 	}	
@@ -356,7 +356,7 @@ static void	Accm_HMI_hitHandle(HMI *self, char kcd)
 //	
 //	if( !strcmp(s_key, HMIKEY_ESC))
 //	{
-//		self->switchBack(self);
+//		self->switchBack(self, 0);
 //	}
 	
 	if( chgFouse)

@@ -140,6 +140,7 @@ static void 	BTN_Init(Button *self)
 
 
 	p_self = self;
+	p_self->focus_btn_num = 0xff;
 	
 	
 }
@@ -226,10 +227,10 @@ static int		BTN_Build_each_btn(uint8_t	seq, uint8_t btn_type, btn_hdl bh, void *
 					//Çå³ý²ÐÁôµÄÍ¼Ïñ
 					Clear_bit(p_set, seq);
 					arr_p_btn_sht[seq]->cnt.effects = GP_CLR_EFF(arr_p_btn_sht[seq]->cnt.effects, EFF_FOCUS);
-					arr_p_btn_sht[seq]->e_heifht = 1;
+//					arr_p_btn_sht[seq]->e_heifht = 1;
 					btn_pic->data = BTN_ICO_CLEAN;
-					Sheet_slide(arr_p_btn_sht[seq]);
-					arr_p_btn_sht[seq]->e_heifht = 0;
+					Sheet_force_slide(arr_p_btn_sht[seq]);
+//					arr_p_btn_sht[seq]->e_heifht = 0;
 					
 					
 				}
@@ -288,9 +289,9 @@ static void		BTN_Show_vaild_btn(void)
 		if(Check_bit(p_set, i))
 		{
 			
-			arr_p_btn_sht[i]->e_heifht = 1;
-			Sheet_slide(arr_p_btn_sht[i]);
-			arr_p_btn_sht[i]->e_heifht = 0;
+//			arr_p_btn_sht[i]->e_heifht = 1;
+			Sheet_force_slide(arr_p_btn_sht[i]);
+//			arr_p_btn_sht[i]->e_heifht = 0;
 		}
 		
 		
@@ -379,9 +380,9 @@ static int		BTN_Move_focus(uint8_t	direction)
 		if(Check_bit(p_set, old_focus))
 		{
 			arr_p_btn_sht[old_focus]->cnt.effects = GP_CLR_EFF(arr_p_btn_sht[old_focus]->cnt.effects, EFF_FOCUS);
-			arr_p_btn_sht[old_focus]->e_heifht = 1;
-			Sheet_slide(arr_p_btn_sht[old_focus]);
-			arr_p_btn_sht[old_focus]->e_heifht = 0;
+//			arr_p_btn_sht[old_focus]->e_heifht = 1;
+			Sheet_force_slide(arr_p_btn_sht[old_focus]);
+//			arr_p_btn_sht[old_focus]->e_heifht = 0;
 		}
 	}
 	
@@ -389,9 +390,9 @@ static int		BTN_Move_focus(uint8_t	direction)
 	if(p_self->focus_btn_num == 0xff)
 		return RET_FAILED;
 	arr_p_btn_sht[p_self->focus_btn_num]->cnt.effects = GP_SET_EFF(arr_p_btn_sht[p_self->focus_btn_num]->cnt.effects, EFF_FOCUS);
-	arr_p_btn_sht[p_self->focus_btn_num]->e_heifht = 1;
-	Sheet_slide(arr_p_btn_sht[p_self->focus_btn_num]);
-	arr_p_btn_sht[p_self->focus_btn_num]->e_heifht = 0;	
+//	arr_p_btn_sht[p_self->focus_btn_num]->e_heifht = 1;
+	Sheet_force_slide(arr_p_btn_sht[p_self->focus_btn_num]);
+//	arr_p_btn_sht[p_self->focus_btn_num]->e_heifht = 0;	
 		return RET_OK;
 	
 }

@@ -23,6 +23,7 @@
 .\objects\power.o: ..\..\APP\system.h
 .\objects\power.o: ..\..\..\PplRcd\utils/time.h
 .\objects\power.o: ..\..\..\PplRcd\utils/PHN_string.h
+.\objects\power.o: ..\..\configs\model_conf.h
 .\objects\power.o: ..\..\sdhLib\inc\sdhDef.h
 .\objects\power.o: ..\..\APP\sdhlibConf.h
 .\objects\power.o: ..\..\sdhLib\inc\basis/sdhDebug.h

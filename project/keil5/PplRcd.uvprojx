@@ -493,6 +493,11 @@
               <FileType>5</FileType>
               <FilePath>..\..\configs\hardwareConfig.h</FilePath>
             </File>
+            <File>
+              <FileName>model_conf.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\configs\model_conf.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -1062,6 +1067,21 @@
               <FileName>STG_set_view.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\HMI\STG_set_view.c</FilePath>
+            </File>
+            <File>
+              <FileName>HMI_main.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\HMI\HMI_main.h</FilePath>
+            </File>
+            <File>
+              <FileName>HMI_keyboard.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\HMI\HMI_keyboard.h</FilePath>
+            </File>
+            <File>
+              <FileName>HMI_comm.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\HMI\HMI_comm.h</FilePath>
             </File>
           </Files>
         </Group>

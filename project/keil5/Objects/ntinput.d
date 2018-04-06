@@ -27,6 +27,7 @@
 .\objects\ntinput.o: ..\..\model\Model.h
 .\objects\ntinput.o: ..\..\sdhLib\inc\arithmetic/list.h
 .\objects\ntinput.o: ..\..\sdhLib\inc\basis/assert.h
+.\objects\ntinput.o: ..\..\configs\model_conf.h
 .\objects\ntinput.o: ..\..\model\Model_channel.h
 .\objects\ntinput.o: ..\..\APP\system.h
 .\objects\ntinput.o: ..\..\..\PplRcd\utils/time.h

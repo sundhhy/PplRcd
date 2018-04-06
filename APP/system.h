@@ -6,6 +6,7 @@
 #include <stdint.h>
 #include "utils/time.h"
 #include "utils/PHN_string.h"
+#include "model_conf.h"
 
 //#include "HMI/HMI.h"
 //------------------------------------------------------------------------------
@@ -21,7 +22,6 @@
 //系统配置类宏定义
 #define CONF_KEYSCAN_POLL		1		//按键扫描：轮询方式,该值为0，则为中断触发式
 #define	CONF_KEYSCAN_CYCLEMS	100
-#define NUM_CHANNEL			6
 #define CURVE_POINT			240			//曲线点数最多240点,但是数据的长度要加上1个起始点
 
 
@@ -207,7 +207,7 @@ typedef struct {
 	
 	//显示相关
 	uint16_t			lcd_cmd_bytes;
-	uint32_t			lcd_sem_wait_ms;
+//	uint32_t			lcd_sem_wait_ms;
 	
 	struct  tm		sys_time;
 	

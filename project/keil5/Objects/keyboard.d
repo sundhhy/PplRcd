@@ -34,6 +34,7 @@
 .\objects\keyboard.o: ..\..\APP\TDD.h
 .\objects\keyboard.o: ..\..\APP\system.h
 .\objects\keyboard.o: ..\..\..\PplRcd\utils/PHN_string.h
+.\objects\keyboard.o: ..\..\configs\model_conf.h
 .\objects\keyboard.o: ..\..\sdhLib\inc\sdhDef.h
 .\objects\keyboard.o: ..\..\APP\sdhlibConf.h
 .\objects\keyboard.o: ..\..\sdhLib\inc\basis/sdhDebug.h

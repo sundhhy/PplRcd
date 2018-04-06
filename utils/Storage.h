@@ -96,7 +96,7 @@ typedef struct {
 
 CLASS(Storage)
 {
-//	IMPLEMENTS( Observer);
+//	IMPLEMENTS( mdl_observer);
 
 	
 	rcd_mgr_t		arr_rcd_mgr[NUM_CHANNEL];

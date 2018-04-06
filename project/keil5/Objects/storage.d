@@ -36,6 +36,7 @@
 .\objects\storage.o: ..\..\sdhLib\inc\basis/assert.h
 .\objects\storage.o: ..\..\sdhLib\inc\basis/except.h
 .\objects\storage.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\setjmp.h
+.\objects\storage.o: ..\..\configs\model_conf.h
 .\objects\storage.o: ..\..\model\Model_channel.h
 .\objects\storage.o: ..\..\APP\system.h
 .\objects\storage.o: ..\..\..\PplRcd\utils/PHN_string.h

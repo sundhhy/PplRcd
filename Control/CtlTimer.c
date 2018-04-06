@@ -118,7 +118,7 @@ static void Ctime_periodic (void const *arg)
 	char			i;
 	
 	cthis->time_count ++;
-//	p_md = ModelCreate("time");
+//	p_md = Create_model("time");
 //	p_md->run(p_md);
 //	
 //	if(phn_sys.save_chg_flga & CHG_SYSTEM_CONF)
@@ -157,7 +157,7 @@ static void Ctime_periodic (void const *arg)
 		if(chn_smp_time[i] != time_smp)
 			continue;
 		sprintf(chn_name,"chn_%d", i);
-		p_md = ModelCreate(chn_name);
+		p_md = Create_model(chn_name);
 		p_md->run(p_md);
 	}
 	

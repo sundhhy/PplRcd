@@ -25,6 +25,7 @@
 .\objects\phn_string.o: d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\StdPeriph_Driver\inc\stm32f10x_tim.h
 .\objects\phn_string.o: d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\StdPeriph_Driver\inc\stm32f10x_usart.h
 .\objects\phn_string.o: d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\StdPeriph_Driver\inc\misc.h
+.\objects\phn_string.o: ..\..\configs\model_conf.h
 .\objects\phn_string.o: ..\..\model\Model.h
 .\objects\phn_string.o: ..\..\sdhLib\inc\arithmetic/list.h
 .\objects\phn_string.o: ..\..\sdhLib\inc\basis/macros.h

@@ -27,6 +27,7 @@
 .\objects\ntbutton.o: ..\..\model\Model.h
 .\objects\ntbutton.o: ..\..\sdhLib\inc\arithmetic/list.h
 .\objects\ntbutton.o: ..\..\sdhLib\inc\basis/assert.h
+.\objects\ntbutton.o: ..\..\configs\model_conf.h
 .\objects\ntbutton.o: ..\..\model\Model_channel.h
 .\objects\ntbutton.o: ..\..\APP\system.h
 .\objects\ntbutton.o: ..\..\..\PplRcd\utils/time.h

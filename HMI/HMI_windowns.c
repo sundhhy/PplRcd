@@ -70,7 +70,7 @@ static int	Init_winHmi( HMI *self, void *arg);
 static void	winHmiShow( HMI *self);
 static void	WinHmi_hit( HMI *self, char kcd);
 static void winHmiHide( HMI *self );
-static void Win_initSheet( HMI *self );
+static void Win_initSheet(HMI *self, uint32_t att);
 
 
 static void winHmi_InitFouse( HMI *self );
@@ -167,7 +167,7 @@ static int	Init_winHmi(HMI *self, void *arg)
 
 
 
-static void Win_initSheet(HMI *self )
+static void Win_initSheet(HMI *self, uint32_t att )
 {
 	winHmi			*cthis = SUB_PTR( self, HMI, winHmi);
 	
@@ -306,7 +306,7 @@ static void winHmi_ShowFocuse( HMI *self, uint8_t fouse_row, uint8_t fouse_col)
 static void	WinHmi_hit(HMI *self, char kcd)
 {
 	winHmi		*cthis = SUB_PTR( self, HMI, winHmi);
-	HMI			*p_src_hmi;
+//	HMI			*p_src_hmi;
 
 	uint8_t		focusRow = cthis->f_row;
 	uint8_t		focusCol = cthis->f_col;
@@ -349,17 +349,19 @@ static void	WinHmi_hit(HMI *self, char kcd)
 				chgFouse = 1;
 			} else if((self->arg[1] &WINFLAG_RETURN) ){
 				
-				p_src_hmi = g_p_win_last;
-				p_src_hmi->flag |= HMIFLAG_WIN;
+//				p_src_hmi = g_p_win_last;
+//				p_src_hmi->flag |= HMIFLAG_WIN;
 				if((self->arg[1] &WINFLAG_COMMIT) && (cthis->f_col == 0))
 				{
 					
 					cthis->cmd_hdl(cthis->p_cmd_rcv, wincmd_commit, NULL);
 				}
 				self->arg[1] = 0;
-				p_src_hmi->flag |= HMI_FLAG_KEEP;
-				self->switchHMI(self, p_src_hmi);
-				p_src_hmi->flag &= ~HMIFLAG_WIN;
+//				p_src_hmi->flag |= HMI_FLAG_KEEP;
+//				self->switchHMI(self, p_src_hmi, HMI_ATT_KEEP);
+//				p_src_hmi->flag &= ~HMIFLAG_WIN;
+				
+				self->switchBack(self, HMI_ATT_KEEP);
 				
 			} else {
 
@@ -367,11 +369,13 @@ static void	WinHmi_hit(HMI *self, char kcd)
 					cthis->cmd_hdl(cthis->p_cmd_rcv, wincmd_commit, NULL);
 				else {
 					//取消则直接返回
-					p_src_hmi = g_p_win_last;
-					p_src_hmi->flag |= HMIFLAG_WIN;
-					p_src_hmi->flag |= HMI_FLAG_KEEP;
-					self->switchHMI(self, p_src_hmi);
-					p_src_hmi->flag &= ~HMIFLAG_WIN;
+//					p_src_hmi = g_p_win_last;
+//					p_src_hmi->flag |= HMIFLAG_WIN;
+//					p_src_hmi->flag |= HMI_FLAG_KEEP;
+//					self->switchHMI(self, p_src_hmi,  HMI_ATT_KEEP);
+//					p_src_hmi->flag &= ~HMIFLAG_WIN;
+					
+					self->switchBack(self, HMI_ATT_KEEP);
 				}
 					
 			}
@@ -379,11 +383,14 @@ static void	WinHmi_hit(HMI *self, char kcd)
 		case KEYCODE_ESC:
 			
 			
-			p_src_hmi = g_p_win_last;
-			p_src_hmi->flag |= HMIFLAG_WIN;
-			p_src_hmi->flag |= HMI_FLAG_KEEP;
-			self->switchHMI(self, p_src_hmi);
-			p_src_hmi->flag &= ~HMIFLAG_WIN;
+//			p_src_hmi = g_p_win_last;
+//			p_src_hmi->flag |= HMIFLAG_WIN;
+//			p_src_hmi->flag |= HMI_FLAG_KEEP;
+//			self->switchHMI(self, p_src_hmi);
+//			p_src_hmi->flag &= ~HMIFLAG_WIN;
+		
+		
+			self->switchBack(self, HMI_ATT_KEEP);
 			break;	
 		
 	}

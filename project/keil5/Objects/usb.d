@@ -43,6 +43,7 @@
 .\objects\usb.o: ..\..\sdhLib\inc\basis/assert.h
 .\objects\usb.o: ..\..\sdhLib\inc\basis/except.h
 .\objects\usb.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\setjmp.h
+.\objects\usb.o: ..\..\configs\model_conf.h
 .\objects\usb.o: ..\..\..\PplRcd\utils/rtc_pcf8563.h
 .\objects\usb.o: ..\..\..\PplRcd\utils/time.h
 .\objects\usb.o: ..\..\..\PplRcd\utils/rtc.h

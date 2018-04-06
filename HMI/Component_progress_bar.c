@@ -309,22 +309,22 @@ static void 	PGB_Update_bar(uint8_t	bar_fd, uint8_t prc)
 	sprintf(arr_pgb[bar_fd].text_buf, "%%%3d", arr_pgb[bar_fd].bar_val);
 	arr_pgb[bar_fd].p_tip_text->cnt.len = strlen(arr_pgb[bar_fd].text_buf);
 	
-	arr_pgb[bar_fd].p_shade->e_heifht = 1;
-	arr_pgb[bar_fd].p_bar->e_heifht = 1;
-	arr_pgb[bar_fd].p_tip_text->e_heifht = 1;
-	arr_pgb[bar_fd].p_border->e_heifht = 1;
+//	arr_pgb[bar_fd].p_shade->e_heifht = 1;
+//	arr_pgb[bar_fd].p_bar->e_heifht = 1;
+//	arr_pgb[bar_fd].p_tip_text->e_heifht = 1;
+//	arr_pgb[bar_fd].p_border->e_heifht = 1;
 	
 	//todo:180217 只考虑了百分比增加的情况
 	if(prc == 0)
 		Sheet_slide(arr_pgb[bar_fd].p_shade);
-	Sheet_slide(arr_pgb[bar_fd].p_bar);
-	Sheet_slide(arr_pgb[bar_fd].p_tip_text);
-	Sheet_slide(arr_pgb[bar_fd].p_border);
+	Sheet_force_slide(arr_pgb[bar_fd].p_bar);
+	Sheet_force_slide(arr_pgb[bar_fd].p_tip_text);
+	Sheet_force_slide(arr_pgb[bar_fd].p_border);
 	
-	arr_pgb[bar_fd].p_shade->e_heifht = 0;
-	arr_pgb[bar_fd].p_bar->e_heifht = 0;
-	arr_pgb[bar_fd].p_tip_text->e_heifht = 0;
-	arr_pgb[bar_fd].p_border->e_heifht = 0;
+//	arr_pgb[bar_fd].p_shade->e_heifht = 0;
+//	arr_pgb[bar_fd].p_bar->e_heifht = 0;
+//	arr_pgb[bar_fd].p_tip_text->e_heifht = 0;
+//	arr_pgb[bar_fd].p_border->e_heifht = 0;
 	
 	
 }

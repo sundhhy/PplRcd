@@ -151,7 +151,7 @@ int main (void) {
 	tid_Thread_key = osThreadCreate (osThread(ThrdKeyRun), p_kb);
 	if (!tid_Thread_key) return(-1);
 	
-	p_mdl_time = ModelCreate("time");
+	p_mdl_time = Create_model("time");
 	
 	
 	osKernelStart ();  
@@ -211,7 +211,10 @@ int main (void) {
 			main_count_1s = 0;
 		}
 		USB_Run(NULL);
+		
+//		phn_sys.lcd_sem_wait_ms = 20;
 		LCD_Run();
+//		phn_sys.lcd_sem_wait_ms = 0xffffffff;
 //		osThreadYield (); 
 
 //		if(cmd_run.func)

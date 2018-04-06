@@ -34,6 +34,7 @@
 .\objects\ctltimer.o: d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\StdPeriph_Driver\inc\stm32f10x_usart.h
 .\objects\ctltimer.o: d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\StdPeriph_Driver\inc\misc.h
 .\objects\ctltimer.o: ..\..\..\PplRcd\utils/PHN_string.h
+.\objects\ctltimer.o: ..\..\configs\model_conf.h
 .\objects\ctltimer.o: ..\..\model\ModelFactory.h
 .\objects\ctltimer.o: ..\..\model\Model.h
 .\objects\ctltimer.o: ..\..\sdhLib\inc\arithmetic/list.h

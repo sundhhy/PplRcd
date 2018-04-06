@@ -26,6 +26,7 @@
 .\objects\hmi.o: ..\..\model\Model.h
 .\objects\hmi.o: ..\..\sdhLib\inc\arithmetic/list.h
 .\objects\hmi.o: ..\..\sdhLib\inc\basis/assert.h
+.\objects\hmi.o: ..\..\configs\model_conf.h
 .\objects\hmi.o: ..\..\model\Model_channel.h
 .\objects\hmi.o: ..\..\APP\system.h
 .\objects\hmi.o: ..\..\..\PplRcd\utils/time.h
@@ -58,11 +59,11 @@
 .\objects\hmi.o: ..\..\HMI\Component_progress_bar.h
 .\objects\hmi.o: ..\..\HMI\Component_tips.h
 .\objects\hmi.o: ..\..\..\PplRcd\utils/keyboard.h
-.\objects\hmi.o: ..\..\HMI\HMI_comm.h
-.\objects\hmi.o: ..\..\HMI\HMI_keyboard.h
 .\objects\hmi.o: ..\..\sdhLib\inc\os/os_depend.h
 .\objects\hmi.o: ..\..\sdhLib\inc\os/rtx/rtx_depend.h
 .\objects\hmi.o: d:\Keil_v5\ARM\PACK\ARM\CMSIS\5.0.0\CMSIS\RTOS\RTX\INC\cmsis_os.h
+.\objects\hmi.o: ..\..\HMI\HMI_comm.h
+.\objects\hmi.o: ..\..\HMI\HMI_keyboard.h
 .\objects\hmi.o: ..\..\APP\sys_cmd.h
 .\objects\hmi.o: ..\..\HMI\HMIFactory.h
 .\objects\hmi.o: ..\..\HMI\HMI_main.h

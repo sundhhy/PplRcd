@@ -40,21 +40,23 @@
 // const defines
 //------------------------------------------------------------------------------
 #define NUM_RUN		2
-#define NUM_TIME_TASK		2
+#define NUM_TIME_TASK		8
 //------------------------------------------------------------------------------
 // local types
 //------------------------------------------------------------------------------
 typedef struct {
 	uint32_t		run_times;
-	cmd_recv	task;
+	time_task	task;
+	void		*arg;
 }time_task_t;
 
 
 struct {
 	uint8_t		set_free_run;
 	uint8_t		set_free_tts;
+	uint8_t		set_clean_tts;		//要求清除的定时任务集合。
+
 	uint8_t		set_free_idle_run;
-	uint8_t		none;
 	time_task_t	arr_tts[NUM_TIME_TASK];
 	cmd_recv 	arr_cmd_run[NUM_RUN];
 	cmd_recv 	cmd_idle_run;
@@ -86,6 +88,7 @@ int Init_Cmd_Thread (void) {
   
 	run_mgr.set_free_run = (1 << NUM_RUN) - 1;
 	run_mgr.set_free_tts = (1 << NUM_TIME_TASK) - 1;
+	run_mgr.set_clean_tts = 0;
 	run_mgr.set_free_idle_run = 0xff;
   return(0);
 }
@@ -109,7 +112,7 @@ int	Cmd_Rgt_recv(cmd_recv	crv)
 	return -1;
 	
 }
-int	Cmd_Rgt_time_task(cmd_recv	crv, int time_s)
+int	Cmd_Rgt_time_task(time_task	tsk, void *arg, int time_s)
 {
 	
 	int i;
@@ -122,14 +125,23 @@ int	Cmd_Rgt_time_task(cmd_recv	crv, int time_s)
 			
 			
 			run_mgr.arr_tts[i].run_times = cur_s + time_s;
-			run_mgr.arr_tts[i].task = crv;
-//			run_mgr.arr_cmd_run[i].arg = arg;
+			run_mgr.arr_tts[i].task = tsk;
+			run_mgr.arr_tts[i].arg = arg;
 			Clear_bit(&run_mgr.set_free_tts, i);
 			return i;
 		}
 	}
 	
 	return -1;
+	
+}
+
+void Cmd_del_time_task(int	cmd_fd)
+{
+	if(cmd_fd >= NUM_RUN)
+		return;
+
+	Set_bit(&run_mgr.set_clean_tts, cmd_fd);
 	
 }
 int	Cmd_Rgt_idle_task(cmd_recv	crv)
@@ -158,21 +170,12 @@ void Cmd_del_recv(int	cmd_fd)
 static void Cmd_Thread (void const *argument) {
 
 	short 	i;
-	char	pwr_val = 1;
-	char	j;
+
 	uint32_t cur_s ;
-//	I_dev_Char		*gpio_pwr;
-//	Dev_open(DEVID_GPIO_PWR, ( void *)&gpio_pwr);
+
 	
 	while (1) {
-//		gpio_pwr->read(gpio_pwr, &pwr_val, 1);
-//		if(phn_sys.sys_flag & SYSFLAG_POWEROFF)
-//		{
 
-//			if(phn_sys.sys_flag & SYSFLAG_POWEON)		//上过电 才认为需要保存，否则可能是假掉电
-//				System_power_off();
-//			break;
-//		}
 
 		cur_s = SYS_time_sec();
 		for(i = 0; i < NUM_RUN; i++)
@@ -186,12 +189,20 @@ static void Cmd_Thread (void const *argument) {
 
 		for(i = 0; i < NUM_TIME_TASK; i++)
 		{
+			if(Check_bit(&run_mgr.set_clean_tts, i))
+			{
+				//使用set_clean_tts中转，是为了减少多线程竞争引起的后果
+				Clear_bit(&run_mgr.set_clean_tts, i);
+				
+				run_mgr.arr_tts[i].run_times = 0xffffffff;
+				Set_bit(&run_mgr.set_free_tts, i);
+			}
 			if(Check_bit(&run_mgr.set_free_tts, i))
 				continue;
 			if(cur_s < run_mgr.arr_tts[i].run_times)
 				continue;
 			Set_bit(&run_mgr.set_free_tts, i);
-			run_mgr.arr_tts[i].task();	
+			run_mgr.arr_tts[i].task(run_mgr.arr_tts[i].arg);	
 			
 		}
     osThreadYield ();  		// suspend thread

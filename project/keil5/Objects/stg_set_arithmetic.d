@@ -27,6 +27,7 @@
 .\objects\stg_set_arithmetic.o: ..\..\model\Model.h
 .\objects\stg_set_arithmetic.o: ..\..\sdhLib\inc\arithmetic/list.h
 .\objects\stg_set_arithmetic.o: ..\..\sdhLib\inc\basis/assert.h
+.\objects\stg_set_arithmetic.o: ..\..\configs\model_conf.h
 .\objects\stg_set_arithmetic.o: ..\..\model\Model_channel.h
 .\objects\stg_set_arithmetic.o: ..\..\APP\system.h
 .\objects\stg_set_arithmetic.o: ..\..\..\PplRcd\utils/time.h
@@ -59,5 +60,8 @@
 .\objects\stg_set_arithmetic.o: ..\..\HMI\Component_progress_bar.h
 .\objects\stg_set_arithmetic.o: ..\..\HMI\Component_tips.h
 .\objects\stg_set_arithmetic.o: ..\..\..\PplRcd\utils/keyboard.h
+.\objects\stg_set_arithmetic.o: ..\..\sdhLib\inc\os/os_depend.h
+.\objects\stg_set_arithmetic.o: ..\..\sdhLib\inc\os/rtx/rtx_depend.h
+.\objects\stg_set_arithmetic.o: d:\Keil_v5\ARM\PACK\ARM\CMSIS\5.0.0\CMSIS\RTOS\RTX\INC\cmsis_os.h
 .\objects\stg_set_arithmetic.o: ..\..\HMI\HMI_comm.h
 .\objects\stg_set_arithmetic.o: ..\..\HMI\HMI_keyboard.h

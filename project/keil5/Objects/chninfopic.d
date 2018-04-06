@@ -27,6 +27,7 @@
 .\objects\chninfopic.o: ..\..\model\Model.h
 .\objects\chninfopic.o: ..\..\sdhLib\inc\arithmetic/list.h
 .\objects\chninfopic.o: ..\..\sdhLib\inc\basis/assert.h
+.\objects\chninfopic.o: ..\..\configs\model_conf.h
 .\objects\chninfopic.o: ..\..\model\Model_channel.h
 .\objects\chninfopic.o: ..\..\APP\system.h
 .\objects\chninfopic.o: ..\..\..\PplRcd\utils/time.h
@@ -59,6 +60,9 @@
 .\objects\chninfopic.o: ..\..\HMI\Component_progress_bar.h
 .\objects\chninfopic.o: ..\..\HMI\Component_tips.h
 .\objects\chninfopic.o: ..\..\..\PplRcd\utils/keyboard.h
+.\objects\chninfopic.o: ..\..\sdhLib\inc\os/os_depend.h
+.\objects\chninfopic.o: ..\..\sdhLib\inc\os/rtx/rtx_depend.h
+.\objects\chninfopic.o: d:\Keil_v5\ARM\PACK\ARM\CMSIS\5.0.0\CMSIS\RTOS\RTX\INC\cmsis_os.h
 .\objects\chninfopic.o: ..\..\HMI\HMIFactory.h
 .\objects\chninfopic.o: ..\..\HMI\HMI_comm.h
 .\objects\chninfopic.o: ..\..\HMI\HMI_keyboard.h

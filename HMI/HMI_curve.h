@@ -21,7 +21,7 @@ CLASS( RLT_trendHMI)
 {
 	EXTENDS( HMI);
 //	IMPLEMENTS( shtCmd);
-//	IMPLEMENTS( Observer);
+//	IMPLEMENTS( mdl_observer);
 	
 	
 	

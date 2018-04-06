@@ -15,6 +15,7 @@
 .\objects\modeltime.o: ..\..\sdhLib\inc\basis/assert.h
 .\objects\modeltime.o: ..\..\sdhLib\inc\basis/except.h
 .\objects\modeltime.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\setjmp.h
+.\objects\modeltime.o: ..\..\configs\model_conf.h
 .\objects\modeltime.o: ..\..\..\PplRcd\utils/rtc_pcf8563.h
 .\objects\modeltime.o: ..\..\..\PplRcd\utils/time.h
 .\objects\modeltime.o: E:\PaperlessRecorder\myCode\PplRcd\project\keil5\RTE\Device\STM32F103VC\stm32f10x_conf.h

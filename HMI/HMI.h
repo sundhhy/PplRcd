@@ -23,7 +23,7 @@
 #include "Component_progress_bar.h"
 #include "Component_tips.h"
 #include "utils/keyboard.h"
-
+#include "os/os_depend.h"
 //------------------------------------------------------------------------------
 // check for correct compilation options
 //------------------------------------------------------------------------------
@@ -31,20 +31,6 @@
 //------------------------------------------------------------------------------
 // const defines
 //------------------------------------------------------------------------------
-//#define HMIKEY_UP				"up"
-//#define HMIKEY_DOWN			"down"
-//#define HMIKEY_LEFT			"left"
-//#define HMIKEY_RIGHT		"right"
-//#define KEYCODE_ENTER		"enter"
-//#define HMIKEY_ESC			"esc"
-
-//#define HMI_KEYCODE_UP		0
-//#define HMI_KEYCODE_DN		1
-//#define HMI_KEYCODE_LT		2
-//#define HMI_KEYCODE_RT		3
-//#define HMI_KEYCODE_ER		4
-//#define HMI_KEYCODE_ESC		5
-
 
 //显示用的方向
 #define		HMI_DIR_UP					0
@@ -87,18 +73,23 @@
 
 
 #define	HMI_FLAG_HIDE			1
-#define	HMI_FLAG_SHOW			2
+#define	HMI_FLAG_HSA_SEM			2		//本界面已经获得了信号量
 #define	HMI_FLAG_DEAL_HIT		3	
-#define	HMI_FLAG_KEEP			4			//有些画面切换时，要求画面不要重新初始化状态
+//#define	HMI_FLAG_KEEP			4			//有些画面切换时，要求画面不要重新初始化状态
 #define	HMI_FLAG_ERR			0x10
 
 //窗口界面来负责对该位的操作
 //表示界面接下来要跟窗口进行交互，因此在窗口切换回界面的时候，会处理一些额外的交互信息
 //故每个需要与窗口交互的界面，在其show方法中，都应该有与窗口界面交互的处理 
-#define	HMIFLAG_WIN				0x20		
-#define	HMIFLAG_KEYBOARD		0x40
+//#define	HMIFLAG_WIN				0x20		
+//#define	HMIFLAG_KEYBOARD		0x40
 //界面当前的焦点位于按钮区间
 #define	HMIFLAG_FOCUS_IN_BTN	0x80
+
+
+#define HMI_ATT_KEEP			1
+#define HMI_ATT_SELF_ERR			2		
+#define HMI_ATT_NOT_RECORD			4		//窗口或者按键界面返回的时候，不用把它们存到历史画面列表中
 
 #define IS_HMI_HIDE(flag)	((flag&1) == 0)
 #define IS_HMI_KEYHANDLE(flag)	((flag&2))
@@ -192,9 +183,9 @@ ABS_CLASS(HMI)
 	
 	// initSheet hide 
 	void		(*hide)( HMI *self);
-	void		(*initSheet)( HMI *self);
-	void		(*switchHMI)( HMI *self, HMI *p_hmi);
-	void		(*switchBack)( HMI *self);
+	void		(*initSheet)( HMI *self, uint32_t	att_flag );
+	void		(*switchHMI)( HMI *self, HMI *p_hmi, uint32_t	att_flag);
+	void		(*switchBack)( HMI *self, uint32_t	att_flag);
 	
 	//按键动作
 	void		(*hitHandle)( HMI *self, char kcd);
@@ -233,13 +224,19 @@ extern keyboard_commit	kbr_cmt;
 extern const Except_T Hmi_Failed;
 //extern  ro_char str_endRow[];
 //extern	ro_char str_endCol[];
-extern HMI *g_p_curHmi, *g_p_lastHmi, *g_p_win_last;
+extern HMI* g_p_curHmi;
 //------------------------------------------------------------------------------
 // function prototypes
 //------------------------------------------------------------------------------
 extern void Set_flag_show(uint8_t	*p_flag, int val);
 //extern void Set_flag_keyhandle(uint8_t	*p_flag, int val);
 void STY_Duild_button(void *arg);
+
+
+//有时候本界面被切换之后，希望把ESC返回时的界面变成另外一个界面时调用
+//要在本界面切换到其他界面之前调用
+void HMI_Change_last_HMI(HMI *p);			
+
 
 //很多界面的处理与主界面的按键处理一样，所以就把主界面的处理开放出来
 void Main_btn_hdl(void *arg, uint8_t btn_id);
@@ -248,5 +245,7 @@ void Main_HMI_hit( HMI *self, char kcd);
 
 int HMI_Init(void);
 
+void	HMI_Attach_model_chn(int *fds, mdl_observer *mdl_obs);
+void	HMI_detach_model_chn(int *fds);
 
 #endif

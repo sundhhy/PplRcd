@@ -2,6 +2,8 @@
 #include <string.h>
 #include "ExpFactory.h"
 #include "HMIFactory.h"
+#include "ModelFactory.h"
+
 
 #include "utils/time.h"
 #include "format.h"
@@ -9,6 +11,7 @@
 
 #include "chnInfoPic.h"
 
+#include "os/os_depend.h"
 
 //提供 按键，事件，消息，窗口，报警，时间，复选框的图层
 //这些图层可能会被其他界面所使用
@@ -56,7 +59,7 @@ ro_char news_cpic[] =  {"<cpic vx0=0 vx1=320 vy0=50 vy1=210>16</>" };
 //------------------------------------------------------------------------------
 // global function prototypes
 //------------------------------------------------------------------------------
-keyboardHMI		*g_keyHmi;
+
 //============================================================================//
 //            P R I V A T E   D E F I N I T I O N S                           //
 //============================================================================//
@@ -70,6 +73,8 @@ static ro_char code_bkPic[] =  {"<bpic vx0=0 vy0=0 m=0 >23</>" };
 static ro_char code_title[] =  {"<text vx0=0 vy0=4 m=0 clr=white f=24> </>" };
 
 static ro_char timeCode[] = { "<text vx0=220 vy0=0 bx=60  by=24 f=24 xali=r m=0 clr=yellow spr=/> </>" };
+
+
 
 ////进入主菜单
 //static ro_char ico_memu[] = { "<bu vx0=10 vy0=212 bx=49 by=25 bkc=black clr=black><pic bx=48  by=24 >20</></bu>" };
@@ -110,8 +115,13 @@ static hmi_ram_mgr_t	hmi_ram;
 //------------------------------------------------------------------------------
 static int	Init_cmmHmi( HMI *self, void *arg);
 
+static void Build_ChnSheets(void);
 static void Build_icoSheets(void);
 static void Build_otherSheets(void);
+
+
+static int CMM_Update_time(mdl_observer *self, void *p_srcMdl);
+
 
 //============================================================================//
 //            P U B L I C   F U N C T I O N S                                 //
@@ -237,6 +247,8 @@ CTOR( cmmHmi)
 SUPER_CTOR( HMI);
 FUNCTION_SETTING( HMI.init, Init_cmmHmi);
 //FUNCTION_SETTING( View.show, TestView_show);
+FUNCTION_SETTING(mdl_observer.update, CMM_Update_time);
+
 END_CTOR
 //=========================================================================//
 //                                                                         //
@@ -246,15 +258,6 @@ END_CTOR
 
 static int	Init_cmmHmi( HMI *self, void *arg)
 {
-//	cmmHmi	*cthis = SUB_PTR( self, HMI, cmmHmi);
-	HMI 			*p_hmi;
-//	menuHMI			*menuHmi ;
-//	barGhHMI		*barHmi ;
-//	dataHMI			*dataHmi;
-//	RLT_trendHMI	*rltHmi;
-//	shtctl *p_shtctl = NULL;
-//	Expr *p_exp ;
-	
 	Focus_init();
 	
 	
@@ -262,66 +265,6 @@ static int	Init_cmmHmi( HMI *self, void *arg)
 	Build_icoSheets();
 	Build_otherSheets();
 	
-	//注意：按键一定要放在最开始初始化，因为其他界面会依赖按键的一些操作
-	p_hmi = CreateHMI(HMI_KYBRD);
-	p_hmi->init(p_hmi, NULL);
-	g_keyHmi = SUB_PTR(p_hmi, HMI, keyboardHMI);
-	
-	//创建与公用图标相关的界面
-	p_hmi = CreateHMI(HMI_MENU);
-	p_hmi->init( p_hmi, NULL);
-//	menuHmi = SUB_PTR(p_hmi, HMI, menuHMI);
-	
-	p_hmi = CreateHMI(HMI_DATA);
-	p_hmi->init(p_hmi, NULL);
-//	dataHmi = SUB_PTR(p_hmi, HMI, dataHMI);
-	
-	p_hmi = CreateHMI(HMI_BAR);
-	p_hmi->init( p_hmi, NULL);
-//	barHmi = SUB_PTR(p_hmi, HMI, barGhHMI);
-	
-	p_hmi = CreateHMI(HMI_RLT_TREND);
-	p_hmi->init(p_hmi, NULL);
-//	rltHmi = SUB_PTR(p_hmi, HMI, RLT_trendHMI);
-	
-	//将图标动作与相关界面处理绑定
-//	g_p_ico_memu->p_enterCmd = &menuHmi->shtCmd;
-//	g_p_ico_digital->p_enterCmd = &dataHmi->shtCmd;
-//	g_p_ico_bar->p_enterCmd = &barHmi->shtCmd;
-//	g_p_ico_trend->p_enterCmd = &rltHmi->shtCmd;
-	
-	
-	
-	
-	//初始化其他界面
-	
-	
-	
-	
-	p_hmi = CreateHMI(HMI_NWS);
-	p_hmi->init(p_hmi, NULL);
-	
-//	p_hmi = CreateHMI(HMI_NEWS_ALARM);
-//	p_hmi->init(p_hmi, NULL);
-//	
-//	p_hmi = CreateHMI(HMI_NEWS_POWER_DOWN);
-//	p_hmi->init(p_hmi, NULL);
-//	
-//	p_hmi = CreateHMI(HMI_HISTORY);
-//	p_hmi->init(p_hmi, NULL);
-	
-	p_hmi = CreateHMI(HMI_ACCM);
-	p_hmi->init(p_hmi, NULL);
-	
-	p_hmi = CreateHMI(HMI_SETUP);
-	p_hmi->init(p_hmi, NULL);
-	
-	
-	p_hmi = CreateHMI(HMI_SETTING);
-	p_hmi->init(p_hmi, NULL);
-	
-	p_hmi = CreateHMI(HMI_WINDOWS);
-	p_hmi->init(p_hmi, NULL);
 	return RET_OK;
 }
 
@@ -405,7 +348,8 @@ static void Build_otherSheets(void)
 {
 	shtctl 		*p_shtctl = NULL;
 	Expr 		*p_exp ;
-		
+	cmmHmi		*cthis = GetCmmHMI();
+	Model		*p_time = Create_model("time");
 	p_shtctl = GetShtctl();
 	
 	g_p_cpic = Sheet_alloc( p_shtctl);
@@ -430,16 +374,76 @@ static void Build_otherSheets(void)
 	p_exp = ExpCreate( "text");
 	p_exp->inptSht( p_exp, (void *)timeCode, g_p_shtTime) ;
 	
-	g_p_shtTime->p_mdl = ModelCreate("time");
-	g_p_shtTime->p_mdl->attach( g_p_shtTime->p_mdl, (Observer *)g_p_shtTime);
-	g_p_shtTime->cnt.data = g_p_shtTime->p_mdl->to_string(g_p_shtTime->p_mdl, 0, NULL);
+	p_time->attach(p_time, &cthis->mdl_observer);
+	g_p_shtTime->cnt.data = p_time->to_string(p_time, 0, NULL);
 	g_p_shtTime->cnt.len = strlen(g_p_shtTime->cnt.data);
 	
 }
 
+static int CMM_Update_time(mdl_observer *self, void *p_srcMdl)
+{
+	
+	Model	*p_mdl = (Model *)p_srcMdl;
+	
+	if(Sheet_is_hide(g_p_shtTime))
+		return RET_OK;
+	if(Sem_wait(&phn_sys.hmi_mgr.hmi_sem, 100) <= 0)
+		return ERR_RSU_BUSY;
+	
+	g_p_shtTime->cnt.data = p_mdl->to_string(p_mdl, 0, NULL);
+	g_p_shtTime->cnt.len = strlen( g_p_shtTime->cnt.data);
+	Sheet_slide(g_p_shtTime);
+	
+	Sem_post(&phn_sys.hmi_mgr.hmi_sem);
+	return RET_OK;
+	
+}
 
+static void Build_ChnSheets(void)
+{
+	int 		i = 0;
+	shtctl 		*p_shtctl = NULL;
+//	Expr 		*p_exp ;
+//	Model			*p_mdl = NULL;
+//	char		mdl_code[16] = {0};
+	p_shtctl = GetShtctl();
+	
+//	Bulid_ChnData(g_arr_p_chnData, (void *)MAIN_hmi_code_data, MainHmi_Data_update);
+	
+//	p_exp = ExpCreate( "text");
+	for(i = 0; i < NUM_CHANNEL; i++) {
+		g_arr_p_chnData[i] = Sheet_alloc( p_shtctl);
+//		p_exp->inptSht( p_exp, (void *)MAIN_hmi_code_data, g_arr_p_chnData[i]) ;
+//		sprintf(mdl_code,"chn_%d", i);
 
-
+//		g_arr_p_chnData[i]->p_mdl = Create_model(mdl_code);
+//		g_arr_p_chnData[i]->update = MainHmi_Data_update;
+		g_arr_p_chnData[i]->id = i;
+//		p_mdl = g_arr_p_chnData[i]->p_mdl;
+//		p_mdl->attach(p_mdl, (mdl_observer *)g_arr_p_chnData[i]);
+		
+		g_arr_p_chnUtil[i] = Sheet_alloc( p_shtctl);
+//		p_exp->inptSht( p_exp, (void *)MAIN_hmi_code_unit, g_arr_p_chnUtil[i]) ;
+//		g_arr_p_chnUtil[i]->id = i;
+//		g_arr_p_chnUtil[i]->p_mdl = Create_model(mdl_code);
+//		g_arr_p_chnUtil[i]->update = MainHmi_Util_update;
+//		g_arr_p_chnUtil[i]->cnt.subType = TEXT_ST_UNTIL;
+//		p_mdl = g_arr_p_chnUtil[i]->p_mdl;
+//		p_mdl->attach(p_mdl, (mdl_observer *)g_arr_p_chnUtil[i]);
+		
+		g_arr_p_chnAlarm[i] = Sheet_alloc( p_shtctl);
+//		p_exp->inptSht( p_exp, (void *)MAIN_hmi_code_alarm, g_arr_p_chnAlarm[i]) ;
+//		g_arr_p_chnAlarm[i]->id = i;
+//		g_arr_p_chnAlarm[i]->p_mdl = Create_model(mdl_code);
+//		g_arr_p_chnAlarm[i]->update = MainHmi_Alarm_update;
+//		p_mdl = g_arr_p_chnAlarm[i]->p_mdl;
+//		p_mdl->attach(p_mdl, (mdl_observer *)g_arr_p_chnAlarm[i]);
+		
+		
+		
+	}
+	
+}
 
 
 

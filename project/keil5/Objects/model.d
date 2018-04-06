@@ -14,4 +14,6 @@
 .\objects\model.o: ..\..\sdhLib\inc\basis/assert.h
 .\objects\model.o: ..\..\sdhLib\inc\basis/except.h
 .\objects\model.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\setjmp.h
+.\objects\model.o: ..\..\configs\model_conf.h
+.\objects\model.o: ..\..\APP\sys_cmd.h
 .\objects\model.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h

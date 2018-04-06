@@ -29,6 +29,7 @@
 .\objects\component_tips.o: ..\..\model\Model.h
 .\objects\component_tips.o: ..\..\sdhLib\inc\arithmetic/list.h
 .\objects\component_tips.o: ..\..\sdhLib\inc\basis/assert.h
+.\objects\component_tips.o: ..\..\configs\model_conf.h
 .\objects\component_tips.o: ..\..\model\Model_channel.h
 .\objects\component_tips.o: ..\..\APP\system.h
 .\objects\component_tips.o: ..\..\..\PplRcd\utils/time.h
@@ -62,4 +63,7 @@
 .\objects\component_tips.o: ..\..\HMI\Component_curve.h
 .\objects\component_tips.o: ..\..\HMI\Component_progress_bar.h
 .\objects\component_tips.o: ..\..\..\PplRcd\utils/keyboard.h
+.\objects\component_tips.o: ..\..\sdhLib\inc\os/os_depend.h
+.\objects\component_tips.o: ..\..\sdhLib\inc\os/rtx/rtx_depend.h
+.\objects\component_tips.o: d:\Keil_v5\ARM\PACK\ARM\CMSIS\5.0.0\CMSIS\RTOS\RTX\INC\cmsis_os.h
 .\objects\component_tips.o: ..\..\sdhLib\inc\arithmetic/bit.h

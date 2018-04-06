@@ -187,7 +187,7 @@ void System_init(void)
 	phn_sys.major_ver = PHN_MAJOR_VER;
 	phn_sys.minor_ver = PHN_MINOR_VER;
 	
-	phn_sys.lcd_sem_wait_ms = 0xffffffff;
+//	phn_sys.lcd_sem_wait_ms = 0xffffffff;
 	
 	sys_rtc = ( UtlRtc *)Pcf8563_new();
 	if(sys_rtc == NULL) while(1);
@@ -196,7 +196,7 @@ void System_init(void)
 	sys_rtc->get(sys_rtc, &phn_sys.sys_time);
 	
 	//md_time要系统时间初始化之后初始化
-	m = ModelCreate("time");
+	m = Create_model("time");
 	m->init(m, NULL);
 	
 	
@@ -220,7 +220,7 @@ void System_init(void)
 	{
 
 		sprintf(chn_name,"chn_%d", i);
-		m = ModelCreate(chn_name);
+		m = Create_model(chn_name);
 		m->init(m, &i);
 		
 	}
@@ -255,7 +255,7 @@ uint32_t  SYS_time_sec(void)
 	return Time_2_u32(&phn_sys.sys_time);
 //	Model 		*m;
 //	uint32_t	sec = 0;
-//	m = ModelCreate("time");
+//	m = Create_model("time");
 //	m->getMdlData(m, TIME_U32, &sec);
 	
 //	return sec;

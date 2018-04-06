@@ -20,7 +20,7 @@
 CLASS( menuHMI)
 {
 	EXTENDS( HMI);
-	IMPLEMENTS( shtCmd);
+//	IMPLEMENTS( shtCmd);
 	sheet  			*p_sht_pic1;
 	sheet  			*p_sht_pic2;
 

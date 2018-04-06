@@ -57,6 +57,7 @@
 .\objects\main.o: ..\..\model\Model.h
 .\objects\main.o: ..\..\sdhLib\inc\arithmetic/list.h
 .\objects\main.o: ..\..\sdhLib\inc\basis/assert.h
+.\objects\main.o: ..\..\configs\model_conf.h
 .\objects\main.o: ..\..\model\Model_channel.h
 .\objects\main.o: ..\..\APP\system.h
 .\objects\main.o: ..\..\..\PplRcd\utils/time.h
@@ -70,6 +71,8 @@
 .\objects\main.o: ..\..\..\PplRcd\HMI/Component_progress_bar.h
 .\objects\main.o: ..\..\..\PplRcd\HMI/Component_tips.h
 .\objects\main.o: ..\..\..\PplRcd\utils/keyboard.h
+.\objects\main.o: ..\..\sdhLib\inc\os/os_depend.h
+.\objects\main.o: ..\..\sdhLib\inc\os/rtx/rtx_depend.h
 .\objects\main.o: ..\..\..\PplRcd\HMI/HMI_keyboard.h
 .\objects\main.o: ..\..\..\PplRcd\HMI/HMI_main.h
 .\objects\main.o: ..\..\..\PplRcd\HMI/HMI_menu.h
@@ -87,5 +90,3 @@
 .\objects\main.o: ..\..\..\PplRcd\control/CtlKey.h
 .\objects\main.o: ..\..\..\PplRcd\control/Controller.h
 .\objects\main.o: ..\..\..\PplRcd\control/CtlTimer.h
-.\objects\main.o: ..\..\sdhLib\inc\os/os_depend.h
-.\objects\main.o: ..\..\sdhLib\inc\os/rtx/rtx_depend.h

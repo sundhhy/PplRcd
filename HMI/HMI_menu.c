@@ -53,7 +53,7 @@ void	Hide_ico_tips(HMI *self);
 const char win_pic1_Code[] = { "<pic vx0=0 vy0=0 >5</>" };
 const char win_pic2_Code[] = { "<cpic vx0=0 vy0=0 >6</>" };
 
-static HMI **arr_pp_targetHmi[NUM_BTNROW][NUM_BTNCOL] = { { &g_p_mainHmi, &g_p_barGhHmi}, {&g_p_dataHmi, &g_p_RLT_trendHmi}, \
+static HMI **arr_pp_targetHmi[NUM_BTNROW][NUM_BTNCOL] = { { &g_p_HMI_main, &g_p_barGhHmi}, {&g_p_dataHmi, &g_p_RLT_trendHmi}, \
 	{&g_p_NewSlct_HMI, &g_p_RLT_trendHmi}, {&g_p_NewSlct_HMI, NULL}};		
 
 //static const hmiAtt_t	menuHmiAtt = { 4,4, COLOUR_GRAY, NUM_BTNROW, NUM_BTNCOL};
@@ -76,9 +76,9 @@ static int	Init_menuHMI( HMI *self, void *arg);
 static void	MenuHmiShow( HMI *self);
 static void	MenuHitHandle( HMI *self, char kcd);
 static void MenuHmiHide( HMI *self );
-static void MenuinitSheet( HMI *self );
+static void MenuinitSheet( HMI *self, uint32_t att );
 
-static void MenuEnterCmdHdl( shtCmd *self, struct SHEET *p_sht, void *arg);
+//static void MenuEnterCmdHdl( shtCmd *self, struct SHEET *p_sht, void *arg);
 static void MenuClearFocuse( HMI *self, uint8_t fouse_row, uint8_t fouse_col);
 static void MenuShowFocuse( HMI *self, uint8_t fouse_row, uint8_t fouse_col);
 
@@ -113,7 +113,7 @@ FUNCTION_SETTING( HMI.hitHandle, MenuHitHandle);
 FUNCTION_SETTING( HMI.clear_focus, MenuClearFocuse);
 FUNCTION_SETTING( HMI.show_focus, MenuShowFocuse);
 
-FUNCTION_SETTING( shtCmd.shtExcute, MenuEnterCmdHdl);
+//FUNCTION_SETTING( shtCmd.shtExcute, MenuEnterCmdHdl);
 
 
 
@@ -170,7 +170,7 @@ static void MenuHmiHide( HMI *self )
 	
 }	
 
-static void MenuinitSheet( HMI *self )
+static void MenuinitSheet( HMI *self, uint32_t att )
 {
 //	menuHMI			*cthis = SUB_PTR( self, HMI, menuHMI);
 //	int i, j, h;;
@@ -321,7 +321,7 @@ static void	MenuHitHandle( HMI *self, char kcd)
 					SwitchToHmi(self, pp_trgtHmi);
 					break;		
 			case KEYCODE_ESC:
-					self->switchBack(self);
+					self->switchBack(self, 0);
 					break;	
 			
 	}
@@ -386,7 +386,7 @@ static void	MenuHitHandle( HMI *self, char kcd)
 //	}
 //	if( !strcmp( s, HMIKEY_ESC))
 //	{
-//		self->switchBack(self);
+//		self->switchBack(self, 0);
 //	}
 	
 	
@@ -404,20 +404,20 @@ static void	MenuHitHandle( HMI *self, char kcd)
 }
 
 
-static void MenuEnterCmdHdl( shtCmd *self, struct SHEET *p_sht, void *arg)
-{
-	menuHMI	*cthis = SUB_PTR( self, shtCmd, menuHMI);
-	HMI		*selfHmi = SUPER_PTR( cthis, HMI);
-	HMI		*srcHmi = ( HMI *)arg;
-	
-	srcHmi->switchHMI( srcHmi, selfHmi);
-	
-}
+//static void MenuEnterCmdHdl( shtCmd *self, struct SHEET *p_sht, void *arg)
+//{
+//	menuHMI	*cthis = SUB_PTR( self, shtCmd, menuHMI);
+//	HMI		*selfHmi = SUPER_PTR( cthis, HMI);
+//	HMI		*srcHmi = ( HMI *)arg;
+//	
+//	srcHmi->switchHMI( srcHmi, selfHmi);
+//	
+//}
 
 static void SwitchToHmi( HMI *self, HMI **target)
 {
 	if( target)
-		self->switchHMI( self, *target);
+		self->switchHMI( self, *target, 0);
 }
 
 

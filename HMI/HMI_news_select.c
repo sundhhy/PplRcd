@@ -1,7 +1,7 @@
 #include "HMI_news_select.h"
 #include "sdhDef.h"
 #include "ExpFactory.h"
-
+#include "HMIFactory.h"
 #include <string.h>
 
 #include "HMI_striped_background.h"
@@ -56,7 +56,7 @@ static ro_char Nws_hmi_code_cpic2[] =  {"<icon vx0=90 bx=140  xn=1 yn=3 n=0>10</
 static int	Init_Nws_HMI(HMI *self, void *arg);
 static void Show_Nws_HMI(HMI *self);
 static void	Nws_HMI_hide(HMI *self);
-static void	Nws_initSheet(HMI *self);
+static void	Nws_initSheet(HMI *self, uint32_t att);
 static void	Nws_HMI_init_focus(HMI *self);
 static void	Nws_HMI_clear_focus(HMI *self, uint8_t fouse_row, uint8_t fouse_col);
 static void	Nws_HMI_show_focus(HMI *self, uint8_t fouse_row, uint8_t fouse_col);
@@ -129,7 +129,7 @@ static void Show_Nws_HMI(HMI *self)
 	g_p_sht_bkpic->p_gp->vdraw( g_p_sht_bkpic->p_gp, &g_p_sht_bkpic->cnt, &g_p_sht_bkpic->area);
 	self->show_focus( self,self->p_fcuu->focus_row, 0);
 }
-static void	Nws_initSheet(HMI *self)
+static void	Nws_initSheet(HMI *self, uint32_t att)
 {
 	Expr 			*p_exp ;
 	
@@ -197,11 +197,12 @@ static void	Nws_HMI_hitHandle(HMI *self, char kcd)
 	
 //	NewSlct_HMI		*cthis = SUB_PTR( self, HMI, NewSlct_HMI);
 //	sheet		*p_focus;
+	HMI			*p_hsb;
 	uint8_t		focusRow = self->p_fcuu->focus_row;
 	uint8_t		chgFouse = 0;
 
 	
-	
+	p_hsb = Create_HMI(HMI_STRIPED_BKG);
 	switch(kcd)
 	{
 
@@ -223,7 +224,7 @@ static void	Nws_HMI_hitHandle(HMI *self, char kcd)
 			case KEYCODE_ENTER:
 					if(self->p_fcuu->focus_row >= 2)
 					{
-						self->switchHMI(self, g_p_HMI_menu);
+						self->switchHMI(self, g_p_HMI_menu, 0);
 						return;
 					}
 					
@@ -231,9 +232,9 @@ static void	Nws_HMI_hitHandle(HMI *self, char kcd)
 					{
 						
 						//选择信息
-						g_p_HMI_striped->arg[0] = HMI_SBG_SELECT_NEWS;
-						g_p_HMI_striped->arg[1] = self->p_fcuu->focus_row;
-						self->switchHMI(self, g_p_HMI_striped);
+						p_hsb->arg[0] = HMI_SBG_SELECT_NEWS;
+						p_hsb->arg[1] = self->p_fcuu->focus_row;
+						self->switchHMI(self, p_hsb, 0);
 						
 					}
 					else
@@ -243,21 +244,21 @@ static void	Nws_HMI_hitHandle(HMI *self, char kcd)
 						if(self->p_fcuu->focus_row == 0) 
 						{
 							
-							g_p_HMI_striped->arg[0] = HMI_SBG_SELECT_ACC;
-							g_p_HMI_striped->arg[1] = self->p_fcuu->focus_row;
-							self->switchHMI(self, g_p_HMI_striped);
+							p_hsb->arg[0] = HMI_SBG_SELECT_ACC;
+							p_hsb->arg[1] = self->p_fcuu->focus_row;
+							self->switchHMI(self, p_hsb, 0);
 						}
 						else if(self->p_fcuu->focus_row == 1) 
 						{
-							g_p_HMI_striped->arg[0] = HMI_SBG_SELECT_ACC;
-							g_p_HMI_striped->arg[1] = self->p_fcuu->focus_row;
-							self->switchHMI(self, g_p_HMI_striped);
+							p_hsb->arg[0] = HMI_SBG_SELECT_ACC;
+							p_hsb->arg[1] = self->p_fcuu->focus_row;
+							self->switchHMI(self, p_hsb, 0);
 						}
 						
 					}
 					break;		
 			case KEYCODE_ESC:
-					self->switchBack(self);
+					self->switchBack(self, 0);
 					break;	
 			
 	}
@@ -289,9 +290,9 @@ static void	Nws_HMI_hitHandle(HMI *self, char kcd)
 //		{
 //			
 //			//选择信息
-//			g_p_HMI_striped->arg[0] = HMI_SBG_SELECT_NEWS;
-//			g_p_HMI_striped->arg[1] = self->p_fcuu->focus_row;
-//			self->switchHMI(self, g_p_HMI_striped);
+//			p_hsb->arg[0] = HMI_SBG_SELECT_NEWS;
+//			p_hsb->arg[1] = self->p_fcuu->focus_row;
+//			self->switchHMI(self, p_hsb);
 //			
 //		}
 //		else
@@ -301,15 +302,15 @@ static void	Nws_HMI_hitHandle(HMI *self, char kcd)
 //			if(self->p_fcuu->focus_row == 0) 
 //			{
 //				
-//				g_p_HMI_striped->arg[0] = HMI_SBG_SELECT_ACC;
-//				g_p_HMI_striped->arg[1] = self->p_fcuu->focus_row;
-//				self->switchHMI(self, g_p_HMI_striped);
+//				p_hsb->arg[0] = HMI_SBG_SELECT_ACC;
+//				p_hsb->arg[1] = self->p_fcuu->focus_row;
+//				self->switchHMI(self, p_hsb);
 //			}
 //			else if(self->p_fcuu->focus_row == 1) 
 //			{
-//				g_p_HMI_striped->arg[0] = HMI_SBG_SELECT_ACC;
-//				g_p_HMI_striped->arg[1] = self->p_fcuu->focus_row;
-//				self->switchHMI(self, g_p_HMI_striped);
+//				p_hsb->arg[0] = HMI_SBG_SELECT_ACC;
+//				p_hsb->arg[1] = self->p_fcuu->focus_row;
+//				self->switchHMI(self, p_hsb);
 //			}
 //			
 //		}
@@ -318,7 +319,7 @@ static void	Nws_HMI_hitHandle(HMI *self, char kcd)
 
 //	if( !strcmp(s_key, HMIKEY_ESC))
 //	{
-//		self->switchBack(self);
+//		self->switchBack(self, 0);
 //	}
 	
 	if( chgFouse)

@@ -48,11 +48,13 @@ static const char datahmi_code_data[] = { "<text f=32 m=0>100</>" };
 
 //static const hmiAtt_t	barHmiAtt = { 4,4, COLOUR_GRAY, BARHMI_NUM_BTNROW, BARHMI_NUM_BTNCOL};
 
-
+#define VRAM_NUM				0
 //------------------------------------------------------------------------------
 // local types
 //------------------------------------------------------------------------------
-
+typedef struct {
+	int			mdf_fd[NUM_CHANNEL];
+}data_run_t;
 //------------------------------------------------------------------------------
 // local vars
 //------------------------------------------------------------------------------
@@ -63,11 +65,11 @@ static const char datahmi_code_data[] = { "<text f=32 m=0>100</>" };
 // local function prototypes
 //------------------------------------------------------------------------------
 static int	Init_dataHMI( HMI *self, void *arg);
-static void DataHmi_InitSheet( HMI *self );
+static void DataHmi_InitSheet( HMI *self, uint32_t att );
 static void DataHmi_HideSheet( HMI *self );
 
 static void	DataHmi_Show( HMI *self);
-
+static int HDT_Update_mdl_chn_data(mdl_observer *self, void *p_srcMdl);
 
 static void	DataHmi_HitHandle( HMI *self, char kcd);
 
@@ -78,25 +80,27 @@ static void	DataHmi_HitHandle( HMI *self, char kcd);
 
 
 
-//static int DataHmi_MdlUpdata( Observer *self, void *p_srcMdl);
-//static void Bulid_dataSheet( dataHMI *self);
-//static void DataHmi_update(dataHMI *self);
+//static int DataHmi_MdlUpdata( mdl_observer *self, void *p_srcMdl);
+//static void Bulid_dataSheet( HMI_data *self);
+//static void DataHmi_update(HMI_data *self);
 //通道数据
 static void DataHmi_Init_chnSht(void);
-static int DataHmi_Data_update(void *p_data, void *p_mdl);
-static int DataHmi_Util_update(void *p_data, void *p_mdl);
-static int DataHmi_Alarm_update(void *p_data, void *p_mdl);
+static int DataHmi_Data_update(void *p_data, Model *p_mdl);
+static int DataHmi_Util_update(void *p_data, Model *p_mdl);
+static int DataHmi_Alarm_update(void *p_data, Model *p_mdl);
+
+
 
 //============================================================================//
 //            P U B L I C   F U N C T I O N S                                 //
 //============================================================================//
 
-dataHMI *Get_dataHMI(void)
+HMI_data *Get_dataHMI(void)
 {
-	static dataHMI *singal_dataHmi = NULL;
+	static HMI_data *singal_dataHmi = NULL;
 	if( singal_dataHmi == NULL)
 	{
-		singal_dataHmi = dataHMI_new();
+		singal_dataHmi = HMI_data_new();
 		if(singal_dataHmi  == NULL) while(1);
 		g_p_dataHmi = SUPER_PTR( singal_dataHmi, HMI);
 		
@@ -106,7 +110,7 @@ dataHMI *Get_dataHMI(void)
 	
 }
 
-CTOR( dataHMI)
+CTOR( HMI_data)
 SUPER_CTOR( HMI);
 FUNCTION_SETTING( HMI.init, Init_dataHMI);
 FUNCTION_SETTING( HMI.initSheet, DataHmi_InitSheet);
@@ -115,7 +119,7 @@ FUNCTION_SETTING( HMI.show, DataHmi_Show);
 
 FUNCTION_SETTING( HMI.hitHandle, DataHmi_HitHandle);
 
-//FUNCTION_SETTING( Observer.update, DataHmi_MdlUpdata);
+FUNCTION_SETTING( mdl_observer.update, HDT_Update_mdl_chn_data);
 
 END_CTOR
 //=========================================================================//
@@ -126,7 +130,7 @@ END_CTOR
 
 static int	Init_dataHMI( HMI *self, void *arg)
 {
-//	dataHMI		*cthis = SUB_PTR( self, HMI, dataHMI);
+//	HMI_data		*cthis = SUB_PTR( self, HMI, HMI_data);
 //	Expr 			*p_exp ;
 //	shtctl 			*p_shtctl = NULL;
 	
@@ -148,11 +152,12 @@ static int	Init_dataHMI( HMI *self, void *arg)
 
 
 
-static void DataHmi_InitSheet( HMI *self )
+static void DataHmi_InitSheet( HMI *self, uint32_t att )
 {
-//	dataHMI			*cthis = SUB_PTR( self, HMI, dataHMI);
+	HMI_data			*cthis = SUB_PTR( self, HMI, HMI_data);
 	int  h = 0;
-
+	data_run_t 		*p_run;
+	
 	g_p_sht_bkpic->cnt.data = DATAHMI_BKPICNUM;
 
 	g_p_sht_title->cnt.data = DATAHMI_TITLE;
@@ -167,17 +172,23 @@ static void DataHmi_InitSheet( HMI *self )
 //		Sheet_updown(g_arr_p_chnAlarm[i], h++);
 //	}
 	
+	HMI_Ram_init();
+		
+	arr_p_vram[VRAM_NUM] = HMI_Ram_alloc(48);
+	p_run = (data_run_t *)arr_p_vram[VRAM_NUM];
+	
 	DataHmi_Init_chnSht();
+	HMI_Attach_model_chn(p_run->mdf_fd, &cthis->mdl_observer);
 	
 	
 }
 
 static void DataHmi_HideSheet( HMI *self )
 {
-//	dataHMI			*cthis = SUB_PTR( self, HMI, dataHMI);
+//	HMI_data			*cthis = SUB_PTR( self, HMI, HMI_data);
 	
 //	int i;
-	
+	data_run_t 		*p_run;
 
 //	cthis->flags = 0;
 //	for( i = BARHMI_NUM_BARS - 1; i >= 0; i--) {
@@ -185,6 +196,9 @@ static void DataHmi_HideSheet( HMI *self )
 //		Sheet_updown(g_arr_p_chnUtil[i], -1);
 //		Sheet_updown(g_arr_p_chnAlarm[i], -1);
 //	}
+	
+	p_run = (data_run_t *)arr_p_vram[VRAM_NUM];
+	HMI_detach_model_chn(p_run->mdf_fd);
 	Sheet_updown(g_p_shtTime, -1);
 	Sheet_updown(g_p_sht_title, -1);
 	Sheet_updown(g_p_sht_bkpic, -1);
@@ -197,14 +211,23 @@ static void DataHmi_HideSheet( HMI *self )
 
 static void	DataHmi_Show( HMI *self )
 {
-//	dataHMI		*cthis = SUB_PTR( self, HMI, dataHMI);
+	HMI_data		*cthis = SUB_PTR( self, HMI, HMI_data);
+	int		i = 0;
+	char		chn_name[8];
+	Model		*p_mdl;
+	
 	g_p_curHmi = self;
-	
-	
-//	DataHmi_update( cthis);
+
 	Sheet_refresh(g_p_sht_bkpic);
-//	cthis->flags = 1;
-//	self->show_focus( self, 0, 0);
+
+	
+	for(i = 0; i < NUM_CHANNEL; i++)
+	{
+		
+		sprintf(chn_name,"chn_%d", i);
+		p_mdl = Create_model(chn_name);
+		cthis->mdl_observer.update(&cthis->mdl_observer, p_mdl);
+	}
 }
 
 static void	DataHmi_HitHandle( HMI *self, char kcd)
@@ -227,10 +250,10 @@ static void	DataHmi_HitHandle( HMI *self, char kcd)
 					break;
 
 			case KEYCODE_ENTER:
-					self->switchHMI(self, g_p_HMI_menu);
+					self->switchHMI(self, g_p_HMI_menu, 0);
 					break;		
 			case KEYCODE_ESC:
-					self->switchBack(self);
+					self->switchBack(self, 0);
 					break;	
 			
 	}
@@ -242,7 +265,7 @@ static void	DataHmi_HitHandle( HMI *self, char kcd)
 //	}
 //	if( !strcmp( s, HMIKEY_ESC))
 //	{
-//		self->switchBack(self);
+//		self->switchBack(self, 0);
 //	}
 //	
 }
@@ -264,134 +287,51 @@ static void DataHmi_Init_chnSht(void)
 		
 		
 		
-		g_arr_p_chnData[i]->update = DataHmi_Data_update;
-		g_arr_p_chnUtil[i]->update = DataHmi_Util_update;
-		g_arr_p_chnAlarm[i]->update = DataHmi_Alarm_update;
+//		g_arr_p_chnData[i]->update = DataHmi_Data_update;
+//		g_arr_p_chnUtil[i]->update = DataHmi_Util_update;
+//		g_arr_p_chnAlarm[i]->update = DataHmi_Alarm_update;
 
-		//这是为了初始化的时候，就能让数据得到正确的坐标
-//		g_arr_p_chnData[i]->update(g_arr_p_chnData[i], NULL);
-//		g_arr_p_chnAlarm[i]->update(g_arr_p_chnAlarm[i], NULL);
-//		g_arr_p_chnUtil[i]->update(g_arr_p_chnUtil[i], NULL);
+
 	
 	}
 }
 
-//根据显示的内容来计算合适的位置
-//三行两列
-//static void DataHmi_update(dataHMI *self)
-//{
-//	uint8_t		up_y = 30;
-//	uint8_t		right_x = 160;
-//	uint8_t		box_sizey = 70;		
-//	uint8_t		box_sizex = 160;		
-//	
-//	//到四周边界的空隙
-//	uint8_t		space_to_up = 		2;	
-//	uint8_t		space_to_bottom = 	2;
-//	uint8_t		space_to_left = 	8;	
-//	uint8_t		space_to_right = 	8;
-//	
-//	char 			i = 0, j = 0;
-//	uint16_t 		sizex = 0;
-//	uint16_t 		sizey = 0;
-//	sheet			*p_sht;
-//	
-//	//刷新一下数据,产生0 - 10000的随机数, 调试时使用
-////	self->arr_p_sht_data[i]->p_mdl->getMdlData( self->arr_p_sht_data[i]->p_mdl, 10000, NULL);		
-//	
-//	for( i = 0; i < 3; i++) { 
-//		for( j = 0; j < 2; j++) {
-//			
-//			//更新数值
-//			p_sht = self->arr_p_sht_data[i * 2 + j];
-//			p_sht->cnt.data = \
-//				p_sht->p_mdl->to_string( p_sht->p_mdl, p_sht->cnt.mdl_aux, NULL);
-//			p_sht->cnt.len = strlen( p_sht->cnt.data);
-//			p_sht->p_gp->getSize( p_sht->p_gp, p_sht->cnt.font, &sizex, &sizey);
-//			sizex = sizex * p_sht->cnt.len;	
-
-//			p_sht->area.x0 = right_x +  (j ) * box_sizex - space_to_right - sizex;
-//			p_sht->area.y0 = up_y + i * box_sizey + space_to_up;
-//			
-//			
-//			
-//			//计算单位的坐标
-//			p_sht = self->arr_p_sht_unit[i * 2 + j];
-//			p_sht->cnt.data = \
-//				p_sht->p_mdl->to_string( p_sht->p_mdl, p_sht->cnt.mdl_aux, NULL);
-//			p_sht->cnt.len = strlen( p_sht->cnt.data);
-//			p_sht->p_gp->getSize( p_sht->p_gp, p_sht->cnt.font, &sizex, &sizey);
-//			sizex = sizex * p_sht->cnt.len;	
-
-//			p_sht->area.x0 = right_x +  j * box_sizex - space_to_right - sizex;
-//			p_sht->area.y0 = up_y + ( i + 1)* box_sizey - space_to_bottom - sizey;
-//			
-//			//计算报警信息的坐标
-//			
-//			p_sht = self->arr_p_sht_alarm[i * 2 + j];
-//			p_sht->cnt.data = \
-//				p_sht->p_mdl->to_string( p_sht->p_mdl, p_sht->cnt.mdl_aux, NULL);
-//			p_sht->cnt.len = strlen( p_sht->cnt.data);
-//			p_sht->p_gp->getSize( p_sht->p_gp, p_sht->cnt.font, &sizex, &sizey);
-//			sizex = sizex * p_sht->cnt.len;	
-//			//报警信息靠左显示
-//			p_sht->area.x0 = j * box_sizex + space_to_left;
-//			p_sht->area.y0 = up_y + ( i + 1)* box_sizey - space_to_bottom - sizey;
-//		}
-//			
-//	}
-//	
-//}
-
-// 
-
-//static void Bulid_dataSheet( dataHMI *self)
-//{
-//	
-//	Expr 			*p_exp ;
-//	shtctl 			*p_shtctl = NULL;
-//	Model			*p_mdl = NULL;
-//	short 			i;
-//	
-//	self->arr_p_sht_unit = g_arr_p_chnUtil;
-//	self->arr_p_sht_alarm = g_arr_p_chnAlarm;
-//	
-//	p_shtctl = GetShtctl();
-
-//	for( i = 0; i < BARHMI_NUM_BARS; i++) {
-//		
-//		
-//		p_exp = ExpCreate("text");
-//		self->arr_p_sht_data[i] = Sheet_alloc( p_shtctl);
-//		p_exp->inptSht( p_exp, (void *)datahmi_code_data, self->arr_p_sht_data[i]) ;
-//		
-////		self->arr_p_sht_data[i]->p_mdl->attach( self->arr_p_sht_data[i]->p_mdl, ( Observer *)self->arr_p_sht_data[i]);		
-//		self->arr_p_sht_data[i]->cnt.colour = arr_clrs[i];
-//		
-//	}
-//	
-//	//todo: 改成通道
-//	p_mdl = ModelCreate("test");
-//	p_mdl->attach(p_mdl, &self->Observer);
-//	
-//}
 
 
-//static int DataHmi_MdlUpdata( Observer *self, void *p_srcMdl)
-//{
-//	dataHMI *cthis = SUB_PTR( self, Observer, dataHMI);
-//	Model	*mdl = (Model *)p_srcMdl;
-//	
-//	if(cthis->flags == 0)
-//		return RET_OK;
-//	DataHmi_update( cthis);
-//	Sheet_refresh( cthis->arr_p_sht_data[0]);
-//	
-//	return RET_OK;
-//	
-//}
+
+
+
+
+static int HDT_Update_mdl_chn_data(mdl_observer *self, void *p_srcMdl)
+{
+	HMI_data		*cthis = SUB_PTR( self, mdl_observer, HMI_data);
+	HMI		*p_hmi = SUPER_PTR(cthis, HMI);
+	Model	*p_mdl = (Model *)p_srcMdl;
+//	data_run_t *p_run = (data_run_t *)arr_p_vram[VRAM_NUM];
+	short	chn_num = GET_MDL_CHN(p_mdl->mdl_id);
+	
+	if((p_hmi->flag & HMI_FLAG_HSA_SEM) == 0)
+	{
+		if(Sem_wait(&phn_sys.hmi_mgr.hmi_sem, 1000) <= 0) 
+			return ERR_RSU_BUSY;
+	
+	}
+	//更新实时值
+	DataHmi_Data_update(g_arr_p_chnData[chn_num], p_srcMdl);
+	
+	//更新单位
+	DataHmi_Util_update(g_arr_p_chnData[chn_num], p_srcMdl);
+	//更新报警
+	DataHmi_Alarm_update(g_arr_p_chnData[chn_num], p_srcMdl);
+	
+	if((p_hmi->flag & HMI_FLAG_HSA_SEM) == 0)
+		Sem_post(&phn_sys.hmi_mgr.hmi_sem);
+	
+	
+	return RET_OK;
+}
 //两列三行
-static int DataHmi_Data_update(void *p_data, void *p_mdl)
+static int DataHmi_Data_update(void *p_data, Model *p_mdl)
 {
 	uint8_t		up_y = 30;
 	uint8_t		right_x = 160;
@@ -411,14 +351,14 @@ static int DataHmi_Data_update(void *p_data, void *p_mdl)
 	sheet			*p_sht = (sheet *)p_data;
 	
 		
-	if(IS_HMI_HIDE(g_p_dataHmi->flag))
-		return 0;
+//	if(IS_HMI_HIDE(g_p_dataHmi->flag))
+//		return 0;
 	
 	row = p_sht->id / 2;
 	col = p_sht->id % 2;
 
 	p_sht->cnt.data = \
-		p_sht->p_mdl->to_string( p_sht->p_mdl, AUX_DATA, NULL);
+		p_mdl->to_string(p_mdl, AUX_DATA, NULL);
 	p_sht->cnt.len = strlen( p_sht->cnt.data);
 	p_sht->p_gp->getSize( p_sht->p_gp, p_sht->cnt.font, &sizex, &sizey);
 	sizex = sizex * p_sht->cnt.len;	
@@ -436,7 +376,7 @@ static int DataHmi_Data_update(void *p_data, void *p_mdl)
 	
 }
 
-static int DataHmi_Util_update(void *p_data, void *p_mdl)
+static int DataHmi_Util_update(void *p_data, Model *p_mdl)
 {
 	uint8_t		up_y = 30;
 	uint8_t		right_x = 160;
@@ -456,14 +396,14 @@ static int DataHmi_Util_update(void *p_data, void *p_mdl)
 	
 		
 	
-	if(IS_HMI_HIDE(g_p_dataHmi->flag))
-		return 0;
+//	if(IS_HMI_HIDE(g_p_dataHmi->flag))
+//		return 0;
 	
 	row = p_sht->id / 2;
 	col = p_sht->id % 2;
 
 	p_sht->cnt.data = \
-		p_sht->p_mdl->to_string( p_sht->p_mdl, AUX_UNIT, NULL);
+		p_mdl->to_string(p_mdl, AUX_UNIT, NULL);
 	p_sht->cnt.len = strlen( p_sht->cnt.data);
 	p_sht->p_gp->getSize( p_sht->p_gp, p_sht->cnt.font, &sizex, &sizey);
 	sizex = sizex * p_sht->cnt.len;	
@@ -478,7 +418,7 @@ static int DataHmi_Util_update(void *p_data, void *p_mdl)
 	return 0;
 	
 }
-static int DataHmi_Alarm_update(void *p_data, void *p_mdl)
+static int DataHmi_Alarm_update(void *p_data, Model *p_mdl)
 {
 	uint8_t		up_y = 30;
 //	uint8_t		right_x = 160;
@@ -496,14 +436,14 @@ static int DataHmi_Alarm_update(void *p_data, void *p_mdl)
 	uint16_t 		sizey = 0;
 	sheet			*p_sht = (sheet *)p_data;
 		
-	if(IS_HMI_HIDE(g_p_dataHmi->flag))
-		return 0;
+//	if(IS_HMI_HIDE(g_p_dataHmi->flag))
+//		return 0;
 	
 	row = p_sht->id / 2;
 	col = p_sht->id % 2;
 
 	p_sht->cnt.data = \
-		p_sht->p_mdl->to_string( p_sht->p_mdl, AUX_ALARM, NULL);
+		p_mdl->to_string(p_mdl, AUX_ALARM, NULL);
 	p_sht->cnt.len = strlen( p_sht->cnt.data);
 	p_sht->p_gp->getSize( p_sht->p_gp, p_sht->cnt.font, &sizex, &sizey);
 	sizex = sizex * p_sht->cnt.len;	

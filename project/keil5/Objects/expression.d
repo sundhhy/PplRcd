@@ -26,6 +26,7 @@
 .\objects\expression.o: ..\..\model\Model.h
 .\objects\expression.o: ..\..\sdhLib\inc\arithmetic/list.h
 .\objects\expression.o: ..\..\sdhLib\inc\basis/assert.h
+.\objects\expression.o: ..\..\configs\model_conf.h
 .\objects\expression.o: ..\..\model\Model_channel.h
 .\objects\expression.o: ..\..\APP\system.h
 .\objects\expression.o: ..\..\..\PplRcd\utils/time.h

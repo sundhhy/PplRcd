@@ -1,6 +1,7 @@
 #include "HMI_setup.h"
 #include "sdhDef.h"
 #include "ExpFactory.h"
+#include "HMIFactory.h"
 #include "HMI_windows.h"
 
 #include <string.h>
@@ -28,7 +29,7 @@ static const char setup_hmi_code_lock[] =  {"<text vx0=230 vy0=50 f=16 m=0> </>"
 // module global vars
 //------------------------------------------------------------------------------
 
-HMI 	*g_p_Setup_HMI;
+//HMI 	*g_p_Setup_HMI;
 //------------------------------------------------------------------------------
 // global function prototypes
 //------------------------------------------------------------------------------
@@ -56,11 +57,12 @@ HMI 	*g_p_Setup_HMI;
 static int	Init_Setup_HMI(HMI *self, void *arg);
 static void Show_Setup_HMI(HMI *self);
 static void	Setup_HMI_hide(HMI *self);
-static void	Setup_initSheet(HMI *self);
+static void	Setup_initSheet(HMI *self, uint32_t att);
 static void	Setup_HMI_init_focus(HMI *self);
 static void	Setup_HMI_clear_focus(HMI *self, uint8_t fouse_row, uint8_t fouse_col);
 static void	Setup_HMI_show_focus(HMI *self, uint8_t fouse_row, uint8_t fouse_col);
 static void	Setup_HMI_hitHandle( HMI *self, char kcd);
+static void	STP_Compose_hit( HMI *self, char kcd_1, char kcd_2);
 
 
 
@@ -79,7 +81,7 @@ Setup_HMI *Get_Setup_HMI(void)
 	{
 		singal_Setup_HMI = Setup_HMI_new();
 		if(singal_Setup_HMI  == NULL) while(1);
-		g_p_Setup_HMI = SUPER_PTR(singal_Setup_HMI, HMI);
+//		g_p_Setup_HMI = SUPER_PTR(singal_Setup_HMI, HMI);
 
 	}
 	
@@ -95,6 +97,9 @@ FUNCTION_SETTING(HMI.hide, Setup_HMI_hide);
 FUNCTION_SETTING(HMI.show, Show_Setup_HMI);
 
 FUNCTION_SETTING(HMI.hitHandle, Setup_HMI_hitHandle);
+FUNCTION_SETTING(HMI.conposeKeyHandle, STP_Compose_hit);
+
+
 FUNCTION_SETTING(HMI.init_focus, Setup_HMI_init_focus);
 FUNCTION_SETTING(HMI.clear_focus, Setup_HMI_clear_focus);
 FUNCTION_SETTING(HMI.show_focus, Setup_HMI_show_focus);
@@ -127,7 +132,7 @@ static void Show_Setup_HMI(HMI *self)
 //	Setup_HMI		*cthis = SUB_PTR( self, HMI, Setup_HMI);
 	Sheet_refresh(g_p_sht_bkpic);
 }
-static void	Setup_initSheet(HMI *self)
+static void	Setup_initSheet(HMI *self, uint32_t att)
 {
 	Setup_HMI		*cthis = SUB_PTR( self, HMI, Setup_HMI);
 	int  				h = 0;
@@ -162,9 +167,8 @@ static void	Setup_initSheet(HMI *self)
 	Print_sys_param(arr_p_vram[0], arr_p_vram[1] , 16, es_psd); 
 		
 		
-//	if(((self->flag & HMIFLAG_WIN) == 0) && (g_p_lastHmi != g_p_HMI_striped) \
-//		&& ((self->flag & HMI_FLAG_KEEP) == 0)) 
-	if((self->flag & HMI_FLAG_KEEP) == 0)
+
+	if((att & HMI_ATT_KEEP) == 0)
 	{		
 		//从其他画面切换进入设置选择画面的时候，需要重新输入密码
 		Setup_HMI_lock(cthis);
@@ -313,27 +317,13 @@ static void	Setup_HMI_hitHandle(HMI *self, char kcd)
 	
 	Setup_HMI	*cthis = SUB_PTR( self, HMI, Setup_HMI);
 	sheet		*p_focus;
-//	shtCmd		*p_cmd;
+	HMI			*p_hsb;
 	uint8_t		focusRow = self->p_fcuu->focus_row;
 	uint8_t		focusCol = self->p_fcuu->focus_col;
 	uint8_t		chgFouse = 0;
 	
 	
-//	if(cthis->unlock)
-//	{
-//		if(!strcmp(s_key, HMIKEY_ESC))
-//		{
-//			self->switchBack(self);
-//		} else {
-//			Input_Password(self);
-//			
-//			
-//		}
-//		
-//	
-//		
-//		return;
-//	}
+	p_hsb = Create_HMI(HMI_STRIPED_BKG);
 
 
 	switch(kcd)
@@ -371,20 +361,19 @@ static void	Setup_HMI_hitHandle(HMI *self, char kcd)
 					} else if(cthis->unlock == 0){
 						
 						if(self->p_fcuu->focus_row == 3 && self->p_fcuu->focus_col) {
-							self->switchHMI(self, g_p_HMI_menu);
-						} else 
-						
-						
+							self->switchHMI(self, g_p_HMI_menu, HMI_ATT_NOT_RECORD);
+						} 
+						else 
 						{
-							g_p_HMI_striped->arg[0] = self->p_fcuu->focus_row - 0;
-							g_p_HMI_striped->arg[1] = self->p_fcuu->focus_col;
+							p_hsb->arg[0] = self->p_fcuu->focus_row - 0;
+							p_hsb->arg[1] = self->p_fcuu->focus_col;
 							
-							self->switchHMI(self, g_p_HMI_striped);
+							self->switchHMI(self, p_hsb, 0);
 						}
 					}					
 					break;		
 			case KEYCODE_ESC:
-					self->switchBack(self);
+					self->switchHMI(self, Create_HMI(HMI_STRIPED_BKG), 0);
 					break;	
 			
 	}
@@ -445,7 +434,7 @@ static void	Setup_HMI_hitHandle(HMI *self, char kcd)
 //	
 //	if( !strcmp(s_key, HMIKEY_ESC))
 //	{
-//		self->switchBack(self);
+//		self->switchBack(self, 0);
 //	}
 	
 	if( chgFouse)
@@ -460,7 +449,23 @@ static void	Setup_HMI_hitHandle(HMI *self, char kcd)
 }
 
 
-
+static void	STP_Compose_hit( HMI *self, char kcd_1, char kcd_2)
+{
+	Setup_HMI		*cthis = SUB_PTR( self, HMI, Setup_HMI);
+	
+	if(cthis->unlock == 0)
+		return;		//已经解锁了，就只能通过退出按钮退出
+	
+	if(kcd_2 == KEYCODE_UP && kcd_1 == KEYCODE_DOWN) {
+//		self->switchHMI(self, Create_HMI(HMI_STRIPED_BKG), HMI_ATT_NOT_RECORD);
+		self->switchBack(self, 0);
+	}
+	else if(kcd_2 == KEYCODE_DOWN && kcd_1 == KEYCODE_UP) {
+//		self->switchHMI(self, Create_HMI(HMI_STRIPED_BKG), HMI_ATT_NOT_RECORD);
+		self->switchBack(self, 0);
+	}
+	
+}
 
 
 static void Setup_HMI_unlock(Setup_HMI		*cthis)
@@ -497,7 +502,7 @@ static int Setup_HMI_cmd(void *p_rcv, int cmd,  void *arg)
 				g_p_winHmi->arg[1] = WINFLAG_RETURN;
 				Win_content("密码输入成功");
 				Setup_HMI_unlock(cthis);
-				self->switchHMI(self, g_p_winHmi);
+				self->switchHMI(self, g_p_winHmi, HMI_ATT_NOT_RECORD);
 
 //				g_p_winHmi->switchHMI(g_p_winHmi, g_p_winHmi);
 			} else {
@@ -507,7 +512,7 @@ static int Setup_HMI_cmd(void *p_rcv, int cmd,  void *arg)
 				Win_content(win_tips);
 				Setup_HMI_lock(cthis);
 //				g_p_winHmi->switchHMI(g_p_winHmi, g_p_winHmi);
-				self->switchHMI(self, g_p_winHmi);
+				self->switchHMI(self, g_p_winHmi, HMI_ATT_NOT_RECORD);
 
 			}
 		
@@ -530,7 +535,7 @@ static void Input_Password(HMI *self)
 	p_win = Get_winHmi();
 	p_win->p_cmd_rcv = self;
 	p_win->cmd_hdl = Setup_HMI_cmd;
-	self->switchHMI(self, g_p_winHmi);
+	self->switchHMI(self, g_p_winHmi, 0);
 	
 	
 }

@@ -924,7 +924,7 @@ static int MBA_Acc_data_real_time(uint16_t	offset, char rd_or_wr, uint16_t *p)
 	
 	if(offset < 6)
 	{
-		p_md = ModelCreate("time");
+		p_md = Create_model("time");
 		p_md->getMdlData(p_md, TIME_TM, &time);
 	}
 	switch(offset)

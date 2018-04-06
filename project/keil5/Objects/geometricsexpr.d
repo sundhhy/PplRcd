@@ -27,6 +27,7 @@
 .\objects\geometricsexpr.o: ..\..\model\Model.h
 .\objects\geometricsexpr.o: ..\..\sdhLib\inc\arithmetic/list.h
 .\objects\geometricsexpr.o: ..\..\sdhLib\inc\basis/assert.h
+.\objects\geometricsexpr.o: ..\..\configs\model_conf.h
 .\objects\geometricsexpr.o: ..\..\model\Model_channel.h
 .\objects\geometricsexpr.o: ..\..\APP\system.h
 .\objects\geometricsexpr.o: ..\..\..\PplRcd\utils/time.h

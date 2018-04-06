@@ -35,6 +35,7 @@
 .\objects\ctlkey.o: ..\..\APP\TDD.h
 .\objects\ctlkey.o: ..\..\APP\system.h
 .\objects\ctlkey.o: ..\..\..\PplRcd\utils/PHN_string.h
+.\objects\ctlkey.o: ..\..\configs\model_conf.h
 .\objects\ctlkey.o: ..\..\..\PplRcd\HMI/HMI.h
 .\objects\ctlkey.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
 .\objects\ctlkey.o: ..\..\sdhLib\inc\sdhDef.h
@@ -60,3 +61,6 @@
 .\objects\ctlkey.o: ..\..\..\PplRcd\HMI/Component_curve.h
 .\objects\ctlkey.o: ..\..\..\PplRcd\HMI/Component_progress_bar.h
 .\objects\ctlkey.o: ..\..\..\PplRcd\HMI/Component_tips.h
+.\objects\ctlkey.o: ..\..\sdhLib\inc\os/os_depend.h
+.\objects\ctlkey.o: ..\..\sdhLib\inc\os/rtx/rtx_depend.h
+.\objects\ctlkey.o: d:\Keil_v5\ARM\PACK\ARM\CMSIS\5.0.0\CMSIS\RTOS\RTX\INC\cmsis_os.h

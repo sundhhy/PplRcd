@@ -24,6 +24,7 @@
 .\objects\hw_w25q.o: ..\..\APP\system.h
 .\objects\hw_w25q.o: ..\..\..\PplRcd\utils/time.h
 .\objects\hw_w25q.o: ..\..\..\PplRcd\utils/PHN_string.h
+.\objects\hw_w25q.o: ..\..\configs\model_conf.h
 .\objects\hw_w25q.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
 .\objects\hw_w25q.o: ..\..\sdhLib\inc\sdhdef.h
 .\objects\hw_w25q.o: ..\..\APP\sdhlibConf.h

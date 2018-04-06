@@ -15,6 +15,7 @@
 .\objects\modelfactory.o: ..\..\sdhLib\inc\basis/assert.h
 .\objects\modelfactory.o: ..\..\sdhLib\inc\basis/except.h
 .\objects\modelfactory.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\setjmp.h
+.\objects\modelfactory.o: ..\..\configs\model_conf.h
 .\objects\modelfactory.o: ..\..\model\Model_channel.h
 .\objects\modelfactory.o: ..\..\APP\system.h
 .\objects\modelfactory.o: ..\..\..\PplRcd\utils/time.h

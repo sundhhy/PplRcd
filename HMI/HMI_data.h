@@ -17,11 +17,10 @@
  //------------------------------------------------------------------------------
 // typedef
 //------------------------------------------------------------------------------
-CLASS( dataHMI)
+CLASS( HMI_data)
 {
 	EXTENDS( HMI);
-	IMPLEMENTS( shtCmd);
-	IMPLEMENTS( Observer);
+	IMPLEMENTS( mdl_observer);
 	
 //	sheet  		*arr_p_sht_data[BARHMI_NUM_BARS];
 //	sheet  		**arr_p_sht_unit;
@@ -37,6 +36,6 @@ CLASS( dataHMI)
 //------------------------------------------------------------------------------
 // function prototypes
 //------------------------------------------------------------------------------
-dataHMI *Get_dataHMI(void);
+HMI_data *Get_dataHMI(void);
 
 #endif

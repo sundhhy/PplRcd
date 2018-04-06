@@ -72,8 +72,8 @@ void LCD_Run(void)
 	if(flush_flag) {
 		I_dev_lcd *lcd;
 		Dev_open( LCD_DEVID, (void *)&lcd);
-		lcd->done();
-		flush_flag = 0;
+		if(lcd->flush_lcd() == RET_OK)
+			flush_flag = 0;
 		
 	}
 	

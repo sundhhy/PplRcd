@@ -27,6 +27,7 @@
 .\objects\hmi_striped_background.o: ..\..\model\Model.h
 .\objects\hmi_striped_background.o: ..\..\sdhLib\inc\arithmetic/list.h
 .\objects\hmi_striped_background.o: ..\..\sdhLib\inc\basis/assert.h
+.\objects\hmi_striped_background.o: ..\..\configs\model_conf.h
 .\objects\hmi_striped_background.o: ..\..\model\Model_channel.h
 .\objects\hmi_striped_background.o: ..\..\APP\system.h
 .\objects\hmi_striped_background.o: ..\..\..\PplRcd\utils/time.h
@@ -59,6 +60,9 @@
 .\objects\hmi_striped_background.o: ..\..\HMI\Component_progress_bar.h
 .\objects\hmi_striped_background.o: ..\..\HMI\Component_tips.h
 .\objects\hmi_striped_background.o: ..\..\..\PplRcd\utils/keyboard.h
+.\objects\hmi_striped_background.o: ..\..\sdhLib\inc\os/os_depend.h
+.\objects\hmi_striped_background.o: ..\..\sdhLib\inc\os/rtx/rtx_depend.h
+.\objects\hmi_striped_background.o: d:\Keil_v5\ARM\PACK\ARM\CMSIS\5.0.0\CMSIS\RTOS\RTX\INC\cmsis_os.h
 .\objects\hmi_striped_background.o: ..\..\HMI\HMI_comm.h
 .\objects\hmi_striped_background.o: ..\..\HMI\HMI_keyboard.h
 .\objects\hmi_striped_background.o: ..\..\Expression\ExpFactory.h
@@ -66,3 +70,12 @@
 .\objects\hmi_striped_background.o: ..\..\Expression\Reader.h
 .\objects\hmi_striped_background.o: ..\..\sdhLib\inc\basis/assert.h
 .\objects\hmi_striped_background.o: ..\..\HMI\HMI_windows.h
+.\objects\hmi_striped_background.o: ..\..\HMI\HMIFactory.h
+.\objects\hmi_striped_background.o: ..\..\HMI\HMI_main.h
+.\objects\hmi_striped_background.o: ..\..\HMI\HMI_menu.h
+.\objects\hmi_striped_background.o: ..\..\HMI\HMI_barGraph.h
+.\objects\hmi_striped_background.o: ..\..\HMI\HMI_data.h
+.\objects\hmi_striped_background.o: ..\..\HMI\HMI_curve.h
+.\objects\hmi_striped_background.o: ..\..\HMI\HMI_news_select.h
+.\objects\hmi_striped_background.o: ..\..\HMI\HMI_Accumulate.h
+.\objects\hmi_striped_background.o: ..\..\HMI\HMI_setup.h

@@ -41,7 +41,7 @@
 //#define HMI_HISTORY				11
 #define HMI_ACCM				12
 #define HMI_SETUP				13
-#define HMI_SETTING				14
+#define HMI_STRIPED_BKG				14
 #define HMI_WINDOWS				15
  //------------------------------------------------------------------------------
 // typedef
@@ -53,6 +53,6 @@
 //------------------------------------------------------------------------------
 // function prototypes
 //------------------------------------------------------------------------------
-HMI *CreateHMI( int type);
+HMI *Create_HMI( int type);
 
 #endif

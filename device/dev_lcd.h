@@ -75,7 +75,7 @@ typedef struct{
 	void ( *picture)( int x1, int y1, char num);
 	void ( *cutPicture)( short x1, short y1, short num, short px1, short py1, short w, short h);
 	void ( *bkPicture)( char m, int x1, int y1, char num);
-	void	(*done)(void);
+	int		(*flush_lcd)(void);
 	void	(*icon)(int x1, int y1, char num, int xn, int yn, int n);
 }I_dev_lcd;
 

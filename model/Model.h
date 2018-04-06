@@ -15,6 +15,8 @@
 #else
 #include "assert.h"
 #endif
+
+#include "model_conf.h"
 //------------------------------------------------------------------------------
 // const defines
 //------------------------------------------------------------------------------
@@ -28,7 +30,9 @@
 
 
 #define MDLID_TEST			0
-#define MDLID_CHN(n)				(8 + n)			// 8 ~ 13
+#define MDLID_CHN(n)				(n)			
+#define IS_MDL_CHN(n)				((n >= 0) && (n < NUM_CHANNEL))
+#define GET_MDL_CHN(mid)			(mid)
 //------------------------------------------------------------------------------
 // typedef
 //------------------------------------------------------------------------------
@@ -78,16 +82,16 @@ typedef enum {
 	eu_ug_L,
 	eu_max
 }e_unit_t;
-INTERFACE( Observer)
+INTERFACE( mdl_observer)
 {
-	int ( *update)( Observer *self, void *p_srcMdl);
+	int ( *update)( mdl_observer *self, void *p_srcMdl);
 	
 	
 };
 
 ABS_CLASS( Model)
 {
-	List_T tObs;
+//	List_T tObs;
 	void	*coreData;
 	void	*dataSource;
 	Model	*teamMdl;
@@ -95,11 +99,16 @@ ABS_CLASS( Model)
 	char	uint;
 	uint8_t	mdl_id;
 	
+//	int		retry_time_tsk_fd;	//管擦着执行失败时，注册到定时任务执行
+	
+	
+	mdl_observer	*arr_mdl_obs[MDL_OBS_NUM];
+	
 	abstract int (*init)( Model *self, IN void *arg);
 	void	(*run)(Model *self);
 	int (*self_check)( Model *self);
-	void (*attach)( Model *self, IN Observer *s);
-	void (*detach)( Model *self, IN Observer *s);
+	int (*attach)( Model *self, IN mdl_observer *s);
+	void (*detach)( Model *self, IN int fd);
 	int	(*getMdlData)( Model *self, IN int aux, OUT void *arg);
 	int	(*setMdlData)( Model *self, IN int aux, IN void *arg);
 	int	(*addTmMdl)( Model *self, Model *m);

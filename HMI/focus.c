@@ -31,6 +31,10 @@ const Except_T FOCUS_Failed = { "[focus]" };
 
 #define FCS_FLAG_IDLE		0
 #define FCS_FLAG_USED		1
+
+//当需要焦点跳出功能的时候，焦点跃出边界的时候，焦点会移动到界外
+//否则焦点跃出边界的时候，进入移动方向的另外一端
+#define FCS_NEED_JUMPOUT		0		
 //#define FCS_FLAG_CHANGED	2
 //------------------------------------------------------------------------------
 // local types
@@ -90,6 +94,8 @@ focus_user_t* Focus_alloc(int rows, int columns)
 	
 	if(p_fcu == NULL)
 		Except_raise(&FOCUS_Failed, __FILE__, __LINE__);
+	p_fcu->focus_col = 0;
+	p_fcu->focus_row = 0;
 	
 	return p_fcu;
 	
@@ -98,7 +104,12 @@ focus_user_t* Focus_alloc(int rows, int columns)
 void Focus_free(focus_user_t *p_fcuu)
 {
 	short 	i = 0;
-	short	num = p_fcuu->rows * p_fcuu->columns;
+	short	num;
+	
+	if(p_fcuu == NULL)
+		return;
+	
+	num = p_fcuu->rows * p_fcuu->columns;
 	num += p_fcuu->first_idx;
 	for(i = p_fcuu->first_idx; i < num; i ++) {		
 		fcsMgr.sht_map[i >> 3] &= ~(1 << (i % 8));
@@ -136,10 +147,12 @@ int Focus_move_left(focus_user_t *p_fcuu)
 		p_fcuu->focus_col --;
 	else
 	{
-//		p_fcuu->focus_col = p_fcuu->columns - 1;
-		
+#if FCS_NEED_JUMPOUT == 0
+		p_fcuu->focus_col = p_fcuu->columns - 1;
+#else
 		p_fcuu->focus_col = 0xff;
 		return RET_FAILED;
+#endif
 	}
 	
 	return RET_OK;
@@ -153,8 +166,12 @@ int Focus_move_right(focus_user_t *p_fcuu)
 		p_fcuu->focus_col ++;
 	else
 	{
+#if FCS_NEED_JUMPOUT == 0
+		p_fcuu->focus_col = 0;
+#else
 		p_fcuu->focus_col = 0xff;		//跳到外部去
 		return RET_FAILED;
+#endif
 	}
 	
 	return RET_OK;
@@ -168,8 +185,15 @@ int Focus_move_up(focus_user_t *p_fcuu)
 		p_fcuu->focus_row --;
 	else
 	{
-		p_fcuu->focus_row = 0xff;
+#if FCS_NEED_JUMPOUT == 0
+		p_fcuu->focus_row = p_fcuu->rows - 1;
+#else
+		p_fcuu->focus_row = 0xff;		//跳到外部去
 		return RET_FAILED;
+#endif		
+		
+		
+
 	}
 	return RET_OK;
 }
@@ -181,8 +205,14 @@ int Focus_move_down(focus_user_t *p_fcuu)
 		p_fcuu->focus_row ++;
 	else
 	{
-		p_fcuu->focus_row = 0xff;
+		
+#if FCS_NEED_JUMPOUT == 0
+		p_fcuu->focus_row = 0;
+#else
+		p_fcuu->focus_row = 0xff;		//跳到外部去
 		return RET_FAILED;
+#endif			
+
 	}
 	return RET_OK;
 	

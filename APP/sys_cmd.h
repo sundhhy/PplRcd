@@ -16,7 +16,7 @@
 //------------------------------------------------------------------------------
 typedef void (*cmd_recv)(void);
 
-
+typedef void (*time_task)(void *arg);
 //------------------------------------------------------------------------------
 // global variable declarations
 //------------------------------------------------------------------------------
@@ -27,6 +27,7 @@ typedef void (*cmd_recv)(void);
 int Init_Cmd_Thread (void);
 int	Cmd_Rgt_recv(cmd_recv	crv);
 int	Cmd_Rgt_idle_task(cmd_recv	crv);
-int	Cmd_Rgt_time_task(cmd_recv	crv, int time_s);		//只执行一次
+int	Cmd_Rgt_time_task(time_task	tsk, void *arg, int time_s);		//只执行一次
 void Cmd_del_recv(int	cmd_fd);
+void Cmd_del_time_task(int	cmd_fd);
 #endif

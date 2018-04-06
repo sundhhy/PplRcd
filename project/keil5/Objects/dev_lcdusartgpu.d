@@ -33,6 +33,7 @@
 .\objects\dev_lcdusartgpu.o: d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\StdPeriph_Driver\inc\stm32f10x_usart.h
 .\objects\dev_lcdusartgpu.o: d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\StdPeriph_Driver\inc\misc.h
 .\objects\dev_lcdusartgpu.o: ..\..\..\PplRcd\utils/PHN_string.h
+.\objects\dev_lcdusartgpu.o: ..\..\configs\model_conf.h
 .\objects\dev_lcdusartgpu.o: ..\..\device\dev_LCD/UsartGpu/dev_LcdUsartGpu.h
 .\objects\dev_lcdusartgpu.o: ..\..\sdhLib\inc\os/os_depend.h
 .\objects\dev_lcdusartgpu.o: ..\..\APP\sdhlibConf.h

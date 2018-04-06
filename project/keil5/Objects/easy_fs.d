@@ -23,6 +23,7 @@
 .\objects\easy_fs.o: d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\StdPeriph_Driver\inc\stm32f10x_usart.h
 .\objects\easy_fs.o: d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\StdPeriph_Driver\inc\misc.h
 .\objects\easy_fs.o: ..\..\..\PplRcd\utils/PHN_string.h
+.\objects\easy_fs.o: ..\..\configs\model_conf.h
 .\objects\easy_fs.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
 .\objects\easy_fs.o: ..\..\sdhLib\inc\sdhDef.h
 .\objects\easy_fs.o: ..\..\APP\sdhlibConf.h

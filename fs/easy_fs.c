@@ -135,7 +135,7 @@ static void EFS_Change_file_size(int fd, uint32_t new_size);
 static void	EFS_Regain_space(void);
 static void	EFS_flush_wr_position(int fd);
 static void EFS_run(void);
-static void EFS_Flush(void);
+static void EFS_Flush(void *);
 //============================================================================//
 //            P U B L I C   F U N C T I O N S                                 //
 //============================================================================//
@@ -181,7 +181,7 @@ int 	EFS_init(int arg)
 	EFS_FS.fs_file_info = EFS_file_info;
 	
 	Cmd_Rgt_idle_task(EFS_run);
-	Cmd_Rgt_time_task(EFS_Flush, EFS_FLUSH_CYCLE_S);
+	Cmd_Rgt_time_task(EFS_Flush, NULL, EFS_FLUSH_CYCLE_S);
 	return EFS_format();
 	
 	
@@ -679,10 +679,10 @@ static void	EFS_flush_wr_position(int fd)
 	}
 }
 
-static void 	EFS_Flush(void)
+static void 	EFS_Flush(void *arg)
 {
 	int i;
-	Cmd_Rgt_time_task(EFS_Flush, EFS_FLUSH_CYCLE_S);
+	Cmd_Rgt_time_task(EFS_Flush, NULL, EFS_FLUSH_CYCLE_S);
 	for(i = 0; i < NUM_FSH; i ++)
 	{
 		EFS_FSH(i).fsh_flush();

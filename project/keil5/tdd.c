@@ -534,7 +534,7 @@ void TDD_Mdl_chn(void)
 	{
 		sprintf(appBuf,"chn_%d", tdd_i);
 		Tdd_disp_text(appBuf,line, 0);
-		p_mdl_test = ModelCreate(appBuf);
+		p_mdl_test = Create_model(appBuf);
 		tdd_u8 = tdd_i;
 		p_mdl_test->init(p_mdl_test, &tdd_u8);
 		//		if(p_mdl_test->self_check(p_mdl_test) == RET_OK)
@@ -596,7 +596,7 @@ void TDD_Mdl_chn(void)
 			sprintf(appBuf,"chn_%d", tdd_i);
 			
 			
-			p_mdl_test = ModelCreate(appBuf);
+			p_mdl_test = Create_model(appBuf);
 			p_mdl_test->run(p_mdl_test);
 
 			sprintf(appBuf,"[%04d] chn_%d", tdd_count, tdd_i);
@@ -815,7 +815,7 @@ void TDD_Sheet(void)
 	short 	hmi_count, count;
 	HMI 		*p_mainHmi;
 	
-	p_mainHmi = CreateHMI( HMI_MAIN);
+	p_mainHmi = Create_HMI( HMI_MAIN);
 	p_mainHmi->init( p_mainHmi, NULL);
 	
 	p_mainHmi->show( p_mainHmi);

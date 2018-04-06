@@ -59,39 +59,41 @@ static char	lcdBuf[LCDBUF_MAX];
 static int Dev_UsartInit( void);
 static int ClearLcd( int c);
 static int Dev_UsartdeInit( void);
-static int GpuWrString( char m, char *string,  int len, int x, int y, int font, char c);
-static int GpuBox( int x1, int y1, int x2, int y2, char type, char c);
-static void GpuBKColor( char c);
-int GpuLabel( char *string,  int len, scArea_t *area, int font, char c, char ali);
-static int GpuStrSize( int font, uint16_t	*width, uint16_t	*heigh);
+static int GPU_WrString( char m, char *string,  int len, int x, int y, int font, char c);
+static int GPU_Box( int x1, int y1, int x2, int y2, char type, char c);
+static void GPU_BKColor( char c);
+int GPU_Label( char *string,  int len, scArea_t *area, int font, char c, char ali);
+static int GPU_StrSize( int font, uint16_t	*width, uint16_t	*heigh);
 static void GetScrnSize( uint16_t *xsize, uint16_t *ysize);
-static void GpuPic( int x1, int y1, char num);
-static void GpuCutPicture( short x1, short y1, short num, short px1, short py1, short w, short h);
-static void GpuBPic( char m, int x1, int y1, char num);
-static void GpuDone( void);
-static void Gpu_send_done(void);
-static void Cmdbuf_manager(char *p_cmd);
-static void GpuIcon(int x1, int y1, char num, int xn, int yn, int n);
+static void GPU_Pic( int x1, int y1, char num);
+static void GPU_CutPicture( short x1, short y1, short num, short px1, short py1, short w, short h);
+static void GPU_Bkc_pic( char m, int x1, int y1, char num);
+static int GPU_Done( void);
+static void GPU_send_done(void);
+static void GPU_Manager_cmd_buf(char *p_cmd);
+static void GPU_Icon(int x1, int y1, char num, int xn, int yn, int n);
+
+static void GPU_Send(char * buf);
 //============================================================================//
 //            P U B L I C   F U N C T I O N S                                 //
 //============================================================================//
 
-I_dev_lcd g_IUsartGpu =
+I_dev_lcd g_IUsartGpu=
 {
 	Dev_UsartInit,
 	Dev_UsartdeInit,
 	ClearLcd,
-	GpuWrString,
-	GpuLabel,
-	GpuBKColor,
-	GpuBox,
-	GpuStrSize,
+	GPU_WrString,
+	GPU_Label,
+	GPU_BKColor,
+	GPU_Box,
+	GPU_StrSize,
 	GetScrnSize,
-	GpuPic,
-	GpuCutPicture,
-	GpuBPic,
-	GpuDone,
-	GpuIcon,
+	GPU_Pic,
+	GPU_CutPicture,
+	GPU_Bkc_pic,
+	GPU_Done,
+	GPU_Icon,
 	
 };
 //=========================================================================//
@@ -104,77 +106,80 @@ I_dev_lcd g_IUsartGpu =
 
 
 
-static void GpuCutPicture( short x1, short y1, short num, short px1, short py1, short w, short h)
+static void GPU_CutPicture( short x1, short y1, short num, short px1, short py1, short w, short h)
 {
 #if USE_CMD_BUF == 1
-	if(Sem_wait(&gpu_sem, phn_sys.lcd_sem_wait_ms) <= 0)
+	if(Sem_wait(&gpu_sem, 0xffffffff) <= 0)
 		return;
 	sprintf( lcdBuf, "CPIC(%d,%d,%d,%d,%d,%d,%d);", x1, y1, num, px1, py1, w, h );
-	Cmdbuf_manager(lcdBuf);
-	GpuSend(lcdBuf);
+	GPU_Manager_cmd_buf(lcdBuf);
+	GPU_Send(lcdBuf);
 	Sem_post(&gpu_sem);
 #else
 	sprintf( lcdBuf, "CPIC(%d,%d,%d,%d,%d,%d,%d);\r\n", x1, y1, num, px1, py1, w, h );
-	GpuSend(lcdBuf);
+	GPU_Send(lcdBuf);
 	osDelay(20);
 #endif
 	
 }
 
-static void GpuPic( int x1, int y1, char num)
+static void GPU_Pic( int x1, int y1, char num)
 {
 #if USE_CMD_BUF == 1
-	if(Sem_wait(&gpu_sem, phn_sys.lcd_sem_wait_ms) <= 0)
+	if(Sem_wait(&gpu_sem, 0xffffffff) <= 0)
 		return;
 	sprintf( lcdBuf, "PIC(%d,%d,%d);", x1, y1, num);
-	Cmdbuf_manager(lcdBuf);
-	GpuSend(lcdBuf);
+	GPU_Manager_cmd_buf(lcdBuf);
+	GPU_Send(lcdBuf);
 	Sem_post(&gpu_sem);
 #else	
 	sprintf( lcdBuf, "PIC(%d,%d,%d);\r\n", x1, y1, num);
-	GpuSend(lcdBuf);
+	GPU_Send(lcdBuf);
 	osDelay(40);
 #endif
 }
 
 
-static void GpuIcon(int x1, int y1, char num, int xn, int yn, int n)
+static void GPU_Icon(int x1, int y1, char num, int xn, int yn, int n)
 {
 #if USE_CMD_BUF == 1
-	if(Sem_wait(&gpu_sem, phn_sys.lcd_sem_wait_ms) <= 0)
+	if(Sem_wait(&gpu_sem, 0xffffffff) <= 0)
 		return;
 	sprintf( lcdBuf, "ICON(%d,%d,%d,%d,%d,%d);", x1, y1, num, xn, yn, n);
-	Cmdbuf_manager(lcdBuf);
-	GpuSend(lcdBuf);
+	GPU_Manager_cmd_buf(lcdBuf);
+	GPU_Send(lcdBuf);
 	Sem_post(&gpu_sem);
 #else	
 	sprintf( lcdBuf, "ICON(%d,%d,%d,%d,%d,%d);\r\n", x1, y1, num, xn, yn, n);
-	GpuSend(lcdBuf);
+	GPU_Send(lcdBuf);
 	osDelay(40);
 #endif
 }
 
 //x1 == y1 == 0 µÄÊ±ºò£¬ËµÃ÷ÊÇ±³¾°Í¼Æ¬Òª¸²¸ÇÕû¸öÆÁÄ»
 //·ñÔò¾ÍÊÇ¾Ö²¿µÄ±³¾°£¬²»ÄÜ¶ÔÈ«ÆÁ½øÐÐ²Á³ýÁË
-static void GpuBPic( char m, int x1, int y1, char num)
+static void GPU_Bkc_pic( char m, int x1, int y1, char num)
 {
 #if USE_CMD_BUF == 1
 //	if((x1 == 0) && (y1 == 0)) 
 //		ClearLcd(0);
-	if(Sem_wait(&gpu_sem, phn_sys.lcd_sem_wait_ms) <= 0)
+	if(Sem_wait(&gpu_sem, 0xffffffff) <= 0)
 		return;
 	sprintf( lcdBuf, "BPIC(%d,%d,%d,%d);",m,  x1, y1, num);
-	Cmdbuf_manager(lcdBuf);
-	GpuSend(lcdBuf);
+	GPU_Manager_cmd_buf(lcdBuf);
+	GPU_Send(lcdBuf);
 	
 	if((x1 == 0) && (y1 == 0))  {
-		Gpu_send_done();
-//		osDelay(100);
+		GPU_send_done();
+		
+		//180406 ¾­¹ýµ÷ÊÔ·¢ÏÖ100Ms±È½ÏºÎºÏÊÊ
+		//²»¼ÓÑÓÊ±ÊÇµ¼ÖÂ°ôÍ¼£¨ÆäËû»­ÃæÒ²ÓÐ£©ÏÔÊ¾²»È«µÄÇé¿ö³öÏÖ
+		osDelay(100);		
 	}
 	Sem_post(&gpu_sem);
 #else	
 	sprintf( lcdBuf, "BPIC(%d,%d,%d,%d);\r\n",m,  x1, y1, num);
-	GpuSend(lcdBuf);
+	GPU_Send(lcdBuf);
 	osDelay(160);
 #endif
 }
@@ -198,13 +203,13 @@ static int Dev_UsartInit( void)
 	
 	if(ret == RET_OK)
 	{
-		I_sendDev->ioctol(I_sendDev, DEVCMD_SET_TXWAITTIME_MS, 0);
+		I_sendDev->ioctol(I_sendDev, DEVCMD_SET_TXWAITTIME_MS, 100);
 		//´®¿ÚÆÁµÄ·´Ó¦Ê±¼ä×î³¤ºÃÏñÊÇ200ms
-		I_sendDev->ioctol(I_sendDev, DEVCMD_SET_RXWAITTIME_MS, 300);
+		I_sendDev->ioctol(I_sendDev, DEVCMD_SET_RXWAITTIME_MS, 500);
 		
 		//¹Ø±Õ´®¿ÚÆÁÑÝÊ¾
 		sprintf( lcdBuf, "STDM\r\n");
-		GpuSend(lcdBuf);
+		GPU_Send(lcdBuf);
 		
 	}
 	return ret;
@@ -220,15 +225,15 @@ static int Dev_UsartdeInit( void)
 static int ClearLcd( int c)
 {
 //#if USE_CMD_BUF == 1
-//	if(Sem_wait(&gpu_sem, phn_sys.lcd_sem_wait_ms) <= 0)
+//	if(Sem_wait(&gpu_sem, 0xffffffff) <= 0)
 //		return RET_FAILED;
 //	sprintf( lcdBuf, "CLS(%d);", c);
-//	Cmdbuf_manager(lcdBuf);
-//	GpuSend(lcdBuf);
+//	GPU_Manager_cmd_buf(lcdBuf);
+//	GPU_Send(lcdBuf);
 //	Sem_post(&gpu_sem);
 //#else	
 	sprintf( lcdBuf, "CLS(%d);\r\n", c);
-	GpuSend(lcdBuf);
+	GPU_Send(lcdBuf);
 	osDelay(20);
 //#endif	
 	
@@ -245,11 +250,11 @@ static void GetScrnSize( uint16_t *xsize, uint16_t *ysize)
 
 //»­¸ö·½¿ò
 //type 0  ¿ÕÐÄ 1 ÊµÐÄ
-static int GpuBox( int x1, int y1, int x2, int y2, char type, char c)
+static int GPU_Box( int x1, int y1, int x2, int y2, char type, char c)
 {
 	
 #if USE_CMD_BUF == 1
-	if(Sem_wait(&gpu_sem, phn_sys.lcd_sem_wait_ms) <= 0)
+	if(Sem_wait(&gpu_sem, 0xffffffff) <= 0)
 		return RET_FAILED;
 	if( type == FILLED_RECTANGLE)
 	{
@@ -264,8 +269,8 @@ static int GpuBox( int x1, int y1, int x2, int y2, char type, char c)
 		//todo:Ïß¶
 		sprintf( lcdBuf, "PL(%d,%d,%d,%d,%d);", x1, y1, x2, y2,c);
 	}
-	Cmdbuf_manager(lcdBuf);
-	GpuSend(lcdBuf);
+	GPU_Manager_cmd_buf(lcdBuf);
+	GPU_Send(lcdBuf);
 	Sem_post(&gpu_sem);
 #else	
 	if( type)
@@ -277,7 +282,7 @@ static int GpuBox( int x1, int y1, int x2, int y2, char type, char c)
 		sprintf( lcdBuf, "BOX(%d,%d,%d,%d,%d);\r\n", x1, y1, x2, y2,c);
 	}
 	
-	GpuSend(lcdBuf);
+	GPU_Send(lcdBuf);
 	osDelay(LCD_DELAY_MS);
 #endif	
 
@@ -285,7 +290,7 @@ static int GpuBox( int x1, int y1, int x2, int y2, char type, char c)
 	
 }
 
-static int GpuWrString( char m ,char *string, int len, int x, int y, int font, char c)
+static int GPU_WrString( char m ,char *string, int len, int x, int y, int font, char c)
 {
 	
 	char 		colour[16];
@@ -296,7 +301,7 @@ static int GpuWrString( char m ,char *string, int len, int x, int y, int font, c
 		f = FONT_12;
 	}
 #if USE_CMD_BUF == 1	
-	if(Sem_wait(&gpu_sem, phn_sys.lcd_sem_wait_ms) <= 0)
+	if(Sem_wait(&gpu_sem, 0xffffffff) <= 0)
 		return RET_FAILED;
 #endif		
 	if( m < 0x8) {
@@ -320,19 +325,19 @@ static int GpuWrString( char m ,char *string, int len, int x, int y, int font, c
 	strcat( lcdBuf,colour);
 	
 #if USE_CMD_BUF == 1
-	Cmdbuf_manager(lcdBuf);
-	GpuSend(lcdBuf);
+	GPU_Manager_cmd_buf(lcdBuf);
+	GPU_Send(lcdBuf);
 	Sem_post(&gpu_sem);
 #else	
 	strcat( lcdBuf,"\r\n");
-	GpuSend(lcdBuf);
+	GPU_Send(lcdBuf);
 	osDelay(LCD_DELAY_MS);
 #endif	
 	
 	return RET_OK;
 }
 
-int GpuLabel( char *string,  int len, scArea_t *area, int font, char c, char ali)
+int GPU_Label( char *string,  int len, scArea_t *area, int font, char c, char ali)
 {
 	char m = 0;
 	short		charMax = LCDBUF_MAX;
@@ -364,7 +369,7 @@ int GpuLabel( char *string,  int len, scArea_t *area, int font, char c, char ali
 	}
 	
 #if USE_CMD_BUF == 1	
-	if(Sem_wait(&gpu_sem, phn_sys.lcd_sem_wait_ms) <= 0)
+	if(Sem_wait(&gpu_sem, 0xffffffff) <= 0)
 		return RET_FAILED;
 #endif	
 	
@@ -382,74 +387,71 @@ int GpuLabel( char *string,  int len, scArea_t *area, int font, char c, char ali
 	strcat( lcdBuf,tail);
 	
 #if USE_CMD_BUF == 1
-	Cmdbuf_manager(lcdBuf);
-	GpuSend(lcdBuf);
+	GPU_Manager_cmd_buf(lcdBuf);
+	GPU_Send(lcdBuf);
 	Sem_post(&gpu_sem);
 #else	
-	GpuSend(lcdBuf);
+	GPU_Send(lcdBuf);
 	osDelay(LCD_DELAY_MS);
 #endif	
 	return RET_OK;
 
 }	
 
-static void GpuBKColor( char c)
+static void GPU_BKColor( char c)
 {
 	if( c == ERR_COLOUR)
 		return;
 #if USE_CMD_BUF == 1	
-	if(Sem_wait(&gpu_sem, phn_sys.lcd_sem_wait_ms) <= 0)
+	if(Sem_wait(&gpu_sem, 0xffffffff) <= 0)
 		return;
 #endif
 	sprintf( lcdBuf, "SBC(%d);", c);
 #if USE_CMD_BUF == 1
-	Cmdbuf_manager(lcdBuf);
-	GpuSend(lcdBuf);
+	GPU_Manager_cmd_buf(lcdBuf);
+	GPU_Send(lcdBuf);
 	Sem_post(&gpu_sem);
 #else	
-	GpuSend(lcdBuf);
+	GPU_Send(lcdBuf);
 	memset( lcdBuf, 0, LCDBUF_MAX);
 #endif	
 	
 
 }
 
-static void Gpu_send_done(void)
+static void GPU_send_done(void)
 {
 	char tmpbuf[4] = {0};
 	strcpy(tmpbuf, "\r\n");
-	GpuSend(tmpbuf);
+	GPU_Send(tmpbuf);
 	LCD_CMD_BYTES = 0;
 }
-static void Cmdbuf_manager(char *p_cmd)
+static void GPU_Manager_cmd_buf(char *p_cmd)
 {
-//	char	tmp_cmd_buf[15] = {0};
 	uint8_t cmd_len = strlen(p_cmd);
 	
 	
 	if((LCD_CMD_BYTES +  cmd_len) > UGPU_CMDBUF_LEN) {
-		Gpu_send_done();
+		GPU_send_done();
 		osDelay(100);
-//		spg ++;
-//		sprintf(tmp_cmd_buf, "SPG(%d);", spg);
-//		GpuSend(tmp_cmd_buf);
+
 		
 	} 
 		
 	LCD_CMD_BYTES += cmd_len;
 }
-static void GpuDone( void)
+static int GPU_Done( void)
 {
 #if USE_CMD_BUF == 1
 	
 //	int		ret = 0;
-	if(Sem_wait(&gpu_sem, phn_sys.lcd_sem_wait_ms) <= 0)
-		return;
+	if(Sem_wait(&gpu_sem, 10) <= 0)
+		return ERR_RSU_UNAVAILABLE;
 	
-	Gpu_send_done();
+	GPU_send_done();
 //	while(1) {
 //		strcpy(tmpbuf, "\r\n");
-//		GpuSend(tmpbuf);
+//		GPU_Send(tmpbuf);
 //		ret = I_sendDev->read(I_sendDev, tmpbuf, 8);
 //		if(ret > 0) {
 //			if(tmpbuf[0] == 'O' && tmpbuf[1] == 'K')
@@ -467,10 +469,11 @@ static void GpuDone( void)
 //	osDelay(200);
 
 	Sem_post(&gpu_sem);
+	return RET_OK;
 #endif
 }
 
-//int GpuWrSection( dspArea_t *area, dspContent_t *arg)
+//int GPU_WrSection( dspArea_t *area, dspContent_t *arg)
 //{
 //	
 //	char colour[16];
@@ -500,14 +503,14 @@ static void GpuDone( void)
 //	
 //	strncat( lcdBuf,arg->data, arg->len);
 //	strcat( lcdBuf,colour);
-//	GpuSend(lcdBuf);
+//	GPU_Send(lcdBuf);
 //	osDelay(LCD_DELAY_MS);
 //	
 //	return RET_OK;
 //}
 
 
-static int GpuStrSize( int font, uint16_t	*width, uint16_t	*heigh)
+static int GPU_StrSize( int font, uint16_t	*width, uint16_t	*heigh)
 {
 	
 	uint16_t x, y;
@@ -551,7 +554,7 @@ static int GpuStrSize( int font, uint16_t	*width, uint16_t	*heigh)
 	return RET_OK;
 }
 
-void GpuSend(char * buf)
+static void GPU_Send(char * buf)
 {
 	int 	len = strlen( buf);
 	int 	ret = 0;
@@ -572,7 +575,7 @@ void GpuSend(char * buf)
 			}
 			else
 			{
-				
+//				osDelay(100);
 				break;		//²»±Ø¶àµÈ£¬Ö±½ÓÍË³ö 180120
 			}
 		}  else if(ret == ERR_DEV_TIMEOUT) {

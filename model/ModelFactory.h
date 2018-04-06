@@ -8,6 +8,6 @@
 #include "ModelTime.h"
 // type : time
 //
-Model *ModelCreate( char *type);
+Model *Create_model( char *type);
 
 #endif

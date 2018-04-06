@@ -27,6 +27,7 @@
 .\objects\hmi_bargraph.o: ..\..\model\Model.h
 .\objects\hmi_bargraph.o: ..\..\sdhLib\inc\arithmetic/list.h
 .\objects\hmi_bargraph.o: ..\..\sdhLib\inc\basis/assert.h
+.\objects\hmi_bargraph.o: ..\..\configs\model_conf.h
 .\objects\hmi_bargraph.o: ..\..\model\Model_channel.h
 .\objects\hmi_bargraph.o: ..\..\APP\system.h
 .\objects\hmi_bargraph.o: ..\..\..\PplRcd\utils/time.h
@@ -59,6 +60,9 @@
 .\objects\hmi_bargraph.o: ..\..\HMI\Component_progress_bar.h
 .\objects\hmi_bargraph.o: ..\..\HMI\Component_tips.h
 .\objects\hmi_bargraph.o: ..\..\..\PplRcd\utils/keyboard.h
+.\objects\hmi_bargraph.o: ..\..\sdhLib\inc\os/os_depend.h
+.\objects\hmi_bargraph.o: ..\..\sdhLib\inc\os/rtx/rtx_depend.h
+.\objects\hmi_bargraph.o: d:\Keil_v5\ARM\PACK\ARM\CMSIS\5.0.0\CMSIS\RTOS\RTX\INC\cmsis_os.h
 .\objects\hmi_bargraph.o: ..\..\HMI\HMI_comm.h
 .\objects\hmi_bargraph.o: ..\..\HMI\HMI_keyboard.h
 .\objects\hmi_bargraph.o: ..\..\HMI\HMIFactory.h

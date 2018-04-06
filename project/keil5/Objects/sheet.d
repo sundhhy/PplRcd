@@ -23,6 +23,7 @@
 .\objects\sheet.o: ..\..\sdhLib\inc\basis/assert.h
 .\objects\sheet.o: ..\..\sdhLib\inc\basis/except.h
 .\objects\sheet.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\setjmp.h
+.\objects\sheet.o: ..\..\configs\model_conf.h
 .\objects\sheet.o: ..\..\model\Model_channel.h
 .\objects\sheet.o: ..\..\APP\system.h
 .\objects\sheet.o: ..\..\..\PplRcd\utils/time.h

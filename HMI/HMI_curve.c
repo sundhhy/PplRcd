@@ -56,7 +56,7 @@ sheet  		*g_arr_p_check[NUM_CHANNEL]; 		//是否显示的指示图形
 #define DEFAULT_MIN_DIV		1
 
 #define CHNSHOW_ROW_SPACE		32
-
+#define CTRV_OFFSET_Y			0		//各通道曲线在y轴上的偏移
 
 static const char RT_hmi_code_chninfo[] =  {"<cpic vx0=260 vy0=30 vx1=320 vy1=240>23</>" };
 
@@ -103,7 +103,7 @@ static sheet  		*p_curve_bkg;
 // local function prototypes
 //------------------------------------------------------------------------------
 static int	Init_RT_trendHMI( HMI *self, void *arg);
-static void RT_trendHmi_InitSheet( HMI *self );
+static void RT_trendHmi_InitSheet( HMI *self, uint32_t att );
 static void RT_trendHmi_HideSheet( HMI *self );
 static void	RT_trendHmi_Show( HMI *self);
 
@@ -135,7 +135,6 @@ static void HST_Move(RLT_trendHMI *cthis, uint8_t direction);
 
 //数据
 static void RLTHmi_Init_chnSht(void);
-static int RLTHmi_Data_update(void *p_data, void *p_mdl);
 
 //键盘
 //static int	RLT_div_input(void *self, void *data, int len);
@@ -179,7 +178,7 @@ FUNCTION_SETTING( HMI.hitHandle, RT_trendHmi_HitHandle);
 FUNCTION_SETTING(HMI.build_component, HMI_CRV_Build_cmp);
 
 
-//FUNCTION_SETTING(Observer.update, RLT_trendHmi_MdlUpdata);		
+//FUNCTION_SETTING(mdl_observer.update, RLT_trendHmi_MdlUpdata);		
 
 END_CTOR
 //=========================================================================//
@@ -237,7 +236,7 @@ static void HMI_CRV_Build_cmp(HMI *self)
 	Button					*p = BTN_Get_Sington();
 	Curve 					*p_crv = CRV_Get_Sington();
 	curve_att_t			crv;
-	short							i;
+	short				i;
 	short				num = 0;
 	
 	p->build_each_btn(0, BTN_TYPE_MENU, Main_btn_hdl, self);
@@ -262,9 +261,9 @@ static void HMI_CRV_Build_cmp(HMI *self)
 		
 		//下面的尺寸要跟曲线的背景位置匹配
 		crv.crv_x0 = 0;
-		crv.crv_y0 = 50 + i * 10;
+		crv.crv_y0 = 50 + i * CTRV_OFFSET_Y;
 		crv.crv_x1 = 240;
-		crv.crv_y1 = 150 + i * 10;		//210
+		crv.crv_y1 = 150 + i * CTRV_OFFSET_Y;		//210
 		
 		crv.crv_buf_size = CRV_MAX_PIXS + 1;
 		
@@ -317,7 +316,7 @@ static void RLT_btn_hdl(void *arg, uint8_t btn_id)
 
 
 
-static void RT_trendHmi_InitSheet( HMI *self )
+static void RT_trendHmi_InitSheet( HMI *self, uint32_t att )
 {
 	RLT_trendHMI	*cthis = SUB_PTR( self, HMI, RLT_trendHMI);
 	Expr 			*p_exp ;
@@ -635,7 +634,7 @@ static void	RT_trendHmi_HitHandle( HMI *self, char kcd)
 						Sem_post(&phn_sys.hmi_mgr.hmi_sem);
 					} else {
 						
-						self->switchHMI(self, g_p_HMI_menu);
+						self->switchHMI(self, g_p_HMI_menu, 0);
 					}					
 					break;		
 			case KEYCODE_ESC:
@@ -808,7 +807,7 @@ static void	RT_trendHmi_HitHandle( HMI *self, char kcd)
 //	}
 //	if( !strcmp( s, HMIKEY_ESC))
 //	{
-//		self->switchBack(self);
+//		self->switchBack(self, 0);
 //	}
 	
 	exit:
@@ -978,10 +977,10 @@ static void HMI_CRV_HST_Run(HMI *self)
 	Model						*p_mdl ;
 	Button					*p_btn = BTN_Get_Sington();
 	data_in_fsh_t			d;
-//	crv_val_t				cval;
-	uint16_t				i, count, end, need_clean = 0;
 	int						read_len = 0;
+	uint16_t				i, count, end, need_clean = 0;
 	uint8_t					crv_prc;
+	char					chn_name[7];
 	//读取一条就记录记录一条
 	//知道屏幕上容纳不下了，或者记录读完了
 	
@@ -1012,11 +1011,9 @@ static void HMI_CRV_HST_Run(HMI *self)
 		}	
 		
 		count = 0;
-		
-		p_mdl = g_arr_p_chnData[i]->p_mdl;
-//		p_mdl->getMdlData(p_mdl, chnaux_upper_limit, &cval.up_limit);
-//		p_mdl->getMdlData(p_mdl, chnaux_lower_limit, &cval.lower_limit);
-//		p_mdl->getMdlData(p_mdl, AUX_PERCENTAGE, &crv_prc);
+		sprintf(chn_name, "chn_%d", i);
+		p_mdl = Create_model(chn_name);;
+
 		
 		STG_Set_file_position(STG_CHN_DATA(i), STG_DRC_READ, hst_mgr.arr_hst_num[i] * sizeof(data_in_fsh_t));	
 		p_crv->reset(cthis->arr_crv_fd[i]);
@@ -1031,8 +1028,7 @@ static void HMI_CRV_HST_Run(HMI *self)
 			if(d.rcd_time_s == 0xffffffff)
 				continue;
 			
-//			cval.val = d.rcd_val;
-//			p_mdl->getMdlData(p_mdl, AUX_PERCENTAGE, &crv_prc);
+
 			crv_prc = MdlChn_Cal_prc(p_mdl, d.rcd_val);
 			p_crv->add_point(cthis->arr_crv_fd[i], crv_prc);
 			count ++;
@@ -1097,6 +1093,7 @@ static void HMI_CRV_RTV_Run(HMI *self)
 //	crv_val_t				cval;
 	int							i;
 	uint8_t			crv_prc;
+	char					chn_name[7];
 //	int				range = 100;
 //	
 //	uint8_t			vy0 = 208;
@@ -1121,7 +1118,7 @@ static void HMI_CRV_RTV_Run(HMI *self)
 
 
 		
-		p_mdl = g_arr_p_chnData[i]->p_mdl;
+//		p_mdl = g_arr_p_chnData[i]->p_mdl;
 		
 //		p_mdl->getMdlData(p_mdl, chnaux_upper_limit, &cval.up_limit);
 //		p_mdl->getMdlData(p_mdl, chnaux_lower_limit, &cval.lower_limit);
@@ -1130,7 +1127,8 @@ static void HMI_CRV_RTV_Run(HMI *self)
 //			
 //			cval.val = cval.lower_limit;
 //		}
-
+		sprintf(chn_name, "chn_%d", i);
+		p_mdl = Create_model(chn_name);
 		p_mdl->getMdlData(p_mdl, AUX_PERCENTAGE, &crv_prc);
 		
 		p_crv->add_point(cthis->arr_crv_fd[i], crv_prc);
@@ -1208,22 +1206,13 @@ static void RLTHmi_Init_chnSht(void)
 		g_arr_p_chnData[i]->cnt.colour = arr_clrs[i];
 		g_arr_p_chnData[i]->cnt.data = prn_buf[i];
 		
-		g_arr_p_chnData[i]->update = RLTHmi_Data_update;
 
 		g_arr_p_chnData[i]->cnt.colour = arr_clrs[i];
 		g_arr_p_chnData[i]->area.y0 = data_vy[i];
 	}
 }
 
-static int RLTHmi_Data_update(void *p_data, void *p_mdl)
-{
-	
-	
-	return 0;
-	
-	
-	
-}
+
 
 
 

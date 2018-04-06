@@ -33,7 +33,7 @@ CLASS( chnInfoHmi)
 //------------------------------------------------------------------------------
 // global variable declarations
 //------------------------------------------------------------------------------
-void Bulid_ChnData(sheet **pp_shts, void *code, int ( *update)( void *p_sht, void *p_srcMdl));
+//void Bulid_ChnData(sheet **pp_shts, void *code, int ( *update)( void *p_sht, void *p_srcMdl));
 
 
 //d¶ªÆú

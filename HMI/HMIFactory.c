@@ -43,13 +43,13 @@
 //============================================================================//
 //            P U B L I C   F U N C T I O N S                                 //
 //============================================================================//
-HMI *CreateHMI( int hmiType)
+HMI *Create_HMI( int hmiType)
 {
 	HMI *p_hmi = NULL;
 	switch( hmiType)
 	{
 		case HMI_MAIN:
-			p_hmi = SUPER_PTR(Get_mainHmi(), HMI);
+			p_hmi = SUPER_PTR(Get_HMI_main(), HMI);
 			break; 
 		case HMI_CMM:
 			
@@ -90,7 +90,7 @@ HMI *CreateHMI( int hmiType)
 		case HMI_SETUP:
 			p_hmi = SUPER_PTR(Get_Setup_HMI(), HMI);
 			break;
-		case HMI_SETTING:
+		case HMI_STRIPED_BKG:
 			p_hmi = SUPER_PTR(Get_Setting_HMI(), HMI);
 			break;
 		case HMI_WINDOWS:

@@ -23,7 +23,7 @@ CLASS( keyboardHMI)
 {
 	
 	EXTENDS( HMI);
-	IMPLEMENTS( shtCmd);
+//	IMPLEMENTS( shtCmd);
 	Model			*p_mdlRtc;
 	sheet			*p_shtVkey[NUM_VIRKEY];
 	sheet			*p_shtvKeyCursor[NUM_VIRKEY];		//虚拟按键上，被选中的按键的光标
@@ -45,4 +45,5 @@ CLASS( keyboardHMI)
 // function prototypes
 //------------------------------------------------------------------------------
 keyboardHMI *GetkeyboardHMI(void);
+void HKB_Set_input(sheet *p);
 #endif

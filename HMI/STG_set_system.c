@@ -100,7 +100,7 @@ static int SysStrategy_entry(int row, int col, void *pp_text)
 				p_syf->f_row = 0;
 				Sys_update_syf(p_syf);
 			
-				model = ModelCreate("time");
+				model = Create_model("time");
 				model->to_string(model, 1, arr_p_vram[0]);
 				p_syf->num_byte = strlen(arr_p_vram[0]);
 				break;
@@ -462,7 +462,7 @@ static int Sys_commit(void *arg)
 	switch(p_syf->f_row) {
 	case 0:
 
-		model = ModelCreate("time");
+		model = Create_model("time");
 		ret = model->set_by_string(model, 1, arr_p_vram[0]);
 			
 		break;

@@ -24,6 +24,7 @@
 .\objects\fm25.o: ..\..\APP\system.h
 .\objects\fm25.o: ..\..\..\PplRcd\utils/time.h
 .\objects\fm25.o: ..\..\..\PplRcd\utils/PHN_string.h
+.\objects\fm25.o: ..\..\configs\model_conf.h
 .\objects\fm25.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
 .\objects\fm25.o: ..\..\sdhLib\inc\sdhdef.h
 .\objects\fm25.o: ..\..\APP\sdhlibConf.h

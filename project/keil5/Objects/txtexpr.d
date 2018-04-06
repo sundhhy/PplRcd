@@ -27,6 +27,7 @@
 .\objects\txtexpr.o: ..\..\model\Model.h
 .\objects\txtexpr.o: ..\..\sdhLib\inc\arithmetic/list.h
 .\objects\txtexpr.o: ..\..\sdhLib\inc\basis/assert.h
+.\objects\txtexpr.o: ..\..\configs\model_conf.h
 .\objects\txtexpr.o: ..\..\model\Model_channel.h
 .\objects\txtexpr.o: ..\..\APP\system.h
 .\objects\txtexpr.o: ..\..\..\PplRcd\utils/time.h

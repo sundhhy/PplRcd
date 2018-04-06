@@ -2,6 +2,7 @@
 #include "sdhDef.h"
 #include "ExpFactory.h"
 #include "HMI_windows.h"
+#include "HMIFactory.h"
 
 #include <string.h>
 
@@ -26,7 +27,7 @@ static char *setting_titles[6][2] = {{"系统设置", "通道设置"},{"报警设置", "算法
 // module global vars
 //------------------------------------------------------------------------------
 
-HMI 	*g_p_HMI_striped;
+//HMI 	*g_p_HMI_striped;
 //------------------------------------------------------------------------------
 // global function prototypes
 //------------------------------------------------------------------------------
@@ -59,12 +60,13 @@ HMI 	*g_p_HMI_striped;
 static int	HMI_SBG_Init(HMI *self, void *arg);
 static void HMI_SBG_Show(HMI *self);
 static void	HMI_SBG_Hide(HMI *self);
-static void	HMI_SBG_Init_sheet(HMI *self);
+static void	HMI_SBG_Init_sheet(HMI *self, uint32_t att);
 static void	HMI_SBG_Init_focus(HMI *self);
 static void	HMI_SBG_Clear_focus(HMI *self, uint8_t fouse_row, uint8_t fouse_col);
 static void	HMI_SBG_Show_focus(HMI *self, uint8_t fouse_row, uint8_t fouse_col);
 static void	HMI_SBG_Hit( HMI *self, char kcd);
 static void	HMI_SBG_Long_hit( HMI *self, char kcd);
+static void	HMI_SBG_Compose_hit( HMI *self, char kcd_1, char kcd_2);
 static void	HMI_SBG_Build_component(HMI *self);
 
 static void	HMI_SBG_Show_entry(HMI *self, strategy_t *p_st);
@@ -88,7 +90,7 @@ HMI_striped_background *Get_Setting_HMI(void)
 	{
 		singal_Setting_HMI = HMI_striped_background_new();
 		if(singal_Setting_HMI  == NULL) while(1);
-		g_p_HMI_striped = SUPER_PTR(singal_Setting_HMI, HMI);
+//		g_p_HMI_striped = SUPER_PTR(singal_Setting_HMI, HMI);
 
 	}
 	
@@ -112,7 +114,7 @@ void Setting_btn_hdl(void *arg, uint8_t btn_id)
 	{
 		
 		cthis->entry_start_row = 0;
-		self->switchHMI(self, g_p_HMI_menu);
+		self->switchHMI(self, g_p_HMI_menu, HMI_ATT_NOT_RECORD);
 	}
 	else if((btn_id == ICO_ID_PGUP) || (btn_id == ICO_ID_PGDN))
 	{
@@ -129,6 +131,7 @@ FUNCTION_SETTING(HMI.show, HMI_SBG_Show);
 
 FUNCTION_SETTING(HMI.hitHandle, HMI_SBG_Hit);
 FUNCTION_SETTING(HMI.longpushHandle, HMI_SBG_Long_hit);
+FUNCTION_SETTING(HMI.conposeKeyHandle, HMI_SBG_Compose_hit);
 
 
 FUNCTION_SETTING(HMI.init_focus, HMI_SBG_Init_focus);
@@ -165,14 +168,14 @@ static void HMI_SBG_Show(HMI *self)
 {
 	HMI_striped_background		*cthis = SUB_PTR( self, HMI, HMI_striped_background);
 
-	Stop_flush_LCD();
+//	Stop_flush_LCD();
 	Sheet_refresh(g_p_sht_bkpic);
 	HMI_SBG_Show_entry(self, cthis->p_sy);
 	Strategy_focus(cthis, &cthis->p_sy->sf, 1);
 	Flush_LCD();
 	
 }
-static void	HMI_SBG_Init_sheet(HMI *self)
+static void	HMI_SBG_Init_sheet(HMI *self, uint32_t att)
 {
 	HMI_striped_background		*cthis = SUB_PTR( self, HMI, HMI_striped_background);
 	int  		 		h = 0;
@@ -181,7 +184,9 @@ static void	HMI_SBG_Init_sheet(HMI *self)
 	strategy_t			*old_sty;
 	p_shtctl = GetShtctl();
 	
-	if(((self->flag & HMIFLAG_WIN) == 0) && ((self->flag & HMIFLAG_KEYBOARD) == 0)) {
+//	if(((self->flag & HMIFLAG_WIN) == 0) && ((self->flag & HMIFLAG_KEYBOARD) == 0)) {
+	if((att & HMI_ATT_KEEP) == 0)
+	{
 		//按钮或者键盘返回的时候就保持原样，不进行初始化
 		old_sty = cthis->p_sy;
 		cthis->p_sy = arr_p_setting_strategy[self->arg[0]][self->arg[1]];
@@ -233,7 +238,7 @@ static void	HMI_SBG_Init_sheet(HMI *self)
 	Sheet_updown(g_p_shtTime, h++);
 //	Sheet_updown(g_p_ico_memu, h++);
 	
-
+	self->arg[2] = att;
 	self->init_focus(self);
 }
 static void	HMI_SBG_Hide(HMI *self)
@@ -258,7 +263,8 @@ static void	HMI_SBG_Init_focus(HMI *self)
 	cthis->f_col = 0;
 	cthis->sub_flag &= 0xf0;
 	cthis->col_max = 1;
-	if(((self->flag & HMIFLAG_WIN) == 0) && ((self->flag & HMIFLAG_KEYBOARD) == 0))
+//	if(((self->flag & HMIFLAG_WIN) == 0) && ((self->flag & HMIFLAG_KEYBOARD) == 0))
+	if((self->arg[2] & HMI_ATT_KEEP) == 0)
 		cthis->p_sy->init(NULL);
 	SET_PG_FLAG(cthis->sub_flag, FOCUS_IN_STARTEGY);
 	
@@ -550,13 +556,12 @@ static void	HMI_SBG_Hit(HMI *self, char kcd)
 		} else {
 			
 			cthis->entry_start_row = 0;
-//			self->switchHMI(self, g_p_Setup_HMI);
 			cthis->p_sy->sty_exit();
 			
 			
-			g_p_lastHmi->flag |= HMI_FLAG_KEEP;
-			self->switchBack(self);
-			
+//			g_p_lastHmi->flag |= HMI_FLAG_KEEP;
+//			self->switchBack(self, HMI_ATT_KEEP);
+			self->switchHMI(self, Create_HMI(HMI_SETUP),HMI_ATT_KEEP | HMI_ATT_NOT_RECORD);
 		}				
 				break;	
 		
@@ -705,7 +710,7 @@ static void	HMI_SBG_Hit(HMI *self, char kcd)
 //			
 //			
 //			g_p_lastHmi->flag |= HMI_FLAG_KEEP;
-//			self->switchBack(self);
+//			self->switchBack(self, 0);
 //			
 //		}
 //		
@@ -735,13 +740,25 @@ static void	HMI_SBG_Hit(HMI *self, char kcd)
 //		self->show_focus(self, 0, 0);
 //		
 //	}
-	
+	Flush_LCD();
 //	exit:
 		return;
 }
 
 
+static void	HMI_SBG_Compose_hit( HMI *self, char kcd_1, char kcd_2)
+{
+	if(kcd_2 == KEYCODE_UP && kcd_1 == KEYCODE_DOWN) {
+//		self->switchHMI(self, Create_HMI(HMI_SETUP),HMI_ATT_KEEP | HMI_ATT_NOT_RECORD);
+		self->switchBack(self, HMI_ATT_KEEP);
 
+	}
+	else if(kcd_2 == KEYCODE_DOWN && kcd_1 == KEYCODE_UP) {
+//		self->switchHMI(self, Create_HMI(HMI_SETUP),HMI_ATT_KEEP | HMI_ATT_NOT_RECORD);
+		self->switchBack(self, HMI_ATT_KEEP);
+	}
+	
+}
 
 static void	HMI_SBG_Long_hit( HMI *self, char kcd)
 {
@@ -993,7 +1010,7 @@ static int Setting_Sy_cmd(void *p_rcv, int cmd,  void *arg)
 			p_win = Get_winHmi();
 			p_win->p_cmd_rcv = self;
 			p_win->cmd_hdl = Setting_Sy_cmd;
-			self->switchHMI(self, g_p_winHmi);
+			self->switchHMI(self, g_p_winHmi, 0);
 			break;
 		case sycmd_win_time:
 			Win_content(arg);
@@ -1002,7 +1019,7 @@ static int Setting_Sy_cmd(void *p_rcv, int cmd,  void *arg)
 			p_win = Get_winHmi();
 			p_win->p_cmd_rcv = self;
 			p_win->cmd_hdl = Setting_Sy_cmd;
-			self->switchHMI(self, g_p_winHmi);
+			self->switchHMI(self, g_p_winHmi, 0);
 			break;
 		case sycmd_win_psd:
 			Win_content(arg);
@@ -1011,12 +1028,13 @@ static int Setting_Sy_cmd(void *p_rcv, int cmd,  void *arg)
 			p_win = Get_winHmi();
 			p_win->p_cmd_rcv = self;
 			p_win->cmd_hdl = Setting_Sy_cmd;
-			self->switchHMI(self, g_p_winHmi);
+			self->switchHMI(self, g_p_winHmi, 0);
 			break;
 		case sycmd_keyboard:
 			cthis->p_sht_text->cnt.data = arg;
-			g_keyHmi->p_shtInput = cthis->p_sht_text;
-			self->switchHMI(self, SUPER_PTR(g_keyHmi, HMI));
+//			g_keyHmi->p_shtInput = cthis->p_sht_text;
+			HKB_Set_input(cthis->p_sht_text);
+			self->switchHMI(self, Create_HMI(HMI_KYBRD), 0);
 			break;
 		case wincmd_commit:
 			
@@ -1026,14 +1044,14 @@ static int Setting_Sy_cmd(void *p_rcv, int cmd,  void *arg)
 				g_p_winHmi->arg[1] = WINFLAG_RETURN;
 				Win_content("修改成功");
 //				g_p_winHmi->switchHMI(g_p_winHmi, g_p_winHmi);
-				self->switchHMI(self, g_p_winHmi);
+				self->switchHMI(self, g_p_winHmi, 0);
 			} else {
 				g_p_winHmi->arg[0] = WINTYPE_ERROR;
 				g_p_winHmi->arg[1] = WINFLAG_RETURN;
 				sprintf(win_tips,"错误码:%d", ret);
 				Win_content(win_tips);
 //				g_p_winHmi->switchHMI(g_p_winHmi, g_p_winHmi);
-				self->switchHMI(self, g_p_winHmi);
+				self->switchHMI(self, g_p_winHmi, 0);
 //				g_p_winHmi->show(g_p_winHmi);
 			}
 		

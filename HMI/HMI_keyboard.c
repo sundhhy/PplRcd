@@ -174,10 +174,10 @@ static sheet	*p_keyboardFocusPic;
 //------------------------------------------------------------------------------
 static int	Init_kbmHmi( HMI *self, void *arg);
 
-static void KeyboardEnterCmdHdl( shtCmd *self, struct SHEET *p_sht, void *arg);
+//static void KeyboardEnterCmdHdl( shtCmd *self, struct SHEET *p_sht, void *arg);
 static void	KeyboardShow( HMI *self );
 static void KBHide( HMI *self );
-static void KBInitSheet( HMI *self );
+static void KBInitSheet( HMI *self, uint32_t att );
 
 static void	KeyboardHitHandle( HMI *self, char kcd);
 static void	KeyboardLngpshHandle( HMI *self,  char kcd);
@@ -210,6 +210,12 @@ keyboardHMI *GetkeyboardHMI(void)
 	
 }
 
+void HKB_Set_input(sheet *p)
+{
+	singalKBHmi->p_shtInput = p;
+	
+}
+
 
 CTOR( keyboardHMI)
 SUPER_CTOR( HMI);
@@ -222,7 +228,7 @@ FUNCTION_SETTING( HMI.longpushHandle, KeyboardLngpshHandle);
 FUNCTION_SETTING( HMI.dhitHandle, KeyboardDouHitHandle);
 
 
-FUNCTION_SETTING( shtCmd.shtExcute, KeyboardEnterCmdHdl);
+//FUNCTION_SETTING( shtCmd.shtExcute, KeyboardEnterCmdHdl);
 END_CTOR
 //=========================================================================//
 //                                                                         //
@@ -289,7 +295,7 @@ static int	Init_kbmHmi( HMI *self, void *arg)
 	return RET_OK;
 }
 
-static void KBInitSheet( HMI *self )
+static void KBInitSheet( HMI *self, uint32_t att )
 {
 	keyboardHMI		*cthis = SUB_PTR( self, HMI, keyboardHMI);
 	
@@ -438,7 +444,7 @@ static void	KeyboardHitHandle( HMI *self, char kcd)
 {
 	keyboardHMI		*cthis = SUB_PTR( self, HMI, keyboardHMI);
 	virKeyOp_t		*p_op;
-	HMI				*src_hmi;
+//	HMI				*src_hmi;
 	int				cmt_ret = 0;
 	
 	
@@ -502,10 +508,12 @@ static void	KeyboardHitHandle( HMI *self, char kcd)
 
 				}
 				if(cmt_ret == RET_OK) {
-					src_hmi = g_p_lastHmi;
-					src_hmi->flag |= HMIFLAG_KEYBOARD;
-					self->switchBack(self);
-					src_hmi->flag &= ~HMIFLAG_KEYBOARD;
+//					src_hmi = g_p_lastHmi;
+//					src_hmi->flag |= HMIFLAG_KEYBOARD;
+//					self->switchBack(self, 0);
+//					src_hmi->flag &= ~HMIFLAG_KEYBOARD;
+					
+					self->switchBack(self, HMI_ATT_KEEP);
 				} else {
 					//todo: 提示错误
 				}
@@ -516,7 +524,7 @@ static void	KeyboardHitHandle( HMI *self, char kcd)
 			}
 			break;		
 		case KEYCODE_ESC:
-			self->switchBack(self);
+			self->switchBack(self, 0);
 			break;	
 			
 	}
@@ -555,7 +563,7 @@ static void	KeyboardHitHandle( HMI *self, char kcd)
 //	
 //	if( !strcmp( s, HMIKEY_ESC))
 //	{
-//		self->switchBack(self);
+//		self->switchBack(self, 0);
 //	}
 //	if( !strcmp( s, KEYCODE_ENTER))
 //	{
@@ -590,7 +598,7 @@ static void	KeyboardHitHandle( HMI *self, char kcd)
 //			if(cmt_ret == RET_OK) {
 //				src_hmi = g_p_lastHmi;
 //				src_hmi->flag |= HMIFLAG_KEYBOARD;
-//				self->switchBack(self);
+//				self->switchBack(self, 0);
 //				src_hmi->flag &= ~HMIFLAG_KEYBOARD;
 //			} else {
 //				//todo: 提示错误
@@ -605,16 +613,16 @@ static void	KeyboardHitHandle( HMI *self, char kcd)
 	
 }
 
-static void KeyboardEnterCmdHdl( shtCmd *self, struct SHEET *p_sht, void *arg)
-{
-	keyboardHMI	*cthis = SUB_PTR( self, shtCmd, keyboardHMI);
-	HMI			*selfHmi = SUPER_PTR( cthis, HMI);
-	HMI		*srcHmi = ( HMI *)arg;
-	
-	cthis->p_shtInput = p_sht;
-	srcHmi->switchHMI( srcHmi, selfHmi);
-	
-}
+//static void KeyboardEnterCmdHdl( shtCmd *self, struct SHEET *p_sht, void *arg)
+//{
+//	keyboardHMI	*cthis = SUB_PTR( self, shtCmd, keyboardHMI);
+//	HMI			*selfHmi = SUPER_PTR( cthis, HMI);
+//	HMI		*srcHmi = ( HMI *)arg;
+//	
+//	cthis->p_shtInput = p_sht;
+//	srcHmi->switchHMI( srcHmi, selfHmi);
+//	
+//}
 
 static int	Default_input(void *self, void *data, int len)
 {

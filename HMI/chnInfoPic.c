@@ -5,6 +5,9 @@
 #include "format.h"
 #include "mem/CiiMem.h"
 
+#include "model_conf.h"
+
+
 //提供 按键，事件，消息，窗口，报警，时间，复选框的图层
 //这些图层可能会被其他界面所使用
 //============================================================================//
@@ -103,40 +106,40 @@ static sheet * CIF_build( char num, CIF_piccode_t *p_code);
 
 
 
-void Bulid_ChnData(sheet **pp_shts, void *code, int ( *update)( void *p_sht, void *p_srcMdl))
-{
-	
-	Expr 			*p_exp ;
-	shtctl 			*p_shtctl = NULL;
-	Model			*p_mdl = NULL;
-	short 			i;
-	
-	
-	
-	p_shtctl = GetShtctl();
+//void Bulid_ChnData(sheet **pp_shts, void *code, int ( *update)( void *p_sht, void *p_srcMdl))
+//{
+//	
+//	Expr 			*p_exp ;
+//	shtctl 			*p_shtctl = NULL;
+//	Model			*p_mdl = NULL;
+//	short 			i;
+//	
+//	
+//	
+//	p_shtctl = GetShtctl();
 
-	for( i = 0; i < BARHMI_NUM_BARS; i++) {
-		
-		
-		p_exp = ExpCreate("text");
-		pp_shts[i] = Sheet_alloc( p_shtctl);
-		p_exp->inptSht( p_exp, code, pp_shts[i]) ;
-		pp_shts[i]->cnt.colour = arr_clrs[i];
-		pp_shts[i]->id = i;
-//		pp_shts[i]->cnt.mdl_aux = AUX_DATA;
-		
-		if(update) {
-			pp_shts[i]->update = update;
-			
-			
-			
-		}
-		
-		//todo: 改成通道
-		p_mdl = pp_shts[i]->p_mdl;
-		p_mdl->attach(p_mdl, (Observer *)pp_shts[i]);
-	}
-}
+//	for( i = 0; i < BARHMI_NUM_BARS; i++) {
+//		
+//		
+//		p_exp = ExpCreate("text");
+//		pp_shts[i] = Sheet_alloc( p_shtctl);
+//		p_exp->inptSht( p_exp, code, pp_shts[i]) ;
+//		pp_shts[i]->cnt.colour = arr_clrs[i];
+//		pp_shts[i]->id = i;
+////		pp_shts[i]->cnt.mdl_aux = AUX_DATA;
+//		
+////		if(update) {
+////			pp_shts[i]->update = update;
+////			
+////			
+////			
+////		}
+//		
+//		//todo: 改成通道
+////		p_mdl = pp_shts[i]->p_mdl;
+//		p_mdl->attach(p_mdl, (mdl_observer *)pp_shts[i]);
+//	}
+//}
 
 
 

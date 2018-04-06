@@ -24,6 +24,7 @@
 .\objects\focus.o: ..\..\sdhLib\inc\basis/assert.h
 .\objects\focus.o: ..\..\sdhLib\inc\basis/except.h
 .\objects\focus.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\setjmp.h
+.\objects\focus.o: ..\..\configs\model_conf.h
 .\objects\focus.o: ..\..\model\Model_channel.h
 .\objects\focus.o: ..\..\APP\system.h
 .\objects\focus.o: ..\..\..\PplRcd\utils/time.h

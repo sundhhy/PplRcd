@@ -37,11 +37,11 @@ typedef struct {
 	
 }video_t;
 
-INTERFACE( shtCmd)
-{
-	
-	void (*shtExcute)( shtCmd *self, struct SHEET *p_sht, void *arg);
-};
+//INTERFACE( shtCmd)
+//{
+//	
+//	void (*shtExcute)( shtCmd *self, struct SHEET *p_sht, void *arg);
+//};
 
 
 
@@ -51,9 +51,7 @@ INTERFACE( shtCmd)
 //};
 
 /* sheet.c   */
-typedef struct SHEET {
-	int ( *update)( void *p_sht, void *p_srcMdl);	//注意：必须放在第一个位置
-	
+typedef struct SHEET {	
 	subShtAtt_t		subAtt;
 	struct SHEET	**pp_sub;
 	
@@ -68,13 +66,12 @@ typedef struct SHEET {
 	uint8_t		col_inv;
 	
 	uint8_t		id;
-	uint8_t		e_heifht;		//在调用Sheet_slide 时将其与height 相加作为是否显示的依据
-	uint8_t		none[2];
+//	uint8_t		e_heifht;		//在调用Sheet_slide 时将其与height 相加作为是否显示的依据
+	uint8_t		none[3];
 	
 	dspContent_t	cnt;
 	vArea_t			area;
 	Glyph			*p_gp;
-	Model			*p_mdl;
 	
 	//键盘相关
 //	shtCmd		*p_enterCmd;
@@ -107,7 +104,7 @@ struct SHEET *Sheet_alloc( struct SHTCTL *p_ctl);
 void Sheet_setbuf( struct SHEET *p_sht, uint8_t *buf, int bxsize, int bysize, int col_inv);
 void Sheet_updown( struct SHEET *p_sht, int height);
 void Sheet_append( struct SHEET *p_sht);
-int ShtUpdate( void *p_sht, void *p);
+//int ShtUpdate( void *p_sht, void *p);
 // void sheet_refresh( struct SHTCTL *p_ctl);
 void Sheet_refresh( struct SHEET *p_sht);
 void Sheet_slide(  struct SHEET *p_sht);

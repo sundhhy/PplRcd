@@ -28,6 +28,7 @@
 .\objects\picexpr.o: ..\..\model\Model.h
 .\objects\picexpr.o: ..\..\sdhLib\inc\arithmetic/list.h
 .\objects\picexpr.o: ..\..\sdhLib\inc\basis/assert.h
+.\objects\picexpr.o: ..\..\configs\model_conf.h
 .\objects\picexpr.o: ..\..\model\Model_channel.h
 .\objects\picexpr.o: ..\..\APP\system.h
 .\objects\picexpr.o: ..\..\..\PplRcd\utils/time.h

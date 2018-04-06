@@ -26,8 +26,8 @@ const Except_T Hmi_Failed = { "HMI Failed" };
 // global function prototypes
 //------------------------------------------------------------------------------
 HMI *g_p_curHmi;
-HMI *g_p_lastHmi;
-HMI *g_p_win_last;
+//HMI *g_p_lastHmi;
+//HMI *g_p_win_last;
 
 keyboard_commit	kbr_cmt = NULL;
 //============================================================================//
@@ -49,14 +49,14 @@ keyboard_commit	kbr_cmt = NULL;
 //------------------------------------------------------------------------------
 
 static HMI *arr_him_histroy[KEEP_NUM_HMI];
- 
+static HMI *change_last_hmi;	
 //------------------------------------------------------------------------------
 // local function prototypes
 //------------------------------------------------------------------------------
 static void	HmiShow( HMI *self);
 static void	HMI_Run( HMI *self);
-static void	SwitchHMI( HMI *self, HMI *p_hmi);
-static void	SwitchBack( HMI *self);
+static void	SwitchHMI( HMI *self, HMI *p_hmi, uint32_t	att_flag);
+static void	SwitchBack( HMI *self, uint32_t	att_flag);
 static void HitHandle( HMI *self, char kcd);
 static void LngpshHandle( HMI *self, char kcd);
 static void DHitHandle( HMI *self, char kcd);
@@ -73,7 +73,7 @@ static int		HMI_Btn_forward(HMI *self);
 static int		HMI_Btn_backward(HMI *self);
 static void		HMI_Btn_jumpout(HMI *self);
 //static void		HMI_Btn_hit(HMI *self);
-static void HMI_Flush(void);		//定期刷屏
+static void HMI_Flush(void *);		//定期刷屏
 
 
 static void HMI_Push_hmi(HMI *h);
@@ -96,13 +96,107 @@ void Set_flag_show(uint8_t	*p_flag, int val)
 int HMI_Init(void)
 {
 	
-	HMI 			*p_mainHmi;
-	p_mainHmi = CreateHMI( HMI_MAIN);
-	p_mainHmi->init( p_mainHmi, NULL);
-	p_mainHmi->switchHMI(p_mainHmi, p_mainHmi);
-	Cmd_Rgt_time_task(HMI_Flush, HMI_FLUSH_CYCLE_S);
+	Button					*p_btn;
+	Progress_bar			*p_bar;
+	Curve					*p_crv;
+	CMP_tips				*p_tips;
+	HMI 					*p_hmi;
+	HMI 					*p_HMI_main;
+
+	
+	
+	//初始化界面组件
+	p_btn = BTN_Get_Sington();
+	p_btn->init(p_btn);
+	p_bar = PGB_Get_Sington();
+	p_bar->init(p_bar);
+	p_crv = CRV_Get_Sington();
+	p_crv->init(p_crv, NUM_CHANNEL);
+	p_tips = TIP_Get_Sington();
+	p_tips->init(p_tips);
+	
+
+	phn_sys.hmi_mgr.hmi_sem = Alloc_sem();
+	Sem_init(&phn_sys.hmi_mgr.hmi_sem);
+	Sem_post(&phn_sys.hmi_mgr.hmi_sem);
+	
+	
+	//初始化各个界面
+
+	
+	p_hmi = Create_HMI(HMI_CMM);
+	p_hmi->init(p_hmi, NULL);
+	
+	p_hmi = Create_HMI(HMI_KYBRD);
+	p_hmi->init(p_hmi, NULL);
+	
+	p_hmi = Create_HMI(HMI_MENU);
+	p_hmi->init(p_hmi, NULL);
+	
+	p_hmi = Create_HMI(HMI_BAR);
+	p_hmi->init(p_hmi, NULL);
+	
+	p_hmi = Create_HMI(HMI_DATA);
+	p_hmi->init(p_hmi, NULL);
+	
+	p_hmi = Create_HMI(HMI_RLT_TREND);
+	p_hmi->init(p_hmi, NULL);
+	
+	p_hmi = Create_HMI(HMI_NWS);
+	p_hmi->init(p_hmi, NULL);
+	
+	p_hmi = Create_HMI(HMI_ACCM);
+	p_hmi->init(p_hmi, NULL);
+	
+	p_hmi = Create_HMI(HMI_SETUP);
+	p_hmi->init(p_hmi, NULL);
+	
+	p_hmi = Create_HMI(HMI_STRIPED_BKG);
+	p_hmi->init(p_hmi, NULL);
+	
+	p_hmi = Create_HMI(HMI_WINDOWS);
+	p_hmi->init(p_hmi, NULL);
+	
+	
+	p_HMI_main = Create_HMI(HMI_MAIN);
+	p_HMI_main->init( p_HMI_main, NULL);
+	
+	
+	p_HMI_main->switchHMI(NULL, p_HMI_main, 0);
+	Cmd_Rgt_time_task(HMI_Flush, NULL, HMI_FLUSH_CYCLE_S);
 	
 	return RET_OK;
+}
+
+void	HMI_Attach_model_chn(int  *fds, mdl_observer *mdl_obs)
+{
+	int			i;
+	Model		*p_mdl;
+	char		chn_name[8];
+	
+	for(i = 0; i < NUM_CHANNEL; i++)
+	{
+		
+		sprintf(chn_name,"chn_%d", i);
+		p_mdl = Create_model(chn_name);
+		fds[i] = p_mdl->attach(p_mdl, mdl_obs);
+	}
+}
+
+void	HMI_detach_model_chn(int  *fds)
+{
+	
+	int			i;
+	Model		*p_mdl;
+	char		chn_name[8];
+	
+	for(i = 0; i < NUM_CHANNEL; i++)
+	{
+		
+		sprintf(chn_name,"chn_%d", i);
+		p_mdl = Create_model(chn_name);
+		p_mdl->detach(p_mdl, fds[i]);
+	}
 }
 
 //void Set_flag_keyhandle(uint8_t	*p_flag, int val)
@@ -112,7 +206,11 @@ int HMI_Init(void)
 //	*p_flag |= val;
 //}
 
-
+void HMI_Change_last_HMI(HMI *p)
+{
+	
+	change_last_hmi = p;
+}
 
 
 
@@ -148,9 +246,9 @@ END_ABS_CTOR
 //                                                                         //
 //=========================================================================//
 
-static void HMI_Flush(void)
+static void HMI_Flush(void *arg)
 {
-	Cmd_Rgt_time_task(HMI_Flush, HMI_FLUSH_CYCLE_S);
+	Cmd_Rgt_time_task(HMI_Flush, NULL, HMI_FLUSH_CYCLE_S);
 	if(Sem_wait(&phn_sys.hmi_mgr.hmi_sem, 1000) <= 0)
 		return;
 	g_p_curHmi->show(g_p_curHmi);
@@ -171,85 +269,216 @@ static void	HMI_Run( HMI *self)
 	
 }
 
-static void	SwitchHMI( HMI *self, HMI *p_hmi)
+static void	SwitchHMI( HMI *self, HMI *p_hmi, uint32_t	att_flag)
 {
 	HMI		*save_last_case_err = NULL;		//如果切换发生错误，就要恢复之前的旧画面
 	if( p_hmi == NULL)
 		return;
-	if(p_hmi ==  g_p_winHmi ) {
-		
-		g_p_win_last = self;
-	} else if((self != p_hmi) && (self != g_p_winHmi)) {		//切换到不同的界面上，才更新
-		save_last_case_err = g_p_lastHmi;
-		g_p_lastHmi = g_p_curHmi;
-		
-	}
-	phn_sys.key_weight = 1;
-	
-	g_p_curHmi = p_hmi;
-	
 	
 	if(Sem_wait(&phn_sys.hmi_mgr.hmi_sem, 1000) <= 0)
-		return;
-	
+		return;	
+	//把本界面切出
+		//如果本画面是空值，说明不需要对本画面进行切出操作
+		//在上电启动显示第一幅画面时就出现这种情况
+	if(self == NULL)
+		goto show_target;
+		//本画面切出成功，则把本画面装入历史画面列表
+			//如果本画面与目标画面相同，那就不必保存到历史列表了	\
+				一般是画面需要重新显示的时候会出现这种情况
 	Set_flag_show(&self->flag, 0);
 	self->hide(self);
 	self->clean_cmp(self);
 	
-	re_show:
-	p_hmi->initSheet( p_hmi);
-	if(p_hmi->flag & HMI_FLAG_ERR)		//切换发生错误，就切回原画面
+	if(self == p_hmi)
+		goto show_target; 
+	
+	if(att_flag & HMI_ATT_NOT_RECORD)
+		goto show_target; 
+	
+	if(change_last_hmi)
 	{
-		g_p_lastHmi = save_last_case_err;
-		g_p_curHmi = self;
-		p_hmi = self;
-		p_hmi->flag |= HMI_FLAG_KEEP;
-		
-		goto re_show;
+		HMI_Push_hmi(change_last_hmi);
+		change_last_hmi = NULL;
 		
 	}
+	else
+		HMI_Push_hmi(self);
+	
+	show_target:
+	//显示目标画面
+		//目标画面显示失败，则要切换回原来的画面
+		//把当前画面设置为目标画面
+	p_hmi->initSheet( p_hmi, att_flag);
+	if(p_hmi->flag & HMI_FLAG_ERR)		//切换发生错误，就切回原画面
+	{
+		p_hmi = self;
+		att_flag = HMI_ATT_KEEP;
+		goto show_target;
 		
+	}
 	
+	
+		
+	p_hmi->flag |= HMI_FLAG_HSA_SEM;
 	p_hmi->build_component(p_hmi);
-	p_hmi->show( p_hmi);
-	
-	
 	Set_flag_show(&p_hmi->flag, 1);
+
+	
+	p_hmi->show( p_hmi);
 	p_hmi->show_cmp(p_hmi);
 	
-	p_hmi->flag &= ~HMI_FLAG_KEEP;
+	g_p_curHmi = p_hmi;
+	p_hmi->flag &= ~HMI_FLAG_HSA_SEM;
 	
 	Sem_post(&phn_sys.hmi_mgr.hmi_sem);
 	
+	
+	return;
+//	err:
+//		Sem_post(&phn_sys.hmi_mgr.hmi_sem);
+//		self->switchBack(self, HMI_ATT_SELF_ERR | HMI_ATT_KEEP);
+	
+//	if(p_hmi ==  g_p_winHmi ) {
+//		
+//		g_p_win_last = self;
+//	} else if((self != p_hmi) && (self != g_p_winHmi)) {		//切换到不同的界面上，才更新
+//		save_last_case_err = g_p_lastHmi;
+//		g_p_lastHmi = g_p_curHmi;
+//		
+//	}
+	
+
+		
+	
+//	phn_sys.key_weight = 1;
+//	
+//	
+//	
+//	
+//	if(Sem_wait(&phn_sys.hmi_mgr.hmi_sem, 1000) <= 0)
+//		return;
+//	
+//	if(self == NULL)
+//	{
+//		goto show_target;
+//		
+//	}
+//	
+//	
+//	
+//	
+//	Set_flag_show(&self->flag, 0);
+//	self->hide(self);
+//	self->clean_cmp(self);
+//	
+//	if(self != p_hmi)
+//	{
+//		if(change_last_hmi)
+//		{
+//			HMI_Push_hmi(change_last_hmi);
+//			change_last_hmi = NULL;
+//			
+//		}
+//		else
+//			HMI_Push_hmi(self);
+//		
+//	}
+//	
+//	
+//	
+//	show_target:
+//	p_hmi->initSheet( p_hmi);
+//	if(p_hmi->flag & HMI_FLAG_ERR)		//切换发生错误，就切回原画面
+//	{
+//		g_p_lastHmi = save_last_case_err;
+//		g_p_curHmi = self;
+//		p_hmi = self;
+//		p_hmi->flag |= HMI_FLAG_KEEP;
+//		
+//		goto show_target;
+//		
+//	}
+//	
+//	
+//		
+//	p_hmi->flag |= HMI_FLAG_HSA_SEM;
+//	p_hmi->build_component(p_hmi);
+//	p_hmi->show( p_hmi);
+//	
+////	p_hmi->show( p_hmi);
+//	
+//	
+//	Set_flag_show(&p_hmi->flag, 1);
+//	p_hmi->show_cmp(p_hmi);
+////	p_hmi->show_cmp(p_hmi);
+//	
+//	p_hmi->flag &= ~HMI_FLAG_KEEP;
+//	g_p_curHmi = p_hmi;
+//	Sem_post(&phn_sys.hmi_mgr.hmi_sem);
+//	p_hmi->flag &= ~HMI_FLAG_HSA_SEM;
 }
 
-static void	SwitchBack( HMI *self)
+static void	SwitchBack( HMI *self, uint32_t	att_flag)
 {
-	HMI *nowHmi = g_p_lastHmi;
-	if(g_p_lastHmi == NULL)
+	HMI *p_hmi = HMI_Pop_hmi();
+	if(p_hmi == NULL)
 		return;
 	
 	if(Sem_wait(&phn_sys.hmi_mgr.hmi_sem, 1000) <= 0)
 		return;
 	
-	g_p_lastHmi = g_p_curHmi;
-	g_p_curHmi = nowHmi;
+	g_p_curHmi = p_hmi;
 	
 	phn_sys.key_weight = 1;
 	Set_flag_show(&self->flag, 0);
+	
+	if(att_flag & HMI_ATT_SELF_ERR)
+		goto show_last;
 	self->hide( self);
 	self->clean_cmp(self);
 	
+	show_last:
+	p_hmi->flag |= HMI_FLAG_HSA_SEM;
+	p_hmi->initSheet(p_hmi, att_flag & ~HMI_ATT_SELF_ERR);
+	p_hmi->build_component(p_hmi);
+	p_hmi->show(p_hmi);
 	
-	nowHmi->initSheet( nowHmi);
-	nowHmi->build_component(nowHmi);
-	nowHmi->show( nowHmi);
-	
-	nowHmi->flag &= ~HMI_FLAG_KEEP;
-	Set_flag_show(&nowHmi->flag, 1);
-	nowHmi->show_cmp(nowHmi);
+//	p_hmi->flag &= ~HMI_FLAG_KEEP;
+	Set_flag_show(&p_hmi->flag, 1);
+	p_hmi->show_cmp(p_hmi);
 	
 	Sem_post(&phn_sys.hmi_mgr.hmi_sem);
+	p_hmi->flag &= ~HMI_FLAG_HSA_SEM;
+	
+	
+//	HMI *p_hmi = g_p_lastHmi;
+//	if(p_hmi == NULL)
+//		return;
+//	
+//	if(Sem_wait(&phn_sys.hmi_mgr.hmi_sem, 1000) <= 0)
+//		return;
+//	
+//	g_p_lastHmi = g_p_curHmi;
+//	g_p_curHmi = p_hmi;
+//	
+//	phn_sys.key_weight = 1;
+//	Set_flag_show(&self->flag, 0);
+//	
+//	
+//	self->hide( self);
+//	self->clean_cmp(self);
+//	
+//	p_hmi->flag |= HMI_FLAG_HSA_SEM;
+//	p_hmi->initSheet( p_hmi);
+//	p_hmi->build_component(p_hmi);
+//	p_hmi->show( p_hmi);
+//	
+//	p_hmi->flag &= ~HMI_FLAG_KEEP;
+//	Set_flag_show(&p_hmi->flag, 1);
+//	p_hmi->show_cmp(p_hmi);
+//	
+//	Sem_post(&phn_sys.hmi_mgr.hmi_sem);
+//	p_hmi->flag &= ~HMI_FLAG_HSA_SEM;
 }
 
 
@@ -270,42 +499,28 @@ static void DHitHandle( HMI *self, char kcd)
 
 static void ConposeKeyHandle(HMI *self, char kcd_1, char kcd_2)
 {
+	HMI *p_hsb = Create_HMI(HMI_SETUP);
 		if(kcd_1 == KEYCODE_RIGHT && kcd_2 == KEYCODE_LEFT)
 		{
 			phn_sys.sys_flag |= SYSFLAG_SETTING;
-			self->switchHMI(self, g_p_Setup_HMI);
+			self->switchHMI(self, p_hsb, 0);
 
 		} 
 		else if(kcd_2 == KEYCODE_RIGHT && kcd_1 == KEYCODE_LEFT) {
 			phn_sys.sys_flag |= SYSFLAG_SETTING;
-			self->switchHMI(self, g_p_Setup_HMI);
+			self->switchHMI(self, p_hsb, 0);
 		}
 		else if(kcd_2 == KEYCODE_UP && kcd_1 == KEYCODE_DOWN) {
-			self->switchBack(self);
+			self->switchBack(self, 0);
 
 		}
 		else if(kcd_2 == KEYCODE_DOWN && kcd_1 == KEYCODE_UP) {
-			self->switchBack(self);
+			self->switchBack(self, 0);
 
 		}
 	
 	
-//	if( !strcmp( s_key1, HMIKEY_LEFT) && !strcmp( s_key2, HMIKEY_RIGHT))
-//	{
 
-//		phn_sys.sys_flag |= SYSFLAG_SETTING;
-//		self->switchHMI(self, g_p_Setup_HMI);
-//	} 
-//	else if( !strcmp( s_key1, HMIKEY_RIGHT) && !strcmp( s_key2, HMIKEY_LEFT)) {
-//		phn_sys.sys_flag |= SYSFLAG_SETTING;
-//		self->switchHMI(self, g_p_Setup_HMI);
-//	}
-//	else if( !strcmp( s_key1, HMIKEY_UP) && !strcmp( s_key2, HMIKEY_DOWN)) {
-//		self->switchBack(self);
-//	}
-//	else if( !strcmp( s_key2, HMIKEY_UP) && !strcmp( s_key1, HMIKEY_DOWN)) {
-//		self->switchBack(self);
-//	}
 	
 	
 }
@@ -378,17 +593,7 @@ static void		HMI_Show_cmp(HMI *self)
 	p_crv->crv_show_bkg();
 	p_tips->show_tips();
 	
-	for(i = 0; i < NUM_CHANNEL; i++)
-	{
-		if(g_arr_p_chnData[i]->update)
-			g_arr_p_chnData[i]->update(g_arr_p_chnData[i], NULL);
-		if(g_arr_p_chnUtil[i]->update)
-			g_arr_p_chnUtil[i]->update(g_arr_p_chnUtil[i], NULL);
-		if(g_arr_p_chnAlarm[i]->update)
-			g_arr_p_chnAlarm[i]->update(g_arr_p_chnAlarm[i], NULL);
-		
-		
-	}
+
 }
 
 static int		HMI_Btn_forward(HMI *self)
