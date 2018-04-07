@@ -44,3 +44,4 @@
 .\objects\storage.o: ..\..\..\PplRcd\utils/rtc_pcf8563.h
 .\objects\storage.o: ..\..\..\PplRcd\utils/rtc.h
 .\objects\storage.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
+.\objects\storage.o: ..\..\utils\log.h

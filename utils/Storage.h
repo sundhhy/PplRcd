@@ -18,6 +18,7 @@
 #define STG_CHN_ALARM(n)				(0x30 + n)
 #define STG_CHN_SUM(n)				(0x40 + n)
 #define STG_LOSE_PWR					(0x50)
+#define STG_LOG							(0x60)
 
 #define	IS_CHN_CONF(type)				(type < NUM_CHANNEL)
 #define	IS_SYS_CONF(type)				(type == 0x10)
@@ -25,6 +26,7 @@
 #define	IS_CHN_ALARM(type)			((type & 0xf0) == 0x30)
 #define	IS_CHN_SUM(type)			((type & 0xf0) == 0x40)
 #define	IS_LOSE_PWR(type)				(type == 0x50)
+#define	IS_LOG(type)				(type == 0x60)
 
 #define STG_GET_CHN(type)				(type & 0x0f)
 
@@ -42,6 +44,9 @@
 
 #define STG_MAX_NUM_CHNALARM			24		//每个通道的最大报警数量	
 #define STG_MAX_NUM_LST_PWR				24
+
+#define STG_LOG_FILE_SIZE					3600		//FM25L64的剩余部分全部用于存储日志		
+
 //------------------------------------------------------------------------------
 // typedef
 //------------------------------------------------------------------------------
@@ -58,6 +63,8 @@ typedef struct {
 	uint32_t		happen_time_s;
 	uint32_t		disapper_time_s;
 }rcd_alm_pwr_t;
+
+
 
 typedef struct {
 	char			enable_sum;

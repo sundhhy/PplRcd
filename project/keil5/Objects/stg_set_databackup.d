@@ -71,3 +71,4 @@
 .\objects\stg_set_databackup.o: ..\..\configs\hardwareConfig.h
 .\objects\stg_set_databackup.o: ..\..\APP\sys_cmd.h
 .\objects\stg_set_databackup.o: ..\..\..\PplRcd\utils/Storage.h
+.\objects\stg_set_databackup.o: ..\..\..\PplRcd\utils/log.h

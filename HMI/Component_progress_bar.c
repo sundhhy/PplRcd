@@ -219,9 +219,9 @@ static uint8_t 	PGB_Build_bar(bar_object_t  *b)
 	
 	
 	
-	
+	//计算提示字符的位置
 	arr_pgb[i].p_tip_text->p_gp->getSize(arr_pgb[i].p_tip_text->p_gp, arr_pgb[i].p_tip_text->cnt.font, &tip_sizex, &tip_sizey);
-	tip_sizex = tip_sizex * 3;	//最长的值是100
+	tip_sizex = tip_sizex * 4;	//最长的值是100
 	if(b->bar_frm.bar_towards == PGB_TWD_CROSS)		
 	{
 		
@@ -240,7 +240,7 @@ static uint8_t 	PGB_Build_bar(bar_object_t  *b)
 				arr_pgb[i].p_tip_text->area.y0 = b->bar_frm.bar_y0 + (b->bar_frm.bar_width - tip_sizex) / 2;
 				break;
 			case PGB_TIP_RIGHT:
-				arr_pgb[i].p_tip_text->area.x0 = b->bar_frm.bar_x0 + b->bar_frm.bar_len;
+				arr_pgb[i].p_tip_text->area.x0 = b->bar_frm.bar_x0 + b->bar_frm.bar_len + 8;
 				arr_pgb[i].p_tip_text->area.y0 = b->bar_frm.bar_y0 + (b->bar_frm.bar_width - tip_sizey) / 2;
 				break;
 			

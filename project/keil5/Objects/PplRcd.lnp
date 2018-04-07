@@ -56,6 +56,7 @@
 ".\objects\storage.o"
 ".\objects\times.o"
 ".\objects\phn_string.o"
+".\objects\log.o"
 ".\objects\sheet.o"
 ".\objects\sheetmemento.o"
 ".\objects\chninfopic.o"

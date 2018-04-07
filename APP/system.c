@@ -11,7 +11,7 @@
 #include "utils/rtc_pcf8563.h"
 #include "utils/hw_w25q.h"
 #include "utils/FM25.h"
-
+#include "utils/log.h"
 
 #include "fs/easy_fs.h"
 #include "utils/Storage.h"
@@ -23,7 +23,7 @@
 // const defines
 //------------------------------------------------------------------------------
 #define 	PHN_MAJOR_VER				3
-#define 	PHN_MINOR_VER				1
+#define 	PHN_MINOR_VER				17
 
 
 const unsigned short daytab[13]={0,31,59,90,120,151,181,212,243,273,304,334,365};//非闰年月份累积天数
@@ -210,6 +210,7 @@ void System_init(void)
 	
 	System_power_on();
 	
+	LOG_Init();
 	stg->rd_stored_data(stg, STG_SYS_CONF, &phn_sys.sys_conf, sizeof(phn_sys.sys_conf));
 	if(phn_sys.sys_conf.num_chn != NUM_CHANNEL)
 		System_default();

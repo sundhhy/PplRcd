@@ -3,7 +3,7 @@
 #include "ModelFactory.h"
 #include "system.h"
 #include <string.h>
-
+#include "utils/log.h"
 //============================================================================//
 //            G L O B A L   D E F I N I T I O N S                             //
 //============================================================================//
@@ -348,7 +348,7 @@ static int Sys_key_rt(void *arg)
 		}
 		
 	} else {
-		p_syf->f_row = Operate_in_tange(p_syf->f_row, OP_ADD, 1, 11, 13);
+		p_syf->f_row = Operate_in_tange(p_syf->f_row, OP_ADD, 1, 11, 14);
 		
 		if(p_syf->f_row == 11)
 		{
@@ -406,7 +406,7 @@ static int Sys_key_lt(void *arg)
 			//只有超过范围才会反转
 			ret = -1;
 		}
-		p_syf->f_row = Operate_in_tange(p_syf->f_row, OP_SUB, 1, 11, 13);
+		p_syf->f_row = Operate_in_tange(p_syf->f_row, OP_SUB, 1, 11, 14);
 		
 		
 	}
@@ -430,7 +430,7 @@ static int Sys_key_er(void *arg)
 	case 1:
 		g_sys_strategy.cmd_hdl(g_sys_strategy.p_cmd_rcv, sycmd_win_psd, arr_p_vram[p_syf->f_row]);
 		break;
-	case 13:
+	case 14:
 		//恢复出厂设置，应该不只是恢复系统设置，包括通道设置等，应该也要恢复
 		Win_content("确认恢复出厂设置？");
 		g_sys_strategy.cmd_hdl(g_sys_strategy.p_cmd_rcv, sycmd_win_tips, arr_p_vram[p_syf->f_row]);
@@ -469,9 +469,10 @@ static int Sys_commit(void *arg)
 //	case 1:
 //		Str_set_password(arr_p_vram[p_syf->f_row]);
 //		break;
-//	case 13:
-//		System_default();
-//		break;
+	case 14:
+		LOG_Add(LOG_Factory_Reset);
+		System_default();
+		break;
 //	default:
 //		ret = ERR_OPT_FAILED;
 //		break;

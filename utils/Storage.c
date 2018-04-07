@@ -1,6 +1,7 @@
 #include "Storage.h"
 #include "sdhDef.h"
 #include <string.h>
+#include "log.h"
 //============================================================================//
 //            G L O B A L   D E F I N I T I O N S                             //
 //============================================================================//
@@ -23,8 +24,7 @@
 #define STG_SUM_FILE_SIZE 				NUM_CHANNEL * STG_CHN_SUM_FILE_SIZE
 
 
-#define STG_PAS_SIZE								(STG_PWR_FILE_SIZE  + STG_ALARM_FILE_SIZE + STG_SUM_FILE_SIZE)
-
+#define STG_PAS_SIZE					(STG_PWR_FILE_SIZE  + STG_ALARM_FILE_SIZE + STG_SUM_FILE_SIZE)
 //------------------------------------------------------------------------------
 // module global vars
 //------------------------------------------------------------------------------
@@ -94,7 +94,7 @@ static int	STG_Acc_chn_conf(uint8_t	tp, uint8_t	drc, void *p);
 static int	STG_Acc_chn_alarm(uint8_t	type, uint8_t	drc, void *p, int len);
 static int	STG_Acc_chn_data(uint8_t	type, uint8_t	drc, void *p, int len);
 static int	STG_Acc_chn_sum(uint8_t	type, uint8_t	drc, void *p, int len);
-
+static int	STG_Acc_file(uint8_t	type, uint8_t	drc, void *p, int len);
 static int	STG_Acc_sys_conf(uint8_t	drc, void *p);
 static int	STG_Acc_lose_pwr(uint8_t	drc, void *p, int len);
 
@@ -462,34 +462,22 @@ END_CTOR
 
 static int Strg_init(Storage *self)
 {
-//	Model 		*p_md;
-//	char			chn_name[7];
-//	char			i;
-//	uint16_t	pg_size;
-//	uint32_t	num_pg;
-//	for(i = 0; i < NUM_CHANNEL; i++)
-//	{
-//		sprintf(chn_name,"chn_%d", i);
-//		p_md = Create_model(chn_name);
-//	}
-//	
-//	pg_size = STRG_SYS.arr_fsh[STRG_FSH_NUM].fnf.page_size;
-//	num_pg = STRG_SYS.arr_fsh[STRG_FSH_NUM].fnf.total_pagenum;
+//	int i;
+
+
 	
+	/*  把所有的文件按照固定的顺序打开一遍，来保证每个仪表在第一次上电时，文件的存储位置是一致的*/
+	//这里只处理FM25上的文件
+	//通道的数据文件，会自行根据先后顺序排列
+	STG_Open_file(STG_SYS_CONF, STG_DEF_FILE_SIZE);
 	
+	//掉电信息以及素有通道的报警和累积信息都是在同一个文件里面的，因此打开一次就行
+	STG_Open_file(STG_CHN_ALARM(0), STG_DEF_FILE_SIZE);			
+
+	STG_Open_file(STG_LOG, STG_DEF_FILE_SIZE);
 	
+
 	
-//	self->rcd_mgr_fd = STRG_SYS.fs.fs_open(STRG_FSH_NUM, "mdl_chn.mgr", "rw", sizeof(rcd_mgr_t) * NUM_CHANNEL);
-//	self->alarm_fd = STRG_SYS.fs.fs_open(STRG_FSH_NUM, "mdl_chn.alm", "rw", 4096);
-//	self->lose_pwr_fd = STRG_SYS.fs.fs_open(STRG_FSH_NUM, "lose_pwr", "rw", 4096);
-////	num_pg --;
-////	//为了减少w25q的擦写次数，把所有通道都记录在一个文件里面，这样在切换记录通的时候，能够尽量在同一个扇区内
-//	self->rcd_fd = STRG_SYS.fs.fs_open(STRG_FSH_NUM, "mdl_chn.rcd", "rw",pg_size * num_pg - sizeof(self->arr_rcd_mgr));
-//	Strg_Updata_rcd_mgr(0, NULL);
-//	if((self->alarm_fd >= 0) && (self->lose_pwr_fd >= 0))
-//		return RET_OK;
-//	else
-//		return ERR_FS_OPEN_FAIL;
 	
 	return RET_OK;
 	
@@ -531,7 +519,11 @@ static int	Strg_rd_stored_data(Storage *self, uint8_t	cfg_type, void *buf, int l
 		ret = STG_Acc_chn_sum(cfg_type, STG_DRC_READ, buf, len);
 		
 	}
-	
+	else
+	{
+		ret = STG_Acc_file(cfg_type, STG_DRC_READ, buf, len);
+		
+	}
 	return ret;
 	
 }
@@ -572,6 +564,11 @@ static int		Strg_WR_stored_data(Storage *self, uint8_t	cfg_type, void *buf, int 
 		ret = STG_Acc_chn_sum(cfg_type, STG_DRC_WRITE, buf, len);
 		
 	}
+	else
+	{
+		
+		ret = STG_Acc_file(cfg_type, STG_DRC_WRITE, buf, len);
+	}
 	
 	return ret;
 }
@@ -589,6 +586,9 @@ static void Strg_Updata_rcd_mgr(uint8_t	num, mdl_chn_save_t *p)
 	stg->arr_rcd_mgr[num].rcd_count = fnf->write_position / sizeof(data_in_fsh_t);
 	
 	if(p == NULL)
+		return;
+	//存储的信息有效判断
+	if(p_save->small_signal == 0xff)
 		return;
 	//如果文件的大小没有发生变化，下面这条语句不会执行任何操作
 	//大小发生变化的话就会去执行文件大小重新分配额
@@ -733,7 +733,26 @@ static int	STG_Acc_chn_alarm(uint8_t	type, uint8_t	drc, void *p, int len)
 	}
 	
 }
-
+static int	STG_Acc_file(uint8_t	type, uint8_t	drc, void *p, int len)
+{
+	int fd = STG_Open_file(type, STG_DEF_FILE_SIZE);
+	file_info_t	*p_fnf = STRG_SYS.fs.fs_file_info(fd);
+	
+	if(drc == STG_DRC_READ)
+	{
+		if((len + p_fnf->read_position) > p_fnf->file_size)
+			return 0;
+		return STRG_SYS.fs.fs_read(fd, p, len);
+		
+	}
+	else
+	{
+		if((len + p_fnf->write_position) > p_fnf->file_size)
+			return 0;
+		return STRG_SYS.fs.fs_write(fd, p, len);
+	}
+	
+}
 
 static int	STG_Acc_chn_sum(uint8_t	type, uint8_t	drc, void *p, int len)
 {
@@ -793,6 +812,7 @@ static int	STG_Acc_chn_data(uint8_t	type, uint8_t	drc, void *p, int len)
 	{
 		if(stg->arr_rcd_mgr[chn_num].rcd_count >= stg->arr_rcd_mgr[chn_num].rcd_maxcount)
 		{
+			LOG_Add(LOG_CHN_DATA_AUTO_ERASE(chn_num));
 			STRG_SYS.fs.fs_erase_file(fd, 0, 0);
 			stg->arr_rcd_mgr[chn_num].rcd_count = 0;
 		}
@@ -1026,28 +1046,33 @@ static int 	STG_Open_file(uint8_t type, uint32_t file_size)
 	
 	if(IS_SYS_CONF(type))
 	{
-		fd = STRG_SYS.fs.fs_open(STRG_CFG_FSH_NUM, "phn.cfg", "r", 256);
+		fd = STRG_SYS.fs.fs_open(STRG_CFG_FSH_NUM, "phn.cfg", "rw", 256);
 		
 	}
 	else if(IS_CHN_CONF(type))
 	{
 		//通道配置与系统配置存放在同一个文件的不同位置
-		fd = STRG_SYS.fs.fs_open(STRG_CFG_FSH_NUM, "phn.cfg", "r", 256);
+		fd = STRG_SYS.fs.fs_open(STRG_CFG_FSH_NUM, "phn.cfg", "rw", 256);
 		
 	}
 	else if(IS_LOSE_PWR(type))
 	{
-		fd = STRG_SYS.fs.fs_open(STRG_RCD_FSH_NUM, "alm_lost_pwr", "r", STG_PAS_SIZE);
+		fd = STRG_SYS.fs.fs_open(STRG_RCD_FSH_NUM, "alm_lost_pwr", "rw", STG_PAS_SIZE);
 		
 	}
 	else if(IS_CHN_ALARM(type))
 	{
-		fd = STRG_SYS.fs.fs_open(STRG_RCD_FSH_NUM, "alm_lost_pwr", "r", STG_PAS_SIZE);
+		fd = STRG_SYS.fs.fs_open(STRG_RCD_FSH_NUM, "alm_lost_pwr", "rw", STG_PAS_SIZE);
 		
 	}
 	else if(IS_CHN_SUM(type))
 	{
-		fd = STRG_SYS.fs.fs_open(STRG_RCD_FSH_NUM, "alm_lost_pwr", "r", STG_PAS_SIZE);
+		fd = STRG_SYS.fs.fs_open(STRG_RCD_FSH_NUM, "alm_lost_pwr", "rw", STG_PAS_SIZE);
+		
+	}
+	else if(IS_LOG(type))
+	{
+		fd = STRG_SYS.fs.fs_open(STRG_RCD_FSH_NUM, "SDH_LOG.CSV", "rw", STG_LOG_FILE_SIZE);
 		
 	}
 	else if(IS_CHN_DATA(type))
@@ -1055,7 +1080,7 @@ static int 	STG_Open_file(uint8_t type, uint32_t file_size)
 		sprintf(name, "chn_%d", STG_GET_CHN(type));
 		if(file_size == STG_DEF_FILE_SIZE)
 		{
-			fd = STRG_SYS.fs.fs_open(STRG_CHN_DATA_FSH_NUM, name, "wr", \
+			fd = STRG_SYS.fs.fs_open(STRG_CHN_DATA_FSH_NUM, name, "rw", \
 		stg->arr_rcd_mgr[STG_GET_CHN(type)].rcd_maxcount * sizeof(data_in_fsh_t));
 			
 		}

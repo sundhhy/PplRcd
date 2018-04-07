@@ -5,6 +5,7 @@
 #include "os/os_depend.h"
 #include "sys_cmd.h"
 #include "utils/Storage.h"
+#include "utils/log.h"
 //============================================================================//
 //            G L O B A L   D E F I N I T I O N S                             //
 //============================================================================//
@@ -93,6 +94,8 @@ static void DBP_Print_file_type(char *s, char ft);
 static void DBP_Default_file_name(char *s, char ft);
  
 static int	DBP_filename_commit(void *self, void *data, int len);
+ 
+ static void DBP_Focus_file_name(void);	//文件名的前缀'/' 和 后缀'.CSV'不允许选中
 //============================================================================//
 //            P U B L I C   F U N C T I O N S                                 //
 //============================================================================//
@@ -211,7 +214,7 @@ static void DBP_build_component(void *arg)
 	Progress_bar	*p_bar = PGB_Get_Sington();
 	
 	
-	bar_object_t	bob = {{1, 0, 280, STRIPE_SIZE_Y, 0, PGB_TWD_CROSS, FONT_16, PGB_TIP_RIGHT}, \
+	bar_object_t	bob = {{1, 0, 270, STRIPE_SIZE_Y, 0, PGB_TWD_CROSS, FONT_16, PGB_TIP_RIGHT}, \
 		{COLOUR_GREN, COLOUR_GRAY, COLOUR_BLUE, COLOUR_YELLOW}};
 	bob.bar_frm.bar_y0 = Stripe_vy(DBP_row_max + 1);
 	p_btn->build_each_btn(0, BTN_TYPE_MENU, Setting_btn_hdl, arg);
@@ -240,16 +243,16 @@ static void DBP_Default_file_name(char *s, char ft)
 	switch(ft)
 	{
 		case 0:
-			sprintf(s,  "/DATA.CSV");
+			sprintf(s,  "/DATA.CSV  ");
 			break;
 		case 1:
-			sprintf(s, "/ALARM.CSV");
+			sprintf(s, "/ALARM.CSV  ");
 			break;
 		case 2:
 			sprintf(s, "/POWER.CSV  ");
 			break;
 		default:
-			sprintf(s, "        ");
+			sprintf(s, "         ");
 			break;
 		
 	}
@@ -320,7 +323,17 @@ static int DBP_key_dn(void *arg)
 	return ret;
 }
 
-
+static void DBP_Focus_file_name(void)
+{
+	strategy_focus_t *p_syf = &g_DBP_strategy.sf;
+			
+	if(p_syf->f_row == row_file_name)
+	{
+		p_syf->num_byte = strcspn(arr_p_vram[p_syf->f_row], "."); 
+		p_syf->start_byte = 1;
+		p_syf->num_byte -= 1;	// 前缀'/' 和 后缀不允许修改
+	}
+}
 
 static int DBP_key_lt(void *arg)
 {
@@ -350,8 +363,8 @@ static int DBP_key_lt(void *arg)
 		}
 	}
 	p_syf->num_byte = strlen(arr_p_vram[p_syf->f_row]);
-	if(p_syf->f_row == 4)
-		p_syf->num_byte -= strlen(".CSV");	//后缀不允许修改
+	p_syf->start_byte = 0;
+	DBP_Focus_file_name();
 	return ret;
 }
 static int DBP_key_rt(void *arg)
@@ -385,8 +398,8 @@ static int DBP_key_rt(void *arg)
 	}
 	
 	p_syf->num_byte = strlen(arr_p_vram[p_syf->f_row]);
-	if(p_syf->f_row == 4)
-		p_syf->num_byte -= strlen(".csv");	//后缀不允许修改
+	p_syf->start_byte = 0;
+	DBP_Focus_file_name();
 	return ret;
 }
 static int DBP_key_er(void *arg)
@@ -413,10 +426,9 @@ static int DBP_get_focusdata(void *pp_data,  strategy_focus_t *p_in_syf)
 	
 	
 	
-	
+	p_syf->start_byte = 0;
 	p_syf->num_byte = strlen(arr_p_vram[p_syf->f_row]);
-	if(p_syf->f_row == row_file_name)
-		p_syf->num_byte -= strlen(".CSV");	//后缀不允许修改
+	DBP_Focus_file_name();
 	
 	ret = p_syf->num_byte;
 	*pp_vram = arr_p_vram[p_syf->f_row] + p_syf->start_byte;
@@ -463,6 +475,7 @@ static int	DBP_filename_commit(void *self, void *data, int len)
 		len = 7;
 	
 	memset(arr_p_vram[row_file_name], 0, strlen(arr_p_vram[row_file_name]));
+	
 	for(i = 0; i < len; i ++)
 	{
 		//把小写转化成大写
@@ -474,6 +487,8 @@ static int	DBP_filename_commit(void *self, void *data, int len)
 		arr_p_vram[row_file_name][i] = p[i];
 		
 	}
+	if(arr_p_vram[row_file_name][0] != '/')
+		arr_p_vram[row_file_name][0] = '/';
 	return RET_OK;
 }
 
@@ -555,7 +570,8 @@ static void DBP_Copy(void)
 	uint8_t				done_chn = 0;
 //	usb_fd = USB_Open_file(arr_p_vram[4], USB_FM_WRITE | USB_FM_COVER);
 
-	
+	if(strcmp(arr_p_vram[row_file_name], "/SDHLOG.CSV") == 0)
+		copy_file_type = 3;
 	
 	while(done_chn <= copy_num_chn)
 	{
@@ -570,11 +586,21 @@ static void DBP_Copy(void)
 			total = STG_MAX_NUM_CHNALARM;
 			start_sec = 0;
 		}
-		else
+		else if(copy_file_type == 2)
 		{
 			
 			total = STG_MAX_NUM_LST_PWR;
 			start_sec = 0;
+		}
+		else if(copy_file_type == 3)
+		{
+			
+			total = LOG_Get_total_num() * sizeof(rcd_log_t);
+		}
+		else
+		{
+			
+			return;
 		}
 		
 		while(done < total)
@@ -594,10 +620,15 @@ static void DBP_Copy(void)
 				}
 				if(copy_file_type == 0)
 					sprintf(copy_buf,"通道号,日期,时间,值\r\n");
+				else if(copy_file_type == 3)
+				{
+					sprintf(copy_buf,"日期,时间,类型\r\n");
+					LOG_Set_read_position(0);
+				}
 				else 
 					sprintf(copy_buf,"通道号,事件类型,产生日期,产生时间,结束日期,结束时间\r\n");
-	//			else if(copy_file_type == 2)
-	//				sprintf(copy_buf,"上电日期,上电时间,掉电日期,掉电时间\r\n");
+				
+				
 					
 				USB_Write_file(usb_fd, copy_buf, strlen(copy_buf));
 			}
@@ -614,6 +645,19 @@ static void DBP_Copy(void)
 					start_sec += rd_sec;
 					done += rd_sec;
 				}
+			}
+			else if(copy_file_type == 3)
+			{
+				rd_len = LOG_Read(copy_buf, usb_buf_size);
+				if(rd_len <= 0)
+					done = total;
+				else
+				{
+					copy_chn = DBP_FIRST_CHN;
+					copy_num_chn = 1;
+					done = LOG_Get_read_num() * sizeof(rcd_log_t);
+				}
+				
 			}
 			else 
 			{

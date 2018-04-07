@@ -114,7 +114,8 @@ void Setting_btn_hdl(void *arg, uint8_t btn_id)
 	{
 		
 		cthis->entry_start_row = 0;
-		self->switchHMI(self, g_p_HMI_menu, HMI_ATT_NOT_RECORD);
+//		self->switchHMI(self, Create_HMI(HMI_SETUP), HMI_ATT_NOT_RECORD | HMI_ATT_KEEP);
+		self->switchBack(self, HMI_ATT_KEEP);
 	}
 	else if((btn_id == ICO_ID_PGUP) || (btn_id == ICO_ID_PGDN))
 	{
@@ -208,7 +209,7 @@ static void	HMI_SBG_Init_sheet(HMI *self, uint32_t att)
 		
 		cthis->p_sy->p_cmd_rcv = self;
 		cthis->p_sy->cmd_hdl = Setting_Sy_cmd;
-		
+		cthis->entry_start_row = 0;
 	}
 	
 

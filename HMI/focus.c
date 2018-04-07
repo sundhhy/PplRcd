@@ -34,7 +34,7 @@ const Except_T FOCUS_Failed = { "[focus]" };
 
 //当需要焦点跳出功能的时候，焦点跃出边界的时候，焦点会移动到界外
 //否则焦点跃出边界的时候，进入移动方向的另外一端
-#define FCS_NEED_JUMPOUT		0		
+#define FCS_NEED_JUMPOUT		1		
 //#define FCS_FLAG_CHANGED	2
 //------------------------------------------------------------------------------
 // local types

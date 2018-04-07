@@ -78,6 +78,7 @@
 .\objects\system.o: ..\..\..\PplRcd\utils/hw_w25q.h
 .\objects\system.o: ..\..\configs\hardwareConfig.h
 .\objects\system.o: ..\..\..\PplRcd\utils/FM25.h
+.\objects\system.o: ..\..\..\PplRcd\utils/log.h
 .\objects\system.o: ..\..\..\PplRcd\fs/easy_fs.h
 .\objects\system.o: ..\..\..\PplRcd\utils/Storage.h
 .\objects\system.o: ..\..\APP\Modbus_app.h

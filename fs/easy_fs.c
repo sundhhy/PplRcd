@@ -34,7 +34,7 @@ V010 171226 :
 #define	EFS_MGR_FSH_NO					0
 #define	EFS_MGR_NUM_FSH					2
 #define EFS_NAME_LEN					14
-#define EFS_MAX_NUM_FILES				8
+#define EFS_MAX_NUM_FILES				10
 #define EFS_NUM_IDLE_FILES				0		//空闲区域
 
 
@@ -783,28 +783,34 @@ static void EFS_Regain_space(void)
 	efs_mgr.free_spac_num = 0;
 }
  
+//根据前一个被使用的末尾地址和下一个被使用的起始地址之间的差值来作为空闲空间
 static int EFS_Cal_free_space(uint8_t prt, space_t *fsp)
 {
 	
-	short i;
 	uint32_t	usd_addr_1 = 0, usd_addr_2 = 0, use_size_1 = 0, tmp_addr = 0;
-	short				fsp_num = efs_mgr.free_spac_num ++;		//获得第n个空闲空间
-	short				count = 0;
-	
+	uint32_t	file_start_addr;
+	short		fsp_num = efs_mgr.free_spac_num ++;		//获得第n个空闲空间
+	short		count = 0;
+	short 		i;
+
 	if(efs_mgr.free_spac_num > EFS_MAX_NUM_FILES + 2)
 		return -1;
 	
 	//找到第一个使用的空间
-	usd_addr_1 = 0;
-	use_size_1 = 0;
-	if(prt == EFS_MGR_FSH_NO)
+	if((prt == EFS_MGR_FSH_NO) && (fsp_num == 0))
 	{
-		use_size_1 = sizeof(efs_mgr.arr_efiles) + EFS_FSH(prt).fnf.page_size;
+		use_size_1 = sizeof(efs_mgr.arr_efiles);
 		usd_addr_1 = 0;
 		
 	}
+	else
+	{
+		usd_addr_1 = 0;
+		use_size_1 = 0;
+		
+	}
 	count = 0;
-	tmp_addr = use_size_1;
+	//找到指定序号的前一个末尾地址
 	for(i = 0; i < EFS_MAX_NUM_FILES; i++)
 	{
 		if(count == fsp_num)
@@ -817,37 +823,19 @@ static int EFS_Cal_free_space(uint8_t prt, space_t *fsp)
 		
 		if(efs_mgr.arr_efiles[i].efile_fsh_NO != prt)
 			continue;
-		
-//		if(efs_mgr.arr_efiles[i].efs_flag & EFS_FLAG_SEARCHED)
-//		{
-//			
-//			continue;
-//		}
-		
 	
-		count ++;
-			
+		count ++;	
 		if(count == fsp_num)
 		{
 			usd_addr_1 = efs_mgr.arr_efiles[i].efile_start_pg * EFS_FSH(prt).fnf.page_size;
 			use_size_1 = efs_mgr.arr_efiles[i].efile_num_pg * EFS_FSH(prt).fnf.page_size;
-		}
-		
-//		efs_mgr.arr_efiles[i].efs_flag |= EFS_FLAG_SEARCHED;
-		
+		}		
 	}
-//	if(i == EFS_MAX_NUM_FILES)
-//	{
-//		
-//		//指定序号的空闲空间已经找不到了
-//		return -1;
-//	}
+
 	
 	//找到比usd_addr_1右侧的第一个使用区域
 	usd_addr_2 = EFS_FSH(prt).fnf.page_size *  EFS_FSH(prt).fnf.total_pagenum;
 	count = 0;
-	
-	
 	fsp->start_addr = usd_addr_1 + use_size_1;
 	tmp_addr = usd_addr_2;
 	for(i = 0 ; i < EFS_MAX_NUM_FILES; i++)
@@ -861,11 +849,11 @@ static int EFS_Cal_free_space(uint8_t prt, space_t *fsp)
 		if(efs_mgr.arr_efiles[i].efile_fsh_NO != prt)
 			continue;
 		
-		
-		if(efs_mgr.arr_efiles[i].efile_start_pg * EFS_FSH(prt).fnf.page_size >= fsp->start_addr)
+		file_start_addr = efs_mgr.arr_efiles[i].efile_start_pg * EFS_FSH(prt).fnf.page_size;
+		if(file_start_addr >= fsp->start_addr)
 		{
-			if(tmp_addr > efs_mgr.arr_efiles[i].efile_start_pg * EFS_FSH(prt).fnf.page_size)
-				tmp_addr = efs_mgr.arr_efiles[i].efile_start_pg * EFS_FSH(prt).fnf.page_size;
+			if(tmp_addr > file_start_addr)
+				tmp_addr = file_start_addr;
 		}
 		
 	}
@@ -943,10 +931,10 @@ static int EFS_create_file(uint8_t	fd, uint8_t	prt, char *path, int size)
 			strncpy(efs_mgr.arr_efiles[i].efile_name, path, EFS_NAME_LEN);
 			efs_mgr.arr_efiles[i].efile_fsh_NO = prt;
 			efs_mgr.arr_efiles[i].efs_flag = 1;
-			efs_mgr.arr_efiles[i].efile_start_pg = space.start_addr / EFS_FSH(prt).fnf.page_size;
-			efs_mgr.arr_efiles[i].efile_num_pg = size / EFS_FSH(prt).fnf.page_size;
-			if(size > efs_mgr.arr_efiles[i].efile_num_pg * EFS_FSH(prt).fnf.page_size)
-				efs_mgr.arr_efiles[i].efile_num_pg += 1;
+			efs_mgr.arr_efiles[i].efile_start_pg = (space.start_addr + EFS_FSH(prt).fnf.page_size - 1)/ EFS_FSH(prt).fnf.page_size;
+			efs_mgr.arr_efiles[i].efile_num_pg = (size + + EFS_FSH(prt).fnf.page_size - 1) / EFS_FSH(prt).fnf.page_size;
+//			if(size > efs_mgr.arr_efiles[i].efile_num_pg * EFS_FSH(prt).fnf.page_size)
+//				efs_mgr.arr_efiles[i].efile_num_pg += 1;
 			
 			if(prt == 0)
 				efs_mgr.arr_file_info[i].low_pg = EFS_LOWSPACE_ALARM_0;

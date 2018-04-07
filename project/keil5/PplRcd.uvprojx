@@ -833,6 +833,16 @@
               <FileType>5</FileType>
               <FilePath>..\..\utils\FM25.h</FilePath>
             </File>
+            <File>
+              <FileName>log.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\utils\log.c</FilePath>
+            </File>
+            <File>
+              <FileName>log.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\utils\log.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

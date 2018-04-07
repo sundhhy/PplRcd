@@ -65,3 +65,4 @@
 .\objects\stg_set_system.o: d:\Keil_v5\ARM\PACK\ARM\CMSIS\5.0.0\CMSIS\RTOS\RTX\INC\cmsis_os.h
 .\objects\stg_set_system.o: ..\..\HMI\HMI_comm.h
 .\objects\stg_set_system.o: ..\..\HMI\HMI_keyboard.h
+.\objects\stg_set_system.o: ..\..\..\PplRcd\utils/log.h
