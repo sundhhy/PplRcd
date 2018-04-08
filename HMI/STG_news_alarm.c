@@ -318,6 +318,8 @@ static void	NLM_Btn_hdl(void *self, uint8_t	btn_id)
 	if(btn_id == ICO_ID_ERASETOOL)
 	{
 		STG_Erase_file(STG_CHN_ALARM(g_setting_chn));
+		STG_Set_alm_pwr_num(STG_CHN_ALARM(g_setting_chn), 0);
+		
 		g_news_alarm.cmd_hdl(g_news_alarm.p_cmd_rcv, sycmd_reflush, NULL);
 		MdlChn_Clean_Alamr(g_setting_chn);
 	}

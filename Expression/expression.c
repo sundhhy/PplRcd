@@ -115,7 +115,7 @@ char expTempBUf[TEMPBUF_LEN];
 int Set_shtContextAtt( char *p_att, sheet *p_sht)
 {
 	
-	char tmpbuf[8] = {0};
+//	char tmpbuf[8] = {0};
 	p_sht->cnt.colour = String2Clr( p_att);
 	
 	p_sht->cnt.bkc  = String2CntEff( p_att);

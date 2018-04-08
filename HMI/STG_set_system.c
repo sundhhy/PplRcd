@@ -455,7 +455,7 @@ static int Sys_commit(void *arg)
 
 	strategy_focus_t 	*p_syf = &g_sys_strategy.sf;
 	Model							*model;
-	int								ret = RET_OK;
+//	int								ret = RET_OK;
 	
 	
 	
@@ -463,7 +463,7 @@ static int Sys_commit(void *arg)
 	case 0:
 
 		model = Create_model("time");
-		ret = model->set_by_string(model, 1, arr_p_vram[0]);
+		model->set_by_string(model, 1, arr_p_vram[0]);
 			
 		break;
 //	case 1:

@@ -107,6 +107,7 @@ static 	int16_t	MdlChn_Get_def_lower_limit(uint8_t t);
 static 	int16_t	MdlChn_Get_def_up_limit(uint8_t t);
 static void Signal_Alarm(Model_chn *cthis);
 //static int Str_to_data(char *str, int prec);
+static void	MdlChn_Cancle_alarm(Model_chn *cthis, uint8_t new_flag, uint8_t alm_flag);
 //============================================================================//
 //            P U B L I C   F U N C T I O N S                                 //
 //============================================================================//
@@ -193,6 +194,17 @@ void MdlChn_default_alarm(int chn_num)
 	
 }
 
+void MCH_Cancle_all_alarm(uint8_t chn)
+{
+	Model_chn *cthis= Get_Mode_chn(chn);
+	
+	MdlChn_Cancle_alarm(cthis, 0, ALM_HH);
+	MdlChn_Cancle_alarm(cthis, 0, ALM_HI);
+	MdlChn_Cancle_alarm(cthis, 0, ALM_LO);
+	MdlChn_Cancle_alarm(cthis, 0, ALM_LL);
+	
+}
+
 void MdlChn_Clean_Alamr(int chn_num)
 {
 	Model_chn *p_mdl= Get_Mode_chn(chn_num);
@@ -204,6 +216,8 @@ void MdlChn_Clean_Alamr(int chn_num)
 	p_mdl->alarm_mgr.alm_hi_index = 0xff;
 	p_mdl->alarm_mgr.alm_lo_index = 0xff;
 	p_mdl->alarm_mgr.alm_ll_index = 0xff;
+	
+	
 	
 	
 }
@@ -332,7 +346,7 @@ static void	MdlChn_Check_new_alarm(Model_chn *cthis, uint8_t new_flag, uint8_t a
 	rap.happen_time_s = SYS_time_sec();
 	rap.disapper_time_s = 0xffffffff;
 	
-	
+	//把记录写到存储器中
 	while(STG_Set_file_position(STG_CHN_ALARM(cthis->chni.chn_NO), STG_DRC_WRITE, *p_index * sizeof(rcd_alm_pwr_t)) < 0)
 		delay_ms(1);
 	while(1)
@@ -353,6 +367,9 @@ static void	MdlChn_Check_new_alarm(Model_chn *cthis, uint8_t new_flag, uint8_t a
 			break;
 		
 	}
+	
+	//把数量也写到存储器中
+	STG_Set_alm_pwr_num(STG_CHN_ALARM(cthis->chni.chn_NO), cthis->alarm.num_alms_in_stg);
 	
 }
 
@@ -600,29 +617,34 @@ static void MdlChn_Init_alm_mgr_by_STG_alm(Model_chn *cthis)
 {
 	
 	Storage						*stg = Get_storage();
-	rcd_alm_pwr_t			stg_alm = {0};
-	int								num_alm = 0;
+//	rcd_alm_pwr_t			stg_alm = {0};
+//	int								num_alm = 0;
 	
-	STG_Set_file_position(STG_CHN_ALARM(cthis->chni.chn_NO), STG_DRC_READ, 0);
-	while(stg_alm.flag != 0xff)
-	{
-		if(stg->rd_stored_data(stg, STG_CHN_ALARM(cthis->chni.chn_NO), \
-			&stg_alm, sizeof(rcd_alm_pwr_t)) != sizeof(rcd_alm_pwr_t))
-			{
-				
-				//或者已经读完了
-				break;
-				
-				
-			}
-			if(stg_alm.flag != 0xff)
-				num_alm ++;
-		
-	}
+//	STG_Set_file_position(STG_CHN_ALARM(cthis->chni.chn_NO), STG_DRC_READ, 0);
+//	while(stg_alm.flag != 0xff)
+//	{
+//		if(stg->rd_stored_data(stg, STG_CHN_ALARM(cthis->chni.chn_NO), \
+//			&stg_alm, sizeof(rcd_alm_pwr_t)) != sizeof(rcd_alm_pwr_t))
+//			{
+//				
+//				//或者已经读完了
+//				break;
+//				
+//				
+//			}
+//			if(stg_alm.flag != 0xff)
+//				num_alm ++;
+//		
+//	}
 	
-	if(num_alm == STG_MAX_NUM_CHNALARM)
-		num_alm = 0;		//报警内存都满了，就重头开始覆盖
-	cthis->alarm.num_alms_in_stg = num_alm;
+	
+//	if(num_alm == STG_MAX_NUM_CHNALARM)
+//		num_alm = 0;		//报警内存都满了，就重头开始覆盖
+//	cthis->alarm.num_alms_in_stg = num_alm;
+
+	cthis->alarm.num_alms_in_stg = STG_Get_alm_pwr_num(STG_CHN_ALARM(cthis->chni.chn_NO));
+	if(cthis->alarm.num_alms_in_stg > STG_MAX_NUM_CHNALARM)
+		cthis->alarm.num_alms_in_stg = 0;
 	
 	cthis->alarm_mgr.alm_hh_index = 0xff;
 	cthis->alarm_mgr.alm_hi_index = 0xff;

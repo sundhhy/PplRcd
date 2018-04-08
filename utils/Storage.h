@@ -59,7 +59,7 @@ typedef struct {
 typedef struct {
 	uint8_t			flag;
 	uint8_t			alm_pwr_type;
-	uint8_t			none[2];
+	uint16_t		rcd_num;	//存放记录数量，只需要在第一个记录的地方存放数量就行了
 	uint32_t		happen_time_s;
 	uint32_t		disapper_time_s;
 }rcd_alm_pwr_t;
@@ -133,6 +133,8 @@ int	STG_Read_rcd_by_time(uint8_t	chn, uint32_t start_sec, uint32_t end_sec, char
 
 //chn 0 ~ NUM_CHANNELNUM 是报警信息,0xff是掉电信息
 int	STG_Read_alm_pwr(uint8_t	chn_pwr,short start, char *buf, int buf_size, uint32_t *rd_count);			
+uint16_t STG_Get_alm_pwr_num(uint8_t	chn_pwr);
+int	STG_Set_alm_pwr_num(uint8_t	chn_pwr, uint16_t new_num);
 
 int	STG_Set_file_position(uint8_t	file_type, uint8_t rd_or_wr, uint32_t position);
 void STG_Erase_file(uint8_t	file_type);

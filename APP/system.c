@@ -87,30 +87,30 @@ void System_power_on(void)
 	
 	
 	STG_Set_file_position(STG_LOSE_PWR, STG_DRC_READ, 0);
-	while(stg_pwr.flag != 0xff)
-	{
-		if(stg->rd_stored_data(stg, STG_LOSE_PWR, \
-			&stg_pwr, sizeof(rcd_alm_pwr_t)) != sizeof(rcd_alm_pwr_t))
-			{
-				
-				//或者已经读完了
-				break;
-				
-				
-			}
-			if(stg_pwr.flag != 0xff)
-				num_pwr ++;
-		
-	}
-	
-	if(num_pwr == STG_MAX_NUM_LST_PWR)
-		num_pwr = 0;	
-//	else
-//		phn_sys.pwr_rcd_index = num_pwr + 1;
-//	if(num_pwr)
-	phn_sys.pwr_rcd_index = num_pwr;
-//	else
-//		phn_sys.pwr_rcd_index = 0;
+//	while(stg_pwr.flag != 0xff)
+//	{
+//		if(stg->rd_stored_data(stg, STG_LOSE_PWR, \
+//			&stg_pwr, sizeof(rcd_alm_pwr_t)) != sizeof(rcd_alm_pwr_t))
+//			{
+//				
+//				//或者已经读完了
+//				break;
+//				
+//				
+//			}
+//			if(stg_pwr.flag != 0xff)
+//				num_pwr ++;
+//		
+//	}
+//	
+//	if(num_pwr == STG_MAX_NUM_LST_PWR)
+//		num_pwr = 0;	
+//	phn_sys.pwr_rcd_index = num_pwr;
+
+	phn_sys.pwr_rcd_index = STG_Get_alm_pwr_num(STG_LOSE_PWR);
+	if(phn_sys.pwr_rcd_index > STG_MAX_NUM_LST_PWR)
+		phn_sys.pwr_rcd_index = 0;
+
 	//记录上电时间
 	stg_pwr.flag = 1;
 	stg_pwr.happen_time_s = SYS_time_sec();
@@ -119,11 +119,17 @@ void System_power_on(void)
 	
 	stg->wr_stored_data(stg, STG_LOSE_PWR, &stg_pwr, sizeof(rcd_alm_pwr_t));
 	
+	//在记录中增加数量
+	num_pwr = phn_sys.pwr_rcd_index + 1;
+	num_pwr %= STG_MAX_NUM_LST_PWR;
+	STG_Set_alm_pwr_num(STG_LOSE_PWR, num_pwr);
+	
 }
 
 void System_power_off(void)
 {
-	int 				retry = 5;
+	short 				retry = 5;
+	short				i = 0;
 	uint32_t		dsp_time = 0;
 	Storage			*stg = Get_storage();
 	
@@ -148,8 +154,8 @@ void System_power_off(void)
 			
 		}
 	}
-
-	
+	for(i = 0; i < NUM_CHANNEL; i++)
+		MCH_Cancle_all_alarm(i);
 //	stg->wr_stored_data(stg, STG_SYS_CONF, &phn_sys.sys_conf, sizeof(phn_sys.sys_conf));
 	
 	phn_sys.fs.fs_shutdown();
@@ -182,7 +188,7 @@ void System_init(void)
 	Storage					*stg = Get_storage();
 	char			chn_name[7];
 	char			i;
-	int				retry = 5;
+//	int				retry = 5;
 
 	phn_sys.major_ver = PHN_MAJOR_VER;
 	phn_sys.minor_ver = PHN_MINOR_VER;

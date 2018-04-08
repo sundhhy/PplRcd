@@ -271,7 +271,7 @@ static void	HMI_Run( HMI *self)
 
 static void	SwitchHMI( HMI *self, HMI *p_hmi, uint32_t	att_flag)
 {
-	HMI		*save_last_case_err = NULL;		//如果切换发生错误，就要恢复之前的旧画面
+//	HMI		*save_last_case_err = NULL;		//如果切换发生错误，就要恢复之前的旧画面
 	if( p_hmi == NULL)
 		return;
 	
@@ -586,7 +586,6 @@ static void		HMI_Show_cmp(HMI *self)
 	Progress_bar		*p_bar = PGB_Get_Sington();
 	Curve 				*p_crv = CRV_Get_Sington();
 	CMP_tips 			*p_tips = TIP_Get_Sington();
-	int					i;
 	
 	p->show_vaild_btn();
 	p_bar->show_bar();

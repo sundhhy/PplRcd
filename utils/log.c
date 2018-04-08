@@ -156,13 +156,13 @@ static int LOG_Read_flash(uint32_t addr, void *buf, int len)
 {
 	Storage						*stg = Get_storage();
 	STG_Set_file_position(STG_LOG, STG_DRC_READ, addr);
-	stg->rd_stored_data(stg, STG_LOG, buf, len);
+	return stg->rd_stored_data(stg, STG_LOG, buf, len);
 }
 static int LOG_Write_flash(uint32_t addr, void *buf, int len)
 {
 	Storage						*stg = Get_storage();
 	STG_Set_file_position(STG_LOG, STG_DRC_WRITE, addr);
-	stg->wr_stored_data(stg, STG_LOG, buf, len);
+	return stg->wr_stored_data(stg, STG_LOG, buf, len);
 }
 
 

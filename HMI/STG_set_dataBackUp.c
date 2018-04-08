@@ -662,12 +662,12 @@ static void DBP_Copy(void)
 			else 
 			{
 				if(copy_file_type == 1)
-					rd_len = STG_Read_alm_pwr(copy_chn, start_sec, copy_buf, usb_buf_size, &rd_sec);
+					rd_len = STG_Read_alm_pwr(STG_CHN_ALARM(copy_chn), start_sec, copy_buf, usb_buf_size, &rd_sec);
 				else
 				{
 					copy_chn = DBP_FIRST_CHN;
 					copy_num_chn = 1;
-					rd_len = STG_Read_alm_pwr(0xff, start_sec, copy_buf, usb_buf_size, &rd_sec);
+					rd_len = STG_Read_alm_pwr(STG_LOSE_PWR, start_sec, copy_buf, usb_buf_size, &rd_sec);
 					
 				}
 					

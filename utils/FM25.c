@@ -346,7 +346,7 @@ static void FM25_cmd_addr(uint8_t cmd, uint16_t addr)
 	tmp_u8 = addr & 0x00ff;
 	FM25_SPI_WRITE(&tmp_u8, 1);
 	
-#else FM25_DEVTYPE == FM25L64B
+#elif FM25_DEVTYPE == FM25L64B
 	// op-code (8-bit) | address(16 -bit ,高3位被忽视)
 	tmp_u8 = cmd;
 	FM25_SPI_WRITE(&tmp_u8, 1);

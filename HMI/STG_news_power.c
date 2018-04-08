@@ -237,6 +237,7 @@ static void	NPW_Btn_hdl(void *self, uint8_t	btn_id)
 	if(btn_id == ICO_ID_ERASETOOL)
 	{
 		STG_Erase_file(STG_LOSE_PWR);
+		STG_Set_alm_pwr_num(STG_LOSE_PWR, 0);
 		phn_sys.pwr_rcd_index = 0xff;
 		g_news_power.cmd_hdl(g_news_power.p_cmd_rcv, sycmd_reflush, NULL);
 	}

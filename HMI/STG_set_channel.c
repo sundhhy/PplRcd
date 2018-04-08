@@ -1,7 +1,8 @@
 #include <stdint.h>
 #include "HMI_striped_background.h"
 #include "ModelFactory.h"
-
+#include "utils/Storage.h"
+#include "utils/log.h"
 //============================================================================//
 //            G L O B A L   D E F I N I T I O N S                             //
 //============================================================================//
@@ -55,11 +56,28 @@ strategy_t	g_chn_strategy = {
 //------------------------------------------------------------------------------
 // local types
 //------------------------------------------------------------------------------
-
+enum {
+	row_chn_num,
+	row_tag,
+	row_signal_type,
+	row_units,
+	row_low_limit,
+	row_upper_limit,
+	row_MB,
+	row_filter_time,
+	row_small_signal,
+	row_k,
+	row_b,
+	row_erase,
+	row_num
+	
+	
+	
+}cns_rows;
 //------------------------------------------------------------------------------
 // local vars
 //------------------------------------------------------------------------------
-static char *const arr_p_chnnel_entry[11] = {"通道号", "位号", "信号类型", "工程单位", \
+static char *const arr_p_chnnel_entry[row_num] = {"通道号", "位号", "信号类型", "工程单位", \
  "量程下限", "量程上限", "记录容量", "滤波时间", "小信号切除", "零点调整 K", "零点调整 B"
 };
 
@@ -88,49 +106,50 @@ static int ChnStrategy_entry(int row, int col, void *pp_text)
 	Model				*p_md = SUPER_PTR(p_mc, Model);
 	if(col == 0) {
 		
-		if(row > 10)
+		if(row >= row_num)
 			return 0;
 		*pp = arr_p_chnnel_entry[row];
 		return strlen(arr_p_chnnel_entry[row]);
 	} else if(col == 1){
 		switch(row) 
 		{
-			case 0:
+			case row_chn_num:
 				sprintf(arr_p_vram[row], "%d", g_setting_chn);
 				break;
-			case 1:		//位号
+			case row_tag:		//位号
 				sprintf(arr_p_vram[row], "%d", p_mc->chni.tag_NO);
 				break;
-			case 2:		//信号类型
+			case row_signal_type:		//信号类型
 				p_md->to_string(p_md, AUX_SIGNALTYPE, arr_p_vram[row]);
 				break;
-			case 3:		//单位
+			case row_units:		//单位
 				p_md->to_string(p_md, AUX_UNIT, arr_p_vram[row]);
 				
 			
 				break;
-			case 4:		//下限
+			case row_low_limit:		//下限
 				p_md->to_string(p_md, chnaux_lower_limit, arr_p_vram[row]);
 				break;
-			case 5:		//上限
+			case row_upper_limit:		//上限
 				p_md->to_string(p_md, chnaux_upper_limit, arr_p_vram[row]);
 				break;
-			case 6:		//记录容量
+			case row_MB:		//记录容量
 				p_md->to_string(p_md, chnaux_record_mb, arr_p_vram[row]);
 				break;
-			case 7:		//滤波时间
+			case row_filter_time:		//滤波时间
 				p_md->to_string(p_md, chnaux_filter_ts, arr_p_vram[row]);
 				break;
-			case 8:		//小信号切除
+			case row_small_signal:		//小信号切除
 				p_md->to_string(p_md, chnaux_small_signal, arr_p_vram[row]);
 				break;
-			case 9:		//零点调整
+			case row_k:		//零点调整
 				p_md->to_string(p_md, chnaux_k, arr_p_vram[row]);
 				
 				break;
-			case 10:		//零点调整
+			case row_b:		//零点调整
 				p_md->to_string(p_md, chnaux_b, arr_p_vram[row]);
-				
+			case row_erase:		//零点调整
+				sprintf(arr_p_vram[row], "...");	
 				break;
 			default:
 				goto exit;
@@ -156,7 +175,7 @@ static int Cns_init(void *arg)
 	g_chn_strategy.sf.num_byte = 1;
 	g_setting_chn = 0;
 	HMI_Ram_init();
-	for(i = 0; i < 12; i++) {
+	for(i = 0; i < row_num; i++) {
 		
 		arr_p_vram[i] = HMI_Ram_alloc(48);
 		memset(arr_p_vram[i], 0, 48);
@@ -342,14 +361,30 @@ static int Cns_key_lt(void *arg)
 
 static int Cns_key_er(void *arg)
 {
+	strategy_focus_t *p_syf = &g_chn_strategy.sf;
+	if(p_syf->f_row != row_erase)
+	{
+		return -1;
+		
+	}
+	Win_content("删除通道数据?");
+	g_chn_strategy.cmd_hdl(g_chn_strategy.p_cmd_rcv, sycmd_win_tips, arr_p_vram[p_syf->f_row]);
 	
-	return -1;
+	return RET_OK;
 }
 
 static int CNS_commit(void *arg)
 {
-	return 0;
+	strategy_focus_t *p_syf = &g_chn_strategy.sf;
+	if(p_syf->f_row != row_erase)
+	{
+		return 0;
+		
+	}
 	
+	LOG_Add(LOG_CHN_DATA_HANDLE_ERASE(g_setting_chn));
+	STG_Erase_file(STG_CHN_DATA(g_setting_chn));
+	return RET_OK;
 }
 
 
@@ -387,16 +422,16 @@ static void Cns_update_content(int op, int weight)
 	
 	switch(p_syf->f_row) 
 	{
-		case 0:
+		case row_chn_num:
 			g_setting_chn = Operate_in_tange(g_setting_chn, op, 1, 0, NUM_CHANNEL - 1);
 			g_chn_strategy.cmd_hdl(g_chn_strategy.p_cmd_rcv, sycmd_reflush, NULL);
 //			Str_Calculations(arr_p_vram[p_syf->f_row], 1,  op, weight, 0, NUM_CHANNEL);
 			break;
-		case 1:		//位号
+		case row_tag:		//位号
 //			Str_Calculations(arr_p_vram[p_syf->f_row], 1,  op, weight, 0, 9);
 			p_md->modify_str_conf(p_md, chnaux_tag_NO, arr_p_vram[p_syf->f_row], op, weight);
 			break;
-		case 2:		//信号类型
+		case row_signal_type:		//信号类型
 			p_md->modify_str_conf(p_md, AUX_SIGNALTYPE, arr_p_vram[p_syf->f_row], op, weight);
 			
 			//要把上下限重新显示
@@ -408,28 +443,28 @@ static void Cns_update_content(int op, int weight)
 			pos.f_row = 5;
 			g_chn_strategy.cmd_hdl(g_chn_strategy.p_cmd_rcv, sycmd_reflush_position, &pos);
 			break;
-		case 3:		//单位
+		case row_units:		//单位
 			p_md->modify_str_conf(p_md, AUX_UNIT, arr_p_vram[p_syf->f_row], op, weight);
 			break;
-		case 4:		//下限
+		case row_low_limit:		//下限
 			p_md->modify_str_conf(p_md, chnaux_lower_limit, arr_p_vram[p_syf->f_row], op, weight);
 			break;
-		case 5:		//上限
+		case row_upper_limit:		//上限
 			p_md->modify_str_conf(p_md, chnaux_upper_limit, arr_p_vram[p_syf->f_row], op, weight);
 			break;
-		case 6:		//记录容量
+		case row_MB:		//记录容量
 			p_md->modify_str_conf(p_md, chnaux_record_mb, arr_p_vram[p_syf->f_row], op, weight);
 			break;
-		case 7:		//滤波时间
+		case row_filter_time:		//滤波时间
 			p_md->modify_str_conf(p_md, chnaux_filter_ts, arr_p_vram[p_syf->f_row], op, weight);
 			break;
-		case 8:		//小信号切除
+		case row_small_signal:		//小信号切除
 			p_md->modify_str_conf(p_md, chnaux_small_signal, arr_p_vram[p_syf->f_row], op, weight);
 			break;
-		case 9:		//零点调整
+		case row_k:		//零点调整
 			p_md->modify_str_conf(p_md, chnaux_k, arr_p_vram[p_syf->f_row], op, weight);
 			break;
-		case 10:		//零点调整
+		case row_b:		//零点调整
 			p_md->modify_str_conf(p_md, chnaux_b, arr_p_vram[p_syf->f_row], op, weight);
 			break;
 		default:

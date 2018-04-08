@@ -140,6 +140,7 @@ extern const	char	g_moth_day[12];
 // function prototypes
 //------------------------------------------------------------------------------
 
+void MCH_Cancle_all_alarm(uint8_t chn);
 
 
 

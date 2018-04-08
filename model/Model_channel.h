@@ -169,8 +169,7 @@ typedef struct {
 	
 	
 	
-	uint8_t				num_alms_in_stg;		//存储器中的报警数量
-	uint8_t				none;
+	uint16_t				num_alms_in_stg;		//存储器中的报警数量
 }chn_alarm_t;
 	
 typedef struct {

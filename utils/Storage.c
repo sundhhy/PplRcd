@@ -226,6 +226,32 @@ void STG_Erase_file(uint8_t	file_type)
 	
 }
 
+//报警和掉电的记录是存放在第一个记录上的
+uint16_t STG_Get_alm_pwr_num(uint8_t	chn_pwr)
+{
+	Storage				*stg = Get_storage();
+	uint16_t			n = 0;
+	
+	
+	
+	STG_Set_file_position(chn_pwr, STG_DRC_READ, offsetof(rcd_alm_pwr_t, rcd_num));
+	if(stg->rd_stored_data(stg, chn_pwr, (uint8_t *)&n, 2) != 2)
+			return 0xffff;
+	return n;
+	
+}
+int	STG_Set_alm_pwr_num(uint8_t	chn_pwr, uint16_t new_num)
+{
+	Storage				*stg = Get_storage();
+	
+
+	STG_Set_file_position(chn_pwr, STG_DRC_WRITE, offsetof(rcd_alm_pwr_t, rcd_num));
+	if(stg->wr_stored_data(stg, chn_pwr, (uint8_t *)&new_num, 2) != 2)
+			return RET_FAILED;
+	return RET_OK;
+	
+}
+
 int	STG_Read_alm_pwr(uint8_t	chn_pwr,short start, char *buf, int buf_size, uint32_t *rd_count)		
 {
 	Storage				*stg = Get_storage();
@@ -237,23 +263,13 @@ int	STG_Read_alm_pwr(uint8_t	chn_pwr,short start, char *buf, int buf_size, uint3
 	int					buf_offset = 0;
 	char				tmp_buf[32];
 	char				alarm_code[7];
-	uint8_t				ct;
-	if(chn_pwr < NUM_CHANNEL)
-	{
-		ct = STG_CHN_ALARM(chn_pwr);
-		
-	}
-	else
-	{
-		ct = STG_LOSE_PWR;
-
-	}		
+	
 	
 //	fnf = STRG_SYS.fs.fs_file_info(fd);
 
 //	fd = STG_Open_file(ct, STG_DEF_FILE_SIZE);
 //	STRG_SYS.fs.fs_lseek(fd, RD_SEEK_SET, start * sizeof(rcd_alm_pwr_t));
-	STG_Set_file_position(ct, STG_DRC_READ, start * sizeof(rcd_alm_pwr_t));
+	STG_Set_file_position(chn_pwr, STG_DRC_READ, start * sizeof(rcd_alm_pwr_t));
 //	memset(buf, 0, buf_size);
 	buf[0] = 0;
 	while(1)
@@ -266,7 +282,7 @@ int	STG_Read_alm_pwr(uint8_t	chn_pwr,short start, char *buf, int buf_size, uint3
 //			break;
 		
 		
-		if(stg->rd_stored_data(stg, ct, (uint8_t *)&ap, sizeof(rcd_alm_pwr_t)) != sizeof(rcd_alm_pwr_t))
+		if(stg->rd_stored_data(stg, chn_pwr, (uint8_t *)&ap, sizeof(rcd_alm_pwr_t)) != sizeof(rcd_alm_pwr_t))
 			break;
 
 		
@@ -300,7 +316,7 @@ int	STG_Read_alm_pwr(uint8_t	chn_pwr,short start, char *buf, int buf_size, uint3
 				break;
 			
 		}
-		if(chn_pwr > NUM_CHANNEL)
+		if(IS_LOSE_PWR(chn_pwr))
 			alarm_code[0] = 0;
 		sprintf(tmp_buf, "%s,%2d/%02d/%02d,%02d:%02d:%02d,%2d/%02d/%02d,%02d:%02d:%02d\r\n", alarm_code,\
 			st.tm_year,st.tm_mon, st.tm_mday, st.tm_hour, st.tm_min, st.tm_sec, \

@@ -50,7 +50,7 @@
 int PVD_Init(void)
 {
 //	I_dev_Char		*gpio_pwr;
-	int			pwr_code = PWR_PIN_CODE;
+//	int			pwr_code = PWR_PIN_CODE;
 	
 	EXTI_InitTypeDef exti_param;
 	RCC_APB1PeriphClockCmd(RCC_APB1Periph_PWR, ENABLE);
