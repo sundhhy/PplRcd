@@ -3,7 +3,7 @@
 <title>Static Call Graph - [.\Objects\PplRcd.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image .\Objects\PplRcd.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060061: Last Updated: Sun Apr 08 15:03:41 2018
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5050106: Last Updated: Sun Apr 08 22:09:51 2018
 <BR><P>
 <H3>Maximum Stack Usage =        584 bytes + Unknown(Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -2075,7 +2075,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[1da]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;KeyboardHitHandle
 </UL>
 
-<P><STRONG><a name="[2b8]"></a>Except_raise</STRONG> (Thumb, 128 bytes, Stack size 0 bytes, except.o(i.Except_raise))
+<P><STRONG><a name="[2b8]"></a>Except_raise</STRONG> (Thumb, 130 bytes, Stack size 0 bytes, except.o(i.Except_raise))
 <BR><BR>[Stack]<UL><LI>Max Depth = 24 + In Cycle
 <LI>Call Chain = Except_raise &rArr;  Except_raise (Cycle)
 </UL>
@@ -3092,8 +3092,8 @@ Global Symbols
 </UL>
 <BR>[Calls]<UL><LI><a href="#[35b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;TIP_Get_Sington
 </UL>
-<BR>[Address Reference Count : 2]<UL><LI> hmi_menu.o(i.menuHMI_ctor)
-<LI> hmi_news_select.o(i.NewSlct_HMI_ctor)
+<BR>[Address Reference Count : 2]<UL><LI> hmi_news_select.o(i.NewSlct_HMI_ctor)
+<LI> hmi_menu.o(i.menuHMI_ctor)
 </UL>
 <P><STRONG><a name="[3f3]"></a>I2C_AcknowledgeConfig</STRONG> (Thumb, 24 bytes, Stack size 0 bytes, stm32f10x_i2c.o(i.I2C_AcknowledgeConfig))
 <BR><BR>[Called By]<UL><LI><a href="#[3ee]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Read_IIC
@@ -3256,6 +3256,8 @@ Global Symbols
 <LI><a href="#[38c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;LOG_Write_flash
 </UL>
 <BR>[Called By]<UL><LI><a href="#[401]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;STG_Acc_chn_data
+<LI><a href="#[17c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;NPW_Btn_hdl
+<LI><a href="#[17b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;NLM_Btn_hdl
 <LI><a href="#[78]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Sys_commit
 <LI><a href="#[62]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CNS_commit
 </UL>
@@ -3649,6 +3651,8 @@ Global Symbols
 <LI><a href="#[74]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Sys_key_lt
 <LI><a href="#[2d3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;DBP_update_content
 <LI><a href="#[2a9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Cns_update_content
+<LI><a href="#[5f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Cns_key_rt
+<LI><a href="#[5e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Cns_key_lt
 </UL>
 
 <P><STRONG><a name="[2c1]"></a>PGB_Get_Sington</STRONG> (Thumb, 32 bytes, Stack size 8 bytes, component_progress_bar.o(i.PGB_Get_Sington))
@@ -4274,16 +4278,16 @@ Global Symbols
 </UL>
 <BR>[Calls]<UL><LI><a href="#[360]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HMI_SBG_Turn_page
 </UL>
-<BR>[Address Reference Count : 10]<UL><LI> stg_set_accumulate.o(i.SSA_Build_component)
+<BR>[Address Reference Count : 10]<UL><LI> stg_news_alarm.o(i.NLM_Build_component)
+<LI> stg_set_accumulate.o(i.SSA_Build_component)
 <LI> stg_set_databackup.o(i.DBP_build_component)
-<LI> stg_set_system.o(i.SYS_build_component)
 <LI> hmi_striped_background.o(i.HMI_SBG_Show_entry)
 <LI> hmi_striped_background.o(i.STY_Duild_button)
 <LI> stg_acc_month.o(i.SAM_Build_component)
-<LI> stg_news_alarm.o(i.NLM_Build_component)
 <LI> stg_news_power.o(i.NPW_Build_component)
 <LI> stg_acc_day.o(i.SAD_Build_component)
 <LI> stg_set_channel.o(i.CNS_build_component)
+<LI> stg_set_system.o(i.SYS_build_component)
 </UL>
 <P><STRONG><a name="[416]"></a>Setup_HMI_ctor</STRONG> (Thumb, 48 bytes, Stack size 8 bytes, hmi_setup.o(i.Setup_HMI_ctor))
 <BR><BR>[Stack]<UL><LI>Max Depth = 8<LI>Call Chain = Setup_HMI_ctor
@@ -4742,7 +4746,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[89]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;PVD_IRQHandler
 </UL>
 
-<P><STRONG><a name="[433]"></a>System_power_on</STRONG> (Thumb, 124 bytes, Stack size 32 bytes, system.o(i.System_power_on))
+<P><STRONG><a name="[433]"></a>System_power_on</STRONG> (Thumb, 114 bytes, Stack size 32 bytes, system.o(i.System_power_on))
 <BR><BR>[Stack]<UL><LI>Max Depth = 232<LI>Call Chain = System_power_on &rArr; STG_Set_alm_pwr_num &rArr; STG_Set_file_position &rArr; STG_Open_file &rArr; Strg_Updata_rcd_mgr &rArr;  STG_Open_file (Cycle)
 </UL>
 <BR>[Calls]<UL><LI><a href="#[27b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;STG_Set_file_position
@@ -4877,8 +4881,8 @@ Global Symbols
 <P><STRONG><a name="[2db]"></a>USART_DeInit</STRONG> (Thumb, 134 bytes, Stack size 8 bytes, stm32f10x_usart.o(i.USART_DeInit))
 <BR><BR>[Stack]<UL><LI>Max Depth = 8<LI>Call Chain = USART_DeInit
 </UL>
-<BR>[Calls]<UL><LI><a href="#[36d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RCC_APB1PeriphResetCmd
-<LI><a href="#[438]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RCC_APB2PeriphResetCmd
+<BR>[Calls]<UL><LI><a href="#[438]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RCC_APB2PeriphResetCmd
+<LI><a href="#[36d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RCC_APB1PeriphResetCmd
 </UL>
 <BR>[Called By]<UL><LI><a href="#[2d9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;DRI_Uart_Change_baud
 <LI><a href="#[1ca]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UartInit
@@ -9332,10 +9336,11 @@ Local Symbols
 <BR>[Called By]<UL><LI><a href="#[22]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SAM_Entry
 </UL>
 
-<P><STRONG><a name="[17b]"></a>NLM_Btn_hdl</STRONG> (Thumb, 58 bytes, Stack size 16 bytes, stg_news_alarm.o(i.NLM_Btn_hdl))
-<BR><BR>[Stack]<UL><LI>Max Depth = 216<LI>Call Chain = NLM_Btn_hdl &rArr; STG_Set_alm_pwr_num &rArr; STG_Set_file_position &rArr; STG_Open_file &rArr; Strg_Updata_rcd_mgr &rArr;  STG_Open_file (Cycle)
+<P><STRONG><a name="[17b]"></a>NLM_Btn_hdl</STRONG> (Thumb, 70 bytes, Stack size 16 bytes, stg_news_alarm.o(i.NLM_Btn_hdl))
+<BR><BR>[Stack]<UL><LI>Max Depth = 232<LI>Call Chain = NLM_Btn_hdl &rArr; LOG_Add &rArr; LOG_Write_flash &rArr; STG_Set_file_position &rArr; STG_Open_file &rArr; Strg_Updata_rcd_mgr &rArr;  STG_Open_file (Cycle)
 </UL>
 <BR>[Calls]<UL><LI><a href="#[39d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;STG_Set_alm_pwr_num
+<LI><a href="#[286]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;LOG_Add
 <LI><a href="#[287]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;STG_Erase_file
 <LI><a href="#[39e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MdlChn_Clean_Alamr
 </UL>
@@ -9397,10 +9402,11 @@ Local Symbols
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> stg_news_alarm.o(.data)
 </UL>
-<P><STRONG><a name="[17c]"></a>NPW_Btn_hdl</STRONG> (Thumb, 44 bytes, Stack size 16 bytes, stg_news_power.o(i.NPW_Btn_hdl))
-<BR><BR>[Stack]<UL><LI>Max Depth = 216<LI>Call Chain = NPW_Btn_hdl &rArr; STG_Set_alm_pwr_num &rArr; STG_Set_file_position &rArr; STG_Open_file &rArr; Strg_Updata_rcd_mgr &rArr;  STG_Open_file (Cycle)
+<P><STRONG><a name="[17c]"></a>NPW_Btn_hdl</STRONG> (Thumb, 50 bytes, Stack size 16 bytes, stg_news_power.o(i.NPW_Btn_hdl))
+<BR><BR>[Stack]<UL><LI>Max Depth = 232<LI>Call Chain = NPW_Btn_hdl &rArr; LOG_Add &rArr; LOG_Write_flash &rArr; STG_Set_file_position &rArr; STG_Open_file &rArr; Strg_Updata_rcd_mgr &rArr;  STG_Open_file (Cycle)
 </UL>
 <BR>[Calls]<UL><LI><a href="#[39d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;STG_Set_alm_pwr_num
+<LI><a href="#[286]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;LOG_Add
 <LI><a href="#[287]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;STG_Erase_file
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> stg_news_power.o(i.NPW_Build_component)
@@ -9660,7 +9666,7 @@ Local Symbols
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> stg_set_channel.o(.data)
 </UL>
-<P><STRONG><a name="[59]"></a>ChnStrategy_entry</STRONG> (Thumb, 312 bytes, Stack size 32 bytes, stg_set_channel.o(i.ChnStrategy_entry))
+<P><STRONG><a name="[59]"></a>ChnStrategy_entry</STRONG> (Thumb, 338 bytes, Stack size 32 bytes, stg_set_channel.o(i.ChnStrategy_entry))
 <BR><BR>[Stack]<UL><LI>Max Depth = 112<LI>Call Chain = ChnStrategy_entry &rArr; Get_Mode_chn &rArr; Model_chn_new &rArr; malloc &rArr; internal_alloc
 </UL>
 <BR>[Calls]<UL><LI><a href="#[23f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Get_Mode_chn
@@ -9674,7 +9680,7 @@ Local Symbols
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> stg_set_channel.o(.data)
 </UL>
-<P><STRONG><a name="[5a]"></a>Cns_init</STRONG> (Thumb, 86 bytes, Stack size 16 bytes, stg_set_channel.o(i.Cns_init))
+<P><STRONG><a name="[5a]"></a>Cns_init</STRONG> (Thumb, 92 bytes, Stack size 16 bytes, stg_set_channel.o(i.Cns_init))
 <BR><BR>[Stack]<UL><LI>Max Depth = 24<LI>Call Chain = Cns_init &rArr; HMI_Ram_alloc
 </UL>
 <BR>[Calls]<UL><LI><a href="#[23b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HMI_Ram_alloc
@@ -9697,17 +9703,19 @@ Local Symbols
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> stg_set_channel.o(.data)
 </UL>
-<P><STRONG><a name="[5e]"></a>Cns_key_lt</STRONG> (Thumb, 38 bytes, Stack size 16 bytes, stg_set_channel.o(i.Cns_key_lt))
-<BR><BR>[Stack]<UL><LI>Max Depth = 24<LI>Call Chain = Cns_key_lt &rArr; Cns_update_len
+<P><STRONG><a name="[5e]"></a>Cns_key_lt</STRONG> (Thumb, 80 bytes, Stack size 24 bytes, stg_set_channel.o(i.Cns_key_lt))
+<BR><BR>[Stack]<UL><LI>Max Depth = 40<LI>Call Chain = Cns_key_lt &rArr; Operate_in_tange
 </UL>
-<BR>[Calls]<UL><LI><a href="#[2aa]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Cns_update_len
+<BR>[Calls]<UL><LI><a href="#[242]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Operate_in_tange
+<LI><a href="#[2aa]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Cns_update_len
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> stg_set_channel.o(.data)
 </UL>
-<P><STRONG><a name="[5f]"></a>Cns_key_rt</STRONG> (Thumb, 42 bytes, Stack size 16 bytes, stg_set_channel.o(i.Cns_key_rt))
-<BR><BR>[Stack]<UL><LI>Max Depth = 24<LI>Call Chain = Cns_key_rt &rArr; Cns_update_len
+<P><STRONG><a name="[5f]"></a>Cns_key_rt</STRONG> (Thumb, 80 bytes, Stack size 24 bytes, stg_set_channel.o(i.Cns_key_rt))
+<BR><BR>[Stack]<UL><LI>Max Depth = 40<LI>Call Chain = Cns_key_rt &rArr; Operate_in_tange
 </UL>
-<BR>[Calls]<UL><LI><a href="#[2aa]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Cns_update_len
+<BR>[Calls]<UL><LI><a href="#[242]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Operate_in_tange
+<LI><a href="#[2aa]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Cns_update_len
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> stg_set_channel.o(.data)
 </UL>

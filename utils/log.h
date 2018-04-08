@@ -11,8 +11,10 @@
 // const defines
 //------------------------------------------------------------------------------
 #define LOG_Factory_Reset						1
+#define LOG_LOST_PWR_ERASE						2
 #define LOG_CHN_DATA_AUTO_ERASE(n)				(0x10 | n)
-#define LOG_CHN_DATA_HANDLE_ERASE(n)			(0x2 | n)
+#define LOG_CHN_DATA_HANDLE_ERASE(n)			(0x20 | n)
+#define LOG_CHN_ALARM_HANDLE_ERASE(n)			(0x30 | n)
 //------------------------------------------------------------------------------
 // typedef
 //------------------------------------------------------------------------------

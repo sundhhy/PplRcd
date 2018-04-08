@@ -52,10 +52,6 @@ strategy_t	g_chn_strategy = {
 //------------------------------------------------------------------------------
 // const defines
 //------------------------------------------------------------------------------
-
-//------------------------------------------------------------------------------
-// local types
-//------------------------------------------------------------------------------
 enum {
 	row_chn_num,
 	row_tag,
@@ -74,11 +70,20 @@ enum {
 	
 	
 }cns_rows;
+#define STG_NUM_VRAM			(row_num + 1)
+#define STG_RUN_VRAM_NUM		row_num
+//------------------------------------------------------------------------------
+// local types
+//------------------------------------------------------------------------------
+typedef struct {
+	int		cur_page;
+	
+}cns_run_t;
 //------------------------------------------------------------------------------
 // local vars
 //------------------------------------------------------------------------------
 static char *const arr_p_chnnel_entry[row_num] = {"通道号", "位号", "信号类型", "工程单位", \
- "量程下限", "量程上限", "记录容量", "滤波时间", "小信号切除", "零点调整 K", "零点调整 B"
+ "量程下限", "量程上限", "记录容量", "滤波时间", "小信号切除", "零点调整 K", "零点调整 B", "清除数据"
 };
 
 
@@ -102,6 +107,7 @@ static void Cns_update_content(int op, int weight);
 static int ChnStrategy_entry(int row, int col, void *pp_text)
 {
 	char **pp = (char **)pp_text;
+	cns_run_t	*p_run = (cns_run_t *)arr_p_vram[STG_RUN_VRAM_NUM];
 	Model_chn		*p_mc = Get_Mode_chn(g_setting_chn);
 	Model				*p_md = SUPER_PTR(p_mc, Model);
 	if(col == 0) {
@@ -111,6 +117,13 @@ static int ChnStrategy_entry(int row, int col, void *pp_text)
 		*pp = arr_p_chnnel_entry[row];
 		return strlen(arr_p_chnnel_entry[row]);
 	} else if(col == 1){
+		
+		if(row >= STRIPE_MAX_ROWS)
+			p_run->cur_page = 1;
+		else
+			p_run->cur_page = 0;
+		
+		
 		switch(row) 
 		{
 			case row_chn_num:
@@ -148,7 +161,9 @@ static int ChnStrategy_entry(int row, int col, void *pp_text)
 				break;
 			case row_b:		//零点调整
 				p_md->to_string(p_md, chnaux_b, arr_p_vram[row]);
+				break;
 			case row_erase:		//零点调整
+				
 				sprintf(arr_p_vram[row], "...");	
 				break;
 			default:
@@ -168,6 +183,7 @@ static int ChnStrategy_entry(int row, int col, void *pp_text)
 static int Cns_init(void *arg)
 {
 	int i = 0;
+	cns_run_t	*p_run;
 	memset(&g_chn_strategy.sf, 0, sizeof(g_chn_strategy.sf));
 	g_chn_strategy.sf.f_col = 1;
 	g_chn_strategy.sf.f_row = 0;
@@ -175,13 +191,14 @@ static int Cns_init(void *arg)
 	g_chn_strategy.sf.num_byte = 1;
 	g_setting_chn = 0;
 	HMI_Ram_init();
-	for(i = 0; i < row_num; i++) {
+	for(i = 0; i < STG_NUM_VRAM; i++) {
 		
 		arr_p_vram[i] = HMI_Ram_alloc(48);
 		memset(arr_p_vram[i], 0, 48);
 	}
 	
-	
+	p_run = (cns_run_t *)arr_p_vram[STG_RUN_VRAM_NUM];
+	p_run->cur_page = 0;
 //	phn_sys.key_weight = 1;
 	return RET_OK;
 }
@@ -197,7 +214,7 @@ static int Cns_get_focusdata(void *pp_data, strategy_focus_t *p_in_syf)
 	char		**pp_vram = (char **)pp_data;
 	int ret = 0;
 	
-	if(p_syf->f_row > 10) {
+	if(p_syf->f_row >= row_num) {
 		return -1;
 	}
 	
@@ -326,13 +343,36 @@ static int Cns_key_rt(void *arg)
 {
 	strategy_focus_t *p_syf = &g_chn_strategy.sf;
 	int ret = RET_OK;
+	cns_run_t	*p_run = (cns_run_t *)arr_p_vram[STG_RUN_VRAM_NUM];
+//	if(p_syf->f_row < (row_num - 1))
+//		p_syf->f_row ++;
+//	else {
+//		p_syf->f_row = 0;
+//		p_syf->f_col = 1;
+//		ret = -1;
+//	}
 	
-	if(p_syf->f_row < 10)
-		p_syf->f_row ++;
-	else {
-		p_syf->f_row = 0;
-		p_syf->f_col = 1;
-		ret = -1;
+	
+	if(p_run->cur_page == 0) {
+		
+		p_syf->f_row = Operate_in_tange(p_syf->f_row, OP_ADD, 1, 0, STRIPE_MAX_ROWS - 1);
+		
+		if(p_syf->f_row == 0)
+		{
+			//说明光标发生了反转
+			//只有超过范围才会反转
+			ret = -1;
+		} 
+		
+	} else {
+		p_syf->f_row = Operate_in_tange(p_syf->f_row, OP_ADD, 1, STRIPE_MAX_ROWS, row_num - 1);
+		
+		if(p_syf->f_row == STRIPE_MAX_ROWS)
+		{
+			//说明光标发生了反转
+			//只有超过范围才会反转
+			ret = -1;
+		}
 	}
 		
 	Cns_update_len(p_syf);
@@ -344,14 +384,40 @@ static int Cns_key_lt(void *arg)
 {
 	strategy_focus_t *p_syf = &g_chn_strategy.sf;
 	int ret = RET_OK;
+	cns_run_t	*p_run = (cns_run_t *)arr_p_vram[STG_RUN_VRAM_NUM];
 	
-	if(p_syf->f_row )
-		p_syf->f_row --;
-	else {
-		p_syf->f_row = 10;
-		ret = -1;
+	
+	if(p_run->cur_page == 0)
+	{
+		
+		if(p_syf->f_row == 0)
+		{
+			//说明光标发生了反转
+			//只有超过范围才会反转
+			ret = -1;
+		}
+		p_syf->f_row = Operate_in_tange(p_syf->f_row, OP_SUB, 1, 0, STRIPE_MAX_ROWS - 1);
+		
+		
+		
 		
 	}
+	else
+	{
+		
+		if(p_syf->f_row == STRIPE_MAX_ROWS)
+		{
+			//说明光标发生了反转
+			//只有超过范围才会反转
+			ret = -1;
+		}
+		p_syf->f_row = Operate_in_tange(p_syf->f_row, OP_SUB, 1, STRIPE_MAX_ROWS, row_num - 1);
+		
+		
+	
+		
+	}
+	
 	
 	Cns_update_len(p_syf);
 	return ret;

@@ -1,7 +1,7 @@
 #include <stdint.h>
 #include "HMI_striped_background.h"
 #include "utils/Storage.h"
-
+#include "utils/log.h"
 //============================================================================//
 //            G L O B A L   D E F I N I T I O N S                             //
 //============================================================================//
@@ -238,6 +238,7 @@ static void	NPW_Btn_hdl(void *self, uint8_t	btn_id)
 	{
 		STG_Erase_file(STG_LOSE_PWR);
 		STG_Set_alm_pwr_num(STG_LOSE_PWR, 0);
+		LOG_Add(LOG_LOST_PWR_ERASE);
 		phn_sys.pwr_rcd_index = 0xff;
 		g_news_power.cmd_hdl(g_news_power.p_cmd_rcv, sycmd_reflush, NULL);
 	}

@@ -919,8 +919,8 @@ static void	HMI_SBG_Show_entry(HMI *self, strategy_t *p_st)
 		}
 		//检查是否还有内容需要显示
 			//通过对本页的已经显示完的下一行进行检测来判断
-			
-		text_len = p_st->entry_txt(row + cthis->entry_start_row, col, &p_trash);
+		//todo:180408 这个方法很不好，太晦涩了。有时间要改进掉。
+		text_len = p_st->entry_txt(row + cthis->entry_start_row, 0, &p_trash);
 		if(text_len > 0)
 			more = 1;		//任何一列需要更多的显示，就认为需要更多的显示
 		

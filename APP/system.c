@@ -86,7 +86,7 @@ void System_power_on(void)
 	
 	
 	
-	STG_Set_file_position(STG_LOSE_PWR, STG_DRC_READ, 0);
+//	STG_Set_file_position(STG_LOSE_PWR, STG_DRC_READ, 0);
 //	while(stg_pwr.flag != 0xff)
 //	{
 //		if(stg->rd_stored_data(stg, STG_LOSE_PWR, \

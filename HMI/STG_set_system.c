@@ -334,7 +334,7 @@ static int Sys_key_rt(void *arg)
 //	ret = -1;
 	if(sys_page == 0) {
 		
-		p_syf->f_row = Operate_in_tange(p_syf->f_row, OP_ADD, 1, 0, 10);
+		p_syf->f_row = Operate_in_tange(p_syf->f_row, OP_ADD, 1, 0, STRIPE_MAX_ROWS - 1);
 		
 		if(p_syf->f_row == 0)
 		{
@@ -348,7 +348,7 @@ static int Sys_key_rt(void *arg)
 		}
 		
 	} else {
-		p_syf->f_row = Operate_in_tange(p_syf->f_row, OP_ADD, 1, 11, 14);
+		p_syf->f_row = Operate_in_tange(p_syf->f_row, OP_ADD, 1, STRIPE_MAX_ROWS, 14);
 		
 		if(p_syf->f_row == 11)
 		{

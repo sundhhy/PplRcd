@@ -1,6 +1,7 @@
 #include <stdint.h>
 #include "HMI_striped_background.h"
 #include "utils/Storage.h"
+#include "utils/log.h"
 #include "os/os_depend.h"
 //============================================================================//
 //            G L O B A L   D E F I N I T I O N S                             //
@@ -319,7 +320,7 @@ static void	NLM_Btn_hdl(void *self, uint8_t	btn_id)
 	{
 		STG_Erase_file(STG_CHN_ALARM(g_setting_chn));
 		STG_Set_alm_pwr_num(STG_CHN_ALARM(g_setting_chn), 0);
-		
+		LOG_Add(LOG_CHN_ALARM_HANDLE_ERASE(g_setting_chn));
 		g_news_alarm.cmd_hdl(g_news_alarm.p_cmd_rcv, sycmd_reflush, NULL);
 		MdlChn_Clean_Alamr(g_setting_chn);
 	}
