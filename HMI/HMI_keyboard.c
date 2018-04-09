@@ -182,6 +182,7 @@ static void KBInitSheet( HMI *self, uint32_t att );
 static void	KeyboardHitHandle( HMI *self, char kcd);
 static void	KeyboardLngpshHandle( HMI *self,  char kcd);
 static void	KeyboardDouHitHandle( HMI *self,  char kcd);
+static void		KYB_Show_cmp(HMI *self);
 
 
 //----- vir key -------------
@@ -226,7 +227,7 @@ FUNCTION_SETTING( HMI.hide, KBHide);
 FUNCTION_SETTING( HMI.hitHandle, KeyboardHitHandle);
 FUNCTION_SETTING( HMI.longpushHandle, KeyboardLngpshHandle);
 FUNCTION_SETTING( HMI.dhitHandle, KeyboardDouHitHandle);
-
+FUNCTION_SETTING(HMI.show_cmp, KYB_Show_cmp);
 
 //FUNCTION_SETTING( shtCmd.shtExcute, KeyboardEnterCmdHdl);
 END_CTOR
@@ -293,6 +294,12 @@ static int	Init_kbmHmi( HMI *self, void *arg)
 	cthis->p_shtInput = NULL;
 	
 	return RET_OK;
+}
+
+static void		KYB_Show_cmp(HMI *self)
+{
+	
+	
 }
 
 static void KBInitSheet( HMI *self, uint32_t att )

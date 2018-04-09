@@ -137,8 +137,8 @@ static int SysStrategy_entry(int row, int col, void *pp_text)
 			case row_set_time:
 				
 	
-				p_syf->f_row = 0;
-				Sys_update_syf(p_syf);
+//				p_syf->f_row = 0;
+//				Sys_update_syf(p_syf);
 			
 				model = Create_model("time");
 				model->to_string(model, 1, arr_p_vram[0]);
@@ -188,12 +188,26 @@ static int SysStrategy_entry(int row, int col, void *pp_text)
 				
 				sprintf(arr_p_vram[row], "....");
 			
-				p_syf->f_row = 11;
-				Sys_update_syf(p_syf);
+//				p_syf->f_row = STRIPE_MAX_ROWS;
+//				Sys_update_syf(p_syf);
 				break;
 			default:
 				goto exit;
 		}
+		
+		//发生翻页的时候，要把焦点也进行切换
+		//目前只考虑了2页的情况
+		if(row == 0)
+		{
+			p_syf->f_row = 0;
+			Sys_update_syf(p_syf);
+		}
+		else if(row == STRIPE_MAX_ROWS)
+		{
+			p_syf->f_row= STRIPE_MAX_ROWS;
+			Sys_update_syf(p_syf);
+		}
+		
 		*pp = arr_p_vram[row];
 		return strlen(*pp);
 		

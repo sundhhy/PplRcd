@@ -253,6 +253,9 @@ static void DBP_Default_file_name(char *s, char ft)
 		case 2:
 			sprintf(s, "/POWER.CSV  ");
 			break;
+		case 3:
+			sprintf(s, "/SDHLOG.CSV  ");
+			break;
 		default:
 			sprintf(s, "         ");
 			break;
@@ -274,7 +277,7 @@ static void DBP_Print_file_type(char *s, char ft)
 			sprintf(s, "掉电信息");
 			break;
 		default:
-			sprintf(s, "        ");
+			sprintf(s, "********");
 			break;
 		
 	}
@@ -477,20 +480,20 @@ static int	DBP_filename_commit(void *self, void *data, int len)
 		len = 7;
 	
 	memset(arr_p_vram[row_file_name], 0, strlen(arr_p_vram[row_file_name]));
-	
+	arr_p_vram[row_file_name][0] = '/';
 	for(i = 0; i < len; i ++)
 	{
 		//把小写转化成大写
-		if(p[i] < 'z' && p[i] > 'a')
+		if(p[i] <= 'z' && p[i] >= 'a')
 		{
 			p[i] -= 32;
 			
 		}
-		arr_p_vram[row_file_name][i] = p[i];
+		arr_p_vram[row_file_name][i + 1] = p[i];
 		
 	}
-	if(arr_p_vram[row_file_name][0] != '/')
-		arr_p_vram[row_file_name][0] = '/';
+//	if(arr_p_vram[row_file_name][0] != '/')
+//		arr_p_vram[row_file_name][0] = '/';
 	return RET_OK;
 }
 
@@ -538,7 +541,7 @@ static int DBP_update_content(int op, int weight)
 			break;
 		case row_file_name:
 			
-			g_DBP_strategy.cmd_hdl(g_DBP_strategy.p_cmd_rcv, sycmd_keyboard, arr_p_vram[p_syf->f_row]);
+			g_DBP_strategy.cmd_hdl(g_DBP_strategy.p_cmd_rcv, sycmd_keyboard, arr_p_vram[p_syf->f_row] + 1);	//第一个'/'不运行编辑
 			ret = 1;
 			break;
 	default:
@@ -655,8 +658,7 @@ static void DBP_Copy(void)
 					done = total;
 				else
 				{
-					copy_chn = DBP_FIRST_CHN;
-					copy_num_chn = 1;
+					copy_num_chn = 0;
 					done = LOG_Get_read_num() * sizeof(rcd_log_t);
 				}
 				

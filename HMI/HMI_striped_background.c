@@ -900,8 +900,8 @@ static void	HMI_SBG_Show_entry(HMI *self, strategy_t *p_st)
 		col_maxlen = 0;
 		for(row = 0; row < STRIPE_MAX_ROWS; row ++) {
 			
-			if((row + cthis->entry_start_row) >= p_st->total_row)
-				break;
+//			if((row + cthis->entry_start_row) >= p_st->total_row)
+//				break;
 			
 			
 			text_len = p_st->entry_txt(row + cthis->entry_start_row, col, &cthis->p_sht_text->cnt.data);
@@ -938,7 +938,7 @@ static void	HMI_SBG_Show_entry(HMI *self, strategy_t *p_st)
 	
 
 	//判断本页能否把全部的行显示完。
-	if((cthis->entry_start_row +  STRIPE_MAX_ROWS) < p_st->total_col)
+	if((cthis->entry_start_row +  STRIPE_MAX_ROWS) <= p_st->total_row)
 		more = 1;		
 	
 	if(more) 
@@ -1041,14 +1041,19 @@ static int Setting_Sy_cmd(void *p_rcv, int cmd,  void *arg)
 				g_p_winHmi->arg[1] = WINFLAG_RETURN;
 				Win_content("修改成功");
 //				g_p_winHmi->switchHMI(g_p_winHmi, g_p_winHmi);
-				self->switchHMI(self, g_p_winHmi, 0);
+				//本界面已经在wincmd_commit之前的命令(sycmd_win_tips,sycmd_win_time,sycmd_win_tips,sycmd_win_psd)\
+				时已经被记录到历史列表里面了，所以这就不用再记录了
+				
+				self->switchHMI(self, g_p_winHmi, HMI_ATT_NOT_RECORD);		
 			} else {
 				g_p_winHmi->arg[0] = WINTYPE_ERROR;
 				g_p_winHmi->arg[1] = WINFLAG_RETURN;
 				sprintf(win_tips,"错误码:%d", ret);
 				Win_content(win_tips);
 //				g_p_winHmi->switchHMI(g_p_winHmi, g_p_winHmi);
-				self->switchHMI(self, g_p_winHmi, 0);
+				//本界面已经在wincmd_commit之前的命令时已经被记录到历史列表里面了，所以这就不用再记录了
+
+				self->switchHMI(self, g_p_winHmi, HMI_ATT_NOT_RECORD);
 //				g_p_winHmi->show(g_p_winHmi);
 			}
 		

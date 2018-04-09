@@ -199,7 +199,7 @@ void STG_Erase_file(uint8_t	file_type)
 	
 	Storage				*stg = Get_storage();
 	int						fd = -1;
-	uint32_t			erase_addr[2];
+	uint32_t			erase_addr[2] = {0, 0};
 	uint8_t				chn_num = STG_GET_CHN(file_type);
 	
 	

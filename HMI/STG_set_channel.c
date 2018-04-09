@@ -129,6 +129,8 @@ static int ChnStrategy_entry(int row, int col, void *pp_text)
 			p_run->cur_page = 0;
 		
 		
+		
+		
 		switch(row) 
 		{
 			case row_chn_num:
@@ -174,6 +176,19 @@ static int ChnStrategy_entry(int row, int col, void *pp_text)
 			default:
 				goto exit;
 			
+		}
+		
+		//发生翻页的时候，要把焦点也进行切换
+		//目前只考虑了2页的情况
+		if(row == 0)
+		{
+			STG_SELF.sf.f_row = 0;
+			Cns_update_len(&STG_SELF.sf);
+		}
+		else if(row == STRIPE_MAX_ROWS)
+		{
+			STG_SELF.sf.f_row = STRIPE_MAX_ROWS;
+			Cns_update_len(&STG_SELF.sf);
 		}
 		
 		*pp = arr_p_vram[row];
@@ -339,7 +354,7 @@ static void CNS_build_component(void *arg)
 {
 	Button			*p_btn = BTN_Get_Sington();
 	p_btn->build_each_btn(0, BTN_TYPE_MENU, Setting_btn_hdl, arg);
-	p_btn->build_each_btn(1, BTN_TYPE_SAVE, CNS_Btn_hdl, arg);
+	p_btn->build_each_btn(3, BTN_TYPE_SAVE, CNS_Btn_hdl, arg);
 		
 	
 	

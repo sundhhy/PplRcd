@@ -103,41 +103,7 @@ static int NLM_Entry(int row, int col, void *pp_text)
 	
 	r = row % STRIPE_MAX_ROWS;		//条纹界面上的行数是11
 	
-	pic_num = row / STRIPE_MAX_ROWS + 1;  //第几副画面
-	if( row > 1)
-	{
-		
-		//有可能是查询是否更多数据
-		//(row - 2 * pic_num) 每页的0，1两行显示的不是报警数据，因此要剪掉
-		STG_Set_file_position(STG_CHN_ALARM(g_setting_chn), STG_DRC_READ, (row - 2 * pic_num)* sizeof(rcd_alm_pwr_t));
-		while(1)
-		{
-			read_len = stg->rd_stored_data(stg, STG_CHN_ALARM(g_setting_chn), \
-				&stg_alm, sizeof(rcd_alm_pwr_t));
-			if(read_len < 0)
-			{
-				//其他线程正在访问
-				delay_ms(1);
-				
-			}
-			else if((read_len == 0) || (stg_alm.alm_pwr_type == 0xff))
-			{
-				//或者已经读完了
-				STG_SELF.total_row = row - 1;
-				return 0;
-				
-			}
-			else if(read_len == sizeof(rcd_alm_pwr_t))
-			{
-				STG_SELF.total_row = row + 1;
-				break;
-			}				
-			
-		}
-		
-		
 	
-	}
 	
 	if(r == 0)
 	{
@@ -164,20 +130,44 @@ static int NLM_Entry(int row, int col, void *pp_text)
 		return 0;
 	}
 	
-//	return 0;
-
-	
+	pic_num = row / STRIPE_MAX_ROWS + 1;  //第几副画面
+	if(row > 1)		//头两行
+	{
+		
+		//有可能是查询是否更多数据
+		//(row - 2 * pic_num) 每页的0，1两行显示的不是报警数据，因此要剪掉
+		STG_Set_file_position(STG_CHN_ALARM(g_setting_chn), STG_DRC_READ, (row - 2 * pic_num)* sizeof(rcd_alm_pwr_t));
+		while(1)
+		{
+			read_len = stg->rd_stored_data(stg, STG_CHN_ALARM(g_setting_chn), \
+				&stg_alm, sizeof(rcd_alm_pwr_t));
+			if(read_len < 0)
+			{
+				//其他线程正在访问
+				delay_ms(1);
+				
+			}
+			else if((read_len == 0) || (stg_alm.alm_pwr_type == 0xff))
+			{
+				//或者已经读完了
+				STG_SELF.total_row = row;
+				return 0;
+				
+			}
+			else if(read_len == sizeof(rcd_alm_pwr_t))
+			{
+				STG_SELF.total_row = row + 1;
+				break;
+			}				
+			
+		}
+		
 		
 	
+	}
 		
 	switch(col)
 	{
-//		case 0:
-//			sprintf(arr_p_vram[r], "%d", row);
-//			break;
-//		case 1:
-//			sprintf(arr_p_vram[r], "CHN%d", g_setting_chn);
-//			break;
 		case 0:
 			switch(stg_alm.alm_pwr_type)
 			{

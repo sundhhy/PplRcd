@@ -78,6 +78,7 @@ static void winHmi_InitFouse( HMI *self );
 
 static void winHmi_ClearFocuse( HMI *self, uint8_t fouse_row, uint8_t fouse_col);
 static void winHmi_ShowFocuse( HMI *self, uint8_t fouse_row, uint8_t fouse_col);
+static void		WIN_Show_cmp(HMI *self);
 
 //提示窗口还是复选窗口
 static int Win_CUR_move(winHmi *cthis, int kc);
@@ -142,6 +143,7 @@ SUPER_CTOR( HMI);
 FUNCTION_SETTING(HMI.init, Init_winHmi);
 FUNCTION_SETTING(HMI.hide, winHmiHide);
 FUNCTION_SETTING(HMI.initSheet, Win_initSheet);
+FUNCTION_SETTING(HMI.show_cmp, WIN_Show_cmp);
 
 FUNCTION_SETTING(HMI.show, winHmiShow);
 FUNCTION_SETTING(HMI.hitHandle, WinHmi_hit);
@@ -194,6 +196,12 @@ static void Win_initSheet(HMI *self, uint32_t att )
 	self->init_focus(self);
 	
 
+	
+	
+}
+
+static void		WIN_Show_cmp(HMI *self)
+{
 	
 	
 }
