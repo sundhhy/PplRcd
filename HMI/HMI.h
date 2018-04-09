@@ -160,6 +160,9 @@ typedef struct {
 	strategy_focus_t	sf;
 	void				*p_cmd_rcv;
 	stategy_cmd			cmd_hdl;
+	uint8_t					total_row;
+	uint8_t					total_col;
+	uint8_t					none[2];
 }strategy_t;
 
 

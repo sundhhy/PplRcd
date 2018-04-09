@@ -3,7 +3,7 @@
 <title>Static Call Graph - [.\Objects\PplRcd.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image .\Objects\PplRcd.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5050106: Last Updated: Sun Apr 08 22:09:51 2018
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060061: Last Updated: Mon Apr 09 17:48:26 2018
 <BR><P>
 <H3>Maximum Stack Usage =        584 bytes + Unknown(Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -2075,7 +2075,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[1da]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;KeyboardHitHandle
 </UL>
 
-<P><STRONG><a name="[2b8]"></a>Except_raise</STRONG> (Thumb, 130 bytes, Stack size 0 bytes, except.o(i.Except_raise))
+<P><STRONG><a name="[2b8]"></a>Except_raise</STRONG> (Thumb, 128 bytes, Stack size 0 bytes, except.o(i.Except_raise))
 <BR><BR>[Stack]<UL><LI>Max Depth = 24 + In Cycle
 <LI>Call Chain = Except_raise &rArr;  Except_raise (Cycle)
 </UL>
@@ -3092,8 +3092,8 @@ Global Symbols
 </UL>
 <BR>[Calls]<UL><LI><a href="#[35b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;TIP_Get_Sington
 </UL>
-<BR>[Address Reference Count : 2]<UL><LI> hmi_news_select.o(i.NewSlct_HMI_ctor)
-<LI> hmi_menu.o(i.menuHMI_ctor)
+<BR>[Address Reference Count : 2]<UL><LI> hmi_menu.o(i.menuHMI_ctor)
+<LI> hmi_news_select.o(i.NewSlct_HMI_ctor)
 </UL>
 <P><STRONG><a name="[3f3]"></a>I2C_AcknowledgeConfig</STRONG> (Thumb, 24 bytes, Stack size 0 bytes, stm32f10x_i2c.o(i.I2C_AcknowledgeConfig))
 <BR><BR>[Called By]<UL><LI><a href="#[3ee]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Read_IIC
@@ -4278,16 +4278,16 @@ Global Symbols
 </UL>
 <BR>[Calls]<UL><LI><a href="#[360]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HMI_SBG_Turn_page
 </UL>
-<BR>[Address Reference Count : 10]<UL><LI> stg_news_alarm.o(i.NLM_Build_component)
-<LI> stg_set_accumulate.o(i.SSA_Build_component)
+<BR>[Address Reference Count : 10]<UL><LI> stg_set_accumulate.o(i.SSA_Build_component)
 <LI> stg_set_databackup.o(i.DBP_build_component)
+<LI> stg_set_system.o(i.SYS_build_component)
 <LI> hmi_striped_background.o(i.HMI_SBG_Show_entry)
 <LI> hmi_striped_background.o(i.STY_Duild_button)
 <LI> stg_acc_month.o(i.SAM_Build_component)
+<LI> stg_news_alarm.o(i.NLM_Build_component)
 <LI> stg_news_power.o(i.NPW_Build_component)
 <LI> stg_acc_day.o(i.SAD_Build_component)
 <LI> stg_set_channel.o(i.CNS_build_component)
-<LI> stg_set_system.o(i.SYS_build_component)
 </UL>
 <P><STRONG><a name="[416]"></a>Setup_HMI_ctor</STRONG> (Thumb, 48 bytes, Stack size 8 bytes, hmi_setup.o(i.Setup_HMI_ctor))
 <BR><BR>[Stack]<UL><LI>Max Depth = 8<LI>Call Chain = Setup_HMI_ctor
@@ -4881,8 +4881,8 @@ Global Symbols
 <P><STRONG><a name="[2db]"></a>USART_DeInit</STRONG> (Thumb, 134 bytes, Stack size 8 bytes, stm32f10x_usart.o(i.USART_DeInit))
 <BR><BR>[Stack]<UL><LI>Max Depth = 8<LI>Call Chain = USART_DeInit
 </UL>
-<BR>[Calls]<UL><LI><a href="#[438]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RCC_APB2PeriphResetCmd
-<LI><a href="#[36d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RCC_APB1PeriphResetCmd
+<BR>[Calls]<UL><LI><a href="#[36d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RCC_APB1PeriphResetCmd
+<LI><a href="#[438]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RCC_APB2PeriphResetCmd
 </UL>
 <BR>[Called By]<UL><LI><a href="#[2d9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;DRI_Uart_Change_baud
 <LI><a href="#[1ca]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UartInit
@@ -7798,8 +7798,8 @@ Local Symbols
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> hmi_striped_background.o(i.HMI_striped_background_ctor)
 </UL>
-<P><STRONG><a name="[35f]"></a>HMI_SBG_Show_entry</STRONG> (Thumb, 312 bytes, Stack size 64 bytes, hmi_striped_background.o(i.HMI_SBG_Show_entry))
-<BR><BR>[Stack]<UL><LI>Max Depth = 136<LI>Call Chain = HMI_SBG_Show_entry &rArr; BTN_Get_Sington &rArr; Button_new &rArr; malloc &rArr; internal_alloc
+<P><STRONG><a name="[35f]"></a>HMI_SBG_Show_entry</STRONG> (Thumb, 324 bytes, Stack size 56 bytes, hmi_striped_background.o(i.HMI_SBG_Show_entry))
+<BR><BR>[Stack]<UL><LI>Max Depth = 128<LI>Call Chain = HMI_SBG_Show_entry &rArr; BTN_Get_Sington &rArr; Button_new &rArr; malloc &rArr; internal_alloc
 </UL>
 <BR>[Calls]<UL><LI><a href="#[245]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;BTN_Get_Sington
 <LI><a href="#[2d1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Stripe_vy
@@ -9245,7 +9245,7 @@ Local Symbols
 <P><STRONG><a name="[1f]"></a>SAD_Get_focus_data</STRONG> (Thumb, 6 bytes, Stack size 0 bytes, stg_acc_day.o(i.SAD_Get_focus_data))
 <BR>[Address Reference Count : 1]<UL><LI> stg_acc_day.o(.data)
 </UL>
-<P><STRONG><a name="[18]"></a>SAD_Init</STRONG> (Thumb, 50 bytes, Stack size 16 bytes, stg_acc_day.o(i.SAD_Init))
+<P><STRONG><a name="[18]"></a>SAD_Init</STRONG> (Thumb, 64 bytes, Stack size 16 bytes, stg_acc_day.o(i.SAD_Init))
 <BR><BR>[Stack]<UL><LI>Max Depth = 24<LI>Call Chain = SAD_Init &rArr; HMI_Ram_alloc
 </UL>
 <BR>[Calls]<UL><LI><a href="#[23b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HMI_Ram_alloc
@@ -9299,7 +9299,7 @@ Local Symbols
 <P><STRONG><a name="[2a]"></a>SAM_Get_focus_data</STRONG> (Thumb, 6 bytes, Stack size 0 bytes, stg_acc_month.o(i.SAM_Get_focus_data))
 <BR>[Address Reference Count : 1]<UL><LI> stg_acc_month.o(.data)
 </UL>
-<P><STRONG><a name="[23]"></a>SAM_Init</STRONG> (Thumb, 50 bytes, Stack size 16 bytes, stg_acc_month.o(i.SAM_Init))
+<P><STRONG><a name="[23]"></a>SAM_Init</STRONG> (Thumb, 64 bytes, Stack size 16 bytes, stg_acc_month.o(i.SAM_Init))
 <BR><BR>[Stack]<UL><LI>Max Depth = 24<LI>Call Chain = SAM_Init &rArr; HMI_Ram_alloc
 </UL>
 <BR>[Calls]<UL><LI><a href="#[23b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HMI_Ram_alloc
@@ -9356,7 +9356,7 @@ Local Symbols
 <P><STRONG><a name="[36]"></a>NLM_Commit</STRONG> (Thumb, 6 bytes, Stack size 0 bytes, stg_news_alarm.o(i.NLM_Commit))
 <BR>[Address Reference Count : 1]<UL><LI> stg_news_alarm.o(.data)
 </UL>
-<P><STRONG><a name="[2d]"></a>NLM_Entry</STRONG> (Thumb, 498 bytes, Stack size 96 bytes, stg_news_alarm.o(i.NLM_Entry))
+<P><STRONG><a name="[2d]"></a>NLM_Entry</STRONG> (Thumb, 516 bytes, Stack size 96 bytes, stg_news_alarm.o(i.NLM_Entry))
 <BR><BR>[Stack]<UL><LI>Max Depth = 272<LI>Call Chain = NLM_Entry &rArr; STG_Set_file_position &rArr; STG_Open_file &rArr; Strg_Updata_rcd_mgr &rArr;  STG_Open_file (Cycle)
 </UL>
 <BR>[Calls]<UL><LI><a href="#[27b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;STG_Set_file_position
@@ -9374,7 +9374,7 @@ Local Symbols
 <P><STRONG><a name="[35]"></a>NLM_Get_focus_data</STRONG> (Thumb, 6 bytes, Stack size 0 bytes, stg_news_alarm.o(i.NLM_Get_focus_data))
 <BR>[Address Reference Count : 1]<UL><LI> stg_news_alarm.o(.data)
 </UL>
-<P><STRONG><a name="[2e]"></a>NLM_Init</STRONG> (Thumb, 50 bytes, Stack size 16 bytes, stg_news_alarm.o(i.NLM_Init))
+<P><STRONG><a name="[2e]"></a>NLM_Init</STRONG> (Thumb, 64 bytes, Stack size 16 bytes, stg_news_alarm.o(i.NLM_Init))
 <BR><BR>[Stack]<UL><LI>Max Depth = 24<LI>Call Chain = NLM_Init &rArr; HMI_Ram_alloc
 </UL>
 <BR>[Calls]<UL><LI><a href="#[23b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HMI_Ram_alloc
@@ -9422,7 +9422,7 @@ Local Symbols
 <P><STRONG><a name="[41]"></a>NPW_Commit</STRONG> (Thumb, 6 bytes, Stack size 0 bytes, stg_news_power.o(i.NPW_Commit))
 <BR>[Address Reference Count : 1]<UL><LI> stg_news_power.o(.data)
 </UL>
-<P><STRONG><a name="[38]"></a>NPW_Entry</STRONG> (Thumb, 338 bytes, Stack size 88 bytes, stg_news_power.o(i.NPW_Entry))
+<P><STRONG><a name="[38]"></a>NPW_Entry</STRONG> (Thumb, 362 bytes, Stack size 88 bytes, stg_news_power.o(i.NPW_Entry))
 <BR><BR>[Stack]<UL><LI>Max Depth = 264<LI>Call Chain = NPW_Entry &rArr; STG_Set_file_position &rArr; STG_Open_file &rArr; Strg_Updata_rcd_mgr &rArr;  STG_Open_file (Cycle)
 </UL>
 <BR>[Calls]<UL><LI><a href="#[27b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;STG_Set_file_position
@@ -9439,7 +9439,7 @@ Local Symbols
 <P><STRONG><a name="[40]"></a>NPW_Get_focus_data</STRONG> (Thumb, 6 bytes, Stack size 0 bytes, stg_news_power.o(i.NPW_Get_focus_data))
 <BR>[Address Reference Count : 1]<UL><LI> stg_news_power.o(.data)
 </UL>
-<P><STRONG><a name="[39]"></a>NPW_Init</STRONG> (Thumb, 46 bytes, Stack size 16 bytes, stg_news_power.o(i.NPW_Init))
+<P><STRONG><a name="[39]"></a>NPW_Init</STRONG> (Thumb, 60 bytes, Stack size 16 bytes, stg_news_power.o(i.NPW_Init))
 <BR><BR>[Stack]<UL><LI>Max Depth = 24<LI>Call Chain = NPW_Init &rArr; HMI_Ram_alloc
 </UL>
 <BR>[Calls]<UL><LI><a href="#[23b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HMI_Ram_alloc
@@ -9506,7 +9506,7 @@ Local Symbols
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> stg_set_accumulate.o(.data)
 </UL>
-<P><STRONG><a name="[44]"></a>SSA_Init</STRONG> (Thumb, 86 bytes, Stack size 16 bytes, stg_set_accumulate.o(i.SSA_Init))
+<P><STRONG><a name="[44]"></a>SSA_Init</STRONG> (Thumb, 100 bytes, Stack size 16 bytes, stg_set_accumulate.o(i.SSA_Init))
 <BR><BR>[Stack]<UL><LI>Max Depth = 24<LI>Call Chain = SSA_Init &rArr; HMI_Ram_alloc
 </UL>
 <BR>[Calls]<UL><LI><a href="#[23b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HMI_Ram_alloc
@@ -9582,7 +9582,7 @@ Local Symbols
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> stg_set_alarm.o(.data)
 </UL>
-<P><STRONG><a name="[4f]"></a>Als_init</STRONG> (Thumb, 94 bytes, Stack size 16 bytes, stg_set_alarm.o(i.Als_init))
+<P><STRONG><a name="[4f]"></a>Als_init</STRONG> (Thumb, 108 bytes, Stack size 16 bytes, stg_set_alarm.o(i.Als_init))
 <BR><BR>[Stack]<UL><LI>Max Depth = 24<LI>Call Chain = Als_init &rArr; HMI_Ram_alloc
 </UL>
 <BR>[Calls]<UL><LI><a href="#[23b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HMI_Ram_alloc
@@ -9680,7 +9680,7 @@ Local Symbols
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> stg_set_channel.o(.data)
 </UL>
-<P><STRONG><a name="[5a]"></a>Cns_init</STRONG> (Thumb, 92 bytes, Stack size 16 bytes, stg_set_channel.o(i.Cns_init))
+<P><STRONG><a name="[5a]"></a>Cns_init</STRONG> (Thumb, 106 bytes, Stack size 16 bytes, stg_set_channel.o(i.Cns_init))
 <BR><BR>[Stack]<UL><LI>Max Depth = 24<LI>Call Chain = Cns_init &rArr; HMI_Ram_alloc
 </UL>
 <BR>[Calls]<UL><LI><a href="#[23b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HMI_Ram_alloc
@@ -9846,7 +9846,7 @@ Local Symbols
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> stg_set_databackup.o(.data)
 </UL>
-<P><STRONG><a name="[65]"></a>DBP_init</STRONG> (Thumb, 148 bytes, Stack size 16 bytes, stg_set_databackup.o(i.DBP_init))
+<P><STRONG><a name="[65]"></a>DBP_init</STRONG> (Thumb, 162 bytes, Stack size 16 bytes, stg_set_databackup.o(i.DBP_init))
 <BR><BR>[Stack]<UL><LI>Max Depth = 24<LI>Call Chain = DBP_init &rArr; HMI_Ram_alloc
 </UL>
 <BR>[Calls]<UL><LI><a href="#[2d2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USB_Rgt_event_hdl
@@ -9932,7 +9932,7 @@ Local Symbols
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> stg_set_system.o(.data)
 </UL>
-<P><STRONG><a name="[6f]"></a>SysStrategy_entry</STRONG> (Thumb, 422 bytes, Stack size 32 bytes, stg_set_system.o(i.SysStrategy_entry))
+<P><STRONG><a name="[6f]"></a>SysStrategy_entry</STRONG> (Thumb, 436 bytes, Stack size 32 bytes, stg_set_system.o(i.SysStrategy_entry))
 <BR><BR>[Stack]<UL><LI>Max Depth = 128<LI>Call Chain = SysStrategy_entry &rArr; Create_model &rArr; Get_Mode_chn &rArr; Model_chn_new &rArr; malloc &rArr; internal_alloc
 </UL>
 <BR>[Calls]<UL><LI><a href="#[24d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Create_model
@@ -9943,7 +9943,7 @@ Local Symbols
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> stg_set_system.o(.data)
 </UL>
-<P><STRONG><a name="[78]"></a>Sys_commit</STRONG> (Thumb, 56 bytes, Stack size 16 bytes, stg_set_system.o(i.Sys_commit))
+<P><STRONG><a name="[78]"></a>Sys_commit</STRONG> (Thumb, 60 bytes, Stack size 16 bytes, stg_set_system.o(i.Sys_commit))
 <BR><BR>[Stack]<UL><LI>Max Depth = 232<LI>Call Chain = Sys_commit &rArr; LOG_Add &rArr; LOG_Write_flash &rArr; STG_Set_file_position &rArr; STG_Open_file &rArr; Strg_Updata_rcd_mgr &rArr;  STG_Open_file (Cycle)
 </UL>
 <BR>[Calls]<UL><LI><a href="#[42f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;System_default
@@ -9959,7 +9959,7 @@ Local Symbols
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> stg_set_system.o(.data)
 </UL>
-<P><STRONG><a name="[70]"></a>Sys_init</STRONG> (Thumb, 74 bytes, Stack size 16 bytes, stg_set_system.o(i.Sys_init))
+<P><STRONG><a name="[70]"></a>Sys_init</STRONG> (Thumb, 94 bytes, Stack size 16 bytes, stg_set_system.o(i.Sys_init))
 <BR><BR>[Stack]<UL><LI>Max Depth = 24<LI>Call Chain = Sys_init &rArr; HMI_Ram_alloc
 </UL>
 <BR>[Calls]<UL><LI><a href="#[23b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HMI_Ram_alloc
@@ -9975,14 +9975,14 @@ Local Symbols
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> stg_set_system.o(.data)
 </UL>
-<P><STRONG><a name="[76]"></a>Sys_key_er</STRONG> (Thumb, 104 bytes, Stack size 24 bytes, stg_set_system.o(i.Sys_key_er))
+<P><STRONG><a name="[76]"></a>Sys_key_er</STRONG> (Thumb, 108 bytes, Stack size 24 bytes, stg_set_system.o(i.Sys_key_er))
 <BR><BR>[Stack]<UL><LI>Max Depth = 24<LI>Call Chain = Sys_key_er
 </UL>
 <BR>[Calls]<UL><LI><a href="#[285]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Win_content
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> stg_set_system.o(.data)
 </UL>
-<P><STRONG><a name="[74]"></a>Sys_key_lt</STRONG> (Thumb, 90 bytes, Stack size 24 bytes, stg_set_system.o(i.Sys_key_lt))
+<P><STRONG><a name="[74]"></a>Sys_key_lt</STRONG> (Thumb, 92 bytes, Stack size 24 bytes, stg_set_system.o(i.Sys_key_lt))
 <BR><BR>[Stack]<UL><LI>Max Depth = 40<LI>Call Chain = Sys_key_lt &rArr; Operate_in_tange
 </UL>
 <BR>[Calls]<UL><LI><a href="#[242]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Operate_in_tange
@@ -9990,7 +9990,7 @@ Local Symbols
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> stg_set_system.o(.data)
 </UL>
-<P><STRONG><a name="[75]"></a>Sys_key_rt</STRONG> (Thumb, 92 bytes, Stack size 24 bytes, stg_set_system.o(i.Sys_key_rt))
+<P><STRONG><a name="[75]"></a>Sys_key_rt</STRONG> (Thumb, 94 bytes, Stack size 24 bytes, stg_set_system.o(i.Sys_key_rt))
 <BR><BR>[Stack]<UL><LI>Max Depth = 40<LI>Call Chain = Sys_key_rt &rArr; Operate_in_tange
 </UL>
 <BR>[Calls]<UL><LI><a href="#[242]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Operate_in_tange
@@ -10005,7 +10005,7 @@ Local Symbols
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> stg_set_system.o(.data)
 </UL>
-<P><STRONG><a name="[430]"></a>Sys_update_content</STRONG> (Thumb, 352 bytes, Stack size 24 bytes, stg_set_system.o(i.Sys_update_content))
+<P><STRONG><a name="[430]"></a>Sys_update_content</STRONG> (Thumb, 358 bytes, Stack size 24 bytes, stg_set_system.o(i.Sys_update_content))
 <BR><BR>[Stack]<UL><LI>Max Depth = 120<LI>Call Chain = Sys_update_content &rArr; Str_set_sys_param &rArr; Print_sys_param &rArr; Disable_string &rArr; __2sprintf
 </UL>
 <BR>[Calls]<UL><LI><a href="#[428]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Str_set_sys_param

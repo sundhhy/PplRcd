@@ -47,7 +47,7 @@ strategy_t	g_dataPrint_strategy = {
 //------------------------------------------------------------------------------
 // const defines
 //------------------------------------------------------------------------------
-
+#define STG_SELF  g_dataPrint_strategy
 //------------------------------------------------------------------------------
 // local types
 //------------------------------------------------------------------------------
@@ -89,6 +89,8 @@ static int Data_print_Strategy_entry(int row, int col, void *pp_text)
 
 static int DPT_init(void *arg)
 {
+	STG_SELF.total_col = 1;
+	STG_SELF.total_row = 6;
 	return RET_OK;
 }
 static void DBT_Exit(void)

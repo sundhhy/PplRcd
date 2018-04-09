@@ -66,7 +66,7 @@ strategy_t	g_news_alarm = {
 //------------------------------------------------------------------------------
 // const defines
 //------------------------------------------------------------------------------
-
+#define STG_SELF  g_news_alarm
 //------------------------------------------------------------------------------
 // local types
 //------------------------------------------------------------------------------
@@ -123,11 +123,13 @@ static int NLM_Entry(int row, int col, void *pp_text)
 			else if((read_len == 0) || (stg_alm.alm_pwr_type == 0xff))
 			{
 				//或者已经读完了
+				STG_SELF.total_row = row - 1;
 				return 0;
 				
 			}
 			else if(read_len == sizeof(rcd_alm_pwr_t))
 			{
+				STG_SELF.total_row = row + 1;
 				break;
 			}				
 			
@@ -244,7 +246,8 @@ static int NLM_Init(void *arg)
 		arr_p_vram[i] = HMI_Ram_alloc(48);
 		memset(arr_p_vram[i], 0, 48);
 	}
-	
+	STG_SELF.total_col = 3;
+	STG_SELF.total_row = STRIPE_MAX_ROWS;
 	g_setting_chn = 0;
 	
 	return RET_OK;

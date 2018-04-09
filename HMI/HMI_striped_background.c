@@ -873,7 +873,7 @@ static int HMI_SBG_Turn_page(HMI *self, int up_or_dn)
 static void	HMI_SBG_Show_entry(HMI *self, strategy_t *p_st)
 {
 	HMI_striped_background		*cthis = SUB_PTR( self, HMI, HMI_striped_background);
-	char					*p_trash;
+//	char					*p_trash;
 	Button				*p_btn = BTN_Get_Sington();
 	uint8_t	row = 0;
 	uint8_t	col = 0;
@@ -892,7 +892,7 @@ static void	HMI_SBG_Show_entry(HMI *self, strategy_t *p_st)
 	
 	cthis->p_sht_text->p_gp->getSize(cthis->p_sht_text->p_gp, cthis->p_sht_text->cnt.font, &txt_xsize, &txt_ysize);
 	
-	for(col = 0; col < HMI_SBG_COL_MAX; col ++) {
+	for(col = 0; col < p_st->total_col; col ++) {
 		
 		col_vx0 += col_maxlen * txt_xsize;
 		cthis->col_vx0[col] = col_vx0;
@@ -900,8 +900,12 @@ static void	HMI_SBG_Show_entry(HMI *self, strategy_t *p_st)
 		col_maxlen = 0;
 		for(row = 0; row < STRIPE_MAX_ROWS; row ++) {
 			
+			if((row + cthis->entry_start_row) >= p_st->total_row)
+				break;
+			
+			
 			text_len = p_st->entry_txt(row + cthis->entry_start_row, col, &cthis->p_sht_text->cnt.data);
-			if(text_len == 0)
+			if(text_len == 0) //有些行可能是空缺的，跳过该行
 				continue;
 			cthis->p_sht_text->cnt.len = text_len;
 			if(col_maxlen < text_len)
@@ -909,29 +913,20 @@ static void	HMI_SBG_Show_entry(HMI *self, strategy_t *p_st)
 			
 			cthis->p_sht_text->area.x0 = col_vx0;
 			cthis->p_sht_text->area.y0 = Stripe_vy(row);
-//			if(row == 0)
-//				cthis->p_sht_text->area.y0 = STRIPE_VY0 ;
-//			else 
-//				cthis->p_sht_text->area.y0 = STRIPE_VY1 + (row - 1)* STRIPE_SIZE_Y;
 			
 			cthis->p_sht_text->p_gp->vdraw(cthis->p_sht_text->p_gp, &cthis->p_sht_text->cnt, &cthis->p_sht_text->area);
 			
 		}
-		//检查是否还有内容需要显示
-			//通过对本页的已经显示完的下一行进行检测来判断
-		//todo:180408 这个方法很不好，太晦涩了。有时间要改进掉。
-		text_len = p_st->entry_txt(row + cthis->entry_start_row, 0, &p_trash);
-		if(text_len > 0)
-			more = 1;		//任何一列需要更多的显示，就认为需要更多的显示
+		
 		
 		col_maxlen += col_space;
 	}
 	
+	
+	
+	
 	if(cthis->entry_start_row) {
-//		g_p_ico_pgup->e_heifht = 1;
-//		Sheet_slide(g_p_ico_pgup);
-//		g_p_ico_pgup->e_heifht = 0;
-//		SET_PG_FLAG(cthis->sub_flag, HAS_PGUP);
+
 		
 		p_btn->build_each_btn(1, BTN_TYPE_PGUP, Setting_btn_hdl, self);
 		
@@ -940,15 +935,16 @@ static void	HMI_SBG_Show_entry(HMI *self, strategy_t *p_st)
 		p_btn->build_each_btn(1, BTN_FLAG_CLEAN | BTN_TYPE_PGUP, NULL, NULL);
 	}
 	
+	
+
+	//判断本页能否把全部的行显示完。
+	if((cthis->entry_start_row +  STRIPE_MAX_ROWS) < p_st->total_col)
+		more = 1;		
+	
 	if(more) 
 	{
 		p_btn->build_each_btn(2, BTN_TYPE_PGDN, Setting_btn_hdl, self);
-		
-//		g_p_ico_pgdn->e_heifht = 1;
-//		Sheet_slide(g_p_ico_pgdn);
-//		g_p_ico_pgdn->e_heifht = 0;
-//		
-//		SET_PG_FLAG(cthis->sub_flag, HAS_PGDN);
+
 	} 
 	
 	else {

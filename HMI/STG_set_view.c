@@ -48,7 +48,7 @@ strategy_t	g_view_strategy = {
 //------------------------------------------------------------------------------
 // const defines
 //------------------------------------------------------------------------------
-
+#define STG_SELF  g_view_strategy
 //------------------------------------------------------------------------------
 // local types
 //------------------------------------------------------------------------------
@@ -89,6 +89,8 @@ static int ViewStrategy_entry(int row, int col, void *pp_text)
 
 static int VIEW_init(void *arg)
 {
+	STG_SELF.total_col = 1;
+	STG_SELF.total_row = 7;
 	return RET_OK;
 }
 static void VIEW_Exit(void)

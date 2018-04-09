@@ -64,7 +64,7 @@ strategy_t	g_news_power = {
 //------------------------------------------------------------------------------
 // const defines
 //------------------------------------------------------------------------------
-
+#define STG_SELF  g_news_power
 //------------------------------------------------------------------------------
 // local types
 //------------------------------------------------------------------------------
@@ -108,12 +108,16 @@ static int NPW_Entry(int row, int col, void *pp_text)
 				&stg_alm, sizeof(rcd_alm_pwr_t)) != sizeof(rcd_alm_pwr_t))
 			{	
 				//或者已经读完了
+				STG_SELF.total_row = row - 1;
 				return 0;
 			}
 			
 		if(stg_alm.flag == 0xff)
+		{
+			STG_SELF.total_row = row - 1;
 			return 0;		//记录结尾
-		
+		}
+		STG_SELF.total_row = row + 1;
 	}
 	
 	if(r == 0)
@@ -171,6 +175,8 @@ static int NPW_Init(void *arg)
 		memset(arr_p_vram[i], 0, 48);
 	}
 	
+	STG_SELF.total_col = 3;
+	STG_SELF.total_row = STRIPE_MAX_ROWS;		
 	
 	return RET_OK;
 }

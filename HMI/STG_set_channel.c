@@ -72,6 +72,7 @@ enum {
 }cns_rows;
 #define STG_NUM_VRAM			(row_num + 1)
 #define STG_RUN_VRAM_NUM		row_num
+#define STG_SELF						g_chn_strategy
 //------------------------------------------------------------------------------
 // local types
 //------------------------------------------------------------------------------
@@ -110,10 +111,14 @@ static int ChnStrategy_entry(int row, int col, void *pp_text)
 	cns_run_t	*p_run = (cns_run_t *)arr_p_vram[STG_RUN_VRAM_NUM];
 	Model_chn		*p_mc = Get_Mode_chn(g_setting_chn);
 	Model				*p_md = SUPER_PTR(p_mc, Model);
+	
+	
+	if(row >= row_num)
+			return 0;
+	
 	if(col == 0) {
 		
-		if(row >= row_num)
-			return 0;
+		
 		*pp = arr_p_chnnel_entry[row];
 		return strlen(arr_p_chnnel_entry[row]);
 	} else if(col == 1){
@@ -184,11 +189,11 @@ static int Cns_init(void *arg)
 {
 	int i = 0;
 	cns_run_t	*p_run;
-	memset(&g_chn_strategy.sf, 0, sizeof(g_chn_strategy.sf));
-	g_chn_strategy.sf.f_col = 1;
-	g_chn_strategy.sf.f_row = 0;
-	g_chn_strategy.sf.start_byte = 0;
-	g_chn_strategy.sf.num_byte = 1;
+	memset(&STG_SELF.sf, 0, sizeof(STG_SELF.sf));
+	STG_SELF.sf.f_col = 1;
+	STG_SELF.sf.f_row = 0;
+	STG_SELF.sf.start_byte = 0;
+	STG_SELF.sf.num_byte = 1;
 	g_setting_chn = 0;
 	HMI_Ram_init();
 	for(i = 0; i < STG_NUM_VRAM; i++) {
@@ -196,7 +201,8 @@ static int Cns_init(void *arg)
 		arr_p_vram[i] = HMI_Ram_alloc(48);
 		memset(arr_p_vram[i], 0, 48);
 	}
-	
+	STG_SELF.total_col = 2;
+	STG_SELF.total_row = row_num;
 	p_run = (cns_run_t *)arr_p_vram[STG_RUN_VRAM_NUM];
 	p_run->cur_page = 0;
 //	phn_sys.key_weight = 1;
@@ -210,7 +216,7 @@ static void CNS_Exit(void)
 }
 static int Cns_get_focusdata(void *pp_data, strategy_focus_t *p_in_syf)
 {
-	strategy_focus_t *p_syf = &g_chn_strategy.sf;
+	strategy_focus_t *p_syf = &STG_SELF.sf;
 	char		**pp_vram = (char **)pp_data;
 	int ret = 0;
 	
@@ -243,7 +249,7 @@ static int Cns_key_up(void *arg)
 //	Model_chn			*p_mc = Get_Mode_chn(g_setting_chn);
 //	Model				*p_md = SUPER_PTR(p_mc, Model);
 //	strategy_keyval_t	kt = {SY_KEYTYPE_HIT};
-//	strategy_focus_t 	*p_syf = &g_chn_strategy.sf;
+//	strategy_focus_t 	*p_syf = &STG_SELF.sf;
 //	char			*p;
 	int 			ret = RET_OK;
 	
@@ -309,14 +315,14 @@ static int Cns_key_dn(void *arg)
 					phn_sys.save_chg_flga &=~ CHG_MODCHN_CONF(i);
 					sprintf(arr_p_vram[11],"写入配置成功");
 					Win_content(arr_p_vram[11]);
-					g_chn_strategy.cmd_hdl(g_chn_strategy.p_cmd_rcv, sycmd_win_tips, NULL);
+					STG_SELF.cmd_hdl(STG_SELF.p_cmd_rcv, sycmd_win_tips, NULL);
 				}
 				else
 				{
 					
 					sprintf(arr_p_vram[11],"通道[%d] 写入配置失败", i);
 					Win_content(arr_p_vram[11]);
-					g_chn_strategy.cmd_hdl(g_chn_strategy.p_cmd_rcv, sycmd_win_tips, NULL);
+					STG_SELF.cmd_hdl(STG_SELF.p_cmd_rcv, sycmd_win_tips, NULL);
 				}
 				
 			}
@@ -341,7 +347,7 @@ static void CNS_build_component(void *arg)
 
 static int Cns_key_rt(void *arg)
 {
-	strategy_focus_t *p_syf = &g_chn_strategy.sf;
+	strategy_focus_t *p_syf = &STG_SELF.sf;
 	int ret = RET_OK;
 	cns_run_t	*p_run = (cns_run_t *)arr_p_vram[STG_RUN_VRAM_NUM];
 //	if(p_syf->f_row < (row_num - 1))
@@ -382,7 +388,7 @@ static int Cns_key_rt(void *arg)
 
 static int Cns_key_lt(void *arg)
 {
-	strategy_focus_t *p_syf = &g_chn_strategy.sf;
+	strategy_focus_t *p_syf = &STG_SELF.sf;
 	int ret = RET_OK;
 	cns_run_t	*p_run = (cns_run_t *)arr_p_vram[STG_RUN_VRAM_NUM];
 	
@@ -427,21 +433,21 @@ static int Cns_key_lt(void *arg)
 
 static int Cns_key_er(void *arg)
 {
-	strategy_focus_t *p_syf = &g_chn_strategy.sf;
+	strategy_focus_t *p_syf = &STG_SELF.sf;
 	if(p_syf->f_row != row_erase)
 	{
 		return -1;
 		
 	}
 	Win_content("删除通道数据?");
-	g_chn_strategy.cmd_hdl(g_chn_strategy.p_cmd_rcv, sycmd_win_tips, arr_p_vram[p_syf->f_row]);
+	STG_SELF.cmd_hdl(STG_SELF.p_cmd_rcv, sycmd_win_tips, arr_p_vram[p_syf->f_row]);
 	
 	return RET_OK;
 }
 
 static int CNS_commit(void *arg)
 {
-	strategy_focus_t *p_syf = &g_chn_strategy.sf;
+	strategy_focus_t *p_syf = &STG_SELF.sf;
 	if(p_syf->f_row != row_erase)
 	{
 		return 0;
@@ -476,7 +482,7 @@ static void Cns_update_content(int op, int weight)
 {
 	Model_chn			*p_mc = Get_Mode_chn(g_setting_chn);
 	Model				*p_md = SUPER_PTR(p_mc, Model);
-	strategy_focus_t 	*p_syf = &g_chn_strategy.sf;
+	strategy_focus_t 	*p_syf = &STG_SELF.sf;
 	
 	strategy_focus_t		pos;
 
@@ -490,7 +496,7 @@ static void Cns_update_content(int op, int weight)
 	{
 		case row_chn_num:
 			g_setting_chn = Operate_in_tange(g_setting_chn, op, 1, 0, NUM_CHANNEL - 1);
-			g_chn_strategy.cmd_hdl(g_chn_strategy.p_cmd_rcv, sycmd_reflush, NULL);
+			STG_SELF.cmd_hdl(STG_SELF.p_cmd_rcv, sycmd_reflush, NULL);
 //			Str_Calculations(arr_p_vram[p_syf->f_row], 1,  op, weight, 0, NUM_CHANNEL);
 			break;
 		case row_tag:		//位号
@@ -503,11 +509,11 @@ static void Cns_update_content(int op, int weight)
 			//要把上下限重新显示
 			pos.f_col = 1;
 			pos.f_row = 4;
-			g_chn_strategy.cmd_hdl(g_chn_strategy.p_cmd_rcv, sycmd_reflush_position, &pos);
+			STG_SELF.cmd_hdl(STG_SELF.p_cmd_rcv, sycmd_reflush_position, &pos);
 		
 			pos.f_col = 1;
 			pos.f_row = 5;
-			g_chn_strategy.cmd_hdl(g_chn_strategy.p_cmd_rcv, sycmd_reflush_position, &pos);
+			STG_SELF.cmd_hdl(STG_SELF.p_cmd_rcv, sycmd_reflush_position, &pos);
 			break;
 		case row_units:		//单位
 			p_md->modify_str_conf(p_md, AUX_UNIT, arr_p_vram[p_syf->f_row], op, weight);

@@ -11,7 +11,7 @@
 //------------------------------------------------------------------------------
 // const defines
 //------------------------------------------------------------------------------
-#define ST_SELF		g_st_acc_day
+
 
 #define SAD_RAM_ACC_SDATA				0
 #define SAD_RAM_ACC_SCHN				1
@@ -36,7 +36,7 @@ static int SAD_Get_focus_data(void *pp_data, strategy_focus_t *p_in_syf);
 static int SAD_Commit(void *arg);
 static void SAD_Exit(void);
 
-strategy_t	ST_SELF = {
+strategy_t	g_st_acc_day = {
 	SAD_Entry,
 	SAD_Init,
 	SAD_Build_component,
@@ -75,7 +75,7 @@ strategy_t	ST_SELF = {
 //------------------------------------------------------------------------------
 // const defines
 //------------------------------------------------------------------------------
-
+#define ST_SELF		g_st_acc_day
 //------------------------------------------------------------------------------
 // local types
 //------------------------------------------------------------------------------
@@ -218,7 +218,8 @@ static int SAD_Init(void *arg)
 		arr_p_vram[i] = HMI_Ram_alloc(48);
 		memset(arr_p_vram[i], 0, 48);
 	}
-	
+	ST_SELF.total_col = 4;
+	ST_SELF.total_row = 31;
 	g_setting_chn = 0;
 	
 	return RET_OK;

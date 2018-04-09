@@ -68,7 +68,7 @@ enum {
 //------------------------------------------------------------------------------
 // const defines
 //------------------------------------------------------------------------------
-
+#define STG_SELF  g_DBP_strategy
 //------------------------------------------------------------------------------
 // local types
 //------------------------------------------------------------------------------
@@ -194,6 +194,8 @@ static int DBP_init(void *arg)
 		arr_p_vram[i] = HMI_Ram_alloc(48);
 		memset(arr_p_vram[i], 0, 48);
 	}
+	STG_SELF.total_col = 2;
+	STG_SELF.total_row = DBP_row_max;
 //	usb_buf_size = HMI_Ram_free_bytes();
 	usb_buf_size = USB_MAX_WRITE_BYTE;
 	arr_p_vram[DBP_row_max] = HMI_Ram_alloc(usb_buf_size);		//这个缓存用于数据备份

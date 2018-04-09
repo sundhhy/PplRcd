@@ -49,7 +49,7 @@ strategy_t	g_art_strategy = {
 //------------------------------------------------------------------------------
 // const defines
 //------------------------------------------------------------------------------
-
+#define STG_SELF  g_art_strategy
 //------------------------------------------------------------------------------
 // local types
 //------------------------------------------------------------------------------
@@ -90,6 +90,8 @@ static int ArtStrategy_entry(int row, int col, void *pp_text)
 
 static int ART_init(void *arg)
 {
+	STG_SELF.total_col = 1;
+	STG_SELF.total_row = 3;
 	return RET_OK;
 }
 static void ART_Exit(void)

@@ -241,7 +241,8 @@ static int SAM_Init(void *arg)
 		arr_p_vram[i] = HMI_Ram_alloc(48);
 		memset(arr_p_vram[i], 0, 48);
 	}
-	
+	ST_SELF.total_col = 4;
+	ST_SELF.total_row = 14;
 	g_setting_chn = 0;
 	
 	return RET_OK;

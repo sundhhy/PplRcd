@@ -167,7 +167,8 @@ static int SSA_Init(void *arg)
 		memset(arr_p_vram[i], 0, 48);
 	}
 	
-	
+	ST_SELF.total_col = 2;
+	ST_SELF.total_row = row_max;
 	return RET_OK;
 }
 

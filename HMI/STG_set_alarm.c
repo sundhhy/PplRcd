@@ -63,7 +63,7 @@ strategy_t	g_alarm_strategy = {
 //------------------------------------------------------------------------------
 // const defines
 //------------------------------------------------------------------------------
-
+#define STG_SELF  g_alarm_strategy
 //------------------------------------------------------------------------------
 // local types
 //------------------------------------------------------------------------------
@@ -134,7 +134,8 @@ static int Als_init(void *arg)
 		arr_p_vram[i] = HMI_Ram_alloc(48);
 		memset(arr_p_vram[i], 0, 48);
 	}
-	
+	STG_SELF.total_col = 2;
+	STG_SELF.total_row = 10;
 	phn_sys.key_weight = 1;
 	return RET_OK;
 }
