@@ -72,12 +72,14 @@ enum {
 }cns_rows;
 #define STG_NUM_VRAM			(row_num + 1)
 #define STG_RUN_VRAM_NUM		row_num
-#define STG_SELF						g_chn_strategy
+#define STG_SELF				g_chn_strategy
 //------------------------------------------------------------------------------
 // local types
 //------------------------------------------------------------------------------
 typedef struct {
-	int		cur_page;
+	int			cur_page;
+	char		win_buf[48];
+	chn_info_t	tmp_info[NUM_CHANNEL];
 	
 }cns_run_t;
 //------------------------------------------------------------------------------
@@ -95,6 +97,7 @@ static char *const arr_p_chnnel_entry[row_num] = {"通道号", "位号", "信号类型", 
 //------------------------------------------------------------------------------
 static void Cns_update_len(strategy_focus_t *p_syf);
 static void Cns_update_content(int op, int weight);
+static void CNS_Set_mdl_tmp_buf(int chn, chn_info_t *p_info);		
 //============================================================================//
 //            P U B L I C   F U N C T I O N S                                 //
 //============================================================================//
@@ -213,21 +216,36 @@ static int Cns_init(void *arg)
 	HMI_Ram_init();
 	for(i = 0; i < STG_NUM_VRAM; i++) {
 		
-		arr_p_vram[i] = HMI_Ram_alloc(48);
-		memset(arr_p_vram[i], 0, 48);
+		
+		
+		if(i != STG_RUN_VRAM_NUM)
+		{
+			arr_p_vram[i] = HMI_Ram_alloc(48);
+			memset(arr_p_vram[i], 0, 48);
+		}
+		else
+		{
+			arr_p_vram[i] = HMI_Ram_alloc(sizeof(cns_run_t));
+			memset(arr_p_vram[i], 0, sizeof(cns_run_t));
+		}
+			
 	}
 	STG_SELF.total_col = 2;
 	STG_SELF.total_row = row_num;
 	p_run = (cns_run_t *)arr_p_vram[STG_RUN_VRAM_NUM];
 	p_run->cur_page = 0;
-//	phn_sys.key_weight = 1;
+	
+	for(i = 0; i < NUM_CHANNEL; i++)
+		CNS_Set_mdl_tmp_buf(i, &p_run->tmp_info[i]);
 	return RET_OK;
 }
 
 
 static void CNS_Exit(void)
 {
-	
+	int i;
+	for(i = 0; i < NUM_CHANNEL; i++)
+		CNS_Set_mdl_tmp_buf(i, NULL);
 }
 static int Cns_get_focusdata(void *pp_data, strategy_focus_t *p_in_syf)
 {
@@ -256,7 +274,14 @@ static int Cns_get_focusdata(void *pp_data, strategy_focus_t *p_in_syf)
 	
 }
 
-
+static void CNS_Set_mdl_tmp_buf(int chn, chn_info_t *p_info)
+{
+	Model_chn			*p_mc = Get_Mode_chn(chn);
+	
+	MCH_Set_info_buf(p_mc, p_info, sizeof(chn_info_t));
+	
+	
+}
 
 static int Cns_key_up(void *arg)
 {
@@ -316,6 +341,7 @@ static int Cns_key_dn(void *arg)
  static void	CNS_Btn_hdl(void *self, uint8_t	btn_id)
  {
 	 int		i;
+	 cns_run_t *p_run = (cns_run_t *)arr_p_vram[STG_RUN_VRAM_NUM];
 	 if(btn_id == BTN_TYPE_SAVE)
 	 {
 		for(i = 0; i < NUM_CHANNEL; i++)
@@ -328,15 +354,15 @@ static int Cns_key_dn(void *arg)
 				if(MdlChn_Commit_conf(i) == RET_OK)
 				{
 					phn_sys.save_chg_flga &=~ CHG_MODCHN_CONF(i);
-					sprintf(arr_p_vram[11],"写入配置成功");
-					Win_content(arr_p_vram[11]);
+					sprintf(p_run->win_buf,"写入配置成功");
+					Win_content(p_run->win_buf);
 					STG_SELF.cmd_hdl(STG_SELF.p_cmd_rcv, sycmd_win_tips, NULL);
 				}
 				else
 				{
 					
-					sprintf(arr_p_vram[11],"通道[%d] 写入配置失败", i);
-					Win_content(arr_p_vram[11]);
+					sprintf(p_run->win_buf,"通道[%d] 写入配置失败", i);
+					Win_content(p_run->win_buf);
 					STG_SELF.cmd_hdl(STG_SELF.p_cmd_rcv, sycmd_win_tips, NULL);
 				}
 				
@@ -468,7 +494,7 @@ static int CNS_commit(void *arg)
 		return 0;
 		
 	}
-	
+	//删除通道数据
 	LOG_Add(LOG_CHN_DATA_HANDLE_ERASE(g_setting_chn));
 	STG_Erase_file(STG_CHN_DATA(g_setting_chn));
 	return RET_OK;
@@ -498,7 +524,7 @@ static void Cns_update_content(int op, int weight)
 	Model_chn			*p_mc = Get_Mode_chn(g_setting_chn);
 	Model				*p_md = SUPER_PTR(p_mc, Model);
 	strategy_focus_t 	*p_syf = &STG_SELF.sf;
-	
+//	cns_run_t	*p_run = (cns_run_t *)arr_p_vram[STG_RUN_VRAM_NUM];
 	strategy_focus_t		pos;
 
 	

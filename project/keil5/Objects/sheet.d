@@ -1,10 +1,10 @@
 .\objects\sheet.o: ..\..\sheet\sheet.c
 .\objects\sheet.o: ..\..\sheet\sheet.h
-.\objects\sheet.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+.\objects\sheet.o: C:\ARM\ADSv1_2\INCLUDE\stdint.h
 .\objects\sheet.o: ..\..\Glyph\glyph.h
 .\objects\sheet.o: ..\..\sdhLib\inc\lw_oopc.h
-.\objects\sheet.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
-.\objects\sheet.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
+.\objects\sheet.o: C:\ARM\ADSv1_2\INCLUDE\stdlib.h
+.\objects\sheet.o: C:\ARM\ADSv1_2\INCLUDE\stddef.h
 .\objects\sheet.o: ..\..\device\device.h
 .\objects\sheet.o: ..\..\device\deviceId.h
 .\objects\sheet.o: ..\..\device\dev_cmd.h
@@ -18,11 +18,11 @@
 .\objects\sheet.o: ..\..\sdhLib\inc\sdhDef.h
 .\objects\sheet.o: ..\..\APP\sdhlibConf.h
 .\objects\sheet.o: ..\..\sdhLib\inc\basis/sdhDebug.h
-.\objects\sheet.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
+.\objects\sheet.o: C:\ARM\ADSv1_2\INCLUDE\stdio.h
 .\objects\sheet.o: ..\..\sdhLib\inc\basis/sdhError.h
 .\objects\sheet.o: ..\..\sdhLib\inc\basis/assert.h
 .\objects\sheet.o: ..\..\sdhLib\inc\basis/except.h
-.\objects\sheet.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\setjmp.h
+.\objects\sheet.o: C:\ARM\ADSv1_2\INCLUDE\setjmp.h
 .\objects\sheet.o: ..\..\configs\model_conf.h
 .\objects\sheet.o: ..\..\model\Model_channel.h
 .\objects\sheet.o: ..\..\APP\system.h
@@ -52,4 +52,4 @@
 .\objects\sheet.o: ..\..\..\PplRcd\utils/rtc.h
 .\objects\sheet.o: ..\..\sdhLib\inc\mem/CiiMem.h
 .\objects\sheet.o: ..\..\sdhLib\inc\basis/assert.h
-.\objects\sheet.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
+.\objects\sheet.o: C:\ARM\ADSv1_2\INCLUDE\string.h

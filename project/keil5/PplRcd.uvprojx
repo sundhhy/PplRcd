@@ -1193,6 +1193,16 @@
               <FileType>5</FileType>
               <FilePath>..\..\USB\Ch376.h</FilePath>
             </File>
+            <File>
+              <FileName>usb_hardware_interface.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\USB\usb_hardware_interface.c</FilePath>
+            </File>
+            <File>
+              <FileName>usb_hardware_interface.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\USB\usb_hardware_interface.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

@@ -1,6 +1,6 @@
 .\objects\channel_accumulated.o: ..\..\APP\channel_accumulated.c
 .\objects\channel_accumulated.o: ..\..\APP\sys_cmd.h
-.\objects\channel_accumulated.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+.\objects\channel_accumulated.o: C:\ARM\ADSv1_2\INCLUDE\stdint.h
 .\objects\channel_accumulated.o: ..\..\APP\system.h
 .\objects\channel_accumulated.o: ..\..\..\PplRcd\utils/time.h
 .\objects\channel_accumulated.o: E:\PaperlessRecorder\myCode\PplRcd\project\keil5\RTE\Device\STM32F103VC\stm32f10x_conf.h
@@ -28,7 +28,7 @@
 .\objects\channel_accumulated.o: ..\..\sdhLib\inc\sdhDef.h
 .\objects\channel_accumulated.o: ..\..\APP\sdhlibConf.h
 .\objects\channel_accumulated.o: ..\..\sdhLib\inc\basis/sdhDebug.h
-.\objects\channel_accumulated.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
+.\objects\channel_accumulated.o: C:\ARM\ADSv1_2\INCLUDE\stdio.h
 .\objects\channel_accumulated.o: ..\..\sdhLib\inc\basis/sdhError.h
 .\objects\channel_accumulated.o: ..\..\sdhLib\inc\basis/macros.h
 .\objects\channel_accumulated.o: ..\..\device\device.h
@@ -36,8 +36,8 @@
 .\objects\channel_accumulated.o: ..\..\device\dev_cmd.h
 .\objects\channel_accumulated.o: ..\..\device\dev_char.h
 .\objects\channel_accumulated.o: ..\..\sdhLib\inc\lw_oopc.h
-.\objects\channel_accumulated.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
-.\objects\channel_accumulated.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
+.\objects\channel_accumulated.o: C:\ARM\ADSv1_2\INCLUDE\stdlib.h
+.\objects\channel_accumulated.o: C:\ARM\ADSv1_2\INCLUDE\stddef.h
 .\objects\channel_accumulated.o: ..\..\device\dev_lcd.h
 .\objects\channel_accumulated.o: ..\..\APP\TDD.h
 .\objects\channel_accumulated.o: ..\..\configs\hardwareConfig.h
@@ -48,9 +48,9 @@
 .\objects\channel_accumulated.o: ..\..\sdhLib\inc\arithmetic/list.h
 .\objects\channel_accumulated.o: ..\..\sdhLib\inc\basis/assert.h
 .\objects\channel_accumulated.o: ..\..\sdhLib\inc\basis/except.h
-.\objects\channel_accumulated.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\setjmp.h
+.\objects\channel_accumulated.o: C:\ARM\ADSv1_2\INCLUDE\setjmp.h
 .\objects\channel_accumulated.o: ..\..\model\Model_channel.h
 .\objects\channel_accumulated.o: ..\..\model\ModelTime.h
 .\objects\channel_accumulated.o: ..\..\..\PplRcd\utils/rtc_pcf8563.h
 .\objects\channel_accumulated.o: ..\..\..\PplRcd\utils/rtc.h
-.\objects\channel_accumulated.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
+.\objects\channel_accumulated.o: C:\ARM\ADSv1_2\INCLUDE\string.h

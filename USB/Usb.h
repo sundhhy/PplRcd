@@ -90,15 +90,15 @@ typedef enum {
 }e_usb_msg;
 
 
+
 //------------------------------------------------------------------------------
 // global variable declarations
 //------------------------------------------------------------------------------
-
 //------------------------------------------------------------------------------
 // function prototypes
 //------------------------------------------------------------------------------
-int USB_Init(void* arg);
-int USB_Run(void* arg);
+int USB_Init(void *hard_op);
+int USB_Run(void);
 int USB_Open_file(char *file_name, char mode);
 int USB_Colse_file(int fd);
 int USB_Write_file(int fd, char *buf, int len);

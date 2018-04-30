@@ -1,6 +1,6 @@
 .\objects\modbus_app.o: ..\..\APP\Modbus_app.c
 .\objects\modbus_app.o: ..\..\APP\sys_cmd.h
-.\objects\modbus_app.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+.\objects\modbus_app.o: C:\ARM\ADSv1_2\INCLUDE\stdint.h
 .\objects\modbus_app.o: ..\..\APP\system.h
 .\objects\modbus_app.o: ..\..\..\PplRcd\utils/time.h
 .\objects\modbus_app.o: E:\PaperlessRecorder\myCode\PplRcd\project\keil5\RTE\Device\STM32F103VC\stm32f10x_conf.h
@@ -28,7 +28,7 @@
 .\objects\modbus_app.o: ..\..\sdhLib\inc\sdhDef.h
 .\objects\modbus_app.o: ..\..\APP\sdhlibConf.h
 .\objects\modbus_app.o: ..\..\sdhLib\inc\basis/sdhDebug.h
-.\objects\modbus_app.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
+.\objects\modbus_app.o: C:\ARM\ADSv1_2\INCLUDE\stdio.h
 .\objects\modbus_app.o: ..\..\sdhLib\inc\basis/sdhError.h
 .\objects\modbus_app.o: ..\..\sdhLib\inc\basis/macros.h
 .\objects\modbus_app.o: ..\..\device\device.h
@@ -36,8 +36,8 @@
 .\objects\modbus_app.o: ..\..\device\dev_cmd.h
 .\objects\modbus_app.o: ..\..\device\dev_char.h
 .\objects\modbus_app.o: ..\..\sdhLib\inc\lw_oopc.h
-.\objects\modbus_app.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
-.\objects\modbus_app.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
+.\objects\modbus_app.o: C:\ARM\ADSv1_2\INCLUDE\stdlib.h
+.\objects\modbus_app.o: C:\ARM\ADSv1_2\INCLUDE\stddef.h
 .\objects\modbus_app.o: ..\..\device\dev_lcd.h
 .\objects\modbus_app.o: ..\..\APP\TDD.h
 .\objects\modbus_app.o: ..\..\configs\hardwareConfig.h
@@ -46,7 +46,7 @@
 .\objects\modbus_app.o: ..\..\sdhLib\inc\arithmetic/list.h
 .\objects\modbus_app.o: ..\..\sdhLib\inc\basis/assert.h
 .\objects\modbus_app.o: ..\..\sdhLib\inc\basis/except.h
-.\objects\modbus_app.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\setjmp.h
+.\objects\modbus_app.o: C:\ARM\ADSv1_2\INCLUDE\setjmp.h
 .\objects\modbus_app.o: ..\..\model\Model_channel.h
 .\objects\modbus_app.o: ..\..\model\ModelTime.h
 .\objects\modbus_app.o: ..\..\..\PplRcd\utils/rtc_pcf8563.h

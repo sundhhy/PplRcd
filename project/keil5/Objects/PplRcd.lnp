@@ -101,6 +101,7 @@
 ".\objects\ctltimer.o"
 ".\objects\ch376.o"
 ".\objects\usb.o"
+".\objects\usb_hardware_interface.o"
 ".\objects\easy_fs.o"
 ".\objects\rtx_conf_cm.o"
 "d:\Keil_v5\ARM\PACK\ARM\CMSIS\5.0.0\CMSIS\RTOS\RTX\LIB\ARM\RTX_CM3.lib"

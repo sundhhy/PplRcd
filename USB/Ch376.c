@@ -18,27 +18,23 @@
 //============================================================================//
 //            P R I V A T E   D E F I N I T I O N S                           //
 //============================================================================//
+#include <string.h>		//NULL 
 #include "Ch376.h"
-#include "os/os_depend.h"
-#include "device.h"
-#include "sdhDef.h"
+#include "usb_hardware_interface.h"
 
 //------------------------------------------------------------------------------
 // const defines
 //------------------------------------------------------------------------------
 
-static	I_dev_Char	*ch376_dev;
-static	I_dev_Char			*ch376_int;
 
 
-//#define	xReadCH376Status( )		( CH376_CMD_PORT )  // 从CH376读状态
-#define xWriteCH376Data(d)		(ch376_dev->write(ch376_dev, &d, 1))
-#define xWriteCH376Data_p(ptr, n)		(ch376_dev->write(ch376_dev, ptr, n))
-#define xReadCH376Data(d)		(ch376_dev->read(ch376_dev, &d, 1))
-#define xReadCH376Data_p(ptr, n)		(ch376_dev->read(ch376_dev, ptr, n))
-#define	xEndCH376Cmd( )			SET_CH376ENA_HIGH//结束CH376命令,仅用于SPI接口方式
-#define CH376_CMD_PORT	(ch376_dev->write(ch376_dev, &d, 1))
-//#define CH376_DATA_PORT	(*((volatile unsigned char *) 0x82000000))
+
+//#define xWriteCH376Data(d)		(ch376_dev->write(ch376_dev, &d, 1))
+//#define xWriteCH376Data_p(ptr, n)		(ch376_dev->write(ch376_dev, ptr, n))
+//#define xReadCH376Data(d)		(ch376_dev->read(ch376_dev, &d, 1))
+//#define xReadCH376Data_p(ptr, n)		(ch376_dev->read(ch376_dev, ptr, n))
+//#define	xEndCH376Cmd( )			p_ch376->usb_cs_off()//结束CH376命令,仅用于SPI接口方式
+//#define CH376_CMD_PORT	(ch376_dev->write(ch376_dev, &d, 1))
 
 #define CH376_DATABUF_SIZE			64
 //------------------------------------------------------------------------------
@@ -48,14 +44,23 @@ static	I_dev_Char			*ch376_int;
 //------------------------------------------------------------------------------
 // local vars
 //------------------------------------------------------------------------------
-
+static usb_op_t	*p_ch376;
 static uint8_t DataBuff[CH376_DATABUF_SIZE];
 static uplevel_intr ch376_up_irq = NULL;
+
+#define xWriteCH376Data(d)		(p_ch376->usb_write_bytes(&d, 1))
+#define xWriteCH376Data_p(ptr, n)		(p_ch376->usb_write_bytes(ptr, n))
+#define xReadCH376Data(d)		(p_ch376->usb_read_bytes(&d, 1))
+#define xReadCH376Data_p(ptr, n)		(p_ch376->usb_read_bytes(ptr, n))
+#define	xEndCH376Cmd( )			p_ch376->usb_cs_off()//结束CH376命令,仅用于SPI接口方式
+#define	xStartCH376Cmd( )			p_ch376->usb_cs_on()//开始CH376命令,仅用于SPI接口方式
+#define CH376_CMD_PORT	(p_ch376->usb_write_bytes(&d, 1))
+
 //------------------------------------------------------------------------------
 // local function prototypes
 //------------------------------------------------------------------------------
 
-//static void delay_ms(unsigned long time);
+//static void p_ch376->usb_delay_ms(unsigned long time);
 //static void Delay10us(unsigned long time);
 static void xWriteCH376Data_u32(uint32_t data_u32);
 static void xWriteCH376Cmd(uint8_t mCmd);
@@ -69,87 +74,95 @@ static void	CH376SetFileName(char *name );
 static uint8_t	CH376SendCmdDatWaitInt( uint8_t mCmd, uint8_t mDat )  ;
 static void	CH376WriteVar32(uint8_t var, uint32_t dat );  /* 写CH376芯片内部的32位变量 */
 static uint32_t	CH376Read32bitDat( void );
-static  void Ch376_intr( void *arg, int type, int encode);
+static  void Ch376_intr(void);
 static uint8_t	CH376DiskWriteSec( uint8_t *buf, uint32_t iLbaStart, uint8_t iSectorCount );
 static  uint8_t	CH376WriteReqBlock( uint8_t *buf );
 static void	CH376WriteOfsBlock(uint8_t * buf, uint8_t ofs, uint8_t len );
 //============================================================================//
 //            P U B L I C   F U N C T I O N S                                 //
 //============================================================================//
-int	Init_Ch376(int dev_id, uplevel_intr up_irq)
+int	Init_Ch376(void *op, uplevel_intr up_irq)
 {
-	int ret = RET_OK;
+	int ret = 0;
 	
-	ret = Dev_open(DEVID_GPIO_A10, (void *)&ch376_int);
-	Ch376_enbale_Irq(0);
-	
-	ret = Dev_open(dev_id, (void *)&ch376_dev);
-	
-	ch376_int->ioctol(ch376_int, DEVCMD_SET_IRQHDL, Ch376_intr, (void *)NULL);
-	HRst_Ch376();
+	p_ch376 = (usb_op_t *)op;
+	p_ch376->usb_irq_cb = Ch376_intr;
+	p_ch376->usb_reset();
+//	ret = Dev_open(DEVID_GPIO_USB_INIT, (void *)&ch376_int);
+	p_ch376->usb_set_irq(0);
+//	
+//	ret = Dev_open(dev_id, (void *)&ch376_dev);
+//	
+//	ch376_int->ioctol(ch376_int, DEVCMD_SET_IRQHDL, Ch376_intr, (void *)NULL);
+//	HRst_Ch376();
 	ch376_up_irq = up_irq;
  
 	ret = mInitCH376Host();
 	
-	Ch376_enbale_Irq(1);
-	CH376GetIntStatus();
+	p_ch376->usb_set_irq(1);
+	
+	if( CH376GetIntStatus() == USB_INT_CONNECT)
+	{
+		
+		ch376_up_irq(USB_INT_CONNECT);
+	}
 	return ret;
 	
 }
 
-void Power_Ch376(int on)
-{
-	if(on) 
-	{
-		SET_CH376PWR_LOW;
-	}
-	else 
-	{
-		
-		
-		SET_CH376PWR_HIGH;
-	}
-	
-}
-
-void Ch376_enbale_Irq(int ed)
-{
-	if(ed) 
-	{
-		ch376_int->ioctol(ch376_int,DEVCMD_ENABLE_IRQ);
-		
-	}
-	else 
-	{
-		
-		ch376_int->ioctol(ch376_int,DEVCMD_DISABLE_IRQ);
-	}
-	
-	
-}
-
-void HRst_Ch376(void)
-{
-	SET_CH376RST_HIGH;
-	delay_ms(100);
-	
-	SET_CH376RST_LOW;
-	delay_ms(100);
-	
-	SET_CH376ENA_HIGH;
-	delay_ms(100);
-	
+//void Power_Ch376(int on)
+//{
+//	if(on) 
+//	{
+//		SET_CH376PWR_LOW;
+//	}
+//	else 
+//	{
+//		
+//		
+//		SET_CH376PWR_HIGH;
+//	}
 //	
-	
-//	uint8_t	s = 0;
+//}
+
+//void p_ch376->usb_set_irq(int ed)
+//{
+//	if(ed) 
+//	{
+//		ch376_int->ioctol(ch376_int,DEVCMD_ENABLE_IRQ);
+//		
+//	}
+//	else 
+//	{
+//		
+//		ch376_int->ioctol(ch376_int,DEVCMD_DISABLE_IRQ);
+//	}
 //	
+//	
+//}
 
-//	SET_CH376ENA_HIGH;
-//	s = CH376SendCmdWaitInt(CMD00_RESET_ALL);
-//	xEndCH376Cmd();
-//	delay_ms(50);			//通常35ms内完成
+//void HRst_Ch376(void)
+//{
+//	SET_CH376RST_HIGH;
+//	p_ch376->usb_delay_ms(100);
+//	
+//	SET_CH376RST_LOW;
+//	p_ch376->usb_delay_ms(100);
+//	
+//	p_ch376->usb_cs_off();
+//	p_ch376->usb_delay_ms(100);
+//	
+////	
+//	
+////	uint8_t	s = 0;
+////	
 
-}
+////	p_ch376->usb_cs_off();
+////	s = CH376SendCmdWaitInt(CMD00_RESET_ALL);
+////	xEndCH376Cmd();
+////	p_ch376->usb_delay_ms(50);			//通常35ms内完成
+
+//}
 
 //初始化CH376
 uint8_t mInitCH376Host(void)
@@ -160,12 +173,12 @@ uint8_t mInitCH376Host(void)
 	//检测通讯接口
 	
 	xWriteCH376Cmd(CMD11_CHECK_EXIST);
-	delay_ms(100);
+	p_ch376->usb_delay_ms(100);
 	usb_data = 0x65;
 	xWriteCH376Data(usb_data);
-	delay_ms(100);
+	p_ch376->usb_delay_ms(100);
 	xReadCH376Data(res);
-	SET_CH376ENA_HIGH;
+	p_ch376->usb_cs_off();
 	if (res != 0x9A)
 	{
 		return (ERR_USB_UNKNOWN);
@@ -174,9 +187,9 @@ uint8_t mInitCH376Host(void)
 
 	//获取芯片及固件版本
 	xWriteCH376Cmd(CMD01_GET_IC_VER);
-	delay_ms(1000);
+	p_ch376->usb_delay_ms(1000);
 	xReadCH376Data(res);
-	SET_CH376ENA_HIGH;
+	p_ch376->usb_cs_off();
 	if (res != 0x41)
 	{
 //		return (ERR_USB_UNKNOWN);
@@ -188,9 +201,9 @@ uint8_t mInitCH376Host(void)
 	xWriteCH376Cmd(CMD11_SET_USB_MODE);
 	usb_data = 0x06;
 	xWriteCH376Data(usb_data);	//已启用的主机方式并且自动产生SOF包
-	delay_ms(100);
+	p_ch376->usb_delay_ms(100);
 	xReadCH376Data(res);
-	SET_CH376ENA_HIGH;
+	p_ch376->usb_cs_off();
 	if (res == CMD_RET_SUCCESS)
 	{
 		return USB_INT_SUCCESS;
@@ -339,7 +352,7 @@ uint8_t	CH376FileCreate(char *name )
 	// 设置将要操作的文件的文件名 
 	if ( name )
 		CH376SetFileName( name );  
-//	delay_ms(100);
+//	p_ch376->usb_delay_ms(100);
 	return(CH376SendCmdWaitInt(CMD0H_FILE_CREATE ) );
 }
 
@@ -408,7 +421,7 @@ uint8_t	CH376ByteRead(uint8_t* buf, uint16_t ReqCount, uint16_t* RealCount )
 	uint8_t	s;
 	
 	xWriteCH376Cmd( CMD2H_BYTE_READ );
-	xWriteCH376Data_p(&ReqCount, 2 );
+	xWriteCH376Data_p((uint8_t *)&ReqCount, 2 );
 	xEndCH376Cmd( );
 	if ( RealCount ) 
 	{
@@ -443,7 +456,7 @@ uint8_t	CH376ByteWrite( uint8_t *buf, uint16_t ReqCount, uint16_t *RealCount )
 	uint8_t	u16_part;
 	
 	
-	Ch376_enbale_Irq(0);
+	p_ch376->usb_set_irq(0);
 	xWriteCH376Cmd( CMD2H_BYTE_WRITE );
 	u16_part = ReqCount;
 	xWriteCH376Data(u16_part);
@@ -471,13 +484,13 @@ uint8_t	CH376ByteWrite( uint8_t *buf, uint16_t ReqCount, uint16_t *RealCount )
 		}
 		else
 		{
-			Ch376_enbale_Irq(1);
+			p_ch376->usb_set_irq(1);
 			return( s );  // 错误
 			
 		}
 	}
 	
-	Ch376_enbale_Irq(1);
+//	p_ch376->usb_set_irq(1);
 	
 //	return 0;
 }
@@ -591,8 +604,13 @@ static void xWriteCH376Cmd(uint8_t mCmd)
 //	uint8_t i,res;
 
 	//ch376将SPI片选有效后第一个字节作为命令
-	SET_CH376ENA_LOW;
-	ch376_dev->write(ch376_dev, &mCmd, 1);
+//	SET_CH376ENA_LOW;
+//	ch376_dev->write(ch376_dev, &mCmd, 1);
+		xStartCH376Cmd();
+		xWriteCH376Data(mCmd);
+
+	
+	
 //	for (i=0;i<10;i++)
 //	{
 //		//检查状态端口的标志位，位4：忙标志，高有效
@@ -644,7 +662,7 @@ static uint8_t CH376GetIntStatus(void)
 			sc --;
 		else
 			break;
-		delay_ms(1);
+		p_ch376->usb_delay_ms(1);
 	}
 	return (s);
 }
@@ -654,13 +672,13 @@ static uint8_t CH376GetIntStatus(void)
 static uint8_t	CH376SendCmdWaitInt( uint8_t mCmd )  
 {
 	uint8_t	itr = 0;
-	Ch376_enbale_Irq(0);
+	p_ch376->usb_set_irq(0);
 	
 	xWriteCH376Cmd( mCmd );
-	delay_ms(1);
+	p_ch376->usb_delay_ms(1);
 	xEndCH376Cmd();
 	itr = Wait376Interrupt(0);
-	Ch376_enbale_Irq(1);
+	p_ch376->usb_set_irq(1);
 	return itr;
 }
 
@@ -668,7 +686,8 @@ static uint8_t	CH376SendCmdWaitInt( uint8_t mCmd )
 static int Query376Interrupt(void)
 {
 	char	pin_val = 0;
-	ch376_int->read(ch376_int, &pin_val, 1);
+//	ch376_int->read(ch376_int, &pin_val, 1);
+	pin_val = p_ch376->usb_read_intr_pin();
 	if(pin_val)
 	{
 		return 0;
@@ -680,28 +699,28 @@ static uint8_t Wait376Interrupt(int	set_irq )
 {
 	uint16_t	i = 10000;
 	if(set_irq)
-		Ch376_enbale_Irq(0);
+		p_ch376->usb_set_irq(0);
 	while(1)
 	{
 		if (Query376Interrupt( ))
 		{
 			if(set_irq)
-				Ch376_enbale_Irq(1);
+				p_ch376->usb_set_irq(1);
 			return( CH376GetIntStatus( ) );	
 		}
 			
-		delay_ms(1);
+		p_ch376->usb_delay_ms(1);
 		if(i)
 			i --;
 		else
 			break;
 	}
 	if(set_irq)
-		Ch376_enbale_Irq(1);
+		p_ch376->usb_set_irq(1);
 	return( ERR_USB_UNKNOWN );
 }
 
-static  void Ch376_intr( void *arg, int type, int encode)
+static  void Ch376_intr(void)
 {
 	
 	uint8_t	s = CH376GetIntStatus();// 清除CH376中断
@@ -723,7 +742,7 @@ static void	CH376WriteHostBlock( uint8_t *buf, uint8_t len )
 //		do
 //		{
 //			xWriteCH376Data( *buf );
-//			//delay_ms(2);
+//			//p_ch376->usb_delay_ms(2);
 //			buf ++;
 //		} while ( -- len );
 	}
@@ -789,7 +808,7 @@ static void	CH376WriteOfsBlock(uint8_t * buf, uint8_t ofs, uint8_t len )
 //	if(!(IO0PIN & USB_OCA))
 //	{
 //		SET_CH376ENA_LOW;
-//		delay_ms(100);
+//		p_ch376->usb_delay_ms(100);
 //	}
 //}
 
@@ -844,9 +863,9 @@ static uint8_t	CH376ReadVar8( uint8_t var )  /* 读CH376芯片内部的8位变量 */
 static uint8_t	CH376DiskReqSense( void )  
 {
 	uint8_t	s;
-	delay_ms( 50 );
+	p_ch376->usb_delay_ms( 50 );
 	s = CH376SendCmdWaitInt( CMD0H_DISK_R_SENSE );
-	delay_ms( 50 );
+	p_ch376->usb_delay_ms( 50 );
 	return( s );
 }
 
@@ -883,7 +902,7 @@ static void	CH376SetFileName(char *name )
 	xWriteCH376Data( c );
 	while ( c )
 	{
-		delay_ms(5);
+		p_ch376->usb_delay_ms(5);
 		name ++;
 		c = *name;
 		if ( c == DEF_SEPAR_CHAR1 || c == DEF_SEPAR_CHAR2 ) c = 0;  // 强行将文件名截止 
@@ -941,12 +960,12 @@ static uint8_t	CH376SendCmdDatWaitInt( uint8_t mCmd, uint8_t mDat )
 	
 	uint8_t	itr = 0;
 
-	Ch376_enbale_Irq(0);
+	p_ch376->usb_set_irq(0);
 	xWriteCH376Cmd( mCmd );
 	xWriteCH376Data( mDat );
 	xEndCH376Cmd( );
 	itr = Wait376Interrupt(0);
-	Ch376_enbale_Irq(1);
+	p_ch376->usb_set_irq(1);
 	return itr;
 }
 

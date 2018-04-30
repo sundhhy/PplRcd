@@ -1,20 +1,20 @@
 .\objects\hmi_accumulate .o: ..\..\HMI\HMI_Accumulate .c
 .\objects\hmi_accumulate .o: ..\..\HMI\HMI_Accumulate.h
 .\objects\hmi_accumulate .o: ..\..\HMI\HMI.h
-.\objects\hmi_accumulate .o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
-.\objects\hmi_accumulate .o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
+.\objects\hmi_accumulate .o: C:\ARM\ADSv1_2\INCLUDE\stdint.h
+.\objects\hmi_accumulate .o: C:\ARM\ADSv1_2\INCLUDE\string.h
 .\objects\hmi_accumulate .o: ..\..\sdhLib\inc\lw_oopc.h
-.\objects\hmi_accumulate .o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
-.\objects\hmi_accumulate .o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
+.\objects\hmi_accumulate .o: C:\ARM\ADSv1_2\INCLUDE\stdlib.h
+.\objects\hmi_accumulate .o: C:\ARM\ADSv1_2\INCLUDE\stddef.h
 .\objects\hmi_accumulate .o: ..\..\sdhLib\inc\sdhDef.h
 .\objects\hmi_accumulate .o: ..\..\APP\sdhlibConf.h
 .\objects\hmi_accumulate .o: ..\..\sdhLib\inc\basis/sdhDebug.h
-.\objects\hmi_accumulate .o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
+.\objects\hmi_accumulate .o: C:\ARM\ADSv1_2\INCLUDE\stdio.h
 .\objects\hmi_accumulate .o: ..\..\sdhLib\inc\basis/sdhError.h
 .\objects\hmi_accumulate .o: ..\..\sdhLib\inc\basis/macros.h
 .\objects\hmi_accumulate .o: ..\..\sdhLib\inc\basis/assert.h
 .\objects\hmi_accumulate .o: ..\..\sdhLib\inc\basis/except.h
-.\objects\hmi_accumulate .o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\setjmp.h
+.\objects\hmi_accumulate .o: C:\ARM\ADSv1_2\INCLUDE\setjmp.h
 .\objects\hmi_accumulate .o: ..\..\sheet\sheet.h
 .\objects\hmi_accumulate .o: ..\..\Glyph\glyph.h
 .\objects\hmi_accumulate .o: ..\..\device\device.h

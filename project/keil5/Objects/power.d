@@ -1,7 +1,7 @@
 .\objects\power.o: ..\..\BSP\power.c
 .\objects\power.o: d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\Include\stm32f10x.h
 .\objects\power.o: d:\Keil_v5\ARM\PACK\ARM\CMSIS\5.0.0\CMSIS\Include\core_cm3.h
-.\objects\power.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+.\objects\power.o: C:\ARM\ADSv1_2\INCLUDE\stdint.h
 .\objects\power.o: d:\Keil_v5\ARM\PACK\ARM\CMSIS\5.0.0\CMSIS\Include\cmsis_compiler.h
 .\objects\power.o: d:\Keil_v5\ARM\PACK\ARM\CMSIS\5.0.0\CMSIS\Include\cmsis_armcc.h
 .\objects\power.o: d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\Include\system_stm32f10x.h
@@ -27,7 +27,7 @@
 .\objects\power.o: ..\..\sdhLib\inc\sdhDef.h
 .\objects\power.o: ..\..\APP\sdhlibConf.h
 .\objects\power.o: ..\..\sdhLib\inc\basis/sdhDebug.h
-.\objects\power.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
+.\objects\power.o: C:\ARM\ADSv1_2\INCLUDE\stdio.h
 .\objects\power.o: ..\..\sdhLib\inc\basis/sdhError.h
 .\objects\power.o: ..\..\sdhLib\inc\basis/macros.h
 .\objects\power.o: ..\..\device\device.h
@@ -35,8 +35,8 @@
 .\objects\power.o: ..\..\device\dev_cmd.h
 .\objects\power.o: ..\..\device\dev_char.h
 .\objects\power.o: ..\..\sdhLib\inc\lw_oopc.h
-.\objects\power.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
-.\objects\power.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
+.\objects\power.o: C:\ARM\ADSv1_2\INCLUDE\stdlib.h
+.\objects\power.o: C:\ARM\ADSv1_2\INCLUDE\stddef.h
 .\objects\power.o: ..\..\device\dev_lcd.h
 .\objects\power.o: ..\..\APP\TDD.h
 .\objects\power.o: ..\..\Glyph\glyph.h

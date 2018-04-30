@@ -54,6 +54,7 @@ strategy_t	g_sys_strategy = {
 // const defines
 //------------------------------------------------------------------------------
 enum {
+	row_ver,
 	row_set_time,
 	row_set_psd,
 	row_num_chn,
@@ -90,7 +91,7 @@ typedef struct {
 // local vars
 //------------------------------------------------------------------------------
 
- static char *const arr_p_sys_entry[row_num] = {"时间设定", "用户密码", "通道数目", "记录间隔", \
+ static char *const arr_p_sys_entry[row_num] = {"版本号","时间设定", "用户密码", "通道数目", "记录间隔", \
 	"断偶处理", "断阻处理", "通信方式", "波特率", "本机地址", "调节参数修改","冷端方式",  "冷端温度", "通道状态显示", \
 	 "按键声音", "恢复出厂设置"};
  
@@ -134,15 +135,14 @@ static int SysStrategy_entry(int row, int col, void *pp_text)
 		
 		
 		switch(row) {
+			case row_ver:
+				sprintf(arr_p_vram[row], "%d.%d", phn_sys.major_ver, phn_sys.minor_ver);
+				break;
 			case row_set_time:
-				
-	
-//				p_syf->f_row = 0;
-//				Sys_update_syf(p_syf);
 			
 				model = Create_model("time");
-				model->to_string(model, 1, arr_p_vram[0]);
-				p_syf->num_byte = strlen(arr_p_vram[0]);
+				model->to_string(model, 1, arr_p_vram[row]);
+				p_syf->num_byte = strlen(arr_p_vram[row]);
 				break;
 			case row_set_psd:
 				Print_sys_param(NULL, arr_p_vram[row], 48, es_psd);

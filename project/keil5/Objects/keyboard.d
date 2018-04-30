@@ -1,11 +1,11 @@
 .\objects\keyboard.o: ..\..\utils\keyboard.c
-.\objects\keyboard.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
+.\objects\keyboard.o: C:\ARM\ADSv1_2\INCLUDE\string.h
 .\objects\keyboard.o: ..\..\utils\keyboard.h
 .\objects\keyboard.o: ..\..\sdhLib\inc\lw_oopc.h
-.\objects\keyboard.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
-.\objects\keyboard.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
+.\objects\keyboard.o: C:\ARM\ADSv1_2\INCLUDE\stdlib.h
+.\objects\keyboard.o: C:\ARM\ADSv1_2\INCLUDE\stddef.h
 .\objects\keyboard.o: ..\..\sdhLib\inc\basis/macros.h
-.\objects\keyboard.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+.\objects\keyboard.o: C:\ARM\ADSv1_2\INCLUDE\stdint.h
 .\objects\keyboard.o: ..\..\..\PplRcd\utils/time.h
 .\objects\keyboard.o: E:\PaperlessRecorder\myCode\PplRcd\project\keil5\RTE\Device\STM32F103VC\stm32f10x_conf.h
 .\objects\keyboard.o: E:\PaperlessRecorder\myCode\PplRcd\project\keil5\RTE\RTE_Components.h
@@ -38,7 +38,7 @@
 .\objects\keyboard.o: ..\..\sdhLib\inc\sdhDef.h
 .\objects\keyboard.o: ..\..\APP\sdhlibConf.h
 .\objects\keyboard.o: ..\..\sdhLib\inc\basis/sdhDebug.h
-.\objects\keyboard.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
+.\objects\keyboard.o: C:\ARM\ADSv1_2\INCLUDE\stdio.h
 .\objects\keyboard.o: ..\..\sdhLib\inc\basis/sdhError.h
 .\objects\keyboard.o: ..\..\drive\GPIO/drive_gpio.h
 .\objects\keyboard.o: ..\..\drive\dri_cmd.h

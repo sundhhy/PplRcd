@@ -24,6 +24,7 @@
 #include "HMI/Component_tips.h"
 
 #include "Usb.h"
+#include "usb_hardware_interface.h"
 
 #include "control/CtlKey.h"
 #include "control/CtlTimer.h"
@@ -74,6 +75,7 @@ static void ThrdKeyRun (void const *argument);                             // th
 osThreadId tid_Thread_key;                                          // thread id
 osThreadDef (ThrdKeyRun, osPriorityNormal, 1, 0);                   // thread object
 
+static usb_op_t	usb_op;
 //------------------------------------------------------------------------------
 // local function prototypes
 //------------------------------------------------------------------------------
@@ -157,7 +159,9 @@ int main (void) {
 	osKernelStart ();  
 
 	MBA_Init();
-	if(USB_Init(NULL) != RET_OK)
+	
+	UHI_Init(&usb_op);
+	if(USB_Init(&usb_op) != RET_OK)
 	{
 		phn_sys.sys_flag |= SYSFLAG_ERR;
 	}
@@ -210,7 +214,7 @@ int main (void) {
 			g_p_curHmi->hmi_run(g_p_curHmi);
 			main_count_1s = 0;
 		}
-		USB_Run(NULL);
+		USB_Run();
 		
 //		phn_sys.lcd_sem_wait_ms = 20;
 		LCD_Run();
@@ -344,11 +348,14 @@ static int	Main_USB_event(int type)
 	CMP_tips *p_tips = TIP_Get_Sington();
 	if(type == et_ready)
 	{
+		
+		phn_sys.usb_device = 1;
 		p_tips->show_ico_tips(0, -1);
 		
 	}
 	else if(type == et_remove)
 	{
+		phn_sys.usb_device = 0;
 		p_tips->clear_ico_tips(0);
 		
 	}

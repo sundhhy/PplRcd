@@ -213,6 +213,8 @@ CLASS(Model_chn)
 {
 		
 	EXTENDS( Model);
+	chn_info_t		*p_tmp_info;
+	chn_alarm_t		*p_tmp_alarm;
 	chn_info_t		chni;
 	chn_alarm_t		alarm;
 	struct {
@@ -242,6 +244,7 @@ void MdlChn_default_alarm(int chn_num);
 void MdlChn_Clean_Alamr(int chn_num);
 int MdlChn_Commit_conf(int chn_num);			//提交修改,会把通道的配置写入存储和发送给通道版
 uint8_t  MdlChn_Cal_prc( Model *self, int val);
-
+int	MCH_Set_info_buf(Model_chn *cthis, void *buf, int buf_size);		//在设置时，可能需要先把数值设置到缓存中，而不是直接修改模型的数据
+int	MCH_Set_alarm_buf(Model_chn *cthis, void *buf, int buf_size);
 
 #endif

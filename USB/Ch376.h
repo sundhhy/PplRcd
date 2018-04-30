@@ -34,7 +34,7 @@ typedef void (*uplevel_intr)(int	arg);
 // function prototypes
 //------------------------------------------------------------------------------
 
-extern int	Init_Ch376(int dev_id, uplevel_intr up_irq);
+extern int	Init_Ch376(void *op,  uplevel_intr up_irq);
 
 
 
@@ -47,20 +47,12 @@ extern int	Init_Ch376(int dev_id, uplevel_intr up_irq);
 
 
 
-#define SET_CH376RST_HIGH	GPIO_SetBits(GPIO_PORT_USBRESET, GPIO_PIN_USBRESET)
-#define SET_CH376RST_LOW	GPIO_ResetBits(GPIO_PORT_USBRESET, GPIO_PIN_USBRESET)
 
-
-#define SET_CH376ENA_HIGH	GPIO_SetBits(GPIO_PORT_SPI1, GPIO_PIN_SPI1_NSS)
-#define SET_CH376ENA_LOW	GPIO_ResetBits(GPIO_PORT_SPI1, GPIO_PIN_SPI1_NSS)
-
-#define SET_CH376PWR_HIGH	GPIO_SetBits(GPIO_PORT_POWER, GPIO_PIN_POWER)
-#define SET_CH376PWR_LOW	GPIO_ResetBits(GPIO_PORT_POWER, GPIO_PIN_POWER)
 
 //extern	void	DelayMs(unsigned long time);
-extern	void	HRst_Ch376(void);
-extern void Power_Ch376(int on);
-extern void Ch376_enbale_Irq(int ed);
+//extern	void	HRst_Ch376(void);
+//extern void Power_Ch376(int on);
+//extern void Ch376_enbale_Irq(int ed);
 //extern	void	Test_USBOCA(void);
 extern	uint8_t	mInitCH376Host(void);
 

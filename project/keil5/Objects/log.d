@@ -1,7 +1,7 @@
 .\objects\log.o: ..\..\utils\log.c
 .\objects\log.o: ..\..\utils\Storage.h
 .\objects\log.o: ..\..\sdhLib\inc\basis/macros.h
-.\objects\log.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+.\objects\log.o: C:\ARM\ADSv1_2\INCLUDE\stdint.h
 .\objects\log.o: ..\..\..\PplRcd\utils/time.h
 .\objects\log.o: E:\PaperlessRecorder\myCode\PplRcd\project\keil5\RTE\Device\STM32F103VC\stm32f10x_conf.h
 .\objects\log.o: E:\PaperlessRecorder\myCode\PplRcd\project\keil5\RTE\RTE_Components.h
@@ -24,18 +24,18 @@
 .\objects\log.o: d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\StdPeriph_Driver\inc\misc.h
 .\objects\log.o: ..\..\model\ModelFactory.h
 .\objects\log.o: ..\..\sdhLib\inc\lw_oopc.h
-.\objects\log.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
-.\objects\log.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
+.\objects\log.o: C:\ARM\ADSv1_2\INCLUDE\stdlib.h
+.\objects\log.o: C:\ARM\ADSv1_2\INCLUDE\stddef.h
 .\objects\log.o: ..\..\model\Model.h
 .\objects\log.o: ..\..\sdhLib\inc\arithmetic/list.h
 .\objects\log.o: ..\..\sdhLib\inc\sdhDef.h
 .\objects\log.o: ..\..\APP\sdhlibConf.h
 .\objects\log.o: ..\..\sdhLib\inc\basis/sdhDebug.h
-.\objects\log.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
+.\objects\log.o: C:\ARM\ADSv1_2\INCLUDE\stdio.h
 .\objects\log.o: ..\..\sdhLib\inc\basis/sdhError.h
 .\objects\log.o: ..\..\sdhLib\inc\basis/assert.h
 .\objects\log.o: ..\..\sdhLib\inc\basis/except.h
-.\objects\log.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\setjmp.h
+.\objects\log.o: C:\ARM\ADSv1_2\INCLUDE\setjmp.h
 .\objects\log.o: ..\..\configs\model_conf.h
 .\objects\log.o: ..\..\model\Model_channel.h
 .\objects\log.o: ..\..\APP\system.h
@@ -47,4 +47,4 @@
 .\objects\log.o: ..\..\sdhLib\inc\os/os_depend.h
 .\objects\log.o: ..\..\sdhLib\inc\os/rtx/rtx_depend.h
 .\objects\log.o: d:\Keil_v5\ARM\PACK\ARM\CMSIS\5.0.0\CMSIS\RTOS\RTX\INC\cmsis_os.h
-.\objects\log.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
+.\objects\log.o: C:\ARM\ADSv1_2\INCLUDE\string.h

@@ -41,7 +41,7 @@ const unsigned short daytab1[13]={0,31,60,91,121,152,182,213,244,274,305,335,366
 static UtlRtc *sys_rtc;	
 //为了能够紧凑的定义一些静态变量，所以都定义在一起
 //只有非4字节对齐的，需要放在这里定于
-char 				*arr_p_vram[17];
+char 				*arr_p_vram[18];
 uint16_t			time_smp;
 char				g_setting_chn = 0;
 char				flush_flag = 0;

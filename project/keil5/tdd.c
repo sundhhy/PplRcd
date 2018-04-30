@@ -19,6 +19,7 @@
 #include "device.h"
 #include "HMI/HMIFactory.h"
 #include "Usb.h"
+#include "usb_hardware_interface.h"
 #include "control/CtlKey.h"
 #include "control/CtlTimer.h"
 #include "utils/time.h"

@@ -1,10 +1,10 @@
 .\objects\main.o: ..\..\APP\main.c
 .\objects\main.o: ..\..\APP\osObjects.h
 .\objects\main.o: d:\Keil_v5\ARM\PACK\ARM\CMSIS\5.0.0\CMSIS\RTOS\RTX\INC\cmsis_os.h
-.\objects\main.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
-.\objects\main.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
-.\objects\main.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
-.\objects\main.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
+.\objects\main.o: C:\ARM\ADSv1_2\INCLUDE\stdint.h
+.\objects\main.o: C:\ARM\ADSv1_2\INCLUDE\stddef.h
+.\objects\main.o: C:\ARM\ADSv1_2\INCLUDE\stdio.h
+.\objects\main.o: C:\ARM\ADSv1_2\INCLUDE\string.h
 .\objects\main.o: d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\StdPeriph_Driver\inc\stm32f10x_usart.h
 .\objects\main.o: d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\Include\stm32f10x.h
 .\objects\main.o: d:\Keil_v5\ARM\PACK\ARM\CMSIS\5.0.0\CMSIS\Include\core_cm3.h
@@ -39,7 +39,7 @@
 .\objects\main.o: ..\..\device\dev_cmd.h
 .\objects\main.o: ..\..\device\dev_char.h
 .\objects\main.o: ..\..\sdhLib\inc\lw_oopc.h
-.\objects\main.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
+.\objects\main.o: C:\ARM\ADSv1_2\INCLUDE\stdlib.h
 .\objects\main.o: ..\..\device\dev_lcd.h
 .\objects\main.o: ..\..\APP\TDD.h
 .\objects\main.o: ..\..\..\PplRcd\HMI/HMIFactory.h
@@ -50,7 +50,7 @@
 .\objects\main.o: ..\..\sdhLib\inc\basis/sdhDebug.h
 .\objects\main.o: ..\..\sdhLib\inc\basis/assert.h
 .\objects\main.o: ..\..\sdhLib\inc\basis/except.h
-.\objects\main.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\setjmp.h
+.\objects\main.o: C:\ARM\ADSv1_2\INCLUDE\setjmp.h
 .\objects\main.o: ..\..\sheet\sheet.h
 .\objects\main.o: ..\..\Glyph\glyph.h
 .\objects\main.o: ..\..\model\ModelFactory.h
@@ -87,6 +87,7 @@
 .\objects\main.o: ..\..\usb\Usb.h
 .\objects\main.o: ..\..\usb\Ch376.h
 .\objects\main.o: ..\..\usb\Ch376INC.h
+.\objects\main.o: ..\..\usb\usb_hardware_interface.h
 .\objects\main.o: ..\..\..\PplRcd\control/CtlKey.h
 .\objects\main.o: ..\..\..\PplRcd\control/Controller.h
 .\objects\main.o: ..\..\..\PplRcd\control/CtlTimer.h

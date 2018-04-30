@@ -165,6 +165,41 @@ uint8_t  MdlChn_Cal_prc(Model *self, int val)
 	
 	return prc;
 }
+
+
+int	MCH_Set_info_buf(Model_chn *cthis, void *buf, int buf_size)
+{
+	
+	if(buf == NULL)
+	{
+		cthis->p_tmp_info = NULL;
+		return RET_OK;
+	}
+	
+	if(buf_size < sizeof(chn_info_t))
+		return RET_FAILED;
+	cthis->p_tmp_info = buf;
+	memcpy(cthis->p_tmp_info, &cthis->chni, sizeof(chn_info_t));
+	return RET_OK;
+	
+}
+int	MCH_Set_alarm_buf(Model_chn *cthis, void *buf, int buf_size)
+{
+	
+	
+	if(buf == NULL)
+	{
+		cthis->p_tmp_alarm = NULL;
+		return RET_OK;
+	}
+	
+	if(buf_size < sizeof(chn_alarm_t))
+		return RET_FAILED;
+	cthis->p_tmp_alarm = buf;
+	memcpy(cthis->p_tmp_alarm, &cthis->alarm, sizeof(chn_alarm_t));
+	return RET_OK;
+}
+
 void MdlChn_default_conf(int chn_num)
 {
 	Model_chn *p_mdl= Get_Mode_chn(chn_num);
@@ -227,13 +262,95 @@ int MdlChn_Commit_conf(int chn_num)
 	Model_chn *p_mdl= Get_Mode_chn(chn_num);
 	Model		*self = SUPER_PTR(p_mdl, Model);
 	Storage		*stg = Get_storage();
+	chn_info_t		*p_info;
+	chn_alarm_t		*p_tmp_alarm;
+	int				i;
+	
+	if(p_mdl->p_tmp_info )
+	{
+		p_info = p_mdl->p_tmp_info;
+		
+//		p_info->value = p_mdl->chni.value;		//实时值不能被临时缓存覆盖
+		
+		
+		if(p_info->unit != p_mdl->chni.unit)
+			self->setMdlData(self, AUX_UNIT, &p_info->unit);
+		if(p_info->tag_NO != p_mdl->chni.tag_NO)
+			self->setMdlData(self, chnaux_tag_NO, &p_info->tag_NO);
+		if(p_info->signal_type != p_mdl->chni.signal_type)		
+			self->setMdlData(self, AUX_SIGNALTYPE, &p_info->signal_type);
+		if(p_info->MB != p_mdl->chni.MB)
+		{
+			self->setMdlData(self, chnaux_record_mb, &p_info->MB);
+			STG_Resize(STG_CHN_DATA(chn_num), p_mdl->chni.MB * 1024 * 1024);
+		}
+		if(p_info->filter_time_s != p_mdl->chni.filter_time_s)
+			self->setMdlData(self, chnaux_filter_ts, &p_info->filter_time_s);
+		if(p_info->lower_limit != p_mdl->chni.lower_limit)		
+			self->setMdlData(self, chnaux_lower_limit, &p_info->lower_limit);
+		if(p_info->upper_limit != p_mdl->chni.upper_limit)
+			self->setMdlData(self, chnaux_upper_limit, &p_info->upper_limit);
+		if(p_info->small_signal != p_mdl->chni.small_signal)
+			self->setMdlData(self, chnaux_small_signal, &p_info->small_signal);
+		if(p_info->k != p_mdl->chni.k)		
+			self->setMdlData(self, chnaux_k, &p_info->k);
+		if(p_info->b != p_mdl->chni.b)		
+			self->setMdlData(self, chnaux_b, &p_info->b);
+		
+		
+		
+//		memcpy(&p_mdl->chni, p_info, sizeof(chn_info_t));
+		
+		//把新的配置发送给通道板
+//		self->setMdlData(self, AUX_SIGNALTYPE, NULL);
+//		self->setMdlData(self, chnaux_lower_limit, NULL);
+//		self->setMdlData(self, chnaux_upper_limit, NULL);
+		
+		
+		
+	}
+	
+	if(p_mdl->p_tmp_alarm)
+	{
+		p_tmp_alarm = p_mdl->p_tmp_alarm;
+		
+//		p_tmp_alarm->alm_flag = p_mdl->alarm.alm_flag;	//实时值不能被临时缓存覆盖
+		
+		
+		
+		if(p_tmp_alarm->alarm_hh != p_mdl->alarm.alarm_hh)
+			self->setMdlData(self, alarm_hh, &p_tmp_alarm->alarm_hh);
+		if(p_tmp_alarm->alarm_hi != p_mdl->alarm.alarm_hi)
+			self->setMdlData(self, alarm_hi, &p_tmp_alarm->alarm_hi);
+		if(p_tmp_alarm->alarm_lo != p_mdl->alarm.alarm_lo)
+			self->setMdlData(self, alarm_lo, &p_tmp_alarm->alarm_lo);
+		if(p_tmp_alarm->alarm_ll != p_mdl->alarm.alarm_ll)
+			self->setMdlData(self, alarm_ll, &p_tmp_alarm->alarm_ll);
+		if(p_tmp_alarm->touch_spot_hh != p_mdl->alarm.touch_spot_hh)
+			self->setMdlData(self, tchspt_hh, &p_tmp_alarm->touch_spot_hh);
+		if(p_tmp_alarm->touch_spot_hi != p_mdl->alarm.touch_spot_hi)
+			self->setMdlData(self, tchspt_hi, &p_tmp_alarm->touch_spot_hi);
+		if(p_tmp_alarm->touch_spot_lo != p_mdl->alarm.touch_spot_lo)
+			self->setMdlData(self, tchspt_lo, &p_tmp_alarm->touch_spot_lo);
+		if(p_tmp_alarm->touch_spot_ll != p_mdl->alarm.touch_spot_ll)
+			self->setMdlData(self, tchspt_ll, &p_tmp_alarm->touch_spot_ll);
+		if(p_tmp_alarm->alarm_backlash != p_mdl->alarm.alarm_backlash)
+			self->setMdlData(self, alarm_backlash, &p_tmp_alarm->alarm_backlash);
+		
+		
+	
+		
+//		memcpy(&p_mdl->alarm, p_tmp_alarm, sizeof(chn_alarm_t));
+	}
+	
+	//存储新的配置信息
 	stg->wr_stored_data(stg, STG_CHN_CONF(chn_num), NULL, 0);
+
 	
-	self->setMdlData(self, AUX_SIGNALTYPE, NULL);
-	self->setMdlData(self, chnaux_lower_limit, NULL);
-	self->setMdlData(self, chnaux_upper_limit, NULL);
 	
-	STG_Resize(STG_CHN_DATA(chn_num), p_mdl->chni.MB * 1024 * 1024);
+	
+	
+	
 	
 	return RET_OK;
 }
@@ -1236,6 +1353,77 @@ static int MdlChn_setData(  Model *self, IN int aux, void *arg)
 		case AUX_PERCENTAGE:
 			
 			return self->to_percentage(self, arg); 
+		
+		case alarm_hh:
+			if(arg)
+			{
+				p_s16 = arg;
+				cthis->alarm.alarm_hh = *p_s16;
+			}
+			break;
+		case alarm_hi:
+			if(arg)
+			{
+				p_s16 = arg;
+				cthis->alarm.alarm_hi = *p_s16;
+			}
+			
+			break;
+		case alarm_lo:
+			if(arg)
+			{
+				p_s16 = arg;
+				cthis->alarm.alarm_lo = *p_s16;
+			}
+			break;
+		case alarm_ll:
+			if(arg)
+			{
+				p_s16 = arg;
+				cthis->alarm.alarm_ll = *p_s16;
+			}
+			break;
+		case tchspt_hh:
+			if(arg)
+			{
+				p_u8 = (uint8_t *)arg;
+				cthis->alarm.touch_spot_hh = *p_u8;
+			}
+			
+			break;
+		case tchspt_hi:
+			if(arg)
+			{
+				p_u8 = (uint8_t *)arg;
+				cthis->alarm.touch_spot_hi = *p_u8;
+			}
+			
+			break;
+		case tchspt_lo:
+			if(arg)
+			{
+				p_u8 = (uint8_t *)arg;
+				cthis->alarm.touch_spot_lo = *p_u8;
+			}
+			
+			break;
+		case tchspt_ll:
+			if(arg)
+			{
+				p_u8 = (uint8_t *)arg;
+				cthis->alarm.touch_spot_ll = *p_u8;
+			}
+			
+			break;	
+		case alarm_backlash:
+			if(arg)
+			{
+				p_u8 = (uint8_t *)arg;
+				cthis->alarm.alarm_backlash = *p_u8;
+			}
+			
+			break;
+		
 		default:
 			break;
 	}
@@ -1249,6 +1437,21 @@ static char* MdlChn_to_string( Model *self, IN int aux, void *arg)
 {
 	Model_chn		*cthis = SUB_PTR( self, Model, Model_chn);
 	char		*p = (char *)arg;
+	
+	chn_info_t		*p_info;
+	chn_alarm_t		*p_alarm;
+	
+	if(cthis->p_tmp_info)
+		p_info = cthis->p_tmp_info;
+	else
+		p_info = &cthis->chni;
+	
+	if(cthis->p_tmp_alarm)
+		p_alarm = cthis->p_tmp_alarm;
+	else
+		p_alarm = &cthis->alarm;
+	
+	
 //	int 			hh = cthis->alarm.alarm_hh;
 //	int 			hi = cthis->alarm.alarm_hi;
 //	int 			li = cthis->alarm.alarm_lo;
@@ -1274,7 +1477,7 @@ static char* MdlChn_to_string( Model *self, IN int aux, void *arg)
 			} else {
 				p = cthis->unit_buf;
 			}
-			Print_unit( cthis->chni.unit, p, 8);
+			Print_unit( p_info->unit, p, 8);
 			return p;
 		case AUX_ALARM:
 			if( arg) {
@@ -1309,111 +1512,77 @@ static char* MdlChn_to_string( Model *self, IN int aux, void *arg)
 				
 				strcat(p, "  ");
 			}
-			
-//			if(cthis->chni.value > hh) {
-//				strcat(p, "HH ");
-//			}
-//			
-//			if(cthis->chni.value > hi) {
-//				strcat(p, "Hi");
-//			}
-//			
-//			if(cthis->chni.value < li) {
-//				strcat(p, "Li ");
-//			}
-//			
-//			if(cthis->chni.value < ll) {
-//				strcat(p, "LL");
-//			}
-//			
-//			//把空间填满，来达到清除掉上一次的显示的目的
-//			for(i = strlen(p); i < 5; i++)
-//			{
-//				
-//				p[i] = ' ';
-//				
-//			}
-			
+				
 			
 			return p;
-//		case AUX_PERCENTAGE:
-//			if( arg) {
-//				p = (char *)arg;		
-//			} else {
-//				p = cthis->str_buf;
-//			}
-//			if(cthis->range == 1000)
-//				sprintf( p, "%d.%d", cthis->i_rand/10, cthis->i_rand%10);
-//			else
-//				sprintf( p, "%d", cthis->i_rand);
-//			return p;
+
 			
 		case AUX_SIGNALTYPE:
-			Print_singnaltype((e_signal_t)cthis->chni.signal_type, (char *)arg);
+			Print_singnaltype((e_signal_t)p_info->signal_type, (char *)arg);
 			break;
 		case chnaux_record_mb:
-			sprintf(arg, "%2d M", cthis->chni.MB);
+			sprintf(arg, "%2d M", p_info->MB);
 			break;
 		case chnaux_filter_ts:
-			sprintf(arg, "%2d S", cthis->chni.filter_time_s);
+			sprintf(arg, "%2d S", p_info->filter_time_s);
 			break;
 		case chnaux_lower_limit:
 			//温度信号没有小数点
 //			if(cthis->chni.signal_type <= AI_Cu50)
 //				sprintf(arg, "%-6d", cthis->chni.lower_limit);
 //			else
-				Print_float(cthis->chni.lower_limit, 6, cthis->chni.decimal_places, (char *)arg);
+				Print_float(p_info->lower_limit, 6, p_info->decimal_places, (char *)arg);
 			break;
 		case chnaux_upper_limit:
-//			if(cthis->chni.signal_type <= AI_Cu50)
-//				sprintf(arg, "%-6d", cthis->chni.upper_limit);
+//			if(p_info->signal_type <= AI_Cu50)
+//				sprintf(arg, "%-6d", p_info->upper_limit);
 //			else
-				Print_float(cthis->chni.upper_limit, 6, cthis->chni.decimal_places, (char *)arg);
+				Print_float(p_info->upper_limit, 6, p_info->decimal_places, (char *)arg);
 			break;
 		case chnaux_small_signal:
-			Print_float(cthis->chni.small_signal, 2, 1, (char *)arg);
+			Print_float(p_info->small_signal, 2, 1, (char *)arg);
 			strcat((char *)arg, " %");
 			break;
 		case chnaux_k:
-//			Print_frefix_float(cthis->chni.k, 2, "K:",(char *)arg);
-			Print_float(cthis->chni.k, 2 , 2, (char *)arg);
+//			Print_frefix_float(p_info->k, 2, "K:",(char *)arg);
+			Print_float(p_info->k, 2 , 2, (char *)arg);
 			break;
 		case chnaux_b:
-//			Print_frefix_float(cthis->chni.b, 1, "B:", (char *)arg);
-//			Print_float(cthis->chni.b, 1, (char *)arg);
-			sprintf(arg, "%-3d", cthis->chni.b);
+//			Print_frefix_float(p_info->b, 1, "B:", (char *)arg);
+//			Print_float(p_info->b, 1, (char *)arg);
+			sprintf(arg, "%-3d", p_info->b);
 			break;	
 	
 		case alarm_hh:
-			sprintf(arg, "%-6d", cthis->alarm.alarm_hh);
-//			Print_float(cthis->alarm.alarm_hh, 1, (char *)arg);
+			sprintf(arg, "%-6d", p_alarm->alarm_hh);
+//			Print_float(p_alarm->alarm_hh, 1, (char *)arg);
 			break;
 		case alarm_hi:
-			sprintf(arg, "%-6d", cthis->alarm.alarm_hi);
-//			Print_float(cthis->alarm.alarm_hi, 1, (char *)arg);
+			sprintf(arg, "%-6d", p_alarm->alarm_hi);
+//			Print_float(p_alarm->alarm_hi, 1, (char *)arg);
 			break;
 		case alarm_lo:
-			sprintf(arg, "%-5d", cthis->alarm.alarm_lo);
-//			Print_float(cthis->alarm.alarm_lo, 1, (char *)arg);
+			sprintf(arg, "%-5d", p_alarm->alarm_lo);
+//			Print_float(p_alarm->alarm_lo, 1, (char *)arg);
 			break;
 		case alarm_ll:
-			sprintf(arg, "%-5d", cthis->alarm.alarm_ll);
-//			Print_float(cthis->alarm.alarm_ll, 1, (char *)arg);
+			sprintf(arg, "%-5d", p_alarm->alarm_ll);
+//			Print_float(p_alarm->alarm_ll, 1, (char *)arg);
 			break;
 		case tchspt_hh:
-			Print_touch_spot(cthis->alarm.touch_spot_hh, (char *)arg);
+			Print_touch_spot(p_alarm->touch_spot_hh, (char *)arg);
 			break;
 		case tchspt_hi:
-			Print_touch_spot(cthis->alarm.touch_spot_hi, (char *)arg);
+			Print_touch_spot(p_alarm->touch_spot_hi, (char *)arg);
 			break;
 		case tchspt_lo:
-			Print_touch_spot(cthis->alarm.touch_spot_lo, (char *)arg);	
+			Print_touch_spot(p_alarm->touch_spot_lo, (char *)arg);	
 			break;
 		case tchspt_ll:
-			Print_touch_spot(cthis->alarm.touch_spot_ll, (char *)arg);	
+			Print_touch_spot(p_alarm->touch_spot_ll, (char *)arg);	
 			break;	
 		case alarm_backlash:
-			Print_float(cthis->alarm.alarm_backlash, 2, 1, (char *)arg);
+			Print_float(p_alarm->alarm_backlash, 2, 1, (char *)arg);
 			break;
 		default:
 			break;
@@ -1425,193 +1594,124 @@ static char* MdlChn_to_string( Model *self, IN int aux, void *arg)
 static int MdlChn_modify_sconf(Model *self, IN int aux, char *s, int op, int val)
 {
 	Model_chn		*cthis = SUB_PTR( self, Model, Model_chn);
+	chn_info_t		*p_info;
+	chn_alarm_t		*p_alarm;
+//	uint8_t			tmp_u8 = 0;
 	
-	uint8_t			tmp_u8 = 0;
+	if(cthis->p_tmp_info)
+		p_info = cthis->p_tmp_info;
+	else
+		p_info = &cthis->chni;
+	
+	if(cthis->p_tmp_alarm)
+		p_alarm = cthis->p_tmp_alarm;
+	else
+		p_alarm = &cthis->alarm;
+	
 	phn_sys.save_chg_flga |= CHG_MODCHN_CONF(cthis->chni.chn_NO);
 	switch(aux) {
 		case AUX_UNIT:
-			tmp_u8 = Operate_in_tange(cthis->chni.unit, op, 1, 0, eu_max - 1);
-			if(tmp_u8 != cthis->chni.unit)
-			{
-				cthis->chni.unit = tmp_u8;
-				
-			}
-//			cthis->chni.unit = Operate_in_tange(cthis->chni.unit, op, 1, 0, eu_max - 1);
+//			tmp_u8 = Operate_in_tange(cthis->chni.unit, op, 1, 0, eu_max - 1);
+//			if(tmp_u8 != cthis->chni.unit)
+//			{
+//				cthis->chni.unit = tmp_u8;
+//				
+//			}
+			p_info->unit = Operate_in_tange(p_info->unit, op, 1, 0, eu_max - 1);
 			self->to_string(self, AUX_UNIT, s);
 			break;
 		case chnaux_tag_NO:
-			cthis->chni.tag_NO = Operate_in_tange(cthis->chni.tag_NO, op, 1, 0, 9);
-			sprintf(s, "%d", cthis->chni.tag_NO);
+			p_info->tag_NO = Operate_in_tange(p_info->tag_NO, op, 1, 0, 9);
+			sprintf(s, "%d", p_info->tag_NO);
 			break;
 		case AUX_SIGNALTYPE:
-			cthis->chni.signal_type = Operate_in_tange(cthis->chni.signal_type, op, 1, 0, es_max - 1);
+			p_info->signal_type = Operate_in_tange(p_info->signal_type, op, 1, 0, es_max - 1);
 			self->to_string(self, AUX_SIGNALTYPE, s);
 			break;
 		case chnaux_record_mb:
-			cthis->chni.MB = Operate_in_tange(cthis->chni.MB, op, val, 0, 99);
+			p_info->MB = Operate_in_tange(p_info->MB, op, val, 0, 99);
 			
-			sprintf(s, "%d M", cthis->chni.MB);
+			sprintf(s, "%d M", p_info->MB);
 			break;
 		case chnaux_filter_ts:
-			cthis->chni.filter_time_s = Operate_in_tange(cthis->chni.filter_time_s, op, val, 0, 99);
+			p_info->filter_time_s = Operate_in_tange(p_info->filter_time_s, op, val, 0, 99);
 			
-			sprintf(s, "%d S", cthis->chni.filter_time_s);
+			sprintf(s, "%d S", p_info->filter_time_s);
 			break;
 		case chnaux_lower_limit:
-			cthis->chni.lower_limit = Operate_in_tange(cthis->chni.lower_limit, op, val, -30000, cthis->chni.upper_limit - 1);
+			p_info->lower_limit = Operate_in_tange(p_info->lower_limit, op, val, -30000, p_info->upper_limit - 1);
 			self->to_string(self, chnaux_lower_limit, s);
 			
 			break;
 		case chnaux_upper_limit:
-			cthis->chni.upper_limit = Operate_in_tange(cthis->chni.upper_limit, op, val, cthis->chni.lower_limit + 1, 30000);
+			p_info->upper_limit = Operate_in_tange(p_info->upper_limit, op, val, p_info->lower_limit + 1, 30000);
 			self->to_string(self, chnaux_upper_limit, s);
 			break;
 		case chnaux_small_signal:
-			cthis->chni.small_signal = Operate_in_tange(cthis->chni.small_signal, op, val, 0, 100);
+			p_info->small_signal = Operate_in_tange(p_info->small_signal, op, val, 0, 100);
 			self->to_string(self, chnaux_small_signal, s);
 			break;
 		case chnaux_k:
-			cthis->chni.k = Operate_in_tange(cthis->chni.k, op, val, -999, 999);
+			p_info->k = Operate_in_tange(p_info->k, op, val, -999, 999);
 			self->to_string(self, chnaux_k, s);
 			break;
 		case chnaux_b:
-			cthis->chni.b = Operate_in_tange(cthis->chni.b, op, val, -999, 999);
+			p_info->b = Operate_in_tange(p_info->b, op, val, -999, 999);
 			self->to_string(self, chnaux_b, s);
 			break;
 		
 		case alarm_hh:
-			cthis->alarm.alarm_hh = Operate_in_tange(cthis->alarm.alarm_hh, op, val, 0, 0xffff);
+			p_alarm->alarm_hh = Operate_in_tange(p_alarm->alarm_hh, op, val, 0, 0xffff);
 			self->to_string(self, aux, s);
-//			Print_float(cthis->alarm.alarm_hh, 1, s);
+//			Print_float(p_alarm->alarm_hh, 1, s);
 			break;
 		case alarm_hi:
-			cthis->alarm.alarm_hi = Operate_in_tange(cthis->alarm.alarm_hi, op, val, 0, 0xffff);
-//			Print_float(cthis->alarm.alarm_hi, 1, s);
+			p_alarm->alarm_hi = Operate_in_tange(p_alarm->alarm_hi, op, val, 0, 0xffff);
+//			Print_float(p_alarm->alarm_hi, 1, s);
 			self->to_string(self, aux, s);
 			break;
 		case alarm_lo:
-			cthis->alarm.alarm_lo = Operate_in_tange(cthis->alarm.alarm_lo, op, val, 0, 0xffff);
-//			Print_float(cthis->alarm.alarm_lo, 1, s);
+			p_alarm->alarm_lo = Operate_in_tange(p_alarm->alarm_lo, op, val, 0, 0xffff);
+//			Print_float(p_alarm->alarm_lo, 1, s);
 			self->to_string(self, aux, s);
 			break;
 		case alarm_ll:
-			cthis->alarm.alarm_ll = Operate_in_tange(cthis->alarm.alarm_ll, op, val, 0, 0xffff);
-//			Print_float(cthis->alarm.alarm_ll, 1, (char *)s);
+			p_alarm->alarm_ll = Operate_in_tange(p_alarm->alarm_ll, op, val, 0, 0xffff);
+//			Print_float(p_alarm->alarm_ll, 1, (char *)s);
 			self->to_string(self, aux, s);
 			break;
 		case tchspt_hh:
-			cthis->alarm.touch_spot_hh = Operate_in_tange(cthis->alarm.touch_spot_hh, op, val, 1, MAX_TOUCHSPOT - 1);
-			Print_touch_spot(cthis->alarm.touch_spot_hh, (char *)s);
+			p_alarm->touch_spot_hh = Operate_in_tange(p_alarm->touch_spot_hh, op, val, 1, MAX_TOUCHSPOT - 1);
+			Print_touch_spot(p_alarm->touch_spot_hh, (char *)s);
 			break;
 		case tchspt_hi:
-			cthis->alarm.touch_spot_hi = Operate_in_tange(cthis->alarm.touch_spot_hi, op, val, 1, MAX_TOUCHSPOT - 1);
-			Print_touch_spot(cthis->alarm.touch_spot_hi, (char *)s);
+			p_alarm->touch_spot_hi = Operate_in_tange(p_alarm->touch_spot_hi, op, val, 1, MAX_TOUCHSPOT - 1);
+			Print_touch_spot(p_alarm->touch_spot_hi, (char *)s);
 			break;
 		case tchspt_lo:
-			cthis->alarm.touch_spot_lo = Operate_in_tange(cthis->alarm.touch_spot_lo, op, val, 1, MAX_TOUCHSPOT - 1);
-			Print_touch_spot(cthis->alarm.touch_spot_lo, (char *)s);	
+			p_alarm->touch_spot_lo = Operate_in_tange(p_alarm->touch_spot_lo, op, val, 1, MAX_TOUCHSPOT - 1);
+			Print_touch_spot(p_alarm->touch_spot_lo, (char *)s);	
 			break;
 		case tchspt_ll:
-			cthis->alarm.touch_spot_ll = Operate_in_tange(cthis->alarm.touch_spot_ll, op, val, 1, MAX_TOUCHSPOT - 1);
-			Print_touch_spot(cthis->alarm.touch_spot_ll, (char *)s);	
+			p_alarm->touch_spot_ll = Operate_in_tange(p_alarm->touch_spot_ll, op, val, 1, MAX_TOUCHSPOT - 1);
+			Print_touch_spot(p_alarm->touch_spot_ll, (char *)s);	
 			break;	
 		case alarm_backlash:
-			cthis->alarm.alarm_backlash = Operate_in_tange(cthis->alarm.alarm_backlash, op, val, 0, 100);
-			Print_float(cthis->alarm.alarm_backlash, 2, 1, (char *)s);
+			p_alarm->alarm_backlash = Operate_in_tange(p_alarm->alarm_backlash, op, val, 0, 100);
+			Print_float(p_alarm->alarm_backlash, 2, 1, (char *)s);
 			break;
 		default:
 			
-			phn_sys.save_chg_flga &= ~CHG_MODCHN_CONF(cthis->chni.chn_NO);
+			phn_sys.save_chg_flga &= ~CHG_MODCHN_CONF(p_info->chn_NO);
 			break;
 		
 		
 	}
-	self->setMdlData(self, aux, NULL);
+//	self->setMdlData(self, aux, NULL);
 	return RET_OK;
 }
 static int MdlChn_set_by_string(Model *self, IN int aux, void *arg)
 {
-//	Model_chn		*cthis = SUB_PTR( self, Model, Model_chn);
-//	char		*p = (char *)arg;
-//	switch(aux) {
-//		case AUX_DATA:
-//		
-//			return p;
-//		case AUX_UNIT:
-//			if( arg) {
-//				p = (char *)arg;		
-//			} else {
-//				p = cthis->unit_buf;
-//			}
-//			Print_unit( cthis->chni.unit, p, 8);
-//			return p;
-//		case AUX_ALARM:
-//			if( arg) {
-//				p = (char *)arg;		
-//			} else {
-//				p = cthis->alarm_buf;
-//			}
-//		
-//			memset(p, 0, 8);
-//			if(cthis->chni.value > hh) {
-//				strcat(p, "HH ");
-//			}
-//			
-//			if(cthis->chni.value > hi) {
-//				strcat(p, "Hi ");
-//			}
-//			
-//			if(cthis->chni.value < li) {
-//				strcat(p, "Li ");
-//			}
-//			
-//			if(cthis->chni.value < ll) {
-//				strcat(p, "LL ");
-//			}
-//			
-//			//把空间填满，来达到清除掉上一次的显示的目的
-//			if( strlen( p) < 4) {
-//				strcat(p, "   ");
-//			}
-//			return p;
-////		case AUX_PERCENTAGE:
-////			if( arg) {
-////				p = (char *)arg;		
-////			} else {
-////				p = cthis->str_buf;
-////			}
-////			if(cthis->range == 1000)
-////				sprintf( p, "%d.%d", cthis->i_rand/10, cthis->i_rand%10);
-////			else
-////				sprintf( p, "%d", cthis->i_rand);
-////			return p;
-//			
-//		case AUX_SIGNALTYPE:
-//			Print_singnaltype((e_signal_t)cthis->chni.signal_type, (char *)arg);
-//			break;
-//		case chnaux_lower_limit:
-//			Print_float(cthis->chni.lower_limit, 1, (char *)arg);
-//			break;
-//		case chnaux_upper_limit:
-//			Print_float(cthis->chni.upper_limit, 1, (char *)arg);
-//			break;
-//		case chnauxsmall_signal:
-//			Print_float(cthis->chni.small_signal, 1, (char *)arg);
-//			strcat((char *)arg, " %");
-//			break;
-//		case chnaux_k:
-//			Print_float(cthis->chni.k, 2, (char *)arg);
-//			break;
-//		case chnaux_b:
-//			Print_float(cthis->chni.k, 1, (char *)arg);
-//			break;	
-//		
-//		default:
-//			break;
-//			
-//		
-//	}
-//	
 
 	return 0;
 	

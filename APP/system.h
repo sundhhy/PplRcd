@@ -234,7 +234,7 @@ typedef struct {
 //------------------------------------------------------------------------------
 // global variable declarations
 //------------------------------------------------------------------------------
-extern	char 				*arr_p_vram[17];
+extern	char 				*arr_p_vram[18];
 extern	uint16_t		time_smp;			//下次记录的时间
 extern 	char				g_setting_chn;
 extern	char				flush_flag;

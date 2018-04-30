@@ -7,13 +7,19 @@
 //1 只支持在根目录下操作;
 //2 只支持对一个文件的操作
 //这来自ch376的限制:文件名长度不得超过11，主文件名不超过8，扩展名不超过3,必须是大写字母，数字
+
+#include <string.h>
 #include "Usb.h"
-#include "os/os_depend.h"
-#include "deviceId.h"
-#include "sdhDef.h"
-#include "arithmetic/cycQueue.h"
-#include "model/ModelTime.h"
-#include "system.h"
+//#include "os/os_depend.h"
+//#include "deviceId.h"
+//#include "sdhDef.h"
+#include "usb_queue.h"
+//#include "model/ModelTime.h"
+//#include "system.h"
+
+#include "usb_hardware_interface.h"
+
+
 //------------------------------------------------------------------------------
 // const defines
 //------------------------------------------------------------------------------
@@ -74,6 +80,7 @@ typedef int	(*usb_deal_msg)(void);
 
 static 	usb_control_t		usb_ctl;
 static	uint8_t 			usb_cq_buf[LEN_USB_CQBUF];
+static usb_op_t 		*p_usb;
 //------------------------------------------------------------------------------
 // local function prototypes
 //------------------------------------------------------------------------------
@@ -98,9 +105,9 @@ Usb_deal_fail, Usb_deal_identify};
 //============================================================================//
 //            P U B L I C   F U N C T I O N S                                 //
 //============================================================================//
-int USB_Run(void* arg)
+int USB_Run(void)
 {
-	int			ret = RET_OK;
+	int			ret = 0;
 	uint8_t	msg = 0;
 	uint8_t	i = 0;
 	CQ_Read(&usb_ctl.usb_cq, &msg, 1);
@@ -133,7 +140,7 @@ int USB_Run(void* arg)
 }
 
 
-int USB_Init(void* arg)
+int USB_Init(void *hard_op)
 {
 	int	ret = -1;
 	//usb管理器初始化
@@ -141,16 +148,18 @@ int USB_Init(void* arg)
 	CQ_Init(&usb_ctl.usb_cq, usb_cq_buf, LEN_USB_CQBUF);
 	
 	//ch376硬件初始化
+	p_usb = (usb_op_t *)hard_op;
 	
-	Power_Ch376(1);
-	ret = Init_Ch376(DEVID_SPI1, Deal_status);
+	p_usb->usb_power(1);
+//	Power_Ch376(1);
+	ret = Init_Ch376(hard_op, Deal_status);
 	if( ret == USB_INT_SUCCESS)
-		ret = RET_OK;
+		ret = 0;
 	else 
 	{
 		
 		Deal_status(ret);
-		ret = ERR_FAIL;
+		ret = -1;
 	}
 	return ret;
 	
@@ -158,7 +167,7 @@ int USB_Init(void* arg)
 //成功返回1
 int USB_Open_file(char *file_name, char mode)
 {
-//	int	ret = RET_OK;
+//	int	ret = 0;
 	uint8_t	s;
 #if ONLY_ROOT_PATH == 1	
 	char	*p_name;
@@ -182,33 +191,34 @@ int USB_Open_file(char *file_name, char mode)
 #endif	
 	
 }
-
+//0 成功， -1 失败
 int USB_Colse_file(int fd)
 {
-	int	ret = ERR_OPT_FAILED;
-	struct  	tm cur_time;
+	int	ret = -1;
+	usb_file_tm cur_time;
 	uint16_t	dtm_u16 = 0;
 	uint8_t 	s = 0;
 	
-	System_time(&cur_time);
+	p_usb->usb_get_time(&cur_time);
 	if(usb_ctl.is_file_changed == 1)
 	{
 		usb_ctl.is_file_changed = 0; 
 		
-		dtm_u16 = MAKE_FILE_DATE(cur_time.tm_year + 2000, cur_time.tm_mon, cur_time.tm_mday);
+		cur_time.year  %= 100;
+		dtm_u16 = MAKE_FILE_DATE(cur_time.year + 2000, cur_time.mon, cur_time.mday);
 		CH376_Set_Data_Time(DTM_CHANGE_DATE, dtm_u16);
-		dtm_u16 = MAKE_FILE_TIME(cur_time.tm_hour, cur_time.tm_min, cur_time.tm_sec);
+		dtm_u16 = MAKE_FILE_TIME(cur_time.hour, cur_time.min, cur_time.sec);
 		CH376_Set_Data_Time(DTM_CHANGE_TIME, dtm_u16);
 
 
 	}		
 	
-	dtm_u16 = MAKE_FILE_DATE(cur_time.tm_year + 2000, cur_time.tm_mon, cur_time.tm_mday);
+	dtm_u16 = MAKE_FILE_DATE(cur_time.year + 2000, cur_time.mon, cur_time.mday);
 	CH376_Set_Data_Time(DTM_LASTACC_DATE, dtm_u16);
 
 	s = CH376FileClose(1);
 	if(s == USB_INT_SUCCESS)
-		ret = RET_OK;
+		ret = 0;
 	else 
 	{
 		
@@ -222,7 +232,7 @@ int USB_Colse_file(int fd)
 
 int USB_Get_file_info(char *file_name, USB_file_info *finfo)
 {
-	int	ret = RET_OK;
+	int	ret = 0;
 	
 	
 	return ret;
@@ -230,48 +240,36 @@ int USB_Get_file_info(char *file_name, USB_file_info *finfo)
 
 int USB_Get_file_info_f(int fd, USB_file_info *finfo)
 {
-	int	ret = RET_OK;
+	int	ret = 0;
 	
 	
 	return ret;
 }
 
 //成功返回大于0的句柄
-//失败返回0,或者负数的错误码
+//-1 失败 -2 文件已经存在
 int USB_Create_file(char *file_name, char mode)
 {
-	int				ret = RET_OK;
+	int				ret = -1;
 	int				fd = 0;
-	struct  	tm cur_time;
+	usb_file_tm cur_time;
 	char			*p_name;
 	uint16_t		dtm_u16 = 0;
 	uint8_t	s;
-//	uint8_t	i = 0;
-//	char	s_name[14] = {0};		
+	
 	//文件已存在
 	//如果未设置覆盖位就直接返回已存在错误
 	//如果设置覆盖位，就直接进行创建
 #if ONLY_ROOT_PATH == 1	
 	p_name = file_name + Last_name_offset(file_name);
-//	s_name[0] = '/';
 
-//	//todo: 只考虑ch376
-//	for(i = 0; i < 13; i++)
-//	{
-//		if(p_name[i] == '\0')
-//			break;
-//		s_name[i + 1] = p_name[i];
-//		
-//	}
-//	p_name = s_name;
-//	Ch376_enbale_Irq(0);
 	fd = USB_Open_file(p_name, mode);
 	if(fd)
 	{
 		if((mode & USB_FM_COVER) == 0)
 		{
 			USB_Colse_file(fd);
-			ret = ERR_ALREADY_EXIST;
+			ret = -2;
 			goto exit;
 		}
 		
@@ -287,13 +285,13 @@ int USB_Create_file(char *file_name, char mode)
 
 	if(s == USB_INT_SUCCESS)
 	{
-		System_time(&cur_time);
+		p_usb->usb_get_time(&cur_time);
 		
-		
-		dtm_u16 = MAKE_FILE_DATE(cur_time.tm_year + 2000, cur_time.tm_mon, cur_time.tm_mday);
+		cur_time.year %= 100;
+		dtm_u16 = MAKE_FILE_DATE(cur_time.year + 2000, cur_time.mon, cur_time.mday);
 		CH376_Set_Data_Time(DTM_CREATE_DATE, dtm_u16);
 		CH376_Set_Data_Time(DTM_CHANGE_DATE, dtm_u16);
-		dtm_u16 = MAKE_FILE_TIME(cur_time.tm_hour, cur_time.tm_min, cur_time.tm_sec);
+		dtm_u16 = MAKE_FILE_TIME(cur_time.hour, cur_time.min, cur_time.sec);
 		CH376_Set_Data_Time(DTM_CREATE_TIME, dtm_u16);
 		CH376_Set_Data_Time(DTM_CHANGE_TIME, dtm_u16);
 		ret = 1;
@@ -312,7 +310,7 @@ int USB_Create_file(char *file_name, char mode)
 
 int USB_Delete_file(char *file_name, char mode)
 {
-	int	ret = RET_OK;
+	int	ret = 0;
 	
 	
 	return ret;
@@ -320,7 +318,7 @@ int USB_Delete_file(char *file_name, char mode)
 
 int USB_Read_file(int fd, char *buf, int len)
 {
-	int	ret = RET_OK;
+	int	ret = 0;
 	
 	
 	return ret;
@@ -328,7 +326,7 @@ int USB_Read_file(int fd, char *buf, int len)
 
 int USB_Write_file(int fd, char *buf, int len)
 {
-	int	ret = RET_OK;
+	int	ret = 0;
 	uint16_t	real_len = 0;
 //	uint8_t		s;
 //	
@@ -356,7 +354,7 @@ int USB_Write_file(int fd, char *buf, int len)
 
 int USB_flush_file(int fd)
 {
-	int	ret = RET_OK;
+	int	ret = 0;
 	
 	
 	return ret;
@@ -371,7 +369,7 @@ void	USB_Power_off(void)
 
 int	USB_Remove_disk(void )
 {
-	int	ret = RET_OK;
+	int	ret = 0;
 	
 	
 	return ret;
@@ -526,8 +524,9 @@ static int	Last_name_offset(char *path )
 
 static void  Reset_Ch376(void)
 {
+	p_usb->usb_reset();
 	
-	HRst_Ch376();
+//	HRst_Ch376();
 	mInitCH376Host();
 }
 
@@ -558,12 +557,12 @@ static void  Reset_Ch376(void)
 
 static int	Usb_deal_insert(void)
 {
-	int	ret = RET_OK;
+	int	ret = 0;
 	uint8_t		s = 0;
 	uint8_t		msg = 0;
 	uint16_t		safe_count = 1000;
 	uint8_t		usb_info[40] = {0};		//一般36个字节
-	Ch376_enbale_Irq(0);
+	p_usb->usb_set_irq(0);
 	while(1)
 	{
 		s = Ch376DiskConnect();
@@ -571,7 +570,7 @@ static int	Usb_deal_insert(void)
 		if(s == USB_INT_SUCCESS)
 		{
 			
-			delay_ms(1);
+			p_usb->usb_delay_ms(1);
 			s = CH376DiskMount();
 			if(s == USB_INT_SUCCESS)
 			{
@@ -608,9 +607,9 @@ static int	Usb_deal_insert(void)
 			break;
 			
 		}
-		delay_ms(10);
+		p_usb->usb_delay_ms(10);
 	}
-	Ch376_enbale_Irq(1);
+	p_usb->usb_set_irq(1);
 	
 	
 	return ret;
@@ -619,12 +618,11 @@ static int	Usb_deal_insert(void)
 }
 static int	Usb_deal_remove(void)
 {
-	int	ret = RET_OK;
+	int	ret = 0;
 	uint8_t	msg = 0;
 	
 	usb_ctl.cur_state = NOSUPPORTDEV;
 	msg = et_remove;
-	phn_sys.usb_device = 0;
 	CQ_Write(&usb_ctl.usb_cq, &msg, 1);
 	return ret;	
 	
@@ -639,7 +637,7 @@ static int	Usb_deal_fail(void)
 
 static int	Usb_deal_identify(void)
 {
-	int					ret = RET_OK;
+	int					ret = 0;
 	uint32_t			all_sectornum = 0;
 	uint32_t			free_sectornum = 0;
 	
@@ -651,7 +649,7 @@ static int	Usb_deal_identify(void)
 	if(usb_ctl.cur_state == NOSUPPORTDEV)		//已经被拔除就算了
 		return ret;
 	
-	Ch376_enbale_Irq(0);
+	p_usb->usb_set_irq(0);
 	
 	//检测U盘的写保护状态
 	//这个功能好像也不一定能支持
@@ -701,10 +699,9 @@ static int	Usb_deal_identify(void)
 exit:
 	usb_ctl.cur_state = U_HAVEREADY;
 	msg = et_ready;
-	phn_sys.usb_device = 1;
 	CQ_Write(&usb_ctl.usb_cq, &msg, 1);	
 
-	Ch376_enbale_Irq(1);
+	p_usb->usb_set_irq(1);
 	return ret;	
 	
 }
