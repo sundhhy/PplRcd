@@ -499,7 +499,8 @@ static void	HMI_SBG_Hit(HMI *self, char kcd)
 					}
 				}
 				if((cthis->sub_flag & FOCUS_IN_STARTEGY) == 0) {
-					self->btn_backward(self);
+					if(self->btn_backward(self) != RET_OK)
+						self->btn_backward(self);
 				}				 
 				break;
 		case KEYCODE_RIGHT:
@@ -517,7 +518,8 @@ static void	HMI_SBG_Hit(HMI *self, char kcd)
 				}
 
 				if((cthis->sub_flag & FOCUS_IN_STARTEGY) == 0) {
-					self->btn_forward(self);
+					if(self->btn_forward(self) != RET_OK)
+						self->btn_forward(self);
 				}				 
 				break;
 		

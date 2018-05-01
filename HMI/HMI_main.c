@@ -129,10 +129,14 @@ void	Main_HMI_hit( HMI *self, char kcd)
 					
 					break;
 			case KEYCODE_LEFT:
-					self->btn_backward(self); 
+				
+					//按钮移出屏幕的时候，再次移动一次，避免按钮出现不被选中的情况
+					if(self->btn_backward(self) != RET_OK)
+						self->btn_backward(self);
 					break;
 			case KEYCODE_RIGHT:
-					self->btn_forward(self); 
+					if(self->btn_forward(self) != RET_OK)
+						self->btn_forward(self);
 					break;
 
 			case KEYCODE_ENTER:

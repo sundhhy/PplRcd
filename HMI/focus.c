@@ -180,7 +180,7 @@ int Focus_move_up(focus_user_t *p_fcuu)
 {
 
 	if(p_fcuu->focus_row == 0xff)
-		p_fcuu->focus_row = p_fcuu->rows;
+		p_fcuu->focus_row = p_fcuu->rows - 1;
 	else if(p_fcuu->focus_row > 0)
 		p_fcuu->focus_row --;
 	else
