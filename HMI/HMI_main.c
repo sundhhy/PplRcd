@@ -109,6 +109,8 @@ void Main_HMI_build_button(HMI *self)
 	p->build_each_btn(1, BTN_TYPE_BAR, Main_btn_hdl, self);
 	p->build_each_btn(2, BTN_TYPE_DIGITAL, Main_btn_hdl, self);
 	p->build_each_btn(3, BTN_TYPE_TREND, Main_btn_hdl, self);
+	
+	p->move_focus(0);
 }
 
 void	Main_HMI_hit( HMI *self, char kcd)

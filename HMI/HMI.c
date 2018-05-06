@@ -510,11 +510,11 @@ static void ConposeKeyHandle(HMI *self, char kcd_1, char kcd_2)
 			phn_sys.sys_flag |= SYSFLAG_SETTING;
 			self->switchHMI(self, p_hsb, 0);
 		}
-		else if(kcd_2 == KEYCODE_UP && kcd_1 == KEYCODE_DOWN) {
+		else if(kcd_2 == KEYCODE_UP && kcd_1 == KEYCODE_ENTER) {
 			self->switchBack(self, 0);
 
 		}
-		else if(kcd_2 == KEYCODE_DOWN && kcd_1 == KEYCODE_UP) {
+		else if(kcd_2 == KEYCODE_ENTER && kcd_1 == KEYCODE_UP) {
 			self->switchBack(self, 0);
 
 		}

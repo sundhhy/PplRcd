@@ -69,7 +69,7 @@ Model		*arr_p_mdl_chn[NUM_CHANNEL];
 //------------------------------------------------------------------------------
 // const defines
 //------------------------------------------------------------------------------
-#define  TDD_SAVE_DATA		0
+#define  TEST_SIMU_DATA		1
 #define UART_WAIT_AFTER_WRITE_MS		50
 //------------------------------------------------------------------------------
 // local types
@@ -896,7 +896,7 @@ static void MdlChn_run(Model *self)
 	uint8_t 			i;
 //	uint8_t				old_do;
 	
-#if TDD_SAVE_DATA == 1
+#if TEST_SIMU_DATA == 1
 	short	test_val;
 	static short mdl_sub = 0;
 	static short mdl_step = 20;
@@ -1103,7 +1103,7 @@ static int MdlChn_getData(Model *self, IN int aux, void *arg)
 			
 			if(arg)
 				p_s16 = (int16_t *)arg;
-			#if TDD_SAVE_DATA == 1
+			#if TEST_SIMU_DATA == 1
 			if(aux == chnaux_upper_limit)
 				*p_s16 = cthis->chni.upper_limit;
 			else
