@@ -26,6 +26,7 @@ CLASS( RLT_trendHMI)
 	
 	
 	sheet  		*p_div;
+	sheet			*p_first_time;
 //	sheet  		*p_clean_chnifo;						//通到信息部分图形
 	
 	

@@ -66,7 +66,7 @@ static const char RT_hmi_code_div[] = { "<text vx0=8 vy0=36 f=16 m=0 clr=red> </
 static const char RT_hmi_code_data[] = { "<text f=16 vx0=285 m=0 aux=3>100</>" };
 static const char RLT_hmi_code_chnshow[] ={ "<icon vx0=265 vy0=62 xn=5 yn=1 n=0>19</>" };
 
-//static const char RT_hmi_code_div[] = { "<text vx0=8 vy0=36 f=16 m=0 clr=red> </>" };
+static const char RT_hmi_code_first_time[] = { "<text vx0=8 vy0=36 f=16 m=0 clr=red> </>" };
 
 
 //------------------------------------------------------------------------------
@@ -80,7 +80,10 @@ struct {
 	uint8_t				hst_flags;
 	uint8_t				has_pgdn;		//执行过向下翻页
 	uint8_t				rtv_reflush;	//为1时，实时曲线重绘。用于页面定期刷新
-	uint8_t				none;
+	
+	uint8_t				none;	
+	uint32_t			set_start_sec;			//设置的起始显示时间，为0时，把最早的历史曲线作为其实显示时间
+	uint32_t			start_time_s;			//每副画面上的起始显示时间
 }hst_mgr;
 					
 	
@@ -332,13 +335,14 @@ static void RT_trendHmi_InitSheet( HMI *self, uint32_t att )
 	p_exp = ExpCreate( "text");
 	cthis->p_div = Sheet_alloc(p_shtctl);
 	p_exp->inptSht( p_exp, (void *)RT_hmi_code_div, cthis->p_div);
-//	cthis->min_div = atoi(cthis->str_div);
 	sprintf(cthis->str_div, "%d", cthis->min_div);
 	cthis->p_div->cnt.data = cthis->str_div;
 	cthis->p_div->cnt.len = strlen(cthis->p_div->cnt.data);
-//	cthis->p_div ->p_enterCmd = &g_keyHmi->shtCmd;
-//	cthis->p_div->input =  RLT_div_input;
 	cthis->p_div->id = SHTID_RTL_MDIV;
+	
+	cthis->p_first_time = Sheet_alloc(p_shtctl);
+	p_exp->inptSht(p_exp, (void *)RT_hmi_code_first_time, cthis->p_first_time);
+	
 	
 	
 	g_p_sht_bkpic->cnt.data = RLTHMI_BKPICNUM;
@@ -349,6 +353,7 @@ static void RT_trendHmi_InitSheet( HMI *self, uint32_t att )
 	} else if(self->arg[0] == 1) {
 		g_p_sht_title->cnt.data = HISTORY_TITLE;
 		self->hmi_run = HMI_CRV_HST_Run;
+		
 	} 
 	g_p_sht_title->cnt.len = strlen(g_p_sht_title->cnt.data);
 
@@ -391,6 +396,7 @@ static void RT_trendHmi_HideSheet( HMI *self )
 	
 //	self->clear_focus(self, 0, 0);
 //	self->clear_focus( self, self->p_fcuu->focus_row, self->p_fcuu->focus_col);
+	Sheet_free(cthis->p_first_time);
 	Sheet_free(cthis->p_div);
 	Focus_free(self->p_fcuu);
 }	
@@ -645,170 +651,6 @@ static void	RT_trendHmi_HitHandle( HMI *self, char kcd)
 	
 
 	
-////	cthis->flags |= 2;
-////	Set_flag_keyhandle(&self->flag, 1);
-////	self->flag |= HMI_FLAG_DEAL_HIT;
-//	if(!strcmp(s, HMIKEY_UP))
-//	{
-//		p_focus = Focus_Get_focus(self->p_fcuu);
-//		if(p_focus != NULL && p_focus->id == SHTID_RTL_MDIV)
-//		{
-//			Str_Calculations(p_focus->cnt.data, 2, OP_MUX, 2, 1, 16);
-////			if(cthis->min_div < 16)
-////				cthis->min_div *= 2;
-////			else
-////				cthis->min_div = 1;
-////			sprintf(p_focus->cnt.data, "%2d", cthis->min_div);
-//			p_focus->cnt.len = strlen(p_focus->cnt.data);
-//			chgFouse = 1;
-//		}
-//	}
-//	else if( !strcmp( s, HMIKEY_DOWN) )
-//	{
-//		p_focus = Focus_Get_focus(self->p_fcuu);
-//		if(p_focus != NULL && p_focus->id == SHTID_RTL_MDIV)
-//		{
-//			
-//			Str_Calculations(p_focus->cnt.data, 2, OP_DIV, 2, 1, 16);
-////			if(cthis->min_div > 1)
-////				cthis->min_div /= 2;
-////			else
-////				cthis->min_div = 16;
-////			sprintf(p_focus->cnt.data, "%2d", cthis->min_div);
-//			p_focus->cnt.len = strlen(p_focus->cnt.data);
-//			chgFouse = 1;
-//		}
-//	}
-//	else if( !strcmp( s, HMIKEY_LEFT))
-//	{
-//		if(self->flag & HMIFLAG_FOCUS_IN_BTN)
-//		{
-//			if(self->btn_backward(self) != RET_OK)
-//			{
-//				Focus_move_right(self->p_fcuu);
-//				chgFouse = 1;
-//			}
-//			
-//		}
-//		else if(Focus_move_left(self->p_fcuu) != RET_OK)
-//		{
-//			self->btn_forward(self);	//跳到第一个按钮
-//			chgFouse = 1;
-//		}
-//		else
-//		{
-//			chgFouse = 1;
-//		}
-//	}
-//	else if( !strcmp( s, HMIKEY_RIGHT))
-//	{
-//		
-//		if(self->flag & HMIFLAG_FOCUS_IN_BTN)
-//		{
-//			if(self->btn_forward(self) != RET_OK)
-//			{
-//				Focus_move_left(self->p_fcuu);	//移动到最左端
-//				chgFouse = 1;
-//			}
-//			
-//		}
-//		else if(Focus_move_right(self->p_fcuu) != RET_OK)
-//		{
-//			self->btn_forward(self);	//跳到第一个按钮
-//			chgFouse = 1;
-//		}
-//		else
-//		{
-//			chgFouse = 1;
-//		}
-//	}
-
-//	if( !strcmp( s, KEYCODE_ENTER))
-//	{
-//		if(self->flag & HMIFLAG_FOCUS_IN_BTN)
-//		{
-//			p->hit();
-////			self->btn_hit(self);
-//		}
-//		
-//		//处于按钮区的话p_focus 肯定是NULL
-//		p_focus = Focus_Get_focus(self->p_fcuu);
-//		if(p_focus == NULL)
-//			goto exit;
-//		
-//		if(IS_CHECK(p_focus->id)) {
-//			chn = GET_CHN_FROM_ID(p_focus->id);
-//			
-//			if(cthis->chn_show_map & (1 << chn)) {
-//				cthis->chn_show_map &= ~(1 << chn);
-//				p_crv->crv_ctl(cthis->arr_crv_fd[chn], CRV_CTL_HIDE, 1);
-//				
-//				p_focus->area.n = 3;
-//				//清除数字显示
-//				sprintf(g_arr_p_chnData[chn]->cnt.data, "    ");
-////				g_arr_p_chnData[chn]->cnt.data = "   ";
-//				g_arr_p_chnData[chn]->cnt.len = strlen(g_arr_p_chnData[chn]->cnt.data);
-//				g_arr_p_chnData[chn]->p_gp->vdraw(g_arr_p_chnData[chn]->p_gp,\
-//				&g_arr_p_chnData[chn]->cnt, &g_arr_p_chnData[chn]->area);
-//				
-//				if(self->arg[0] == 0)
-//				{
-//					p_crv->crv_show_curve(HMI_CMP_ALL, CRV_SHOW_WHOLE);
-//				}
-//				else
-//				{
-//					hst_mgr.hst_flags &= ~ HST_FLAG_DONE;
-//					
-//					
-//				}
-//			} else {
-//				p_focus->area.n = 1;
-//				cthis->chn_show_map |= 1 << chn;
-//				p_crv->crv_ctl(cthis->arr_crv_fd[chn], CRV_CTL_HIDE, 0);
-//				
-//				
-//				
-//				if(self->arg[0] == 0)
-//				{
-//					p_crv->crv_show_curve(HMI_CMP_ALL, CRV_SHOW_WHOLE);
-//				}
-//				else
-//				{
-//					hst_mgr.hst_flags &= ~ HST_FLAG_DONE;
-//					
-//					
-//				}
-//			}
-//			p_focus->p_gp->vdraw(p_focus->p_gp, &p_focus->cnt, &p_focus->area);
-//			Flush_LCD();
-//			
-//		} else if(p_focus->id == SHTID_RTL_MDIV) {
-//			if(Sem_wait(&phn_sys.hmi_mgr.hmi_sem, 1000) <= 0)
-//				goto exit;
-//			new_mins = atoi(p_focus->cnt.data);
-//			
-//			arr_mdiv_change[self->arg[0]](cthis, new_mins);
-////			self->switchHMI(self, self);
-////			HMI_Ram_init();
-//			
-//			
-//			
-//			Sem_post(&phn_sys.hmi_mgr.hmi_sem);
-////			if(p_focus) {
-////				p_cmd = p_focus->p_enterCmd;
-////				if(p_cmd)
-////					p_cmd->shtExcute( p_cmd, p_focus, self);
-////			} else
-////				self->switchHMI(self, g_p_HMI_menu);
-//		} else {
-//			
-//			self->switchHMI(self, g_p_HMI_menu);
-//		}
-//	}
-//	if( !strcmp( s, HMIKEY_ESC))
-//	{
-//		self->switchBack(self, 0);
-//	}
 	
 	exit:
 	if( chgFouse)
@@ -912,6 +754,8 @@ static void HST_Init(void)
 	}
 	hst_mgr.hst_flags = 0;
 	hst_mgr.has_pgdn = 0;
+	hst_mgr.set_start_sec = 0;
+	hst_mgr.start_time_s = 0;
 }
 
 static void HST_Flex(uint8_t new_mdiv, uint8_t old_mdiv)
@@ -929,38 +773,40 @@ static void HST_Flex(uint8_t new_mdiv, uint8_t old_mdiv)
 
 static void HST_Move(RLT_trendHMI *cthis, uint8_t direction)
 {
-	uint8_t		i;
-	uint16_t		num = HST_Num_rcds(cthis->min_div);
+//	uint8_t		i;
+//	uint16_t		num = HST_Num_rcds(cthis->min_div);
 	
 	
 	
 	
 	if(direction == HST_NEXT_PG)
 	{
-		for(i = 0; i < NUM_CHANNEL; i++)
-		{
-			hst_mgr.arr_hst_num[i] += num;
-			Set_bit(&hst_mgr.has_pgdn, i);
-			
-		}
+//		for(i = 0; i < NUM_CHANNEL; i++)
+//		{
+//			hst_mgr.arr_hst_num[i] += num;
+//			Set_bit(&hst_mgr.has_pgdn, i);
+//			
+//		}
+		hst_mgr.start_time_s += cthis->min_div * 60;
 	}
 	else
 	{
-		for(i = 0; i < NUM_CHANNEL; i++)
-		{
-			
-				if(hst_mgr.arr_hst_num[i] > num)
-				{
-					
-					hst_mgr.arr_hst_num[i] -= num;
-					
-				}
-				else
-				{
-					hst_mgr.arr_hst_num[i] = 0;
-					Clear_bit(&hst_mgr.has_pgdn, i);
-				}
-		}
+//		for(i = 0; i < NUM_CHANNEL; i++)
+//		{
+//			
+//				if(hst_mgr.arr_hst_num[i] > num)
+//				{
+//					
+//					hst_mgr.arr_hst_num[i] -= num;
+//					
+//				}
+//				else
+//				{
+//					hst_mgr.arr_hst_num[i] = 0;
+//					Clear_bit(&hst_mgr.has_pgdn, i);
+//				}
+//		}
+		hst_mgr.start_time_s -= cthis->min_div * 60;
 		
 	}
 	
@@ -976,13 +822,15 @@ static void HMI_CRV_HST_Run(HMI *self)
 	Storage					*stg = Get_storage();
 	Model						*p_mdl ;
 	Button					*p_btn = BTN_Get_Sington();
-	data_in_fsh_t			d;
-	int						read_len = 0;
+	data_in_fsh_t		d;
+	int							read_len = 0;
+	uint32_t				first_time = 0;
+	struct	tm			first_tm;						
 	uint16_t				i, count, end, need_clean = 0;
 	uint8_t					crv_prc;
-	char					chn_name[7];
+	char						str_buf[31];
 	//读取一条就记录记录一条
-	//知道屏幕上容纳不下了，或者记录读完了
+	//直到屏幕上容纳不下了，或者记录读完了
 	
 	if(IS_HMI_HIDE(self->flag))
 		return;
@@ -1011,8 +859,8 @@ static void HMI_CRV_HST_Run(HMI *self)
 		}	
 		
 		count = 0;
-		sprintf(chn_name, "chn_%d", i);
-		p_mdl = Create_model(chn_name);;
+		sprintf(str_buf, "chn_%d", i);
+		p_mdl = Create_model(str_buf);
 
 		
 		STG_Set_file_position(STG_CHN_DATA(i), STG_DRC_READ, hst_mgr.arr_hst_num[i] * sizeof(data_in_fsh_t));	
@@ -1027,8 +875,15 @@ static void HMI_CRV_HST_Run(HMI *self)
 				goto exit;	//可能文件正在被其他线程访问，直接退出，下一次再尝试
 			if(d.rcd_time_s == 0xffffffff)
 				continue;
+			if(hst_mgr.start_time_s == 0)
+				hst_mgr.start_time_s = d.rcd_time_s;
 			
-
+			if(d.rcd_time_s < hst_mgr.start_time_s)
+				continue;
+			
+			if(first_time == 0)
+				first_time = d.rcd_time_s;
+			hst_mgr.arr_hst_num[i] ++;
 			crv_prc = MdlChn_Cal_prc(p_mdl, d.rcd_val);
 			p_crv->add_point(cthis->arr_crv_fd[i], crv_prc);
 			count ++;
@@ -1038,6 +893,16 @@ static void HMI_CRV_HST_Run(HMI *self)
 		
 		
 	}
+	
+	//显示时间
+	Sec_2_tm(first_time, &first_tm);
+	sprintf(str_buf, "%02d-%02d-%02d %02d:%02d:%02d", \
+		first_tm.tm_year, first_tm.tm_mon, first_tm.tm_mday, \
+		first_tm.tm_hour, first_tm.tm_min, first_tm.tm_sec);
+	
+	cthis->p_first_time->cnt.data = str_buf;
+	cthis->p_first_time->cnt.len = strlen(str_buf);
+	Sheet_force_slide(cthis->p_first_time);
 	
 	if(count >= end) //说明可能还有记录
 	{
@@ -1049,7 +914,8 @@ static void HMI_CRV_HST_Run(HMI *self)
 //		need_clean = 1;
 	}
 	
-	if(hst_mgr.has_pgdn) //说明可能还有记录
+//	if(hst_mgr.has_pgdn) 
+	if((hst_mgr.set_start_sec > 0) && (hst_mgr.start_time_s > hst_mgr.set_start_sec))
 	{
 		
 		p_btn->build_each_btn(1, BTN_TYPE_PGUP, RLT_btn_hdl, self);
