@@ -81,10 +81,10 @@ struct {
 	uint8_t				has_pgdn;		//执行过向下翻页
 	uint8_t				rtv_reflush;	//为1时，实时曲线重绘。用于页面定期刷新
 	
-	uint8_t				none;	
+	uint8_t				init_att;	
 	uint32_t			set_start_sec;			//设置的起始显示时间，为0时，把最早的历史曲线作为其实显示时间
-	uint32_t			start_time_s;			//每副画面上的起始显示时间
-	char					set_first_tm_buf[32];
+	uint32_t			real_first_time_s;			//每副画面上的起始显示时间
+	char				set_first_tm_buf[32];
 }hst_mgr;
 					
 	
@@ -130,8 +130,8 @@ static void HMI_CRV_RTV_Run(HMI *self);
 static void HMI_CRV_HST_Run(HMI *self);
 
 //static void Bulid_rtCurveSheet( RLT_trendHMI *self);
-static void RLT_Init_curve(RLT_trendHMI *self);
-static void HST_Init(void);
+static void RLT_Init_curve(HMI *self);
+static void HST_Init(HMI *self);
 static uint16_t HST_Num_rcds(uint8_t	mul);
 static void HST_Flex(uint8_t new_mdiv, uint8_t old_mdiv);
 static void HST_Move(RLT_trendHMI *cthis, uint8_t direction);
@@ -347,6 +347,7 @@ static void RT_trendHmi_InitSheet( HMI *self, uint32_t att )
 	
 	cthis->p_first_time = Sheet_alloc(p_shtctl);
 	p_exp->inptSht(p_exp, (void *)RT_hmi_code_first_time, cthis->p_first_time);
+	cthis->p_first_time->cnt.data = hst_mgr.set_first_tm_buf;
 	cthis->p_first_time->id = SHT_FIRST_TIME;
 	
 	g_p_sht_bkpic->cnt.data = RLTHMI_BKPICNUM;
@@ -369,9 +370,9 @@ static void RT_trendHmi_InitSheet( HMI *self, uint32_t att )
 	for(i = 0; i < RLTHMI_NUM_CURVE; i++) {
 		Sheet_updown(g_arr_p_check[i], h++);
 	}
-	
+	hst_mgr.init_att = att;
 	RLTHmi_Init_chnSht();
-	RLT_Init_curve(cthis);
+	RLT_Init_curve(self);
 	self->init_focus(self);
 }
 
@@ -796,7 +797,7 @@ static uint16_t HST_Num_rcds(uint8_t	mul)
 	
 	
 }
-static void HST_Init(void)
+static void HST_Init(HMI *self)
 {
 	int i;
 	
@@ -804,10 +805,14 @@ static void HST_Init(void)
 	{
 		hst_mgr.arr_hst_num[i] = 0;
 	}
+	
+	hst_mgr.real_first_time_s = 0;		
+	
+	if(hst_mgr.init_att & HMI_ATT_KEEP)
+		return ;
 	hst_mgr.hst_flags = 0;
 	hst_mgr.has_pgdn = 0;
 	hst_mgr.set_start_sec = 0;
-	hst_mgr.start_time_s = 0;
 }
 
 static void HST_Flex(uint8_t new_mdiv, uint8_t old_mdiv)
@@ -825,40 +830,40 @@ static void HST_Flex(uint8_t new_mdiv, uint8_t old_mdiv)
 
 static void HST_Move(RLT_trendHMI *cthis, uint8_t direction)
 {
-//	uint8_t		i;
-//	uint16_t		num = HST_Num_rcds(cthis->min_div);
+	uint8_t		i;
+	uint16_t		num = HST_Num_rcds(cthis->min_div);
 	
 	
 	
 	
 	if(direction == HST_NEXT_PG)
 	{
-//		for(i = 0; i < NUM_CHANNEL; i++)
-//		{
-//			hst_mgr.arr_hst_num[i] += num;
-//			Set_bit(&hst_mgr.has_pgdn, i);
-//			
-//		}
-		hst_mgr.start_time_s += cthis->min_div * 60;
+		for(i = 0; i < NUM_CHANNEL; i++)
+		{
+			hst_mgr.arr_hst_num[i] += num;
+			Set_bit(&hst_mgr.has_pgdn, i);
+			
+		}
+		hst_mgr.real_first_time_s += cthis->min_div * 60;
 	}
 	else
 	{
-//		for(i = 0; i < NUM_CHANNEL; i++)
-//		{
-//			
-//				if(hst_mgr.arr_hst_num[i] > num)
-//				{
-//					
-//					hst_mgr.arr_hst_num[i] -= num;
-//					
-//				}
-//				else
-//				{
-//					hst_mgr.arr_hst_num[i] = 0;
-//					Clear_bit(&hst_mgr.has_pgdn, i);
-//				}
-//		}
-		hst_mgr.start_time_s -= cthis->min_div * 60;
+		for(i = 0; i < NUM_CHANNEL; i++)
+		{
+			
+				if(hst_mgr.arr_hst_num[i] > num)
+				{
+					
+					hst_mgr.arr_hst_num[i] -= num;
+					
+				}
+				else
+				{
+					hst_mgr.arr_hst_num[i] = 0;
+					Clear_bit(&hst_mgr.has_pgdn, i);
+				}
+		}
+		hst_mgr.real_first_time_s -= cthis->min_div * 60;
 		
 	}
 	
@@ -869,18 +874,18 @@ static void HST_Move(RLT_trendHMI *cthis, uint8_t direction)
 //历史曲线运行方法
 static void HMI_CRV_HST_Run(HMI *self)
 {
-	RLT_trendHMI		*cthis = SUB_PTR( self, HMI, RLT_trendHMI);
+	RLT_trendHMI			*cthis = SUB_PTR( self, HMI, RLT_trendHMI);
 	Curve 					*p_crv = CRV_Get_Sington();
 	Storage					*stg = Get_storage();
-	Model						*p_mdl ;
+	Model					*p_mdl ;
 	Button					*p_btn = BTN_Get_Sington();
-	data_in_fsh_t		d;
-	int							read_len = 0;
+	data_in_fsh_t			d;
+	int						read_len = 0;
 	uint32_t				first_time = 0;
-	struct	tm			first_tm;						
+	struct	tm				first_tm;						
 	uint16_t				i, count, end, need_clean = 0;
 	uint8_t					crv_prc;
-	char						str_buf[31];
+	char					str_buf[7];
 	//读取一条就记录记录一条
 	//直到屏幕上容纳不下了，或者记录读完了
 	
@@ -897,10 +902,14 @@ static void HMI_CRV_HST_Run(HMI *self)
 	
 	end = HST_Num_rcds(cthis->min_div) - 1;
 	
+	//第一次显示的时候，把设置的起始时间作为实际的起始时间。
+	//而一旦已经显示过了，实际起始时间是根据翻页情况变化的，就不要赋初值了
+	if(hst_mgr.real_first_time_s == 0)
+		hst_mgr.real_first_time_s = hst_mgr.set_start_sec;
+	
 	
 	
 	//显示曲线
-	
 	for(i = 0; i < RLTHMI_NUM_CURVE; i++)
 	{
 		
@@ -910,7 +919,7 @@ static void HMI_CRV_HST_Run(HMI *self)
 			continue;
 		}	
 		
-		count = 0;
+		count = 0;		//
 		sprintf(str_buf, "chn_%d", i);
 		p_mdl = Create_model(str_buf);
 
@@ -927,15 +936,18 @@ static void HMI_CRV_HST_Run(HMI *self)
 				goto exit;	//可能文件正在被其他线程访问，直接退出，下一次再尝试
 			if(d.rcd_time_s == 0xffffffff)
 				continue;
-			if(hst_mgr.start_time_s == 0)
-				hst_mgr.start_time_s = d.rcd_time_s;
 			
-			if(d.rcd_time_s < hst_mgr.start_time_s)
+			hst_mgr.arr_hst_num[i] ++;		//读取了一条有效记录，就把计数器加1
+			
+			if(hst_mgr.real_first_time_s == 0)
+				hst_mgr.real_first_time_s = d.rcd_time_s;
+			
+			if(d.rcd_time_s < hst_mgr.real_first_time_s)
 				continue;
 			
 			if(first_time == 0)
 				first_time = d.rcd_time_s;
-			hst_mgr.arr_hst_num[i] ++;
+			
 			crv_prc = MdlChn_Cal_prc(p_mdl, d.rcd_val);
 			p_crv->add_point(cthis->arr_crv_fd[i], crv_prc);
 			count ++;
@@ -948,12 +960,11 @@ static void HMI_CRV_HST_Run(HMI *self)
 	
 	//显示时间
 	Sec_2_tm(first_time, &first_tm);
-	sprintf(str_buf, "%02d-%02d-%02d %02d:%02d:%02d", \
+	sprintf(cthis->p_first_time->cnt.data, "%02d-%02d-%02d %02d:%02d:%02d", \
 		first_tm.tm_year, first_tm.tm_mon, first_tm.tm_mday, \
 		first_tm.tm_hour, first_tm.tm_min, first_tm.tm_sec);
 	
-	cthis->p_first_time->cnt.data = str_buf;
-	cthis->p_first_time->cnt.len = strlen(str_buf);
+	cthis->p_first_time->cnt.len = strlen(cthis->p_first_time->cnt.data);
 	Sheet_force_slide(cthis->p_first_time);
 	
 	if(count >= end) //说明可能还有记录
@@ -967,7 +978,7 @@ static void HMI_CRV_HST_Run(HMI *self)
 	}
 	
 //	if(hst_mgr.has_pgdn) 
-	if((hst_mgr.set_start_sec > 0) && (hst_mgr.start_time_s > hst_mgr.set_start_sec))
+	if((hst_mgr.set_start_sec > 0) && (hst_mgr.real_first_time_s > hst_mgr.set_start_sec))
 	{
 		
 		p_btn->build_each_btn(1, BTN_TYPE_PGUP, RLT_btn_hdl, self);
@@ -1080,13 +1091,13 @@ static void HMI_CRV_RTV_Run(HMI *self)
 	
 }
 
-static void RLT_Init_curve(RLT_trendHMI *self)
+static void RLT_Init_curve(HMI *self)
 {
 	
 	
 	HMI_Ram_init();		//曲线需要使用的缓存
 	
-	HST_Init();
+	HST_Init(self);
 //	curve_ctl_t *p_cctl;
 //	int i = 0;
 //	
@@ -1136,7 +1147,7 @@ static int CRV_Win_cmd(void *p_rcv, int cmd,  void *arg)
 	HMI								*self = (HMI *)p_rcv;
 //	RLT_trendHMI			*cthis = SUB_PTR(self, HMI, RLT_trendHMI);
 //	winHmi						*p_win;
-	char							*p = (char *)arg;
+	char							*p = (char *)hst_mgr.set_first_tm_buf;
 	struct  tm				t = {0};
 	short							i;
 	uint8_t						err;
@@ -1211,7 +1222,8 @@ static void CRV_Set_first_time(HMI *self)
 	winHmi						*p_win;
 	struct tm t;
 	
-	
+	if(hst_mgr.set_start_sec == 0)
+		hst_mgr.set_start_sec = SYS_time_sec();
 	Sec_2_tm(hst_mgr.set_start_sec, &t);
 	sprintf(hst_mgr.set_first_tm_buf, "%02d/%02d/%02d %02d:%02d:%02d", t.tm_year, t.tm_mon, t.tm_mday, \
 				t.tm_hour, t.tm_min, t.tm_sec);

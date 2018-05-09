@@ -2,10 +2,10 @@
 .\objects\assert.o: ..\..\sdhLib\inc\sdhDef.h
 .\objects\assert.o: ..\..\APP\sdhlibConf.h
 .\objects\assert.o: ..\..\sdhLib\inc\basis/sdhDebug.h
-.\objects\assert.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
+.\objects\assert.o: C:\ARM\ADSv1_2\INCLUDE\stdio.h
 .\objects\assert.o: ..\..\sdhLib\inc\basis/sdhError.h
 .\objects\assert.o: ..\..\sdhLib\inc\basis/macros.h
-.\objects\assert.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+.\objects\assert.o: C:\ARM\ADSv1_2\INCLUDE\stdint.h
 .\objects\assert.o: ..\..\sdhLib\inc\basis/assert.h
 .\objects\assert.o: ..\..\sdhLib\inc\basis/except.h
-.\objects\assert.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\setjmp.h
+.\objects\assert.o: C:\ARM\ADSv1_2\INCLUDE\setjmp.h

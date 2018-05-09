@@ -450,7 +450,6 @@ static void	SwitchBack( HMI *self, uint32_t	att_flag)
 	Sem_post(&phn_sys.hmi_mgr.hmi_sem);
 	p_hmi->flag &= ~HMI_FLAG_HSA_SEM;
 	
-	
 //	HMI *p_hmi = g_p_lastHmi;
 //	if(p_hmi == NULL)
 //		return;
