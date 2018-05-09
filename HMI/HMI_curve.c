@@ -66,7 +66,7 @@ static const char RT_hmi_code_div[] = { "<text vx0=8 vy0=36 f=16 m=0 clr=red> </
 static const char RT_hmi_code_data[] = { "<text f=16 vx0=285 m=0 aux=3>100</>" };
 static const char RLT_hmi_code_chnshow[] ={ "<icon vx0=265 vy0=62 xn=5 yn=1 n=0>19</>" };
 
-static const char RT_hmi_code_first_time[] = { "<text vx0=8 vy0=36 f=16 m=0 clr=red> </>" };
+static const char RT_hmi_code_first_time[] = { "<text vx0=88 vy0=36 f=16 m=0 clr=red> </>" };
 
 
 //------------------------------------------------------------------------------
@@ -84,6 +84,7 @@ struct {
 	uint8_t				none;	
 	uint32_t			set_start_sec;			//设置的起始显示时间，为0时，把最早的历史曲线作为其实显示时间
 	uint32_t			start_time_s;			//每副画面上的起始显示时间
+	char					set_first_tm_buf[32];
 }hst_mgr;
 					
 	
@@ -145,6 +146,10 @@ static void RLTHmi_Init_chnSht(void);
 
 static void HMI_CRV_Build_cmp(HMI *self);
 static void RLT_btn_hdl(void *arg, uint8_t btn_id);
+
+//历史曲线的起始时间
+static void CRV_Set_first_time(HMI *self);
+	static int CRV_Win_cmd(void *p_rcv, int cmd,  void *arg);
 //============================================================================//
 //            P U B L I C   F U N C T I O N S                                 //
 //============================================================================//
@@ -342,8 +347,7 @@ static void RT_trendHmi_InitSheet( HMI *self, uint32_t att )
 	
 	cthis->p_first_time = Sheet_alloc(p_shtctl);
 	p_exp->inptSht(p_exp, (void *)RT_hmi_code_first_time, cthis->p_first_time);
-	
-	
+	cthis->p_first_time->id = SHT_FIRST_TIME;
 	
 	g_p_sht_bkpic->cnt.data = RLTHMI_BKPICNUM;
 
@@ -361,11 +365,8 @@ static void RT_trendHmi_InitSheet( HMI *self, uint32_t att )
 	Sheet_updown(p_curve_bkg, h++);
 	Sheet_updown(g_p_sht_title, h++);
 	Sheet_updown(g_p_shtTime, h++);
-//	Sheet_updown(g_p_ico_memu, h++);
 	Sheet_updown(cthis->p_div, h++);
-//	Sheet_updown( cthis->p_clean_chnifo, h++);
 	for(i = 0; i < RLTHMI_NUM_CURVE; i++) {
-//		Sheet_updown(g_arr_p_chnData[i], h++);
 		Sheet_updown(g_arr_p_check[i], h++);
 	}
 	
@@ -405,16 +406,36 @@ static void RT_trendHmi_HideSheet( HMI *self )
 
 static void	RLT_init_focus(HMI *self)
 {
-	int	col = 0; 
+	short	col = 0, offset; 
 	RLT_trendHMI *cthis = SUB_PTR(self, HMI, RLT_trendHMI);
 	
-	self->p_fcuu = Focus_alloc(1, RLTHMI_NUM_CURVE + 1);
+	
+	
+	if(self->arg[0] == 1) {
+		//历史曲线多一个设置起始时间的选项
+		self->p_fcuu = Focus_alloc(1, RLTHMI_NUM_CURVE + 2);
+		
+	} 
+	else
+	{
+		self->p_fcuu = Focus_alloc(1, RLTHMI_NUM_CURVE + 1);
+		
+	}
+	
+	
 	
 	Focus_Set_focus(self->p_fcuu, 0, 0);
 	
 	Focus_Set_sht(self->p_fcuu, 0, 0, cthis->p_div);
+	offset = 1;
+	
+	if(self->arg[0] == 1) {
+		Focus_Set_sht(self->p_fcuu, 0, 1, cthis->p_first_time);
+		offset = 2;
+	} 
+	
 	for(col = 0; col < RLTHMI_NUM_CURVE; col ++) {
-		Focus_Set_sht(self->p_fcuu, 0, col + 1, g_arr_p_check[col]);
+		Focus_Set_sht(self->p_fcuu, 0, col + offset, g_arr_p_check[col]);
 	}		
 	
 }
@@ -434,7 +455,7 @@ static void	RLT_clear_focus(HMI *self, uint8_t fouse_row, uint8_t fouse_col)
 	} else {
 		p_sht->cnt.effects = GP_CLR_EFF( p_sht->cnt.effects, EFF_FOCUS);
 	}
-	Sheet_slide(p_sht);
+	Sheet_force_slide(p_sht);
 }
 static void	RLT_show_focus(HMI *self, uint8_t fouse_row, uint8_t fouse_col)
 {
@@ -452,7 +473,7 @@ static void	RLT_show_focus(HMI *self, uint8_t fouse_row, uint8_t fouse_col)
 	} else {
 		p_sht->cnt.effects = GP_SET_EFF( p_sht->cnt.effects, EFF_FOCUS);
 	}
-	Sheet_slide( p_sht);
+	Sheet_force_slide( p_sht);
 }
 //static int	RLT_div_input(void *self, void *data, int len)
 //{
@@ -496,6 +517,9 @@ static void	RT_trendHmi_Show( HMI *self )
 //	
 }
 
+
+
+
 static void	RT_trendHmi_HitHandle( HMI *self, char kcd)
 {
 	RLT_trendHMI		*cthis = SUB_PTR( self, HMI, RLT_trendHMI);
@@ -517,21 +541,35 @@ static void	RT_trendHmi_HitHandle( HMI *self, char kcd)
 
 			case KEYCODE_UP:
 					p_focus = Focus_Get_focus(self->p_fcuu);
-					if(p_focus != NULL && p_focus->id == SHTID_RTL_MDIV)
+					if(p_focus == NULL)
+						break;
+					
+					if(p_focus->id == SHTID_RTL_MDIV)
 					{
 						Str_Calculations(p_focus->cnt.data, 2, OP_MUX, 2, 1, 16);
 						p_focus->cnt.len = strlen(p_focus->cnt.data);
 						chgFouse = 1;
-					}					 
+					}	
+					else if(p_focus->id == SHT_FIRST_TIME)
+					{
+						CRV_Set_first_time(self);
+					}
 					break;
 			case KEYCODE_DOWN:
 					p_focus = Focus_Get_focus(self->p_fcuu);
-					if(p_focus != NULL && p_focus->id == SHTID_RTL_MDIV)
+					if(p_focus == NULL)
+						break;
+					
+					if(p_focus->id == SHTID_RTL_MDIV)
 					{
 						
 						Str_Calculations(p_focus->cnt.data, 2, OP_DIV, 2, 1, 16);
 						p_focus->cnt.len = strlen(p_focus->cnt.data);
 						chgFouse = 1;
+					}		
+					else if(p_focus->id == SHT_FIRST_TIME)
+					{
+						CRV_Set_first_time(self);
 					}					
 					break;
 			case KEYCODE_LEFT:
@@ -631,14 +669,28 @@ static void	RT_trendHmi_HitHandle( HMI *self, char kcd)
 						p_focus->p_gp->vdraw(p_focus->p_gp, &p_focus->cnt, &p_focus->area);
 						Flush_LCD();
 						
-					} else if(p_focus->id == SHTID_RTL_MDIV) {
+					} 
+					else if(p_focus->id == SHTID_RTL_MDIV) 
+					{
 						if(Sem_wait(&phn_sys.hmi_mgr.hmi_sem, 1000) <= 0)
 							goto exit;
 						new_mins = atoi(p_focus->cnt.data);
 						
 						arr_mdiv_change[self->arg[0]](cthis, new_mins);
 						Sem_post(&phn_sys.hmi_mgr.hmi_sem);
-					} else {
+					} 
+					else if(p_focus->id == SHT_FIRST_TIME)
+					{
+						
+						//借用时标更新后，从新刷新曲线的机制来重新显示曲线
+						if(Sem_wait(&phn_sys.hmi_mgr.hmi_sem, 1000) <= 0)
+							goto exit;
+						
+						arr_mdiv_change[self->arg[0]](cthis, cthis->min_div);
+						Sem_post(&phn_sys.hmi_mgr.hmi_sem);
+					}
+					else 
+					{
 						
 						self->switchHMI(self, g_p_HMI_menu, 0);
 					}					
@@ -1076,6 +1128,101 @@ static void RLTHmi_Init_chnSht(void)
 		g_arr_p_chnData[i]->cnt.colour = arr_clrs[i];
 		g_arr_p_chnData[i]->area.y0 = data_vy[i];
 	}
+}
+
+
+static int CRV_Win_cmd(void *p_rcv, int cmd,  void *arg)
+{
+	HMI								*self = (HMI *)p_rcv;
+//	RLT_trendHMI			*cthis = SUB_PTR(self, HMI, RLT_trendHMI);
+//	winHmi						*p_win;
+	char							*p = (char *)arg;
+	struct  tm				t = {0};
+	short							i;
+	uint8_t						err;
+								
+	
+	switch(cmd) {
+		
+		
+		case wincmd_commit:
+			
+			t.tm_year = Get_str_data(p, "/", 0, &err);
+			if(err)
+				goto err;
+			t.tm_mon = Get_str_data(p, "/", 1, &err);
+			if(err)
+				goto err;
+			t.tm_mday = Get_str_data(p, "/", 2, &err);
+			if(err)
+				goto err;
+			if(t.tm_mday > g_moth_day[t.tm_mon])
+				goto err;
+		
+			
+			i = strcspn(p, " ");
+			p += i;
+			
+			t.tm_hour = Get_str_data(p, ":", 0, &err);
+			if(err)
+				goto err;
+			t.tm_min = Get_str_data(p, ":", 1, &err);
+			if(err)
+				goto err;
+			t.tm_sec = Get_str_data(p, ":", 2, &err);
+			if(err)
+				goto err;
+		
+			
+			hst_mgr.set_start_sec = Time_2_u32(&t);
+
+			g_p_winHmi->arg[0] = WINTYPE_TIPS;
+			g_p_winHmi->arg[1] = WINFLAG_RETURN;
+			Win_content("修改成功");
+
+			
+			self->switchHMI(self, g_p_winHmi, HMI_ATT_NOT_RECORD);		
+			break;
+				
+				
+			err:
+				
+				g_p_winHmi->arg[0] = WINTYPE_ERROR;
+				g_p_winHmi->arg[1] = WINFLAG_RETURN;
+				Win_content("设置时间错误");
+
+				//本界面已经在wincmd_commit之前的命令时已经被记录到历史列表里面了，所以这就不用再记录了
+				self->switchHMI(self, g_p_winHmi, HMI_ATT_NOT_RECORD);
+
+			
+		
+			break;
+		
+	}
+	
+	return 0;
+	
+	
+}
+
+static void CRV_Set_first_time(HMI *self)
+{
+	
+	winHmi						*p_win;
+	struct tm t;
+	
+	
+	Sec_2_tm(hst_mgr.set_start_sec, &t);
+	sprintf(hst_mgr.set_first_tm_buf, "%02d/%02d/%02d %02d:%02d:%02d", t.tm_year, t.tm_mon, t.tm_mday, \
+				t.tm_hour, t.tm_min, t.tm_sec);
+	Win_content(hst_mgr.set_first_tm_buf);
+	g_p_winHmi->arg[0] = WINTYPE_TIME_SET;
+	g_p_winHmi->arg[1] = 0;
+	p_win = Get_winHmi();
+	p_win->p_cmd_rcv = self;
+	p_win->cmd_hdl = CRV_Win_cmd;
+	self->switchHMI(self, g_p_winHmi, 0);
+	
 }
 
 

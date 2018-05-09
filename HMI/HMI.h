@@ -66,6 +66,7 @@
 
 
 #define SHTID_RTL_MDIV				0x40
+#define SHT_FIRST_TIME				0x41
 
 #define SHT_BTN_ID(n)			(0x30 | n)
 
