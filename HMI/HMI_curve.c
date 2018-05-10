@@ -76,14 +76,18 @@ typedef void (*midv_change)(RLT_trendHMI *cthis, uint8_t new_mins);
 
 
 struct {
-	uint32_t			arr_hst_num[NUM_CHANNEL];
+	
+	//每次显示完一页历史曲线的时候，记录下已经显示过的数量。这样在翻页的时候，就不必每次都重头开始寻找符合显示条件的记录了
+	//注意，这样做的前提是假设存储器中的记录都是按照时间的先后顺序存放的。另外在往前翻页的时候，要把这个记录进行相应的回退，不然往前翻页就永远也不能显示了
+	uint32_t			arr_hst_num[NUM_CHANNEL];		
 	uint8_t				hst_flags;
 	uint8_t				has_pgdn;		//执行过向下翻页
 	uint8_t				rtv_reflush;	//为1时，实时曲线重绘。用于页面定期刷新
 	
 	uint8_t				init_att;	
 	uint32_t			set_start_sec;			//设置的起始显示时间，为0时，把最早的历史曲线作为其实显示时间
-	uint32_t			real_first_time_s;			//每副画面上的起始显示时间
+	//每副画面上的实际起始时间，需要注意，这个值并不一定比set_start_sec大，因为用户可能向前翻页，使得本页实际起始时间超前于设置的起始时间，这是允许的
+	uint32_t			real_first_time_s;			
 	char				set_first_tm_buf[32];
 }hst_mgr;
 					
@@ -838,16 +842,18 @@ static void HST_Move(RLT_trendHMI *cthis, uint8_t direction)
 	
 	if(direction == HST_NEXT_PG)
 	{
-		for(i = 0; i < NUM_CHANNEL; i++)
-		{
-			hst_mgr.arr_hst_num[i] += num;
-			Set_bit(&hst_mgr.has_pgdn, i);
-			
-		}
+//		for(i = 0; i < NUM_CHANNEL; i++)
+//		{
+//			hst_mgr.arr_hst_num[i] += num;
+			hst_mgr.has_pgdn = 1;
+//			
+//		}
 		hst_mgr.real_first_time_s += cthis->min_div * 60;
 	}
 	else
 	{
+		
+		//往前翻页的时候，要把当前的记录数量减小。
 		for(i = 0; i < NUM_CHANNEL; i++)
 		{
 			
@@ -860,10 +866,15 @@ static void HST_Move(RLT_trendHMI *cthis, uint8_t direction)
 				else
 				{
 					hst_mgr.arr_hst_num[i] = 0;
-					Clear_bit(&hst_mgr.has_pgdn, i);
+					hst_mgr.has_pgdn = 0;
 				}
 		}
-		hst_mgr.real_first_time_s -= cthis->min_div * 60;
+		
+		//允许向前翻页到设置的起始时间之前
+		if(hst_mgr.real_first_time_s > cthis->min_div * 60)
+			hst_mgr.real_first_time_s -= cthis->min_div * 60;
+		else
+			hst_mgr.real_first_time_s = 0;
 		
 	}
 	
@@ -904,6 +915,7 @@ static void HMI_CRV_HST_Run(HMI *self)
 	
 	//第一次显示的时候，把设置的起始时间作为实际的起始时间。
 	//而一旦已经显示过了，实际起始时间是根据翻页情况变化的，就不要赋初值了
+	
 	if(hst_mgr.real_first_time_s == 0)
 		hst_mgr.real_first_time_s = hst_mgr.set_start_sec;
 	
@@ -951,7 +963,7 @@ static void HMI_CRV_HST_Run(HMI *self)
 			crv_prc = MdlChn_Cal_prc(p_mdl, d.rcd_val);
 			p_crv->add_point(cthis->arr_crv_fd[i], crv_prc);
 			count ++;
-			if(count > end)
+			if(count > end)	//避免显示的数量超过屏幕的限制
 				break;
 		}
 		
@@ -977,8 +989,9 @@ static void HMI_CRV_HST_Run(HMI *self)
 //		need_clean = 1;
 	}
 	
-//	if(hst_mgr.has_pgdn) 
-	if((hst_mgr.set_start_sec > 0) && (hst_mgr.real_first_time_s > hst_mgr.set_start_sec))
+	
+	if(hst_mgr.has_pgdn) 
+//	if((hst_mgr.set_start_sec > 0) && (hst_mgr.real_first_time_s > hst_mgr.set_start_sec))
 	{
 		
 		p_btn->build_each_btn(1, BTN_TYPE_PGUP, RLT_btn_hdl, self);
@@ -1017,18 +1030,11 @@ static void HMI_CRV_RTV_Run(HMI *self)
 {
 	RLT_trendHMI		*cthis = SUB_PTR( self, HMI, RLT_trendHMI);
 	Curve 					*p_crv = CRV_Get_Sington();
-//	HMI				*p_hmi = SUPER_PTR(cthis, HMI);
 	Model						*p_mdl ;
-//	crv_val_t				cval;
 	int							i;
 	uint8_t			crv_prc;
 	char					chn_name[7];
-//	int				range = 100;
-//	
-//	uint8_t			vy0 = 208;
-//	uint8_t			height = 150;
-//	uint8_t			i = 0;
-//	int				y = 0;
+
 	
 	cthis->count ++;
 	if(cthis->count < cthis->min_div / 4)
@@ -1042,20 +1048,6 @@ static void HMI_CRV_RTV_Run(HMI *self)
 		return;
 	
 	for(i = 0; i < RLTHMI_NUM_CURVE; i++) {
-//		if(self->flag & HMI_FLAG_DEAL_HIT)
-//			break;
-
-
-		
-//		p_mdl = g_arr_p_chnData[i]->p_mdl;
-		
-//		p_mdl->getMdlData(p_mdl, chnaux_upper_limit, &cval.up_limit);
-//		p_mdl->getMdlData(p_mdl, chnaux_lower_limit, &cval.lower_limit);
-//		if(p_mdl->getMdlData(p_mdl, AUX_DATA, &cval.val) != RET_OK)
-//		{
-//			
-//			cval.val = cval.lower_limit;
-//		}
 		sprintf(chn_name, "chn_%d", i);
 		p_mdl = Create_model(chn_name);
 		p_mdl->getMdlData(p_mdl, AUX_PERCENTAGE, &crv_prc);
@@ -1072,7 +1064,6 @@ static void HMI_CRV_RTV_Run(HMI *self)
 
 	}
 	
-//	if((self->flag & HMI_FLAG_DEAL_HIT) == 0)
 	if(hst_mgr.rtv_reflush == 0)
 		p_crv->crv_show_curve(HMI_CMP_ALL, CRV_SHOW_LATEST);
 	else
@@ -1096,27 +1087,8 @@ static void RLT_Init_curve(HMI *self)
 	
 	
 	HMI_Ram_init();		//曲线需要使用的缓存
-	
 	HST_Init(self);
-//	curve_ctl_t *p_cctl;
-//	int i = 0;
-//	
-//	for(i = 0; i < RLTHMI_NUM_CURVE; i++) {
-//		p_cctl = &g_curve[i];
-//		arr_p_crv[i] = p_cctl;
-//		
-//		Curve_clean(p_cctl);
-//		self->count = 0;
-////		Curve_set(p_cctl, 240/self->min_div, arr_clrs[i], 239, self->min_div);
-////		if(self->min_div == 1)
-//			Curve_set(p_cctl, CURVE_POINT - 1, arr_clrs[i], 0, -1);
-////		else
-////			Curve_set(p_cctl, CURVE_POINT/self->min_div, arr_clrs[i], 0, -self->min_div);
 
-//	}
-	
-	
-	
 }
 
 static void RLTHmi_Init_chnSht(void)
