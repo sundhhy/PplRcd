@@ -7,7 +7,6 @@
 
 #include <string.h>
 
-
 static TxtExpr *signalTxtExpr;
 
 

@@ -632,6 +632,9 @@ static void	RT_trendHmi_HitHandle( HMI *self, char kcd)
 					if(IS_CHECK(p_focus->id)) {
 						chn = GET_CHN_FROM_ID(p_focus->id);
 						
+						hst_mgr.arr_hst_num[chn] = 0;
+						
+						//反转选中显示
 						if(cthis->chn_show_map & (1 << chn)) {
 							cthis->chn_show_map &= ~(1 << chn);
 							p_crv->crv_ctl(cthis->arr_crv_fd[chn], CRV_CTL_HIDE, 1);
@@ -671,6 +674,10 @@ static void	RT_trendHmi_HitHandle( HMI *self, char kcd)
 								
 							}
 						}
+						
+						//目前所有的曲线都是统一显示的，因此显示记录要保持一致
+//						memset(hst_mgr.arr_hst_num, 0 , sizeof(hst_mgr.arr_hst_num));
+
 						p_focus->p_gp->vdraw(p_focus->p_gp, &p_focus->cnt, &p_focus->area);
 						Flush_LCD();
 						
@@ -680,6 +687,8 @@ static void	RT_trendHmi_HitHandle( HMI *self, char kcd)
 						if(Sem_wait(&phn_sys.hmi_mgr.hmi_sem, 1000) <= 0)
 							goto exit;
 						new_mins = atoi(p_focus->cnt.data);
+						
+						memset(hst_mgr.arr_hst_num, 0, sizeof(hst_mgr.arr_hst_num));
 						
 						arr_mdiv_change[self->arg[0]](cthis, new_mins);
 						Sem_post(&phn_sys.hmi_mgr.hmi_sem);
@@ -845,14 +854,16 @@ static void HST_Move(RLT_trendHMI *cthis, uint8_t direction)
 //		for(i = 0; i < NUM_CHANNEL; i++)
 //		{
 //			hst_mgr.arr_hst_num[i] += num;
-			hst_mgr.has_pgdn = 1;
+//			hst_mgr.has_pgdn = 1;
 //			
 //		}
 		hst_mgr.real_first_time_s += cthis->min_div * 60;
 	}
 	else
 	{
-		
+		//向前翻2页，因为每次执行了一次显示，会自动往后走一页的偏移。
+		//因此如果不多翻一页就会导致每次往前翻页都不起作用
+		num = num * 2;	
 		//往前翻页的时候，要把当前的记录数量减小。
 		for(i = 0; i < NUM_CHANNEL; i++)
 		{
@@ -866,7 +877,7 @@ static void HST_Move(RLT_trendHMI *cthis, uint8_t direction)
 				else
 				{
 					hst_mgr.arr_hst_num[i] = 0;
-					hst_mgr.has_pgdn = 0;
+//					hst_mgr.has_pgdn = 0;
 				}
 		}
 		
@@ -919,8 +930,8 @@ static void HMI_CRV_HST_Run(HMI *self)
 	if(hst_mgr.real_first_time_s == 0)
 		hst_mgr.real_first_time_s = hst_mgr.set_start_sec;
 	
-	
-	
+	//只要没有到达最前的位置，就允许向上翻页
+	hst_mgr.has_pgdn = 0;
 	//显示曲线
 	for(i = 0; i < RLTHMI_NUM_CURVE; i++)
 	{
@@ -935,6 +946,8 @@ static void HMI_CRV_HST_Run(HMI *self)
 		sprintf(str_buf, "chn_%d", i);
 		p_mdl = Create_model(str_buf);
 
+		if(hst_mgr.arr_hst_num[i]) //只要没有到达最前的位置，就允许向上翻页
+			hst_mgr.has_pgdn = 1;
 		
 		STG_Set_file_position(STG_CHN_DATA(i), STG_DRC_READ, hst_mgr.arr_hst_num[i] * sizeof(data_in_fsh_t));	
 		p_crv->reset(cthis->arr_crv_fd[i]);
@@ -975,6 +988,9 @@ static void HMI_CRV_HST_Run(HMI *self)
 	sprintf(cthis->p_first_time->cnt.data, "%02d-%02d-%02d %02d:%02d:%02d", \
 		first_tm.tm_year, first_tm.tm_mon, first_tm.tm_mday, \
 		first_tm.tm_hour, first_tm.tm_min, first_tm.tm_sec);
+	//更新真实起始时间
+//	if(hst_mgr.real_first_time_s != first_time)
+//		hst_mgr.real_first_time_s = first_time;
 	
 	cthis->p_first_time->cnt.len = strlen(cthis->p_first_time->cnt.data);
 	Sheet_force_slide(cthis->p_first_time);
@@ -1158,6 +1174,7 @@ static int CRV_Win_cmd(void *p_rcv, int cmd,  void *arg)
 		
 			
 			hst_mgr.set_start_sec = Time_2_u32(&t);
+			memset(hst_mgr.arr_hst_num, 0 , sizeof(hst_mgr.arr_hst_num));
 
 			g_p_winHmi->arg[0] = WINTYPE_TIPS;
 			g_p_winHmi->arg[1] = WINFLAG_RETURN;

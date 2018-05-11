@@ -1,11 +1,11 @@
 .\objects\modbusrtu_cli.o: ..\..\sdhLib\src\Communication\modbusRTU_cli.c
-.\objects\modbusrtu_cli.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
+.\objects\modbusrtu_cli.o: C:\ARM\ADSv1_2\INCLUDE\string.h
 .\objects\modbusrtu_cli.o: ..\..\sdhLib\inc\Communication/modbusRTU_cli.h
-.\objects\modbusrtu_cli.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+.\objects\modbusrtu_cli.o: C:\ARM\ADSv1_2\INCLUDE\stdint.h
 .\objects\modbusrtu_cli.o: ..\..\sdhLib\inc\arithmetic/crc.h
 .\objects\modbusrtu_cli.o: ..\..\sdhLib\inc\sdhDef.h
 .\objects\modbusrtu_cli.o: ..\..\APP\sdhlibConf.h
 .\objects\modbusrtu_cli.o: ..\..\sdhLib\inc\basis/sdhDebug.h
-.\objects\modbusrtu_cli.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
+.\objects\modbusrtu_cli.o: C:\ARM\ADSv1_2\INCLUDE\stdio.h
 .\objects\modbusrtu_cli.o: ..\..\sdhLib\inc\basis/sdhError.h
 .\objects\modbusrtu_cli.o: ..\..\sdhLib\inc\basis/macros.h
