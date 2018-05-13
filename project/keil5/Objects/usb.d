@@ -1,9 +1,9 @@
 .\objects\usb.o: ..\..\USB\Usb.c
-.\objects\usb.o: C:\ARM\ADSv1_2\INCLUDE\string.h
+.\objects\usb.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
 .\objects\usb.o: ..\..\USB\Usb.h
 .\objects\usb.o: ..\..\USB\Ch376.h
 .\objects\usb.o: ..\..\USB\Ch376INC.h
-.\objects\usb.o: C:\ARM\ADSv1_2\INCLUDE\stdint.h
+.\objects\usb.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
 .\objects\usb.o: ..\..\configs\hardwareConfig.h
 .\objects\usb.o: E:\PaperlessRecorder\myCode\PplRcd\project\keil5\RTE\Device\STM32F103VC\stm32f10x_conf.h
 .\objects\usb.o: E:\PaperlessRecorder\myCode\PplRcd\project\keil5\RTE\RTE_Components.h

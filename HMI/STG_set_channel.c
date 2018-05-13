@@ -80,6 +80,8 @@ typedef struct {
 	int			cur_page;
 	char		win_buf[48];
 	chn_info_t	tmp_info[NUM_CHANNEL];
+	int			arr_flag_change[NUM_CHANNEL];
+
 	
 }cns_run_t;
 //------------------------------------------------------------------------------
@@ -344,16 +346,15 @@ static int Cns_key_dn(void *arg)
 	 cns_run_t *p_run = (cns_run_t *)arr_p_vram[STG_RUN_VRAM_NUM];
 	 if(btn_id == BTN_TYPE_SAVE)
 	 {
-		for(i = 0; i < NUM_CHANNEL; i++)
+		for(i = 0; i < phn_sys.sys_conf.num_chn; i++)
 		{
-			if(phn_sys.save_chg_flga & CHG_MODCHN_CONF(i))
+			if(p_run->arr_flag_change[i])
 			{
 				
 				
 				
 				if(MdlChn_Commit_conf(i) == RET_OK)
 				{
-					phn_sys.save_chg_flga &=~ CHG_MODCHN_CONF(i);
 					sprintf(p_run->win_buf,"Ð´ÈëÅäÖÃ³É¹¦");
 					Win_content(p_run->win_buf);
 					STG_SELF.cmd_hdl(STG_SELF.p_cmd_rcv, sycmd_win_tips, NULL);
@@ -367,7 +368,7 @@ static int Cns_key_dn(void *arg)
 				}
 				
 			}
-			
+			p_run->arr_flag_change[i] = 0;
 			
 		}	
 
@@ -524,19 +525,19 @@ static void Cns_update_content(int op, int weight)
 	Model_chn			*p_mc = Get_Mode_chn(g_setting_chn);
 	Model				*p_md = SUPER_PTR(p_mc, Model);
 	strategy_focus_t 	*p_syf = &STG_SELF.sf;
-//	cns_run_t	*p_run = (cns_run_t *)arr_p_vram[STG_RUN_VRAM_NUM];
+	cns_run_t	*p_run = (cns_run_t *)arr_p_vram[STG_RUN_VRAM_NUM];
 	strategy_focus_t		pos;
 
 	
 	
 	
 	
-	
+	p_run->arr_flag_change[g_setting_chn] = 1;
 	
 	switch(p_syf->f_row) 
 	{
 		case row_chn_num:
-			g_setting_chn = Operate_in_tange(g_setting_chn, op, 1, 0, NUM_CHANNEL - 1);
+			g_setting_chn = Operate_in_tange(g_setting_chn, op, 1, 0, phn_sys.sys_conf.num_chn - 1);
 			STG_SELF.cmd_hdl(STG_SELF.p_cmd_rcv, sycmd_reflush, NULL);
 //			Str_Calculations(arr_p_vram[p_syf->f_row], 1,  op, weight, 0, NUM_CHANNEL);
 			break;
@@ -581,6 +582,7 @@ static void Cns_update_content(int op, int weight)
 			p_md->modify_str_conf(p_md, chnaux_b, arr_p_vram[p_syf->f_row], op, weight);
 			break;
 		default:
+			p_run->arr_flag_change[g_setting_chn] = 0;
 			break;
 		
 	}

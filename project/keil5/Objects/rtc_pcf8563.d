@@ -1,10 +1,10 @@
 .\objects\rtc_pcf8563.o: ..\..\utils\rtc_pcf8563.c
 .\objects\rtc_pcf8563.o: ..\..\utils\rtc_pcf8563.h
 .\objects\rtc_pcf8563.o: ..\..\sdhLib\inc\lw_oopc.h
-.\objects\rtc_pcf8563.o: C:\ARM\ADSv1_2\INCLUDE\stdlib.h
-.\objects\rtc_pcf8563.o: C:\ARM\ADSv1_2\INCLUDE\stddef.h
+.\objects\rtc_pcf8563.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
+.\objects\rtc_pcf8563.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
 .\objects\rtc_pcf8563.o: ..\..\sdhLib\inc\basis/macros.h
-.\objects\rtc_pcf8563.o: C:\ARM\ADSv1_2\INCLUDE\stdint.h
+.\objects\rtc_pcf8563.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
 .\objects\rtc_pcf8563.o: ..\..\..\PplRcd\utils/time.h
 .\objects\rtc_pcf8563.o: E:\PaperlessRecorder\myCode\PplRcd\project\keil5\RTE\Device\STM32F103VC\stm32f10x_conf.h
 .\objects\rtc_pcf8563.o: E:\PaperlessRecorder\myCode\PplRcd\project\keil5\RTE\RTE_Components.h
@@ -29,7 +29,7 @@
 .\objects\rtc_pcf8563.o: ..\..\sdhLib\inc\sdhDef.h
 .\objects\rtc_pcf8563.o: ..\..\APP\sdhlibConf.h
 .\objects\rtc_pcf8563.o: ..\..\sdhLib\inc\basis/sdhDebug.h
-.\objects\rtc_pcf8563.o: C:\ARM\ADSv1_2\INCLUDE\stdio.h
+.\objects\rtc_pcf8563.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
 .\objects\rtc_pcf8563.o: ..\..\sdhLib\inc\basis/sdhError.h
 .\objects\rtc_pcf8563.o: ..\..\device\device.h
 .\objects\rtc_pcf8563.o: ..\..\device\deviceId.h

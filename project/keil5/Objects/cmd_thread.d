@@ -1,7 +1,7 @@
 .\objects\cmd_thread.o: ..\..\APP\Cmd_Thread.c
 .\objects\cmd_thread.o: d:\Keil_v5\ARM\PACK\ARM\CMSIS\5.0.0\CMSIS\RTOS\RTX\INC\cmsis_os.h
-.\objects\cmd_thread.o: C:\ARM\ADSv1_2\INCLUDE\stdint.h
-.\objects\cmd_thread.o: C:\ARM\ADSv1_2\INCLUDE\stddef.h
+.\objects\cmd_thread.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+.\objects\cmd_thread.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
 .\objects\cmd_thread.o: ..\..\APP\sys_cmd.h
 .\objects\cmd_thread.o: ..\..\sdhLib\inc\arithmetic/bit.h
 .\objects\cmd_thread.o: ..\..\APP\system.h
@@ -32,6 +32,6 @@
 .\objects\cmd_thread.o: ..\..\device\dev_cmd.h
 .\objects\cmd_thread.o: ..\..\device\dev_char.h
 .\objects\cmd_thread.o: ..\..\sdhLib\inc\lw_oopc.h
-.\objects\cmd_thread.o: C:\ARM\ADSv1_2\INCLUDE\stdlib.h
+.\objects\cmd_thread.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
 .\objects\cmd_thread.o: ..\..\device\dev_lcd.h
 .\objects\cmd_thread.o: ..\..\APP\TDD.h

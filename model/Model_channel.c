@@ -1197,6 +1197,12 @@ static int MdlChn_setData(  Model *self, IN int aux, void *arg)
 	
 	Dev_open(DEVID_UART3, ( void *)&I_uart3);
 	switch(aux) {
+		case AUX_UNIT:
+			cthis->chni.unit = *(uint8_t *)arg;
+			break;
+				
+		
+		
 		case AUX_SIGNALTYPE:
 			if(arg)
 				p_u8 = (uint8_t *)arg;
@@ -1608,7 +1614,7 @@ static int MdlChn_modify_sconf(Model *self, IN int aux, char *s, int op, int val
 	else
 		p_alarm = &cthis->alarm;
 	
-	phn_sys.save_chg_flga |= CHG_MODCHN_CONF(cthis->chni.chn_NO);
+//	phn_sys.save_chg_flga |= CHG_MODCHN_CONF(cthis->chni.chn_NO);
 	switch(aux) {
 		case AUX_UNIT:
 //			tmp_u8 = Operate_in_tange(cthis->chni.unit, op, 1, 0, eu_max - 1);
@@ -1702,7 +1708,7 @@ static int MdlChn_modify_sconf(Model *self, IN int aux, char *s, int op, int val
 			break;
 		default:
 			
-			phn_sys.save_chg_flga &= ~CHG_MODCHN_CONF(p_info->chn_NO);
+//			phn_sys.save_chg_flga &= ~CHG_MODCHN_CONF(p_info->chn_NO);
 			break;
 		
 		

@@ -1,5 +1,5 @@
 .\objects\drive_gpio.o: ..\..\drive\GPIO\drive_gpio.c
-.\objects\drive_gpio.o: C:\ARM\ADSv1_2\INCLUDE\stdint.h
+.\objects\drive_gpio.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
 .\objects\drive_gpio.o: ..\..\drive\GPIO/drive_gpio.h
 .\objects\drive_gpio.o: d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\StdPeriph_Driver\inc\stm32f10x_gpio.h
 .\objects\drive_gpio.o: d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\Include\stm32f10x.h
@@ -22,15 +22,15 @@
 .\objects\drive_gpio.o: d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\StdPeriph_Driver\inc\stm32f10x_usart.h
 .\objects\drive_gpio.o: d:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\StdPeriph_Driver\inc\misc.h
 .\objects\drive_gpio.o: ..\..\sdhLib\inc\lw_oopc.h
-.\objects\drive_gpio.o: C:\ARM\ADSv1_2\INCLUDE\stdlib.h
-.\objects\drive_gpio.o: C:\ARM\ADSv1_2\INCLUDE\stddef.h
+.\objects\drive_gpio.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
+.\objects\drive_gpio.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
 .\objects\drive_gpio.o: ..\..\drive\dri_cmd.h
 .\objects\drive_gpio.o: ..\..\configs\hardwareConfig.h
 .\objects\drive_gpio.o: ..\..\sdhLib\inc\basis/sdhError.h
-.\objects\drive_gpio.o: C:\ARM\ADSv1_2\INCLUDE\stdarg.h
-.\objects\drive_gpio.o: C:\ARM\ADSv1_2\INCLUDE\string.h
+.\objects\drive_gpio.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdarg.h
+.\objects\drive_gpio.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
 .\objects\drive_gpio.o: ..\..\sdhLib\inc\sdhDef.h
 .\objects\drive_gpio.o: ..\..\APP\sdhlibConf.h
 .\objects\drive_gpio.o: ..\..\sdhLib\inc\basis/sdhDebug.h
-.\objects\drive_gpio.o: C:\ARM\ADSv1_2\INCLUDE\stdio.h
+.\objects\drive_gpio.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
 .\objects\drive_gpio.o: ..\..\sdhLib\inc\basis/macros.h

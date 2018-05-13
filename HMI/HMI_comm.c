@@ -46,7 +46,7 @@ sheet			*g_arr_p_chnData[NUM_CHANNEL];
 sheet			*g_arr_p_chnUtil[NUM_CHANNEL];
 sheet			*g_arr_p_chnAlarm[NUM_CHANNEL];
 
-char		prn_buf[BARHMI_NUM_BARS][8];
+char		prn_buf[NUM_CHANNEL][8];
 
 
 hmiAtt_t CmmHmiAtt = { 10,1, COLOUR_BLACK, 4, 2};

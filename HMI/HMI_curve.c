@@ -85,8 +85,11 @@ struct {
 	uint8_t				rtv_reflush;	//为1时，实时曲线重绘。用于页面定期刷新
 	
 	uint8_t				init_att;	
+	
+	//这个参数是通过窗口设置的起始时间
 	uint32_t			set_start_sec;			//设置的起始显示时间，为0时，把最早的历史曲线作为其实显示时间
 	//每副画面上的实际起始时间，需要注意，这个值并不一定比set_start_sec大，因为用户可能向前翻页，使得本页实际起始时间超前于设置的起始时间，这是允许的
+	//这个参数是可以通过上下翻页来改变的。并且如果第一次显示的时候为0 的话，可以用存储器的最早的记录时间来更新
 	uint32_t			real_first_time_s;			
 	char				set_first_tm_buf[32];
 }hst_mgr;
@@ -225,7 +228,7 @@ static int	Init_RT_trendHMI( HMI *self, void *arg)
 	//初始化通道勾选图形
 	p_exp = ExpCreate( "pic");
 	cthis->chn_show_map = 0xff;
-	for(i = 0; i < RLTHMI_NUM_CURVE; i++) {
+	for(i = 0; i < phn_sys.sys_conf.num_chn; i++) {
 		g_arr_p_check[i] = Sheet_alloc( p_shtctl);
 		p_exp->inptSht( p_exp, (void *)RLT_hmi_code_chnshow, g_arr_p_check[i]);
 		g_arr_p_check[i]->area.y0 += i * CHNSHOW_ROW_SPACE;
@@ -256,7 +259,7 @@ static void HMI_CRV_Build_cmp(HMI *self)
 //	p->build_each_btn(1, BTN_TYPE_PGDN, RLT_btn_hdl, self);
 //	p->build_each_btn(2, BTN_TYPE_LOOP, RLT_btn_hdl, self);
 	
-	for(i = 0; i < NUM_CHANNEL; i++)
+	for(i = 0; i < phn_sys.sys_conf.num_chn; i++)
 	{
 		crv.crv_col = arr_clrs[i];
 		crv.crv_direction = HMI_DIR_RIGHT;
@@ -276,7 +279,8 @@ static void HMI_CRV_Build_cmp(HMI *self)
 		crv.crv_y0 = 50 + i * CTRV_OFFSET_Y;
 		crv.crv_x1 = 240;
 		crv.crv_y1 = 150 + i * CTRV_OFFSET_Y;		//210
-		
+		if(CTRV_OFFSET_Y == 0)
+			crv.crv_y1 = 209;
 		crv.crv_buf_size = CRV_MAX_PIXS + 1;
 		
 		
@@ -371,7 +375,7 @@ static void RT_trendHmi_InitSheet( HMI *self, uint32_t att )
 	Sheet_updown(g_p_sht_title, h++);
 	Sheet_updown(g_p_shtTime, h++);
 	Sheet_updown(cthis->p_div, h++);
-	for(i = 0; i < RLTHMI_NUM_CURVE; i++) {
+	for(i = 0; i < phn_sys.sys_conf.num_chn; i++) {
 		Sheet_updown(g_arr_p_check[i], h++);
 	}
 	hst_mgr.init_att = att;
@@ -387,7 +391,7 @@ static void RT_trendHmi_HideSheet( HMI *self )
 	int i;
 	
 	
-	for( i = RLTHMI_NUM_CURVE - 1; i >= 0; i--) {
+	for( i = phn_sys.sys_conf.num_chn - 1; i >= 0; i--) {
 		Sheet_updown(g_arr_p_check[i], -1);
 //		Sheet_updown(g_arr_p_chnData[i], -1);
 	}
@@ -418,12 +422,12 @@ static void	RLT_init_focus(HMI *self)
 	
 	if(self->arg[0] == 1) {
 		//历史曲线多一个设置起始时间的选项
-		self->p_fcuu = Focus_alloc(1, RLTHMI_NUM_CURVE + 2);
+		self->p_fcuu = Focus_alloc(1, phn_sys.sys_conf.num_chn + 2);
 		
 	} 
 	else
 	{
-		self->p_fcuu = Focus_alloc(1, RLTHMI_NUM_CURVE + 1);
+		self->p_fcuu = Focus_alloc(1, phn_sys.sys_conf.num_chn + 1);
 		
 	}
 	
@@ -439,7 +443,7 @@ static void	RLT_init_focus(HMI *self)
 		offset = 2;
 	} 
 	
-	for(col = 0; col < RLTHMI_NUM_CURVE; col ++) {
+	for(col = 0; col < phn_sys.sys_conf.num_chn; col ++) {
 		Focus_Set_sht(self->p_fcuu, 0, col + offset, g_arr_p_check[col]);
 	}		
 	
@@ -551,7 +555,10 @@ static void	RT_trendHmi_HitHandle( HMI *self, char kcd)
 					
 					if(p_focus->id == SHTID_RTL_MDIV)
 					{
-						Str_Calculations(p_focus->cnt.data, 2, OP_MUX, 2, 1, 16);
+						if(self->arg[0] == 1)	//历史曲线的时标是 1- 8
+							Str_Calculations(p_focus->cnt.data, 2, OP_MUX, 2, 1, 8);
+						else
+							Str_Calculations(p_focus->cnt.data, 2, OP_MUX, 2, 1, 16);
 						p_focus->cnt.len = strlen(p_focus->cnt.data);
 						chgFouse = 1;
 					}	
@@ -567,8 +574,10 @@ static void	RT_trendHmi_HitHandle( HMI *self, char kcd)
 					
 					if(p_focus->id == SHTID_RTL_MDIV)
 					{
-						
-						Str_Calculations(p_focus->cnt.data, 2, OP_DIV, 2, 1, 16);
+						if(self->arg[0] == 1)	//历史曲线的时标是 1- 8
+							Str_Calculations(p_focus->cnt.data, 2, OP_DIV, 2, 1, 8);
+						else
+							Str_Calculations(p_focus->cnt.data, 2, OP_DIV, 2, 1, 16);
 						p_focus->cnt.len = strlen(p_focus->cnt.data);
 						chgFouse = 1;
 					}		
@@ -632,7 +641,7 @@ static void	RT_trendHmi_HitHandle( HMI *self, char kcd)
 					if(IS_CHECK(p_focus->id)) {
 						chn = GET_CHN_FROM_ID(p_focus->id);
 						
-						hst_mgr.arr_hst_num[chn] = 0;
+						memset(hst_mgr.arr_hst_num, 0, sizeof(hst_mgr.arr_hst_num));
 						
 						//反转选中显示
 						if(cthis->chn_show_map & (1 << chn)) {
@@ -807,9 +816,17 @@ static void HST_midv_change(RLT_trendHMI *cthis, uint8_t new_mins)
 static uint16_t HST_Num_rcds(uint8_t	mul)
 {
 	return 15 * mul + 1;
-	
-	
 }
+
+static uint16_t HST_Time_step(uint8_t	mul)
+{
+	//一个屏幕240个曲线点
+	if(mul <= 4)
+		return 1;
+	return mul / 4;
+}
+
+
 static void HST_Init(HMI *self)
 {
 	int i;
@@ -863,23 +880,23 @@ static void HST_Move(RLT_trendHMI *cthis, uint8_t direction)
 	{
 		//向前翻2页，因为每次执行了一次显示，会自动往后走一页的偏移。
 		//因此如果不多翻一页就会导致每次往前翻页都不起作用
-		num = num * 2;	
-		//往前翻页的时候，要把当前的记录数量减小。
-		for(i = 0; i < NUM_CHANNEL; i++)
-		{
-			
-				if(hst_mgr.arr_hst_num[i] > num)
-				{
-					
-					hst_mgr.arr_hst_num[i] -= num;
-					
-				}
-				else
-				{
-					hst_mgr.arr_hst_num[i] = 0;
-//					hst_mgr.has_pgdn = 0;
-				}
-		}
+//		num = num * 2;	
+//		//往前翻页的时候，要把当前的记录数量减小。
+//		for(i = 0; i < NUM_CHANNEL; i++)
+//		{
+//			
+//				if(hst_mgr.arr_hst_num[i] > num)
+//				{
+//					
+//					hst_mgr.arr_hst_num[i] -= num;
+//					
+//				}
+//				else
+//				{
+//					hst_mgr.arr_hst_num[i] = 0;
+//				}
+//		}
+		memset(hst_mgr.arr_hst_num, 0, sizeof(hst_mgr.arr_hst_num));
 		
 		//允许向前翻页到设置的起始时间之前
 		if(hst_mgr.real_first_time_s > cthis->min_div * 60)
@@ -903,10 +920,14 @@ static void HMI_CRV_HST_Run(HMI *self)
 	Button					*p_btn = BTN_Get_Sington();
 	data_in_fsh_t			d;
 	int						read_len = 0;
-	uint32_t				first_time = 0;
-	struct	tm				first_tm;						
-	uint16_t				i, count, end, need_clean = 0;
-	uint8_t					crv_prc;
+//	uint32_t				first_time = 0;
+	uint32_t				time_s = 0;
+	uint32_t				pos = 0;
+	struct	tm				first_tm;
+	uint32_t				end_time;
+	uint16_t				i, num_point, crv_max_points, time_step, need_clean = 0;
+//	int16_t					last_val;
+	uint8_t					crv_prc, pg_up,pg_down;
 	char					str_buf[7];
 	//读取一条就记录记录一条
 	//直到屏幕上容纳不下了，或者记录读完了
@@ -922,7 +943,7 @@ static void HMI_CRV_HST_Run(HMI *self)
 	
 
 	
-	end = HST_Num_rcds(cthis->min_div) - 1;
+	crv_max_points = HST_Num_rcds(cthis->min_div) - 1;
 	
 	//第一次显示的时候，把设置的起始时间作为实际的起始时间。
 	//而一旦已经显示过了，实际起始时间是根据翻页情况变化的，就不要赋初值了
@@ -930,72 +951,168 @@ static void HMI_CRV_HST_Run(HMI *self)
 	if(hst_mgr.real_first_time_s == 0)
 		hst_mgr.real_first_time_s = hst_mgr.set_start_sec;
 	
+	end_time = hst_mgr.real_first_time_s + cthis->min_div * 60;
 	//只要没有到达最前的位置，就允许向上翻页
 	hst_mgr.has_pgdn = 0;
-	//显示曲线
-	for(i = 0; i < RLTHMI_NUM_CURVE; i++)
+	
+	
+	//根据当前的时标计算曲线点之间的时间间隔
+	time_step = HST_Time_step(cthis->min_div);
+	/*  安装曲线数据 */
+	for(i = 0; i < phn_sys.sys_conf.num_chn; i++)
 	{
-		
-		
 		
 		if((cthis->chn_show_map & (1 << i)) == 0) {
 			continue;
-		}	
+		}
 		
-		count = 0;		//
+		//如果起始时间为0则使用第一条记录的时间作为起始时间
+		if(hst_mgr.real_first_time_s == 0)
+		{
+			STG_Read_data_by_time(i, 0, 0, &d);
+			if(d.rcd_time_s == 0xffffffff)
+				break;
+			
+			hst_mgr.real_first_time_s = d.rcd_time_s;
+			end_time = hst_mgr.real_first_time_s + cthis->min_div * 60;
+			
+		}
+	
+		//从起始时间开始到结束时间这段范围内的数据并装入曲线
 		sprintf(str_buf, "chn_%d", i);
 		p_mdl = Create_model(str_buf);
-
-		if(hst_mgr.arr_hst_num[i]) //只要没有到达最前的位置，就允许向上翻页
-			hst_mgr.has_pgdn = 1;
-		
-		STG_Set_file_position(STG_CHN_DATA(i), STG_DRC_READ, hst_mgr.arr_hst_num[i] * sizeof(data_in_fsh_t));	
-		p_crv->reset(cthis->arr_crv_fd[i]);
-		while(1)
+		num_point = 0;
+		for(time_s = hst_mgr.real_first_time_s; time_s < end_time;time_s += time_step)
 		{
-			read_len = stg->rd_stored_data(stg, STG_CHN_DATA(i), &d, sizeof(d));
+			hst_mgr.arr_hst_num[i] = STG_Read_data_by_time(i, time_s, hst_mgr.arr_hst_num[i], &d);
+			if(hst_mgr.arr_hst_num[i])
+				hst_mgr.arr_hst_num[i] --;	//后腿一格，防止错过
+			//如果某个时间点没有数据，则装入0
+			if(d.rcd_time_s != 0xffffffff)
+			{
+				
+				crv_prc = MdlChn_Cal_prc(p_mdl, d.rcd_val);
+			}
+			else
+			{
+				
+				crv_prc = 0;
+			}
 			
-			if(read_len == 0)
-				break;
-			if(read_len != sizeof(d))
-				goto exit;	//可能文件正在被其他线程访问，直接退出，下一次再尝试
-			if(d.rcd_time_s == 0xffffffff)
-				continue;
 			
-			hst_mgr.arr_hst_num[i] ++;		//读取了一条有效记录，就把计数器加1
 			
-			if(hst_mgr.real_first_time_s == 0)
-				hst_mgr.real_first_time_s = d.rcd_time_s;
-			
-			if(d.rcd_time_s < hst_mgr.real_first_time_s)
-				continue;
-			
-			if(first_time == 0)
-				first_time = d.rcd_time_s;
-			
-			crv_prc = MdlChn_Cal_prc(p_mdl, d.rcd_val);
 			p_crv->add_point(cthis->arr_crv_fd[i], crv_prc);
-			count ++;
-			if(count > end)	//避免显示的数量超过屏幕的限制
+			num_point ++;
+			if(num_point > crv_max_points)
 				break;
+			
 		}
 		
 		
 	}
 	
-	//显示时间
-	Sec_2_tm(first_time, &first_tm);
+	//获取是否有更早数据，来决定是否有向上按钮
+	pg_up = 0;
+	for(i = 0; i < phn_sys.sys_conf.num_chn; i++)
+	{
+		STG_Read_data_by_time(i, 0, 0, &d);
+		if(d.rcd_time_s == 0xffffffff)
+			continue;
+		
+		if(d.rcd_time_s < hst_mgr.real_first_time_s)
+		{
+			
+			pg_up = 1;
+			break;
+		}
+		
+		
+	}
+	
+	//获取是否有更晚数据，来决定是否有向下按钮
+	pg_down = 0;
+	for(i = 0; i < phn_sys.sys_conf.num_chn; i++)
+	{
+		STG_Read_data_by_time(i, 0xffffffff, 0, &d);
+		if(d.rcd_time_s == 0xffffffff)
+			continue;
+		
+		if(d.rcd_time_s > hst_mgr.real_first_time_s)
+		{
+			
+			pg_down = 1;
+			break;
+		}
+		
+		
+	}	
+//	for(i = 0; i < RLTHMI_NUM_CURVE; i++)
+//	{
+//		
+//		
+//		
+//		if((cthis->chn_show_map & (1 << i)) == 0) {
+//			continue;
+//		}	
+//		
+////		count = 0;		//
+//		sprintf(str_buf, "chn_%d", i);
+//		p_mdl = Create_model(str_buf);
+//		
+//		//获取最早记录
+
+//		if(hst_mgr.arr_hst_num[i]) //只要没有到达最前的位置，就允许向上翻页
+//			hst_mgr.has_pgdn = 1;
+//		
+//		STG_Set_file_position(STG_CHN_DATA(i), STG_DRC_READ, hst_mgr.arr_hst_num[i] * sizeof(data_in_fsh_t));	
+//		p_crv->reset(cthis->arr_crv_fd[i]);
+//		while(1)
+//		{
+//			read_len = stg->rd_stored_data(stg, STG_CHN_DATA(i), &d, sizeof(d));
+//			
+//			if(read_len == 0)
+//				break;
+//			if(read_len != sizeof(d))
+//				goto exit;	//可能文件正在被其他线程访问，直接退出，下一次再尝试
+//			if(d.rcd_time_s == 0xffffffff)
+//				break;
+//			
+//			hst_mgr.arr_hst_num[i] ++;		//读取了一条有效记录，就把计数器加1
+//			
+//			if(hst_mgr.real_first_time_s == 0)
+//			{
+//				hst_mgr.real_first_time_s = d.rcd_time_s;
+//				end_time = hst_mgr.real_first_time_s + cthis->min_div * 60;
+//			}
+//			
+//			if(d.rcd_time_s < hst_mgr.real_first_time_s)
+//				continue;
+//			
+//			if(d.rcd_time_s > end_time)
+//			{
+//				more= 1;
+//				break;
+//			}
+//						
+//			crv_prc = MdlChn_Cal_prc(p_mdl, d.rcd_val);
+//			p_crv->add_point(cthis->arr_crv_fd[i], crv_prc);
+
+//		}
+//		
+//		
+//	}
+	
+	
+	Sec_2_tm(hst_mgr.real_first_time_s, &first_tm);
 	sprintf(cthis->p_first_time->cnt.data, "%02d-%02d-%02d %02d:%02d:%02d", \
 		first_tm.tm_year, first_tm.tm_mon, first_tm.tm_mday, \
 		first_tm.tm_hour, first_tm.tm_min, first_tm.tm_sec);
-	//更新真实起始时间
-//	if(hst_mgr.real_first_time_s != first_time)
-//		hst_mgr.real_first_time_s = first_time;
+
 	
 	cthis->p_first_time->cnt.len = strlen(cthis->p_first_time->cnt.data);
 	Sheet_force_slide(cthis->p_first_time);
 	
-	if(count >= end) //说明可能还有记录
+	if(pg_down) //说明可能还有记录
 	{
 		
 		p_btn->build_each_btn(2, BTN_TYPE_PGDN, RLT_btn_hdl, self);
@@ -1006,8 +1123,7 @@ static void HMI_CRV_HST_Run(HMI *self)
 	}
 	
 	
-	if(hst_mgr.has_pgdn) 
-//	if((hst_mgr.set_start_sec > 0) && (hst_mgr.real_first_time_s > hst_mgr.set_start_sec))
+	if(pg_up) 
 	{
 		
 		p_btn->build_each_btn(1, BTN_TYPE_PGUP, RLT_btn_hdl, self);
@@ -1027,7 +1143,7 @@ static void HMI_CRV_HST_Run(HMI *self)
 		
 	
 	//显示颜色标识
-	for(i = 0; i < RLTHMI_NUM_CURVE; i++)
+	for(i = 0; i < phn_sys.sys_conf.num_chn; i++)
 	{
 		if((cthis->chn_show_map & (1 << i)) == 0) {
 			continue;
@@ -1063,7 +1179,7 @@ static void HMI_CRV_RTV_Run(HMI *self)
 	if(Sem_wait(&phn_sys.hmi_mgr.hmi_sem, 1000) <= 0)
 		return;
 	
-	for(i = 0; i < RLTHMI_NUM_CURVE; i++) {
+	for(i = 0; i < phn_sys.sys_conf.num_chn; i++) {
 		sprintf(chn_name, "chn_%d", i);
 		p_mdl = Create_model(chn_name);
 		p_mdl->getMdlData(p_mdl, AUX_PERCENTAGE, &crv_prc);
@@ -1114,7 +1230,7 @@ static void RLTHmi_Init_chnSht(void)
 	uint8_t			data_vy[6] = {65, 98, 128, 160, 195, 225};
 	uint16_t			i = 0;
 	p_exp = ExpCreate( "text");
-	for(i = 0; i < NUM_CHANNEL; i++) {
+	for(i = 0; i < phn_sys.sys_conf.num_chn; i++) {
 		p_exp->inptSht( p_exp, (void *)RT_hmi_code_data, g_arr_p_chnData[i]) ;
 		
 		

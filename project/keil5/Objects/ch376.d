@@ -1,8 +1,8 @@
 .\objects\ch376.o: ..\..\USB\Ch376.c
-.\objects\ch376.o: C:\ARM\ADSv1_2\INCLUDE\string.h
+.\objects\ch376.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
 .\objects\ch376.o: ..\..\USB\Ch376.h
 .\objects\ch376.o: ..\..\USB\Ch376INC.h
-.\objects\ch376.o: C:\ARM\ADSv1_2\INCLUDE\stdint.h
+.\objects\ch376.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
 .\objects\ch376.o: ..\..\configs\hardwareConfig.h
 .\objects\ch376.o: E:\PaperlessRecorder\myCode\PplRcd\project\keil5\RTE\Device\STM32F103VC\stm32f10x_conf.h
 .\objects\ch376.o: E:\PaperlessRecorder\myCode\PplRcd\project\keil5\RTE\RTE_Components.h

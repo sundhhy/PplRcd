@@ -23,8 +23,11 @@
 // const defines
 //------------------------------------------------------------------------------
 #define 	PHN_MAJOR_VER				3
-#define 	PHN_MINOR_VER				17
+#define 	PHN_MINOR_VER				19
 
+#define 	PHN_DEF_SUPER_PSD_1			0x01			
+#define 	PHN_DEF_SUPER_PSD_2			0x01
+#define 	PHN_DEF_SUPER_PSD_3			0x01
 
 const unsigned short daytab[13]={0,31,59,90,120,151,181,212,243,273,304,334,365};//非闰年月份累积天数
 const unsigned short daytab1[13]={0,31,60,91,121,152,182,213,244,274,305,335,366};//闰年月份累积天数
@@ -174,8 +177,9 @@ void System_default(void)
 	p_sc->cold_end_way = 0;
 	stg->wr_stored_data(stg, STG_SYS_CONF, &phn_sys.sys_conf, sizeof(phn_sys.sys_conf));
 	
-	
-	
+	p_sc->super_psd[0] = PHN_DEF_SUPER_PSD_1;
+	p_sc->super_psd[1] = PHN_DEF_SUPER_PSD_2;
+	p_sc->super_psd[2] = PHN_DEF_SUPER_PSD_3;
 //	p_sc->baud_idx = 0;
 //	p_sc->baud_rate = arr_baud[0];
 //	p_sc->disable_view_chn_status = 0;
@@ -193,7 +197,6 @@ void System_init(void)
 	phn_sys.major_ver = PHN_MAJOR_VER;
 	phn_sys.minor_ver = PHN_MINOR_VER;
 	
-//	phn_sys.lcd_sem_wait_ms = 0xffffffff;
 	
 	sys_rtc = ( UtlRtc *)Pcf8563_new();
 	if(sys_rtc == NULL) while(1);
@@ -218,9 +221,9 @@ void System_init(void)
 	
 	LOG_Init();
 	stg->rd_stored_data(stg, STG_SYS_CONF, &phn_sys.sys_conf, sizeof(phn_sys.sys_conf));
-	if(phn_sys.sys_conf.num_chn != NUM_CHANNEL)
+	if((phn_sys.sys_conf.num_chn > NUM_CHANNEL) || (phn_sys.sys_conf.num_chn == 0))
 		System_default();
-
+	
 	
 	CNA_Init();
 	for(i = 0; i < NUM_CHANNEL; i++)

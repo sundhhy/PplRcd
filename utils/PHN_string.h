@@ -26,15 +26,15 @@
 
 //system.c
 void Print_sys_param(void *p_data, char	*p_s, int len, int aux);
-void Str_set_sys_param(char	*p_s, int aux, int op, int val);
+void Str_set_sys_param(void *p, char	*p_s, int aux, int op, int val);
 
 int Get_str_data(char *s_data, char* separator, int num, uint8_t	*err);
 
-int Str_Password_match(char *p_s_psd);
+int Str_Password_match(char *p_s_psd, uint8_t *psd);
 void Password_modify(char	*p_s_psd, int idx, int op);
-void Str_set_password(char	*p_s_psd);
+void Str_set_password(char	*p_s_psd, uint8_t *psd);
 int Password_iteartor(char	*p_time_text, int idx, int director);
-
+void Clone_psd(uint8_t *src, uint8_t *dst);
 //model.c
 void Print_unit( char unit, char *buf, int len);
 void Print_float(int data, short int_len, short prec, char *str);

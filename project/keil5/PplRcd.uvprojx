@@ -1093,6 +1093,11 @@
               <FileType>5</FileType>
               <FilePath>..\..\HMI\HMI_comm.h</FilePath>
             </File>
+            <File>
+              <FileName>STG_Super_set.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\HMI\STG_Super_set.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

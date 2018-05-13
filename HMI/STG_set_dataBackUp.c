@@ -203,7 +203,7 @@ static int DBP_init(void *arg)
 	arr_p_vram[DBP_row_tips] = HMI_Ram_alloc(48); //
 	arr_p_vram[DBP_row_temp] = HMI_Ram_alloc(48); //
 	DBP_FIRST_CHN = 0;
-	DBP_LAST_CHN = NUM_CHANNEL - 1;
+	DBP_LAST_CHN = phn_sys.sys_conf.num_chn - 1;
 	
 	arr_DBP_fds[0] = USB_Rgt_event_hdl(DBP_Usb_event);
 //	phn_sys.key_weight = 1;
@@ -515,16 +515,16 @@ static int DBP_update_content(int op, int weight)
 			g_DBP_strategy.cmd_hdl(g_DBP_strategy.p_cmd_rcv, sycmd_reflush_position, &pos);
 			break;
 		case row_first_chn:
-			DBP_FIRST_CHN = Operate_in_tange(DBP_FIRST_CHN, op, 1, 0, NUM_CHANNEL - 1);
-			sprintf(arr_p_vram[row_first_chn], "%d", DBP_FIRST_CHN);
+			DBP_FIRST_CHN = Operate_in_tange(DBP_FIRST_CHN, op, 1, 0, phn_sys.sys_conf.num_chn - 1);
+			sprintf(arr_p_vram[p_syf->f_row], "%d", DBP_FIRST_CHN);
 //			pos.f_col = 1;
 //			pos.f_row = row_file_name;
 //			arr_p_vram[row_file_name][0] = 0;	//重新生成默认文件名
 //			g_DBP_strategy.cmd_hdl(g_DBP_strategy.p_cmd_rcv, sycmd_reflush_position, &pos);
 			break;
 		case row_last_chn:
-			DBP_LAST_CHN = Operate_in_tange(DBP_LAST_CHN, op, 1, DBP_FIRST_CHN, NUM_CHANNEL - 1);
-			sprintf(arr_p_vram[row_last_chn], "%d", DBP_FIRST_CHN);
+			DBP_LAST_CHN = Operate_in_tange(DBP_LAST_CHN, op, 1, DBP_FIRST_CHN, phn_sys.sys_conf.num_chn - 1);
+			sprintf(arr_p_vram[p_syf->f_row], "%d", DBP_LAST_CHN);
 //			pos.f_col = 1;
 //			pos.f_row = row_file_name;
 //			arr_p_vram[row_file_name][0] = 0;	//重新生成默认文件名

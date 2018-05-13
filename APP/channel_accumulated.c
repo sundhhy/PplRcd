@@ -94,7 +94,7 @@ void CNA_Run(int cyc_ms)
 	int32_t				sum = 0;
 	uint32_t				temp = 0;
 	cur_time_s = Time_2_u32(&SYS_TIME);
-	for(chn_num = 0; chn_num < NUM_CHANNEL; chn_num ++)
+	for(chn_num = 0; chn_num < phn_sys.sys_conf.num_chn; chn_num ++)
 	{
 		t.tm_year = arr_chn_acc[chn_num].sum_start_year;
 		t.tm_mon = arr_chn_acc[chn_num].sum_start_month;

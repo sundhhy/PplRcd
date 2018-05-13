@@ -92,6 +92,7 @@
 ".\objects\stg_set_dataprint.o"
 ".\objects\stg_set_system.o"
 ".\objects\stg_set_view.o"
+".\objects\stg_super_set.o"
 ".\objects\model.o"
 ".\objects\model_channel.o"
 ".\objects\modelfactory.o"

@@ -1,9 +1,9 @@
 .\objects\dev_char.o: ..\..\device\dev_char.c
 .\objects\dev_char.o: ..\..\device\dev_char.h
-.\objects\dev_char.o: C:\ARM\ADSv1_2\INCLUDE\stdint.h
+.\objects\dev_char.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
 .\objects\dev_char.o: ..\..\sdhLib\inc\lw_oopc.h
-.\objects\dev_char.o: C:\ARM\ADSv1_2\INCLUDE\stdlib.h
-.\objects\dev_char.o: C:\ARM\ADSv1_2\INCLUDE\stddef.h
+.\objects\dev_char.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
+.\objects\dev_char.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
 .\objects\dev_char.o: ..\..\device\deviceId.h
 .\objects\dev_char.o: ..\..\device\dev_uart/dev_uart.h
 .\objects\dev_char.o: ..\..\sdhLib\inc\basis/sdhError.h
@@ -36,7 +36,7 @@
 .\objects\dev_char.o: ..\..\device\dev_gpio/device_gpio.h
 .\objects\dev_char.o: ..\..\drive\GPIO/drive_gpio.h
 .\objects\dev_char.o: ..\..\sdhLib\inc\basis/sdhDebug.h
-.\objects\dev_char.o: C:\ARM\ADSv1_2\INCLUDE\stdio.h
+.\objects\dev_char.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
 .\objects\dev_char.o: ..\..\sdhLib\inc\sdhDef.h
 .\objects\dev_char.o: ..\..\APP\sdhlibConf.h
 .\objects\dev_char.o: ..\..\sdhLib\inc\basis/macros.h

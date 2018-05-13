@@ -1,10 +1,10 @@
 .\objects\rtc.o: ..\..\utils\rtc.c
 .\objects\rtc.o: ..\..\utils\rtc.h
 .\objects\rtc.o: ..\..\sdhLib\inc\lw_oopc.h
-.\objects\rtc.o: C:\ARM\ADSv1_2\INCLUDE\stdlib.h
-.\objects\rtc.o: C:\ARM\ADSv1_2\INCLUDE\stddef.h
+.\objects\rtc.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
+.\objects\rtc.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
 .\objects\rtc.o: ..\..\sdhLib\inc\basis/macros.h
-.\objects\rtc.o: C:\ARM\ADSv1_2\INCLUDE\stdint.h
+.\objects\rtc.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
 .\objects\rtc.o: ..\..\..\PplRcd\utils/time.h
 .\objects\rtc.o: E:\PaperlessRecorder\myCode\PplRcd\project\keil5\RTE\Device\STM32F103VC\stm32f10x_conf.h
 .\objects\rtc.o: E:\PaperlessRecorder\myCode\PplRcd\project\keil5\RTE\RTE_Components.h
@@ -28,5 +28,5 @@
 .\objects\rtc.o: ..\..\sdhLib\inc\sdhDef.h
 .\objects\rtc.o: ..\..\APP\sdhlibConf.h
 .\objects\rtc.o: ..\..\sdhLib\inc\basis/sdhDebug.h
-.\objects\rtc.o: C:\ARM\ADSv1_2\INCLUDE\stdio.h
+.\objects\rtc.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
 .\objects\rtc.o: ..\..\sdhLib\inc\basis/sdhError.h

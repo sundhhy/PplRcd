@@ -219,7 +219,7 @@ static void	Accm_HMI_hitHandle(HMI *self, char kcd)
 					if(p_focus->id != SHEET_BOXLIST) {
 						goto exit;
 					}
-					if(cthis->cur_chn < NUM_CHANNEL) {
+					if(cthis->cur_chn < phn_sys.sys_conf.num_chn) {
 						cthis->cur_chn ++;
 						p_cnt = Button_Get_subcnt(p_focus);
 						sprintf(p_cnt->data, "%02d", cthis->cur_chn);

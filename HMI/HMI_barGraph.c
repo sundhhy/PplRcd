@@ -246,7 +246,7 @@ static void	BarHmi_Show( HMI *self )
 	Sheet_refresh(g_p_sht_bkpic);
 //	self->show_focus( self, 0, 0);
 	
-	for(i = 0; i < NUM_CHANNEL; i++)
+	for(i = 0; i < phn_sys.sys_conf.num_chn; i++)
 	{
 		
 		sprintf(chn_name,"chn_%d", i);
@@ -285,7 +285,7 @@ static void BarHmi_Init_chnSht(void)
 	Expr 		*p_exp ;
 	int			i = 0;
 	p_exp = ExpCreate( "text");
-	for(i = 0; i < NUM_CHANNEL; i++) {
+	for(i = 0; i < phn_sys.sys_conf.num_chn; i++) {
 		p_exp->inptSht( p_exp, (void *)barhmi_code_textPrcn, g_arr_p_chnData[i]) ;
 		
 		g_arr_p_chnData[i]->cnt.colour = arr_clrs[i];

@@ -89,9 +89,11 @@ enum {
 // local types
 //------------------------------------------------------------------------------
 typedef struct {
-	int			cur_chn;
+	char			cur_chn;
+	char		none[3];
 	char 		win_buf[48];
 	chn_alarm_t	tmp_alarm[NUM_CHANNEL];
+	int			arr_flag_change[NUM_CHANNEL];
 }als_run_t;
 //------------------------------------------------------------------------------
 // local vars
@@ -218,14 +220,13 @@ static void ALS_Set_mdl_tmp_alarm(int chn, chn_alarm_t *p_alarm)
 	 {
 		for(i = 0; i < NUM_CHANNEL; i++)
 		{
-			if(phn_sys.save_chg_flga & CHG_MODCHN_CONF(i))
+			if(p_run->arr_flag_change[i])
 			{
 				
 				
 				
 				if(MdlChn_Commit_conf(i) == RET_OK)
 				{
-					phn_sys.save_chg_flga &=~ CHG_MODCHN_CONF(i);
 					sprintf(p_run->win_buf,"Ð´ÈëÅäÖÃ³É¹¦");
 					Win_content(p_run->win_buf);
 					STG_SELF.cmd_hdl(STG_SELF.p_cmd_rcv, sycmd_win_tips, NULL);
@@ -239,7 +240,7 @@ static void ALS_Set_mdl_tmp_alarm(int chn, chn_alarm_t *p_alarm)
 				}
 				
 			}
-			
+			p_run->arr_flag_change[i] = 0;
 			
 		}	
 
@@ -389,13 +390,14 @@ static int Als_modify(void *arg, int op)
 	
 	
 	if(p_syf->f_row == row_chn_num) {
-		p_run->cur_chn = Operate_in_tange(p_run->cur_chn, op, 1, 0, NUM_CHANNEL - 1);
+		p_run->cur_chn = Operate_in_tange(p_run->cur_chn, op, 1, 0, phn_sys.sys_conf.num_chn - 1);
 		g_alarm_strategy.cmd_hdl(g_alarm_strategy.p_cmd_rcv, sycmd_reflush, NULL);
 		
 	} else {
 		a_aux = Als_row_aux(p_syf->f_row);
 		if(a_aux < 0)
 			goto exit;
+		p_run->arr_flag_change[p_run->cur_chn] = 1;
 		p_md->modify_str_conf(p_md, a_aux, arr_p_vram[p_syf->f_row], op, phn_sys.key_weight);
 		p_syf->num_byte = strlen(arr_p_vram[p_syf->f_row]);
 	}

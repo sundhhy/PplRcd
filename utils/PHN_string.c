@@ -205,62 +205,64 @@ void Print_sys_param(void *p_data, char	*p_s, int len, int aux)
 	
 }
 
-void Str_set_sys_param(char	*p_s, int aux, int op, int val)
+void Str_set_sys_param(void *p, char	*p_s, int aux, int op, int val)
 {
+	
+	system_conf_t *p_cfg = (system_conf_t *)p;
 	switch(aux)
 	{
 		case es_rcd_t_s:
-			phn_sys.sys_conf.record_gap_s = Operate_in_tange(phn_sys.sys_conf.record_gap_s, op, val, 0, 240);
-			sprintf(p_s, "%d", phn_sys.sys_conf.record_gap_s);
+			p_cfg->record_gap_s = Operate_in_tange(p_cfg->record_gap_s, op, val, 0, 240);
+			sprintf(p_s, "%d", p_cfg->record_gap_s);
 			break;
 		case es_brk_cpl:
 			
-			phn_sys.sys_conf.break_couple = Operate_in_tange(phn_sys.sys_conf.break_couple, op, val, 0, 2);
-			Break_deal_string(p_s, phn_sys.sys_conf.break_couple);
+			p_cfg->break_couple = Operate_in_tange(p_cfg->break_couple, op, val, 0, 2);
+			Break_deal_string(p_s, p_cfg->break_couple);
 			break;
 		case es_brk_rss:
-			phn_sys.sys_conf.break_resistor = Operate_in_tange(phn_sys.sys_conf.break_resistor, op, val, 0, 2);
-			Break_deal_string(p_s, phn_sys.sys_conf.break_resistor);
+			p_cfg->break_resistor = Operate_in_tange(p_cfg->break_resistor, op, val, 0, 2);
+			Break_deal_string(p_s, p_cfg->break_resistor);
 			break;
 		case es_baud:
-			phn_sys.sys_conf.baud_idx = Operate_in_tange(phn_sys.sys_conf.baud_idx, op, val, 0, 6);
-			phn_sys.sys_conf.baud_rate = arr_baud[phn_sys.sys_conf.baud_idx];
-			sprintf(p_s, "%d", phn_sys.sys_conf.baud_rate);
+			p_cfg->baud_idx = Operate_in_tange(p_cfg->baud_idx, op, val, 0, 6);
+			p_cfg->baud_rate = arr_baud[p_cfg->baud_idx];
+			sprintf(p_s, "%d", p_cfg->baud_rate);
 			break;
 		case es_id:
-			phn_sys.sys_conf.id = Operate_in_tange(phn_sys.sys_conf.id, op, val, 1, 63);
-			sprintf(p_s, "%d", phn_sys.sys_conf.id);
+			p_cfg->id = Operate_in_tange(p_cfg->id, op, val, 1, 63);
+			sprintf(p_s, "%d", p_cfg->id);
 			break;
 		case es_cmn_md:
-			phn_sys.sys_conf.communication_mode = Operate_in_tange(phn_sys.sys_conf.communication_mode, op, val, 0, 1);
-			if(phn_sys.sys_conf.communication_mode == 0)
+			p_cfg->communication_mode = Operate_in_tange(p_cfg->communication_mode, op, val, 0, 1);
+			if(p_cfg->communication_mode == 0)
 				sprintf(p_s, "Í¨Ñ¶");
 			else 
 				sprintf(p_s, "´òÓ¡");
 			break;
 		case es_mdfy_prm:
 		
-			phn_sys.sys_conf.disable_modify_adjust_paramter = Operate_in_tange(phn_sys.sys_conf.disable_modify_adjust_paramter, op, val, 0, 1);
-			Disable_string(p_s, phn_sys.sys_conf.disable_modify_adjust_paramter );
+			p_cfg->disable_modify_adjust_paramter = Operate_in_tange(p_cfg->disable_modify_adjust_paramter, op, val, 0, 1);
+			Disable_string(p_s, p_cfg->disable_modify_adjust_paramter );
 			break;
 		case es_cold_end_way:
-			phn_sys.sys_conf.cold_end_way = Operate_in_tange(phn_sys.sys_conf.cold_end_way, op, val, 0, 1);
+			p_cfg->cold_end_way = Operate_in_tange(p_cfg->cold_end_way, op, val, 0, 1);
 			Print_sys_param(NULL, p_s, 0xff, es_cold_end_way);
 			break;
 			
 		case es_CJC:
-			phn_sys.sys_conf.CJC = Operate_in_tange(phn_sys.sys_conf.CJC, op, val, 0, 99);
+			p_cfg->CJC = Operate_in_tange(p_cfg->CJC, op, val, 0, 99);
 			Print_sys_param(NULL, p_s, 0xff, es_CJC);
 			break;
 			
 			
 		case es_vcs:
-			phn_sys.sys_conf.disable_view_chn_status = Operate_in_tange(phn_sys.sys_conf.disable_view_chn_status, op, val, 0, 1);
-			Disable_string(p_s, phn_sys.sys_conf.disable_view_chn_status);
+			p_cfg->disable_view_chn_status = Operate_in_tange(p_cfg->disable_view_chn_status, op, val, 0, 1);
+			Disable_string(p_s, p_cfg->disable_view_chn_status);
 			break;
 		case es_beep:
-			phn_sys.sys_conf.enable_beep = Operate_in_tange(phn_sys.sys_conf.enable_beep, op, val, 0, 1);
-			Disable_string(p_s, phn_sys.sys_conf.enable_beep);
+			p_cfg->enable_beep = Operate_in_tange(p_cfg->enable_beep, op, val, 0, 1);
+			Disable_string(p_s, p_cfg->enable_beep);
 			break;
 		default:
 			
@@ -338,15 +340,25 @@ void Password_modify(char	*p_s_psd, int idx, int op)
 	
 }
 
+void Clone_psd(uint8_t *src, uint8_t *dst)
+{
+	int i;
+	for(i = 0; i < 3; i++) {
+	
+		dst[i] = src[i];
+		
+	}
+}
+
 //"** ** **"
-void Str_set_password(char	*p_s_psd)
+void Str_set_password(char	*p_s_psd, uint8_t *psd)
 {
 	short	i, data;
 	
 	for(i = 0; i < 3; i++) {
 		data = atoi(p_s_psd);
 	
-		phn_sys.sys_conf.password[i] = data;
+		psd[i] = data;
 		
 		p_s_psd += 3;
 	}
@@ -387,7 +399,7 @@ int Password_iteartor(char	*p_time_text, int idx, int director)
 	
 }
 
-int Str_Password_match(char *p_s_psd)
+int Str_Password_match(char *p_s_psd, uint8_t *psd)
 {
 	
 	
@@ -397,7 +409,7 @@ int Str_Password_match(char *p_s_psd)
 	for(i = 0; i < 3; i++) {
 		data = atoi(p_s_psd);
 	
-		if( phn_sys.sys_conf.password[i] != data) {
+		if( psd[i] != data) {
 			ret = 1;
 			break;
 		}

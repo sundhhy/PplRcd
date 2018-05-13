@@ -379,63 +379,6 @@ static void	Setup_HMI_hitHandle(HMI *self, char kcd)
 	}
 
 
-//	if( !strcmp( s_key, HMIKEY_LEFT) )
-//	{
-//		if(Focus_move_left(self->p_fcuu) != RET_OK)
-//			Focus_move_left(self->p_fcuu);
-//		chgFouse = 1;
-//	}
-//	
-//	if( !strcmp( s_key, HMIKEY_RIGHT) )
-//	{
-//		if(Focus_move_right(self->p_fcuu) != RET_OK)
-//			Focus_move_right(self->p_fcuu);
-//		chgFouse = 1;
-//	}
-//	if( !strcmp( s_key, HMIKEY_UP) )
-//	{
-//		if(Focus_move_up(self->p_fcuu) != RET_OK)
-//			Focus_move_up(self->p_fcuu);		//焦点不允许出现在外部
-//		chgFouse = 1;
-//	}
-//	
-//	if( !strcmp( s_key, HMIKEY_DOWN) )
-//	{
-//		if(Focus_move_down(self->p_fcuu) != RET_OK)
-//			Focus_move_down(self->p_fcuu);
-//		chgFouse = 1;
-//	}
-//	if( !strcmp(s_key, KEYCODE_ENTER))
-//	{
-//		p_focus = Focus_Get_focus(self->p_fcuu);
-//		if(p_focus == NULL) 
-//				goto exit;
-//		
-//		if(p_focus->id == SHEET_PSD_TEXT) {
-////			p_cmd = p_focus->p_enterCmd;
-////			p_cmd->shtExcute(p_cmd, p_focus, self);
-//			Input_Password(self);
-//			goto exit;
-//		} else if(cthis->unlock == 0){
-//			
-//			if(self->p_fcuu->focus_row == 3 && self->p_fcuu->focus_col) {
-//				self->switchHMI(self, g_p_HMI_menu);
-//			} else 
-//			
-//			
-//			{
-//				g_p_HMI_striped->arg[0] = self->p_fcuu->focus_row - 0;
-//				g_p_HMI_striped->arg[1] = self->p_fcuu->focus_col;
-//				
-//				self->switchHMI(self, g_p_HMI_striped);
-//			}
-//		}
-//	}
-//	
-//	if( !strcmp(s_key, HMIKEY_ESC))
-//	{
-//		self->switchBack(self, 0);
-//	}
 	
 	if( chgFouse)
 	{	
@@ -489,21 +432,35 @@ static void Setup_HMI_lock(Setup_HMI		*cthis)
 static int Setup_HMI_cmd(void *p_rcv, int cmd,  void *arg)
 {
 	HMI					*self = (HMI *)p_rcv;
+	HMI					*p_hsb = Create_HMI(HMI_STRIPED_BKG);
 	Setup_HMI		*cthis = SUB_PTR( self, HMI, Setup_HMI);
 	int 				ret = RET_OK;
 	char				win_tips[32];
+	char				super_unlock = 0;
+	
 	switch(cmd) {
 		
 		case wincmd_commit:
+			//先匹配超级密码，匹配成功就解锁，并且进入超级设置界面
+			ret = Str_Password_match(arr_p_vram[1], phn_sys.sys_conf.super_psd) ;
+			if(ret != RET_OK)
+				ret = Str_Password_match(arr_p_vram[1], phn_sys.sys_conf.password) ;
+			else
+				super_unlock = 1;
 			
-			ret = Str_Password_match(arr_p_vram[1]) ;
 			if(ret == 0) {
 				g_p_winHmi->arg[0] = WINTYPE_TIPS;
 				g_p_winHmi->arg[1] = WINFLAG_RETURN;
 				Win_content("密码输入成功");
 				Setup_HMI_unlock(cthis);
 				self->switchHMI(self, g_p_winHmi, HMI_ATT_NOT_RECORD);
-
+				if(super_unlock)
+				{
+					
+					p_hsb->arg[0] = HMI_SBG_SUPER_SET_ROW;
+					p_hsb->arg[1] = HMI_SBG_SUPER_SET_COL;
+					self->switchHMI(self, p_hsb, 0);
+				}
 //				g_p_winHmi->switchHMI(g_p_winHmi, g_p_winHmi);
 			} else {
 				g_p_winHmi->arg[0] = WINTYPE_ERROR;

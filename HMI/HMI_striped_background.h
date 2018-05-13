@@ -23,6 +23,9 @@
 #define HMI_SBG_SELECT_NEWS		4
 #define HMI_SBG_SELECT_ACC		5
 
+#define HMI_SBG_SUPER_SET_ROW		0x6
+#define HMI_SBG_SUPER_SET_COL		0x0
+
 #define FOCUS_IN_STARTEGY		0x10
 
 
@@ -57,7 +60,7 @@ CLASS(HMI_striped_background)
 //------------------------------------------------------------------------------
 extern strategy_t	g_sys_strategy, g_dataPrint_strategy;
 extern strategy_t	g_chn_strategy, g_alarm_strategy, g_art_strategy, \
-	g_view_strategy, g_DBP_strategy, g_set_ACC;
+	g_view_strategy, g_DBP_strategy, g_set_ACC, g_stg_super;
 
 extern strategy_t g_news_alarm, g_news_power;
 extern strategy_t g_st_acc_day, g_st_acc_month;

@@ -341,7 +341,7 @@ static void SSA_update_content(int op, int weight)
 	switch(p_syf->f_row) 
 	{
 		case row_chn_num:
-			g_setting_chn = Operate_in_tange(g_setting_chn, op, 1, 0, NUM_CHANNEL - 1);
+			g_setting_chn = Operate_in_tange(g_setting_chn, op, 1, 0, phn_sys.sys_conf.num_chn - 1);
 			ST_SELF.cmd_hdl(ST_SELF.p_cmd_rcv, sycmd_reflush, NULL);
 			arr_p_vram[SSA_TEMP_RAM_NUM][g_setting_chn] = 0;
 			break;

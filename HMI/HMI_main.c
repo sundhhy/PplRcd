@@ -310,7 +310,7 @@ static void	MainHmiShow( HMI *self )
 	//刚切入画面时，模型可能没有更新
 	//这里主动显示一次,否则可能会出现空洞
 	
-	for(i = 0; i < NUM_CHANNEL; i++)
+	for(i = 0; i < phn_sys.sys_conf.num_chn; i++)
 	{
 		
 		sprintf(chn_name,"chn_%d", i);
@@ -330,7 +330,7 @@ static void MainHmi_Init_chnShet(void)
 //	Model		*p_mdl = NULL;
 	int			i = 0;
 	p_exp = ExpCreate( "text");
-	for(i = 0; i < NUM_CHANNEL; i++) {
+	for(i = 0; i < phn_sys.sys_conf.num_chn; i++) {
 		p_exp->inptSht( p_exp, (void *)MAIN_hmi_code_data, g_arr_p_chnData[i]) ;
 		p_exp->inptSht( p_exp, (void *)MAIN_hmi_code_unit, g_arr_p_chnUtil[i]) ;
 		p_exp->inptSht( p_exp, (void *)MAIN_hmi_code_alarm, g_arr_p_chnAlarm[i]) ;

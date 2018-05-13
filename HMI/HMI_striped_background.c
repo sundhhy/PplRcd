@@ -21,8 +21,8 @@ static const char setting_hmi_code_CUR[] =  {"<box clr=gren> </>" };
 static const char setting_hmi_code_clean[] =  {"<cpic>16</>" };
 
 
-static char *setting_titles[6][2] = {{"系统设置", "通道设置"},{"报警设置", "算法设置"},\
-{"显示设置", "数据备份"},{"累积设置", "退出"},{"报警一览", "掉电一览"},{"日累积", "月累积"}};
+static char *setting_titles[7][2] = {{"系统设置", "通道设置"},{"报警设置", "算法设置"},\
+{"显示设置", "数据备份"},{"累积设置", "退出"},{"报警一览", "掉电一览"},{"日累积", "月累积"},{"出厂设置", ""}};
 //------------------------------------------------------------------------------
 // module global vars
 //------------------------------------------------------------------------------
@@ -51,8 +51,9 @@ static char *setting_titles[6][2] = {{"系统设置", "通道设置"},{"报警设置", "算法
 // static strategy_t	*arr_p_setting_strategy[5][2] = {{&g_sys_strategy, &g_chn_strategy}, {&g_alarm_strategy, &g_art_strategy}, \
 // {&g_view_strategy, &g_DBP_strategy},{&g_dataPrint_strategy, NULL}, {&g_news_alarm, &g_news_power}};
 
- static strategy_t	*arr_p_setting_strategy[6][2] = {{&g_sys_strategy, &g_chn_strategy}, {&g_alarm_strategy, NULL}, \
- {NULL, &g_DBP_strategy},{&g_set_ACC, NULL}, {&g_news_alarm, &g_news_power}, {&g_st_acc_day, &g_st_acc_month}};
+ static strategy_t	*arr_p_setting_strategy[7][2] = {{&g_sys_strategy, &g_chn_strategy}, {&g_alarm_strategy, NULL}, \
+ {NULL, &g_DBP_strategy},{&g_set_ACC, NULL}, {&g_news_alarm, &g_news_power}, {&g_st_acc_day, &g_st_acc_month}, \
+ {&g_stg_super, NULL}};
  
 //------------------------------------------------------------------------------
 // local function prototypes

@@ -337,6 +337,67 @@ int	STG_Read_alm_pwr(uint8_t	chn_pwr,short start, char *buf, int buf_size, uint3
 	
 	
 }
+
+uint32_t STG_Read_data_by_time(uint8_t	chn, uint32_t sec, uint32_t pos, data_in_fsh_t *r)
+{
+	
+	Storage				*stg = Get_storage();
+	file_info_t			*fnf ;
+	int					fd = -1;
+	data_in_fsh_t		d;
+
+	
+	fd = STG_Open_file(STG_CHN_DATA(chn), STG_DEF_FILE_SIZE);
+	fnf = STRG_SYS.fs.fs_file_info(fd);
+	
+	STG_Set_file_position(STG_CHN_DATA(chn), STG_DRC_READ, pos * sizeof(data_in_fsh_t));	
+	if(sec == 0xffffffff)
+		STG_Set_file_position(STG_CHN_DATA(chn), STG_DRC_READ, fnf->write_position - sizeof(data_in_fsh_t));
+	
+	r->rcd_time_s = 0xffffffff;
+	while(1)
+	{
+		if(fnf->read_position >= fnf->write_position)
+			break;
+		if(STRG_SYS.fs.fs_raw_read(fd, (uint8_t *)&d, sizeof(data_in_fsh_t)) != sizeof(data_in_fsh_t))
+			break;
+
+		pos ++;
+		if(d.rcd_time_s == 0xffffffff)
+			continue;
+		
+		if((sec == 0) || (sec == 0xffffffff))	//返回最早的记录,或最晚的记录
+			sec = d.rcd_time_s;
+		
+		if(d.rcd_time_s > sec)
+			break;
+		
+		if(d.rcd_time_s != sec)
+			continue;
+		
+		
+		
+		r->rcd_time_s = d.rcd_time_s;
+		r->rcd_val = d.rcd_val;
+		r->decimal_places = d.decimal_places;
+		
+		break;
+		
+		
+		
+		
+		
+		
+		
+		
+	}
+	
+	return pos;
+	
+	
+}
+
+
 int	STG_Read_rcd_by_time(uint8_t	chn, uint32_t start_sec, uint32_t end_sec, char *buf, int buf_size, uint32_t *rd_sec)
 {
 	Storage				*stg = Get_storage();

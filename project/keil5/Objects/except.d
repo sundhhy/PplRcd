@@ -1,12 +1,12 @@
 .\objects\except.o: ..\..\sdhLib\src\basis\except.c
-.\objects\except.o: C:\ARM\ADSv1_2\INCLUDE\stdlib.h
-.\objects\except.o: C:\ARM\ADSv1_2\INCLUDE\stdio.h
+.\objects\except.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
+.\objects\except.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
 .\objects\except.o: ..\..\sdhLib\inc\sdhDef.h
 .\objects\except.o: ..\..\APP\sdhlibConf.h
 .\objects\except.o: ..\..\sdhLib\inc\basis/sdhDebug.h
 .\objects\except.o: ..\..\sdhLib\inc\basis/sdhError.h
 .\objects\except.o: ..\..\sdhLib\inc\basis/macros.h
-.\objects\except.o: C:\ARM\ADSv1_2\INCLUDE\stdint.h
+.\objects\except.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
 .\objects\except.o: ..\..\sdhLib\inc\basis/assert.h
 .\objects\except.o: ..\..\sdhLib\inc\basis/except.h
-.\objects\except.o: C:\ARM\ADSv1_2\INCLUDE\setjmp.h
+.\objects\except.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\setjmp.h

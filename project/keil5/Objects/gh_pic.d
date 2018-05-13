@@ -2,9 +2,9 @@
 .\objects\gh_pic.o: ..\..\Glyph\Gh_Pic.h
 .\objects\gh_pic.o: ..\..\Glyph\Glyph.h
 .\objects\gh_pic.o: ..\..\sdhLib\inc\lw_oopc.h
-.\objects\gh_pic.o: C:\ARM\ADSv1_2\INCLUDE\stdlib.h
-.\objects\gh_pic.o: C:\ARM\ADSv1_2\INCLUDE\stddef.h
-.\objects\gh_pic.o: C:\ARM\ADSv1_2\INCLUDE\stdint.h
+.\objects\gh_pic.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
+.\objects\gh_pic.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
+.\objects\gh_pic.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
 .\objects\gh_pic.o: ..\..\device\device.h
 .\objects\gh_pic.o: ..\..\device\deviceId.h
 .\objects\gh_pic.o: ..\..\device\dev_cmd.h

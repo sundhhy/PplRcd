@@ -75,16 +75,19 @@ enum {
 	
 }sys_rows;
 
-#define STG_NUM_VRAM			(row_num + 2)
-#define STG_RUN_VRAM_NUM	 row_num
-#define STG_TIPS_VRAM_NUM	 row_num + 1
+#define STG_NUM_VRAM			(row_num + 1)	//STG_TIPS_VRAM_NUM 单独分配
+#define STG_TIPS_VRAM_NUM	 row_num
+#define STG_RUN_VRAM_NUM	 row_num + 1
+
 #define STG_SELF						g_sys_strategy
 //------------------------------------------------------------------------------
 // local types
 //------------------------------------------------------------------------------
 typedef struct {
-	int 	cur_page;
-	
+	uint8_t 		cur_page;
+	uint8_t			flag_conf_change;
+	uint8_t			none[2];
+	system_conf_t	temp_sys_conf;		
 	
 }sys_run_t;
 //------------------------------------------------------------------------------
@@ -116,9 +119,11 @@ static int SysStrategy_entry(int row, int col, void *pp_text)
 	char 	**pp = (char **)pp_text;
 	Model	*model;
 	sys_run_t	*p_run = (sys_run_t *)arr_p_vram[STG_RUN_VRAM_NUM];
+	system_conf_t	*p_sys_conf;
+	
 	strategy_focus_t *p_syf = &STG_SELF.sf;
 	
-	
+	p_sys_conf = &p_run->temp_sys_conf;
 	
 	if(row >= row_num)
 			return 0;
@@ -145,44 +150,44 @@ static int SysStrategy_entry(int row, int col, void *pp_text)
 				p_syf->num_byte = strlen(arr_p_vram[row]);
 				break;
 			case row_set_psd:
-				Print_sys_param(NULL, arr_p_vram[row], 48, es_psd);
+				Print_sys_param(&p_sys_conf->password, arr_p_vram[row], 48, es_psd);
 				break;
 			case row_num_chn:
-				sprintf(arr_p_vram[row], "%d", phn_sys.sys_conf.num_chn);
+				sprintf(arr_p_vram[row], "%d", p_sys_conf->num_chn);
 				break;
 			case row_rcd_time_gap:
-				sprintf(arr_p_vram[row], "%d", phn_sys.sys_conf.record_gap_s);
+				sprintf(arr_p_vram[row], "%d", p_sys_conf->record_gap_s);
 				break;
 			case row_brk_cpl:
-				Print_sys_param(NULL, arr_p_vram[row], 48, es_brk_cpl);
+				Print_sys_param(&p_sys_conf->break_couple, arr_p_vram[row], 48, es_brk_cpl);
 				break;
 			case row_brk_rss:
-				Print_sys_param(NULL, arr_p_vram[row], 48, es_brk_rss);
+				Print_sys_param(&p_sys_conf->break_resistor, arr_p_vram[row], 48, es_brk_rss);
 				break;
 			case row_cmm_method:
-				Print_sys_param(NULL, arr_p_vram[row], 48, es_cmn_md);
+				Print_sys_param(&p_sys_conf->communication_mode, arr_p_vram[row], 48, es_cmn_md);
 				break;
 			case row_baud:
-				sprintf(arr_p_vram[row], "%d", phn_sys.sys_conf.baud_rate);
+				sprintf(arr_p_vram[row], "%d", p_sys_conf->baud_rate);
 				break;
 			case row_addr:
-				sprintf(arr_p_vram[row], "%d", phn_sys.sys_conf.id);
+				sprintf(arr_p_vram[row], "%d", p_sys_conf->id);
 				break;
 			case row_modify_param:
-				Print_sys_param(NULL, arr_p_vram[row], 48, es_mdfy_prm);
+				Print_sys_param(&p_sys_conf->disable_modify_adjust_paramter, arr_p_vram[row], 48, es_mdfy_prm);
 				break;
 			case row_cold_end_way:
-				Print_sys_param(NULL, arr_p_vram[row], 48, es_cold_end_way);
+				Print_sys_param(&p_sys_conf->cold_end_way, arr_p_vram[row], 48, es_cold_end_way);
 				break;
 			case row_cold_end_tempure:
-				Print_sys_param(NULL, arr_p_vram[row], 48, es_CJC);
+				Print_sys_param(&p_sys_conf->CJC, arr_p_vram[row], 48, es_CJC);
 				break;
 			case row_chn_status:
 				
-				Print_sys_param(NULL, arr_p_vram[row], 48, es_vcs);
+				Print_sys_param(&p_sys_conf->disable_view_chn_status, arr_p_vram[row], 48, es_vcs);
 				break;
 			case row_beep:
-				Print_sys_param(NULL, arr_p_vram[row], 48, es_beep);
+				Print_sys_param(&p_sys_conf->enable_beep, arr_p_vram[row], 48, es_beep);
 				break;
 			case row_factory_reset:
 				
@@ -235,7 +240,10 @@ static int Sys_init(void *arg)
 	}
 	STG_SELF.total_col = 2;
 	STG_SELF.total_row = row_num;
+	
+	arr_p_vram[STG_RUN_VRAM_NUM] = HMI_Ram_alloc(sizeof(sys_run_t));
 	p_run = (sys_run_t *)arr_p_vram[STG_RUN_VRAM_NUM];
+	memcpy(&p_run->temp_sys_conf, &phn_sys.sys_conf, sizeof(phn_sys.sys_conf));
 	p_run->cur_page = 0;
 	
 	return RET_OK;
@@ -296,13 +304,15 @@ static int Sys_key_up(void *arg)
 
  static void	SYS_Btn_hdl(void *self, uint8_t	btn_id)
  {
+	 sys_run_t	*p_run = (sys_run_t *)arr_p_vram[STG_RUN_VRAM_NUM];
+	 
 	 if(btn_id == BTN_TYPE_SAVE)
 	 {
 		
-		if(phn_sys.save_chg_flga & CHG_SYSTEM_CONF)
+		if(p_run->flag_conf_change)
 		{
 			
-			
+			memcpy(&phn_sys.sys_conf, &p_run->temp_sys_conf, sizeof(p_run->temp_sys_conf));
 			
 			if(SYS_Commit() == RET_OK)
 			{
@@ -319,7 +329,7 @@ static int Sys_key_up(void *arg)
 			}
 				
 			
-			phn_sys.save_chg_flga &= ~CHG_SYSTEM_CONF;
+			p_run->flag_conf_change = 0;;
 		}
 			
 			
@@ -495,9 +505,9 @@ static int Sys_commit(void *arg)
 		model->set_by_string(model, 1, arr_p_vram[p_syf->f_row]);
 			
 		break;
-//	case 1:
-//		Str_set_password(arr_p_vram[p_syf->f_row]);
-//		break;
+	case row_set_psd:
+		Str_set_password(arr_p_vram[p_syf->f_row], phn_sys.sys_conf.password);
+		break;
 	case row_factory_reset:
 		LOG_Add(LOG_Factory_Reset);
 		System_default();
@@ -538,7 +548,10 @@ static int Sys_update_content(int op, int weight)
 {
 	strategy_focus_t 	*p_syf = &STG_SELF.sf;
 	int					ret = RET_OK;
-	phn_sys.save_chg_flga |= CHG_SYSTEM_CONF;
+	sys_run_t			*p_run = (sys_run_t *)arr_p_vram[STG_RUN_VRAM_NUM];
+	system_conf_t 		*p_cfg = &p_run->temp_sys_conf;
+	
+	p_run->flag_conf_change = 1;
 	switch(p_syf->f_row) {
 	case row_set_time:		
 		STG_SELF.cmd_hdl(STG_SELF.p_cmd_rcv, sycmd_win_time, arr_p_vram[p_syf->f_row]);
@@ -549,43 +562,43 @@ static int Sys_update_content(int op, int weight)
 		ret = 1;
 		break;
 	case row_num_chn:		//通道数目不允许配置
-		phn_sys.save_chg_flga &= ~CHG_SYSTEM_CONF;
+		p_run->flag_conf_change = 0;
 		break;
 	case row_rcd_time_gap:
-		Str_set_sys_param(arr_p_vram[p_syf->f_row], es_rcd_t_s, op, weight);
+		Str_set_sys_param(p_cfg,arr_p_vram[p_syf->f_row], es_rcd_t_s, op, weight);
 		break;
 	case row_brk_cpl:
-		Str_set_sys_param(arr_p_vram[p_syf->f_row], es_brk_cpl, op, weight);
+		Str_set_sys_param(p_cfg,arr_p_vram[p_syf->f_row], es_brk_cpl, op, weight);
 		break;
 	case row_brk_rss:
-		Str_set_sys_param(arr_p_vram[p_syf->f_row], es_brk_rss, op, weight);
+		Str_set_sys_param(p_cfg,arr_p_vram[p_syf->f_row], es_brk_rss, op, weight);
 		break;
 	case row_cmm_method:
-		Str_set_sys_param(arr_p_vram[p_syf->f_row], es_cmn_md, op, weight);
+		Str_set_sys_param(p_cfg,arr_p_vram[p_syf->f_row], es_cmn_md, op, weight);
 		break;
 	case row_baud:
-		Str_set_sys_param(arr_p_vram[p_syf->f_row], es_baud, op, weight);
+		Str_set_sys_param(p_cfg,arr_p_vram[p_syf->f_row], es_baud, op, weight);
 		break;
 	case row_addr:
-		Str_set_sys_param(arr_p_vram[p_syf->f_row], es_id, op, weight);
+		Str_set_sys_param(p_cfg,arr_p_vram[p_syf->f_row], es_id, op, weight);
 		break;
 	case row_modify_param:
-		Str_set_sys_param(arr_p_vram[p_syf->f_row], es_mdfy_prm, op, weight);
+		Str_set_sys_param(p_cfg,arr_p_vram[p_syf->f_row], es_mdfy_prm, op, weight);
 		break;
 	case row_cold_end_way:
-		Str_set_sys_param(arr_p_vram[p_syf->f_row], es_cold_end_way, op, weight);
+		Str_set_sys_param(p_cfg,arr_p_vram[p_syf->f_row], es_cold_end_way, op, weight);
 		break;
 	case row_cold_end_tempure:
-		Str_set_sys_param(arr_p_vram[p_syf->f_row], es_CJC, op, weight);
+		Str_set_sys_param(p_cfg,arr_p_vram[p_syf->f_row], es_CJC, op, weight);
 		break;
 	case row_chn_status:
-		Str_set_sys_param(arr_p_vram[p_syf->f_row], es_vcs, op, weight);
+		Str_set_sys_param(p_cfg,arr_p_vram[p_syf->f_row], es_vcs, op, weight);
 		break;
 	case row_beep:
-		Str_set_sys_param(arr_p_vram[p_syf->f_row], es_beep, op, weight);
+		Str_set_sys_param(p_cfg,arr_p_vram[p_syf->f_row], es_beep, op, weight);
 		break;
 	default:
-		phn_sys.save_chg_flga &= ~CHG_SYSTEM_CONF;
+		p_run->flag_conf_change = 0;
 		break;
 	
 	

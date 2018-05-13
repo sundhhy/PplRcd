@@ -174,7 +174,7 @@ void	HMI_Attach_model_chn(int  *fds, mdl_observer *mdl_obs)
 	Model		*p_mdl;
 	char		chn_name[8];
 	
-	for(i = 0; i < NUM_CHANNEL; i++)
+	for(i = 0; i < phn_sys.sys_conf.num_chn; i++)
 	{
 		
 		sprintf(chn_name,"chn_%d", i);
@@ -190,7 +190,7 @@ void	HMI_detach_model_chn(int  *fds)
 	Model		*p_mdl;
 	char		chn_name[8];
 	
-	for(i = 0; i < NUM_CHANNEL; i++)
+	for(i = 0; i < phn_sys.sys_conf.num_chn; i++)
 	{
 		
 		sprintf(chn_name,"chn_%d", i);

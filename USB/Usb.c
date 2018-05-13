@@ -179,13 +179,13 @@ int USB_Open_file(char *file_name, char mode)
 	
 	if(s == USB_INT_SUCCESS)
 	{
-		return 1;;
+		return 1;
 	}
 	else 
 	{
 		
 		Deal_status(s);
-		return s;
+		return 0;
 	}
 	
 #endif	
@@ -272,18 +272,19 @@ int USB_Create_file(char *file_name, char mode)
 			ret = -2;
 			goto exit;
 		}
+
 		
 		
 		
 		
 	}
 	
-	
-		
-	s = CH376FileCreate(p_name);
+	//文件以及存在就不必创建了，直接覆盖
+	if(fd == 0)	
+		s = CH376FileCreate(p_name);
 	
 
-	if(s == USB_INT_SUCCESS)
+	if((s == USB_INT_SUCCESS) || (fd))
 	{
 		p_usb->usb_get_time(&cur_time);
 		
@@ -328,27 +329,19 @@ int USB_Write_file(int fd, char *buf, int len)
 {
 	int	ret = 0;
 	uint16_t	real_len = 0;
-//	uint8_t		s;
-//	
-//	
-//	uint8_t		num_bkls = 0;
 
+//	uint8_t		num_bkls = 0;
 //	uint8_t		real_num_bkls = 0;
 //	
-//	
-//	
-//	num_bkls = len / DEF_SECTOR_SIZE;
-	
-//	if(len % DEF_SECTOR_SIZE)
-//		num_bkls ++;
-	
+//	num_bkls =len/ DEF_SECTOR_SIZE;
 //	if(num_bkls)
 //		CH376SecWrite((uint8_t *)buf, num_bkls, &real_num_bkls);
 //	
 //	len -= num_bkls * DEF_SECTOR_SIZE;
-	CH376ByteWrite((uint8_t *)buf, len, &real_len);
+	if(len)
+		CH376ByteWrite((uint8_t *)buf, len, &real_len);
 	usb_ctl.is_file_changed = 1; 
-	
+//	p_usb->usb_delay_ms(1);
 	return ret;
 }
 

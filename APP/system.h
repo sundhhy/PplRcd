@@ -75,8 +75,10 @@ typedef enum {
 }e_system_t;
 
 typedef struct {
-	uint8_t		num_chn;
+	uint8_t		num_chn;		//¿ÉÒÔÔÚ³¬¼¶ÉèÖÃ½çÃæÖĞÉèÖÃ£¬µ«²»µÃ´óÓÚNUM_CHANNEL
+	uint8_t		none;
 	uint8_t		password[3];
+	uint8_t		super_psd[3];
 	
 	//record_gap_s:sec 0:1 1:2 2:4 3:8 4:12 5:24 6:36 7:60 8:120 9:180 10:240 
 	uint8_t		record_gap_s;		
@@ -87,11 +89,10 @@ typedef struct {
 	uint8_t		id;											// 1 - 63
 	uint8_t		baud_idx;
 	uint8_t		sys_flag;
-	uint8_t			cold_end_way;				//0 Íâ²¿£¬ 1 Éè¶¨
+	uint8_t		cold_end_way;				//0 Íâ²¿£¬ 1 Éè¶¨
 	uint8_t		CJC;								//Àä¶Ë²¹³¥ 0-99 ÎªÉè¶¨Ä£Ê½
 	
-	
-	
+
 	
 	
 	uint8_t		disable_modify_adjust_paramter;		//½ûÖ¹ĞŞ¸Äµ÷½Ú²ÎÊı
@@ -199,7 +200,7 @@ typedef struct {
 typedef struct {
 	uint8_t				major_ver;
 	uint8_t				minor_ver;
-	uint8_t				save_chg_flga;		//¿É´æ´¢µÄÅäÖÃĞÅÏ¢µÄ±ä»¯±êÖ¾
+	uint8_t				none;		
 	uint8_t				usb_device;		//0 ÎŞusbÉè±¸ 1 ÓĞusbÉè±
 	uint8_t				sys_flag;
 	uint8_t				pwr_rcd_index;
@@ -215,8 +216,8 @@ typedef struct {
 	uint8_t				DO_val;				//DOµÄÊµÊ±Öµ
 	uint8_t				DO_err;
 	uint16_t			code_end_temperature;
-		
-
+	
+	
 	
 	
 	

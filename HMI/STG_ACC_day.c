@@ -255,7 +255,7 @@ static int SAD_Key_UP(void *arg)
 {
 	
 	g_setting_chn ++;
-	if(g_setting_chn == NUM_CHANNEL)
+	if(g_setting_chn == phn_sys.sys_conf.num_chn)
 		g_setting_chn = 0;
 	
 	ST_SELF.cmd_hdl(ST_SELF.p_cmd_rcv, sycmd_reflush, NULL);
@@ -267,7 +267,7 @@ static int SAD_Key_DN(void *arg)
 	if(g_setting_chn)
 		g_setting_chn --;
 	else
-		g_setting_chn = NUM_CHANNEL - 1;
+		g_setting_chn = phn_sys.sys_conf.num_chn - 1;
 	ST_SELF.cmd_hdl(ST_SELF.p_cmd_rcv, sycmd_reflush, NULL);
 	return -1;
 }
