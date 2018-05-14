@@ -695,6 +695,8 @@ static int MdlChn_init(Model *self, IN void *arg)
 	cthis->str_buf = CALLOC(1,8);
 	cthis->unit_buf = CALLOC(1,8);
 	cthis->alarm_buf = CALLOC(1,8);
+	cthis->status_buf = CALLOC(1,8);
+
 	self->mdl_id = MDLID_CHN(chn_num);
 	cthis->chni.chn_NO = chn_num;
 	if(stg->rd_stored_data(stg, STG_CHN_CONF(cthis->chni.chn_NO), &save, sizeof(save)) != RET_OK) 
@@ -1522,7 +1524,19 @@ static char* MdlChn_to_string( Model *self, IN int aux, void *arg)
 			
 			return p;
 
+		case AUX_STATUS:
+			if( arg) {
+				p = (char *)arg;		
+			} else {
+				p = cthis->status_buf;
+			}
+		
+			if(cthis->chni.flag_err == 0)
+				sprintf(p, "Õý³£");
+			else
+				sprintf(p, "¶ÏÏß");
 			
+			return p;
 		case AUX_SIGNALTYPE:
 			Print_singnaltype((e_signal_t)p_info->signal_type, (char *)arg);
 			break;

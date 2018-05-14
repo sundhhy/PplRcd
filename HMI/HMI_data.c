@@ -8,7 +8,6 @@
 #include "ModelFactory.h"
 
 
-//柱状图在y坐标上，按100%显示的话是:71 -187 
 //============================================================================//
 //            G L O B A L   D E F I N I T I O N S                             //
 //============================================================================//
@@ -88,6 +87,7 @@ static void DataHmi_Init_chnSht(void);
 static int DataHmi_Data_update(void *p_data, Model *p_mdl);
 static int DataHmi_Util_update(void *p_data, Model *p_mdl);
 static int DataHmi_Alarm_update(void *p_data, Model *p_mdl);
+static int DataHmi_Status_update(void *p_data, Model *p_mdl);
 
 
 
@@ -318,11 +318,14 @@ static int HDT_Update_mdl_chn_data(mdl_observer *self, void *p_srcMdl)
 	}
 	//更新实时值
 	DataHmi_Data_update(g_arr_p_chnData[chn_num], p_srcMdl);
-	
 	//更新单位
 	DataHmi_Util_update(g_arr_p_chnData[chn_num], p_srcMdl);
 	//更新报警
 	DataHmi_Alarm_update(g_arr_p_chnData[chn_num], p_srcMdl);
+	
+	//更新通道状态
+	if(phn_sys.sys_conf.show_chn_status)
+		DataHmi_Status_update(g_arr_p_chnData[chn_num], p_srcMdl);
 	
 	if((p_hmi->flag & HMI_FLAG_HSA_SEM) == 0)
 		Sem_post(&phn_sys.hmi_mgr.hmi_sem);
@@ -456,6 +459,50 @@ static int DataHmi_Alarm_update(void *p_data, Model *p_mdl)
 //	if(IS_HMI_HIDE(g_p_dataHmi->flag))
 //		return 0;
 	Sheet_force_slide( p_sht);
+	return 0;
+	
+}
+
+static int DataHmi_Status_update(void *p_data, Model *p_mdl)
+{
+	uint8_t		up_y = 30;
+//	uint8_t		right_x = 160;
+	uint8_t		box_sizey = 70;		
+	uint8_t		box_sizex = 160;		
+	
+	//到四周边界的空隙
+	uint8_t		space_to_up = 		20;	
+//	uint8_t		space_to_bottom = 	14;
+	uint8_t		space_to_left = 	0;	
+//	uint8_t		space_to_right = 	8;
+	
+	char 			row = 0, col = 0;
+	uint16_t 		sizex = 0;
+	uint16_t 		sizey = 0;
+	sheet			*p_sht = (sheet *)p_data;
+	char			old_font = p_sht->cnt.font;
+	
+	row = p_sht->id / 2;
+	col = p_sht->id % 2;
+
+	p_sht->cnt.font = FONT_16;
+	p_sht->cnt.data = \
+		p_mdl->to_string(p_mdl, AUX_STATUS, NULL);
+//	p_sht->cnt.data = "正常";
+	p_sht->cnt.len = strlen( p_sht->cnt.data);
+	p_sht->p_gp->getSize( p_sht->p_gp, p_sht->cnt.font, &sizex, &sizey);
+	sizex = sizex * p_sht->cnt.len;	
+
+	p_sht->area.x0 = (col ) * box_sizex + space_to_left;
+	p_sht->area.y0 =  up_y  + (row) * box_sizey  + (space_to_up);
+	
+//	if(Sheet_is_hide(p_sht))
+//		return 0;
+//	if(IS_HMI_HIDE(g_p_dataHmi->flag))
+//		return 0;
+	Sheet_force_slide( p_sht);
+	
+	p_sht->cnt.font = old_font;
 	return 0;
 	
 }

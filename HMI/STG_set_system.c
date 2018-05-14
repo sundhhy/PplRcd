@@ -184,7 +184,7 @@ static int SysStrategy_entry(int row, int col, void *pp_text)
 				break;
 			case row_chn_status:
 				
-				Print_sys_param(&p_sys_conf->disable_view_chn_status, arr_p_vram[row], 48, es_vcs);
+				Print_sys_param(&p_sys_conf->show_chn_status, arr_p_vram[row], 48, es_vcs);
 				break;
 			case row_beep:
 				Print_sys_param(&p_sys_conf->enable_beep, arr_p_vram[row], 48, es_beep);
@@ -445,7 +445,8 @@ static int Sys_key_lt(void *arg)
 			//只有超过范围才会反转
 			ret = -1;
 		}
-		p_syf->f_row = Operate_in_tange(p_syf->f_row, OP_SUB, 1, STRIPE_MAX_ROWS, row_num - 1);
+		else
+			p_syf->f_row = Operate_in_tange(p_syf->f_row, OP_SUB, 1, STRIPE_MAX_ROWS, row_num - 1);
 		
 		
 	}

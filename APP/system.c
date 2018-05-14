@@ -182,7 +182,7 @@ void System_default(void)
 	p_sc->super_psd[2] = PHN_DEF_SUPER_PSD_3;
 //	p_sc->baud_idx = 0;
 //	p_sc->baud_rate = arr_baud[0];
-//	p_sc->disable_view_chn_status = 0;
+//	p_sc->show_chn_status = 0;
 }
 
 void System_init(void)

@@ -27,7 +27,7 @@
 #define AUX_ALARM			2
 #define AUX_PERCENTAGE		3	
 #define AUX_SIGNALTYPE		4	
-
+#define AUX_STATUS			5	
 
 #define MDLID_TEST			0
 #define MDLID_CHN(n)				(n)			

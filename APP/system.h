@@ -96,7 +96,7 @@ typedef struct {
 	
 	
 	uint8_t		disable_modify_adjust_paramter;		//禁止修改调节参数
-	uint8_t		disable_view_chn_status;					//禁止通道状态显示
+	uint8_t		show_chn_status;					//禁止通道状态显示
 	uint8_t		enable_beep;											//按键声音允许
 	int 		baud_rate;
 

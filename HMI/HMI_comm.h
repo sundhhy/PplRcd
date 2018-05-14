@@ -71,8 +71,8 @@ extern 	sheet			*g_p_cpic;
 //extern	sheet			*g_p_ico_search;
 
 extern  sheet			*g_arr_p_chnData[NUM_CHANNEL];
-extern	sheet			*g_arr_p_chnUtil[NUM_CHANNEL];
-extern	sheet			*g_arr_p_chnAlarm[NUM_CHANNEL];
+//extern	sheet			*g_arr_p_chnUtil[NUM_CHANNEL];
+//extern	sheet			*g_arr_p_chnAlarm[NUM_CHANNEL];
 extern	sheet  			*g_arr_p_check[NUM_CHANNEL]; 		//通道的勾选图标
 
 

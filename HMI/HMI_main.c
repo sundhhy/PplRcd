@@ -50,9 +50,9 @@ HMI *g_p_HMI_main;
 
 //每个通道的单位
 static ro_char MAIN_hmi_code_data[] = { "<text f=24 m=0>100</>" };
-static ro_char MAIN_hmi_code_unit[] = { "<text f=16 m=0>m3/h</>" };
+//static ro_char MAIN_hmi_code_unit[] = { "<text f=16 m=0>m3/h</>" };
 //通道报警:HH HI LI LL
-static ro_char MAIN_hmi_code_alarm[] = { "<text f=16 m=0> </>" };
+//static ro_char MAIN_hmi_code_alarm[] = { "<text f=16 m=0> </>" };
 
 //------------------------------------------------------------------------------
 // local types
@@ -332,16 +332,16 @@ static void MainHmi_Init_chnShet(void)
 	p_exp = ExpCreate( "text");
 	for(i = 0; i < phn_sys.sys_conf.num_chn; i++) {
 		p_exp->inptSht( p_exp, (void *)MAIN_hmi_code_data, g_arr_p_chnData[i]) ;
-		p_exp->inptSht( p_exp, (void *)MAIN_hmi_code_unit, g_arr_p_chnUtil[i]) ;
-		p_exp->inptSht( p_exp, (void *)MAIN_hmi_code_alarm, g_arr_p_chnAlarm[i]) ;
-		
+//		p_exp->inptSht( p_exp, (void *)MAIN_hmi_code_unit, g_arr_p_chnUtil[i]) ;
+//		p_exp->inptSht( p_exp, (void *)MAIN_hmi_code_alarm, g_arr_p_chnAlarm[i]) ;
+//		
 		g_arr_p_chnData[i]->id = i;
-		g_arr_p_chnUtil[i]->id = i;
-		g_arr_p_chnAlarm[i]->id = i;
+//		g_arr_p_chnUtil[i]->id = i;
+//		g_arr_p_chnAlarm[i]->id = i;
 		
 		g_arr_p_chnData[i]->cnt.colour = arr_clrs[i];
-		g_arr_p_chnUtil[i]->cnt.colour = arr_clrs[i];
-		g_arr_p_chnAlarm[i]->cnt.colour = arr_clrs[i];
+//		g_arr_p_chnUtil[i]->cnt.colour = arr_clrs[i];
+//		g_arr_p_chnAlarm[i]->cnt.colour = arr_clrs[i];
 		
 		
 		

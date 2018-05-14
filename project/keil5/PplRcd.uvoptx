@@ -171,25 +171,9 @@
         <Bp>
           <Number>0</Number>
           <Type>0</Type>
-          <LineNumber>356</LineNumber>
+          <LineNumber>1369</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>134227936</Address>
-          <ByteObject>0</ByteObject>
-          <HtxType>0</HtxType>
-          <ManyObjects>0</ManyObjects>
-          <SizeOfObject>0</SizeOfObject>
-          <BreakByAccess>0</BreakByAccess>
-          <BreakIfRCount>1</BreakIfRCount>
-          <Filename>..\..\HMI\STG_set_channel.c</Filename>
-          <ExecCommand></ExecCommand>
-          <Expression>\\PplRcd\../../HMI/STG_set_channel.c\356</Expression>
-        </Bp>
-        <Bp>
-          <Number>1</Number>
-          <Type>0</Type>
-          <LineNumber>1367</LineNumber>
-          <EnabledFlag>1</EnabledFlag>
-          <Address>134274982</Address>
+          <Address>134275066</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
@@ -198,7 +182,7 @@
           <BreakIfRCount>1</BreakIfRCount>
           <Filename>..\..\model\Model_channel.c</Filename>
           <ExecCommand></ExecCommand>
-          <Expression>\\PplRcd\../../model/Model_channel.c\1367</Expression>
+          <Expression></Expression>
         </Bp>
       </Breakpoint>
       <WatchWindow1>

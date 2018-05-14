@@ -188,7 +188,7 @@ void Print_sys_param(void *p_data, char	*p_s, int len, int aux)
 			if(p_data)
 				p_u8 = (uint8_t *)p_data;
 			else 
-				p_u8 = &phn_sys.sys_conf.disable_view_chn_status;
+				p_u8 = &phn_sys.sys_conf.show_chn_status;
 			
 			Disable_string(p_s, *p_u8);
 			break;
@@ -257,8 +257,8 @@ void Str_set_sys_param(void *p, char	*p_s, int aux, int op, int val)
 			
 			
 		case es_vcs:
-			p_cfg->disable_view_chn_status = Operate_in_tange(p_cfg->disable_view_chn_status, op, val, 0, 1);
-			Disable_string(p_s, p_cfg->disable_view_chn_status);
+			p_cfg->show_chn_status = Operate_in_tange(p_cfg->show_chn_status, op, val, 0, 1);
+			Disable_string(p_s, p_cfg->show_chn_status);
 			break;
 		case es_beep:
 			p_cfg->enable_beep = Operate_in_tange(p_cfg->enable_beep, op, val, 0, 1);

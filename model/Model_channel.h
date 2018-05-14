@@ -227,6 +227,7 @@ CLASS(Model_chn)
 	char 	*str_buf;
 	char 	*unit_buf;
 	char 	*alarm_buf;
+	char    *status_buf;
 };
 
 //------------------------------------------------------------------------------

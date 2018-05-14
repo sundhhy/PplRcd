@@ -43,8 +43,8 @@ sheet			*g_p_boxlist;
 //sheet			*g_p_ico_eraseTool;
 
 sheet			*g_arr_p_chnData[NUM_CHANNEL];
-sheet			*g_arr_p_chnUtil[NUM_CHANNEL];
-sheet			*g_arr_p_chnAlarm[NUM_CHANNEL];
+//sheet			*g_arr_p_chnUtil[NUM_CHANNEL];
+//sheet			*g_arr_p_chnAlarm[NUM_CHANNEL];
 
 char		prn_buf[NUM_CHANNEL][8];
 
@@ -422,7 +422,7 @@ static void Build_ChnSheets(void)
 //		p_mdl = g_arr_p_chnData[i]->p_mdl;
 //		p_mdl->attach(p_mdl, (mdl_observer *)g_arr_p_chnData[i]);
 		
-		g_arr_p_chnUtil[i] = Sheet_alloc( p_shtctl);
+//		g_arr_p_chnUtil[i] = Sheet_alloc( p_shtctl);
 //		p_exp->inptSht( p_exp, (void *)MAIN_hmi_code_unit, g_arr_p_chnUtil[i]) ;
 //		g_arr_p_chnUtil[i]->id = i;
 //		g_arr_p_chnUtil[i]->p_mdl = Create_model(mdl_code);
@@ -431,7 +431,7 @@ static void Build_ChnSheets(void)
 //		p_mdl = g_arr_p_chnUtil[i]->p_mdl;
 //		p_mdl->attach(p_mdl, (mdl_observer *)g_arr_p_chnUtil[i]);
 		
-		g_arr_p_chnAlarm[i] = Sheet_alloc( p_shtctl);
+//		g_arr_p_chnAlarm[i] = Sheet_alloc( p_shtctl);
 //		p_exp->inptSht( p_exp, (void *)MAIN_hmi_code_alarm, g_arr_p_chnAlarm[i]) ;
 //		g_arr_p_chnAlarm[i]->id = i;
 //		g_arr_p_chnAlarm[i]->p_mdl = Create_model(mdl_code);
