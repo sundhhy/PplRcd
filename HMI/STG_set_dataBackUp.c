@@ -359,10 +359,12 @@ static int DBP_key_lt(void *arg)
 //	}
 //	else
 	{
-		if(p_syf->f_row > 1)
+		//第一行显示状态，不允许选中
+		if(p_syf->f_row > 2)
 			p_syf->f_row --;
 		else {
-			p_syf->f_row = DBP_row_max - 1;
+//			p_syf->f_row = DBP_row_max - 1;
+			p_syf->f_row = 1;		
 			ret = -1;
 			
 		}

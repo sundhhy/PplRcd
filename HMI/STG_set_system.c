@@ -406,6 +406,7 @@ static int Sys_key_rt(void *arg)
 		{
 			//说明光标发生了反转
 			//只有超过范围才会反转
+			
 			ret = -1;
 		}
 	}
@@ -429,6 +430,7 @@ static int Sys_key_lt(void *arg)
 			//说明光标发生了反转
 			//只有超过范围才会反转
 			ret = -1;
+			goto exit;	//直接跳出，这样下次跳回，焦点就是第一个位置
 		}
 		p_syf->f_row = Operate_in_tange(p_syf->f_row, OP_SUB, 1, 0, STRIPE_MAX_ROWS - 1);
 		
@@ -444,14 +446,16 @@ static int Sys_key_lt(void *arg)
 			//说明光标发生了反转
 			//只有超过范围才会反转
 			ret = -1;
+			goto exit;
 		}
-		else
-			p_syf->f_row = Operate_in_tange(p_syf->f_row, OP_SUB, 1, STRIPE_MAX_ROWS, row_num - 1);
+		
+		p_syf->f_row = Operate_in_tange(p_syf->f_row, OP_SUB, 1, STRIPE_MAX_ROWS, row_num - 1);
 		
 		
 	}
-	
 	Sys_update_syf(p_syf);
+exit:
+
 	return ret;
 }
 

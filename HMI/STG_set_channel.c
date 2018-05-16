@@ -443,6 +443,7 @@ static int Cns_key_lt(void *arg)
 			//说明光标发生了反转
 			//只有超过范围才会反转
 			ret = -1;
+			goto exit;
 		}
 		p_syf->f_row = Operate_in_tange(p_syf->f_row, OP_SUB, 1, 0, STRIPE_MAX_ROWS - 1);
 		
@@ -458,6 +459,7 @@ static int Cns_key_lt(void *arg)
 			//说明光标发生了反转
 			//只有超过范围才会反转
 			ret = -1;
+			goto exit;
 		}
 		p_syf->f_row = Operate_in_tange(p_syf->f_row, OP_SUB, 1, STRIPE_MAX_ROWS, row_num - 1);
 		
@@ -466,8 +468,9 @@ static int Cns_key_lt(void *arg)
 		
 	}
 	
-	
 	Cns_update_len(p_syf);
+exit:
+
 	return ret;
 }
 

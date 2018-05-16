@@ -69,7 +69,7 @@ Model		*arr_p_mdl_chn[NUM_CHANNEL];
 //------------------------------------------------------------------------------
 // const defines
 //------------------------------------------------------------------------------
-#define  TEST_SIMU_DATA		1
+#define  TEST_SIMU_DATA		0
 #define UART_WAIT_AFTER_WRITE_MS		50
 //------------------------------------------------------------------------------
 // local types
@@ -1026,10 +1026,9 @@ static void MdlChn_run(Model *self)
 		rst.val -= phn_sys.sys_conf.CJC;
 	}
 	
-	
-	if(rst.val != cthis->chni.value)
+	//实时值或者状态发生变化的时候，进行更新
+	if(rst.val != cthis->chni.value) 
 	{
-		
 		
 		cthis->chni.signal_type = rst.signal_type;
 		cthis->chni.value = rst.val;
@@ -1044,10 +1043,17 @@ static void MdlChn_run(Model *self)
 	save_buf[1] = cthis->chni.decimal_places;
 	stg->wr_stored_data(stg, STG_CHN_DATA(cthis->chni.chn_NO), save_buf, 4);
 	
+	if(( cthis->chni.flag_err & CHN_ERR_CMM))
+	{
+		cthis->chni.flag_err &= ~CHN_ERR_CMM;
+		self->notify(self);		//更新状态
+		
+	}
 
 	return;
 	err:
-		cthis->chni.flag_err = 1;
+		cthis->chni.flag_err |= CHN_ERR_CMM;
+		self->notify(self);		//更新状态
 	
 #endif
 	
@@ -1532,9 +1538,9 @@ static char* MdlChn_to_string( Model *self, IN int aux, void *arg)
 			}
 		
 			if(cthis->chni.flag_err == 0)
-				sprintf(p, "正常");
-			else
-				sprintf(p, "断线");
+				sprintf(p, "正常    ");
+			else if(cthis->chni.flag_err & CHN_ERR_CMM)
+				sprintf(p, "通信错误");
 			
 			return p;
 		case AUX_SIGNALTYPE:

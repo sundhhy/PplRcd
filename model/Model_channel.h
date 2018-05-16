@@ -28,6 +28,7 @@
 #define ALM_CODE_LO			3
 #define ALM_CODE_LL			4
 
+#define CHN_ERR_CMM			1 	//Í¨ÐÅ´íÎó
 
 //------------------------------------------------------------------------------
 // typedef

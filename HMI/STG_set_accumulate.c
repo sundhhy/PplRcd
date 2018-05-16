@@ -282,7 +282,8 @@ static int SSA_Key_LT(void *arg)
 		p_syf->f_row --;
 	}
 	else {
-		p_syf->f_row = row_max - 1;
+//		p_syf->f_row = row_max - 1;
+		
 		ret = -1;
 	}
 	

@@ -76,14 +76,14 @@ enum {
 	row_tchspt_lo,
 	row_tchspt_ll,
 	row_alarm_backlash,
-	row_num
+	num_rows
 }als_rows;
 
 
 
 
-#define STG_NUM_VRAM			(row_num + 1)
-#define STG_RUN_VRAM_NUM		row_num
+#define STG_NUM_VRAM			(num_rows + 1)
+#define STG_RUN_VRAM_NUM		num_rows
 #define STG_SELF  g_alarm_strategy
 //------------------------------------------------------------------------------
 // local types
@@ -98,7 +98,7 @@ typedef struct {
 //------------------------------------------------------------------------------
 // local vars
 //------------------------------------------------------------------------------
- static char *const arr_p_alarm_entry[row_num] = {"通道号", "报警HH", "报警HI", "报警LO", \
+ static char *const arr_p_alarm_entry[num_rows] = {"通道号", "报警HH", "报警HI", "报警LO", \
 	 "报警LL", "触点HH", "触点HI", "触点LI", "触点LL", "报警回差"
  };
 	
@@ -131,7 +131,7 @@ static int Als_entry(int row, int col, void *pp_text)
 	p_md = SUPER_PTR(p_mc, Model);
 	if(col == 0) {
 		
-		if(row > 9)
+		if(row > (num_rows - 1))
 			return 0;
 		*pp = arr_p_alarm_entry[row];
 		return strlen(arr_p_alarm_entry[row]);
@@ -180,7 +180,7 @@ static int Als_init(void *arg)
 			
 	}
 	STG_SELF.total_col = 2;
-	STG_SELF.total_row = 10;
+	STG_SELF.total_row = num_rows;
 	phn_sys.key_weight = 1;
 	
 	p_run = (als_run_t *)arr_p_vram[STG_RUN_VRAM_NUM];
@@ -266,7 +266,7 @@ static int Als_get_focusdata(void *pp_data, strategy_focus_t *p_in_syf)
 	char		**pp_vram = (char **)pp_data;
 	int ret = 0;
 	
-	if(p_syf->f_row > 9) {
+	if(p_syf->f_row > (num_rows - 1)) {
 		return -1;
 	}
 	
@@ -298,7 +298,8 @@ static int Als_key_lt(void *arg)
 	if(p_syf->f_row )
 		p_syf->f_row --;
 	else {
-		p_syf->f_row = 9;
+//		p_syf->f_row = (num_rows - 1);
+		p_syf->f_row = 0;
 		ret = -1;
 		
 	}
@@ -311,11 +312,10 @@ static int Als_key_rt(void *arg)
 	strategy_focus_t *p_syf = &g_alarm_strategy.sf;
 	int ret = RET_OK;
 	
-	if(p_syf->f_row < 9)
+	if(p_syf->f_row < (num_rows - 1))
 		p_syf->f_row ++;
 	else {
 		p_syf->f_row = 0;
-		p_syf->f_col = 1;
 		ret = -1;
 	}
 	p_syf->num_byte = strlen(arr_p_vram[p_syf->f_row]);	
