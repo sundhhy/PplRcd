@@ -13,13 +13,7 @@
 //------------------------------------------------------------------------------
 
 
-#define SAD_RAM_ACC_SDATA				0
-#define SAD_RAM_ACC_SCHN				1
-#define SAD_RAM_SDATE					2
-#define SAD_RAM_SDAY					3
-#define SAD_RAM_SCHN_NUM				4
-#define SAD_RAM_UNIT						5
-#define SAD_RAM_MAX							6
+
 //------------------------------------------------------------------------------
 // module global vars
 //------------------------------------------------------------------------------
@@ -75,11 +69,28 @@ strategy_t	g_st_acc_day = {
 //------------------------------------------------------------------------------
 // const defines
 //------------------------------------------------------------------------------
-#define ST_SELF		g_st_acc_day
+#define STG_SELF		g_st_acc_day
+
+#define SAD_RAM_ACC_SDATA				0
+#define SAD_RAM_ACC_SCHN				1
+#define SAD_RAM_SDATE					2
+#define SAD_RAM_SDAY					3
+#define SAD_RAM_SCHN_NUM				4
+#define SAD_RAM_UNIT						5
+#define SAD_RAM_MAX							6
+
+#define STG_RUN_VRAM_NUM			6		//运行内存单独分配
 //------------------------------------------------------------------------------
 // local types
 //------------------------------------------------------------------------------
+typedef struct {
+	int cur_chn;
+	
+	
+}sad_run_t;
 
+#define STG_P_RUN		(sad_run_t *)arr_p_vram[STG_RUN_VRAM_NUM];
+#define INIT_RUN_RAM arr_p_vram[STG_RUN_VRAM_NUM] = HMI_Ram_alloc(sizeof(sad_run_t))
 //------------------------------------------------------------------------------
 // local vars
 //------------------------------------------------------------------------------
@@ -100,11 +111,20 @@ strategy_t	g_st_acc_day = {
 
 static int SAD_Entry(int row, int col, void *pp_text)
 {
+
+	
 	char 						**pp = (char **)pp_text;
-	Model_chn				*p_mc = Get_Mode_chn(g_setting_chn);
-	Model						*p_md = SUPER_PTR(p_mc, Model);
 	short						r = 0, pic_num = 0;
 	char						day = 0;
+	
+	sad_run_t				*p_run;
+	Model_chn				*p_mc;
+	Model						*p_md;
+	
+
+	p_run = STG_P_RUN;
+	p_mc = Get_Mode_chn(p_run->cur_chn);
+	p_md = SUPER_PTR(p_mc, Model);
 
 	if(col > 3)		//最多4列
 		return 0;
@@ -137,14 +157,14 @@ static int SAD_Entry(int row, int col, void *pp_text)
 				*pp = "月份";
 				break;
 			case 1:
-				sprintf(arr_p_vram[SAD_RAM_SDATE], "%02d.%02d", arr_chn_acc[g_setting_chn].sum_year, arr_chn_acc[g_setting_chn].sum_month);
+				sprintf(arr_p_vram[SAD_RAM_SDATE], "%02d.%02d", arr_chn_acc[p_run->cur_chn].sum_year, arr_chn_acc[p_run->cur_chn].sum_month);
 				*pp = arr_p_vram[SAD_RAM_SDATE];
 				break;
 			case 2:
 				*pp = "通道";
 				break;
 			case 3:
-				sprintf(arr_p_vram[SAD_RAM_ACC_SCHN], "%d", g_setting_chn);
+				sprintf(arr_p_vram[SAD_RAM_ACC_SCHN], "%d", p_run->cur_chn);
 				*pp = arr_p_vram[SAD_RAM_ACC_SCHN];
 				break;
 			
@@ -165,7 +185,7 @@ static int SAD_Entry(int row, int col, void *pp_text)
 				*pp = arr_p_vram[SAD_RAM_SDAY];
 				break;
 			case 1:
-				CNA_Print_acc_val(arr_chn_acc[g_setting_chn].accumlated_day[day], arr_p_vram[SAD_RAM_ACC_SDATA], 1);
+				CNA_Print_acc_val(arr_chn_acc[p_run->cur_chn].accumlated_day[day], arr_p_vram[SAD_RAM_ACC_SDATA], 1);
 				*pp = arr_p_vram[SAD_RAM_ACC_SDATA];
 				break;
 			case 2:
@@ -196,9 +216,9 @@ static int SAD_Entry(int row, int col, void *pp_text)
 		else 
 		{
 			
-//			acc_val = CNA_arr_u16_2_u64(arr_chn_acc[g_setting_chn].accumlated_day[day], 3);
+//			acc_val = CNA_arr_u16_2_u64(arr_chn_acc[p_run->cur_chn].accumlated_day[day], 3);
 //			sprintf(arr_p_vram[SAD_RAM_ACC_SDATA], "%12d.%d", acc_val/10, acc_val % 10);
-			CNA_Print_acc_val(arr_chn_acc[g_setting_chn].accumlated_day[day], arr_p_vram[SAD_RAM_ACC_SDATA], 1);
+			CNA_Print_acc_val(arr_chn_acc[p_run->cur_chn].accumlated_day[day], arr_p_vram[SAD_RAM_ACC_SDATA], 1);
 			*pp = arr_p_vram[SAD_RAM_ACC_SDATA];
 		}
 	}
@@ -211,16 +231,19 @@ static int SAD_Entry(int row, int col, void *pp_text)
 static int SAD_Init(void *arg)
 {
 	int i = 0;
-	
+	sad_run_t *p_run;
 	
 	HMI_Ram_init();
 	for(i = 0; i < SAD_RAM_MAX; i++) {
 		arr_p_vram[i] = HMI_Ram_alloc(48);
 		memset(arr_p_vram[i], 0, 48);
 	}
-	ST_SELF.total_col = 4;
-	ST_SELF.total_row = 31;
-	g_setting_chn = 0;
+	
+	INIT_RUN_RAM;
+	STG_SELF.total_col = 4;
+	STG_SELF.total_row = 31;
+	p_run = STG_P_RUN;
+	p_run->cur_chn = 0;
 	
 	return RET_OK;
 }
@@ -253,22 +276,28 @@ static int SAD_Get_focus_data(void *pp_data, strategy_focus_t *p_in_syf)
 
 static int SAD_Key_UP(void *arg)
 {
+		
+	sad_run_t				*p_run = STG_P_RUN;
+
+	p_run->cur_chn ++;
+	if(p_run->cur_chn == phn_sys.sys_conf.num_chn)
+		p_run->cur_chn = 0;
 	
-	g_setting_chn ++;
-	if(g_setting_chn == phn_sys.sys_conf.num_chn)
-		g_setting_chn = 0;
-	
-	ST_SELF.cmd_hdl(ST_SELF.p_cmd_rcv, sycmd_reflush, NULL);
+	STG_SELF.cmd_hdl(STG_SELF.p_cmd_rcv, sycmd_reflush, NULL);
 	
 	return -1;
 }
 static int SAD_Key_DN(void *arg)
 {
-	if(g_setting_chn)
-		g_setting_chn --;
+		
+	sad_run_t				*p_run = STG_P_RUN;
+
+	
+	if(p_run->cur_chn)
+		p_run->cur_chn --;
 	else
-		g_setting_chn = phn_sys.sys_conf.num_chn - 1;
-	ST_SELF.cmd_hdl(ST_SELF.p_cmd_rcv, sycmd_reflush, NULL);
+		p_run->cur_chn = phn_sys.sys_conf.num_chn - 1;
+	STG_SELF.cmd_hdl(STG_SELF.p_cmd_rcv, sycmd_reflush, NULL);
 	return -1;
 }
 static int SAD_Key_LT(void *arg)

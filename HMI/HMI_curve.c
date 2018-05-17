@@ -156,7 +156,7 @@ static void RLT_btn_hdl(void *arg, uint8_t btn_id);
 
 //历史曲线的起始时间
 static void CRV_Set_first_time(HMI *self);
-	static int CRV_Win_cmd(void *p_rcv, int cmd,  void *arg);
+static int CRV_Win_cmd(void *p_rcv, int cmd,  void *arg);
 //============================================================================//
 //            P U B L I C   F U N C T I O N S                                 //
 //============================================================================//
@@ -860,7 +860,7 @@ static void HST_Flex(uint8_t new_mdiv, uint8_t old_mdiv)
 
 static void HST_Move(RLT_trendHMI *cthis, uint8_t direction)
 {
-	uint8_t		i;
+//	uint8_t		i;
 	uint16_t		num = HST_Num_rcds(cthis->min_div);
 	
 	
@@ -919,10 +919,10 @@ static void HMI_CRV_HST_Run(HMI *self)
 	Model					*p_mdl ;
 	Button					*p_btn = BTN_Get_Sington();
 	data_in_fsh_t			d;
-	int						read_len = 0;
+//	int						read_len = 0;
 //	uint32_t				first_time = 0;
 	uint32_t				time_s = 0;
-	uint32_t				pos = 0;
+//	uint32_t				pos = 0;
 	struct	tm				first_tm;
 	uint32_t				end_time;
 	uint16_t				i, num_point, crv_max_points, time_step, need_clean = 0;
@@ -1153,7 +1153,7 @@ static void HMI_CRV_HST_Run(HMI *self)
 		g_arr_p_chnData[i]->p_gp->vdraw(g_arr_p_chnData[i]->p_gp, &g_arr_p_chnData[i]->cnt, &g_arr_p_chnData[i]->area);
 		
 	}
-	exit:
+//	exit:
 	Sem_post(&phn_sys.hmi_mgr.hmi_sem);
 	
 }

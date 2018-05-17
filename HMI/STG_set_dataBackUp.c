@@ -152,7 +152,7 @@ static int Data_bacnup_Strategy_entry(int row, int col, void *pp_text)
 			case row_file_name:		
 				if(arr_p_vram[row][0] == '\0')
 				{
-//					sprintf(arr_p_vram[row], "/CHN_%d.CSV", g_setting_chn);	//成72要求文件名必须大写
+//					sprintf(arr_p_vram[row], "/CHN_%d.CSV", p_run->cur_chn);	//成72要求文件名必须大写
 					DBP_Default_file_name(arr_p_vram[row], copy_file_type);
 				}
 				else {

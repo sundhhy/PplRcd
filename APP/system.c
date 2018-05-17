@@ -46,7 +46,7 @@ static UtlRtc *sys_rtc;
 //只有非4字节对齐的，需要放在这里定于
 char 				*arr_p_vram[18];
 uint16_t			time_smp;
-char				g_setting_chn = 0;
+//char				g_setting_chn = 0;
 char				flush_flag = 0;
 //------------------------------------------------------------------------------
 // global function prototypes

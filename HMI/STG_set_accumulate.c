@@ -10,8 +10,7 @@
 //------------------------------------------------------------------------------
 // const defines
 //------------------------------------------------------------------------------
-#define ST_SELF			 g_set_ACC
-#define SSA_CLEAR_NUM	NUM_CHANNEL
+
 //------------------------------------------------------------------------------
 // module global vars
 //------------------------------------------------------------------------------
@@ -28,7 +27,7 @@ static int SSA_Get_focus_data(void *pp_data, strategy_focus_t *p_in_syf);
 static int SSA_Commit(void *arg);
 static void SSA_Exit(void);
 
-strategy_t	ST_SELF = {
+strategy_t	g_set_ACC = {
 	SSA_Entry,
 	SSA_Init,
 	SSA_Build_component,
@@ -45,7 +44,7 @@ strategy_t	ST_SELF = {
 
 //static int Cns_init(void *arg);
 //static int Cns_get_focusdata(void *pp_data, strategy_focus_t *p_in_syf);
-//strategy_t	ST_SELF = {
+//strategy_t	STG_SELF = {
 //	ChnStrategy_entry,
 //	Cns_init,
 //	Cns_key_up,
@@ -81,9 +80,26 @@ enum {
 	
 }SSA_rows;
 
-#define SSA_NUM_RAM							(row_max	+ 2)
+
+typedef struct {
+	short cur_chn;
+	short	flag_clean;
+	int arr_conf_modify[NUM_CHANNEL];		//对应通道的累积配置是否被修改
+	char	buf[48];
+}ssa_run_t;
+
+#define STG_SELF			 		g_set_ACC
+
+#define SSA_NUM_RAM							(row_max)
 #define SSA_TIPS_RAM_NUM				row_max	
-#define SSA_TEMP_RAM_NUM				row_max	+ 1		//前6个字节用于保存对应通道的累积配置是否被修改
+#define STG_RUN_VRAM_NUM				row_max	+ 1		//前6个字节用于保存对应通道的累积配置是否被修改
+
+#define STG_P_RUN		(ssa_run_t *)arr_p_vram[STG_RUN_VRAM_NUM];
+#define INIT_RUN_RAM do { \
+	arr_p_vram[STG_RUN_VRAM_NUM] = HMI_Ram_alloc(sizeof(ssa_run_t)); \
+	memset(arr_p_vram[STG_RUN_VRAM_NUM], 0, sizeof(ssa_run_t)); \
+}while(0)
+
 //，第7个字节用于表示是否是清除数据
 //------------------------------------------------------------------------------
 // local vars
@@ -108,6 +124,7 @@ static void	SSA_Btn_hdl(void *self, uint8_t	btn_id);
 static int SSA_Entry(int row, int col, void *pp_text)
 {
 	char 						**pp = (char **)pp_text;
+	ssa_run_t				*p_run = STG_P_RUN;
 	if(col > 1)
 		return 0;
 	
@@ -124,20 +141,20 @@ static int SSA_Entry(int row, int col, void *pp_text)
 	switch(row)
 	{
 		case row_chn_num:
-			sprintf(arr_p_vram[row], "%d", g_setting_chn);
+			sprintf(arr_p_vram[row], "%d", p_run->cur_chn);
 			break;
 		case row_sum_enable:
-			CNA_Print_enable(arr_p_vram[row], arr_chn_acc[g_setting_chn].enable_sum);
+			CNA_Print_enable(arr_p_vram[row], arr_chn_acc[p_run->cur_chn].enable_sum);
 			break;
 		case row_start_year:
 			
-			sprintf(arr_p_vram[row], "%2d", arr_chn_acc[g_setting_chn].sum_start_year);
+			sprintf(arr_p_vram[row], "%2d", arr_chn_acc[p_run->cur_chn].sum_start_year);
 			break;
 		case row_start_month:
-			sprintf(arr_p_vram[row], "%2d", arr_chn_acc[g_setting_chn].sum_start_month);
+			sprintf(arr_p_vram[row], "%2d", arr_chn_acc[p_run->cur_chn].sum_start_month);
 			break;		
 		case row_start_day:
-			sprintf(arr_p_vram[row], "%2d", arr_chn_acc[g_setting_chn].sum_start_day);
+			sprintf(arr_p_vram[row], "%2d", arr_chn_acc[p_run->cur_chn].sum_start_day);
 			break;		
 		case row_clear:
 			sprintf(arr_p_vram[row], "确定");
@@ -154,12 +171,11 @@ static int SSA_Init(void *arg)
 {
 	int i = 0;
 	
-	memset(&ST_SELF.sf, 0, sizeof(ST_SELF.sf));
-	ST_SELF.sf.f_col = 1;
-	ST_SELF.sf.f_row = 0;
-	ST_SELF.sf.start_byte = 0;
-	ST_SELF.sf.num_byte = 1;
-	g_setting_chn = 0;
+	memset(&STG_SELF.sf, 0, sizeof(STG_SELF.sf));
+	STG_SELF.sf.f_col = 1;
+	STG_SELF.sf.f_row = 0;
+	STG_SELF.sf.start_byte = 0;
+	STG_SELF.sf.num_byte = 1;
 	
 	HMI_Ram_init();
 	for(i = 0; i < SSA_NUM_RAM; i++) {
@@ -167,8 +183,11 @@ static int SSA_Init(void *arg)
 		memset(arr_p_vram[i], 0, 48);
 	}
 	
-	ST_SELF.total_col = 2;
-	ST_SELF.total_row = row_max;
+	
+	INIT_RUN_RAM;
+	
+	STG_SELF.total_col = 2;
+	STG_SELF.total_row = row_max;
 	return RET_OK;
 }
 
@@ -185,29 +204,31 @@ static void SSA_Build_component(void *arg)
 static void	SSA_Btn_hdl(void *self, uint8_t	btn_id)
 {
 	 int		i;
+	ssa_run_t				*p_run = STG_P_RUN;
+	
 	 if(btn_id == BTN_TYPE_SAVE)
 	 {
 		for(i = 0; i < NUM_CHANNEL; i++)
 		{
-			if(arr_p_vram[SSA_TEMP_RAM_NUM][i])
+			if(p_run->arr_conf_modify[i])
 			{
 				if(CNA_Commit(i) == RET_OK)
 				{
-					arr_p_vram[SSA_TEMP_RAM_NUM][i] = 0;
+					p_run->arr_conf_modify[i] = 0;
 					sprintf(arr_p_vram[SSA_TIPS_RAM_NUM],"写入配置成功");
 					Win_content(arr_p_vram[SSA_TIPS_RAM_NUM]);
-					ST_SELF.cmd_hdl(ST_SELF.p_cmd_rcv, sycmd_win_tips, NULL);
+					STG_SELF.cmd_hdl(STG_SELF.p_cmd_rcv, sycmd_win_tips, NULL);
 				}
 				else
 				{
 					
-					sprintf(arr_p_vram[SSA_TIPS_RAM_NUM],"通道[%d] 写入配置失败", i);
-					Win_content(arr_p_vram[SSA_TIPS_RAM_NUM]);
-					ST_SELF.cmd_hdl(ST_SELF.p_cmd_rcv, sycmd_win_tips, NULL);
+					sprintf(p_run->buf,"通道[%d] 写入配置失败", i);
+					Win_content(p_run->buf);
+					STG_SELF.cmd_hdl(STG_SELF.p_cmd_rcv, sycmd_win_tips, NULL);
 				}
 				
 			}
-			arr_p_vram[SSA_TEMP_RAM_NUM][i] = 0;
+			p_run->arr_conf_modify[i] = 0;
 			
 		}	
 
@@ -225,7 +246,7 @@ static void SSA_Exit(void)
 static int SSA_Get_focus_data(void *pp_data, strategy_focus_t *p_in_syf)
 {
 
-	strategy_focus_t *p_syf = &ST_SELF.sf;
+	strategy_focus_t *p_syf = &STG_SELF.sf;
 	char		**pp_vram = (char **)pp_data;
 	int ret = 0;
 	
@@ -255,7 +276,7 @@ static int SSA_Key_DN(void *arg)
 }
 static int SSA_Key_RT(void *arg)
 {
-	strategy_focus_t *p_syf = &ST_SELF.sf;
+	strategy_focus_t *p_syf = &STG_SELF.sf;
 	int ret = RET_OK;
 	
 	if(p_syf->f_row < (row_max - 1))
@@ -274,7 +295,7 @@ static int SSA_Key_RT(void *arg)
 static int SSA_Key_LT(void *arg)
 {
 	
-	strategy_focus_t *p_syf = &ST_SELF.sf;
+	strategy_focus_t *p_syf = &STG_SELF.sf;
 	int ret = RET_OK;
 	
 	if(p_syf->f_row )
@@ -292,13 +313,14 @@ static int SSA_Key_LT(void *arg)
 }
 static int SSA_Key_ET(void *arg)
 {
-	strategy_focus_t *p_syf = &ST_SELF.sf;
+	strategy_focus_t *p_syf = &STG_SELF.sf;
+	ssa_run_t				*p_run = STG_P_RUN;
 	
 	if(p_syf->f_row == row_clear)
 	{
 		Win_content("确认删除累积值？");
-		ST_SELF.cmd_hdl(ST_SELF.p_cmd_rcv, sycmd_win_tips, arr_p_vram[SSA_TIPS_RAM_NUM]);
-		arr_p_vram[SSA_TEMP_RAM_NUM][SSA_CLEAR_NUM] = 1;
+		STG_SELF.cmd_hdl(STG_SELF.p_cmd_rcv, sycmd_win_tips, p_run->buf);
+		p_run->flag_clean = 1;
 
 		return RET_OK;
 	}
@@ -307,21 +329,21 @@ static int SSA_Key_ET(void *arg)
 
 static int SSA_Commit(void *arg)
 {
-//	strategy_focus_t *p_syf = &ST_SELF.sf;
+//	strategy_focus_t *p_syf = &STG_SELF.sf;
+	ssa_run_t				*p_run = STG_P_RUN;
 	
 	
-	
-	if(arr_p_vram[SSA_TEMP_RAM_NUM][SSA_CLEAR_NUM])
+	if(p_run->flag_clean)
 	{
 		
-		CNA_Clear(g_setting_chn);
+		CNA_Clear(p_run->cur_chn);
 		
-		arr_p_vram[SSA_TEMP_RAM_NUM][SSA_CLEAR_NUM] = 0;
+		p_run->flag_clean = 0;
 
 	}
 	else
 	{
-		CNA_Commit(g_setting_chn);
+		CNA_Commit(p_run->cur_chn);
 		
 	}
 	
@@ -334,17 +356,18 @@ static int SSA_Commit(void *arg)
 
 static void SSA_update_content(int op, int weight)
 {
-	rcd_chn_accumlated_t		*p_acc = arr_chn_acc + g_setting_chn;
-	strategy_focus_t 				*p_syf = &ST_SELF.sf;
-	
+	rcd_chn_accumlated_t		*p_acc;
+	strategy_focus_t 				*p_syf = &STG_SELF.sf;
+	ssa_run_t								*p_run = STG_P_RUN;
 
-	arr_p_vram[SSA_TEMP_RAM_NUM][g_setting_chn] = 1;		//记录修改
+	p_acc = arr_chn_acc + p_run->cur_chn;
+	p_run->arr_conf_modify[p_run->cur_chn] = 1;		//记录修改
 	switch(p_syf->f_row) 
 	{
 		case row_chn_num:
-			g_setting_chn = Operate_in_tange(g_setting_chn, op, 1, 0, phn_sys.sys_conf.num_chn - 1);
-			ST_SELF.cmd_hdl(ST_SELF.p_cmd_rcv, sycmd_reflush, NULL);
-			arr_p_vram[SSA_TEMP_RAM_NUM][g_setting_chn] = 0;
+			p_run->cur_chn = Operate_in_tange(p_run->cur_chn, op, 1, 0, phn_sys.sys_conf.num_chn - 1);
+			STG_SELF.cmd_hdl(STG_SELF.p_cmd_rcv, sycmd_reflush, NULL);
+			p_run->arr_conf_modify[p_run->cur_chn] = 0;
 			break;
 		case row_sum_enable:	
 			p_acc->enable_sum = Operate_in_tange(p_acc->enable_sum, op, 1, 0, 1);
@@ -363,7 +386,7 @@ static void SSA_update_content(int op, int weight)
 			sprintf(arr_p_vram[p_syf->f_row], "%2d", p_acc->sum_start_day);
 			break;
 		default:
-			arr_p_vram[SSA_TEMP_RAM_NUM][g_setting_chn] = 0;
+			p_run->arr_conf_modify[p_run->cur_chn] = 0;
 			break;
 		
 	}

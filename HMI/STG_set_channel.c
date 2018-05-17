@@ -77,7 +77,8 @@ enum {
 // local types
 //------------------------------------------------------------------------------
 typedef struct {
-	int			cur_page;
+	short		cur_page;
+	short		cur_chn;
 	char		win_buf[48];
 	chn_info_t	tmp_info[NUM_CHANNEL];
 	int			arr_flag_change[NUM_CHANNEL];
@@ -114,8 +115,14 @@ static int ChnStrategy_entry(int row, int col, void *pp_text)
 {
 	char **pp = (char **)pp_text;
 	cns_run_t	*p_run = (cns_run_t *)arr_p_vram[STG_RUN_VRAM_NUM];
-	Model_chn		*p_mc = Get_Mode_chn(g_setting_chn);
-	Model				*p_md = SUPER_PTR(p_mc, Model);
+	Model_chn		*p_mc;
+	Model				*p_md;
+	
+	
+	
+	p_mc = Get_Mode_chn(p_run->cur_chn);
+	p_md = SUPER_PTR(p_mc, Model);
+	
 	
 	
 	if(row >= row_num)
@@ -139,7 +146,7 @@ static int ChnStrategy_entry(int row, int col, void *pp_text)
 		switch(row) 
 		{
 			case row_chn_num:
-				sprintf(arr_p_vram[row], "%d", g_setting_chn);
+				sprintf(arr_p_vram[row], "%d", p_run->cur_chn);
 				break;
 			case row_tag:		//位号
 				sprintf(arr_p_vram[row], "%d", p_mc->chni.tag_NO);
@@ -214,7 +221,6 @@ static int Cns_init(void *arg)
 	STG_SELF.sf.f_row = 0;
 	STG_SELF.sf.start_byte = 0;
 	STG_SELF.sf.num_byte = 1;
-	g_setting_chn = 0;
 	HMI_Ram_init();
 	for(i = 0; i < STG_NUM_VRAM; i++) {
 		
@@ -236,6 +242,7 @@ static int Cns_init(void *arg)
 	STG_SELF.total_row = row_num;
 	p_run = (cns_run_t *)arr_p_vram[STG_RUN_VRAM_NUM];
 	p_run->cur_page = 0;
+	p_run->cur_chn = 0;
 	
 	for(i = 0; i < NUM_CHANNEL; i++)
 		CNS_Set_mdl_tmp_buf(i, &p_run->tmp_info[i]);
@@ -288,25 +295,9 @@ static void CNS_Set_mdl_tmp_buf(int chn, chn_info_t *p_info)
 static int Cns_key_up(void *arg)
 {
 	
-//	Model_chn			*p_mc = Get_Mode_chn(g_setting_chn);
-//	Model				*p_md = SUPER_PTR(p_mc, Model);
-//	strategy_keyval_t	kt = {SY_KEYTYPE_HIT};
-//	strategy_focus_t 	*p_syf = &STG_SELF.sf;
-//	char			*p;
+
 	int 			ret = RET_OK;
-	
-//	if(arg) {
-//		kt.key_type = ((strategy_keyval_t *)arg)->key_type;
-//		
-//	}
-	
-	//
-//	if(kt.key_type == SY_KEYTYPE_LONGPUSH) {
-//		phn_sys.key_weight += 10;
-//		
-//	} else {
-//		phn_sys.key_weight = 1;
-//	}
+
 	Cns_update_content(OP_ADD, phn_sys.key_weight);
 	
 	
@@ -315,27 +306,12 @@ static int Cns_key_up(void *arg)
 
 static int Cns_key_dn(void *arg)
 {
-	
 
-//	strategy_keyval_t	kt = {SY_KEYTYPE_HIT};
 	int 				ret = RET_OK;
 	
-//	if(arg) {
-//		kt.key_type = ((strategy_keyval_t *)arg)->key_type;
-//		
-//	}
-	
-
-//	if(kt.key_type == SY_KEYTYPE_LONGPUSH) {
-//		phn_sys.key_weight += 10;
-//		
-//	} else {
-//		phn_sys.key_weight = 1;
-//	}
 	
 	Cns_update_content(OP_SUB, phn_sys.key_weight);
-	
-		
+
 	return ret;
 }
 
@@ -493,14 +469,15 @@ static int Cns_key_er(void *arg)
 static int CNS_commit(void *arg)
 {
 	strategy_focus_t *p_syf = &STG_SELF.sf;
+	cns_run_t	*p_run = (cns_run_t *)arr_p_vram[STG_RUN_VRAM_NUM];
 	if(p_syf->f_row != row_erase)
 	{
 		return 0;
 		
 	}
 	//删除通道数据
-	LOG_Add(LOG_CHN_DATA_HANDLE_ERASE(g_setting_chn));
-	STG_Erase_file(STG_CHN_DATA(g_setting_chn));
+	LOG_Add(LOG_CHN_DATA_HANDLE_ERASE(p_run->cur_chn));
+	STG_Erase_file(STG_CHN_DATA(p_run->cur_chn));
 	return RET_OK;
 }
 
@@ -525,22 +502,27 @@ static void Cns_update_len(strategy_focus_t *p_syf)
 
 static void Cns_update_content(int op, int weight)
 {
-	Model_chn			*p_mc = Get_Mode_chn(g_setting_chn);
-	Model				*p_md = SUPER_PTR(p_mc, Model);
 	strategy_focus_t 	*p_syf = &STG_SELF.sf;
 	cns_run_t	*p_run = (cns_run_t *)arr_p_vram[STG_RUN_VRAM_NUM];
 	strategy_focus_t		pos;
+	Model_chn		*p_mc;
+	Model				*p_md;
+	
+	p_mc = Get_Mode_chn(p_run->cur_chn);
+	p_md = SUPER_PTR(p_mc, Model);
+	
+	
 
 	
 	
 	
 	
-	p_run->arr_flag_change[g_setting_chn] = 1;
+	p_run->arr_flag_change[p_run->cur_chn] = 1;
 	
 	switch(p_syf->f_row) 
 	{
 		case row_chn_num:
-			g_setting_chn = Operate_in_tange(g_setting_chn, op, 1, 0, phn_sys.sys_conf.num_chn - 1);
+			p_run->cur_chn = Operate_in_tange(p_run->cur_chn, op, 1, 0, phn_sys.sys_conf.num_chn - 1);
 			STG_SELF.cmd_hdl(STG_SELF.p_cmd_rcv, sycmd_reflush, NULL);
 //			Str_Calculations(arr_p_vram[p_syf->f_row], 1,  op, weight, 0, NUM_CHANNEL);
 			break;
@@ -585,7 +567,7 @@ static void Cns_update_content(int op, int weight)
 			p_md->modify_str_conf(p_md, chnaux_b, arr_p_vram[p_syf->f_row], op, weight);
 			break;
 		default:
-			p_run->arr_flag_change[g_setting_chn] = 0;
+			p_run->arr_flag_change[p_run->cur_chn] = 0;
 			break;
 		
 	}

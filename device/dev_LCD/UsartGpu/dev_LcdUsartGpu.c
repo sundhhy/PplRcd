@@ -49,7 +49,7 @@ I_dev_Char *I_sendDev;
 
 
 
-static sem_t	gpu_sem;	
+static sem_t	gpu_sem;	//刷新LCD缓存和发送显示数据会在不同的线程中执行，因此需要进行保护。
 static char	lcdBuf[LCDBUF_MAX];
 
 
@@ -232,9 +232,15 @@ static int ClearLcd( int c)
 //	GPU_Send(lcdBuf);
 //	Sem_post(&gpu_sem);
 //#else	
+	
+	if(Sem_wait(&gpu_sem, 0xffffffff) <= 0)
+		return RET_FAILED;	
+	
 	sprintf( lcdBuf, "CLS(%d);\r\n", c);
 	GPU_Send(lcdBuf);
+
 	osDelay(20);
+	Sem_post(&gpu_sem);
 //#endif	
 	
 	

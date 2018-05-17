@@ -2,6 +2,8 @@
 #include "HMI_striped_background.h"
 #include "utils/Storage.h"
 #include "utils/log.h"
+#include "HMI_windows.h"
+
 //============================================================================//
 //            G L O B A L   D E F I N I T I O N S                             //
 //============================================================================//
@@ -65,6 +67,12 @@ strategy_t	g_news_power = {
 // const defines
 //------------------------------------------------------------------------------
 #define STG_SELF  g_news_power
+
+#define NUM_ROW		11
+
+#define STG_NUM_VRAM			(NUM_ROW + 1)	
+#define STG_TIP_NUM	 		(NUM_ROW)	
+
 //------------------------------------------------------------------------------
 // local types
 //------------------------------------------------------------------------------
@@ -170,10 +178,12 @@ static int NPW_Init(void *arg)
 	
 	
 	HMI_Ram_init();
-	for(i = 0; i < 11; i++) {
+	for(i = 0; i < STG_NUM_VRAM; i++) {
 		arr_p_vram[i] = HMI_Ram_alloc(48);
 		memset(arr_p_vram[i], 0, 48);
 	}
+	
+	
 	
 	STG_SELF.total_col = 3;
 	STG_SELF.total_row = STRIPE_MAX_ROWS;		
@@ -196,6 +206,14 @@ static void NPW_Exit(void)
 }
 static int NPW_Commit(void *arg)
 {
+	
+	
+	STG_Erase_file(STG_LOSE_PWR);
+	STG_Set_alm_pwr_num(STG_LOSE_PWR, 0);
+	LOG_Add(LOG_LOST_PWR_ERASE);
+	phn_sys.pwr_rcd_index = 0xff;
+	g_news_power.cmd_hdl(g_news_power.p_cmd_rcv, sycmd_reflush, NULL);
+	
 	return RET_OK;
 	
 }
@@ -238,15 +256,28 @@ static int NPW_Key_ET(void *arg)
 	
 }
 
+
+
+
 static void	NPW_Btn_hdl(void *self, uint8_t	btn_id)
 {
+
 	if(btn_id == ICO_ID_ERASETOOL)
 	{
-		STG_Erase_file(STG_LOSE_PWR);
-		STG_Set_alm_pwr_num(STG_LOSE_PWR, 0);
-		LOG_Add(LOG_LOST_PWR_ERASE);
-		phn_sys.pwr_rcd_index = 0xff;
-		g_news_power.cmd_hdl(g_news_power.p_cmd_rcv, sycmd_reflush, NULL);
+//		STG_Erase_file(STG_LOSE_PWR);
+//		STG_Set_alm_pwr_num(STG_LOSE_PWR, 0);
+//		LOG_Add(LOG_LOST_PWR_ERASE);
+//		phn_sys.pwr_rcd_index = 0xff;
+//		g_news_power.cmd_hdl(g_news_power.p_cmd_rcv, sycmd_reflush, NULL);
+		
+		
+		sprintf(arr_p_vram[STG_TIP_NUM],"É¾³ýµôµçÐÅÏ¢£¿");
+		Win_content(arr_p_vram[STG_TIP_NUM]);
+		STG_SELF.cmd_hdl(STG_SELF.p_cmd_rcv, sycmd_win_tips, NULL);
+		
+		
+		
+		
 	}
 	
 }

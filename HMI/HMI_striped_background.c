@@ -1042,7 +1042,7 @@ static int Setting_Sy_cmd(void *p_rcv, int cmd,  void *arg)
 			if(ret == RET_OK) {
 				g_p_winHmi->arg[0] = WINTYPE_TIPS;
 				g_p_winHmi->arg[1] = WINFLAG_RETURN;
-				Win_content("修改成功");
+				Win_content("成功");
 //				g_p_winHmi->switchHMI(g_p_winHmi, g_p_winHmi);
 				//本界面已经在wincmd_commit之前的命令(sycmd_win_tips,sycmd_win_time,sycmd_win_tips,sycmd_win_psd)\
 				时已经被记录到历史列表里面了，所以这就不用再记录了
