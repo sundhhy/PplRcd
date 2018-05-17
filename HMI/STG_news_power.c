@@ -212,7 +212,7 @@ static int NPW_Commit(void *arg)
 	STG_Set_alm_pwr_num(STG_LOSE_PWR, 0);
 	LOG_Add(LOG_LOST_PWR_ERASE);
 	phn_sys.pwr_rcd_index = 0xff;
-	g_news_power.cmd_hdl(g_news_power.p_cmd_rcv, sycmd_reflush, NULL);
+//	g_news_power.cmd_hdl(g_news_power.p_cmd_rcv, sycmd_reflush, NULL);
 	
 	return RET_OK;
 	

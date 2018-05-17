@@ -246,7 +246,7 @@ static int NLM_Entry(int row, int col, void *pp_text)
 static int NLM_Init(void *arg)
 {
 	int i = 0;
-	nlm_run_t *p_run = STG_P_RUN;
+	nlm_run_t *p_run;
 	
 	HMI_Ram_init();
 	for(i = 0; i < STG_NUM_VRAM; i++) {
@@ -258,6 +258,7 @@ static int NLM_Init(void *arg)
 	
 	STG_SELF.total_col = 3;
 	STG_SELF.total_row = STRIPE_MAX_ROWS;
+	p_run = STG_P_RUN;
 	p_run->cur_chn = 0;
 	
 	return RET_OK;
@@ -282,7 +283,7 @@ static int NLM_Commit(void *arg)
 	STG_Erase_file(STG_CHN_ALARM(p_run->cur_chn));
 	STG_Set_alm_pwr_num(STG_CHN_ALARM(p_run->cur_chn), 0);
 	LOG_Add(LOG_CHN_ALARM_HANDLE_ERASE(p_run->cur_chn));
-	g_news_alarm.cmd_hdl(g_news_alarm.p_cmd_rcv, sycmd_reflush, NULL);
+//	g_news_alarm.cmd_hdl(g_news_alarm.p_cmd_rcv, sycmd_reflush, NULL);
 	MdlChn_Clean_Alamr(p_run->cur_chn);
 	
 	

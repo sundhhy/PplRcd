@@ -1209,7 +1209,13 @@ static int MdlChn_setData(  Model *self, IN int aux, void *arg)
 			cthis->chni.unit = *(uint8_t *)arg;
 			break;
 				
+		case chnaux_tag_NO:
+			cthis->chni.tag_NO = *(uint8_t *)arg;
+			break;
 		
+		case chnaux_filter_ts:
+			cthis->chni.filter_time_s = *(uint8_t *)arg;
+			break; 
 		
 		case AUX_SIGNALTYPE:
 			if(arg)

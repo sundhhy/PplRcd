@@ -91,8 +91,7 @@ typedef struct {
 #define STG_SELF			 		g_set_ACC
 
 #define SSA_NUM_RAM							(row_max)
-#define SSA_TIPS_RAM_NUM				row_max	
-#define STG_RUN_VRAM_NUM				row_max	+ 1		//前6个字节用于保存对应通道的累积配置是否被修改
+#define STG_RUN_VRAM_NUM				row_max		
 
 #define STG_P_RUN		(ssa_run_t *)arr_p_vram[STG_RUN_VRAM_NUM];
 #define INIT_RUN_RAM do { \
@@ -203,37 +202,50 @@ static void SSA_Build_component(void *arg)
 
 static void	SSA_Btn_hdl(void *self, uint8_t	btn_id)
 {
-	 int		i;
+	short		i;
+	short 		flag = 0;
 	ssa_run_t				*p_run = STG_P_RUN;
-	
-	 if(btn_id == BTN_TYPE_SAVE)
-	 {
-		for(i = 0; i < NUM_CHANNEL; i++)
+
+	if(btn_id == BTN_TYPE_SAVE)
+	{
+		for(i = 0; i < phn_sys.sys_conf.num_chn; i++)
 		{
 			if(p_run->arr_conf_modify[i])
 			{
 				if(CNA_Commit(i) == RET_OK)
 				{
+					flag = 1;
 					p_run->arr_conf_modify[i] = 0;
-					sprintf(arr_p_vram[SSA_TIPS_RAM_NUM],"写入配置成功");
-					Win_content(arr_p_vram[SSA_TIPS_RAM_NUM]);
-					STG_SELF.cmd_hdl(STG_SELF.p_cmd_rcv, sycmd_win_tips, NULL);
+					
 				}
 				else
 				{
-					
-					sprintf(p_run->buf,"通道[%d] 写入配置失败", i);
-					Win_content(p_run->buf);
-					STG_SELF.cmd_hdl(STG_SELF.p_cmd_rcv, sycmd_win_tips, NULL);
+					flag = 2;
+					break;
 				}
-				
-			}
-			p_run->arr_conf_modify[i] = 0;
-			
-		}	
 
-		 
-	 }
+			}
+//			p_run->arr_conf_modify[i] = 0;
+
+		}	
+		
+		if(flag == 1)
+		{
+			sprintf(p_run->buf,"写入配置成功");
+			Win_content(p_run->buf);
+			STG_SELF.cmd_hdl(STG_SELF.p_cmd_rcv, sycmd_win_tips, NULL);
+			
+		}
+		else if(flag == 2)
+		{
+			
+			sprintf(p_run->buf,"通道[%d] 写入配置失败", i);
+			Win_content(p_run->buf);
+			STG_SELF.cmd_hdl(STG_SELF.p_cmd_rcv, sycmd_win_tips, NULL);
+		}
+
+
+	}
 	
 	 
  }

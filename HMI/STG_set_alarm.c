@@ -214,7 +214,8 @@ static void ALS_Set_mdl_tmp_alarm(int chn, chn_alarm_t *p_alarm)
 
  static void	ALS_Btn_hdl(void *self, uint8_t	btn_id)
  {
-	 int		i;
+	 short		i;
+	 short 		flag = 0;
 	 als_run_t *p_run = (als_run_t *)arr_p_vram[STG_RUN_VRAM_NUM];
 	 if(btn_id == BTN_TYPE_SAVE)
 	 {
@@ -227,22 +228,42 @@ static void ALS_Set_mdl_tmp_alarm(int chn, chn_alarm_t *p_alarm)
 				
 				if(MdlChn_Commit_conf(i) == RET_OK)
 				{
-					sprintf(p_run->win_buf,"写入配置成功");
-					Win_content(p_run->win_buf);
-					STG_SELF.cmd_hdl(STG_SELF.p_cmd_rcv, sycmd_win_tips, NULL);
+					flag = 1;
+					p_run->arr_flag_change[i] = 0;
+					
+//					sprintf(p_run->win_buf,"写入配置成功");
+//					Win_content(p_run->win_buf);
+//					STG_SELF.cmd_hdl(STG_SELF.p_cmd_rcv, sycmd_win_tips, NULL);
 				}
 				else
 				{
-					
-					sprintf(p_run->win_buf,"通道[%d] 写入配置失败", i);
-					Win_content(p_run->win_buf);
-					STG_SELF.cmd_hdl(STG_SELF.p_cmd_rcv, sycmd_win_tips, NULL);
+					flag = 2;
+					break;
+//					sprintf(p_run->win_buf,"通道[%d] 写入配置失败", i);
+//					Win_content(p_run->win_buf);
+//					STG_SELF.cmd_hdl(STG_SELF.p_cmd_rcv, sycmd_win_tips, NULL);
 				}
 				
 			}
-			p_run->arr_flag_change[i] = 0;
+			
 			
 		}	
+		
+		
+		if(flag == 1)
+		{
+			sprintf(p_run->win_buf,"写入配置成功");
+			Win_content(p_run->win_buf);
+			STG_SELF.cmd_hdl(STG_SELF.p_cmd_rcv, sycmd_win_tips, NULL);
+			
+		}
+		else if(flag == 2)
+		{
+			
+			sprintf(p_run->win_buf,"通道[%d] 写入配置失败", i);
+			Win_content(p_run->win_buf);
+			STG_SELF.cmd_hdl(STG_SELF.p_cmd_rcv, sycmd_win_tips, NULL);
+		}
 
 		 
 	 }

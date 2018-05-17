@@ -1006,7 +1006,7 @@ static int Setting_Sy_cmd(void *p_rcv, int cmd,  void *arg)
 		case sycmd_win_tips:
 			
 			g_p_winHmi->arg[0] = WINTYPE_TIPS;
-			g_p_winHmi->arg[1] |= WINFLAG_RETURN | WINFLAG_COMMIT;
+			g_p_winHmi->arg[1] |= WINFLAG_COMMIT;
 			p_win = Get_winHmi();
 			p_win->p_cmd_rcv = self;
 			p_win->cmd_hdl = Setting_Sy_cmd;
