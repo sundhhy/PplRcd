@@ -100,6 +100,8 @@ static	I_dev_Char	*w25q_spi;
 // local types
 //------------------------------------------------------------------------------
 typedef struct {
+	
+	sem_t			w25_sem;
 	uint16_t		cur_sct;
 	uint16_t		sct_size;
 //	uint16_t		num_sct;
@@ -144,6 +146,8 @@ int w25q_Write(uint8_t *pBuffer, uint32_t WriteAddr, uint32_t WriteBytesNum);
 //int w25q_Direct_write(uint8_t *pBuffer, uint32_t WriteAddr, uint32_t WriteBytesNum);
 int w25q_rd_data(uint8_t *pBuffer, uint32_t rd_add, uint32_t len);
 void W25Q_Flush(void);
+int	W25Q_lock(uint32_t ms);
+int	W25Q_unlock(void);
 //int w25q_close(void);
 
 
@@ -164,7 +168,10 @@ int w25q_init(void)
 	int  ret = RET_OK;
 	if(W25Q_FSH.fnf.fnf_flag == 0)
 	{
+		w25q_mgr.w25_sem = Alloc_sem();
 		
+		Sem_init(&w25q_mgr.w25_sem);
+		Sem_post(&w25q_mgr.w25_sem);
 			
 		Dev_open(W25Q_SPI_DEVID, (void *)&w25q_spi);
 		W25Q_Disable_CS;
@@ -187,6 +194,9 @@ int w25q_init(void)
 	phn_sys.arr_fsh[FSH_W25Q_NUM].fsh_raw_write = W25Q_wr_fsh;
 	phn_sys.arr_fsh[FSH_W25Q_NUM].fsh_read = w25q_rd_data;
 	phn_sys.arr_fsh[FSH_W25Q_NUM].fsh_raw_read = w25q_Read_flash;
+	phn_sys.arr_fsh[FSH_W25Q_NUM].fsh_lock = W25Q_lock;
+	phn_sys.arr_fsh[FSH_W25Q_NUM].fsh_unlock = W25Q_unlock;
+	
 	W25Q_FSH.fsh_flush = W25Q_Flush;
 	W25Q_Disable_WP;
 	
@@ -555,10 +565,33 @@ void W25Q_Flush(void)
 //=========================================================================//
 /// \name Private Functions
 /// \{
+
+
+int	W25Q_lock(uint32_t ms)
+{
+	if(Sem_wait(&w25q_mgr.w25_sem, ms) > 0)
+		return RET_OK;
+	
+	return RET_FAILED;
+	
+}
+int	W25Q_unlock(void)
+{
+	
+	Sem_post(&w25q_mgr.w25_sem);
+	
+	return RET_OK;
+
+}
+
 static int	W25Q_wr_fsh(uint8_t *pBuffer, uint32_t WriteAddr, uint32_t WriteBytesNum)
 {
-	short step = 0;
-	short count = 100;
+	uint8_t step = 0;
+	uint8_t count = 100;
+
+	uint16_t ckeck_len = WriteBytesNum;
+	uint8_t	 read_back_buf[32];
+
 	int ret = -1;
 
 	while(1)
@@ -605,6 +638,8 @@ static int	W25Q_wr_fsh(uint8_t *pBuffer, uint32_t WriteAddr, uint32_t WriteBytes
 				goto exit;
 		
 			default:
+				
+				
 				step = 0;
 				break;
 			
@@ -612,9 +647,24 @@ static int	W25Q_wr_fsh(uint8_t *pBuffer, uint32_t WriteAddr, uint32_t WriteBytes
 		
 		
 	}		//while(1)
-		exit:
-			return ret;
+	exit:
 	
+	if((W25Q_FSH.fnf.fnf_flag & FSH_FLAG_READBACK_CHECK) == 0)
+		return ret;
+	//回读检查,最多只检查前32个字节
+	if(ret <= 0)
+		return ret;
+	
+	if(ckeck_len > 32)
+		ckeck_len = 32;
+	if(ckeck_len > ret)
+		ckeck_len = ret;
+	
+	w25q_Read_flash(read_back_buf, WriteAddr, ckeck_len);
+	if(memcmp(read_back_buf, pBuffer, ckeck_len))
+		return ERR_DEV_FAILED;
+	
+	return ret;
 	
 }
 

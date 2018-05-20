@@ -20,7 +20,7 @@
 //------------------------------------------------------------------------------
 // const defines
 //------------------------------------------------------------------------------
-#define MAX_NUM_SEM			18
+#define MAX_NUM_SEM			19
 //------------------------------------------------------------------------------
 // module global vars
 //------------------------------------------------------------------------------
@@ -103,6 +103,9 @@ osSemaphoreDef(rtxSemaphore16);
 
 osSemaphoreId sid_Sem17;                             
 osSemaphoreDef(rtxSemaphore17);
+
+osSemaphoreId sid_Sem18;                             
+osSemaphoreDef(rtxSemaphore18);
 //------------------------------------------------------------------------------
 // local function prototypes
 //------------------------------------------------------------------------------
@@ -340,6 +343,18 @@ int Sem_init(sem_t *sem)
 			}
 			osSemaphoreWait( sid_Sem17, 0 );
 			break;	
+			
+			
+		case 18:
+			sid_Sem18 = osSemaphoreCreate(osSemaphore(rtxSemaphore18), 1);
+			if (!sid_Sem18) {
+				ret = ERR_OSRSU_UNAVAILABLE;
+			}
+			osSemaphoreWait( sid_Sem18, 0 );
+			break;	
+				
+			
+		
 		default:
 			ret = ERR_BAD_PARAMETER;
 			break;
@@ -393,6 +408,8 @@ int Sem_wait(sem_t *sem, int ms)
 			return osSemaphoreWait( sid_Sem16, ms );
 		case 17:
 			return osSemaphoreWait( sid_Sem17, ms );
+		case 18:
+			return osSemaphoreWait( sid_Sem18, ms );
 		default:
 			break;
 		
@@ -458,6 +475,9 @@ int Sem_post(sem_t *sem)
 			break;
 		case 17:
 			ret = osSemaphoreRelease( sid_Sem17);
+			break;
+		case 18:
+			ret = osSemaphoreRelease( sid_Sem18);
 			break;
 		default:
 			return ERR_BAD_PARAMETER;

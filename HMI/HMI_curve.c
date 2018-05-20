@@ -985,8 +985,9 @@ static void HMI_CRV_HST_Run(HMI *self)
 		for(time_s = hst_mgr.real_first_time_s; time_s < end_time;time_s += time_step)
 		{
 			hst_mgr.arr_hst_num[i] = STG_Read_data_by_time(i, time_s, hst_mgr.arr_hst_num[i], &d);
-			if(hst_mgr.arr_hst_num[i])
-				hst_mgr.arr_hst_num[i] --;	//后腿一格，防止错过
+//			if(hst_mgr.arr_hst_num[i])
+//				hst_mgr.arr_hst_num[i] --;	//后腿一格，防止错过
+			hst_mgr.arr_hst_num[i] ++;
 			//如果某个时间点没有数据，则装入0
 			if(d.rcd_time_s != 0xffffffff)
 			{

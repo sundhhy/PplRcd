@@ -382,8 +382,16 @@ int		EFS_Raw_read(int fd, uint8_t *p, int len)
 	
 	if(len > f->num_page * EFS_FSH(f->fsh_No).fnf.page_size)
 		len = f->num_page * EFS_FSH(f->fsh_No).fnf.page_size;
-
+	
+	while(EFS_FSH(f->fsh_No).fsh_lock(100) != RET_OK)
+	{
+		
+		delay_ms(1);
+	}
+		
 	ret =  EFS_FSH(f->fsh_No).fsh_raw_read(p, start_addr + f->read_position,len);
+	EFS_FSH(f->fsh_No).fsh_unlock();
+	
 	if(ret > 0)
 		f->read_position += ret;
 	Sem_post(&f->file_sem);
@@ -408,9 +416,14 @@ int		EFS_Raw_write(int fd, uint8_t *p, int len)
 	if(len > f->num_page * EFS_FSH(f->fsh_No).fnf.page_size)
 		len = f->num_page * EFS_FSH(f->fsh_No).fnf.page_size;
 
+	if(EFS_FSH(f->fsh_No).fsh_lock(0xffffffff) != RET_OK)
+		return -1;
+	
 	ret =  EFS_FSH(f->fsh_No).fsh_raw_write(p, start_addr + f->write_position,len);
 	if(ret > 0)
 		f->write_position += ret;
+	EFS_FSH(f->fsh_No).fsh_unlock();
+	
 	
 	if((f->num_page - f->write_position / EFS_FSH(f->fsh_No).fnf.page_size) < f->low_pg)
 		EFS_FS.err_code |= FS_ALARM_LOWSPACE;

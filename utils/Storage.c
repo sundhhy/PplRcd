@@ -98,6 +98,8 @@ static int	STG_Acc_file(uint8_t	type, uint8_t	drc, void *p, int len);
 static int	STG_Acc_sys_conf(uint8_t	drc, void *p);
 static int	STG_Acc_lose_pwr(uint8_t	drc, void *p, int len);
 
+static int STG_Read_chn_data_will_retry(int f, int retry, data_in_fsh_t *dif);
+
 
 //------- 记录通道数据的函数--------------------------------------------------//
 #if STG_RCD_FULL_ACTION != STG_ERASE
@@ -338,52 +340,95 @@ int	STG_Read_alm_pwr(uint8_t	chn_pwr,short start, char *buf, int buf_size, uint3
 	
 }
 
+
+
 uint32_t STG_Read_data_by_time(uint8_t	chn, uint32_t sec, uint32_t pos, data_in_fsh_t *r)
 {
+	#define RDBT_RETRY		3
 	
 	Storage				*stg = Get_storage();
 	file_info_t			*fnf ;
 	int					fd = -1;
-	data_in_fsh_t		d;
-
+	int					i;
+//	data_in_fsh_t		d;
+	uint32_t			lt, mid, rt;
+	
 	
 	fd = STG_Open_file(STG_CHN_DATA(chn), STG_DEF_FILE_SIZE);
 	fnf = STRG_SYS.fs.fs_file_info(fd);
 	
-	STG_Set_file_position(STG_CHN_DATA(chn), STG_DRC_READ, pos * sizeof(data_in_fsh_t));	
-	if(sec == 0xffffffff)
-		STG_Set_file_position(STG_CHN_DATA(chn), STG_DRC_READ, fnf->write_position - sizeof(data_in_fsh_t));
 	
-	r->rcd_time_s = 0xffffffff;
-	while(1)
-	{
-		if(fnf->read_position >= fnf->write_position)
-			break;
-		if(STRG_SYS.fs.fs_raw_read(fd, (uint8_t *)&d, sizeof(data_in_fsh_t)) != sizeof(data_in_fsh_t))
-			break;
 
-		pos ++;
-		if(d.rcd_time_s == 0xffffffff)
+	if(sec == 0)
+	{
+		STG_Set_file_position(STG_CHN_DATA(chn), STG_DRC_READ, 0);
+		if(STG_Read_chn_data_will_retry(fd, RDBT_RETRY, r) != RET_OK)
+			r->rcd_time_s = 0xffffffff;
+		
+		return 0;
+		
+	}
+	
+	if(sec == 0xffffffff)
+	{
+		
+		STG_Set_file_position(STG_CHN_DATA(chn), STG_DRC_READ, fnf->write_position - sizeof(data_in_fsh_t));
+		if(STG_Read_chn_data_will_retry(fd, RDBT_RETRY, r) != RET_OK)
+			r->rcd_time_s = 0xffffffff;
+		
+		return fnf->write_position / sizeof(data_in_fsh_t) - 1;
+	}
+	
+	//因为可能会有连续读取，所以就先尝试在前几个位置读取一下，有可能会减少二分查找的次数
+	lt = pos + 4;
+	for(i = pos; i < lt; i ++)
+	{
+		STG_Set_file_position(STG_CHN_DATA(chn), STG_DRC_READ, i * sizeof(data_in_fsh_t));	
+		STG_Read_chn_data_will_retry(fd, RDBT_RETRY, r);
+		if(r->rcd_time_s == sec)
+			return pos;
+	}
+	
+	lt = pos;
+	rt = fnf->write_position / sizeof(data_in_fsh_t);
+	
+	
+	
+	//对于指定的某个时间点，采用二分查找
+	
+	while(1)
+	{	
+	
+		//若上限与下限相等，或者上下限相邻时,跳到错误处理
+		if((rt - lt) <= 1)
+			goto err;
+		
+		//根据上下限获取中间位置=（上限 + 下限）/ 2
+		mid = ((rt - lt) >> 1) + lt;
+		STG_Set_file_position(STG_CHN_DATA(chn), STG_DRC_READ,  mid * sizeof(data_in_fsh_t));
+		
+		//读取数据，若失败则跳到错误处理
+		if(STG_Read_chn_data_will_retry(fd, RDBT_RETRY, r) != RET_OK)
+			goto err;
+		//若数据的时间大于该时间点，将下限设置为当前的中间位置
+		if(r->rcd_time_s > sec)
+		{
+			rt = mid;
 			continue;
+		}
 		
-		if((sec == 0) || (sec == 0xffffffff))	//返回最早的记录,或最晚的记录
-			sec = d.rcd_time_s;
-		
-		if(d.rcd_time_s > sec)
-			break;
-		
-		if(d.rcd_time_s != sec)
+		//若数据的时间小于该时间点，将上限设置为当前的中间位置
+		if(r->rcd_time_s < sec)
+		{
+			lt = mid;
 			continue;
+		}
 		
 		
-		
-		r->rcd_time_s = d.rcd_time_s;
-		r->rcd_val = d.rcd_val;
-		r->decimal_places = d.decimal_places;
-		
-		break;
-		
-		
+	
+		//若数据的时间等于该时间点，则返回当前的位置
+		if(r->rcd_time_s == sec)
+			return mid ;
 		
 		
 		
@@ -392,7 +437,53 @@ uint32_t STG_Read_data_by_time(uint8_t	chn, uint32_t sec, uint32_t pos, data_in_
 		
 	}
 	
-	return pos;
+err:
+	r->rcd_time_s = 0xffffffff;
+	return mid ;
+//	
+//	STG_Set_file_position(STG_CHN_DATA(chn), STG_DRC_READ, pos * sizeof(data_in_fsh_t));	
+//	if(sec == 0xffffffff)
+//		STG_Set_file_position(STG_CHN_DATA(chn), STG_DRC_READ, fnf->write_position - sizeof(data_in_fsh_t));
+//	
+//	
+//	while(1)
+//	{
+//		if(fnf->read_position >= fnf->write_position)
+//			break;
+//		if(STRG_SYS.fs.fs_raw_read(fd, (uint8_t *)&d, sizeof(data_in_fsh_t)) != sizeof(data_in_fsh_t))
+//			break;
+
+//		pos ++;
+//		if(d.rcd_time_s == 0xffffffff)
+//			break;
+//		
+//		if((sec == 0) || (sec == 0xffffffff))	//返回最早的记录,或最晚的记录
+//			sec = d.rcd_time_s;
+//		
+//		if(d.rcd_time_s > sec)
+//			break;
+//		
+//		if(d.rcd_time_s != sec)
+//			continue;
+//		
+//		
+//		
+//		r->rcd_time_s = d.rcd_time_s;
+//		r->rcd_val = d.rcd_val;
+//		r->decimal_places = d.decimal_places;
+//		
+//		break;
+//		
+//		
+//		
+//		
+//		
+//		
+//		
+//		
+//	}
+//	
+//	return pos;
 	
 	
 }
@@ -409,6 +500,11 @@ int	STG_Read_rcd_by_time(uint8_t	chn, uint32_t start_sec, uint32_t end_sec, char
 	int					buf_offset = 0;
 	char				tmp_buf[32];
 	char				str_data[8];
+	
+	//用二分法先定位起始时间点
+	//执行了这条语句，文件的读取位置自然就会移动到对应的位置
+	STG_Read_data_by_time(chn, start_sec, 0, &d);	
+	
 	fd = STG_Open_file(STG_CHN_DATA(chn), STG_DEF_FILE_SIZE);
 	fnf = STRG_SYS.fs.fs_file_info(fd);
 
@@ -422,7 +518,7 @@ int	STG_Read_rcd_by_time(uint8_t	chn, uint32_t start_sec, uint32_t end_sec, char
 
 		
 		if(d.rcd_time_s == 0xffffffff)
-			continue;
+			break;
 		if(d.rcd_time_s < start_sec)
 			continue;
 		if(d.rcd_time_s > end_sec)
@@ -536,7 +632,19 @@ END_CTOR
 //=========================================================================//
 /// \name Private Functions
 /// \{
-
+static int STG_Read_chn_data_will_retry(int f, int retry, data_in_fsh_t *dif)
+{
+	
+	while(retry)
+	{
+		if(STRG_SYS.fs.fs_raw_read(f, (uint8_t *)dif, sizeof(data_in_fsh_t)) == sizeof(data_in_fsh_t))
+			return RET_OK;
+		retry --;
+	}
+	
+	return RET_FAILED;
+	
+}
 static int Strg_init(Storage *self)
 {
 //	int i;

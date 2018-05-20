@@ -137,7 +137,9 @@ typedef struct {
 	int (*fsh_raw_write)(uint8_t *wr_buf, uint32_t wr_addr, uint32_t num_bytes);
 	int (*fsh_read)(uint8_t *wr_buf, uint32_t rd_addr, uint32_t num_bytes);
 	int (*fsh_raw_read)(uint8_t *wr_buf, uint32_t rd_addr, uint32_t num_bytes);
-	
+	int	(*fsh_lock)(uint32_t ms);
+	int	(*fsh_unlock)(void);
+
 	void (*fsh_flush)(void);
 }flash_t;
 

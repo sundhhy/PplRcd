@@ -77,6 +77,8 @@ int FM25_Erase(int opt, uint32_t Sector_Number);
 int FM25_Write(uint8_t *pBuffer, uint32_t WriteAddr, uint32_t WriteBytesNum);
 int FM25_rd_data(uint8_t *pBuffer, uint32_t rd_add, uint32_t len);
 void FM25_Flush(void);
+int	FM25_lock(uint32_t ms);
+int	FM25_unlock(void);
 
 static void FM25_cmd_addr(uint8_t cmd, uint16_t addr);
 static int FM25_wr_enable(void);
@@ -110,6 +112,9 @@ int FM25_init(void)
 	phn_sys.arr_fsh[FM25_SPI_NO].fsh_raw_read = FM25_rd_data;
 	phn_sys.arr_fsh[FM25_SPI_NO].fsh_read = FM25_rd_data;
 	phn_sys.arr_fsh[FM25_SPI_NO].fsh_flush = FM25_Flush;
+	phn_sys.arr_fsh[FM25_SPI_NO].fsh_lock = FM25_lock;
+	phn_sys.arr_fsh[FM25_SPI_NO].fsh_unlock = FM25_unlock;
+	
 	
 	FM25_info(&phn_sys.arr_fsh[FM25_SPI_NO].fnf);
 		
@@ -294,6 +299,17 @@ int FM25_Erase(int opt, uint32_t num)
 //  
 //  return tmp_u8;
 //}
+
+int	FM25_lock(uint32_t ms)
+{
+	return RET_OK;
+	
+}
+int	FM25_unlock(void)
+{
+	return RET_OK;
+	
+}
 
 static int FM25_Write_status(uint8_t s)
 {
