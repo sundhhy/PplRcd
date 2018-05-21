@@ -304,7 +304,7 @@ static int HBR_Update_mdl_chn_data(mdl_observer *self, void *p_srcMdl)
 	
 	if((p_hmi->flag & HMI_FLAG_HSA_SEM) == 0)
 	{
-		if(Sem_wait(&phn_sys.hmi_mgr.hmi_sem, 1000) <= 0) 
+		if(Sem_wait(&phn_sys.hmi_mgr.hmi_sem, 100) <= 0) 
 			return ERR_RSU_BUSY;
 	
 	}

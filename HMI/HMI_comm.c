@@ -387,7 +387,7 @@ static int CMM_Update_time(mdl_observer *self, void *p_srcMdl)
 	
 	if(Sheet_is_hide(g_p_shtTime))
 		return RET_OK;
-	if(Sem_wait(&phn_sys.hmi_mgr.hmi_sem, 100) <= 0)
+	if(Sem_wait(&phn_sys.hmi_mgr.hmi_sem, 1) <= 0)
 		return ERR_RSU_BUSY;
 	
 	g_p_shtTime->cnt.data = p_mdl->to_string(p_mdl, 0, NULL);

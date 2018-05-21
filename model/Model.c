@@ -119,7 +119,7 @@ void Mdl_notify (Model *self)
 		if(self->arr_mdl_obs[i]->update(self->arr_mdl_obs[i], self) != RET_OK)
 		{
 //			self->retry_time_tsk_fd =  Cmd_Rgt_time_task(MDL_Retry, self, 3);
-			Cmd_Rgt_time_task(MDL_Retry, self, 3);
+			Cmd_Rgt_time_task(MDL_Retry, self, 2);
 			
 		}
 		

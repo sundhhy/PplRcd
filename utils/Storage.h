@@ -94,10 +94,14 @@ typedef struct
 }conf_file_t;
 
 typedef struct {
-	uint32_t		rcd_time_s;
-	int16_t			rcd_val;
+	//180521 这个字段是应用与 w25q flash驱动的约定，是给flash使用的
+	uint8_t			use_by_flash;		
 	uint8_t			decimal_places;
-	uint8_t			none;
+	int16_t			rcd_val;
+
+	
+	uint32_t		rcd_time_s;
+
 
 }data_in_fsh_t;
 

@@ -125,6 +125,7 @@ static w25q_mgr_t		w25q_mgr;
 static uint8_t	W25Q_tx_buf[16];
 static int w25q_wr_enable(void);
 static uint8_t w25q_ReadSR(void);
+static int W25Q_Raw_write(uint8_t *pBuffer, uint32_t WriteAddr, uint32_t WriteBytesNum);
 //static int w25q_write_waitbusy(uint8_t *data, int len);
 static int W25Q_send_wait(uint8_t *data, uint16_t len, uint16_t ms);
 static int w25q_read_id(uint8_t  buf[2]);
@@ -132,6 +133,7 @@ static int w25q_Erase_Sector(uint32_t Sector_Number);
 static int w25q_Erase_block(uint16_t block_Number);
 static int w25q_Erase_chip_c7(void);
 static int	W25Q_wr_fsh(uint8_t *pBuffer, uint32_t WriteAddr, uint32_t WriteBytesNum);
+static int W25Q_Raw_Read(uint8_t *pBuffer, uint32_t rd_add, uint32_t len);
 static int w25q_Read_flash(uint8_t *pBuffer, uint32_t rd_add, uint32_t len);
 //static int w25q_Erase_chip_60(void);
 
@@ -191,8 +193,8 @@ int w25q_init(void)
 //	phn_sys.arr_fsh[FSH_W25Q_NUM].fsh_wr_sector = w25q_Write_Sector_Data;
 //	phn_sys.arr_fsh[FSH_W25Q_NUM].fsh_rd_sector = w25q_Read_Sector_Data;
 	phn_sys.arr_fsh[FSH_W25Q_NUM].fsh_write = w25q_Write;
-	phn_sys.arr_fsh[FSH_W25Q_NUM].fsh_raw_write = W25Q_wr_fsh;
-	phn_sys.arr_fsh[FSH_W25Q_NUM].fsh_read = w25q_rd_data;
+	phn_sys.arr_fsh[FSH_W25Q_NUM].fsh_raw_write = W25Q_Raw_write;
+	phn_sys.arr_fsh[FSH_W25Q_NUM].fsh_read = W25Q_Raw_Read;
 	phn_sys.arr_fsh[FSH_W25Q_NUM].fsh_raw_read = w25q_Read_flash;
 	phn_sys.arr_fsh[FSH_W25Q_NUM].fsh_lock = W25Q_lock;
 	phn_sys.arr_fsh[FSH_W25Q_NUM].fsh_unlock = W25Q_unlock;
@@ -584,15 +586,75 @@ int	W25Q_unlock(void)
 
 }
 
+//当需要写入回读判断时，若回读出错，则废弃当前的写入记录，在该记录之后重新写入数据，最多尝试3次
+//成功返回写入的数据字节数，失败返回-1
+static int W25Q_Raw_write(uint8_t *pBuffer, uint32_t WriteAddr, uint32_t WriteBytesNum)
+{
+	uint16_t wr_len = 0;
+	uint16_t ckeck_len = WriteBytesNum;
+	int			ret;
+	int			retry = 3;
+	uint8_t	 read_back_buf[32];
+	
+
+	
+	
+	//第一个字节是被w25q使用的，作为废弃标记
+	//赋值为0xff表示该记录正常
+	pBuffer[0] = 0xff;
+	
+	rewrite:
+	//先写入，如果写入不成功，返回错误
+	ret = W25Q_wr_fsh(pBuffer, WriteAddr, WriteBytesNum);
+	if(ret != WriteBytesNum)
+		return -1;
+	
+	//若需要回读判断，则进行回读判断
+	if((W25Q_FSH.fnf.fnf_flag & FSH_FLAG_READBACK_CHECK) == 0)
+		return ret;
+	
+	//回读检查,最多只检查前32个字节
+	if(ret <= 0)
+		return ret;
+	
+	wr_len += ret;
+
+	
+	if(ckeck_len > 32)
+		ckeck_len = 32;
+	if(ckeck_len > ret)
+		ckeck_len = ret;
+	
+	w25q_Read_flash(read_back_buf, WriteAddr, ckeck_len);
+	if(memcmp(read_back_buf, pBuffer, ckeck_len) == 0)
+		return wr_len;
+	
+	
+	
+	//如回读判断出错，废弃该记录
+	pBuffer[0] = 0;
+	W25Q_wr_fsh(pBuffer, WriteAddr, 1)
+		//并在下一个位置写入
+	WriteAddr += WriteBytesNum；
+	if(retry)
+	{
+		rewrite --;
+		goto rewrite;
+	}
+	
+	return wr_len;
+	
+	
+}
+
 static int	W25Q_wr_fsh(uint8_t *pBuffer, uint32_t WriteAddr, uint32_t WriteBytesNum)
 {
 	uint8_t step = 0;
 	uint8_t count = 100;
 
-	uint16_t ckeck_len = WriteBytesNum;
-	uint8_t	 read_back_buf[32];
 
 	int ret = -1;
+	
 
 	while(1)
 	{
@@ -649,23 +711,31 @@ static int	W25Q_wr_fsh(uint8_t *pBuffer, uint32_t WriteAddr, uint32_t WriteBytes
 	}		//while(1)
 	exit:
 	
-	if((W25Q_FSH.fnf.fnf_flag & FSH_FLAG_READBACK_CHECK) == 0)
-		return ret;
-	//回读检查,最多只检查前32个字节
-	if(ret <= 0)
-		return ret;
 	
-	if(ckeck_len > 32)
-		ckeck_len = 32;
-	if(ckeck_len > ret)
-		ckeck_len = ret;
-	
-	w25q_Read_flash(read_back_buf, WriteAddr, ckeck_len);
-	if(memcmp(read_back_buf, pBuffer, ckeck_len))
-		return ERR_DEV_FAILED;
 	
 	return ret;
 	
+}
+
+//返回值是读取的全部字节数。
+//因为可能会出现废弃的记录，本函数要自动识别出来，并往后读取下一个记录，此时返回的字节数就会与传入的长度不一样了
+static int W25Q_Raw_Read(uint8_t *pBuffer, uint32_t rd_add, uint32_t len)
+{
+	int total_len = 0;
+	int ret;
+	
+	reread:
+	ret = w25q_Read_flash(pBuffer, rd_add, len);
+	
+	if(ret != len)
+		return -1;
+	
+	total_len += ret;
+	//如果读取的数据被废弃了，就读取下一个数据
+	if(pBuffer[0] != 0xff)
+		goto reread;
+	
+	return total_len;
 }
 
 static int w25q_Read_flash(uint8_t *pBuffer, uint32_t rd_add, uint32_t len)
