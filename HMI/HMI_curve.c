@@ -926,8 +926,7 @@ static void HMI_CRV_HST_Run(HMI *self)
 	struct	tm				first_tm;
 	uint32_t				end_time;
 	uint16_t				i, num_point, crv_max_points, time_step, need_clean = 0;
-//	int16_t					last_val;
-	uint8_t					crv_prc, pg_up,pg_down;
+	uint8_t					last_prc, crv_prc, pg_up,pg_down;
 	char					str_buf[7];
 	//读取一条就记录记录一条
 	//直到屏幕上容纳不下了，或者记录读完了
@@ -982,22 +981,22 @@ static void HMI_CRV_HST_Run(HMI *self)
 		sprintf(str_buf, "chn_%d", i);
 		p_mdl = Create_model(str_buf);
 		num_point = 0;
+		last_prc = 0;
 		for(time_s = hst_mgr.real_first_time_s; time_s < end_time;time_s += time_step)
 		{
 			hst_mgr.arr_hst_num[i] = STG_Read_data_by_time(i, time_s, hst_mgr.arr_hst_num[i], &d);
-//			if(hst_mgr.arr_hst_num[i])
-//				hst_mgr.arr_hst_num[i] --;	//后腿一格，防止错过
 			hst_mgr.arr_hst_num[i] ++;
 			//如果某个时间点没有数据，则装入0
 			if(d.rcd_time_s != 0xffffffff)
 			{
 				
 				crv_prc = MdlChn_Cal_prc(p_mdl, d.rcd_val);
+				last_prc = crv_prc;
 			}
 			else
 			{
 				
-				crv_prc = 0;
+				crv_prc = last_prc;
 			}
 			
 			

@@ -202,7 +202,7 @@ int w25q_init(void)
 	W25Q_FSH.fsh_flush = W25Q_Flush;
 	W25Q_Disable_WP;
 	
-	w25q_info(&phn_sys.arr_fsh[FSH_W25Q_NUM].fnf);
+	w25q_info(&W25Q_FSH.fnf);
 	
 	w25q_mgr.w25q_flag  = 0;
 	w25q_mgr.cache_earse = 0;
@@ -590,20 +590,21 @@ int	W25Q_unlock(void)
 //成功返回写入的数据字节数，失败返回-1
 static int W25Q_Raw_write(uint8_t *pBuffer, uint32_t WriteAddr, uint32_t WriteBytesNum)
 {
-	uint16_t wr_len = 0;
+	uint16_t total_wr_len = 0;
 	uint16_t ckeck_len = WriteBytesNum;
 	int			ret;
 	int			retry = 3;
 	uint8_t	 read_back_buf[32];
 	
 
+	rewrite:
 	
 	
 	//第一个字节是被w25q使用的，作为废弃标记
 	//赋值为0xff表示该记录正常
 	pBuffer[0] = 0xff;
 	
-	rewrite:
+
 	//先写入，如果写入不成功，返回错误
 	ret = W25Q_wr_fsh(pBuffer, WriteAddr, WriteBytesNum);
 	if(ret != WriteBytesNum)
@@ -617,32 +618,37 @@ static int W25Q_Raw_write(uint8_t *pBuffer, uint32_t WriteAddr, uint32_t WriteBy
 	if(ret <= 0)
 		return ret;
 	
-	wr_len += ret;
+	total_wr_len += ret;
 
-	
+
 	if(ckeck_len > 32)
 		ckeck_len = 32;
 	if(ckeck_len > ret)
 		ckeck_len = ret;
 	
-	w25q_Read_flash(read_back_buf, WriteAddr, ckeck_len);
+	if(w25q_Read_flash(read_back_buf, WriteAddr, ckeck_len) != ckeck_len)
+		return total_wr_len;		//无法读取就先退出吧，总比用错误的数据进行判断好
 	if(memcmp(read_back_buf, pBuffer, ckeck_len) == 0)
-		return wr_len;
+		return total_wr_len;
 	
-	
+
 	
 	//如回读判断出错，废弃该记录
 	pBuffer[0] = 0;
 	W25Q_wr_fsh(pBuffer, WriteAddr, 1);
 		//并在下一个位置写入
-	WriteAddr += WriteBytesNum;
 	if(retry)
 	{
+		WriteAddr += ret;
+		
+		//todo: 现在想不到什么好的办法来避免超过文件的范围，只能先判断是否超出flash范围了
+		if(WriteAddr >= W25Q_FSH.fnf.page_size * W25Q_FSH.fnf.total_pagenum)
+			return total_wr_len;
 		retry --;
 		goto rewrite;
 	}
 	
-	return wr_len;
+	return total_wr_len;
 	
 	
 }
@@ -733,7 +739,15 @@ static int W25Q_Raw_Read(uint8_t *pBuffer, uint32_t rd_add, uint32_t len)
 	total_len += ret;
 	//如果读取的数据被废弃了，就读取下一个数据
 	if(pBuffer[0] != 0xff)
+	{
+		
+		rd_add += ret;
+
+		//todo: 现在想不到什么好的办法来避免超过文件的范围，只能先判断是否超出flash范围了
+		if(rd_add >= W25Q_FSH.fnf.page_size * W25Q_FSH.fnf.total_pagenum)
+			return total_len;
 		goto reread;
+	}
 	
 	return total_len;
 }

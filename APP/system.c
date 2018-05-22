@@ -23,7 +23,7 @@
 // const defines
 //------------------------------------------------------------------------------
 #define 	PHN_MAJOR_VER				3
-#define 	PHN_MINOR_VER				20
+#define 	PHN_MINOR_VER				24
 
 #define 	PHN_DEF_SUPER_PSD_1			0x01			
 #define 	PHN_DEF_SUPER_PSD_2			0x01

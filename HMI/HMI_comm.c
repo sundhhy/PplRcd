@@ -388,7 +388,9 @@ static int CMM_Update_time(mdl_observer *self, void *p_srcMdl)
 	if(Sheet_is_hide(g_p_shtTime))
 		return RET_OK;
 	if(Sem_wait(&phn_sys.hmi_mgr.hmi_sem, 1) <= 0)
-		return ERR_RSU_BUSY;
+		//180522 时间本来就是周期性更新，失败了一次也无所谓。之前这返回错误，可能是导致屏幕显示不全的原因
+			//因为这让模型不断的去重新执行notify，导致屏幕频繁的刷新
+		return RET_OK;		
 	
 	g_p_shtTime->cnt.data = p_mdl->to_string(p_mdl, 0, NULL);
 	g_p_shtTime->cnt.len = strlen( g_p_shtTime->cnt.data);

@@ -158,7 +158,7 @@ void STG_Run(void)
 	data_in_fsh_t	d;
 	int						fd = -1;
 	int						acc_len = 0;
-	file_info_t		*fnf ;
+//	file_info_t		*fnf ;
 	uint8_t				chn_num;
 	
 	//把队列中的数据写到flash里面去
@@ -463,6 +463,13 @@ uint32_t STG_Read_data_by_time(uint8_t	chn, uint32_t sec, uint32_t pos, data_in_
 		STG_Read_chn_data_will_retry(fd, RDBT_RETRY, r);
 		if(r->rcd_time_s == sec)
 			return pos;
+		if(r->rcd_time_s > sec)
+		{
+			//如果最近的位置的时间都大于查找的，那之后的更加大于查找的时间，所以就没必要再继续查找了
+			//当然，能这么处理的原因是假定记录的时间是从小到大排列的。
+			r->rcd_time_s = 0xffffffff;
+			return pos;
+		}
 	}
 	
 	lt = pos;
@@ -1044,6 +1051,8 @@ static int	STG_Acc_chn_data(uint8_t	type, uint8_t	drc, void *p, int len)
 		if(STG_En_save_data(chn_num, decimal_places, p_s16[0], SYS_time_sec()) != RET_OK)
 		{
 			//错误处理
+			STG_Clean_save_data(chn_num);
+			LOG_Add(LOG_CHN_DATA_DROP(chn_num));
 			
 		}
 		
@@ -1270,7 +1279,7 @@ static int STG_En_save_data(uint8_t chn, uint8_t dp, uint16_t value,  uint32_t t
 	p_sd->value = value;
 	
 	sds.arr_tail[chn] ++;
-	if(sds.arr_tail[chn] > NUM_SAVE_DATA)
+	if(sds.arr_tail[chn] >= NUM_SAVE_DATA)
 		sds.arr_tail[chn] = 0;
 	
 	return RET_OK;
@@ -1289,6 +1298,7 @@ static int STG_Out_save_data(uint8_t chn, data_in_fsh_t	*dif)
 	dif->rcd_time_s = p_sd->time_s;
 	dif->rcd_val = p_sd->value;
 	
+	return RET_OK;
 }
 
 static void STG_Remove_save_data(uint8_t chn)
@@ -1298,7 +1308,7 @@ static void STG_Remove_save_data(uint8_t chn)
 			return;
 		
 	sds.arr_head[chn] ++;
-	if(sds.arr_head[chn] > NUM_SAVE_DATA)
+	if(sds.arr_head[chn] >= NUM_SAVE_DATA)
 		sds.arr_head[chn] = 0;
 }
 

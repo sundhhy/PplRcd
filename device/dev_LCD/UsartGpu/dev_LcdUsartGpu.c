@@ -174,7 +174,9 @@ static void GPU_Bkc_pic( char m, int x1, int y1, char num)
 		
 		//180406 经过调试发现100Ms比较何合适
 		//不加延时是导致棒图（其他画面也有）显示不全的情况出现
-		osDelay(100);		
+		//180522 这个延时很关键，在设置成200时，棒图显示不全的问题就出现的很频繁。后来改成20好像也没出什么问题。
+		//当他，这个延时不加是不行的，会出现残影。
+		osDelay(20);		
 	}
 	Sem_post(&gpu_sem);
 #else	
@@ -568,13 +570,13 @@ static void GPU_Send(char * buf)
 			}
 		}  else if(ret == ERR_DEV_TIMEOUT) {
 			osDelay(100);
-//			break; 		//180522 test
+			break; 		
 		} 
 		else if(ret == ERR_BUSY) {
 			osDelay(1);
 		} 
 
-//		c ++;  //180522 test
+		c ++;  
 		if(c > 20)
 			break;
 	}
