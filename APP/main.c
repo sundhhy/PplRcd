@@ -218,6 +218,7 @@ int main (void) {
 		
 //		phn_sys.lcd_sem_wait_ms = 20;
 		LCD_Run();
+		STG_Run();
 //		phn_sys.lcd_sem_wait_ms = 0xffffffff;
 //		osThreadYield (); 
 

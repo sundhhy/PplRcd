@@ -455,25 +455,7 @@ static int GPU_Done( void)
 		return ERR_RSU_UNAVAILABLE;
 	
 	GPU_send_done();
-//	while(1) {
-//		strcpy(tmpbuf, "\r\n");
-//		GPU_Send(tmpbuf);
-//		ret = I_sendDev->read(I_sendDev, tmpbuf, 8);
-//		if(ret > 0) {
-//			if(tmpbuf[0] == 'O' && tmpbuf[1] == 'K')
-//				break; 
-//			else
-//				goto err;
-//		} else
-//			goto err;
-//		
-//			
-//		
-//	}
-	//todo:需要增加错误处理
-//	err:
 //	osDelay(200);
-
 	Sem_post(&gpu_sem);
 	return RET_OK;
 #endif
@@ -586,19 +568,13 @@ static void GPU_Send(char * buf)
 			}
 		}  else if(ret == ERR_DEV_TIMEOUT) {
 			osDelay(100);
-			break; 
+//			break; 		//180522 test
 		} 
 		else if(ret == ERR_BUSY) {
 			osDelay(1);
 		} 
-//		else {
-			
-//			strcpy(tmpbuf, "\r\n");
-//			I_sendDev->write(I_sendDev, tmpbuf, 2);
-//			osDelay(50);
-//		}
-		//todo: 如果会在这里出现死机，还要加上退出机制	
-		c ++;
+
+//		c ++;  //180522 test
 		if(c > 20)
 			break;
 	}

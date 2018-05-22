@@ -148,4 +148,6 @@ int	STG_Set_file_position(uint8_t	file_type, uint8_t rd_or_wr, uint32_t position
 void STG_Erase_file(uint8_t	file_type);
 void STG_Resize(uint8_t	file_type, uint32_t	new_size);
 
+void STG_Run(void);
+
 #endif

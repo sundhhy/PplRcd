@@ -27,21 +27,10 @@ Project File Date:  05/21/2018
 <h2>Output:</h2>
 *** Using Compiler 'V5.06 update 1 (build 61)', folder: 'D:\Keil_v5\ARM\ARMCC\Bin'
 Build target 'Target 1'
-compiling hw_w25q.c...
-..\..\utils\hw_w25q.c(638): error:  #65: expected a ";"
-  	WriteAddr += WriteBytesNum£»
-..\..\utils\hw_w25q.c(638): error:  #7: unrecognized token
-  	WriteAddr += WriteBytesNum£»
-..\..\utils\hw_w25q.c(645): warning:  #12-D: parsing restarts here after previous syntax error
-  	return wr_len;
-..\..\utils\hw_w25q.c(648): warning:  #940-D: missing return statement at end of non-void function "W25Q_Raw_write"
-  }
-..\..\utils\hw_w25q.c(596): warning:  #177-D: variable "retry" was declared but never referenced
-  	int			retry = 3;
-..\..\utils\hw_w25q.c(606): warning:  #177-D: label "rewrite" was declared but never referenced
-  	rewrite:
-..\..\utils\hw_w25q.c: 4 warnings, 2 errors
-".\Objects\PplRcd.axf" - 2 Error(s), 4 Warning(s).
+compiling dev_LcdUsartGpu.c...
+linking...
+Program Size: Code=115604 RO-data=5532 RW-data=2256 ZI-data=44056  
+".\Objects\PplRcd.axf" - 0 Error(s), 0 Warning(s).
 
 <h2>Software Packages used:</h2>
 
@@ -151,7 +140,6 @@ Package Vendor: Keil
    * Component: Keil::Device:StdPeriph Drivers:USART:3.5.0
       Include file:  Device\StdPeriph_Driver\inc\stm32f10x_usart.h
       Source file:   Device\StdPeriph_Driver\src\stm32f10x_usart.c
-Target not created.
 Build Time Elapsed:  00:00:02
 </pre>
 </body>

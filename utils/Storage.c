@@ -47,6 +47,7 @@
 #define STRG_CHN_DATA_FSH_NUM	FSH_W25Q_NUM
 #define RCD_ERR					1
 #define RCD_READED			2
+#define NUM_SAVE_DATA		4
 //------------------------------------------------------------------------------
 // local types
 //------------------------------------------------------------------------------
@@ -67,6 +68,24 @@ typedef struct {
 	uint8_t			chn;
 }STG_cache_t;
 #endif
+
+//通道数据存储是先存着，然后在另外的线程里面进行存储。这样减轻采集线程的负担。
+typedef struct {
+	uint8_t			decimal_point;
+	uint8_t			none;
+	int16_t		value;
+	uint32_t	time_s;
+	
+	
+}save_data_t;
+
+typedef struct {
+	save_data_t		arr_save_data[NUM_CHANNEL][NUM_SAVE_DATA];
+	uint8_t				arr_head[NUM_CHANNEL];
+	uint8_t				arr_tail[NUM_CHANNEL];
+	
+	
+}save_data_server_t;
 //------------------------------------------------------------------------------
 // local vars
 //------------------------------------------------------------------------------
@@ -75,6 +94,8 @@ typedef struct {
 static uint8_t			stg_buf[4096];
 static STG_wr_buf_mgr_t stg_wr_mgr = {0, 4096, stg_buf};
 #endif
+
+save_data_server_t		sds;
 //------------------------------------------------------------------------------
 // local function prototypes
 //------------------------------------------------------------------------------
@@ -106,6 +127,10 @@ static int STG_Read_chn_data_will_retry(int f, int retry, data_in_fsh_t *dif);
 static void STG_WR_cache_mgr(void);
 static void STG_flush_wr_cache(uint8_t type);
 #endif
+static int STG_En_save_data(uint8_t chn, uint8_t dp, uint16_t value, uint32_t time_s);
+static int STG_Out_save_data(uint8_t chn, data_in_fsh_t	*dif);
+static void STG_Remove_save_data(uint8_t chn);
+static void STG_Clean_save_data(uint8_t chn);
 //============================================================================//
 //            P U B L I C   F U N C T I O N S                                 //
 //============================================================================//
@@ -122,6 +147,57 @@ Storage		*Get_storage()
 	
 	
 	return sington_strg;
+	
+}
+
+
+void STG_Run(void)
+{
+	
+	Storage				*stg = Get_storage();
+	data_in_fsh_t	d;
+	int						fd = -1;
+	int						acc_len = 0;
+	file_info_t		*fnf ;
+	uint8_t				chn_num;
+	
+	//把队列中的数据写到flash里面去
+	for(chn_num = 0; chn_num <phn_sys.sys_conf.num_chn; chn_num++)
+	{
+
+		if(stg->arr_rcd_mgr[chn_num].rcd_count >= stg->arr_rcd_mgr[chn_num].rcd_maxcount)
+		{
+			STG_Clean_save_data(chn_num);
+			LOG_Add(LOG_CHN_DATA_AUTO_ERASE(chn_num));
+			STRG_SYS.fs.fs_erase_file(fd, 0, 0);
+			stg->arr_rcd_mgr[chn_num].rcd_count = 0;
+			continue;
+		}		
+		
+		fd = STG_Open_file(STG_CHN_DATA(chn_num), STG_DEF_FILE_SIZE);
+		//把对应通道的全部数据都存到falsh里面
+		while(1)
+		{
+			
+			if(STG_Out_save_data(chn_num, &d) != RET_OK)
+				break;
+			
+			//因为W25Q的驱动提供了回读错误后，会在当前位置之后重新写数据，所以可能会出现写入多个记录的情况（当然，错误的那些记录会被标记）
+			acc_len = STRG_SYS.fs.fs_raw_write(fd, (uint8_t *)&d, sizeof(d));
+			if(acc_len > 0)
+			{
+				stg->arr_rcd_mgr[chn_num].rcd_count += acc_len / sizeof(d);	
+				STG_Remove_save_data(chn_num);	//成功写入才删除这个数据
+			}
+			
+		}
+		
+	}
+	
+	
+
+
+
 	
 }
 
@@ -579,50 +655,11 @@ int	STG_Read_rcd_by_time(uint8_t	chn, uint32_t start_sec, uint32_t end_sec, char
 }
 
 
-
-
-
-
-
-
-
-//int Save_channel_data( mdl_observer *self, void *p_srcMdl)
-//{
-//	
-//	Storage 				*cthis = SUB_PTR(self, mdl_observer, Storage);
-//	Model 						*p_mdl;
-//	rcd_channel_t			rchn = {0};
-//	
-//	p_mdl = Create_model("time");
-//	p_mdl->getMdlData(p_mdl, TIME_U32, &rchn.rcd_time_s);
-//	
-//	p_mdl = (Model *)p_srcMdl;
-//	if(p_mdl->getMdlData(p_mdl, AUX_DATA, &rchn.rcd_val) < 0)
-//		rchn.rcd_flag |= RCD_ERR;
-//	p_mdl->getMdlData(p_mdl, MDHCHN_CHN_NUM, &rchn.chn_num);
-//	if(cthis->arr_rcd_mgr[rchn.chn_num].rcd_count < cthis->arr_rcd_mgr[rchn.chn_num].rcd_maxcount)
-//	{
-//		cthis->arr_rcd_mgr[rchn.chn_num].rcd_count ++;
-//		STRG_SYS.fs.fs_write(cthis->rcd_fd, (uint8_t *)&rchn, sizeof(rcd_channel_t));
-//	}
-//	else
-//	{
-//		
-//		
-//	}
-//	
-//	return RET_OK;
-//}
-
-
 CTOR(Storage)
 FUNCTION_SETTING(init, Strg_init);
 FUNCTION_SETTING(rd_stored_data, Strg_rd_stored_data);
 FUNCTION_SETTING(wr_stored_data, Strg_WR_stored_data);
 FUNCTION_SETTING(open_file, STG_Open_file);
-
-//FUNCTION_SETTING(mdl_observer.update, Save_channel_data);
-
 
 END_CTOR
 //=========================================================================//
@@ -969,14 +1006,14 @@ static int	STG_Acc_chn_sum(uint8_t	type, uint8_t	drc, void *p, int len)
 static int	STG_Acc_chn_data(uint8_t	type, uint8_t	drc, void *p, int len)
 {
 #if STG_RCD_FULL_ACTION == STG_ERASE
-	data_in_fsh_t		dinf;
+//	data_in_fsh_t		dinf;
 	Storage				*stg = Get_storage();
 	int16_t				*p_s16 = p;
 	int						fd = -1;
 	int					acc_len = 0;
 	file_info_t			*fnf ;
 	uint8_t				chn_num = STG_GET_CHN(type);
-
+	uint8_t				decimal_places = 0;
 	
 	
 	
@@ -995,26 +1032,31 @@ static int	STG_Acc_chn_data(uint8_t	type, uint8_t	drc, void *p, int len)
 	}
 	else
 	{
-		if(stg->arr_rcd_mgr[chn_num].rcd_count >= stg->arr_rcd_mgr[chn_num].rcd_maxcount)
+		
+//		dinf.rcd_time_s = SYS_time_sec();
+//		dinf.rcd_val = p_s16[0];
+//		if(len == 4)
+//			dinf.decimal_places = p_s16[1];
+		
+		
+		if(len == 4)
+			decimal_places = p_s16[1];
+		if(STG_En_save_data(chn_num, decimal_places, p_s16[0], SYS_time_sec()) != RET_OK)
 		{
-			LOG_Add(LOG_CHN_DATA_AUTO_ERASE(chn_num));
-			STRG_SYS.fs.fs_erase_file(fd, 0, 0);
-			stg->arr_rcd_mgr[chn_num].rcd_count = 0;
+			//错误处理
+			
 		}
-//		if(chn_num == 0)
+		
+//		if(stg->arr_rcd_mgr[chn_num].rcd_count >= stg->arr_rcd_mgr[chn_num].rcd_maxcount)
 //		{
+//			LOG_Add(LOG_CHN_DATA_AUTO_ERASE(chn_num));
 //			STRG_SYS.fs.fs_erase_file(fd, 0, 0);
 //			stg->arr_rcd_mgr[chn_num].rcd_count = 0;
-//			
 //		}
-		dinf.rcd_time_s = SYS_time_sec();
-		dinf.rcd_val = p_s16[0];
-		if(len == 4)
-			dinf.decimal_places = p_s16[1];
-		
-		acc_len = STRG_SYS.fs.fs_raw_write(fd, (uint8_t *)&dinf, sizeof(dinf));
-		if(acc_len == sizeof(dinf))
-			stg->arr_rcd_mgr[chn_num].rcd_count ++;
+
+//		acc_len = STRG_SYS.fs.fs_raw_write(fd, (uint8_t *)&dinf, sizeof(dinf));
+//		if(acc_len == sizeof(dinf))
+//			stg->arr_rcd_mgr[chn_num].rcd_count ++;
 
 	}
 	exit:
@@ -1125,102 +1167,6 @@ static void STG_flush_wr_cache(uint8_t type)
 }
 #endif
 
-//static int	Strg_RD_chn_conf(uint8_t type, void *p)
-//{
-//	int fd;
-//	int	num = 0;
-//	int	ret = -1;
-//	
-//	
-//	if(type < NUM_CHANNEL)
-//		num = type;
-//	else
-//		num = -1;
-//	
-//	if(num < 0)
-//		return -1;
-//	
-//	fd = STRG_SYS.fs.fs_open(STRG_CFG_FSH_NUM, "phn.cfg", "r", 256);
-//	STRG_SYS.fs.fs_lseek(fd, RD_SEEK_SET, num * sizeof(mdl_chn_save_t));
-//	if(STRG_SYS.fs.fs_read(fd,p, sizeof(mdl_chn_save_t)) == sizeof(mdl_chn_save_t))
-//	{
-//		Strg_Updata_rcd_mgr(num, p);
-//		
-//		ret = RET_OK;
-//	}
-//	STRG_SYS.fs.fs_close(fd);
-//	
-//	return ret;
-//}
-//static int	Strg_RD_sys_conf(uint8_t type, void *p)
-//{
-//	int fd;
-//	int	ret = -1;
-//	if(!IS_SYS_CONF(type))
-//		return -1;
-//	
-//	fd = STRG_SYS.fs.fs_open(STRG_CFG_FSH_NUM, "phn.cfg", "r", 256);
-//	STRG_SYS.fs.fs_lseek(fd, RD_SEEK_SET, NUM_CHANNEL * sizeof(mdl_chn_save_t));
-//	if(STRG_SYS.fs.fs_read(fd, p, sizeof(system_conf_t)) == sizeof(system_conf_t))
-//	{
-//		
-//		ret = RET_OK;
-//	}
-//	STRG_SYS.fs.fs_close(fd);
-//	
-//	return ret;
-//}
-
-
-//static int	Strg_WR_chn_conf(uint8_t type, void *p)
-//{
-//	int fd;
-//	int	num = 0;
-//	int	ret = -1;
-//	mdl_chn_save_t	save;
-//	
-//	if(type < NUM_CHANNEL)
-//		num = type;
-//	else
-//		num = -1;
-//	
-//	if(num < 0)
-//		return -1;
-//	if(p == NULL)
-//	{
-//		p = &save;
-//		MdlChn_save_data(num, p);
-//	}
-//	fd = STRG_SYS.fs.fs_open(STRG_CFG_FSH_NUM, "phn.cfg", "r", 256);
-//	STRG_SYS.fs.fs_lseek(fd, WR_SEEK_SET, num * sizeof(mdl_chn_save_t));
-//	if(STRG_SYS.fs.fs_write(fd, p, sizeof(mdl_chn_save_t)) == sizeof(mdl_chn_save_t))
-//	{
-//		Strg_Updata_rcd_mgr(num, p);
-//		
-//		ret = RET_OK;
-//	}
-//	STRG_SYS.fs.fs_close(fd);
-//	
-//	return ret;
-//}
-//static int	Strg_WR_sys_conf(uint8_t type, void *p)
-//{
-//	int fd;
-//	int	ret = -1;
-//	if(!IS_SYS_CONF(type))
-//		return -1;
-//	
-//	fd = STRG_SYS.fs.fs_open(STRG_CFG_FSH_NUM, "phn.cfg", "r", 256);
-//	STRG_SYS.fs.fs_lseek(fd, WR_SEEK_SET, NUM_CHANNEL * sizeof(mdl_chn_save_t));
-//	if(STRG_SYS.fs.fs_write(fd, p, sizeof(system_conf_t)) == sizeof(system_conf_t))
-//	{
-//		
-//		ret = RET_OK;
-//	}
-//	STRG_SYS.fs.fs_close(fd);
-//	
-//	return ret;
-//}
 
 static int 	STG_Open_file(uint8_t type, uint32_t file_size)
 {
@@ -1280,4 +1226,86 @@ static int 	STG_Open_file(uint8_t type, uint32_t file_size)
 	}
 	
 	return fd;
+}
+
+
+static int STG_Is_sava_data_full(uint8_t chn)
+{
+	if(sds.arr_tail[chn] == (NUM_SAVE_DATA - 1))	
+		if(sds.arr_head[chn] == 0)
+			return 1;
+		
+	if((sds.arr_tail[chn] + 1) == sds.arr_head[chn])
+		return 1;
+	
+	
+	return 0;
+	
+}
+
+static int STG_Is_sava_data_empty(uint8_t chn)
+{
+//	if(sds.arr_head[chn] == (NUM_SAVE_DATA - 1))	
+//		if(sds.arr_tail[chn] == 0)
+//			return 1;
+		
+	if((sds.arr_head[chn]) == sds.arr_tail[chn])
+		return 1;
+	
+	
+	return 0;
+	
+}
+
+//成功返回RET_OK， 失败返回 RET_FAILED
+static int STG_En_save_data(uint8_t chn, uint8_t dp, uint16_t value,  uint32_t time_s)
+{
+	save_data_t *p_sd;
+	
+	if(STG_Is_sava_data_full(chn))
+		return RET_FAILED;
+	p_sd = &sds.arr_save_data[chn][sds.arr_tail[chn]];
+	p_sd->decimal_point = dp;
+	p_sd->time_s = time_s;
+	p_sd->value = value;
+	
+	sds.arr_tail[chn] ++;
+	if(sds.arr_tail[chn] > NUM_SAVE_DATA)
+		sds.arr_tail[chn] = 0;
+	
+	return RET_OK;
+	
+}
+//成功返回RET_OK， 失败返回RET_FAILED
+
+static int STG_Out_save_data(uint8_t chn, data_in_fsh_t	*dif)
+{
+	save_data_t *p_sd;
+	if(STG_Is_sava_data_empty(chn))
+		return RET_FAILED;
+	
+	p_sd = &sds.arr_save_data[chn][sds.arr_head[chn]];
+	dif->decimal_places = p_sd->decimal_point;
+	dif->rcd_time_s = p_sd->time_s;
+	dif->rcd_val = p_sd->value;
+	
+}
+
+static void STG_Remove_save_data(uint8_t chn)
+{
+	
+		if(STG_Is_sava_data_empty(chn))
+			return;
+		
+	sds.arr_head[chn] ++;
+	if(sds.arr_head[chn] > NUM_SAVE_DATA)
+		sds.arr_head[chn] = 0;
+}
+
+static void STG_Clean_save_data(uint8_t chn)
+{
+	
+	sds.arr_head[chn] = 0;
+	sds.arr_tail[chn] = 0;
+	
 }

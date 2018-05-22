@@ -194,8 +194,8 @@ int w25q_init(void)
 //	phn_sys.arr_fsh[FSH_W25Q_NUM].fsh_rd_sector = w25q_Read_Sector_Data;
 	phn_sys.arr_fsh[FSH_W25Q_NUM].fsh_write = w25q_Write;
 	phn_sys.arr_fsh[FSH_W25Q_NUM].fsh_raw_write = W25Q_Raw_write;
-	phn_sys.arr_fsh[FSH_W25Q_NUM].fsh_read = W25Q_Raw_Read;
-	phn_sys.arr_fsh[FSH_W25Q_NUM].fsh_raw_read = w25q_Read_flash;
+	phn_sys.arr_fsh[FSH_W25Q_NUM].fsh_read = w25q_rd_data;
+	phn_sys.arr_fsh[FSH_W25Q_NUM].fsh_raw_read = W25Q_Raw_Read;
 	phn_sys.arr_fsh[FSH_W25Q_NUM].fsh_lock = W25Q_lock;
 	phn_sys.arr_fsh[FSH_W25Q_NUM].fsh_unlock = W25Q_unlock;
 	
@@ -633,12 +633,12 @@ static int W25Q_Raw_write(uint8_t *pBuffer, uint32_t WriteAddr, uint32_t WriteBy
 	
 	//如回读判断出错，废弃该记录
 	pBuffer[0] = 0;
-	W25Q_wr_fsh(pBuffer, WriteAddr, 1)
+	W25Q_wr_fsh(pBuffer, WriteAddr, 1);
 		//并在下一个位置写入
-	WriteAddr += WriteBytesNum；
+	WriteAddr += WriteBytesNum;
 	if(retry)
 	{
-		rewrite --;
+		retry --;
 		goto rewrite;
 	}
 	
