@@ -81,6 +81,7 @@ static usb_op_t	usb_op;
 //------------------------------------------------------------------------------
 
 static int	Main_USB_event(int type);
+static void Init_usb_when_idle(void *arg);
 void 	Init_LCD(void);
 
 //============================================================================//
@@ -157,19 +158,14 @@ int main (void) {
 	
 	
 	osKernelStart ();  
+	
+	
+	
+	Cmd_Rgt_time_task(Init_usb_when_idle, NULL, 3);		//3秒之后初始化USB。
 
 	MBA_Init();
 	
-	UHI_Init(&usb_op);
-	if(USB_Init(&usb_op) != RET_OK)
-	{
-		phn_sys.sys_flag |= SYSFLAG_ERR;
-	}
-	else
-	{
-		
-		USB_Rgt_event_hdl(Main_USB_event);
-	}
+	
 	
 	
 	phn_sys.sys_flag |= SYSFLAG_POWEON;
@@ -342,6 +338,21 @@ void HardFault_Handler()
 	;
 	}
 	
+}
+
+static void Init_usb_when_idle(void *arg)
+{
+	
+	UHI_Init(&usb_op);
+	if(USB_Init(&usb_op) != RET_OK)
+	{
+		phn_sys.sys_flag |= SYSFLAG_ERR;
+	}
+	else
+	{
+		
+		USB_Rgt_event_hdl(Main_USB_event);
+	}
 }
 
 static int	Main_USB_event(int type)
