@@ -161,7 +161,7 @@ int main (void) {
 	
 	
 	
-	Cmd_Rgt_time_task(Init_usb_when_idle, NULL, 3);		//3秒之后初始化USB。
+	Cmd_Rgt_time_task(Init_usb_when_idle, NULL, 5);		//3秒之后初始化USB。
 
 	MBA_Init();
 	

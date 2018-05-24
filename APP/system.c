@@ -166,6 +166,14 @@ void System_power_off(void)
 
 }
 
+void SYS_Reset(void)
+{
+	
+	EFS_Reset();
+	System_default();
+	
+}
+
 void System_default(void)
 {
 	system_conf_t 	*p_sc = &phn_sys.sys_conf;

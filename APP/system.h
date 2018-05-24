@@ -261,7 +261,7 @@ int 			System_set_time(struct  tm *stime);
 
 
 extern void System_default(void);
-
+extern void SYS_Reset(void);
 
 
 

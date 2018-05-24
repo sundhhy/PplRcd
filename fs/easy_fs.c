@@ -244,7 +244,7 @@ int	EFS_open(uint8_t prt, char *path, char *mode, int	file_size)
 		EFS_Init_file_sem(new_fd);
 		
 		
-		EFS_Erase_file(new_fd, 0, 0);
+//		EFS_Erase_file(new_fd, 0, 0);
 		
 	}
 	if(new_fd >= 0)
@@ -635,6 +635,25 @@ file_info_t		*EFS_file_info(int fd)
 	return efs_mgr.arr_file_info + fd;
 }
 
+void 	EFS_Reset(void)
+{
+	uint8_t		ver[2];
+	char			i;
+	
+	for(i = 0; i < NUM_FSH; i ++)
+	{
+		EFS_FSH(i).fsh_ersse(FSH_OPT_CHIP, 0);
+		
+	}	
+	
+	
+	ver[0] = EFS_SYS.major_ver ;
+	ver[1] = EFS_SYS.minor_ver;
+	EFS_FSH(EFS_MGR_FSH_NO).fsh_write(ver, 0, 2);
+	memset((uint8_t *)efs_mgr.arr_efiles, 0, sizeof(efs_mgr.arr_efiles));
+	EFS_FSH(EFS_MGR_FSH_NO).fsh_write((uint8_t *)efs_mgr.arr_efiles, 2, sizeof(efs_mgr.arr_efiles));
+	
+}
 //=========================================================================//
 //                                                                         //
 //          P R I V A T E   D E F I N I T I O N S                          //
@@ -644,7 +663,7 @@ file_info_t		*EFS_file_info(int fd)
 /// \{
 static int EFS_format(void)
 {
-	
+	int 	ret = RET_OK;
 	uint8_t		ver[2];
 //	uint8_t		i = 0;
 	
@@ -653,23 +672,18 @@ static int EFS_format(void)
 	if(ver[0] != EFS_SYS.major_ver || ver[1] != EFS_SYS.minor_ver)
 	{
 		
-//		for(i = 0; i < NUM_FSH; i ++)
-//		{
-//			EFS_FSH(i).fsh_ersse(FSH_OPT_CHIP, 0);
-//			
-//		}
-		ver[0] = EFS_SYS.major_ver ;
-		ver[1] = EFS_SYS.minor_ver;
-		EFS_FSH(EFS_MGR_FSH_NO).fsh_write(ver, 0, 2);
-		memset((uint8_t *)efs_mgr.arr_efiles, 0, sizeof(efs_mgr.arr_efiles));
-		EFS_FSH(EFS_MGR_FSH_NO).fsh_write((uint8_t *)efs_mgr.arr_efiles, 2, sizeof(efs_mgr.arr_efiles));
-		
+
+//		ver[0] = EFS_SYS.major_ver ;
+//		ver[1] = EFS_SYS.minor_ver;
+//		EFS_FSH(EFS_MGR_FSH_NO).fsh_write(ver, 0, 2);
+//		memset((uint8_t *)efs_mgr.arr_efiles, 0, sizeof(efs_mgr.arr_efiles));
+//		EFS_FSH(EFS_MGR_FSH_NO).fsh_write((uint8_t *)efs_mgr.arr_efiles, 2, sizeof(efs_mgr.arr_efiles));
+		ret = RET_FAILED;
 		
 	}
-//	
-//	
+	
 	EFS_FSH(EFS_MGR_FSH_NO).fsh_read((uint8_t *)efs_mgr.arr_efiles, 2, sizeof(efs_mgr.arr_efiles));
-	return RET_OK;
+	return ret;
 }
 
 

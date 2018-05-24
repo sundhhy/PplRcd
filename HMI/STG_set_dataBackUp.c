@@ -96,6 +96,13 @@ static void DBP_Default_file_name(char *s, char ft);
 static int	DBP_filename_commit(void *self, void *data, int len);
  
  static void DBP_Focus_file_name(void);	//文件名的前缀'/' 和 后缀'.CSV'不允许选中
+ 
+ 
+static uint32_t DBP_Copy_chn_data(int fd);
+static uint32_t DBP_Copy_chn_alarm(int fd);
+static uint32_t DBP_Copy_lost_power(int fd);
+static uint32_t DBP_Copy_log(int fd);
+
 //============================================================================//
 //            P U B L I C   F U N C T I O N S                                 //
 //============================================================================//
@@ -559,166 +566,191 @@ static int DBP_update_content(int op, int weight)
 
 static void DBP_Copy(void)
 {
-	uint32_t			start_sec;
-	uint32_t			old_start = Str_time_2_u32(arr_p_vram[row_start_time]);
-	uint32_t			end_sec = Str_time_2_u32(arr_p_vram[row_end_time]);
-	uint32_t			total = end_sec - old_start + 1;
-	uint32_t			done = 0;
-	uint32_t			rd_sec = 0;
+//	uint32_t			start_sec;
+//	uint32_t			old_start = Str_time_2_u32(arr_p_vram[row_start_time]);
+//	uint32_t			end_sec = Str_time_2_u32(arr_p_vram[row_end_time]);
+//	uint32_t			total = end_sec - old_start + 1;
+//	uint32_t			done = 0;
+//	uint32_t			rd_sec = 0;
 	
 	Progress_bar		*p_bar = PGB_Get_Sington();
 	char				*copy_buf = arr_p_vram[DBP_row_max];
-	int					rd_len = 0;
+//	int					rd_len = 0;
 	int					usb_fd = 0;
 	uint32_t			dbp_count_bytes = 0;
-	uint8_t				last_prc = 0, prc = 0;
-	uint8_t				copy_num_chn = DBP_LAST_CHN - DBP_FIRST_CHN  + 1;
-	uint8_t				copy_chn = DBP_FIRST_CHN;
-	uint8_t				done_chn = 0;
+//	uint8_t				last_prc = 0, prc = 0;
+//	uint8_t				copy_num_chn = DBP_LAST_CHN - DBP_FIRST_CHN  + 1;
+//	uint8_t				copy_chn = DBP_FIRST_CHN;
+//	uint8_t				done_chn = 0;
 //	usb_fd = USB_Open_file(arr_p_vram[4], USB_FM_WRITE | USB_FM_COVER);
 
 	if(strcmp(arr_p_vram[row_file_name], "/SDHLOG.CSV") == 0)
 		copy_file_type = 3;
 	
-	while(done_chn <= copy_num_chn)
+	//
+	while(phn_sys.usb_device == 0)
 	{
+			delay_ms(50);
+			if(DBP_copy == 0)
+				goto exit;
 		
-		done = 0;
-		start_sec = old_start;
+	}
+			
+
+	
+	//打开文件，并写入第一行标题
+	
+	while(usb_fd == 0)
+	{
+		usb_fd = USB_Create_file(arr_p_vram[row_file_name], USB_FM_WRITE | USB_FM_COVER);
+		if(usb_fd == 0x42)
+		{
+			//todo: 文件名错误的处理要完善
+			usb_fd = 0;
+			delay_ms(5);
+			continue;
+		}
 		if(copy_file_type == 0)
-			STG_Set_file_position(STG_CHN_DATA(copy_chn), STG_DRC_READ, 0);
-		else if(copy_file_type == 1)
-		{
-			
-			total = STG_MAX_NUM_CHNALARM;
-			start_sec = 0;
-		}
-		else if(copy_file_type == 2)
-		{
-			
-			total = STG_MAX_NUM_LST_PWR;
-			start_sec = 0;
-		}
+			sprintf(copy_buf,"通道号,日期,时间,值\r\n");
 		else if(copy_file_type == 3)
 		{
-			
-			total = LOG_Get_total_num() * sizeof(rcd_log_t);
+			sprintf(copy_buf,"日期,时间,类型\r\n");
+			LOG_Set_read_position(0);
 		}
-		else
-		{
-			
-			return;
-		}
+		else 
+			sprintf(copy_buf,"通道号,事件类型,产生日期,产生时间,结束日期,结束时间\r\n");
 		
-		while(done < total)
-		{
-			if(DBP_copy == 0)
-				break;
-			if(phn_sys.usb_device == 0)
-				goto copy_wait;
-			if(usb_fd == 0)
-			{
-				usb_fd = USB_Create_file(arr_p_vram[row_file_name], USB_FM_WRITE | USB_FM_COVER);
-				if(usb_fd == 0x42)
-				{
-					//todo: 文件名错误的处理要完善
-					usb_fd = 0;
-					goto copy_wait;
-				}
-				if(copy_file_type == 0)
-					sprintf(copy_buf,"通道号,日期,时间,值\r\n");
-				else if(copy_file_type == 3)
-				{
-					sprintf(copy_buf,"日期,时间,类型\r\n");
-					LOG_Set_read_position(0);
-				}
-				else 
-					sprintf(copy_buf,"通道号,事件类型,产生日期,产生时间,结束日期,结束时间\r\n");
-				
-				
-					
-				USB_Write_file(usb_fd, copy_buf, strlen(copy_buf));
-			}
-			
-			if(copy_file_type == 0)
-			{
-				rd_sec = 0;
-				rd_len = STG_Read_rcd_by_time(copy_chn, start_sec, end_sec, copy_buf, usb_buf_size, &rd_sec);
-				if(rd_len <= 0)
-					done = total;
-				else
-				{
-					
-					start_sec += rd_sec;
-					done += rd_sec;
-				}
-			}
-			else if(copy_file_type == 3)
-			{
-				rd_len = LOG_Read(copy_buf, usb_buf_size);
-				if(rd_len <= 0)
-					done = total;
-				else
-				{
-					copy_num_chn = 0;
-					done = LOG_Get_read_num() * sizeof(rcd_log_t);
-				}
-				
-			}
-			else 
-			{
-				if(copy_file_type == 1)
-					rd_len = STG_Read_alm_pwr(STG_CHN_ALARM(copy_chn), start_sec, copy_buf, usb_buf_size, &rd_sec);
-				else
-				{
-					copy_chn = DBP_FIRST_CHN;
-					copy_num_chn = 1;
-					rd_len = STG_Read_alm_pwr(STG_LOSE_PWR, start_sec, copy_buf, usb_buf_size, &rd_sec);
-					
-				}
-					
-				if(rd_len <= 0)
-					done = total;
-				else
-				{
-					
-					start_sec += rd_sec;
-					done += rd_sec;
-				}
-			}
-			
-	//		
-			if(rd_len > 0)
-			{
-				
-				USB_Write_file(usb_fd, copy_buf, rd_len);
-				dbp_count_bytes += rd_len;
-				
-				
-			}
-			
-			
-			//用读取的时间与总时间的比值作为进度依据
-		copy_wait:
-//			if(copy_num_chn > 1)
-			prc = done * 100 / total ;
-			prc /= copy_num_chn; 
-			prc += done_chn * 100 / copy_num_chn;
-//			else
-//				prc = done * 100 / total;
-			
-//			prc = prc * (copy_chn - DBP_FIRST_CHN)/ copy_num_chn;
-			
-			if(prc > last_prc)
-			{
-				p_bar->update_bar(arr_DBP_fds[1], prc);
-				last_prc = prc;
-				
-			}			
-		}	//while(done < total)
-		copy_chn ++;
-		done_chn ++;
+		USB_Write_file(usb_fd, copy_buf, strlen(copy_buf));
 	}
+	//拷贝数据
+		if(copy_file_type == 0)
+			dbp_count_bytes = DBP_Copy_chn_data(usb_fd);
+		else if(copy_file_type == 1)
+			dbp_count_bytes = DBP_Copy_chn_alarm(usb_fd);
+		else if(copy_file_type == 2)
+			dbp_count_bytes = DBP_Copy_lost_power(usb_fd);
+		else if(copy_file_type == 3)
+			dbp_count_bytes = DBP_Copy_log(usb_fd);
+	
+	//关闭文件
+	
+//	while(done_chn <= copy_num_chn)
+//	{
+//		
+//		done = 0;
+//		start_sec = old_start;
+//		if(copy_file_type == 0)
+//			STG_Set_file_position(STG_CHN_DATA(copy_chn), STG_DRC_READ, 0);
+//		else if(copy_file_type == 1)
+//		{
+//			
+//			total = STG_MAX_NUM_CHNALARM;
+//			start_sec = 0;
+//		}
+//		else if(copy_file_type == 2)
+//		{
+//			
+//			total = STG_MAX_NUM_LST_PWR;
+//			start_sec = 0;
+//		}
+//		else if(copy_file_type == 3)
+//		{
+//			
+//			total = LOG_Get_total_num() * sizeof(rcd_log_t);
+//		}
+//		else
+//		{
+//			
+//			return;
+//		}
+//		
+//		while(done < total)
+//		{
+//			if(DBP_copy == 0)
+//				break;
+//			if(phn_sys.usb_device == 0)
+//				goto copy_wait;
+//			
+//			
+//			if(copy_file_type == 0)
+//			{
+//				rd_sec = 0;
+//				rd_len = STG_Read_rcd_by_time(copy_chn, start_sec, end_sec, copy_buf, usb_buf_size, &rd_sec);
+//				if(rd_len <= 0)
+//					done = total;
+//				else
+//				{
+//					
+//					start_sec += rd_sec;
+//					done += rd_sec;
+//				}
+//			}
+//			else if(copy_file_type == 3)
+//			{
+//				rd_len = LOG_Read(copy_buf, usb_buf_size);
+//				if(rd_len <= 0)
+//					done = total;
+//				else
+//				{
+//					copy_num_chn = 0;
+//					done = LOG_Get_read_num() * sizeof(rcd_log_t);
+//				}
+//				
+//			}
+//			else 
+//			{
+//				if(copy_file_type == 1)
+//					rd_len = STG_Read_alm_pwr(STG_CHN_ALARM(copy_chn), start_sec, copy_buf, usb_buf_size, &rd_sec);
+//				else
+//				{
+//					copy_chn = DBP_FIRST_CHN;
+//					copy_num_chn = 1;
+//					rd_len = STG_Read_alm_pwr(STG_LOSE_PWR, start_sec, copy_buf, usb_buf_size, &rd_sec);
+//					
+//				}
+//					
+//				if(rd_len <= 0)
+//					done = total;
+//				else
+//				{
+//					
+//					start_sec += rd_sec;
+//					done += rd_sec;
+//				}
+//			}
+//			
+//	//		
+//			if(rd_len > 0)
+//			{
+//				
+//				USB_Write_file(usb_fd, copy_buf, rd_len);
+//				dbp_count_bytes += rd_len;
+//				
+//				
+//			}
+//			
+//			
+//			//用读取的时间与总时间的比值作为进度依据
+//		copy_wait:
+////			if(copy_num_chn > 1)
+//			prc = done * 100 / total ;
+//			prc /= copy_num_chn; 
+//			prc += done_chn * 100 / copy_num_chn;
+////			else
+////				prc = done * 100 / total;
+//			
+////			prc = prc * (copy_chn - DBP_FIRST_CHN)/ copy_num_chn;
+//			
+//			if(prc > last_prc)
+//			{
+//				p_bar->update_bar(arr_DBP_fds[1], prc);
+//				last_prc = prc;
+//				
+//			}			
+//		}	//while(done < total)
+//		copy_chn ++;
+//		done_chn ++;
+//	}
 	
 	delay_ms(500);		//让最后一次更新进度条被显示
 	if(usb_fd > 0)
@@ -733,9 +765,247 @@ static void DBP_Copy(void)
 		g_DBP_strategy.cmd_hdl(g_DBP_strategy.p_cmd_rcv, sycmd_win_tips, NULL);
 		
 	}
+	
+	exit:
 	Cmd_del_recv(arr_DBP_fds[2]);
 	
 	
+}
+
+
+//返回拷贝的字节数
+static uint32_t DBP_Copy_chn_data(int fd)
+{
+	uint32_t			start_sec;
+	uint32_t			set_start = Str_time_2_u32(arr_p_vram[row_start_time]);
+	uint32_t			end_sec = Str_time_2_u32(arr_p_vram[row_end_time]);
+	uint32_t			total = end_sec - set_start + 1;
+	uint32_t			done = 0;
+	uint32_t			rd_sec = 0;
+	
+	Progress_bar		*p_bar = PGB_Get_Sington();
+	char					*copy_buf = arr_p_vram[DBP_row_max];
+	int						rd_len = 0;
+	uint32_t			dbp_count_bytes = 0;
+	uint8_t				last_prc = 0, prc = 0;
+	uint8_t				copy_num_chn = DBP_LAST_CHN - DBP_FIRST_CHN  + 1;
+	uint8_t				copy_chn = DBP_FIRST_CHN;
+	uint8_t				done_chn = 0;		//通道可能不是从0开始，所以要一个专门的完成计数器
+
+	
+	while(done_chn <= copy_num_chn)
+	{
+		
+		done = 0;
+		start_sec = set_start;
+		
+		//执行了这条语句，文件的读取位置自然就会移动到对应的位置附件
+		STG_Read_data_by_time(copy_chn, start_sec - 1, 0, (data_in_fsh_t *)copy_buf);	
+		
+		while(done < total)
+		{
+			if(DBP_copy == 0)
+				break;
+			if(phn_sys.usb_device == 0)
+				break;
+				
+			rd_sec = 0;
+			rd_len = STG_Read_rcd_by_time(copy_chn, start_sec, end_sec, copy_buf, usb_buf_size, &rd_sec);
+			if(rd_len <= 0)
+				done = total;
+			else
+			{
+				
+				start_sec += rd_sec;
+				done += rd_sec;
+						
+				USB_Write_file(fd, copy_buf, rd_len);
+				dbp_count_bytes += rd_len;
+					
+			}
+			
+			
+			//用读取的时间与总时间的比值作为进度依据
+//		copy_wait:
+
+			prc = done * 100 / total ;
+			prc /= copy_num_chn; 
+			prc += done_chn * 100 / copy_num_chn;
+			if(prc > last_prc)
+			{
+				p_bar->update_bar(arr_DBP_fds[1], prc);
+				last_prc = prc;
+				
+			}			
+		}	//while(done < total)
+		copy_chn ++;
+		done_chn ++;
+	}
+	return dbp_count_bytes;
+}
+
+static uint32_t DBP_Copy_chn_alarm(int fd)
+{
+	uint32_t			num;
+	uint32_t			start = 0;
+	uint32_t			total;
+	uint32_t			done = 0;
+
+	
+	Progress_bar		*p_bar = PGB_Get_Sington();
+	char				*copy_buf = arr_p_vram[DBP_row_max];
+	int					rd_len = 0;
+	uint32_t			dbp_count_bytes = 0;
+	uint8_t				last_prc = 0, prc = 0;
+	uint8_t				copy_num_chn = DBP_LAST_CHN - DBP_FIRST_CHN  + 1;
+	uint8_t				copy_chn = DBP_FIRST_CHN;
+	uint8_t				done_chn = 0;		//通道可能不是从0开始，所以要一个专门的完成计数器
+
+	
+	while(done_chn <= copy_num_chn)
+	{
+		
+		done = 0;
+		start = 0;
+		
+			
+		total = STG_MAX_NUM_CHNALARM;
+	
+		while(done < total)
+		{
+			if(DBP_copy == 0)
+				break;
+			if(phn_sys.usb_device == 0)
+				break;
+			rd_len = STG_Read_alm_pwr(STG_CHN_ALARM(copy_chn), start, copy_buf, usb_buf_size, &num);															
+			if(rd_len > 0)
+			{
+				start += num;
+				done += num;
+				USB_Write_file(fd, copy_buf, rd_len);
+				dbp_count_bytes += rd_len;
+			}
+			else
+			{
+				done = total;
+				
+			}
+			
+			
+			//用读取的时间与总时间的比值作为进度依据
+//		copy_wait:
+
+			prc = done * 100 / total ;
+			prc /= copy_num_chn; 
+			prc += done_chn * 100 / copy_num_chn;
+
+			
+			if(prc > last_prc)
+			{
+				p_bar->update_bar(arr_DBP_fds[1], prc);
+				last_prc = prc;
+				
+			}			
+		}	//while(done < total)
+		copy_chn ++;
+		done_chn ++;
+	}
+	
+	return dbp_count_bytes;
+}
+
+static uint32_t DBP_Copy_lost_power(int fd)
+{
+	
+	uint32_t			total ;
+	uint32_t			done = 0;
+	uint32_t			num;
+	uint32_t			count = 0;
+	
+	Progress_bar		*p_bar = PGB_Get_Sington();
+	char				*copy_buf = arr_p_vram[DBP_row_max];
+	int					rd_len = 0;
+	uint32_t			dbp_count_bytes = 0;
+	uint8_t				last_prc = 0, prc = 0;
+				
+	done = 0;
+	count = 0;
+	total = STG_MAX_NUM_LST_PWR;
+	while(done < total)
+	{
+		if(DBP_copy == 0)
+			break;
+		if(phn_sys.usb_device == 0)
+			break;
+									
+		rd_len = STG_Read_alm_pwr(STG_LOSE_PWR, count, copy_buf, usb_buf_size, &num);
+		if(rd_len > 0)
+		{
+			count += num;
+			done += num;
+			USB_Write_file(fd, copy_buf, rd_len);
+			dbp_count_bytes += rd_len;
+		}
+		else
+		{
+			done = total;
+		}
+
+
+		//用读取的时间与总时间的比值作为进度依据
+//	copy_wait:
+
+		prc = done * 100 / total ;
+
+		if(prc > last_prc)
+		{
+			p_bar->update_bar(arr_DBP_fds[1], prc);
+			last_prc = prc;
+		}			
+	}	//while(done < total)
+	return dbp_count_bytes;
+}
+
+static uint32_t DBP_Copy_log(int fd)
+{
+	uint32_t			total;
+	uint32_t			done = 0;
+	
+	Progress_bar		*p_bar = PGB_Get_Sington();
+	char				*copy_buf = arr_p_vram[DBP_row_max];
+	int					rd_len = 0;
+	uint32_t			dbp_count_bytes = 0;
+	uint8_t				last_prc = 0, prc = 0;
+	done = 0;
+	total = LOG_Get_total_num() * sizeof(rcd_log_t);
+	while(done < total)
+	{
+		if(DBP_copy == 0)
+			break;
+		if(phn_sys.usb_device == 0)
+			break;
+		rd_len = LOG_Read(copy_buf, usb_buf_size);
+		if(rd_len <= 0)
+			done = total;
+		else
+		{
+			done = LOG_Get_read_num() * sizeof(rcd_log_t);
+			USB_Write_file(fd, copy_buf, rd_len);
+			dbp_count_bytes += rd_len;
+		}
+		//用读取的时间与总时间的比值作为进度依据
+//		copy_wait:
+		prc = done * 100 / total ;
+
+		if(prc > last_prc)
+		{
+			p_bar->update_bar(arr_DBP_fds[1], prc);
+			last_prc = prc;
+
+		}			
+	}	//while(done < total)
+
+	return dbp_count_bytes;
 }
 
  static void	DBP_Btn_hdl(void *self, uint8_t	btn_id)

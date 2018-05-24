@@ -25,7 +25,7 @@
 // function prototypes
 //------------------------------------------------------------------------------
 int 	EFS_init(int arg);
-
+void 	EFS_Reset(void);
 
 #endif
 

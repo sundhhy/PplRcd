@@ -476,7 +476,7 @@ static int Sys_key_er(void *arg)
 		break;
 	case row_factory_reset:
 		//恢复出厂设置，应该不只是恢复系统设置，包括通道设置等，应该也要恢复
-		Win_content("确认恢复出厂设置？");
+		Win_content("确认恢复出厂设置？数据将被清除!");
 		STG_SELF.cmd_hdl(STG_SELF.p_cmd_rcv, sycmd_win_tips, arr_p_vram[p_syf->f_row]);
 		
 		break;
@@ -515,7 +515,7 @@ static int Sys_commit(void *arg)
 		break;
 	case row_factory_reset:
 		LOG_Add(LOG_Factory_Reset);
-		System_default();
+		SYS_Reset();
 		break;
 //	default:
 //		ret = ERR_OPT_FAILED;

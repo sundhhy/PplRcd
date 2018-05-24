@@ -866,7 +866,7 @@ static uint8_t w25q_ReadSR(void)
 static int W25Q_send_wait(uint8_t *data, uint16_t len, uint16_t ms)
 {
 	uint16_t step = 0;
-	uint16_t count = ms;
+	uint16_t count = ms / 100;
 	int ret = -1;
 	
 	
@@ -895,7 +895,7 @@ static int W25Q_send_wait(uint8_t *data, uint16_t len, uint16_t ms)
 			case 1:
 				if(w25q_ReadSR() & W25Q_STATUS1_BUSYBIT)
 				{
-					W25Q_DELAY_MS(1);
+					W25Q_DELAY_MS(100);
 					if( count)
 						count --;
 					else

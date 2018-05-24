@@ -584,10 +584,6 @@ int	STG_Read_rcd_by_time(uint8_t	chn, uint32_t start_sec, uint32_t end_sec, char
 	char				tmp_buf[32];
 	char				str_data[8];
 	
-	//用二分法先定位起始时间点
-	//执行了这条语句，文件的读取位置自然就会移动到对应的位置
-	STG_Read_data_by_time(chn, start_sec, 0, &d);	
-	
 	fd = STG_Open_file(STG_CHN_DATA(chn), STG_DEF_FILE_SIZE);
 	fnf = STRG_SYS.fs.fs_file_info(fd);
 
@@ -605,7 +601,7 @@ int	STG_Read_rcd_by_time(uint8_t	chn, uint32_t start_sec, uint32_t end_sec, char
 		if(d.rcd_time_s < start_sec)
 			continue;
 		if(d.rcd_time_s > end_sec)
-			continue;
+			break;
 		
 		
 		Sec_2_tm(d.rcd_time_s, &t);
@@ -633,20 +629,11 @@ int	STG_Read_rcd_by_time(uint8_t	chn, uint32_t start_sec, uint32_t end_sec, char
 		strcat(buf, tmp_buf);
 //		sprintf((char *)buf + buf_offset, "%2d/%02d/%02d,%02d:%02d:%02d,%d\r\n", t.tm_year,t.tm_mon, t.tm_mday, \
 //				t.tm_hour, t.tm_min, t.tm_sec, d.rcd_val);
-		buf_offset = strlen(buf);
-		
-		
+		buf_offset = strlen(buf);				
 //		if(min_sec > d.rcd_time_s)
 //			min_sec = d.rcd_time_s;
 		if(max_sec < d.rcd_time_s)
-			max_sec = d.rcd_time_s;
-		
-		
-		
-		
-		
-		
-		
+			max_sec = d.rcd_time_s;						
 	}
 	*rd_sec = max_sec - start_sec;
 	
