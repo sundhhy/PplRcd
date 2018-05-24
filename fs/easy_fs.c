@@ -45,12 +45,14 @@ V010 171226 :
 #define EFS_LOWSPACE_ALARM_1				64
 
 
-#define EFS_FLAG_ALLOCED					1
-#define EFS_FLAG_USED						2
-#define EFS_FLAG_OPENED						4		
-#define EFS_FLAG_RECYCLE					8
-#define EFS_FLAG_ERASE						0x10		//文件需要被擦除，因为擦除文件很费时，因此先做上标记，然后在专门的线程中执行
+#define EFILE_ALLOCED					1
+#define EFILE_USED						2
+#define EFILE_OPENED						4		
+#define EFILE_RECYCLE					8
+#define EFILE_ERASE						0x10		//文件需要被擦除，因为擦除文件很费时，因此先做上标记，然后在专门的线程中执行
 
+//文件系统的标志
+#define EFS_BUSY							0x1
 
 #define EFS_WAIT_WR_MS						1000
 #define EFS_FLUSH_CYCLE_S					5
@@ -95,7 +97,8 @@ typedef struct {
 	
 typedef struct {
 	uint8_t					free_spac_num;
-	uint8_t					none[3];
+	uint8_t					efs_flag;
+	uint8_t					none[2];
 	uint8_t					*pg_buf;
 	efs_file_mgt_t  	arr_efiles[EFS_MAX_NUM_FILES + EFS_NUM_IDLE_FILES];			//文件管理要留一点空间
 	file_info_t			arr_file_info[EFS_MAX_NUM_FILES];
@@ -200,7 +203,7 @@ void 	EFS_Shutdown(void)
 	
 	for(i = 0; i < EFS_MAX_NUM_FILES; i++)
 	{
-		if(efs_mgr.arr_file_info[i].file_flag & EFS_FLAG_OPENED)
+		if(efs_mgr.arr_file_info[i].file_flag & EFILE_OPENED)
 		{
 			EFS_close(i);
 			
@@ -251,9 +254,9 @@ int	EFS_open(uint8_t prt, char *path, char *mode, int	file_size)
 	{
 		//如果第一次打开的话，就初始化读取位置为0
 		//不每次打开都初始化读取位置是因为有些场合下不希望该值被初始化为0
-		if((efs_mgr.arr_file_info[new_fd].file_flag & EFS_FLAG_OPENED) == 0)
+		if((efs_mgr.arr_file_info[new_fd].file_flag & EFILE_OPENED) == 0)
 			efs_mgr.arr_file_info[new_fd].read_position = 0;
-		efs_mgr.arr_file_info[new_fd].file_flag |= EFS_FLAG_OPENED;
+		efs_mgr.arr_file_info[new_fd].file_flag |= EFILE_OPENED;
 		
 	}
 	
@@ -292,7 +295,7 @@ int	EFS_close(int fd)
 //		f_mgr->efile_wr_position = f->write_position;
 //		EFS_flush_mgr(fd);
 //	}
-	efs_mgr.arr_file_info[fd].file_flag &= ~EFS_FLAG_OPENED;
+	efs_mgr.arr_file_info[fd].file_flag &= ~EFILE_OPENED;
 //	Sem_post(&f->file_sem);
 	return 0;
 }
@@ -375,8 +378,12 @@ int		EFS_Raw_read(int fd, uint8_t *p, int len)
 
 	if(fd > EFS_MAX_NUM_FILES)
 		return -1;
-	if(f->file_flag & EFS_FLAG_ERASE)
+	if(f->file_flag & EFILE_ERASE)
 		return ERR_FS_NOT_READY;
+	
+	if(efs_mgr.efs_flag & EFS_BUSY)
+		return ERR_FS_NOT_READY;
+	
 	while(Sem_wait(&f->file_sem, EFS_WAIT_WR_MS) <= 0)
 		delay_ms(1);
 	
@@ -408,7 +415,9 @@ int		EFS_Raw_write(int fd, uint8_t *p, int len)
 
 	if(fd > EFS_MAX_NUM_FILES)
 		return -1;
-	if(f->file_flag & EFS_FLAG_ERASE)
+	if(f->file_flag & EFILE_ERASE)
+		return ERR_FS_NOT_READY;
+	if(efs_mgr.efs_flag & EFS_BUSY)
 		return ERR_FS_NOT_READY;
 	while(Sem_wait(&f->file_sem, EFS_WAIT_WR_MS) <= 0)
 		delay_ms(1);
@@ -451,7 +460,9 @@ int	EFS_write(int fd, uint8_t *p, int len)
 	if(fd > EFS_MAX_NUM_FILES)
 		return -1;
 	
-	if(f->file_flag & EFS_FLAG_ERASE)
+	if(f->file_flag & EFILE_ERASE)
+		return ERR_FS_NOT_READY;
+	if(efs_mgr.efs_flag & EFS_BUSY)
 		return ERR_FS_NOT_READY;
 	
 	if(len > f->num_page * EFS_FSH(f->fsh_No).fnf.page_size)
@@ -485,7 +496,9 @@ int	EFS_read(int fd, uint8_t *p, int len)
 
 	if(fd > EFS_MAX_NUM_FILES)
 		return -1;
-	if(f->file_flag & EFS_FLAG_ERASE)
+	if(f->file_flag & EFILE_ERASE)
+		return ERR_FS_NOT_READY;
+	if(efs_mgr.efs_flag & EFS_BUSY)
 		return ERR_FS_NOT_READY;
 //	if(f->read_position >= f->write_position)
 //		return 0;
@@ -516,7 +529,7 @@ void 	EFS_Erase_file(int fd, uint32_t start, uint32_t size)
 	{
 		//只擦除部分文件的时候就只能直接进行擦除了
 		//因为外部线程无法获取部分擦除的信息
-		f->file_flag |= EFS_FLAG_ERASE;
+		f->file_flag |= EFILE_ERASE;
 		return;
 	}
 	
@@ -579,7 +592,7 @@ int	EFS_resize(int fd, char *path, int new_size)
 	
 //	if(Sem_wait(&f->file_sem, EFS_WAIT_WR_MS) <= 0)
 //		return -1;
-	efs_mgr.arr_efiles[fd].efs_flag |= EFS_FLAG_RECYCLE;
+	efs_mgr.arr_efiles[fd].efs_flag |= EFILE_RECYCLE;
 	EFS_file_mgr_info(&efs_mgr.arr_efiles[fd], &tmp_file_info);
 	tmp_file_info.write_position = f->write_position;
 	tmp_file_info.read_position = f->read_position;
@@ -614,7 +627,7 @@ int	EFS_resize(int fd, char *path, int new_size)
 		f->write_position = tmp_file_info.write_position;
 		f->read_position = tmp_file_info.read_position;
 		
-		efs_mgr.arr_efiles[fd].efs_flag &= ~EFS_FLAG_RECYCLE;
+		efs_mgr.arr_efiles[fd].efs_flag &= ~EFILE_RECYCLE;
 //		Sem_post(&f->file_sem);
 		return fd;
 		
@@ -626,7 +639,7 @@ int	EFS_resize(int fd, char *path, int new_size)
 	{
 		ERR_RECOVER:	
 //		Sem_post(&f->file_sem);
-		efs_mgr.arr_efiles[fd].efs_flag &= ~EFS_FLAG_RECYCLE;
+		efs_mgr.arr_efiles[fd].efs_flag &= ~EFILE_RECYCLE;
 		return -1;
 	}
 }
@@ -637,21 +650,27 @@ file_info_t		*EFS_file_info(int fd)
 
 void 	EFS_Reset(void)
 {
-	uint8_t		ver[2];
+//	uint8_t		ver[2];
 	char			i;
 	
-	for(i = 0; i < NUM_FSH; i ++)
+	
+	efs_mgr.efs_flag |= EFS_BUSY;
+	
+	for(i = 1; i < NUM_FSH; i ++)		//文件管理部分时不能擦除的
 	{
 		EFS_FSH(i).fsh_ersse(FSH_OPT_CHIP, 0);
 		
-	}	
+	}
+
+	efs_mgr.efs_flag &= ~EFS_BUSY;	
 	
+//	
+//	ver[0] = EFS_SYS.major_ver ;
+//	ver[1] = EFS_SYS.minor_ver;
+//	EFS_FSH(EFS_MGR_FSH_NO).fsh_write(ver, 0, 2);
+//	memset((uint8_t *)efs_mgr.arr_efiles, 0, sizeof(efs_mgr.arr_efiles));
+//	EFS_FSH(EFS_MGR_FSH_NO).fsh_write((uint8_t *)efs_mgr.arr_efiles, 2, sizeof(efs_mgr.arr_efiles));
 	
-	ver[0] = EFS_SYS.major_ver ;
-	ver[1] = EFS_SYS.minor_ver;
-	EFS_FSH(EFS_MGR_FSH_NO).fsh_write(ver, 0, 2);
-	memset((uint8_t *)efs_mgr.arr_efiles, 0, sizeof(efs_mgr.arr_efiles));
-	EFS_FSH(EFS_MGR_FSH_NO).fsh_write((uint8_t *)efs_mgr.arr_efiles, 2, sizeof(efs_mgr.arr_efiles));
 	
 }
 //=========================================================================//
@@ -673,9 +692,9 @@ static int EFS_format(void)
 	{
 		
 
-//		ver[0] = EFS_SYS.major_ver ;
-//		ver[1] = EFS_SYS.minor_ver;
-//		EFS_FSH(EFS_MGR_FSH_NO).fsh_write(ver, 0, 2);
+		ver[0] = EFS_SYS.major_ver ;
+		ver[1] = EFS_SYS.minor_ver;
+		EFS_FSH(EFS_MGR_FSH_NO).fsh_write(ver, 0, 2);
 //		memset((uint8_t *)efs_mgr.arr_efiles, 0, sizeof(efs_mgr.arr_efiles));
 //		EFS_FSH(EFS_MGR_FSH_NO).fsh_write((uint8_t *)efs_mgr.arr_efiles, 2, sizeof(efs_mgr.arr_efiles));
 		ret = RET_FAILED;
@@ -748,7 +767,7 @@ static void EFS_run()
 	uint8_t		i = 0;
 	for(i = 0; i < EFS_MAX_NUM_FILES; i++)
 	{
-		if(efs_mgr.arr_file_info[i].file_flag & EFS_FLAG_ERASE)
+		if(efs_mgr.arr_file_info[i].file_flag & EFILE_ERASE)
 		{
 			EFS_SYS.sys_flag |= SYSFLAG_EFS_NOTREADY;
 			EFS_Erase(i);
@@ -760,10 +779,10 @@ static void EFS_run()
 	//放在这里统一清除擦除标志，是为了避免系统在擦除文件的时候，其他线程发起对flash的读写操作导致错误
 	for(i = 0; i < EFS_MAX_NUM_FILES; i++)
 	{
-		if(efs_mgr.arr_file_info[i].file_flag & EFS_FLAG_ERASE)
+		if(efs_mgr.arr_file_info[i].file_flag & EFILE_ERASE)
 		{
 			
-			efs_mgr.arr_file_info[i].file_flag &=~ EFS_FLAG_ERASE;
+			efs_mgr.arr_file_info[i].file_flag &=~ EFILE_ERASE;
 		}
 		
 	}
@@ -843,9 +862,9 @@ static int EFS_Cal_free_space(uint8_t prt, space_t *fsp)
 		if(count == fsp_num)
 			break;
 		
-		if((efs_mgr.arr_efiles[i].efs_flag & EFS_FLAG_USED) == 0)
+		if((efs_mgr.arr_efiles[i].efs_flag & EFILE_USED) == 0)
 			continue;
-		if(efs_mgr.arr_efiles[i].efs_flag & EFS_FLAG_RECYCLE)
+		if(efs_mgr.arr_efiles[i].efs_flag & EFILE_RECYCLE)
 			continue;
 		
 		if(efs_mgr.arr_efiles[i].efile_fsh_NO != prt)
@@ -869,9 +888,9 @@ static int EFS_Cal_free_space(uint8_t prt, space_t *fsp)
 	{
 		
 	
-		if((efs_mgr.arr_efiles[i].efs_flag & EFS_FLAG_USED) == 0)
+		if((efs_mgr.arr_efiles[i].efs_flag & EFILE_USED) == 0)
 			continue;
-		if(efs_mgr.arr_efiles[i].efs_flag & EFS_FLAG_RECYCLE)
+		if(efs_mgr.arr_efiles[i].efs_flag & EFILE_RECYCLE)
 			continue;
 		if(efs_mgr.arr_efiles[i].efile_fsh_NO != prt)
 			continue;
@@ -968,7 +987,7 @@ static int EFS_create_file(uint8_t	fd, uint8_t	prt, char *path, int size)
 			else
 				efs_mgr.arr_file_info[i].low_pg = EFS_LOWSPACE_ALARM_1;
 			efs_mgr.arr_efiles[i].efile_wr_position = 0;
-			efs_mgr.arr_efiles[i].efs_flag |= EFS_FLAG_USED;
+			efs_mgr.arr_efiles[i].efs_flag |= EFILE_USED;
 			
 			EFS_file_mgr_info(&efs_mgr.arr_efiles[i], &efs_mgr.arr_file_info[i]);
 //			efs_mgr.arr_file_info[i].fs_mgr = i;
@@ -1018,10 +1037,10 @@ static int EFS_malloc_file_mgr(void)
 	
 	for(i = 0; i < EFS_MAX_NUM_FILES; i++)
 	{
-		if(efs_mgr.arr_efiles[i].efs_flag & EFS_FLAG_ALLOCED)
+		if(efs_mgr.arr_efiles[i].efs_flag & EFILE_ALLOCED)
 			continue;
 		
-		efs_mgr.arr_efiles[i].efs_flag |= EFS_FLAG_ALLOCED;
+		efs_mgr.arr_efiles[i].efs_flag |= EFILE_ALLOCED;
 		return i;
 		
 		

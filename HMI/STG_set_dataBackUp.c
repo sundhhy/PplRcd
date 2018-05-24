@@ -790,7 +790,7 @@ static uint32_t DBP_Copy_chn_data(int fd)
 	uint8_t				last_prc = 0, prc = 0;
 	uint8_t				copy_num_chn = DBP_LAST_CHN - DBP_FIRST_CHN  + 1;
 	uint8_t				copy_chn = DBP_FIRST_CHN;
-	uint8_t				done_chn = 0;		//通道可能不是从0开始，所以要一个专门的完成计数器
+	uint8_t				done_chn = 1;		//通道可能不是从0开始，所以要一个专门的完成计数器
 
 	
 	while(done_chn <= copy_num_chn)
@@ -859,7 +859,7 @@ static uint32_t DBP_Copy_chn_alarm(int fd)
 	uint8_t				last_prc = 0, prc = 0;
 	uint8_t				copy_num_chn = DBP_LAST_CHN - DBP_FIRST_CHN  + 1;
 	uint8_t				copy_chn = DBP_FIRST_CHN;
-	uint8_t				done_chn = 0;		//通道可能不是从0开始，所以要一个专门的完成计数器
+	uint8_t				done_chn = 1;		//通道可能不是从0开始，所以要一个专门的完成计数器
 
 	
 	while(done_chn <= copy_num_chn)

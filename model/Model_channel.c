@@ -722,6 +722,7 @@ static int MdlChn_init(Model *self, IN void *arg)
 		
 	}
 	
+	
 	MdlChn_Init_alm_mgr_by_STG_alm(cthis);
 	cthis->chni.decimal_places = def_decimal_places[cthis->chni.signal_type];
 

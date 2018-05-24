@@ -168,9 +168,17 @@ void System_power_off(void)
 
 void SYS_Reset(void)
 {
-	
+	int chn_num;
 	EFS_Reset();
 	System_default();
+	for(chn_num = 0; chn_num < NUM_CHANNEL; chn_num ++)
+	{
+		MdlChn_default_conf(chn_num);
+		MdlChn_default_alarm(chn_num);
+		MdlChn_Commit_conf(chn_num);
+		
+	}
+	
 	
 }
 
@@ -224,6 +232,18 @@ void System_init(void)
 	
 #if TDD_ON	== 0
 	stg->init(stg);
+	
+	
+	
+	/*  把所有的文件按照固定的顺序打开一遍，来保证每个仪表在第一次上电时，文件的存储位置是一致的*/
+	//这里只处理FM25上的文件
+	//通道的数据文件，会自行根据先后顺序排列
+	stg->open_file(STG_SYS_CONF, STG_DEF_FILE_SIZE);
+	
+	//掉电信息以及素有通道的报警和累积信息都是在同一个文件里面的，因此打开一次就行
+	stg->open_file(STG_CHN_ALARM(0), STG_DEF_FILE_SIZE);			
+
+	stg->open_file(STG_LOG, STG_DEF_FILE_SIZE);
 	
 	System_power_on();
 	

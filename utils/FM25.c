@@ -234,9 +234,11 @@ int FM25_Erase(int opt, uint32_t num)
 {
 
 	int ret = ERR_DEV_FAILED;
-	uint8_t		tmp_buf[512];
 	fsh_info_t 	info;
-	int 		pg = 0;
+	uint32_t 		addr = 0;
+	uint32_t		total;
+	uint8_t		tmp_buf[4];
+
 	switch(opt)
 	{
 		
@@ -248,11 +250,12 @@ int FM25_Erase(int opt, uint32_t num)
 			break;
 		case FSH_OPT_CHIP:
 			FM25_info(&info);
-			memset(tmp_buf, 0xff, info.page_size);
+			memset(tmp_buf, 0xff, 4);
 			ret = RET_OK;
-			for(pg = 0; pg < info.total_pagenum; pg ++)
+			total = info.total_pagenum * info.page_size / 4;
+			for(addr = 0; addr < total; addr += 4)
 			{
-				if( FM25_Write(tmp_buf, info.page_size * pg, info.page_size)!= info.page_size)
+				if( FM25_Write(tmp_buf, 4 * addr, 4)!= 4)
 					ret = ERR_DEV_FAILED;
 				
 			}
