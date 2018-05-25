@@ -31,6 +31,8 @@
 #include "utils/time.h"
 #include "utils/keyboard.h"
 
+#include "unit_test/unit_test.h"
+
 
 
 #include "os/os_depend.h"
@@ -122,14 +124,12 @@ int main (void) {
 	//各个外设驱动模块初始化
 	System_init();
 	
-#if TDD_ON == 1
-	Tdd_Init();
-#endif		
+	
 	//控制器初始化
-#if TDD_ON == 0
+//#if TDD_ON == 0
 
 	
-	
+	Unit_test();
 
 	//界面初始化
 	HMI_Init();
@@ -149,7 +149,7 @@ int main (void) {
 	if(p_control == NULL) while(1);
 	p_control->init(p_control, NULL);
 	
-//	创建线程
+//创建线程
 	
 	tid_Thread_key = osThreadCreate (osThread(ThrdKeyRun), p_kb);
 	if (!tid_Thread_key) return(-1);
@@ -222,33 +222,33 @@ int main (void) {
 //			cmd_run.func(cmd_run.arg);
 
 	}
-#elif TDD_TIME_SEC == 1	//tdd_on == 0
-	TDD_Time_sec();
-#elif TDD_EFS == 1
-	TDD_Efs();
-#elif TDD_FM25 == 1
-	TDD_Fm25();
-#elif TDD_W25Q == 1
-	TDD_W25q();
-#elif TDD_MODCHANNEL == 1
-	TDD_Mdl_chn();
-#elif TDD_DEV_UART3 == 1
-	TDD_Uart_3();
-# elif TDD_SMART_BUS == 1
-	TDD_Smart_bus();
-# elif TDD_USB == 1
-	TDD_Usb();
-#	elif TDD_SHEET == 1
-	TDD_Sheet();
-#	elif TDD_KEYBOARD == 1
-	TDD_Keyboard();
-#	elif TDD_GPIO == 1
-	TDD_Gpio();
-#	elif TDD_MVC == 1
-	TDD_Mvc();
-#	elif TDD_DEV_UART2 == 1	
-	TDD_Uart_2();
-#endif		//TDD_ON == 0
+//#elif TDD_TIME_SEC == 1	//tdd_on == 0
+//	TDD_Time_sec();
+//#elif TDD_EFS == 1
+//	TDD_Efs();
+//#elif TDD_FM25 == 1
+//	TDD_Fm25();
+//#elif TDD_W25Q == 1
+//	TDD_W25q();
+//#elif TDD_MODCHANNEL == 1
+//	TDD_Mdl_chn();
+//#elif TDD_DEV_UART3 == 1
+//	TDD_Uart_3();
+//# elif TDD_SMART_BUS == 1
+//	TDD_Smart_bus();
+//# elif TDD_USB == 1
+//	TDD_Usb();
+//#	elif TDD_SHEET == 1
+//	TDD_Sheet();
+//#	elif TDD_KEYBOARD == 1
+//	TDD_Keyboard();
+//#	elif TDD_GPIO == 1
+//	TDD_Gpio();
+//#	elif TDD_MVC == 1
+//	TDD_Mvc();
+//#	elif TDD_DEV_UART2 == 1	
+//	TDD_Uart_2();
+//#endif		//TDD_ON == 0
   
 }
 

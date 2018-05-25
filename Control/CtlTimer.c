@@ -37,7 +37,7 @@
 //------------------------------------------------------------------------------
 // const defines
 //------------------------------------------------------------------------------
-
+#define  TIME_PERIODIC_MS 	10		
 //------------------------------------------------------------------------------
 // local types
 //------------------------------------------------------------------------------
@@ -85,7 +85,7 @@ static void Init_ctime( Controller *self, void *arg)
 	ctime_id = osTimerCreate (osTimer(ctime), osTimerPeriodic, self);
   if (ctime_id != NULL) {    // Periodic timer created
     // start timer with periodic 1000ms interval
-    status = osTimerStart (ctime_id, 1000);            
+    status = osTimerStart (ctime_id, TIME_PERIODIC_MS);            
     if (status != osOK) {
       // Timer could not be started
 			ret = ERR_OPT_FAILED;

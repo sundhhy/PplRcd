@@ -170,6 +170,9 @@ void STG_Run(void)
 //			continue;		//在运行中执行文件系统擦除操作的时候，会出现这个情况
 		if(stg->arr_rcd_mgr[chn_num].rcd_count >= stg->arr_rcd_mgr[chn_num].rcd_maxcount)
 		{
+			
+			continue;		//test
+			
 			STG_Clean_save_data(chn_num);
 			LOG_Add(LOG_CHN_DATA_AUTO_ERASE(chn_num));
 			STRG_SYS.fs.fs_erase_file(fd, 0, 0);
@@ -178,8 +181,8 @@ void STG_Run(void)
 		}		
 		
 		fd = STG_Open_file(STG_CHN_DATA(chn_num), STG_DEF_FILE_SIZE);
-		if(fd < 0)
-			continue;
+//		if(fd < 0)
+//			continue;
 		//把对应通道的全部数据都存到falsh里面
 		while(1)
 		{
