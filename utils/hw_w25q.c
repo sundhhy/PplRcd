@@ -207,6 +207,7 @@ int w25q_init(void)
 	w25q_mgr.w25q_flag  = 0;
 	w25q_mgr.cache_earse = 0;
 	w25q_mgr.p_sct_buf = malloc(w25q_mgr.sct_size);
+	memset(w25q_mgr.p_sct_buf, 0xff, w25q_mgr.sct_size);
 	
 	return ret;
 }
@@ -380,17 +381,17 @@ void W25Q_Erase_addr(uint32_t st, uint32_t sz)
 	//计算头部所处于的扇区号，读取该扇
 	n1 = head_area[0] / SECTOR_SIZE;
 	
-	if(n1 != w25q_mgr.cur_sct)
-	{
+//	if(n1 != w25q_mgr.cur_sct)
+//	{
 	
-		W25Q_Flush();
-		w25q_Read_Sector_Data(w25q_mgr.p_sct_buf, n1);
-	}
-	else
-	{
-		w25q_mgr.cache_earse = 1;
-		
-	}
+	W25Q_Flush();
+	w25q_Read_Sector_Data(w25q_mgr.p_sct_buf, n1);
+//	}
+//	else
+//	{
+//		w25q_mgr.cache_earse = 1;
+//		
+//	}
 	//擦除该扇区
 	W25Q_erase(FSH_OPT_SECTOR, n1);
 	//计算扣除头部位置之后要写入该扇区的字节数并写入
@@ -421,7 +422,7 @@ void W25Q_Erase_addr(uint32_t st, uint32_t sz)
 		exit:
 		
 		//更新当前的缓存页面
-		if(w25q_mgr.cache_earse )
+		if(w25q_mgr.cur_sct != n1)
 		{
 	
 		
@@ -602,7 +603,9 @@ static int W25Q_Raw_write(uint8_t *pBuffer, uint32_t WriteAddr, uint32_t WriteBy
 	
 	//第一个字节是被w25q使用的，作为废弃标记
 	//赋值为0xff表示该记录正常
-	pBuffer[0] = 0xff;
+	//若需要回读判断，则进行回读判断
+	if(W25Q_FSH.fnf.fnf_flag & FSH_FLAG_READBACK_CHECK)
+		pBuffer[0] = 0xff;
 	
 
 	//先写入，如果写入不成功，返回错误
@@ -653,6 +656,8 @@ static int W25Q_Raw_write(uint8_t *pBuffer, uint32_t WriteAddr, uint32_t WriteBy
 	
 }
 
+//WriteBytesNum不能大于256. 如果大于256字节，那么数据会从页的开头重新写入。
+//因为这个函数使用的写入指令是W25Q_INSTR_Page_Program
 static int	W25Q_wr_fsh(uint8_t *pBuffer, uint32_t WriteAddr, uint32_t WriteBytesNum)
 {
 	uint8_t step = 0;
@@ -660,6 +665,10 @@ static int	W25Q_wr_fsh(uint8_t *pBuffer, uint32_t WriteAddr, uint32_t WriteBytes
 
 
 	int ret = -1;
+	
+	//指令W25Q_INSTR_Page_Program 最多只能写入一页的数据
+	if(WriteBytesNum > PAGE_SIZE)
+		WriteBytesNum = PAGE_SIZE;
 	
 
 	while(1)
@@ -718,7 +727,6 @@ static int	W25Q_wr_fsh(uint8_t *pBuffer, uint32_t WriteAddr, uint32_t WriteBytes
 	exit:
 	
 	
-	
 	return ret;
 	
 }
@@ -735,6 +743,9 @@ static int W25Q_Raw_Read(uint8_t *pBuffer, uint32_t rd_add, uint32_t len)
 	
 	if(ret != len)
 		return -1;
+	
+	if((W25Q_FSH.fnf.fnf_flag & FSH_FLAG_READBACK_CHECK) == 0)
+		return ret;
 	
 	total_len += ret;
 	//如果读取的数据被废弃了，就读取下一个数据
@@ -1103,7 +1114,7 @@ static int w25q_Erase_chip_c7(void)
 
 	W25Q_tx_buf[0] = W25Q_INSTR_Chip_Erase_C7;
 	
-	return W25Q_send_wait( W25Q_tx_buf, 1, 20000);
+	return W25Q_send_wait( W25Q_tx_buf, 1, 45000);
 	
 }
 int w25q_Erase_chip_60(void)

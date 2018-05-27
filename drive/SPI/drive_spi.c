@@ -124,6 +124,11 @@ int Read_spi(int No, int data_size, void *buf, int rd_len)
 			if( ret < 0)
 				break;
 			data_u8[i] = ret;
+//			if(i > 254)
+//			{
+//				data_u16 = NULL;
+//				
+//			}
 
 			
 			
@@ -177,6 +182,9 @@ int Write_spi(int No, int data_size, void *buf, int len)
 			ret = spi_write_word(spi_reg, data_u8[i]);
 			if(ret < 0)
 				break;
+			
+//			if(i >254)
+//				data_u16 = NULL;
 			
 		}
 		

@@ -48,7 +48,9 @@
 #define STRG_CHN_DATA_FSH_NUM	FSH_W25Q_NUM
 #define RCD_ERR					1
 #define RCD_READED			2
-#define NUM_SAVE_DATA		4
+#define NUM_SAVE_DATA		8
+
+#define TEST_CKE_DATA		1  //当数据满的时候，对存储的数据进行测试
 //------------------------------------------------------------------------------
 // local types
 //------------------------------------------------------------------------------
@@ -130,7 +132,8 @@ static void STG_flush_wr_cache(uint8_t type);
 #endif
 static int STG_En_save_data(uint8_t chn, uint8_t dp, uint16_t value, uint32_t time_s);
 static int STG_Out_save_data(uint8_t chn, data_in_fsh_t	*dif);
-static void STG_Remove_save_data(uint8_t chn);
+static int STG_Out_sequential(uint8_t chn, data_in_fsh_t	*dif, uint8_t max_num);
+static void STG_Remove_save_data(uint8_t chn, uint8_t num);
 static void STG_Clean_save_data(uint8_t chn);
 //============================================================================//
 //            P U B L I C   F U N C T I O N S                                 //
@@ -151,16 +154,34 @@ Storage		*Get_storage()
 	
 }
 
+void STG_Reset(void)
+{
+	int i;
+	Storage				*stg = Get_storage();
+	
+	for(i = 0; i < NUM_CHANNEL; i++)
+	{
+		
+		stg->arr_rcd_mgr[i].rcd_count = 0;
+	}
+	
+}
+
 
 void STG_Run(void)
 {
 	
 	Storage				*stg = Get_storage();
-	data_in_fsh_t	d;
+	data_in_fsh_t	d[NUM_SAVE_DATA];
 	int						fd = -1;
 	int						acc_len = 0;
 //	file_info_t		*fnf ;
 	uint8_t				chn_num;
+	uint8_t				count ;
+	
+	//每个通道一次存储的数量
+	//每个通道每次少处理点，这样就不会导致后面的通道被“饿死”
+//	uint8_t				save_once = NUM_SAVE_DATA;		
 	
 	//把队列中的数据写到flash里面去
 	for(chn_num = 0; chn_num <phn_sys.sys_conf.num_chn; chn_num++)
@@ -170,8 +191,9 @@ void STG_Run(void)
 //			continue;		//在运行中执行文件系统擦除操作的时候，会出现这个情况
 		if(stg->arr_rcd_mgr[chn_num].rcd_count >= stg->arr_rcd_mgr[chn_num].rcd_maxcount)
 		{
-			
+		#if TEST_CKE_DATA == 1
 			continue;		//test
+		#endif
 			
 			STG_Clean_save_data(chn_num);
 			LOG_Add(LOG_CHN_DATA_AUTO_ERASE(chn_num));
@@ -184,28 +206,38 @@ void STG_Run(void)
 //		if(fd < 0)
 //			continue;
 		//把对应通道的全部数据都存到falsh里面
-		while(1)
-		{
+		count = 0;
+//		while(1)
+//		{
 			
-			if(STG_Out_save_data(chn_num, &d) != RET_OK)
+//			if(STG_Out_save_data(chn_num, &d) != RET_OK)
+//				break;
+			
+			count = STG_Out_sequential(chn_num, d, NUM_SAVE_DATA);
+			if(count == 0)
 				break;
 			
+			
 			//因为W25Q的驱动提供了回读错误后，会在当前位置之后重新写数据，所以可能会出现写入多个记录的情况（当然，错误的那些记录会被标记）
-			acc_len = STRG_SYS.fs.fs_raw_write(fd, (uint8_t *)&d, sizeof(d));
+			acc_len = STRG_SYS.fs.fs_raw_write(fd, (uint8_t *)&d, count * sizeof(data_in_fsh_t));
 			if(acc_len  >  0)
 			{
-				stg->arr_rcd_mgr[chn_num].rcd_count += acc_len / sizeof(d);	
-				STG_Remove_save_data(chn_num);	//成功写入才删除这个数据
+				stg->arr_rcd_mgr[chn_num].rcd_count += acc_len / sizeof(data_in_fsh_t);
+//				STG_Remove_save_data(chn_num, count);	//成功写入才删除这个数据
 			}
-			else
-			{
-				break;		//文件发生了错误
-				
-			}
+//			else
+//			{
+//				break;		//文件发生了错误
+//				
+//			}
+			
+//			count ++;
+//			if(count > save_once)
+//				break;
 			
 //			delay_ms(1);
 			
-		}
+//		}
 		
 	}
 	
@@ -591,6 +623,27 @@ err:
 	
 }
 
+int STG_Read_rcd(uint8_t	chn, uint8_t*	buf,  uint16_t size)
+{
+	int 				fd;
+	file_info_t			*fnf ;
+	short 				num_rcd;
+	
+	
+	
+	num_rcd = size / sizeof(data_in_fsh_t);
+	
+	fd = STG_Open_file(STG_CHN_DATA(chn), STG_DEF_FILE_SIZE);
+	fnf = STRG_SYS.fs.fs_file_info(fd);
+	
+	
+	if(fnf->read_position >= fnf->write_position)
+		return 0;
+	
+	return STRG_SYS.fs.fs_raw_read(fd, buf, num_rcd * sizeof(data_in_fsh_t));
+	
+}
+
 
 int	STG_Read_rcd_by_time(uint8_t	chn, uint32_t start_sec, uint32_t end_sec, char *buf, int buf_size, uint32_t *rd_sec)
 {
@@ -612,7 +665,7 @@ int	STG_Read_rcd_by_time(uint8_t	chn, uint32_t start_sec, uint32_t end_sec, char
 	{
 		if(fnf->read_position >= fnf->write_position)
 			break;
-		if(STRG_SYS.fs.fs_raw_read(fd, (uint8_t *)&d, sizeof(data_in_fsh_t)) != sizeof(data_in_fsh_t))
+		if(STRG_SYS.fs.fs_raw_read(fd, (uint8_t *)&d, sizeof(data_in_fsh_t)) <= 0)
 			break;
 
 		
@@ -816,12 +869,12 @@ static int		Strg_WR_stored_data(Storage *self, uint8_t	cfg_type, void *buf, int 
 //	file_info_t			*fnf ;
 //	Storage				*stg = Get_storage();
 //	int					fd;
-//	
+	
 //	fd = STG_Open_file(STG_CHN_DATA(num), STG_DEF_FILE_SIZE);
 //	fnf = STRG_SYS.fs.fs_file_info(fd);
 //	
 //	stg->arr_rcd_mgr[num].rcd_count = fnf->write_position / sizeof(data_in_fsh_t);
-//	
+	
 //	if(p == NULL)
 //		return;
 //	//存储的信息有效判断
@@ -838,9 +891,9 @@ static int		Strg_WR_stored_data(Storage *self, uint8_t	cfg_type, void *buf, int 
 //	}
 //	
 //	STRG_SYS.fs.fs_close(fd);
-//		
+		
 
-//	
+	
 //}
 
 static int	STG_Acc_chn_conf(uint8_t	tp, uint8_t	drc, void *p)
@@ -1038,10 +1091,11 @@ static int	STG_Acc_chn_data(uint8_t	type, uint8_t	drc, void *p, int len)
 
 	
 	
-	fd = STG_Open_file(type, STG_DEF_FILE_SIZE);
+	
 	
 	if(drc == STG_DRC_READ)
 	{
+		fd = STG_Open_file(type, STG_DEF_FILE_SIZE);
 		fnf = STRG_SYS.fs.fs_file_info(fd);
 		if(fnf->read_position >= fnf->write_position)
 			goto exit;
@@ -1062,7 +1116,7 @@ static int	STG_Acc_chn_data(uint8_t	type, uint8_t	drc, void *p, int len)
 		if(STG_En_save_data(chn_num, decimal_places, p_s16[0], SYS_time_sec()) != RET_OK)
 		{
 			//错误处理
-			STG_Remove_save_data(chn_num);
+			STG_Remove_save_data(chn_num, 1);
 			STG_En_save_data(chn_num, decimal_places, p_s16[0], SYS_time_sec());
 			LOG_Add(LOG_CHN_DATA_DROP(chn_num));
 			
@@ -1183,13 +1237,14 @@ static void STG_flush_wr_cache(uint8_t type)
 static int 	STG_Open_file(uint8_t type, uint32_t file_size)
 {
 	int 		fd = -1;
+	file_info_t			*fnf ;
 	Storage		*stg = Get_storage();
 	char		name[8];
 	
 	
 	if(IS_SYS_CONF(type))
 	{
-		fd = STRG_SYS.fs.fs_open(STRG_CFG_FSH_NUM, "phn.cfg", "rw", 256);
+		fd = STRG_SYS.fs.fs_open(STRG_CFG_FSH_NUM, "phn.cfg", "log", 256);		//
 		
 	}
 	else if(IS_CHN_CONF(type))
@@ -1215,7 +1270,8 @@ static int 	STG_Open_file(uint8_t type, uint32_t file_size)
 	}
 	else if(IS_LOG(type))
 	{
-		fd = STRG_SYS.fs.fs_open(STRG_RCD_FSH_NUM, "SDH_LOG.CSV", "rw", STG_LOG_FILE_SIZE);
+		//log 模式的文件不会在文件系统复位的时候被删除
+		fd = STRG_SYS.fs.fs_open(STRG_RCD_FSH_NUM, "SDH_LOG.CSV", "log", STG_LOG_FILE_SIZE);
 		
 	}
 	else if(IS_CHN_DATA(type))
@@ -1223,15 +1279,18 @@ static int 	STG_Open_file(uint8_t type, uint32_t file_size)
 		sprintf(name, "chn_%d", STG_GET_CHN(type));
 		if(file_size == STG_DEF_FILE_SIZE)
 		{
-			fd = STRG_SYS.fs.fs_open(STRG_CHN_DATA_FSH_NUM, name, "rw", \
-		stg->arr_rcd_mgr[STG_GET_CHN(type)].rcd_maxcount * sizeof(data_in_fsh_t));
-			
+			fd = STRG_SYS.fs.fs_open(STRG_CHN_DATA_FSH_NUM, name, "rw", stg->arr_rcd_mgr[STG_GET_CHN(type)].file_size);
+			fnf = STRG_SYS.fs.fs_file_info(fd);
+
 		}
 		else
 		{
 			fd = STRG_SYS.fs.fs_open(STRG_CHN_DATA_FSH_NUM, name, "wr", file_size);
 			//上电时，模型会传入实际的文件大小，此时把最大记录数量进行初始化
 			stg->arr_rcd_mgr[STG_GET_CHN(type)].rcd_maxcount = file_size / sizeof(data_in_fsh_t);
+			stg->arr_rcd_mgr[STG_GET_CHN(type)].file_size = file_size;
+			fnf = STRG_SYS.fs.fs_file_info(fd);
+			stg->arr_rcd_mgr[STG_GET_CHN(type)].rcd_count = fnf->write_position / sizeof(data_in_fsh_t);
 //			Strg_Updata_rcd_mgr(STG_GET_CHN(type), NULL);
 		}
 		
@@ -1269,6 +1328,9 @@ static int STG_Is_sava_data_empty(uint8_t chn)
 	
 }
 
+
+
+
 //成功返回RET_OK， 失败返回 RET_FAILED
 static int STG_En_save_data(uint8_t chn, uint8_t dp, uint16_t value,  uint32_t time_s)
 {
@@ -1288,7 +1350,6 @@ static int STG_En_save_data(uint8_t chn, uint8_t dp, uint16_t value,  uint32_t t
 	return RET_OK;
 	
 }
-//成功返回RET_OK， 失败返回RET_FAILED
 
 static int STG_Out_save_data(uint8_t chn, data_in_fsh_t	*dif)
 {
@@ -1306,15 +1367,38 @@ static int STG_Out_save_data(uint8_t chn, data_in_fsh_t	*dif)
 	return RET_OK;
 }
 
-static void STG_Remove_save_data(uint8_t chn)
+//尽可能多的读取数据
+//成功：返回读取的记录数量
+//失败：0
+static int STG_Out_sequential(uint8_t chn, data_in_fsh_t	*dif, uint8_t max_num)
 {
-	
-	if(STG_Is_sava_data_empty(chn))
-		return;
+	uint8_t i = 0;
+	while(max_num)
+	{
 		
-	sds.arr_head[chn] ++;
-	if(sds.arr_head[chn] >= NUM_SAVE_DATA)
-		sds.arr_head[chn] = 0;
+		if(STG_Out_save_data(chn, dif + i) != RET_OK)
+			break;
+		STG_Remove_save_data(chn, 1);
+		i ++;
+		max_num --;
+	}
+	
+	return i;
+	
+}
+
+static void STG_Remove_save_data(uint8_t chn, uint8_t num)
+{
+	while(num)
+	{
+		if(STG_Is_sava_data_empty(chn))
+			return;
+			
+		sds.arr_head[chn] ++;
+		if(sds.arr_head[chn] >= NUM_SAVE_DATA)
+			sds.arr_head[chn] = 0;
+		num --;
+	}
 }
 
 static void STG_Clean_save_data(uint8_t chn)

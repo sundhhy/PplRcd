@@ -78,6 +78,9 @@ osThreadId tid_Thread_key;                                          // thread id
 osThreadDef (ThrdKeyRun, osPriorityNormal, 1, 0);                   // thread object
 
 static usb_op_t	usb_op;
+
+ 	uint16_t	main_ms = 0;
+
 //------------------------------------------------------------------------------
 // local function prototypes
 //------------------------------------------------------------------------------
@@ -103,7 +106,8 @@ int main (void) {
 	
 	Model 			*p_mdl_time;
 	CMP_tips 		*p_tips;
-	uint8_t			main_count_1s = 0;
+	
+
 	uint8_t			old_sys_flag = phn_sys.sys_flag;
 	
   // initialize peripherals here
@@ -176,8 +180,13 @@ int main (void) {
 	
 	while(1)
 	{
-		osDelay(100);
-		main_count_1s ++;
+		osDelay(10);
+		
+		//在调试中发现main_ms出现过错误值:0x40 这样的话因为500ms和100ms任务就永远的不能执行了
+		if(main_ms % 10)
+			main_ms = 0;
+		
+		main_ms += 10;
 		
 		if(old_sys_flag != phn_sys.sys_flag)
 		{
@@ -204,16 +213,18 @@ int main (void) {
 			}
 			old_sys_flag = phn_sys.sys_flag;
 		}
-		if(main_count_1s >= 9)
+		if((main_ms % 500) == 0)		
 		{
 			p_mdl_time->run(p_mdl_time);
 			g_p_curHmi->hmi_run(g_p_curHmi);
-			main_count_1s = 0;
+//			main_ms = 0;
 		}
 		USB_Run();
 		
 //		phn_sys.lcd_sem_wait_ms = 20;
-		LCD_Run();
+		if((main_ms % 100) == 0)		
+			LCD_Run();
+		
 		STG_Run();
 //		phn_sys.lcd_sem_wait_ms = 0xffffffff;
 //		osThreadYield (); 

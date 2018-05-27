@@ -70,7 +70,7 @@ int Init_test(char	*test_buf, int size)
 	
 	
 	row_num = 0;
-	UNT_Disp_text("W25Q 读写测试",row_num++, 0);
+	UNT_Disp_text("W25Q 读写测试, 擦除整片",row_num++, 0);
 	
 	tdd_fsh->fsh_ersse(FSH_OPT_CHIP, 0);
 	
@@ -89,21 +89,22 @@ void Run_test(void)
 
 	int			 ret = 0;
 	
-	end = tdd_fsh->fnf.total_pagenum * tdd_fsh->fnf.page_size / 4;
+	end = tdd_fsh->fnf.total_pagenum * tdd_fsh->fnf.page_size;
 	
-	sprintf(my_buf, "wirte %d bytes", end);
+	sprintf(my_buf, "wirte to: %d", end);
 	UNT_Disp_text(my_buf,row_num++, 0);
 	
 	//以u32进行读写测试，从0开始写入
 	tdd_u32 = 0;
-	for(addr = 0; addr <= end; addr += 4)
+//	addr = end;
+	for(addr = 0; addr < end; addr += 4)
 	{
 		//对每个寄存器写入地址一样的值
 		ret = tdd_fsh->fsh_raw_write((uint8_t *)&tdd_u32, addr, 4);
 		if(ret != 4)
 		{
 			sprintf(my_buf, "WRE %d", addr);
-			UNT_Disp_text(my_buf,row_num, 0);
+			UNT_Disp_text(my_buf,row_num, 120);
 			wr_err ++;
 			
 		}
@@ -111,8 +112,8 @@ void Run_test(void)
 			
 		if(addr % 10000 == 0)
 		{
-			sprintf(my_buf, "wirte %d", tdd_u32);
-			UNT_Disp_text(my_buf,row_num, 120);
+			sprintf(my_buf, "wirte %.2f", (addr * 100.0 / end));
+			UNT_Disp_text(my_buf,row_num, 0);
 			
 		}
 		
@@ -121,12 +122,12 @@ void Run_test(void)
 	
 	
 	row_num++;
-	sprintf(my_buf, "read %d bytes", end);
+	sprintf(my_buf, "last wr val %d", tdd_u32);
 	UNT_Disp_text(my_buf,row_num++, 0);
 	
 	
 	
-	for(addr = 0; addr <= end; addr += 4)
+	for(addr = 0; addr < end; addr += 4)
 	{
 		tdd_u32 = 0xffffffff;
 
@@ -141,15 +142,15 @@ void Run_test(void)
 		else if(tdd_u32 != addr / 4)
 		{
 			sprintf(my_buf, "CKE %d", addr);
-			UNT_Disp_text(my_buf,row_num, 0);
+			UNT_Disp_text(my_buf,row_num, 120);
 			rd_err ++;
 			
 		}
 		 
-		if(addr % 10000 == 0)
+		if(addr % 100000 == 0)
 		{
 			sprintf(my_buf, "read %d", tdd_u32);
-			UNT_Disp_text(my_buf, row_num, 120);
+			UNT_Disp_text(my_buf, row_num, 0);
 			
 		}
 		

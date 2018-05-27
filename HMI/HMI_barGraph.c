@@ -5,6 +5,7 @@
 #include "format.h"
 #include "chnInfoPic.h"
 #include "ModelFactory.h"
+#include "arithmetic/bit.h"
 
 
 //柱状图在y坐标上，按100%显示的话是:71 -187 
@@ -39,7 +40,7 @@ HMI *g_p_barGhHmi;
 
 #define BARHMI_NUM_BTNROW		1
 #define BARHMI_NUM_BTNCOL		4
-#define VRAM_NUM				0
+#define VRAM_RUN_NUM				0
 
 #define BARHMI_BKPICNUM		"12"
 #define BARHMI_TITLE		"棒图画面"
@@ -62,7 +63,9 @@ static const char barhmi_code_textPrcn[] = { "<text f=16 m=0>100</>" };
 typedef struct {
 	int			mdf_fd[NUM_CHANNEL];
 	
-	
+	//让通道的数据更新与界面更新实现异步处理
+	uint8_t		set_need_update_channel[4];			//每个bit对应一个通道，为1表示需要更新通道
+	void *		arr_p_need_update_model[NUM_CHANNEL];
 }bar_run_t;
 
 	
@@ -73,6 +76,7 @@ typedef struct {
 static int	Init_barGhHMI( HMI *self, void *arg);
 static void BarHmi_InitSheet( HMI *self, uint32_t att );
 static void BarHmi_HideSheet( HMI *self );
+static void BAR_Run(HMI* self);
 
 static void	BarHmi_Show( HMI *self);
 static int HBR_Update_mdl_chn_data(mdl_observer *self, void *p_srcMdl);
@@ -111,12 +115,15 @@ FUNCTION_SETTING( HMI.init, Init_barGhHMI);
 FUNCTION_SETTING( HMI.initSheet, BarHmi_InitSheet);
 FUNCTION_SETTING( HMI.hide, BarHmi_HideSheet);
 FUNCTION_SETTING( HMI.show, BarHmi_Show);
+FUNCTION_SETTING( HMI.hmi_run, BAR_Run);
 
 FUNCTION_SETTING( HMI.hitHandle, Main_HMI_hit);
 FUNCTION_SETTING(HMI.build_component, Main_HMI_build_button);
 FUNCTION_SETTING( mdl_observer.update, HBR_Update_mdl_chn_data);
 
 END_CTOR
+
+
 //=========================================================================//
 //                                                                         //
 //          P R I V A T E   D E F I N I T I O N S                          //
@@ -150,7 +157,45 @@ static int	Init_barGhHMI( HMI *self, void *arg)
 
 }
 
-
+static void BAR_Run(HMI* self)
+{
+	bar_run_t *p_run = (bar_run_t *)arr_p_vram[VRAM_RUN_NUM];
+	int 	chn_num;
+	
+	
+	for(chn_num = 0; chn_num < phn_sys.sys_conf.num_chn; chn_num ++)
+	{
+		
+		if(Check_bit(p_run->set_need_update_channel, chn_num) == 0)
+			continue;
+		
+		
+		if((self->flag & HMI_FLAG_HSA_SEM) == 0)
+		{
+			
+			if(Sem_wait(&phn_sys.hmi_mgr.hmi_sem, 100) <= 0) 
+			{
+				break;	//下次在更新
+			}
+		
+		}
+		//更新实时值
+		BarHmi_Data_update(g_arr_p_chnData[chn_num], p_run->arr_p_need_update_model[chn_num] );
+		
+		//更新单位
+		BarHmi_Util_update(g_arr_p_chnData[chn_num], p_run->arr_p_need_update_model[chn_num] );
+		//更新报警
+		
+		if((self->flag & HMI_FLAG_HSA_SEM) == 0)
+			Sem_post(&phn_sys.hmi_mgr.hmi_sem);
+		
+		
+		
+		Clear_bit(p_run->set_need_update_channel, chn_num);
+		
+	}
+	
+}
 
 static void BarHmi_InitSheet( HMI *self, uint32_t att )
 {
@@ -192,8 +237,8 @@ static void BarHmi_InitSheet( HMI *self, uint32_t att )
 	
 	HMI_Ram_init();
 		
-	arr_p_vram[VRAM_NUM] = HMI_Ram_alloc(48);
-	p_run = (bar_run_t *)arr_p_vram[VRAM_NUM];
+	arr_p_vram[VRAM_RUN_NUM] = HMI_Ram_alloc(48);
+	p_run = (bar_run_t *)arr_p_vram[VRAM_RUN_NUM];
 	HMI_Attach_model_chn(p_run->mdf_fd, &cthis->mdl_observer);
 	BarHmi_Init_chnSht();
 	//初始化焦点
@@ -208,7 +253,7 @@ static void BarHmi_HideSheet( HMI *self )
 
 	
 	
-	p_run = (bar_run_t *)arr_p_vram[VRAM_NUM];
+	p_run = (bar_run_t *)arr_p_vram[VRAM_RUN_NUM];
 	HMI_detach_model_chn(p_run->mdf_fd);
 	
 
@@ -253,6 +298,8 @@ static void	BarHmi_Show( HMI *self )
 		p_mdl = Create_model(chn_name);
 		cthis->mdl_observer.update(&cthis->mdl_observer, p_mdl);
 	}
+	
+	self->hmi_run(self);
 }
 
 
@@ -297,26 +344,31 @@ static void BarHmi_Init_chnSht(void)
 
 static int HBR_Update_mdl_chn_data(mdl_observer *self, void *p_srcMdl)
 {
-	HMI_bar		*cthis = SUB_PTR( self, mdl_observer, HMI_bar);
-	HMI		*p_hmi = SUPER_PTR(cthis, HMI);
-	Model	*p_mdl = (Model *)p_srcMdl;
+//	HMI_bar		*cthis = SUB_PTR( self, mdl_observer, HMI_bar);
+//	HMI		*p_hmi = SUPER_PTR(cthis, HMI);
+	Model		*p_mdl = (Model *)p_srcMdl;
+	bar_run_t *p_run = (bar_run_t *)arr_p_vram[VRAM_RUN_NUM];
 	short	chn_num = GET_MDL_CHN(p_mdl->mdl_id);
 	
-	if((p_hmi->flag & HMI_FLAG_HSA_SEM) == 0)
-	{
-		if(Sem_wait(&phn_sys.hmi_mgr.hmi_sem, 100) <= 0) 
-			return ERR_RSU_BUSY;
 	
-	}
-	//更新实时值
-	BarHmi_Data_update(g_arr_p_chnData[chn_num], p_srcMdl);
+	Set_bit(p_run->set_need_update_channel, chn_num);
+	p_run->arr_p_need_update_model[chn_num] = p_srcMdl;
 	
-	//更新单位
-	BarHmi_Util_update(g_arr_p_chnData[chn_num], p_srcMdl);
-	
-	
-	if((p_hmi->flag & HMI_FLAG_HSA_SEM) == 0)
-		Sem_post(&phn_sys.hmi_mgr.hmi_sem);
+//	if((p_hmi->flag & HMI_FLAG_HSA_SEM) == 0)
+//	{
+//		if(Sem_wait(&phn_sys.hmi_mgr.hmi_sem, 100) <= 0) 
+//			return ERR_RSU_BUSY;
+//	
+//	}
+//	//更新实时值
+//	BarHmi_Data_update(g_arr_p_chnData[chn_num], p_srcMdl);
+//	
+//	//更新单位
+//	BarHmi_Util_update(g_arr_p_chnData[chn_num], p_srcMdl);
+//	
+//	
+//	if((p_hmi->flag & HMI_FLAG_HSA_SEM) == 0)
+//		Sem_post(&phn_sys.hmi_mgr.hmi_sem);
 	
 	
 	return RET_OK;

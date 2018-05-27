@@ -18,7 +18,7 @@
 
 #include "Modbus_app.h"
 #include "channel_accumulated.h"
-#include "TDD.h"
+#include "cfg_test.h"
 //------------------------------------------------------------------------------
 // const defines
 //------------------------------------------------------------------------------
@@ -178,6 +178,7 @@ void SYS_Reset(void)
 		MdlChn_Commit_conf(chn_num);
 		
 	}
+	STG_Reset();
 	
 	
 }
@@ -187,18 +188,23 @@ void System_default(void)
 	system_conf_t 	*p_sc = &phn_sys.sys_conf;
 	Storage			*stg = Get_storage();
 	
-	memset(p_sc, 0, sizeof(system_conf_t));
+//	memset(p_sc, 0, sizeof(system_conf_t));
 	p_sc->sys_flag = 0;
 	p_sc->num_chn = NUM_CHANNEL;
 	p_sc->cold_end_way = 0;
+	
+	p_sc->baud_idx = 2;
+	p_sc->baud_rate = arr_baud[2];
+	p_sc->show_chn_status = 0;
+	
+	
 	stg->wr_stored_data(stg, STG_SYS_CONF, &phn_sys.sys_conf, sizeof(phn_sys.sys_conf));
 	
-	p_sc->super_psd[0] = PHN_DEF_SUPER_PSD_1;
-	p_sc->super_psd[1] = PHN_DEF_SUPER_PSD_2;
-	p_sc->super_psd[2] = PHN_DEF_SUPER_PSD_3;
-//	p_sc->baud_idx = 0;
-//	p_sc->baud_rate = arr_baud[0];
-//	p_sc->show_chn_status = 0;
+//	p_sc->super_psd[0] = PHN_DEF_SUPER_PSD_1;
+//	p_sc->super_psd[1] = PHN_DEF_SUPER_PSD_2;
+//	p_sc->super_psd[2] = PHN_DEF_SUPER_PSD_3;
+	
+
 }
 
 void System_init(void)
@@ -228,9 +234,14 @@ void System_init(void)
 	
 	w25q_init();
 	FM25_init();
-	EFS_init(NUM_FSH);
 	
-#if TDD_ON	== 0
+#if UNT_ON	== 0
+	EFS_init(NUM_FSH, 0);
+#else
+	EFS_init(NUM_FSH, 0);
+#endif
+	
+#if UNT_ON	== 0
 	stg->init(stg);
 	
 	

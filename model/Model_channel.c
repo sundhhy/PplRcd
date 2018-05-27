@@ -581,12 +581,16 @@ static void Signal_Alarm(Model_chn *cthis)
 	{
 		if(p->value < tempS2)
 		{	//低低报
+			#if TEST_SIMU_DATA == 0
 			phn_sys.DO_err |= 1 << p_alm->touch_spot_ll;
+			#endif
 			new_flag |= ALM_LL;
 		}
 		else
 		{	//低报
+			#if TEST_SIMU_DATA == 0
 			phn_sys.DO_err |= 1 << p_alm->touch_spot_lo;
+			#endif
 			new_flag |= ALM_LO;
 		}
 	}
@@ -604,13 +608,17 @@ static void Signal_Alarm(Model_chn *cthis)
 		{
 				if(p->value>tempS2)
 				{		//高高报
+					#if TEST_SIMU_DATA == 0
 					phn_sys.DO_err |= 1 << p_alm->touch_spot_hh;
+					#endif
 					new_flag |= ALM_HH;
 				}
 				else
 				{
 					//高报
+					#if TEST_SIMU_DATA == 0
 					phn_sys.DO_err |= 1 << p_alm->alarm_hi;
+					#endif
 					new_flag |= ALM_HI;
 				}
 				
@@ -900,51 +908,24 @@ static void MdlChn_run(Model *self)
 //	uint8_t				old_do;
 	
 #if TEST_SIMU_DATA == 1
-	short	test_val;
-	static short mdl_sub = 0;
-	static short mdl_step = 20;
-	test_val = cthis->chni.value;
+	uint16_t		*p_u16;
+	p_u16 = (uint16_t *)&cthis->chni.value;
 	
 	
-	cthis->chni.lower_limit = -1000;
-	cthis->chni.upper_limit = 1000;
+	cthis->chni.lower_limit = -32768;
+	cthis->chni.upper_limit = 32767;
 	//decimal_places 在这里用于测试
-	if(mdl_sub == 0)
-	{
-		test_val += mdl_step;
-		if(test_val > cthis->chni.upper_limit)
-		{
-			test_val = cthis->chni.upper_limit - 1;
-			mdl_sub = 1;
-		}
-	}
-	else
-	{
-		if(test_val > cthis->chni.lower_limit)
-		{
-			test_val -= mdl_step;
-			
-		}
-		else
-		{
-			test_val = cthis->chni.lower_limit + 1;
-//			test_val = 0;
-			mdl_sub = 0;
-			
-		}
-		
-	}
-	cthis->alarm.alarm_hh = cthis->chni.upper_limit - 2 * mdl_step;
-	cthis->alarm.alarm_hi = cthis->chni.upper_limit - 1 * mdl_step;
+
+	cthis->alarm.alarm_hh = cthis->chni.upper_limit / 2;
+	cthis->alarm.alarm_hi = cthis->chni.upper_limit / 3;
 	
-	cthis->alarm.alarm_lo = cthis->chni.lower_limit + 2 * mdl_step;
-	cthis->alarm.alarm_ll = cthis->chni.lower_limit + 1 * mdl_step;
+	cthis->alarm.alarm_lo = cthis->chni.lower_limit /5;
+	cthis->alarm.alarm_ll = cthis->chni.lower_limit /10;
 	
+	*p_u16 += 1;
 	
-	
-	test_val = Zero_shift_K_B(&cthis->chni, test_val);
-	test_val = Cut_small_signal(&cthis->chni, test_val);
-	cthis->chni.value = test_val;
+	*p_u16 = Zero_shift_K_B(&cthis->chni, *p_u16);
+	*p_u16 = Cut_small_signal(&cthis->chni, *p_u16);
 	
 	Signal_Alarm(cthis);
 	

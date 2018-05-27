@@ -116,6 +116,7 @@ static int Read_devSpi(I_dev_Char *self, void *buf, int rd_len)
 		ret = Read_spi(cthis->minor, arr_conf_spi[cthis->minor].datasize_bit, buf, rd_len);
 		if(ret >0)
 			len += ret;
+		
 	}
 	
 	return len;

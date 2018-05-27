@@ -6,6 +6,7 @@
 #include "format.h"
 #include "chnInfoPic.h"
 #include "ModelFactory.h"
+#include "arithmetic/bit.h"
 
 
 //============================================================================//
@@ -47,12 +48,15 @@ static const char datahmi_code_data[] = { "<text f=32 m=0>100</>" };
 
 //static const hmiAtt_t	barHmiAtt = { 4,4, COLOUR_GRAY, BARHMI_NUM_BTNROW, BARHMI_NUM_BTNCOL};
 
-#define VRAM_NUM				0
+#define VRAM_RUN_NUM				0
 //------------------------------------------------------------------------------
 // local types
 //------------------------------------------------------------------------------
 typedef struct {
 	int			mdf_fd[NUM_CHANNEL];
+	//让通道的数据更新与界面更新实现异步处理
+	uint8_t		set_need_update_channel[4];			//每个bit对应一个通道，为1表示需要更新通道
+	void *		arr_p_need_update_model[NUM_CHANNEL];
 }data_run_t;
 //------------------------------------------------------------------------------
 // local vars
@@ -66,7 +70,7 @@ typedef struct {
 static int	Init_dataHMI( HMI *self, void *arg);
 static void DataHmi_InitSheet( HMI *self, uint32_t att );
 static void DataHmi_HideSheet( HMI *self );
-
+static void DATA_Run(HMI *self);
 static void	DataHmi_Show( HMI *self);
 static int HDT_Update_mdl_chn_data(mdl_observer *self, void *p_srcMdl);
 
@@ -116,6 +120,7 @@ FUNCTION_SETTING( HMI.init, Init_dataHMI);
 FUNCTION_SETTING( HMI.initSheet, DataHmi_InitSheet);
 FUNCTION_SETTING( HMI.hide, DataHmi_HideSheet);
 FUNCTION_SETTING( HMI.show, DataHmi_Show);
+FUNCTION_SETTING( HMI.hmi_run, DATA_Run);
 
 FUNCTION_SETTING( HMI.hitHandle, DataHmi_HitHandle);
 
@@ -150,6 +155,56 @@ static int	Init_dataHMI( HMI *self, void *arg)
 
 }
 
+static void DATA_Run(HMI *self)
+{
+	data_run_t *p_run = (data_run_t *)arr_p_vram[VRAM_RUN_NUM];
+	int 	chn_num;
+	
+	
+	for(chn_num = 0; chn_num < phn_sys.sys_conf.num_chn; chn_num ++)
+	{
+		
+		if(Check_bit(p_run->set_need_update_channel, chn_num) == 0)
+			continue;
+		
+		
+		
+	
+		
+		if((self->flag & HMI_FLAG_HSA_SEM) == 0)
+		{
+			
+			if(Sem_wait(&phn_sys.hmi_mgr.hmi_sem, 100) <= 0) 
+			{
+				break;	//下次在更新
+			}
+		
+		}
+		//更新实时值
+		DataHmi_Data_update(g_arr_p_chnData[chn_num], p_run->arr_p_need_update_model[chn_num] );
+		
+		//更新单位
+		DataHmi_Util_update(g_arr_p_chnData[chn_num], p_run->arr_p_need_update_model[chn_num] );
+		//更新报警
+		DataHmi_Alarm_update(g_arr_p_chnData[chn_num], p_run->arr_p_need_update_model[chn_num] );
+		
+		//更新通道状态
+		if(phn_sys.sys_conf.show_chn_status)
+			DataHmi_Status_update(g_arr_p_chnData[chn_num], p_run->arr_p_need_update_model[chn_num]);
+		
+		if((self->flag & HMI_FLAG_HSA_SEM) == 0)
+			Sem_post(&phn_sys.hmi_mgr.hmi_sem);
+		
+		
+		
+		
+		
+		Clear_bit(p_run->set_need_update_channel, chn_num);
+		
+	}
+	
+}
+
 
 
 static void DataHmi_InitSheet( HMI *self, uint32_t att )
@@ -174,9 +229,9 @@ static void DataHmi_InitSheet( HMI *self, uint32_t att )
 	
 	HMI_Ram_init();
 		
-	arr_p_vram[VRAM_NUM] = HMI_Ram_alloc(48);
-	p_run = (data_run_t *)arr_p_vram[VRAM_NUM];
-	
+	arr_p_vram[VRAM_RUN_NUM] = HMI_Ram_alloc(sizeof(data_run_t));
+	p_run = (data_run_t *)arr_p_vram[VRAM_RUN_NUM];
+	memset(p_run->set_need_update_channel, 0, sizeof(p_run->set_need_update_channel));
 	DataHmi_Init_chnSht();
 	HMI_Attach_model_chn(p_run->mdf_fd, &cthis->mdl_observer);
 	
@@ -197,7 +252,7 @@ static void DataHmi_HideSheet( HMI *self )
 //		Sheet_updown(g_arr_p_chnAlarm[i], -1);
 //	}
 	
-	p_run = (data_run_t *)arr_p_vram[VRAM_NUM];
+	p_run = (data_run_t *)arr_p_vram[VRAM_RUN_NUM];
 	HMI_detach_model_chn(p_run->mdf_fd);
 	Sheet_updown(g_p_shtTime, -1);
 	Sheet_updown(g_p_sht_title, -1);
@@ -228,6 +283,8 @@ static void	DataHmi_Show( HMI *self )
 		p_mdl = Create_model(chn_name);
 		cthis->mdl_observer.update(&cthis->mdl_observer, p_mdl);
 	}
+	
+	self->hmi_run(self);
 }
 
 static void	DataHmi_HitHandle( HMI *self, char kcd)
@@ -304,31 +361,36 @@ static void DataHmi_Init_chnSht(void)
 
 static int HDT_Update_mdl_chn_data(mdl_observer *self, void *p_srcMdl)
 {
-	HMI_data		*cthis = SUB_PTR( self, mdl_observer, HMI_data);
-	HMI		*p_hmi = SUPER_PTR(cthis, HMI);
+//	HMI_data		*cthis = SUB_PTR( self, mdl_observer, HMI_data);
+//	HMI		*p_hmi = SUPER_PTR(cthis, HMI);
 	Model	*p_mdl = (Model *)p_srcMdl;
-//	data_run_t *p_run = (data_run_t *)arr_p_vram[VRAM_NUM];
+	data_run_t *p_run = (data_run_t *)arr_p_vram[VRAM_RUN_NUM];
 	short	chn_num = GET_MDL_CHN(p_mdl->mdl_id);
 	
-	if((p_hmi->flag & HMI_FLAG_HSA_SEM) == 0)
-	{
-		if(Sem_wait(&phn_sys.hmi_mgr.hmi_sem, 1000) <= 0) 
-			return ERR_RSU_BUSY;
 	
-	}
-	//更新实时值
-	DataHmi_Data_update(g_arr_p_chnData[chn_num], p_srcMdl);
-	//更新单位
-	DataHmi_Util_update(g_arr_p_chnData[chn_num], p_srcMdl);
-	//更新报警
-	DataHmi_Alarm_update(g_arr_p_chnData[chn_num], p_srcMdl);
 	
-	//更新通道状态
-	if(phn_sys.sys_conf.show_chn_status)
-		DataHmi_Status_update(g_arr_p_chnData[chn_num], p_srcMdl);
+	Set_bit(p_run->set_need_update_channel, chn_num);
+	p_run->arr_p_need_update_model[chn_num] = p_srcMdl;
 	
-	if((p_hmi->flag & HMI_FLAG_HSA_SEM) == 0)
-		Sem_post(&phn_sys.hmi_mgr.hmi_sem);
+//	if((p_hmi->flag & HMI_FLAG_HSA_SEM) == 0)
+//	{
+//		if(Sem_wait(&phn_sys.hmi_mgr.hmi_sem, 1000) <= 0) 
+//			return ERR_RSU_BUSY;
+//	
+//	}
+//	//更新实时值
+//	DataHmi_Data_update(g_arr_p_chnData[chn_num], p_srcMdl);
+//	//更新单位
+//	DataHmi_Util_update(g_arr_p_chnData[chn_num], p_srcMdl);
+//	//更新报警
+//	DataHmi_Alarm_update(g_arr_p_chnData[chn_num], p_srcMdl);
+//	
+//	//更新通道状态
+//	if(phn_sys.sys_conf.show_chn_status)
+//		DataHmi_Status_update(g_arr_p_chnData[chn_num], p_srcMdl);
+//	
+//	if((p_hmi->flag & HMI_FLAG_HSA_SEM) == 0)
+//		Sem_post(&phn_sys.hmi_mgr.hmi_sem);
 	
 	
 	return RET_OK;

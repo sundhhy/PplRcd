@@ -53,7 +53,7 @@
 typedef struct {
 	uint32_t				rcd_maxcount;
 	uint32_t				rcd_count;
-	
+	uint32_t				file_size;		//记录下历史数据文件的大小，文件写满擦除之后，重新创建文件时使用
 }rcd_mgr_t;
 
 typedef struct {
@@ -139,6 +139,8 @@ uint32_t STG_Read_data_by_time(uint8_t	chn, uint32_t sec, uint32_t pos, data_in_
 //并且把数据转成csv格式
 int	STG_Read_rcd_by_time(uint8_t	chn, uint32_t start_sec, uint32_t end_sec, char *buf, int buf_size, uint32_t *rd_sec);
 
+int STG_Read_rcd(uint8_t	chn, uint8_t	*buf,  uint16_t size);
+
 //chn 0 ~ NUM_CHANNELNUM 是报警信息,0xff是掉电信息
 int	STG_Read_alm_pwr(uint8_t	chn_pwr,short start, char *buf, int buf_size, uint32_t *rd_count);			
 uint16_t STG_Get_alm_pwr_num(uint8_t	chn_pwr);
@@ -149,5 +151,6 @@ void STG_Erase_file(uint8_t	file_type);
 void STG_Resize(uint8_t	file_type, uint32_t	new_size);
 
 void STG_Run(void);
+void STG_Reset(void);
 
 #endif
