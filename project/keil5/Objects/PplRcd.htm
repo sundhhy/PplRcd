@@ -3,7 +3,7 @@
 <title>Static Call Graph - [.\Objects\PplRcd.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image .\Objects\PplRcd.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060061: Last Updated: Mon May 28 14:47:45 2018
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5050106: Last Updated: Mon May 28 23:22:34 2018
 <BR><P>
 <H3>Maximum Stack Usage =        520 bytes + Unknown(Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -939,6 +939,7 @@ Global Symbols
 </UL>
 <BR>[Called By]<UL><LI><a href="#[275]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Create_model
 <LI><a href="#[1f3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UartTest
+<LI><a href="#[25f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ExpCreate
 <LI><a href="#[35d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GetNameVale
 <LI><a href="#[44a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;String2Font
 <LI><a href="#[463]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;String2Colour
@@ -946,7 +947,6 @@ Global Symbols
 <LI><a href="#[446]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;String2Align
 <LI><a href="#[35c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GetKeyVal
 <LI><a href="#[1a1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;PicInptSht
-<LI><a href="#[25f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ExpCreate
 <LI><a href="#[64]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Data_bacnup_Strategy_entry
 <LI><a href="#[111]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;EFS_open
 </UL>
@@ -1073,9 +1073,9 @@ Global Symbols
 </UL>
 <BR>[Calls]<UL><LI><a href="#[23e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;tolower
 </UL>
-<BR>[Called By]<UL><LI><a href="#[1c3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;TxtInptSht
+<BR>[Called By]<UL><LI><a href="#[25f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ExpCreate
+<LI><a href="#[1c3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;TxtInptSht
 <LI><a href="#[12e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GeoInptSht
-<LI><a href="#[25f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ExpCreate
 </UL>
 
 <P><STRONG><a name="[23f]"></a>calloc</STRONG> (Thumb, 28 bytes, Stack size 8 bytes, calloc.o(.text))
@@ -2138,7 +2138,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[1f8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;KeyboardHitHandle
 </UL>
 
-<P><STRONG><a name="[2de]"></a>Except_raise</STRONG> (Thumb, 128 bytes, Stack size 0 bytes, except.o(i.Except_raise))
+<P><STRONG><a name="[2de]"></a>Except_raise</STRONG> (Thumb, 130 bytes, Stack size 0 bytes, except.o(i.Except_raise))
 <BR><BR>[Stack]<UL><LI>Max Depth = 24 + In Cycle
 <LI>Call Chain = Except_raise &rArr;  Except_raise (Cycle)
 </UL>
@@ -2150,22 +2150,22 @@ Global Symbols
 <LI><a href="#[2bc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Mem_calloc
 <LI><a href="#[331]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Mem_alloc
 <LI><a href="#[2de]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Except_raise
-<LI><a href="#[260]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Sheet_alloc
 <LI><a href="#[25f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ExpCreate
+<LI><a href="#[260]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Sheet_alloc
 <LI><a href="#[259]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Focus_alloc
 <LI><a href="#[ea]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Init_ctime
 <LI><a href="#[327]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;EFS_Init_file_sem
 </UL>
 
 <P><STRONG><a name="[25f]"></a>ExpCreate</STRONG> (Thumb, 176 bytes, Stack size 16 bytes, expfactory.o(i.ExpCreate))
-<BR><BR>[Stack]<UL><LI>Max Depth = 88<LI>Call Chain = ExpCreate &rArr; GetTxtExpr &rArr; TxtExpr_new &rArr; malloc &rArr; internal_alloc
+<BR><BR>[Stack]<UL><LI>Max Depth = 88<LI>Call Chain = ExpCreate &rArr; GetNtButton &rArr; NtButton_new &rArr; malloc &rArr; internal_alloc
 </UL>
 <BR>[Calls]<UL><LI><a href="#[2de]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Except_raise
+<LI><a href="#[344]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GetNtButton
+<LI><a href="#[342]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GetGmtrExpr
 <LI><a href="#[340]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GetTxtExpr
 <LI><a href="#[343]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GetPictExpr
 <LI><a href="#[341]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GetNtInput
-<LI><a href="#[344]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GetNtButton
-<LI><a href="#[342]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GetGmtrExpr
 <LI><a href="#[23d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strcasecmp
 <LI><a href="#[2dc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strstr
 </UL>
@@ -3714,6 +3714,7 @@ Global Symbols
 <BR><BR>[Stack]<UL><LI>Max Depth = 16<LI>Call Chain = Operate_in_tange
 </UL>
 <BR>[Called By]<UL><LI><a href="#[461]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Str_set_sys_param
+<LI><a href="#[80]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SPR_key_rt
 <LI><a href="#[7f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SPR_key_lt
 <LI><a href="#[75]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Sys_key_rt
 <LI><a href="#[74]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Sys_key_lt
@@ -3725,7 +3726,6 @@ Global Symbols
 <LI><a href="#[42b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SSA_update_content
 <LI><a href="#[184]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MdlChn_modify_sconf
 <LI><a href="#[429]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SPR_update_content
-<LI><a href="#[80]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SPR_key_rt
 </UL>
 
 <P><STRONG><a name="[2ea]"></a>PGB_Get_Sington</STRONG> (Thumb, 32 bytes, Stack size 8 bytes, component_progress_bar.o(i.PGB_Get_Sington))
@@ -4144,10 +4144,11 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[248]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MdlChn_Commit_conf
 </UL>
 
-<P><STRONG><a name="[43b]"></a>STG_Run</STRONG> (Thumb, 198 bytes, Stack size 88 bytes, storage.o(i.STG_Run))
-<BR><BR>[Stack]<UL><LI>Max Depth = 192<LI>Call Chain = STG_Run &rArr; STG_Open_file &rArr; Get_storage &rArr; Storage_new &rArr; malloc &rArr; internal_alloc
+<P><STRONG><a name="[43b]"></a>STG_Run</STRONG> (Thumb, 222 bytes, Stack size 88 bytes, storage.o(i.STG_Run))
+<BR><BR>[Stack]<UL><LI>Max Depth = 232<LI>Call Chain = STG_Run &rArr; STG_Set_file_position &rArr; STG_Open_file &rArr; Get_storage &rArr; Storage_new &rArr; malloc &rArr; internal_alloc
 </UL>
-<BR>[Calls]<UL><LI><a href="#[29c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Get_storage
+<BR>[Calls]<UL><LI><a href="#[29d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;STG_Set_file_position
+<LI><a href="#[29c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Get_storage
 <LI><a href="#[438]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;STG_Out_sequential
 <LI><a href="#[1c2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;STG_Open_file
 </UL>
@@ -4166,7 +4167,7 @@ Global Symbols
 <LI><a href="#[3cb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MdlChn_Check_new_alarm
 </UL>
 
-<P><STRONG><a name="[29d]"></a>STG_Set_file_position</STRONG> (Thumb, 168 bytes, Stack size 40 bytes, storage.o(i.STG_Set_file_position))
+<P><STRONG><a name="[29d]"></a>STG_Set_file_position</STRONG> (Thumb, 178 bytes, Stack size 40 bytes, storage.o(i.STG_Set_file_position))
 <BR><BR>[Stack]<UL><LI>Max Depth = 144<LI>Call Chain = STG_Set_file_position &rArr; STG_Open_file &rArr; Get_storage &rArr; Storage_new &rArr; malloc &rArr; internal_alloc
 </UL>
 <BR>[Calls]<UL><LI><a href="#[29c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Get_storage
@@ -4177,6 +4178,7 @@ Global Symbols
 <LI><a href="#[29f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CNA_Init
 <LI><a href="#[46b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;System_power_on
 <LI><a href="#[3fc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;System_power_off
+<LI><a href="#[43b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;STG_Run
 <LI><a href="#[29e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CNA_Commit
 <LI><a href="#[29b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CNA_Clear
 <LI><a href="#[3bc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;LOG_Write_flash
@@ -4390,17 +4392,17 @@ Global Symbols
 </UL>
 <BR>[Calls]<UL><LI><a href="#[392]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HMI_SBG_Turn_page
 </UL>
-<BR>[Address Reference Count : 11]<UL><LI> stg_acc_month.o(i.SAM_Build_component)
+<BR>[Address Reference Count : 11]<UL><LI> hmi_striped_background.o(i.HMI_SBG_Show_entry)
+<LI> stg_acc_month.o(i.SAM_Build_component)
 <LI> stg_set_accumulate.o(i.SSA_Build_component)
 <LI> stg_set_alarm.o(i.ALS_build_component)
-<LI> stg_super_set.o(i.SPR_build_component)
-<LI> hmi_striped_background.o(i.HMI_SBG_Show_entry)
+<LI> stg_set_system.o(i.SYS_build_component)
 <LI> stg_news_alarm.o(i.NLM_Build_component)
 <LI> stg_news_power.o(i.NPW_Build_component)
 <LI> stg_acc_day.o(i.SAD_Build_component)
 <LI> stg_set_channel.o(i.CNS_build_component)
 <LI> stg_set_databackup.o(i.DBP_build_component)
-<LI> stg_set_system.o(i.SYS_build_component)
+<LI> stg_super_set.o(i.SPR_build_component)
 </UL>
 <P><STRONG><a name="[44f]"></a>Setup_HMI_ctor</STRONG> (Thumb, 48 bytes, Stack size 8 bytes, hmi_setup.o(i.Setup_HMI_ctor))
 <BR><BR>[Stack]<UL><LI>Max Depth = 8<LI>Call Chain = Setup_HMI_ctor
@@ -6327,10 +6329,10 @@ Global Symbols
 <P><STRONG><a name="[211]"></a>svcTimerStart</STRONG> (Thumb, 96 bytes, Stack size 16 bytes, rt_cmsis.o(i.svcTimerStart))
 <BR><BR>[Stack]<UL><LI>Max Depth = 56<LI>Call Chain = svcTimerStart &rArr; __aeabi_uldivmod
 </UL>
-<BR>[Calls]<UL><LI><a href="#[237]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_uldivmod
-<LI><a href="#[4ea]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_timer_remove
+<BR>[Calls]<UL><LI><a href="#[4ea]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_timer_remove
 <LI><a href="#[4eb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_timer_insert
 <LI><a href="#[4b0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_id2obj
+<LI><a href="#[237]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_uldivmod
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> rt_cmsis.o(i.osTimerStart)
 </UL>
@@ -7153,7 +7155,8 @@ Local Symbols
 <P><STRONG><a name="[198]"></a>BuInptSht</STRONG> (Thumb, 258 bytes, Stack size 40 bytes, ntbutton.o(i.BuInptSht))
 <BR><BR>[Stack]<UL><LI>Max Depth = 192<LI>Call Chain = BuInptSht &rArr; GetShtctl &rArr; Dev_open &rArr; DevChar_open &rArr; Get_Dev_IIC &rArr; Dev_IIC_new &rArr; malloc &rArr; internal_alloc
 </UL>
-<BR>[Calls]<UL><LI><a href="#[27b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RemoveHead
+<BR>[Calls]<UL><LI><a href="#[25f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ExpCreate
+<LI><a href="#[27b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RemoveHead
 <LI><a href="#[27d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RemoveTail
 <LI><a href="#[27c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GetName
 <LI><a href="#[278]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GetAttribute
@@ -7162,7 +7165,6 @@ Local Symbols
 <LI><a href="#[277]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Get_GhRectangle
 <LI><a href="#[260]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Sheet_alloc
 <LI><a href="#[25e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GetShtctl
-<LI><a href="#[25f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ExpCreate
 <LI><a href="#[23a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memclr
 <LI><a href="#[240]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;malloc
 </UL>
@@ -7171,7 +7173,8 @@ Local Symbols
 <P><STRONG><a name="[199]"></a>InputInptSht</STRONG> (Thumb, 222 bytes, Stack size 40 bytes, ntinput.o(i.InputInptSht))
 <BR><BR>[Stack]<UL><LI>Max Depth = 192<LI>Call Chain = InputInptSht &rArr; GetShtctl &rArr; Dev_open &rArr; DevChar_open &rArr; Get_Dev_IIC &rArr; Dev_IIC_new &rArr; malloc &rArr; internal_alloc
 </UL>
-<BR>[Calls]<UL><LI><a href="#[27b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RemoveHead
+<BR>[Calls]<UL><LI><a href="#[25f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ExpCreate
+<LI><a href="#[27b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RemoveHead
 <LI><a href="#[27d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RemoveTail
 <LI><a href="#[278]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GetAttribute
 <LI><a href="#[279]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Set_shtContextAtt
@@ -7179,7 +7182,6 @@ Local Symbols
 <LI><a href="#[367]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Get_GhNone
 <LI><a href="#[260]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Sheet_alloc
 <LI><a href="#[25e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GetShtctl
-<LI><a href="#[25f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ExpCreate
 <LI><a href="#[23a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memclr
 <LI><a href="#[240]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;malloc
 </UL>
@@ -7697,9 +7699,9 @@ Local Symbols
 <P><STRONG><a name="[db]"></a>BTN_Init</STRONG> (Thumb, 170 bytes, Stack size 24 bytes, component_button.o(i.BTN_Init))
 <BR><BR>[Stack]<UL><LI>Max Depth = 176<LI>Call Chain = BTN_Init &rArr; GetShtctl &rArr; Dev_open &rArr; DevChar_open &rArr; Get_Dev_IIC &rArr; Dev_IIC_new &rArr; malloc &rArr; internal_alloc
 </UL>
-<BR>[Calls]<UL><LI><a href="#[260]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Sheet_alloc
+<BR>[Calls]<UL><LI><a href="#[25f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ExpCreate
+<LI><a href="#[260]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Sheet_alloc
 <LI><a href="#[25e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GetShtctl
-<LI><a href="#[25f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ExpCreate
 <LI><a href="#[261]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FormatSheetSub
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> component_button.o(i.Button_ctor)
@@ -7870,9 +7872,9 @@ Local Symbols
 <P><STRONG><a name="[1a2]"></a>PGB_Init</STRONG> (Thumb, 280 bytes, Stack size 24 bytes, component_progress_bar.o(i.PGB_Init))
 <BR><BR>[Stack]<UL><LI>Max Depth = 176<LI>Call Chain = PGB_Init &rArr; GetShtctl &rArr; Dev_open &rArr; DevChar_open &rArr; Get_Dev_IIC &rArr; Dev_IIC_new &rArr; malloc &rArr; internal_alloc
 </UL>
-<BR>[Calls]<UL><LI><a href="#[260]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Sheet_alloc
+<BR>[Calls]<UL><LI><a href="#[25f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ExpCreate
+<LI><a href="#[260]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Sheet_alloc
 <LI><a href="#[25e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GetShtctl
-<LI><a href="#[25f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ExpCreate
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> component_progress_bar.o(i.Progress_bar_ctor)
 </UL>
@@ -7952,9 +7954,9 @@ Local Symbols
 <P><STRONG><a name="[15a]"></a>HMI_SBG_Init_sheet</STRONG> (Thumb, 276 bytes, Stack size 32 bytes, hmi_striped_background.o(i.HMI_SBG_Init_sheet))
 <BR><BR>[Stack]<UL><LI>Max Depth = 208<LI>Call Chain = HMI_SBG_Init_sheet &rArr; Sheet_updown &rArr; GetShtctl &rArr; Dev_open &rArr; DevChar_open &rArr; Get_Dev_IIC &rArr; Dev_IIC_new &rArr; malloc &rArr; internal_alloc
 </UL>
-<BR>[Calls]<UL><LI><a href="#[260]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Sheet_alloc
+<BR>[Calls]<UL><LI><a href="#[25f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ExpCreate
+<LI><a href="#[260]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Sheet_alloc
 <LI><a href="#[25e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GetShtctl
-<LI><a href="#[25f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ExpCreate
 <LI><a href="#[251]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Sheet_updown
 <LI><a href="#[256]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strlen
 </UL>
@@ -8144,14 +8146,14 @@ Local Symbols
 <P><STRONG><a name="[1a8]"></a>Init_RT_trendHMI</STRONG> (Thumb, 150 bytes, Stack size 32 bytes, hmi_curve.o(i.Init_RT_trendHMI))
 <BR><BR>[Stack]<UL><LI>Max Depth = 184<LI>Call Chain = Init_RT_trendHMI &rArr; GetShtctl &rArr; Dev_open &rArr; DevChar_open &rArr; Get_Dev_IIC &rArr; Dev_IIC_new &rArr; malloc &rArr; internal_alloc
 </UL>
-<BR>[Calls]<UL><LI><a href="#[260]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Sheet_alloc
+<BR>[Calls]<UL><LI><a href="#[25f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ExpCreate
+<LI><a href="#[260]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Sheet_alloc
 <LI><a href="#[25e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GetShtctl
-<LI><a href="#[25f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ExpCreate
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> hmi_curve.o(i.RLT_trendHMI_ctor)
 </UL>
 <P><STRONG><a name="[414]"></a>RLTHmi_Init_chnSht</STRONG> (Thumb, 104 bytes, Stack size 24 bytes, hmi_curve.o(i.RLTHmi_Init_chnSht))
-<BR><BR>[Stack]<UL><LI>Max Depth = 112<LI>Call Chain = RLTHmi_Init_chnSht &rArr; ExpCreate &rArr; GetTxtExpr &rArr; TxtExpr_new &rArr; malloc &rArr; internal_alloc
+<BR><BR>[Stack]<UL><LI>Max Depth = 112<LI>Call Chain = RLTHmi_Init_chnSht &rArr; ExpCreate &rArr; GetNtButton &rArr; NtButton_new &rArr; malloc &rArr; internal_alloc
 </UL>
 <BR>[Calls]<UL><LI><a href="#[25f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ExpCreate
 </UL>
@@ -8238,9 +8240,9 @@ Local Symbols
 <P><STRONG><a name="[1a9]"></a>RT_trendHmi_InitSheet</STRONG> (Thumb, 322 bytes, Stack size 32 bytes, hmi_curve.o(i.RT_trendHmi_InitSheet))
 <BR><BR>[Stack]<UL><LI>Max Depth = 208<LI>Call Chain = RT_trendHmi_InitSheet &rArr; Sheet_updown &rArr; GetShtctl &rArr; Dev_open &rArr; DevChar_open &rArr; Get_Dev_IIC &rArr; Dev_IIC_new &rArr; malloc &rArr; internal_alloc
 </UL>
-<BR>[Calls]<UL><LI><a href="#[260]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Sheet_alloc
+<BR>[Calls]<UL><LI><a href="#[25f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ExpCreate
+<LI><a href="#[260]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Sheet_alloc
 <LI><a href="#[25e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GetShtctl
-<LI><a href="#[25f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ExpCreate
 <LI><a href="#[251]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Sheet_updown
 <LI><a href="#[415]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RLT_Init_curve
 <LI><a href="#[414]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RLTHmi_Init_chnSht
@@ -8373,9 +8375,9 @@ Local Symbols
 <BR><BR>[Stack]<UL><LI>Max Depth = 176<LI>Call Chain = CRV_Init &rArr; GetShtctl &rArr; Dev_open &rArr; DevChar_open &rArr; Get_Dev_IIC &rArr; Dev_IIC_new &rArr; malloc &rArr; internal_alloc
 </UL>
 <BR>[Calls]<UL><LI><a href="#[2bc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Mem_calloc
+<LI><a href="#[25f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ExpCreate
 <LI><a href="#[260]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Sheet_alloc
 <LI><a href="#[25e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GetShtctl
-<LI><a href="#[25f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ExpCreate
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> component_curve.o(i.Curve_ctor)
 </UL>
@@ -8467,9 +8469,9 @@ Local Symbols
 <P><STRONG><a name="[e1]"></a>TIP_Init</STRONG> (Thumb, 72 bytes, Stack size 24 bytes, component_tips.o(i.TIP_Init))
 <BR><BR>[Stack]<UL><LI>Max Depth = 176<LI>Call Chain = TIP_Init &rArr; GetShtctl &rArr; Dev_open &rArr; DevChar_open &rArr; Get_Dev_IIC &rArr; Dev_IIC_new &rArr; malloc &rArr; internal_alloc
 </UL>
-<BR>[Calls]<UL><LI><a href="#[260]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Sheet_alloc
+<BR>[Calls]<UL><LI><a href="#[25f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ExpCreate
+<LI><a href="#[260]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Sheet_alloc
 <LI><a href="#[25e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GetShtctl
-<LI><a href="#[25f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ExpCreate
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> component_tips.o(i.CMP_tips_ctor)
 </UL>
@@ -8529,10 +8531,10 @@ Local Symbols
 <P><STRONG><a name="[d6]"></a>Alarm_initSheet</STRONG> (Thumb, 284 bytes, Stack size 32 bytes, hmi_accumulate .o(i.Alarm_initSheet))
 <BR><BR>[Stack]<UL><LI>Max Depth = 208<LI>Call Chain = Alarm_initSheet &rArr; Sheet_updown &rArr; GetShtctl &rArr; Dev_open &rArr; DevChar_open &rArr; Get_Dev_IIC &rArr; Dev_IIC_new &rArr; malloc &rArr; internal_alloc
 </UL>
-<BR>[Calls]<UL><LI><a href="#[260]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Sheet_alloc
+<BR>[Calls]<UL><LI><a href="#[25f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ExpCreate
+<LI><a href="#[260]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Sheet_alloc
 <LI><a href="#[25e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GetShtctl
 <LI><a href="#[255]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Button_Get_subcnt
-<LI><a href="#[25f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ExpCreate
 <LI><a href="#[261]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FormatSheetSub
 <LI><a href="#[251]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Sheet_updown
 <LI><a href="#[25d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HMI_Ram_init
@@ -8597,7 +8599,7 @@ Local Symbols
 <BR>[Address Reference Count : 1]<UL><LI> hmi_bargraph.o(i.HMI_bar_ctor)
 </UL>
 <P><STRONG><a name="[273]"></a>BarHmi_Init_chnSht</STRONG> (Thumb, 70 bytes, Stack size 16 bytes, hmi_bargraph.o(i.BarHmi_Init_chnSht))
-<BR><BR>[Stack]<UL><LI>Max Depth = 104<LI>Call Chain = BarHmi_Init_chnSht &rArr; ExpCreate &rArr; GetTxtExpr &rArr; TxtExpr_new &rArr; malloc &rArr; internal_alloc
+<BR><BR>[Stack]<UL><LI>Max Depth = 104<LI>Call Chain = BarHmi_Init_chnSht &rArr; ExpCreate &rArr; GetNtButton &rArr; NtButton_new &rArr; malloc &rArr; internal_alloc
 </UL>
 <BR>[Calls]<UL><LI><a href="#[25f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ExpCreate
 </UL>
@@ -8633,9 +8635,9 @@ Local Symbols
 <P><STRONG><a name="[3a7]"></a>Init_bar</STRONG> (Thumb, 94 bytes, Stack size 24 bytes, hmi_bargraph.o(i.Init_bar))
 <BR><BR>[Stack]<UL><LI>Max Depth = 176<LI>Call Chain = Init_bar &rArr; GetShtctl &rArr; Dev_open &rArr; DevChar_open &rArr; Get_Dev_IIC &rArr; Dev_IIC_new &rArr; malloc &rArr; internal_alloc
 </UL>
-<BR>[Calls]<UL><LI><a href="#[260]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Sheet_alloc
+<BR>[Calls]<UL><LI><a href="#[25f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ExpCreate
+<LI><a href="#[260]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Sheet_alloc
 <LI><a href="#[25e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GetShtctl
-<LI><a href="#[25f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ExpCreate
 </UL>
 <BR>[Called By]<UL><LI><a href="#[133]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Init_barGhHMI
 </UL>
@@ -8664,9 +8666,9 @@ Local Symbols
 <BR><BR>[Stack]<UL><LI>Max Depth = 176<LI>Call Chain = Build_otherSheets &rArr; GetShtctl &rArr; Dev_open &rArr; DevChar_open &rArr; Get_Dev_IIC &rArr; Dev_IIC_new &rArr; malloc &rArr; internal_alloc
 </UL>
 <BR>[Calls]<UL><LI><a href="#[275]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Create_model
+<LI><a href="#[25f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ExpCreate
 <LI><a href="#[260]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Sheet_alloc
 <LI><a href="#[25e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GetShtctl
-<LI><a href="#[25f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ExpCreate
 <LI><a href="#[280]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GetCmmHMI
 <LI><a href="#[256]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strlen
 </UL>
@@ -8751,7 +8753,7 @@ Local Symbols
 <BR>[Address Reference Count : 1]<UL><LI> hmi_data.o(i.HMI_data_ctor)
 </UL>
 <P><STRONG><a name="[30f]"></a>DataHmi_Init_chnSht</STRONG> (Thumb, 56 bytes, Stack size 16 bytes, hmi_data.o(i.DataHmi_Init_chnSht))
-<BR><BR>[Stack]<UL><LI>Max Depth = 104<LI>Call Chain = DataHmi_Init_chnSht &rArr; ExpCreate &rArr; GetTxtExpr &rArr; TxtExpr_new &rArr; malloc &rArr; internal_alloc
+<BR><BR>[Stack]<UL><LI>Max Depth = 104<LI>Call Chain = DataHmi_Init_chnSht &rArr; ExpCreate &rArr; GetNtButton &rArr; NtButton_new &rArr; malloc &rArr; internal_alloc
 </UL>
 <BR>[Calls]<UL><LI><a href="#[25f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ExpCreate
 </UL>
@@ -8841,9 +8843,9 @@ Local Symbols
 <P><STRONG><a name="[1f4]"></a>Init_kbmHmi</STRONG> (Thumb, 340 bytes, Stack size 24 bytes, hmi_keyboard.o(i.Init_kbmHmi))
 <BR><BR>[Stack]<UL><LI>Max Depth = 176<LI>Call Chain = Init_kbmHmi &rArr; GetShtctl &rArr; Dev_open &rArr; DevChar_open &rArr; Get_Dev_IIC &rArr; Dev_IIC_new &rArr; malloc &rArr; internal_alloc
 </UL>
-<BR>[Calls]<UL><LI><a href="#[260]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Sheet_alloc
+<BR>[Calls]<UL><LI><a href="#[25f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ExpCreate
+<LI><a href="#[260]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Sheet_alloc
 <LI><a href="#[25e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GetShtctl
-<LI><a href="#[25f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ExpCreate
 <LI><a href="#[261]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FormatSheetSub
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> hmi_keyboard.o(i.keyboardHMI_ctor)
@@ -9051,7 +9053,7 @@ Local Symbols
 </UL>
 
 <P><STRONG><a name="[3ca]"></a>MainHmi_Init_chnShet</STRONG> (Thumb, 64 bytes, Stack size 16 bytes, hmi_main.o(i.MainHmi_Init_chnShet))
-<BR><BR>[Stack]<UL><LI>Max Depth = 104<LI>Call Chain = MainHmi_Init_chnShet &rArr; ExpCreate &rArr; GetTxtExpr &rArr; TxtExpr_new &rArr; malloc &rArr; internal_alloc
+<BR><BR>[Stack]<UL><LI>Max Depth = 104<LI>Call Chain = MainHmi_Init_chnShet &rArr; ExpCreate &rArr; GetNtButton &rArr; NtButton_new &rArr; malloc &rArr; internal_alloc
 </UL>
 <BR>[Calls]<UL><LI><a href="#[25f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ExpCreate
 </UL>
@@ -9080,9 +9082,9 @@ Local Symbols
 <P><STRONG><a name="[1fd]"></a>Init_menuHMI</STRONG> (Thumb, 76 bytes, Stack size 24 bytes, hmi_menu.o(i.Init_menuHMI))
 <BR><BR>[Stack]<UL><LI>Max Depth = 176<LI>Call Chain = Init_menuHMI &rArr; GetShtctl &rArr; Dev_open &rArr; DevChar_open &rArr; Get_Dev_IIC &rArr; Dev_IIC_new &rArr; malloc &rArr; internal_alloc
 </UL>
-<BR>[Calls]<UL><LI><a href="#[260]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Sheet_alloc
+<BR>[Calls]<UL><LI><a href="#[25f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ExpCreate
+<LI><a href="#[260]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Sheet_alloc
 <LI><a href="#[25e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GetShtctl
-<LI><a href="#[25f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ExpCreate
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> hmi_menu.o(i.menuHMI_ctor)
 </UL>
@@ -9167,7 +9169,7 @@ Local Symbols
 <BR>[Address Reference Count : 1]<UL><LI> hmi_news_select.o(i.NewSlct_HMI_ctor)
 </UL>
 <P><STRONG><a name="[190]"></a>Nws_initSheet</STRONG> (Thumb, 68 bytes, Stack size 16 bytes, hmi_news_select.o(i.Nws_initSheet))
-<BR><BR>[Stack]<UL><LI>Max Depth = 104<LI>Call Chain = Nws_initSheet &rArr; ExpCreate &rArr; GetTxtExpr &rArr; TxtExpr_new &rArr; malloc &rArr; internal_alloc
+<BR><BR>[Stack]<UL><LI>Max Depth = 104<LI>Call Chain = Nws_initSheet &rArr; ExpCreate &rArr; GetNtButton &rArr; NtButton_new &rArr; malloc &rArr; internal_alloc
 </UL>
 <BR>[Calls]<UL><LI><a href="#[25f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ExpCreate
 </UL>
@@ -9275,9 +9277,9 @@ Local Symbols
 <P><STRONG><a name="[1b7]"></a>Setup_initSheet</STRONG> (Thumb, 318 bytes, Stack size 32 bytes, hmi_setup.o(i.Setup_initSheet))
 <BR><BR>[Stack]<UL><LI>Max Depth = 208<LI>Call Chain = Setup_initSheet &rArr; Sheet_updown &rArr; GetShtctl &rArr; Dev_open &rArr; DevChar_open &rArr; Get_Dev_IIC &rArr; Dev_IIC_new &rArr; malloc &rArr; internal_alloc
 </UL>
-<BR>[Calls]<UL><LI><a href="#[260]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Sheet_alloc
+<BR>[Calls]<UL><LI><a href="#[25f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ExpCreate
+<LI><a href="#[260]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Sheet_alloc
 <LI><a href="#[25e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GetShtctl
-<LI><a href="#[25f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ExpCreate
 <LI><a href="#[251]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Sheet_updown
 <LI><a href="#[412]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Print_sys_param
 <LI><a href="#[25d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HMI_Ram_init
@@ -9358,9 +9360,9 @@ Local Symbols
 <P><STRONG><a name="[411]"></a>Popup_init</STRONG> (Thumb, 238 bytes, Stack size 24 bytes, hmi_windowns.o(i.Popup_init))
 <BR><BR>[Stack]<UL><LI>Max Depth = 200<LI>Call Chain = Popup_init &rArr; Sheet_updown &rArr; GetShtctl &rArr; Dev_open &rArr; DevChar_open &rArr; Get_Dev_IIC &rArr; Dev_IIC_new &rArr; malloc &rArr; internal_alloc
 </UL>
-<BR>[Calls]<UL><LI><a href="#[260]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Sheet_alloc
+<BR>[Calls]<UL><LI><a href="#[25f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ExpCreate
+<LI><a href="#[260]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Sheet_alloc
 <LI><a href="#[25e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GetShtctl
-<LI><a href="#[25f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ExpCreate
 <LI><a href="#[251]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Sheet_updown
 <LI><a href="#[256]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strlen
 </UL>
@@ -9390,9 +9392,9 @@ Local Symbols
 <P><STRONG><a name="[406]"></a>Timeset_init</STRONG> (Thumb, 206 bytes, Stack size 24 bytes, hmi_windowns.o(i.Timeset_init))
 <BR><BR>[Stack]<UL><LI>Max Depth = 200<LI>Call Chain = Timeset_init &rArr; Sheet_updown &rArr; GetShtctl &rArr; Dev_open &rArr; DevChar_open &rArr; Get_Dev_IIC &rArr; Dev_IIC_new &rArr; malloc &rArr; internal_alloc
 </UL>
-<BR>[Calls]<UL><LI><a href="#[260]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Sheet_alloc
+<BR>[Calls]<UL><LI><a href="#[25f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ExpCreate
+<LI><a href="#[260]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Sheet_alloc
 <LI><a href="#[25e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GetShtctl
-<LI><a href="#[25f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ExpCreate
 <LI><a href="#[251]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Sheet_updown
 <LI><a href="#[256]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strlen
 </UL>
@@ -10095,8 +10097,8 @@ Local Symbols
 <BR>[Called By]<UL><LI><a href="#[f4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;DBP_Copy
 </UL>
 
-<P><STRONG><a name="[2f0]"></a>DBP_Copy_chn_data</STRONG> (Thumb, 598 bytes, Stack size 144 bytes, stg_set_databackup.o(i.DBP_Copy_chn_data))
-<BR><BR>[Stack]<UL><LI>Max Depth = 368<LI>Call Chain = DBP_Copy_chn_data &rArr; Str_time_2_u32 &rArr; Str_time_2_tm &rArr; Get_str_data &rArr; atoi &rArr; strtol &rArr; _strtoul
+<P><STRONG><a name="[2f0]"></a>DBP_Copy_chn_data</STRONG> (Thumb, 646 bytes, Stack size 152 bytes, stg_set_databackup.o(i.DBP_Copy_chn_data))
+<BR><BR>[Stack]<UL><LI>Max Depth = 376<LI>Call Chain = DBP_Copy_chn_data &rArr; Str_time_2_u32 &rArr; Str_time_2_tm &rArr; Get_str_data &rArr; atoi &rArr; strtol &rArr; _strtoul
 </UL>
 <BR>[Calls]<UL><LI><a href="#[29d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;STG_Set_file_position
 <LI><a href="#[2f6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Str_time_2_u32
@@ -10463,8 +10465,8 @@ Local Symbols
 <BR>[Calls]<UL><LI><a href="#[268]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Operate_in_tange
 <LI><a href="#[249]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2sprintf
 </UL>
-<BR>[Called By]<UL><LI><a href="#[7e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SPR_key_dn
-<LI><a href="#[7d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SPR_key_up
+<BR>[Called By]<UL><LI><a href="#[7d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SPR_key_up
+<LI><a href="#[7e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SPR_key_dn
 </UL>
 
 <P><STRONG><a name="[42a]"></a>SPR_update_syf</STRONG> (Thumb, 20 bytes, Stack size 8 bytes, stg_super_set.o(i.SPR_update_syf))
@@ -10472,8 +10474,8 @@ Local Symbols
 </UL>
 <BR>[Calls]<UL><LI><a href="#[256]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strlen
 </UL>
-<BR>[Called By]<UL><LI><a href="#[7f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SPR_key_lt
-<LI><a href="#[80]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SPR_key_rt
+<BR>[Called By]<UL><LI><a href="#[80]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SPR_key_rt
+<LI><a href="#[7f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SPR_key_lt
 </UL>
 
 <P><STRONG><a name="[1b3]"></a>SYS_Btn_hdl</STRONG> (Thumb, 68 bytes, Stack size 16 bytes, stg_super_set.o(i.SYS_Btn_hdl))

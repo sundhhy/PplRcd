@@ -418,6 +418,7 @@ int		EFS_Raw_read(int fd, uint8_t *p, int len)
 	}
 		
 	ret =  EFS_FSH(f->fsh_No).fsh_raw_read(p, start_addr + f->read_position,len);
+	
 	EFS_FSH(f->fsh_No).fsh_unlock();
 	
 	if(ret > 0)

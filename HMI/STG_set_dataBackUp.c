@@ -84,13 +84,12 @@ enum {
 
 typedef struct {
 	
-	uint8_t		arr_DBP_fds[3];
+	uint8_t		arr_DBP_fds[4];
 	uint8_t		DBP_copy;
 	
 	char		copy_file_type;	//0 数据 1 报警 2 掉电 3 log
 	uint8_t		copy_first_chn;
 	uint8_t		copy_last_buf;
-	uint8_t		none;
 	
 	char		tip_buf[48];
 	
@@ -684,126 +683,6 @@ static void DBP_Copy(void)
 		else if(p_run->copy_file_type == 3)
 			dbp_count_bytes = DBP_Copy_log(usb_fd);
 	
-	//关闭文件
-	
-//	while(done_chn <= copy_num_chn)
-//	{
-//		
-//		done = 0;
-//		start_sec = old_start;
-//		if(p_run->copy_file_type == 0)
-//			STG_Set_file_position(STG_CHN_DATA(copy_chn), STG_DRC_READ, 0);
-//		else if(p_run->copy_file_type == 1)
-//		{
-//			
-//			total = STG_MAX_NUM_CHNALARM;
-//			start_sec = 0;
-//		}
-//		else if(p_run->copy_file_type == 2)
-//		{
-//			
-//			total = STG_MAX_NUM_LST_PWR;
-//			start_sec = 0;
-//		}
-//		else if(p_run->copy_file_type == 3)
-//		{
-//			
-//			total = LOG_Get_total_num() * sizeof(rcd_log_t);
-//		}
-//		else
-//		{
-//			
-//			return;
-//		}
-//		
-//		while(done < total)
-//		{
-//			if(DBP_copy == 0)
-//				break;
-//			if(phn_sys.usb_device == 0)
-//				goto copy_wait;
-//			
-//			
-//			if(p_run->copy_file_type == 0)
-//			{
-//				rd_sec = 0;
-//				rd_len = STG_Read_rcd_by_time(copy_chn, start_sec, end_sec, copy_buf, BDP_USB_BUF_SIZE, &rd_sec);
-//				if(rd_len <= 0)
-//					done = total;
-//				else
-//				{
-//					
-//					start_sec += rd_sec;
-//					done += rd_sec;
-//				}
-//			}
-//			else if(p_run->copy_file_type == 3)
-//			{
-//				rd_len = LOG_Read(copy_buf, BDP_USB_BUF_SIZE);
-//				if(rd_len <= 0)
-//					done = total;
-//				else
-//				{
-//					copy_num_chn = 0;
-//					done = LOG_Get_read_num() * sizeof(rcd_log_t);
-//				}
-//				
-//			}
-//			else 
-//			{
-//				if(p_run->copy_file_type == 1)
-//					rd_len = STG_Read_alm_pwr(STG_CHN_ALARM(copy_chn), start_sec, copy_buf, BDP_USB_BUF_SIZE, &rd_sec);
-//				else
-//				{
-//					copy_chn = DBP_FIRST_CHN;
-//					copy_num_chn = 1;
-//					rd_len = STG_Read_alm_pwr(STG_LOSE_PWR, start_sec, copy_buf, BDP_USB_BUF_SIZE, &rd_sec);
-//					
-//				}
-//					
-//				if(rd_len <= 0)
-//					done = total;
-//				else
-//				{
-//					
-//					start_sec += rd_sec;
-//					done += rd_sec;
-//				}
-//			}
-//			
-//	//		
-//			if(rd_len > 0)
-//			{
-//				
-//				USB_Write_file(usb_fd, copy_buf, rd_len);
-//				dbp_count_bytes += rd_len;
-//				
-//				
-//			}
-//			
-//			
-//			//用读取的时间与总时间的比值作为进度依据
-//		copy_wait:
-////			if(copy_num_chn > 1)
-//			prc = done * 100 / total ;
-//			prc /= copy_num_chn; 
-//			prc += done_chn * 100 / copy_num_chn;
-////			else
-////				prc = done * 100 / total;
-//			
-////			prc = prc * (copy_chn - DBP_FIRST_CHN)/ copy_num_chn;
-//			
-//			if(prc > last_prc)
-//			{
-//				p_bar->update_bar(arr_DBP_fds[1], prc);
-//				last_prc = prc;
-//				
-//			}			
-//		}	//while(done < total)
-//		copy_chn ++;
-//		done_chn ++;
-//	}
-	
 	delay_ms(500);		//让最后一次更新进度条被显示
 	if(usb_fd > 0)
 	{
@@ -878,6 +757,7 @@ static uint32_t DBP_Copy_chn_data(int fd)
 	uint8_t				retry = DBP_RETRY;
 	uint8_t				num_rcd;
 	uint8_t				i;
+	uint8_t				err;
 	
 	p_bar = PGB_Get_Sington();
 	copy_buf = p_run->usb_buf;
@@ -909,7 +789,8 @@ static uint32_t DBP_Copy_chn_data(int fd)
 				
 			
 			//读取数据
-			
+			err = 0;
+//			re_read:
 			rd_len = STG_Read_rcd(copy_chn, p_run->rcd_buf, sizeof(p_run->rcd_buf));
 			if(rd_len <= 0)
 			{
@@ -926,10 +807,28 @@ static uint32_t DBP_Copy_chn_data(int fd)
 			
 			num_rcd = rd_len / sizeof(data_in_fsh_t);
 			d = (data_in_fsh_t *)p_run->rcd_buf;
+			
 			for(i = 0; i < num_rcd; i++)
 			{
+				if(d[i].rcd_time_s != 0xffffffff)
+					continue;
+				if(err == 0)
+				{
+					err ++;
+//					STG_Set_file_position(STG_CHN_DATA(copy_chn), STG_SUR_READ, -2 * rd_len);
+//					
+//					goto re_read;
+				}
+				
+			}
+			
+			for(i = 0; i < num_rcd; i++)
+			{
+				if(d[i].rcd_time_s == 0xffffffff)
+					continue;
 				if(d[i].rcd_time_s >= start_sec)
 					break;
+				
 				
 			}
 			if(i == num_rcd)
@@ -948,12 +847,14 @@ static uint32_t DBP_Copy_chn_data(int fd)
 				
 				
 				if(d[i].rcd_time_s > end_sec)
-					break;
-				if(d[i].rcd_time_s < start_sec)
-					continue;		//不应该出现在这里
+					continue;
+//				if(d[i].rcd_time_s < start_sec)
+//					continue;		//不应该出现在这里
 				
 				if(min_sec > d[i].rcd_time_s)
 					min_sec = d[i].rcd_time_s;
+				if(min_sec == 0xffffffff)
+					min_sec = 0;
 				
 				if(max_sec < d[i].rcd_time_s)
 					max_sec = d[i].rcd_time_s;
@@ -998,8 +899,10 @@ static uint32_t DBP_Copy_chn_data(int fd)
 //			{
 			
 			retry = DBP_RETRY;
+			done += max_sec - start_sec;
+			
 			start_sec = min_sec;
-			done += max_sec - min_sec;
+
 			rd_len = strlen(p_run->usb_buf);		
 			USB_Write_file(fd, copy_buf, rd_len);
 			dbp_count_bytes += rd_len;

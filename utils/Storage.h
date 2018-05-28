@@ -32,6 +32,7 @@
 
 #define STG_DRC_READ					0
 #define STG_DRC_WRITE					1
+#define STG_SUR_READ					2
 
 #define	STG_STOP									0
 #define	STG_COVER									1
@@ -146,7 +147,7 @@ int	STG_Read_alm_pwr(uint8_t	chn_pwr,short start, char *buf, int buf_size, uint3
 uint16_t STG_Get_alm_pwr_num(uint8_t	chn_pwr);
 int	STG_Set_alm_pwr_num(uint8_t	chn_pwr, uint16_t new_num);
 
-int	STG_Set_file_position(uint8_t	file_type, uint8_t rd_or_wr, uint32_t position);
+int	STG_Set_file_position(uint8_t	file_type, uint8_t rd_or_wr, int position);
 void STG_Erase_file(uint8_t	file_type);
 void STG_Resize(uint8_t	file_type, uint32_t	new_size);
 
