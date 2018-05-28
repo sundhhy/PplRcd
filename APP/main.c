@@ -79,7 +79,6 @@ osThreadDef (ThrdKeyRun, osPriorityNormal, 1, 0);                   // thread ob
 
 static usb_op_t	usb_op;
 
- 	uint16_t	main_ms = 0;
 
 //------------------------------------------------------------------------------
 // local function prototypes
@@ -106,7 +105,8 @@ int main (void) {
 	
 	Model 			*p_mdl_time;
 	CMP_tips 		*p_tips;
-	
+	uint16_t	main_ms = 0;
+
 
 	uint8_t			old_sys_flag = phn_sys.sys_flag;
 	
@@ -155,8 +155,8 @@ int main (void) {
 	
 //创建线程
 	
-	tid_Thread_key = osThreadCreate (osThread(ThrdKeyRun), p_kb);
-	if (!tid_Thread_key) return(-1);
+//	tid_Thread_key = osThreadCreate (osThread(ThrdKeyRun), p_kb);
+//	if (!tid_Thread_key) return(-1);
 	
 	p_mdl_time = Create_model("time");
 	
@@ -205,6 +205,11 @@ int main (void) {
 				p_tips->show_ico_tips(2, -1);
 				
 			}
+			else if(phn_sys.sys_flag & SYSFLAG_LOWSPACE)
+			{
+				p_tips->show_ico_tips(1, -1);
+				
+			}
 			else
 			{
 				
@@ -222,8 +227,12 @@ int main (void) {
 		USB_Run();
 		
 //		phn_sys.lcd_sem_wait_ms = 20;
-		if((main_ms % 100) == 0)		
+		if((main_ms % 100) == 0)	
+		{			
+			p_kb->run( p_kb);
 			LCD_Run();
+			
+		}
 		
 		STG_Run();
 //		phn_sys.lcd_sem_wait_ms = 0xffffffff;

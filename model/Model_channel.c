@@ -1468,7 +1468,7 @@ static char* MdlChn_to_string( Model *self, IN int aux, void *arg)
 			} else {
 				p = cthis->str_buf;
 			}
-			Print_float(cthis->chni.value, 6,  cthis->chni.decimal_places, p);
+			Print_float(cthis->chni.value, 7,  cthis->chni.decimal_places, p);
 //			sprintf( p, "%4d.%d", cthis->chni.value/10, cthis->chni.value%10);
 			return p;
 			
@@ -1545,13 +1545,13 @@ static char* MdlChn_to_string( Model *self, IN int aux, void *arg)
 //			if(cthis->chni.signal_type <= AI_Cu50)
 //				sprintf(arg, "%-6d", cthis->chni.lower_limit);
 //			else
-				Print_float(p_info->lower_limit, 6, p_info->decimal_places, (char *)arg);
+				Print_float(p_info->lower_limit, 7, p_info->decimal_places, (char *)arg);
 			break;
 		case chnaux_upper_limit:
 //			if(p_info->signal_type <= AI_Cu50)
 //				sprintf(arg, "%-6d", p_info->upper_limit);
 //			else
-				Print_float(p_info->upper_limit, 6, p_info->decimal_places, (char *)arg);
+				Print_float(p_info->upper_limit, 7, p_info->decimal_places, (char *)arg);
 			break;
 		case chnaux_small_signal:
 			Print_float(p_info->small_signal, 2, 1, (char *)arg);

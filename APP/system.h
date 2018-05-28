@@ -38,7 +38,6 @@
 #define NUM_FSH					2
 #define FSH_FLAG_READBACK_CHECK		2			//
 
-#define FS_ALARM_LOWSPACE		1
 
 #define	CHG_SYSTEM_CONF				1	
 #define	CHG_MODCHN_CONF(n)			(1 << (n + 1))
@@ -51,6 +50,8 @@
 #define SYSFLAG_ERR					0x10
 #define SYSFLAG_URGENCY				0x20
 #define SYSFLAG_READ_CET			0x40		//要求读取冷端温度
+#define SYSFLAG_LOWSPACE		0x80		//存储历史数据的空间即将耗尽
+
 
 #define SYS_TIME				phn_sys.sys_time
 //#define	STSFLAG_TIME_CHANGE		8
@@ -159,7 +160,7 @@ typedef struct {
 	uint8_t			fsh_No;				//对应的存储器编号
 	uint8_t			opt_mode;			//0  只读  1 读写
 	uint8_t			file_flag;
-	uint8_t			low_pg;
+	uint8_t			none;
 	
 	int				file_sem;
 	

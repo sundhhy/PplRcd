@@ -42,7 +42,7 @@
 //------------------------------------------------------------------------------
 // const defines
 //------------------------------------------------------------------------------
-#define STRG_SYS				phn_sys
+#define STG_SYS				phn_sys
 #define STRG_RCD_FSH_NUM		FSH_FM25_NUM
 #define STRG_CFG_FSH_NUM		FSH_FM25_NUM
 #define STRG_CHN_DATA_FSH_NUM	FSH_W25Q_NUM
@@ -51,6 +51,8 @@
 #define NUM_SAVE_DATA		8
 
 #define TEST_CKE_DATA		1  //当数据满的时候，对存储的数据进行测试
+
+#define STG_LOWSPACE		86400 //24*3600 一天的秒值
 //------------------------------------------------------------------------------
 // local types
 //------------------------------------------------------------------------------
@@ -197,10 +199,19 @@ void STG_Run(void)
 			
 			STG_Clean_save_data(chn_num);
 			LOG_Add(LOG_CHN_DATA_AUTO_ERASE(chn_num));
-			STRG_SYS.fs.fs_erase_file(fd, 0, 0);
+			STG_SYS.fs.fs_erase_file(fd, 0, 0);
 			stg->arr_rcd_mgr[chn_num].rcd_count = 0;
 			continue;
-		}		
+		}
+		
+		//第容量报警
+		if((stg->arr_rcd_mgr[chn_num].rcd_maxcount - stg->arr_rcd_mgr[chn_num].rcd_count) < STG_LOWSPACE)
+			STG_SYS.sys_flag |= SYSFLAG_LOWSPACE;
+		else
+			STG_SYS.sys_flag &= ~SYSFLAG_LOWSPACE;
+
+
+			
 		
 		fd = STG_Open_file(STG_CHN_DATA(chn_num), STG_DEF_FILE_SIZE);
 //		if(fd < 0)
@@ -219,7 +230,7 @@ void STG_Run(void)
 			
 			
 			//因为W25Q的驱动提供了回读错误后，会在当前位置之后重新写数据，所以可能会出现写入多个记录的情况（当然，错误的那些记录会被标记）
-			acc_len = STRG_SYS.fs.fs_raw_write(fd, (uint8_t *)&d, count * sizeof(data_in_fsh_t));
+			acc_len = STG_SYS.fs.fs_raw_write(fd, (uint8_t *)&d, count * sizeof(data_in_fsh_t));
 			if(acc_len  >  0)
 			{
 				stg->arr_rcd_mgr[chn_num].rcd_count += acc_len / sizeof(data_in_fsh_t);
@@ -306,7 +317,7 @@ int	STG_Set_file_position(uint8_t	file_type, uint8_t rd_or_wr, uint32_t position
 		
 	}
 	
-	return STRG_SYS.fs.fs_lseek(fd, whn, whr);
+	return STG_SYS.fs.fs_lseek(fd, whn, whr);
 }
 
 void STG_Resize(uint8_t	file_type, uint32_t	new_size)
@@ -317,7 +328,7 @@ void STG_Resize(uint8_t	file_type, uint32_t	new_size)
 	
 	fd = STG_Open_file(file_type, STG_DEF_FILE_SIZE);
 	
-	if(STRG_SYS.fs.fs_resize(fd, NULL, new_size) != RET_OK)
+	if(STG_SYS.fs.fs_resize(fd, NULL, new_size) != RET_OK)
 		return;
 	
 	if(IS_CHN_DATA(file_type))
@@ -352,7 +363,7 @@ void STG_Erase_file(uint8_t	file_type)
 		erase_addr[1] = STG_PWR_FILE_SIZE;
 	}
 	
-	STRG_SYS.fs.fs_erase_file(fd, erase_addr[0] , erase_addr[1]);
+	STG_SYS.fs.fs_erase_file(fd, erase_addr[0] , erase_addr[1]);
 	
 }
 
@@ -395,10 +406,10 @@ int	STG_Read_alm_pwr(uint8_t	chn_pwr,short start, char *buf, int buf_size, uint3
 	char				alarm_code[7];
 	
 	
-//	fnf = STRG_SYS.fs.fs_file_info(fd);
+//	fnf = STG_SYS.fs.fs_file_info(fd);
 
 //	fd = STG_Open_file(ct, STG_DEF_FILE_SIZE);
-//	STRG_SYS.fs.fs_lseek(fd, RD_SEEK_SET, start * sizeof(rcd_alm_pwr_t));
+//	STG_SYS.fs.fs_lseek(fd, RD_SEEK_SET, start * sizeof(rcd_alm_pwr_t));
 	STG_Set_file_position(chn_pwr, STG_DRC_READ, start * sizeof(rcd_alm_pwr_t));
 //	memset(buf, 0, buf_size);
 	buf[0] = 0;
@@ -453,7 +464,7 @@ int	STG_Read_alm_pwr(uint8_t	chn_pwr,short start, char *buf, int buf_size, uint3
 			et.tm_year,et.tm_mon, et.tm_mday, et.tm_hour, et.tm_min, et.tm_sec);
 		if(strlen(tmp_buf) > (buf_size - buf_offset))
 		{
-			STRG_SYS.fs.fs_lseek(fd, RD_SEEK_CUR, -sizeof(rcd_alm_pwr_t));
+			STG_SYS.fs.fs_lseek(fd, RD_SEEK_CUR, -sizeof(rcd_alm_pwr_t));
 			break;
 			
 		}
@@ -483,7 +494,7 @@ uint32_t STG_Read_data_by_time(uint8_t	chn, uint32_t sec, uint32_t pos, data_in_
 	
 	
 	fd = STG_Open_file(STG_CHN_DATA(chn), STG_DEF_FILE_SIZE);
-	fnf = STRG_SYS.fs.fs_file_info(fd);
+	fnf = STG_SYS.fs.fs_file_info(fd);
 	
 	
 
@@ -585,7 +596,7 @@ err:
 //	{
 //		if(fnf->read_position >= fnf->write_position)
 //			break;
-//		if(STRG_SYS.fs.fs_raw_read(fd, (uint8_t *)&d, sizeof(data_in_fsh_t)) != sizeof(data_in_fsh_t))
+//		if(STG_SYS.fs.fs_raw_read(fd, (uint8_t *)&d, sizeof(data_in_fsh_t)) != sizeof(data_in_fsh_t))
 //			break;
 
 //		pos ++;
@@ -634,13 +645,13 @@ int STG_Read_rcd(uint8_t	chn, uint8_t*	buf,  uint16_t size)
 	num_rcd = size / sizeof(data_in_fsh_t);
 	
 	fd = STG_Open_file(STG_CHN_DATA(chn), STG_DEF_FILE_SIZE);
-	fnf = STRG_SYS.fs.fs_file_info(fd);
+	fnf = STG_SYS.fs.fs_file_info(fd);
 	
 	
 	if(fnf->read_position >= fnf->write_position)
 		return 0;
 	
-	return STRG_SYS.fs.fs_raw_read(fd, buf, num_rcd * sizeof(data_in_fsh_t));
+	return STG_SYS.fs.fs_raw_read(fd, buf, num_rcd * sizeof(data_in_fsh_t));
 	
 }
 
@@ -658,14 +669,14 @@ int	STG_Read_rcd_by_time(uint8_t	chn, uint32_t start_sec, uint32_t end_sec, char
 	char				str_data[8];
 	
 	fd = STG_Open_file(STG_CHN_DATA(chn), STG_DEF_FILE_SIZE);
-	fnf = STRG_SYS.fs.fs_file_info(fd);
+	fnf = STG_SYS.fs.fs_file_info(fd);
 
 	buf[0] = 0;
 	while(1)
 	{
 		if(fnf->read_position >= fnf->write_position)
 			break;
-		if(STRG_SYS.fs.fs_raw_read(fd, (uint8_t *)&d, sizeof(data_in_fsh_t)) <= 0)
+		if(STG_SYS.fs.fs_raw_read(fd, (uint8_t *)&d, sizeof(data_in_fsh_t)) <= 0)
 			break;
 
 		
@@ -694,7 +705,7 @@ int	STG_Read_rcd_by_time(uint8_t	chn, uint32_t start_sec, uint32_t end_sec, char
 		strcat(tmp_buf, "\r\n");
 		if(strlen(tmp_buf) > (buf_size - buf_offset))
 		{
-			STRG_SYS.fs.fs_lseek(fd, RD_SEEK_CUR, -sizeof(data_in_fsh_t));
+			STG_SYS.fs.fs_lseek(fd, RD_SEEK_CUR, -sizeof(data_in_fsh_t));
 			break;
 			
 		}
@@ -741,7 +752,7 @@ static int STG_Read_chn_data_will_retry(int f, int retry, data_in_fsh_t *dif)
 	
 	while(retry)
 	{
-		if(STRG_SYS.fs.fs_raw_read(f, (uint8_t *)dif, sizeof(data_in_fsh_t)) == sizeof(data_in_fsh_t))
+		if(STG_SYS.fs.fs_raw_read(f, (uint8_t *)dif, sizeof(data_in_fsh_t)) == sizeof(data_in_fsh_t))
 			return RET_OK;
 		retry --;
 	}
@@ -871,7 +882,7 @@ static int		Strg_WR_stored_data(Storage *self, uint8_t	cfg_type, void *buf, int 
 //	int					fd;
 	
 //	fd = STG_Open_file(STG_CHN_DATA(num), STG_DEF_FILE_SIZE);
-//	fnf = STRG_SYS.fs.fs_file_info(fd);
+//	fnf = STG_SYS.fs.fs_file_info(fd);
 //	
 //	stg->arr_rcd_mgr[num].rcd_count = fnf->write_position / sizeof(data_in_fsh_t);
 	
@@ -882,7 +893,7 @@ static int		Strg_WR_stored_data(Storage *self, uint8_t	cfg_type, void *buf, int 
 //		return;
 //	//如果文件的大小没有发生变化，下面这条语句不会执行任何操作
 //	//大小发生变化的话就会去执行文件大小重新分配额
-//	if(STRG_SYS.fs.fs_resize(fd, NULL, p_save->MB * 1024 * 1024) == fd)
+//	if(STG_SYS.fs.fs_resize(fd, NULL, p_save->MB * 1024 * 1024) == fd)
 //		stg->arr_rcd_mgr[num].rcd_maxcount = p_save->MB * 1024 * 1024 / sizeof(data_in_fsh_t);
 //	else
 //	{
@@ -890,7 +901,7 @@ static int		Strg_WR_stored_data(Storage *self, uint8_t	cfg_type, void *buf, int 
 //		
 //	}
 //	
-//	STRG_SYS.fs.fs_close(fd);
+//	STG_SYS.fs.fs_close(fd);
 		
 
 	
@@ -908,8 +919,8 @@ static int	STG_Acc_chn_conf(uint8_t	tp, uint8_t	drc, void *p)
 	
 	if(drc == STG_DRC_READ)
 	{
-		STRG_SYS.fs.fs_lseek(fd, RD_SEEK_SET, num * sizeof(mdl_chn_save_t));
-		if(STRG_SYS.fs.fs_read(fd, p, sizeof(mdl_chn_save_t)) == sizeof(mdl_chn_save_t))
+		STG_SYS.fs.fs_lseek(fd, RD_SEEK_SET, num * sizeof(mdl_chn_save_t));
+		if(STG_SYS.fs.fs_read(fd, p, sizeof(mdl_chn_save_t)) == sizeof(mdl_chn_save_t))
 		{
 //			Strg_Updata_rcd_mgr(num, p);
 			
@@ -924,8 +935,8 @@ static int	STG_Acc_chn_conf(uint8_t	tp, uint8_t	drc, void *p)
 			p = &save;
 			MdlChn_save_data(num, p);
 		}
-		STRG_SYS.fs.fs_lseek(fd, WR_SEEK_SET, num * sizeof(mdl_chn_save_t));
-		if(STRG_SYS.fs.fs_write(fd, p, sizeof(mdl_chn_save_t)) == sizeof(mdl_chn_save_t))
+		STG_SYS.fs.fs_lseek(fd, WR_SEEK_SET, num * sizeof(mdl_chn_save_t));
+		if(STG_SYS.fs.fs_write(fd, p, sizeof(mdl_chn_save_t)) == sizeof(mdl_chn_save_t))
 		{
 			ret = RET_OK;
 		}
@@ -938,7 +949,7 @@ static int	STG_Acc_chn_conf(uint8_t	tp, uint8_t	drc, void *p)
 	}
 	
 	//不要关闭，这样才能让下一次读写在上一次的读写位置之后
-//	STRG_SYS.fs.fs_close(fd);
+//	STG_SYS.fs.fs_close(fd);
 	return ret;
 	
 	
@@ -954,8 +965,8 @@ static int	STG_Acc_sys_conf(uint8_t drc, void *p)
 	
 	if(drc == STG_DRC_READ)
 	{
-		STRG_SYS.fs.fs_lseek(fd, RD_SEEK_SET, NUM_CHANNEL * sizeof(mdl_chn_save_t));
-		if(STRG_SYS.fs.fs_read(fd, p, sizeof(system_conf_t)) == sizeof(system_conf_t))
+		STG_SYS.fs.fs_lseek(fd, RD_SEEK_SET, NUM_CHANNEL * sizeof(mdl_chn_save_t));
+		if(STG_SYS.fs.fs_read(fd, p, sizeof(system_conf_t)) == sizeof(system_conf_t))
 		{
 			
 			ret = RET_OK;
@@ -963,15 +974,15 @@ static int	STG_Acc_sys_conf(uint8_t drc, void *p)
 	}
 	else
 	{
-		STRG_SYS.fs.fs_lseek(fd, WR_SEEK_SET, NUM_CHANNEL * sizeof(mdl_chn_save_t));
-		if(STRG_SYS.fs.fs_write(fd, p, sizeof(system_conf_t)) == sizeof(system_conf_t))
+		STG_SYS.fs.fs_lseek(fd, WR_SEEK_SET, NUM_CHANNEL * sizeof(mdl_chn_save_t));
+		if(STG_SYS.fs.fs_write(fd, p, sizeof(system_conf_t)) == sizeof(system_conf_t))
 		{
 			
 			ret = RET_OK;
 		}
 		
 	}
-	STRG_SYS.fs.fs_close(fd);
+	STG_SYS.fs.fs_close(fd);
 	
 	return ret;
 	
@@ -982,20 +993,20 @@ static int	STG_Acc_lose_pwr(uint8_t	drc, void *p, int len)
 {
 	
 	int fd = STG_Open_file(STG_LOSE_PWR, STG_DEF_FILE_SIZE);
-	file_info_t	*p_fnf = STRG_SYS.fs.fs_file_info(fd);
+	file_info_t	*p_fnf = STG_SYS.fs.fs_file_info(fd);
 	
 	if(drc == STG_DRC_READ)
 	{
 		if((len + p_fnf->read_position) >= (STG_PWR_FILE_SIZE + STG_LSTPWR_FILE_OFFSET))
 			return 0;
 		
-		return STRG_SYS.fs.fs_read(fd, p, len);
+		return STG_SYS.fs.fs_read(fd, p, len);
 	}
 	else
 	{
 		if((len + p_fnf->write_position) >= (STG_PWR_FILE_SIZE + STG_LSTPWR_FILE_OFFSET))
 			return 0;
-		return STRG_SYS.fs.fs_write(fd, p, len);
+		return STG_SYS.fs.fs_write(fd, p, len);
 	}
 	
 }
@@ -1004,7 +1015,7 @@ static int	STG_Acc_lose_pwr(uint8_t	drc, void *p, int len)
 static int	STG_Acc_chn_alarm(uint8_t	type, uint8_t	drc, void *p, int len)
 {
 	int fd = STG_Open_file(type, STG_DEF_FILE_SIZE);
-	file_info_t	*p_fnf = STRG_SYS.fs.fs_file_info(fd);
+	file_info_t	*p_fnf = STG_SYS.fs.fs_file_info(fd);
 	uint8_t		chn_num = STG_GET_CHN(type);
 	if(chn_num > (NUM_CHANNEL - 1))
 		return 0;
@@ -1015,34 +1026,34 @@ static int	STG_Acc_chn_alarm(uint8_t	type, uint8_t	drc, void *p, int len)
 	{
 		if((len + p_fnf->read_position) > ((chn_num + 1)* STG_CHN_ALARM_FILE_SIZE + STG_ALARM_FILE_OFFSET))
 			return 0;
-		return STRG_SYS.fs.fs_read(fd, p, len);
+		return STG_SYS.fs.fs_read(fd, p, len);
 		
 	}
 	else
 	{
 		if((len + p_fnf->write_position) > ((chn_num + 1)* STG_CHN_ALARM_FILE_SIZE + STG_ALARM_FILE_OFFSET))
 			return 0;
-		return STRG_SYS.fs.fs_write(fd, p, len);
+		return STG_SYS.fs.fs_write(fd, p, len);
 	}
 	
 }
 static int	STG_Acc_file(uint8_t	type, uint8_t	drc, void *p, int len)
 {
 	int fd = STG_Open_file(type, STG_DEF_FILE_SIZE);
-	file_info_t	*p_fnf = STRG_SYS.fs.fs_file_info(fd);
+	file_info_t	*p_fnf = STG_SYS.fs.fs_file_info(fd);
 	
 	if(drc == STG_DRC_READ)
 	{
 		if((len + p_fnf->read_position) > p_fnf->file_size)
 			return 0;
-		return STRG_SYS.fs.fs_read(fd, p, len);
+		return STG_SYS.fs.fs_read(fd, p, len);
 		
 	}
 	else
 	{
 		if((len + p_fnf->write_position) > p_fnf->file_size)
 			return 0;
-		return STRG_SYS.fs.fs_write(fd, p, len);
+		return STG_SYS.fs.fs_write(fd, p, len);
 	}
 	
 }
@@ -1050,7 +1061,7 @@ static int	STG_Acc_file(uint8_t	type, uint8_t	drc, void *p, int len)
 static int	STG_Acc_chn_sum(uint8_t	type, uint8_t	drc, void *p, int len)
 {
 	int fd = STG_Open_file(type, STG_DEF_FILE_SIZE);
-	file_info_t	*p_fnf = STRG_SYS.fs.fs_file_info(fd);
+	file_info_t	*p_fnf = STG_SYS.fs.fs_file_info(fd);
 	uint8_t		chn_num = STG_GET_CHN(type);
 	if(chn_num > (NUM_CHANNEL - 1))
 		return 0;
@@ -1061,14 +1072,14 @@ static int	STG_Acc_chn_sum(uint8_t	type, uint8_t	drc, void *p, int len)
 	{
 		if((len + p_fnf->read_position) > ((chn_num + 1)* STG_CHN_SUM_FILE_SIZE + STG_SUM_FILE_OFFSET))
 			return 0;
-		return STRG_SYS.fs.fs_read(fd, p, len);
+		return STG_SYS.fs.fs_read(fd, p, len);
 		
 	}
 	else
 	{
 		if((len + p_fnf->write_position) > ((chn_num + 1)* STG_CHN_SUM_FILE_SIZE + STG_SUM_FILE_OFFSET))
 			return 0;
-		return STRG_SYS.fs.fs_write(fd, p, len);
+		return STG_SYS.fs.fs_write(fd, p, len);
 	}
 	
 }
@@ -1096,10 +1107,10 @@ static int	STG_Acc_chn_data(uint8_t	type, uint8_t	drc, void *p, int len)
 	if(drc == STG_DRC_READ)
 	{
 		fd = STG_Open_file(type, STG_DEF_FILE_SIZE);
-		fnf = STRG_SYS.fs.fs_file_info(fd);
+		fnf = STG_SYS.fs.fs_file_info(fd);
 		if(fnf->read_position >= fnf->write_position)
 			goto exit;
-		acc_len = STRG_SYS.fs.fs_raw_read(fd, (uint8_t *)p, len);
+		acc_len = STG_SYS.fs.fs_raw_read(fd, (uint8_t *)p, len);
 		
 	}
 	else
@@ -1144,7 +1155,7 @@ static int	STG_Acc_chn_data(uint8_t	type, uint8_t	drc, void *p, int len)
 	{
 		
 		rd_len = len - len % sizeof(data_in_fsh_t);
-		rd_len = STRG_SYS.fs.fs_read(fd, p, rd_len);
+		rd_len = STG_SYS.fs.fs_read(fd, p, rd_len);
 		
 		return rd_len;
 	}
@@ -1159,7 +1170,7 @@ static int	STG_Acc_chn_data(uint8_t	type, uint8_t	drc, void *p, int len)
 #endif			
 			STG_flush_wr_cache(type);
 			fd = STG_Open_file(type, STG_DEF_FILE_SIZE);
-			STRG_SYS.fs.fs_lseek(fd, WR_SEEK_SET, 0);
+			STG_SYS.fs.fs_lseek(fd, WR_SEEK_SET, 0);
 			stg->arr_rcd_mgr[chn_num].rcd_count = 0;
 
 			
@@ -1208,7 +1219,7 @@ static void STG_flush_wr_cache(uint8_t type)
 		if(c->flag && c->chn == chn_num)
 		{
 			//c->flag c->chn 这两个成员不必存储到flash
-			while(STRG_SYS.fs.fs_write(fd, (uint8_t *)c, sizeof(STG_cache_t) - 2) != (sizeof(STG_cache_t) - 2))
+			while(STG_SYS.fs.fs_write(fd, (uint8_t *)c, sizeof(STG_cache_t) - 2) != (sizeof(STG_cache_t) - 2))
 			{
 				if(safe_count)
 				{
@@ -1244,34 +1255,34 @@ static int 	STG_Open_file(uint8_t type, uint32_t file_size)
 	
 	if(IS_SYS_CONF(type))
 	{
-		fd = STRG_SYS.fs.fs_open(STRG_CFG_FSH_NUM, "phn.cfg", "log", 256);		//
+		fd = STG_SYS.fs.fs_open(STRG_CFG_FSH_NUM, "phn.cfg", "log", 256);		//
 		
 	}
 	else if(IS_CHN_CONF(type))
 	{
 		//通道配置与系统配置存放在同一个文件的不同位置
-		fd = STRG_SYS.fs.fs_open(STRG_CFG_FSH_NUM, "phn.cfg", "rw", 256);
+		fd = STG_SYS.fs.fs_open(STRG_CFG_FSH_NUM, "phn.cfg", "rw", 256);
 		
 	}
 	else if(IS_LOSE_PWR(type))
 	{
-		fd = STRG_SYS.fs.fs_open(STRG_RCD_FSH_NUM, "alm_lost_pwr", "rw", STG_PAS_SIZE);
+		fd = STG_SYS.fs.fs_open(STRG_RCD_FSH_NUM, "alm_lost_pwr", "rw", STG_PAS_SIZE);
 		
 	}
 	else if(IS_CHN_ALARM(type))
 	{
-		fd = STRG_SYS.fs.fs_open(STRG_RCD_FSH_NUM, "alm_lost_pwr", "rw", STG_PAS_SIZE);
+		fd = STG_SYS.fs.fs_open(STRG_RCD_FSH_NUM, "alm_lost_pwr", "rw", STG_PAS_SIZE);
 		
 	}
 	else if(IS_CHN_SUM(type))
 	{
-		fd = STRG_SYS.fs.fs_open(STRG_RCD_FSH_NUM, "alm_lost_pwr", "rw", STG_PAS_SIZE);
+		fd = STG_SYS.fs.fs_open(STRG_RCD_FSH_NUM, "alm_lost_pwr", "rw", STG_PAS_SIZE);
 		
 	}
 	else if(IS_LOG(type))
 	{
 		//log 模式的文件不会在文件系统复位的时候被删除
-		fd = STRG_SYS.fs.fs_open(STRG_RCD_FSH_NUM, "SDH_LOG.CSV", "log", STG_LOG_FILE_SIZE);
+		fd = STG_SYS.fs.fs_open(STRG_RCD_FSH_NUM, "SDH_LOG.CSV", "log", STG_LOG_FILE_SIZE);
 		
 	}
 	else if(IS_CHN_DATA(type))
@@ -1279,17 +1290,17 @@ static int 	STG_Open_file(uint8_t type, uint32_t file_size)
 		sprintf(name, "chn_%d", STG_GET_CHN(type));
 		if(file_size == STG_DEF_FILE_SIZE)
 		{
-			fd = STRG_SYS.fs.fs_open(STRG_CHN_DATA_FSH_NUM, name, "rw", stg->arr_rcd_mgr[STG_GET_CHN(type)].file_size);
-			fnf = STRG_SYS.fs.fs_file_info(fd);
+			fd = STG_SYS.fs.fs_open(STRG_CHN_DATA_FSH_NUM, name, "rw", stg->arr_rcd_mgr[STG_GET_CHN(type)].file_size);
+			fnf = STG_SYS.fs.fs_file_info(fd);
 
 		}
 		else
 		{
-			fd = STRG_SYS.fs.fs_open(STRG_CHN_DATA_FSH_NUM, name, "wr", file_size);
+			fd = STG_SYS.fs.fs_open(STRG_CHN_DATA_FSH_NUM, name, "wr", file_size);
 			//上电时，模型会传入实际的文件大小，此时把最大记录数量进行初始化
 			stg->arr_rcd_mgr[STG_GET_CHN(type)].rcd_maxcount = file_size / sizeof(data_in_fsh_t);
 			stg->arr_rcd_mgr[STG_GET_CHN(type)].file_size = file_size;
-			fnf = STRG_SYS.fs.fs_file_info(fd);
+			fnf = STG_SYS.fs.fs_file_info(fd);
 			stg->arr_rcd_mgr[STG_GET_CHN(type)].rcd_count = fnf->write_position / sizeof(data_in_fsh_t);
 //			Strg_Updata_rcd_mgr(STG_GET_CHN(type), NULL);
 		}

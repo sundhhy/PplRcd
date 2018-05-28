@@ -456,7 +456,7 @@ int		EFS_Raw_write(int fd, uint8_t *p, int len)
 	if((len + f->write_position) >= f->file_size)
 		len = f->file_size - f->write_position;
 
-	if(EFS_FSH(f->fsh_No).fsh_lock(0xffffffff) != RET_OK)
+	if(EFS_FSH(f->fsh_No).fsh_lock(10) != RET_OK)
 		return -1;
 	
 	ret =  EFS_FSH(f->fsh_No).fsh_raw_write(p, start_addr + f->write_position,len);
@@ -465,10 +465,10 @@ int		EFS_Raw_write(int fd, uint8_t *p, int len)
 	EFS_FSH(f->fsh_No).fsh_unlock();
 	
 	
-	if((f->num_page - f->write_position / EFS_FSH(f->fsh_No).fnf.page_size) < f->low_pg)
-		EFS_FS.err_code |= FS_ALARM_LOWSPACE;
-	else
-		EFS_FS.err_code &= ~FS_ALARM_LOWSPACE;
+//	if((f->num_page - f->write_position / EFS_FSH(f->fsh_No).fnf.page_size) < f->low_pg)
+//		EFS_FS.err_code |= FS_ALARM_LOWSPACE;
+//	else
+//		EFS_FS.err_code &= ~FS_ALARM_LOWSPACE;
 	ef->efile_wr_position = f->write_position;
 	
 	EFS_flush_mgr(fd);
@@ -511,10 +511,10 @@ int	EFS_write(int fd, uint8_t *p, int len)
 		f->write_position += ret;
 	if(EFS_SYS.sys_flag & SYSFLAG_URGENCY)		//紧急情况下，没有获取信号量，也就不用执行释放信号量了
 		return ret;
-	if((f->num_page - f->write_position / EFS_FSH(f->fsh_No).fnf.page_size) < f->low_pg)
-		EFS_FS.err_code |= FS_ALARM_LOWSPACE;
-	else
-		EFS_FS.err_code &= ~FS_ALARM_LOWSPACE;
+//	if((f->num_page - f->write_position / EFS_FSH(f->fsh_No).fnf.page_size) < f->low_pg)
+//		EFS_FS.err_code |= FS_ALARM_LOWSPACE;
+//	else
+//		EFS_FS.err_code &= ~FS_ALARM_LOWSPACE;
 	Sem_post(&f->file_sem);
 	return ret;
 	
@@ -806,16 +806,26 @@ static void EFS_Erase(int fd)
 
 static void EFS_run()
 {
+	file_info_t *f;
 	uint8_t		set_done[EFS_MAX_NUM_FILES/8 + 1] = {0};
+	
 	uint8_t		i = 0;
 	for(i = 0; i < EFS_MAX_NUM_FILES; i++)
 	{
-		if(efs_mgr.arr_dynamic_info[i].file_flag & EFILE_ERASE)
+		
+		f = &efs_mgr.arr_dynamic_info[i];
+		if(f->file_flag & EFILE_ERASE)
 		{
-			EFS_SYS.sys_flag |= SYSFLAG_EFS_NOTREADY;
-			EFS_Erase(i);
-			Set_bit(set_done, i);
+				if(EFS_FSH(f->fsh_No).fsh_lock(10) != RET_OK)
+					break;
+			
+				EFS_SYS.sys_flag |= SYSFLAG_EFS_NOTREADY;
+				EFS_Erase(i);
+				Set_bit(set_done, i);
 //			efs_mgr.arr_dynamic_info[i].write_position = 0;
+				
+				EFS_FSH(f->fsh_No).fsh_unlock();
+				
 		}
 		
 	}
@@ -1026,10 +1036,10 @@ static int EFS_create_file(uint8_t	fd, uint8_t	prt, char *path, int size)
 //			if(size > efs_mgr.arr_static_info[i].efile_num_pg * EFS_FSH(prt).fnf.page_size)
 //				efs_mgr.arr_static_info[i].efile_num_pg += 1;
 			
-			if(prt == 0)
-				efs_mgr.arr_dynamic_info[i].low_pg = EFS_LOWSPACE_ALARM_0;
-			else
-				efs_mgr.arr_dynamic_info[i].low_pg = EFS_LOWSPACE_ALARM_1;
+//			if(prt == 0)
+//				efs_mgr.arr_dynamic_info[i].low_pg = EFS_LOWSPACE_ALARM_0;
+//			else
+//				efs_mgr.arr_dynamic_info[i].low_pg = EFS_LOWSPACE_ALARM_1;
 			efs_mgr.arr_static_info[i].efile_wr_position = 0;
 			efs_mgr.arr_static_info[i].efs_flag |= EFILE_USED;
 			
