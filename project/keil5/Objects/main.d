@@ -91,4 +91,5 @@
 .\objects\main.o: ..\..\..\PplRcd\control/CtlKey.h
 .\objects\main.o: ..\..\..\PplRcd\control/Controller.h
 .\objects\main.o: ..\..\..\PplRcd\control/CtlTimer.h
+.\objects\main.o: ..\..\..\PplRcd\utils/Storage.h
 .\objects\main.o: ..\..\..\PplRcd\unit_test/unit_test.h

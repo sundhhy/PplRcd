@@ -607,7 +607,8 @@ static int W25Q_Raw_write(uint8_t *pBuffer, uint32_t WriteAddr, uint32_t WriteBy
 	if(W25Q_FSH.fnf.fnf_flag & FSH_FLAG_READBACK_CHECK)
 		pBuffer[0] = 0xff;
 	
-
+	if(pBuffer[0] == 0xff)
+		pBuffer[0] = 0xcc;	
 	//先写入，如果写入不成功，返回错误
 	ret = W25Q_wr_fsh(pBuffer, WriteAddr, WriteBytesNum);
 	if(ret != WriteBytesNum)

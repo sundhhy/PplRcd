@@ -436,7 +436,7 @@ int		EFS_Raw_write(int fd, uint8_t *p, int len)
 	int			start_addr = f->start_page * EFS_FSH(f->fsh_No).fnf.page_size;
 
 	if(fd > EFS_MAX_NUM_FILES)
-		return -1;
+		return RET_FAILED;
 	if(f->file_flag & EFILE_ERASE)
 		return ERR_FS_NOT_READY;
 	
@@ -458,11 +458,16 @@ int		EFS_Raw_write(int fd, uint8_t *p, int len)
 		len = f->file_size - f->write_position;
 
 	if(EFS_FSH(f->fsh_No).fsh_lock(10) != RET_OK)
-		return -1;
+	{
+		ret =  ERR_RSU_BUSY;
+		goto exit;
+	}
 	
 	ret =  EFS_FSH(f->fsh_No).fsh_raw_write(p, start_addr + f->write_position,len);
 	if(ret > 0)
 		f->write_position += ret;
+	else
+		ret = ERR_DEV_FAILED;
 	EFS_FSH(f->fsh_No).fsh_unlock();
 	
 	
@@ -473,7 +478,7 @@ int		EFS_Raw_write(int fd, uint8_t *p, int len)
 	ef->efile_wr_position = f->write_position;
 	
 	EFS_flush_mgr(fd);
-
+	exit:
 	Sem_post(&f->file_sem);
 	return ret;
 	

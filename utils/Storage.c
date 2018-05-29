@@ -188,9 +188,10 @@ void STG_Run(void)
 	//把队列中的数据写到flash里面去
 	for(chn_num = 0; chn_num <phn_sys.sys_conf.num_chn; chn_num++)
 	{
+		
+		fd = STG_Open_file(STG_CHN_DATA(chn_num), STG_DEF_FILE_SIZE);
 
-//		if(stg->arr_rcd_mgr[chn_num].rcd_maxcount == 0)
-//			continue;		//在运行中执行文件系统擦除操作的时候，会出现这个情况
+
 		if(stg->arr_rcd_mgr[chn_num].rcd_count >= stg->arr_rcd_mgr[chn_num].rcd_maxcount)
 		{
 		#if TEST_CKE_DATA == 1
@@ -213,7 +214,7 @@ void STG_Run(void)
 
 			
 		
-		fd = STG_Open_file(STG_CHN_DATA(chn_num), STG_DEF_FILE_SIZE);
+		
 //		if(fd < 0)
 //			continue;
 		//把对应通道的全部数据都存到falsh里面

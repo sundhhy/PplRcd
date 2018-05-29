@@ -30,6 +30,7 @@
 #include "control/CtlTimer.h"
 #include "utils/time.h"
 #include "utils/keyboard.h"
+#include "utils/Storage.h"
 
 #include "unit_test/unit_test.h"
 
@@ -152,11 +153,8 @@ int main (void) {
 	p_control = SUPER_PTR(CtlTimer_new(), Controller);
 	if(p_control == NULL) while(1);
 	p_control->init(p_control, NULL);
-	
-//创建线程
-	
-//	tid_Thread_key = osThreadCreate (osThread(ThrdKeyRun), p_kb);
-//	if (!tid_Thread_key) return(-1);
+//	
+
 	
 	p_mdl_time = Create_model("time");
 	
@@ -168,10 +166,10 @@ int main (void) {
 	Cmd_Rgt_time_task(Init_usb_when_idle, NULL, 5);		//3秒之后初始化USB。
 
 	MBA_Init();
-	
-	
-	
-	
+//	
+//	
+//	
+//	
 	phn_sys.sys_flag |= SYSFLAG_POWEON;
 	p_tips = TIP_Get_Sington();
 	
@@ -180,13 +178,13 @@ int main (void) {
 	
 	while(1)
 	{
-		osDelay(10);
+		osDelay(20);
 		
-		//在调试中发现main_ms出现过错误值:0x40 这样的话因为500ms和100ms任务就永远的不能执行了
+		//main_ms 从65530 + 10的时候会溢出，就会变成4
 		if(main_ms % 10)
-			main_ms = 0;
+			main_ms = 20;
 		
-		main_ms += 10;
+		main_ms += 20;
 		
 		if(old_sys_flag != phn_sys.sys_flag)
 		{
@@ -197,7 +195,7 @@ int main (void) {
 			}
 			else if(phn_sys.sys_flag & SYSFLAG_EFS_NOTREADY)
 			{
-				p_tips->show_ico_tips(1, -1);
+				p_tips->show_ico_tips(2, -1);
 				
 			}
 			else if(phn_sys.sys_flag & SYSFLAG_ERR)
@@ -222,11 +220,8 @@ int main (void) {
 		{
 			p_mdl_time->run(p_mdl_time);
 			g_p_curHmi->hmi_run(g_p_curHmi);
-//			main_ms = 0;
 		}
 		USB_Run();
-		
-//		phn_sys.lcd_sem_wait_ms = 20;
 		if((main_ms % 100) == 0)	
 		{			
 			p_kb->run( p_kb);
@@ -235,11 +230,7 @@ int main (void) {
 		}
 		
 		STG_Run();
-//		phn_sys.lcd_sem_wait_ms = 0xffffffff;
-//		osThreadYield (); 
 
-//		if(cmd_run.func)
-//			cmd_run.func(cmd_run.arg);
 
 	}
 //#elif TDD_TIME_SEC == 1	//tdd_on == 0
