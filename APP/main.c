@@ -138,13 +138,14 @@ int main (void) {
 
 	//界面初始化
 	HMI_Init();
+	phn_sys.lcd_cmd_bytes  = 0;
+
 	//按键初始化
 	p_kb = GetKeyInsance();
 	
 	//借用一下内存:&phn_sys.lcd_cmd_bytes
-	phn_sys.lcd_cmd_bytes = CONF_KEYSCAN_CYCLEMS;
-	p_kb->init( p_kb, &phn_sys.lcd_cmd_bytes);
-	phn_sys.lcd_cmd_bytes  = 0;
+	main_ms = CONF_KEYSCAN_CYCLEMS;
+	p_kb->init( p_kb, &main_ms);
 
 	//创建控制器
 	p_control = SUPER_PTR( Get_CtlKey(), Controller);
@@ -175,7 +176,7 @@ int main (void) {
 	
 	
 //	p_tips->show_ico_tips(1, -1);
-	
+	main_ms = 0;
 	while(1)
 	{
 		osDelay(20);
@@ -216,18 +217,22 @@ int main (void) {
 			}
 			old_sys_flag = phn_sys.sys_flag;
 		}
-		if((main_ms % 500) == 0)		
-		{
-			p_mdl_time->run(p_mdl_time);
-			g_p_curHmi->hmi_run(g_p_curHmi);
-		}
-		USB_Run();
+		
+		
+		
 		if((main_ms % 100) == 0)	
 		{			
 			p_kb->run( p_kb);
 			LCD_Run();
 			
 		}
+		if((main_ms % 500) == 0)		
+		{
+			p_mdl_time->run(p_mdl_time);
+			g_p_curHmi->hmi_run(g_p_curHmi);
+		}
+		USB_Run();
+		
 		
 		STG_Run();
 

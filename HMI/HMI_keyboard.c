@@ -383,7 +383,7 @@ static void	KeyboardShow( HMI *self )
 	
 	
 
-	SwitchVirKey( cthis->p_shtVkey, cthis->p_shtvKeyCursor, INPUTMETHOD_LOWER);
+	SwitchVirKey( cthis->p_shtVkey, cthis->p_shtvKeyCursor, INPUTMETHOD_UPP);
 	
 	p_op = p_vko[ keyEdit.inputMethod];
 	p_op->vkey_init( &actKeyBlk); 

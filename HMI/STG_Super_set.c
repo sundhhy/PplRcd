@@ -60,15 +60,18 @@ strategy_t	g_stg_super = {
 enum {
 	row_set_super_psd,
 	num_row_chn,
+	row_stg_alarm,
 	num_row
 	
 	
 }supre_rows;
 
-#define STG_NUM_VRAM			(num_row + 2)
+#define STG_NUM_VRAM			(num_row)
 #define STG_RUN_VRAM_NUM	 num_row
-#define STG_TIPS_VRAM_NUM	 num_row + 1
 #define STG_SELF						g_stg_super
+
+#define STG_ALARM_LOW				1024
+#define STG_ALARM_HIG				10240
 //------------------------------------------------------------------------------
 // local types
 //------------------------------------------------------------------------------
@@ -76,15 +79,20 @@ typedef struct {
 	uint8_t		super_psd[3];
 	uint8_t		tmp_num_channel;
 	
-	
+	uint32_t	storage_alarm;	
+	char			tip_buf[32];
 }suprt_run_t;
 //------------------------------------------------------------------------------
 // local vars
 //------------------------------------------------------------------------------
 
- static char *const arr_p_sys_entry[num_row] = {"超级密码", "通道数目"};
+ static char *const arr_p_sys_entry[num_row] = {"超级密码", "通道数目","存储报警"};
  
-
+#define STG_P_RUN		(suprt_run_t *)arr_p_vram[STG_RUN_VRAM_NUM];
+#define INIT_RUN_RAM do { \
+	arr_p_vram[STG_RUN_VRAM_NUM] = HMI_Ram_alloc(sizeof(supre_rows)); \
+	memset(arr_p_vram[STG_RUN_VRAM_NUM], 0, sizeof(supre_rows)); \
+}while(0)
 //------------------------------------------------------------------------------
 // local function prototypes
 //------------------------------------------------------------------------------
@@ -126,6 +134,9 @@ static int SPR_Entry(int row, int col, void *pp_text)
 			case num_row_chn:
 				sprintf(arr_p_vram[row], "%d", p_run->tmp_num_channel);
 				break;
+			case row_stg_alarm:
+				sprintf(arr_p_vram[row], "%d", p_run->storage_alarm);
+				break;
 			
 			default:
 				goto exit;
@@ -159,9 +170,13 @@ static int SPR_init(void *arg)
 	}
 	STG_SELF.total_col = 2;
 	STG_SELF.total_row = num_row;
-	p_run = (suprt_run_t *)arr_p_vram[STG_RUN_VRAM_NUM];
-	p_run->tmp_num_channel = phn_sys.sys_conf.num_chn;
 	
+	
+	
+	INIT_RUN_RAM;
+	p_run = STG_P_RUN;
+	p_run->tmp_num_channel = phn_sys.sys_conf.num_chn;
+	p_run->storage_alarm = phn_sys.sys_conf.storage_alarm;
 	Clone_psd(phn_sys.sys_conf.super_psd, p_run->super_psd);
 	return RET_OK;
 }
@@ -200,7 +215,7 @@ static int SPR_key_up(void *arg)
 }
 
 
- static void	SYS_Btn_hdl(void *self, uint8_t	btn_id)
+ static void	SPR_btn_hdl(void *self, uint8_t	btn_id)
  {
 	 
 	 suprt_run_t	*p_run = (suprt_run_t *)arr_p_vram[STG_RUN_VRAM_NUM];
@@ -209,12 +224,12 @@ static int SPR_key_up(void *arg)
 		//保存超级设置
 		Clone_psd(p_run->super_psd, phn_sys.sys_conf.super_psd);
 		phn_sys.sys_conf.num_chn = p_run->tmp_num_channel;
-		 
+		phn_sys.sys_conf.storage_alarm = p_run->storage_alarm; 
 		 
 		SYS_Commit();		//保存到flash
 		 
-		sprintf(arr_p_vram[STG_TIPS_VRAM_NUM],"系统设置写入成功");
-		Win_content(arr_p_vram[STG_TIPS_VRAM_NUM]);
+		sprintf(p_run->tip_buf,"系统设置写入成功");
+		Win_content(p_run->tip_buf);
 		STG_SELF.cmd_hdl(STG_SELF.p_cmd_rcv, sycmd_win_tips, NULL);
 			
 			
@@ -226,7 +241,7 @@ static void SPR_build_component(void *arg)
 {
 	Button			*p_btn = BTN_Get_Sington();
 	p_btn->build_each_btn(0, BTN_TYPE_MENU, Setting_btn_hdl, arg);
-	p_btn->build_each_btn(3, BTN_TYPE_SAVE, SYS_Btn_hdl, arg);
+	p_btn->build_each_btn(3, BTN_TYPE_SAVE, SPR_btn_hdl, arg);
 		
 	
 	
@@ -383,9 +398,13 @@ static int SPR_update_content(int op, int weight)
 			p_run->tmp_num_channel = Operate_in_tange(p_run->tmp_num_channel, op, 1,1, NUM_CHANNEL);
 			sprintf(arr_p_vram[p_syf->f_row], "%d", p_run->tmp_num_channel);
 			break;
+		case row_stg_alarm:		
+			p_run->tmp_num_channel = Operate_in_tange(p_run->storage_alarm, op, 1,STG_ALARM_LOW, STG_ALARM_HIG);
+			sprintf(arr_p_vram[p_syf->f_row], "%d", p_run->storage_alarm);
+			break;
 	
-	default:
-		break;
+		default:
+			break;
 	
 	
 	}

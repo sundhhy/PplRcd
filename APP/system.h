@@ -47,10 +47,13 @@
 #define SYSFLAG_POWEON				4
 #define SYSFLAG_POWEROFF			8
 
-#define SYSFLAG_ERR					0x10
+#define SYSFLAG_ERR						0x10
 #define SYSFLAG_URGENCY				0x20
 #define SYSFLAG_READ_CET			0x40		//要求读取冷端温度
-#define SYSFLAG_LOWSPACE		0x80		//存储历史数据的空间即将耗尽
+#define SYSFLAG_LOWSPACE			0x80		//存储历史数据的空间即将耗尽
+
+
+#define STG_DEFAULT_ALARM			86400		//一天的秒数
 
 
 #define SYS_TIME				phn_sys.sys_time
@@ -91,16 +94,14 @@ typedef struct {
 	uint8_t		baud_idx;
 	uint8_t		sys_flag;
 	uint8_t		cold_end_way;				//0 外部， 1 设定
+	
 	uint8_t		CJC;								//冷端补偿 0-99 为设定模式
-	
-
-	
-	
 	uint8_t		disable_modify_adjust_paramter;		//禁止修改调节参数
 	uint8_t		show_chn_status;					//禁止通道状态显示
 	uint8_t		enable_beep;											//按键声音允许
-	int 		baud_rate;
-
+	
+	int 			baud_rate;
+	uint8_t		storage_alarm;			//历史数据存储容量快耗尽时会产生警告信号，这个值作为阀值
 }system_conf_t;
 
 //-----------HMI -----------------------------------------------

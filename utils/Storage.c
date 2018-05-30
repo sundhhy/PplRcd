@@ -206,7 +206,7 @@ void STG_Run(void)
 		}
 		
 		//µÚÈÝÁ¿±¨¾¯
-		if((stg->arr_rcd_mgr[chn_num].rcd_maxcount - stg->arr_rcd_mgr[chn_num].rcd_count) < STG_LOWSPACE)
+		if((stg->arr_rcd_mgr[chn_num].rcd_maxcount - stg->arr_rcd_mgr[chn_num].rcd_count) < STG_SYS.sys_conf.storage_alarm)
 			STG_SYS.sys_flag |= SYSFLAG_LOWSPACE;
 		else
 			STG_SYS.sys_flag &= ~SYSFLAG_LOWSPACE;

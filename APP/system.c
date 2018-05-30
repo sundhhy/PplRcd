@@ -196,6 +196,7 @@ void System_default(void)
 	p_sc->baud_idx = 2;
 	p_sc->baud_rate = arr_baud[2];
 	p_sc->show_chn_status = 0;
+	p_sc->storage_alarm = STG_DEFAULT_ALARM;
 	
 	
 	stg->wr_stored_data(stg, STG_SYS_CONF, &phn_sys.sys_conf, sizeof(phn_sys.sys_conf));
