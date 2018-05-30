@@ -445,7 +445,9 @@ static void	Key_identify_key_msg(Keyboard *self, keyMsg_t *p_key_msg, int *num)
 	char	num_pressed = 0;
 	short	long_count = LONGPUSH_TIME_MS / self->cycle_ms;
 	keyMsg_t	*p_msg = NULL;
-	//优先检测长按
+	
+	
+	//识别长按
 	for( i = 0; i < NUM_KEYS; i++)
 	{
 		
@@ -481,6 +483,10 @@ static void	Key_identify_key_msg(Keyboard *self, keyMsg_t *p_key_msg, int *num)
 			num_pressed ++;
 		}
 	}
+	
+	
+	
+	
 			
 	
 	exit:

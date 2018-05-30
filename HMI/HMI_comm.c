@@ -161,7 +161,7 @@ int Stripe_vy(int row)
 	return y;
 }
 
-int	Operate_in_tange(int	arg1, int op, int arg2, int rangel, int rangeh)
+int	Operate_in_range(int	arg1, int op, int arg2, int rangel, int rangeh)
 {
 	int	ret = 0;
 	
@@ -178,6 +178,23 @@ int	Operate_in_tange(int	arg1, int op, int arg2, int rangel, int rangeh)
 	return ret;
 }
 
+//超上下限的时候，不要反转
+int	Operate_in_range_keep(int	arg1, int op, int arg2, int rangel, int rangeh)
+{
+	int	ret = 0;
+	
+	if(op == OP_ADD) {
+		ret = arg1 + arg2;
+		if(ret > rangeh) 
+			ret = rangeh;
+		
+	} else if(op == OP_SUB) {
+		ret = arg1 - arg2;
+		if(ret < rangel)
+			ret = rangel;
+	}
+	return ret;
+}
 
 
 //一个简单的内存分配

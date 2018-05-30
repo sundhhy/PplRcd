@@ -70,8 +70,8 @@ enum {
 #define STG_RUN_VRAM_NUM	 num_row
 #define STG_SELF						g_stg_super
 
-#define STG_ALARM_LOW				1024
-#define STG_ALARM_HIG				10240
+#define STG_ALARM_LOW				1000
+#define STG_ALARM_HIG				1000000
 //------------------------------------------------------------------------------
 // local types
 //------------------------------------------------------------------------------
@@ -158,7 +158,7 @@ static int SPR_init(void *arg)
 	memset(&STG_SELF.sf, 0, sizeof(STG_SELF.sf));
 	STG_SELF.sf.f_col = 1;
 	STG_SELF.sf.f_row = 0;
-	STG_SELF.sf.num_byte = 1;
+	SPR_update_syf(&STG_SELF.sf);
 	
 	HMI_Ram_init();
 	
@@ -269,7 +269,7 @@ static int SPR_key_rt(void *arg)
 
 	
 		
-	p_syf->f_row = Operate_in_tange(p_syf->f_row, OP_ADD, 1, 0, num_row);
+	p_syf->f_row = Operate_in_range(p_syf->f_row, OP_ADD, 1, 0, num_row);
 	
 	if(p_syf->f_row == num_row)
 	{
@@ -299,7 +299,7 @@ static int SPR_key_lt(void *arg)
 		//只有超过范围才会反转
 		ret = -1;
 	}
-	p_syf->f_row = Operate_in_tange(p_syf->f_row, OP_SUB, 1, 0, num_row - 1);
+	p_syf->f_row = Operate_in_range(p_syf->f_row, OP_SUB, 1, 0, num_row - 1);
 		
 		
 	
@@ -387,7 +387,7 @@ static int SPR_update_content(int op, int weight)
 	strategy_focus_t 	*p_syf = &STG_SELF.sf;
 	int					ret = RET_OK;
 	suprt_run_t	*p_run = (suprt_run_t *)arr_p_vram[STG_RUN_VRAM_NUM];
-
+	
 	switch(p_syf->f_row) {
 	
 		case row_set_super_psd:
@@ -395,11 +395,11 @@ static int SPR_update_content(int op, int weight)
 			ret = 1;
 			break;
 		case num_row_chn:		
-			p_run->tmp_num_channel = Operate_in_tange(p_run->tmp_num_channel, op, 1,1, NUM_CHANNEL);
+			p_run->tmp_num_channel = Operate_in_range(p_run->tmp_num_channel, op, 1,1, NUM_CHANNEL);
 			sprintf(arr_p_vram[p_syf->f_row], "%d", p_run->tmp_num_channel);
 			break;
 		case row_stg_alarm:		
-			p_run->tmp_num_channel = Operate_in_tange(p_run->storage_alarm, op, 1,STG_ALARM_LOW, STG_ALARM_HIG);
+			p_run->storage_alarm = Operate_in_range_keep(p_run->storage_alarm, op, weight,STG_ALARM_LOW, STG_ALARM_HIG);
 			sprintf(arr_p_vram[p_syf->f_row], "%d", p_run->storage_alarm);
 			break;
 	
@@ -408,6 +408,9 @@ static int SPR_update_content(int op, int weight)
 	
 	
 	}
+	
+	SPR_update_syf(p_syf);
+	
 	return ret;
 }
 

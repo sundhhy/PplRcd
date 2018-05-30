@@ -219,29 +219,29 @@ void Str_set_sys_param(void *p, char	*p_s, int aux, int op, int val)
 	switch(aux)
 	{
 		case es_rcd_t_s:
-			p_cfg->record_gap_s = Operate_in_tange(p_cfg->record_gap_s, op, val, 0, 240);
+			p_cfg->record_gap_s = Operate_in_range(p_cfg->record_gap_s, op, val, 0, 240);
 			sprintf(p_s, "%d", p_cfg->record_gap_s);
 			break;
 		case es_brk_cpl:
 			
-			p_cfg->break_couple = Operate_in_tange(p_cfg->break_couple, op, val, 0, 2);
+			p_cfg->break_couple = Operate_in_range(p_cfg->break_couple, op, val, 0, 2);
 			Break_deal_string(p_s, p_cfg->break_couple);
 			break;
 		case es_brk_rss:
-			p_cfg->break_resistor = Operate_in_tange(p_cfg->break_resistor, op, val, 0, 2);
+			p_cfg->break_resistor = Operate_in_range(p_cfg->break_resistor, op, val, 0, 2);
 			Break_deal_string(p_s, p_cfg->break_resistor);
 			break;
 		case es_baud:
-			p_cfg->baud_idx = Operate_in_tange(p_cfg->baud_idx, op, val, 0, 6);
+			p_cfg->baud_idx = Operate_in_range(p_cfg->baud_idx, op, val, 0, 6);
 			p_cfg->baud_rate = arr_baud[p_cfg->baud_idx];
 			sprintf(p_s, "%d", p_cfg->baud_rate);
 			break;
 		case es_id:
-			p_cfg->id = Operate_in_tange(p_cfg->id, op, val, 1, 63);
+			p_cfg->id = Operate_in_range(p_cfg->id, op, val, 1, 63);
 			sprintf(p_s, "%d", p_cfg->id);
 			break;
 		case es_cmn_md:
-			p_cfg->communication_mode = Operate_in_tange(p_cfg->communication_mode, op, val, 0, 1);
+			p_cfg->communication_mode = Operate_in_range(p_cfg->communication_mode, op, val, 0, 1);
 			if(p_cfg->communication_mode == 0)
 				sprintf(p_s, "ͨѶ");
 			else 
@@ -249,26 +249,26 @@ void Str_set_sys_param(void *p, char	*p_s, int aux, int op, int val)
 			break;
 		case es_mdfy_prm:
 		
-			p_cfg->disable_modify_adjust_paramter = Operate_in_tange(p_cfg->disable_modify_adjust_paramter, op, val, 0, 1);
+			p_cfg->disable_modify_adjust_paramter = Operate_in_range(p_cfg->disable_modify_adjust_paramter, op, val, 0, 1);
 			Disable_string(p_s, p_cfg->disable_modify_adjust_paramter );
 			break;
 		case es_cold_end_way:
-			p_cfg->cold_end_way = Operate_in_tange(p_cfg->cold_end_way, op, val, 0, 1);
+			p_cfg->cold_end_way = Operate_in_range(p_cfg->cold_end_way, op, val, 0, 1);
 			Print_sys_param(NULL, p_s, 0xff, es_cold_end_way);
 			break;
 			
 		case es_CJC:
-			p_cfg->CJC = Operate_in_tange(p_cfg->CJC, op, val, 0, 99);
+			p_cfg->CJC = Operate_in_range(p_cfg->CJC, op, val, 0, 99);
 			Print_sys_param(NULL, p_s, 0xff, es_CJC);
 			break;
 			
 			
 		case es_vcs:
-			p_cfg->show_chn_status = Operate_in_tange(p_cfg->show_chn_status, op, val, 0, 1);
+			p_cfg->show_chn_status = Operate_in_range(p_cfg->show_chn_status, op, val, 0, 1);
 			Disable_string(p_s, p_cfg->show_chn_status);
 			break;
 		case es_beep:
-			p_cfg->enable_beep = Operate_in_tange(p_cfg->enable_beep, op, val, 0, 1);
+			p_cfg->enable_beep = Operate_in_range(p_cfg->enable_beep, op, val, 0, 1);
 			Disable_string(p_s, p_cfg->enable_beep);
 			break;
 		default:

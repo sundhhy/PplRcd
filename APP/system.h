@@ -47,7 +47,7 @@
 #define SYSFLAG_POWEON				4
 #define SYSFLAG_POWEROFF			8
 
-#define SYSFLAG_ERR						0x10
+#define SYSFLAG_ERR					0x10
 #define SYSFLAG_URGENCY				0x20
 #define SYSFLAG_READ_CET			0x40		//ÒªÇó¶ÁÈ¡Àä¶ËÎÂ¶È
 #define SYSFLAG_LOWSPACE			0x80		//´æ´¢ÀúÊ·Êı¾İµÄ¿Õ¼ä¼´½«ºÄ¾¡
@@ -101,7 +101,7 @@ typedef struct {
 	uint8_t		enable_beep;											//°´¼üÉùÒôÔÊĞí
 	
 	int 			baud_rate;
-	uint8_t		storage_alarm;			//ÀúÊ·Êı¾İ´æ´¢ÈİÁ¿¿ìºÄ¾¡Ê±»á²úÉú¾¯¸æĞÅºÅ£¬Õâ¸öÖµ×÷Îª·§Öµ
+	uint32_t		storage_alarm;			//ÀúÊ·Êı¾İ´æ´¢ÈİÁ¿¿ìºÄ¾¡Ê±»á²úÉú¾¯¸æĞÅºÅ£¬Õâ¸öÖµ×÷Îª·§Öµ
 }system_conf_t;
 
 //-----------HMI -----------------------------------------------
@@ -204,7 +204,7 @@ typedef struct {
 typedef struct {
 	uint8_t				major_ver;
 	uint8_t				minor_ver;
-	uint8_t				none;		
+	uint8_t				usb_ready;		
 	uint8_t				usb_device;		//0 ÎŞusbÉè±¸ 1 ÓĞusbÉè±
 	uint8_t				sys_flag;
 	uint8_t				pwr_rcd_index;
@@ -248,8 +248,8 @@ extern system_t			phn_sys;
 //------------------------------------------------------------------------------
 // function prototypes
 //------------------------------------------------------------------------------
-int	Operate_in_tange(int	arg1, int op, int arg2, int rangel, int rangeh);
-
+int	Operate_in_range(int	arg1, int op, int arg2, int rangel, int rangeh);
+int	Operate_in_range_keep(int	arg1, int op, int arg2, int rangel, int rangeh);
 void System_init(void);
 void System_power_off(void);
 

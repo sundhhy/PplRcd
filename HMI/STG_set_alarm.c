@@ -411,7 +411,7 @@ static int Als_modify(void *arg, int op)
 	
 	
 	if(p_syf->f_row == row_chn_num) {
-		p_run->cur_chn = Operate_in_tange(p_run->cur_chn, op, 1, 0, phn_sys.sys_conf.num_chn - 1);
+		p_run->cur_chn = Operate_in_range(p_run->cur_chn, op, 1, 0, phn_sys.sys_conf.num_chn - 1);
 		g_alarm_strategy.cmd_hdl(g_alarm_strategy.p_cmd_rcv, sycmd_reflush, NULL);
 		
 	} else {

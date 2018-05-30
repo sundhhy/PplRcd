@@ -607,8 +607,7 @@ static int W25Q_Raw_write(uint8_t *pBuffer, uint32_t WriteAddr, uint32_t WriteBy
 	if(W25Q_FSH.fnf.fnf_flag & FSH_FLAG_READBACK_CHECK)
 		pBuffer[0] = 0xff;
 	
-	if(pBuffer[0] == 0xff)
-		pBuffer[0] = 0xcc;	
+
 	//先写入，如果写入不成功，返回错误
 	ret = W25Q_wr_fsh(pBuffer, WriteAddr, WriteBytesNum);
 	if(ret != WriteBytesNum)
@@ -845,16 +844,38 @@ static int w25q_Read_Sector_Data(uint8_t *pBuffer, uint16_t Sector_Num)
 static int w25q_wr_enable(void)
 {
 	int ret = ERR_DEV_FAILED;
-//	int count = 50;
+	int count = 100;
 	uint8_t cmd = W25Q_INSTR_WR_ENABLE;
 	
 	
 	
 	W25Q_Enable_CS;
-	if(SPI_WRITE( &cmd,1) == 1)
-		ret = RET_OK;
+//	if(SPI_WRITE( &cmd,1) == 1)
+//	{
+//		
+//		ret = RET_OK;
+//	}
+	SPI_WRITE( &cmd,1);
 	W25Q_Disable_CS;
+	
+	
+	ret = ERR_DEV_FAILED;
+
+	while(count)
+	{
+		if(w25q_ReadSR() & W25Q_STATUS1_WEL)
+		{
+			ret = RET_OK;
+			break;
+		}
+		count --;
+		
+	}
+	
+	exit:
 	return ret;
+	
+	
 }
 
 static uint8_t w25q_ReadSR(void)

@@ -386,7 +386,7 @@ static int Sys_key_rt(void *arg)
 
 	if(p_run->cur_page == 0) {
 		
-		p_syf->f_row = Operate_in_tange(p_syf->f_row, OP_ADD, 1, 0, STRIPE_MAX_ROWS - 1);
+		p_syf->f_row = Operate_in_range(p_syf->f_row, OP_ADD, 1, 0, STRIPE_MAX_ROWS - 1);
 		
 		if(p_syf->f_row == 0)
 		{
@@ -400,7 +400,7 @@ static int Sys_key_rt(void *arg)
 		}
 		
 	} else {
-		p_syf->f_row = Operate_in_tange(p_syf->f_row, OP_ADD, 1, STRIPE_MAX_ROWS, row_num - 1);
+		p_syf->f_row = Operate_in_range(p_syf->f_row, OP_ADD, 1, STRIPE_MAX_ROWS, row_num - 1);
 		
 		if(p_syf->f_row == STRIPE_MAX_ROWS)
 		{
@@ -432,7 +432,7 @@ static int Sys_key_lt(void *arg)
 			ret = -1;
 			goto exit;	//直接跳出，这样下次跳回，焦点就是第一个位置
 		}
-		p_syf->f_row = Operate_in_tange(p_syf->f_row, OP_SUB, 1, 0, STRIPE_MAX_ROWS - 1);
+		p_syf->f_row = Operate_in_range(p_syf->f_row, OP_SUB, 1, 0, STRIPE_MAX_ROWS - 1);
 		
 		if(p_syf->f_row == row_num_chn)		{//通道数目不允许配置
 		
@@ -449,7 +449,7 @@ static int Sys_key_lt(void *arg)
 			goto exit;
 		}
 		
-		p_syf->f_row = Operate_in_tange(p_syf->f_row, OP_SUB, 1, STRIPE_MAX_ROWS, row_num - 1);
+		p_syf->f_row = Operate_in_range(p_syf->f_row, OP_SUB, 1, STRIPE_MAX_ROWS, row_num - 1);
 		
 		
 	}

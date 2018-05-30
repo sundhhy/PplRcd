@@ -377,24 +377,24 @@ static void SSA_update_content(int op, int weight)
 	switch(p_syf->f_row) 
 	{
 		case row_chn_num:
-			p_run->cur_chn = Operate_in_tange(p_run->cur_chn, op, 1, 0, phn_sys.sys_conf.num_chn - 1);
+			p_run->cur_chn = Operate_in_range(p_run->cur_chn, op, 1, 0, phn_sys.sys_conf.num_chn - 1);
 			STG_SELF.cmd_hdl(STG_SELF.p_cmd_rcv, sycmd_reflush, NULL);
 			p_run->arr_conf_modify[p_run->cur_chn] = 0;
 			break;
 		case row_sum_enable:	
-			p_acc->enable_sum = Operate_in_tange(p_acc->enable_sum, op, 1, 0, 1);
+			p_acc->enable_sum = Operate_in_range(p_acc->enable_sum, op, 1, 0, 1);
 			CNA_Print_enable(arr_p_vram[p_syf->f_row], p_acc->enable_sum);
 			break;
 		case row_start_year:	
-			p_acc->sum_start_year = Operate_in_tange(p_acc->sum_start_year, op, weight, 0, 99);
+			p_acc->sum_start_year = Operate_in_range(p_acc->sum_start_year, op, weight, 0, 99);
 			sprintf(arr_p_vram[p_syf->f_row], "%2d", p_acc->sum_start_year);
 			break;
 		case row_start_month:	
-			p_acc->sum_start_month = Operate_in_tange(p_acc->sum_start_month, op, 1, 1, 12);
+			p_acc->sum_start_month = Operate_in_range(p_acc->sum_start_month, op, 1, 1, 12);
 			sprintf(arr_p_vram[p_syf->f_row], "%2d", p_acc->sum_start_month);
 			break;
 		case row_start_day:	
-			p_acc->sum_start_day = Operate_in_tange(p_acc->sum_start_day, op, 1, 1, 31);
+			p_acc->sum_start_day = Operate_in_range(p_acc->sum_start_day, op, 1, 1, 31);
 			sprintf(arr_p_vram[p_syf->f_row], "%2d", p_acc->sum_start_day);
 			break;
 		default:

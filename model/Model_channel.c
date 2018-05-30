@@ -1625,93 +1625,93 @@ static int MdlChn_modify_sconf(Model *self, IN int aux, char *s, int op, int val
 //	phn_sys.save_chg_flga |= CHG_MODCHN_CONF(cthis->chni.chn_NO);
 	switch(aux) {
 		case AUX_UNIT:
-//			tmp_u8 = Operate_in_tange(cthis->chni.unit, op, 1, 0, eu_max - 1);
+//			tmp_u8 = Operate_in_range(cthis->chni.unit, op, 1, 0, eu_max - 1);
 //			if(tmp_u8 != cthis->chni.unit)
 //			{
 //				cthis->chni.unit = tmp_u8;
 //				
 //			}
-			p_info->unit = Operate_in_tange(p_info->unit, op, 1, 0, eu_max - 1);
+			p_info->unit = Operate_in_range(p_info->unit, op, 1, 0, eu_max - 1);
 			self->to_string(self, AUX_UNIT, s);
 			break;
 		case chnaux_tag_NO:
-			p_info->tag_NO = Operate_in_tange(p_info->tag_NO, op, 1, 0, 9);
+			p_info->tag_NO = Operate_in_range(p_info->tag_NO, op, 1, 0, 9);
 			sprintf(s, "%d", p_info->tag_NO);
 			break;
 		case AUX_SIGNALTYPE:
-			p_info->signal_type = Operate_in_tange(p_info->signal_type, op, 1, 0, es_max - 1);
+			p_info->signal_type = Operate_in_range(p_info->signal_type, op, 1, 0, es_max - 1);
 			self->to_string(self, AUX_SIGNALTYPE, s);
 			break;
 		case chnaux_record_mb:
-			p_info->MB = Operate_in_tange(p_info->MB, op, val, 0, 99);
+			p_info->MB = Operate_in_range(p_info->MB, op, val, 0, 99);
 			
 			sprintf(s, "%d M", p_info->MB);
 			break;
 		case chnaux_filter_ts:
-			p_info->filter_time_s = Operate_in_tange(p_info->filter_time_s, op, val, 0, 99);
+			p_info->filter_time_s = Operate_in_range_keep(p_info->filter_time_s, op, val, 0, 99);
 			
 			sprintf(s, "%d S", p_info->filter_time_s);
 			break;
 		case chnaux_lower_limit:
-			p_info->lower_limit = Operate_in_tange(p_info->lower_limit, op, val, -30000, p_info->upper_limit - 1);
+			p_info->lower_limit = Operate_in_range_keep(p_info->lower_limit, op, val, -30000, p_info->upper_limit - 1);
 			self->to_string(self, chnaux_lower_limit, s);
 			
 			break;
 		case chnaux_upper_limit:
-			p_info->upper_limit = Operate_in_tange(p_info->upper_limit, op, val, p_info->lower_limit + 1, 30000);
+			p_info->upper_limit = Operate_in_range_keep(p_info->upper_limit, op, val, p_info->lower_limit + 1, 30000);
 			self->to_string(self, chnaux_upper_limit, s);
 			break;
 		case chnaux_small_signal:
-			p_info->small_signal = Operate_in_tange(p_info->small_signal, op, val, 0, 100);
+			p_info->small_signal = Operate_in_range(p_info->small_signal, op, val, 0, 100);
 			self->to_string(self, chnaux_small_signal, s);
 			break;
 		case chnaux_k:
-			p_info->k = Operate_in_tange(p_info->k, op, val, -999, 999);
+			p_info->k = Operate_in_range(p_info->k, op, val, -999, 999);
 			self->to_string(self, chnaux_k, s);
 			break;
 		case chnaux_b:
-			p_info->b = Operate_in_tange(p_info->b, op, val, -999, 999);
+			p_info->b = Operate_in_range(p_info->b, op, val, -999, 999);
 			self->to_string(self, chnaux_b, s);
 			break;
 		
 		case alarm_hh:
-			p_alarm->alarm_hh = Operate_in_tange(p_alarm->alarm_hh, op, val, 0, 0xffff);
+			p_alarm->alarm_hh = Operate_in_range_keep(p_alarm->alarm_hh, op, val, 0, 0xffff);
 			self->to_string(self, aux, s);
 //			Print_float(p_alarm->alarm_hh, 1, s);
 			break;
 		case alarm_hi:
-			p_alarm->alarm_hi = Operate_in_tange(p_alarm->alarm_hi, op, val, 0, 0xffff);
+			p_alarm->alarm_hi = Operate_in_range_keep(p_alarm->alarm_hi, op, val, 0, 0xffff);
 //			Print_float(p_alarm->alarm_hi, 1, s);
 			self->to_string(self, aux, s);
 			break;
 		case alarm_lo:
-			p_alarm->alarm_lo = Operate_in_tange(p_alarm->alarm_lo, op, val, 0, 0xffff);
+			p_alarm->alarm_lo = Operate_in_range_keep(p_alarm->alarm_lo, op, val, 0, 0xffff);
 //			Print_float(p_alarm->alarm_lo, 1, s);
 			self->to_string(self, aux, s);
 			break;
 		case alarm_ll:
-			p_alarm->alarm_ll = Operate_in_tange(p_alarm->alarm_ll, op, val, 0, 0xffff);
+			p_alarm->alarm_ll = Operate_in_range_keep(p_alarm->alarm_ll, op, val, 0, 0xffff);
 //			Print_float(p_alarm->alarm_ll, 1, (char *)s);
 			self->to_string(self, aux, s);
 			break;
 		case tchspt_hh:
-			p_alarm->touch_spot_hh = Operate_in_tange(p_alarm->touch_spot_hh, op, val, 1, MAX_TOUCHSPOT - 1);
+			p_alarm->touch_spot_hh = Operate_in_range(p_alarm->touch_spot_hh, op, val, 1, MAX_TOUCHSPOT - 1);
 			Print_touch_spot(p_alarm->touch_spot_hh, (char *)s);
 			break;
 		case tchspt_hi:
-			p_alarm->touch_spot_hi = Operate_in_tange(p_alarm->touch_spot_hi, op, val, 1, MAX_TOUCHSPOT - 1);
+			p_alarm->touch_spot_hi = Operate_in_range(p_alarm->touch_spot_hi, op, val, 1, MAX_TOUCHSPOT - 1);
 			Print_touch_spot(p_alarm->touch_spot_hi, (char *)s);
 			break;
 		case tchspt_lo:
-			p_alarm->touch_spot_lo = Operate_in_tange(p_alarm->touch_spot_lo, op, val, 1, MAX_TOUCHSPOT - 1);
+			p_alarm->touch_spot_lo = Operate_in_range(p_alarm->touch_spot_lo, op, val, 1, MAX_TOUCHSPOT - 1);
 			Print_touch_spot(p_alarm->touch_spot_lo, (char *)s);	
 			break;
 		case tchspt_ll:
-			p_alarm->touch_spot_ll = Operate_in_tange(p_alarm->touch_spot_ll, op, val, 1, MAX_TOUCHSPOT - 1);
+			p_alarm->touch_spot_ll = Operate_in_range(p_alarm->touch_spot_ll, op, val, 1, MAX_TOUCHSPOT - 1);
 			Print_touch_spot(p_alarm->touch_spot_ll, (char *)s);	
 			break;	
 		case alarm_backlash:
-			p_alarm->alarm_backlash = Operate_in_tange(p_alarm->alarm_backlash, op, val, 0, 100);
+			p_alarm->alarm_backlash = Operate_in_range_keep(p_alarm->alarm_backlash, op, val, 0, 100);
 			Print_float(p_alarm->alarm_backlash, 2, 1, (char *)s);
 			break;
 		default:

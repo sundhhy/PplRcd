@@ -399,7 +399,7 @@ static int Cns_key_rt(void *arg)
 	
 	if(p_run->cur_page == 0) {
 		
-		p_syf->f_row = Operate_in_tange(p_syf->f_row, OP_ADD, 1, 0, STRIPE_MAX_ROWS - 1);
+		p_syf->f_row = Operate_in_range(p_syf->f_row, OP_ADD, 1, 0, STRIPE_MAX_ROWS - 1);
 		
 		if(p_syf->f_row == 0)
 		{
@@ -409,7 +409,7 @@ static int Cns_key_rt(void *arg)
 		} 
 		
 	} else {
-		p_syf->f_row = Operate_in_tange(p_syf->f_row, OP_ADD, 1, STRIPE_MAX_ROWS, row_num - 1);
+		p_syf->f_row = Operate_in_range(p_syf->f_row, OP_ADD, 1, STRIPE_MAX_ROWS, row_num - 1);
 		
 		if(p_syf->f_row == STRIPE_MAX_ROWS)
 		{
@@ -441,7 +441,7 @@ static int Cns_key_lt(void *arg)
 			ret = -1;
 			goto exit;
 		}
-		p_syf->f_row = Operate_in_tange(p_syf->f_row, OP_SUB, 1, 0, STRIPE_MAX_ROWS - 1);
+		p_syf->f_row = Operate_in_range(p_syf->f_row, OP_SUB, 1, 0, STRIPE_MAX_ROWS - 1);
 		
 		
 		
@@ -457,7 +457,7 @@ static int Cns_key_lt(void *arg)
 			ret = -1;
 			goto exit;
 		}
-		p_syf->f_row = Operate_in_tange(p_syf->f_row, OP_SUB, 1, STRIPE_MAX_ROWS, row_num - 1);
+		p_syf->f_row = Operate_in_range(p_syf->f_row, OP_SUB, 1, STRIPE_MAX_ROWS, row_num - 1);
 		
 		
 	
@@ -542,7 +542,7 @@ static void Cns_update_content(int op, int weight)
 	switch(p_syf->f_row) 
 	{
 		case row_chn_num:
-			p_run->cur_chn = Operate_in_tange(p_run->cur_chn, op, 1, 0, phn_sys.sys_conf.num_chn - 1);
+			p_run->cur_chn = Operate_in_range(p_run->cur_chn, op, 1, 0, phn_sys.sys_conf.num_chn - 1);
 			STG_SELF.cmd_hdl(STG_SELF.p_cmd_rcv, sycmd_reflush, NULL);
 //			Str_Calculations(arr_p_vram[p_syf->f_row], 1,  op, weight, 0, NUM_CHANNEL);
 			break;

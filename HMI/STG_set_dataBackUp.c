@@ -566,7 +566,7 @@ static int DBP_update_content(int op, int weight)
 	
 	switch(p_syf->f_row) {
 		case row_file_type:
-			p_run->copy_file_type = Operate_in_tange(p_run->copy_file_type, op, 1, 0, 2);
+			p_run->copy_file_type = Operate_in_range(p_run->copy_file_type, op, 1, 0, 2);
 			DBP_Print_file_type(arr_p_vram[row_file_type], p_run->copy_file_type);
 			pos.f_col = 1;
 			pos.f_row = row_file_name;
@@ -574,7 +574,7 @@ static int DBP_update_content(int op, int weight)
 			g_DBP_strategy.cmd_hdl(g_DBP_strategy.p_cmd_rcv, sycmd_reflush_position, &pos);
 			break;
 		case row_first_chn:
-			DBP_FIRST_CHN = Operate_in_tange(DBP_FIRST_CHN, op, 1, 0, phn_sys.sys_conf.num_chn - 1);
+			DBP_FIRST_CHN = Operate_in_range(DBP_FIRST_CHN, op, 1, 0, phn_sys.sys_conf.num_chn - 1);
 			sprintf(arr_p_vram[p_syf->f_row], "%d", DBP_FIRST_CHN);
 //			pos.f_col = 1;
 //			pos.f_row = row_file_name;
@@ -582,7 +582,7 @@ static int DBP_update_content(int op, int weight)
 //			g_DBP_strategy.cmd_hdl(g_DBP_strategy.p_cmd_rcv, sycmd_reflush_position, &pos);
 			break;
 		case row_last_chn:
-			DBP_LAST_CHN = Operate_in_tange(DBP_LAST_CHN, op, 1, DBP_FIRST_CHN, phn_sys.sys_conf.num_chn - 1);
+			DBP_LAST_CHN = Operate_in_range(DBP_LAST_CHN, op, 1, DBP_FIRST_CHN, phn_sys.sys_conf.num_chn - 1);
 			sprintf(arr_p_vram[p_syf->f_row], "%d", DBP_LAST_CHN);
 //			pos.f_col = 1;
 //			pos.f_row = row_file_name;
@@ -772,14 +772,19 @@ static uint32_t DBP_Copy_chn_data(int fd)
 	while(done_chn < copy_num_chn)
 	{
 		
-		done = 0;
+		
 		start_sec = set_start;
 		chn_prc = done_chn * 100 / copy_num_chn;
 		
 		//执行了这条语句，文件的读取位置自然就会移动到对应的位置附件
-//		STG_Read_data_by_time(copy_chn, start_sec - 1, 0, (data_in_fsh_t *)copy_buf);	
-		STG_Set_file_position(STG_CHN_DATA(copy_chn), STG_DRC_READ, 0);
+		done = STG_Read_data_by_time(copy_chn, start_sec - 1, 0, (data_in_fsh_t *)copy_buf);	
+		STG_Set_file_position(STG_CHN_DATA(copy_chn), STG_DRC_READ, done * sizeof(data_in_fsh_t));
+		done = 0;
+		
+		
 		retry = DBP_RETRY;
+		err = 0;
+
 		while(done < total)
 		{
 			if(p_run->DBP_copy == 0)
@@ -789,7 +794,6 @@ static uint32_t DBP_Copy_chn_data(int fd)
 				
 			
 			//读取数据
-			err = 0;
 //			re_read:
 			rd_len = STG_Read_rcd(copy_chn, p_run->rcd_buf, sizeof(p_run->rcd_buf));
 			if(rd_len <= 0)
@@ -853,8 +857,7 @@ static uint32_t DBP_Copy_chn_data(int fd)
 				
 				if(min_sec > d[i].rcd_time_s)
 					min_sec = d[i].rcd_time_s;
-				if(min_sec == 0xffffffff)
-					min_sec = 0;
+
 				
 				if(max_sec < d[i].rcd_time_s)
 					max_sec = d[i].rcd_time_s;

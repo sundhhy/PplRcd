@@ -163,7 +163,7 @@ int main (void) {
 	osKernelStart ();  
 	
 	
-	
+	phn_sys.usb_ready = 0;
 	Cmd_Rgt_time_task(Init_usb_when_idle, NULL, 5);		//3秒之后初始化USB。
 
 	MBA_Init();
@@ -179,13 +179,13 @@ int main (void) {
 	main_ms = 0;
 	while(1)
 	{
-		osDelay(20);
+		osDelay(100);
 		
 		//main_ms 从65530 + 10的时候会溢出，就会变成4
 		if(main_ms % 10)
-			main_ms = 20;
+			main_ms = 100;
 		
-		main_ms += 20;
+		main_ms += 100;
 		
 		if(old_sys_flag != phn_sys.sys_flag)
 		{
@@ -220,9 +220,11 @@ int main (void) {
 		
 		
 		
-		if((main_ms % 100) == 0)	
-		{			
-			p_kb->run( p_kb);
+//		if((main_ms % 100) == 0)	
+		{		
+			if(phn_sys.usb_ready)	//在USB初始化的时候进行界面切换会产生花屏，所以就等USB初始化之后再允许按键切屏
+				p_kb->run( p_kb);
+			
 			LCD_Run();
 			
 		}
@@ -232,7 +234,6 @@ int main (void) {
 			g_p_curHmi->hmi_run(g_p_curHmi);
 		}
 		USB_Run();
-		
 		
 		STG_Run();
 
@@ -369,6 +370,8 @@ static void Init_usb_when_idle(void *arg)
 		
 		USB_Rgt_event_hdl(Main_USB_event);
 	}
+	
+	phn_sys.usb_ready = 1;
 }
 
 static int	Main_USB_event(int type)

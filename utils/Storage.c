@@ -50,7 +50,7 @@
 #define RCD_READED			2
 #define NUM_SAVE_DATA		8
 
-#define TEST_CKE_DATA		1  //当数据满的时候，对存储的数据进行测试
+#define TEST_CKE_DATA		0  //当数据满的时候，对存储的数据进行测试
 
 #define STG_LOWSPACE		86400 //24*3600 一天的秒值
 //------------------------------------------------------------------------------
@@ -224,6 +224,10 @@ void STG_Run(void)
 			
 //			if(STG_Out_save_data(chn_num, &d) != RET_OK)
 //				break;
+		
+		
+			if(stg->arr_rcd_mgr[chn_num].rcd_count >= 60)
+				count = 0;
 			
 			count = STG_Out_sequential(chn_num, d, NUM_SAVE_DATA);
 			if(count == 0)
@@ -527,19 +531,20 @@ uint32_t STG_Read_data_by_time(uint8_t	chn, uint32_t sec, uint32_t pos, data_in_
 	
 	//因为可能会有连续读取，所以就先尝试在前几个位置读取一下，有可能会减少二分查找的次数
 	lt = pos + 4;
+	STG_Set_file_position(STG_CHN_DATA(chn), STG_DRC_READ, pos * sizeof(data_in_fsh_t));	
 	for(i = pos; i < lt; i ++)
 	{
-		STG_Set_file_position(STG_CHN_DATA(chn), STG_DRC_READ, i * sizeof(data_in_fsh_t));	
+		
 		STG_Read_chn_data_will_retry(fd, RDBT_RETRY, r);
 		if(r->rcd_time_s == sec)
 			return pos;
-		if(r->rcd_time_s > sec)
-		{
-			//如果最近的位置的时间都大于查找的，那之后的更加大于查找的时间，所以就没必要再继续查找了
-			//当然，能这么处理的原因是假定记录的时间是从小到大排列的。
-			r->rcd_time_s = 0xffffffff;
-			return pos;
-		}
+//		if(r->rcd_time_s > sec)
+//		{
+//			//如果最近的位置的时间都大于查找的，那之后的更加大于查找的时间，所以就没必要再继续查找了
+//			//当然，能这么处理的原因是假定记录的时间是从小到大排列的。
+//			r->rcd_time_s = 0xffffffff;
+//			return pos;
+//		}
 	}
 	
 	lt = pos;
@@ -552,9 +557,7 @@ uint32_t STG_Read_data_by_time(uint8_t	chn, uint32_t sec, uint32_t pos, data_in_
 	while(1)
 	{	
 	
-		//若上限与下限相等，或者上下限相邻时,跳到错误处理
-		if((rt - lt) <= 1)
-			goto err;
+		
 		
 		//根据上下限获取中间位置=（上限 + 下限）/ 2
 		mid = ((rt - lt) >> 1) + lt;
@@ -563,6 +566,15 @@ uint32_t STG_Read_data_by_time(uint8_t	chn, uint32_t sec, uint32_t pos, data_in_
 		//读取数据，若失败则跳到错误处理
 		if(STG_Read_chn_data_will_retry(fd, RDBT_RETRY, r) != RET_OK)
 			goto err;
+		
+		//若数据的时间等于该时间点，则返回当前的位置
+		if(r->rcd_time_s == sec)
+			return mid ;
+		
+		//若上限与下限相等,说明已经全部都查找完了
+		if((rt - lt) < 1)
+			goto err;
+		
 		//若数据的时间大于该时间点，将下限设置为当前的中间位置
 		if(r->rcd_time_s > sec)
 		{
@@ -579,9 +591,7 @@ uint32_t STG_Read_data_by_time(uint8_t	chn, uint32_t sec, uint32_t pos, data_in_
 		
 		
 	
-		//若数据的时间等于该时间点，则返回当前的位置
-		if(r->rcd_time_s == sec)
-			return mid ;
+		
 		
 		
 		

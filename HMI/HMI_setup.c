@@ -340,11 +340,25 @@ static void	Setup_HMI_hitHandle(HMI *self, char kcd)
 					chgFouse = 1;					
 					break;
 			case KEYCODE_LEFT:
+					if(cthis->unlock)
+					{
+						self->switchBack(self, 0);
+						goto exit;
+						
+					}
 					if(Focus_move_left(self->p_fcuu) != RET_OK)
 						Focus_move_left(self->p_fcuu);
 					chgFouse = 1;					 
 					break;
 			case KEYCODE_RIGHT:
+					if(cthis->unlock)
+					{
+						self->switchBack(self, 0);
+						goto exit;
+						
+					}
+			
+			
 					if(Focus_move_right(self->p_fcuu) != RET_OK)
 						Focus_move_right(self->p_fcuu);
 					chgFouse = 1;					 
