@@ -2,6 +2,7 @@
 #include "HMI_striped_background.h"
 #include "utils/Storage.h"
 #include "utils/log.h"
+#include "utils/time_func.h"
 #include "os/os_depend.h"
 //============================================================================//
 //            G L O B A L   D E F I N I T I O N S                             //

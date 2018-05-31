@@ -135,7 +135,7 @@ ABS_CLASS( Model)
 // global variable declarations
 //------------------------------------------------------------------------------
 extern const Except_T model_Failed;
-extern const	char	g_moth_day[12];
+//extern const	char	g_moth_day[12];
 //------------------------------------------------------------------------------
 // function prototypes
 //------------------------------------------------------------------------------

@@ -255,10 +255,6 @@ void System_power_off(void);
 
 void 			System_time(struct  tm *stime);
 uint32_t  SYS_time_sec(void);
-int  			Str_time_2_tm(char *s_time, struct  tm	*time);
-uint32_t  Str_time_2_u32(char *s_time);
-uint32_t  Time_2_u32(struct  tm	*tm_2_sec);
-int 			Sec_2_tm(uint32_t seconds, struct  tm *time);
 int 			System_set_time(struct  tm *stime);
 
 

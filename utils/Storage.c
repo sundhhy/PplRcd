@@ -2,6 +2,8 @@
 #include "sdhDef.h"
 #include <string.h>
 #include "log.h"
+#include "time_func.h"
+
 #include "os/os_depend.h"
 //============================================================================//
 //            G L O B A L   D E F I N I T I O N S                             //

@@ -6,6 +6,8 @@
 #include "sys_cmd.h"
 #include "utils/Storage.h"
 #include "utils/log.h"
+#include "utils/time_func.h"
+
 //============================================================================//
 //            G L O B A L   D E F I N I T I O N S                             //
 //============================================================================//
@@ -133,7 +135,7 @@ static int	DBP_filename_commit(void *self, void *data, int len);
  
  static void DBP_Focus_file_name(void);	//文件名的前缀'/' 和 后缀'.CSV'不允许选中
  
- 
+static void DBP_Copy(void);
 static uint32_t DBP_Copy_chn_data(int fd);
 static uint32_t DBP_Copy_chn_alarm(int fd);
 static uint32_t DBP_Copy_lost_power(int fd);
@@ -499,6 +501,16 @@ static int DBP_get_focusdata(void *pp_data,  strategy_focus_t *p_in_syf)
 }
 static int DBP_commit(void *arg)
 {
+	struct  tm	 t;
+	strategy_focus_t *p_syf = &g_DBP_strategy.sf;
+	
+	if((p_syf->f_row == row_start_time) || (p_syf->f_row == row_end_time))
+	{
+		//主要是判断一下所设置的起止时间是否合法
+		return TMF_Check(arr_p_vram[p_syf->f_row], &t);
+		
+	}
+	//主要是判断一下所设置的起止时间是否合法
 	return RET_OK;
 }
 
@@ -767,7 +779,8 @@ static uint32_t DBP_Copy_chn_data(int fd)
 	total = end_sec - set_start + 1;
 	
 	
-	
+	if(set_start == 0xffffffff)
+		return 0;
 	
 	while(done_chn < copy_num_chn)
 	{

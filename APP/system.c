@@ -29,13 +29,7 @@
 #define 	PHN_DEF_SUPER_PSD_2			0x01
 #define 	PHN_DEF_SUPER_PSD_3			0x01
 
-const unsigned short daytab[13]={0,31,59,90,120,151,181,212,243,273,304,334,365};//非闰年月份累积天数
-const unsigned short daytab1[13]={0,31,60,91,121,152,182,213,244,274,305,335,366};//闰年月份累积天数
 
-#define    xMINUTE     (60)					/*1 ????*/
-#define    xHOUR         (60*xMINUTE)			/*1 ?????*/
-#define    xDAY           (24*xHOUR)			/*1 ????*/
-#define    xYEAR         (365*xDAY)			/*1 ???? */
 
 //------------------------------------------------------------------------------
 // module global vars
@@ -281,6 +275,7 @@ void System_init(void)
 	
 }
 
+//todo:坏味道的代码
 extern void Ctime_Allco_time(uint16_t  all_time, uint8_t need);
 int SYS_Commit(void)
 {
@@ -299,6 +294,20 @@ void System_time(struct  tm *stime)
 	sys_rtc->get(sys_rtc, stime);
 }
 
+
+int  System_set_time(struct  tm *stime)
+{
+	int ret;
+	ret = sys_rtc->set(sys_rtc, stime);
+	
+	if(ret == RET_OK)
+		sys_rtc->get(sys_rtc, stime);
+	
+	return ret;
+}
+
+
+
 uint32_t  SYS_time_sec(void)
 {
 	
@@ -316,180 +325,6 @@ uint32_t  SYS_time_sec(void)
 //	
 //	return Time_2_u32(&t);
 }
-
-
-
-
-
-//--------------------------------------------------------------------------------
-//计算从2000年1月1号0时0分0秒到现在的秒数
-//年份的值是只有两位数，否则计算不对
-//----------------------------------------------------------------------------------
-uint32_t    Time_2_u32(struct  tm	*tm_2_sec)
-{
-
-	unsigned char a;
-	unsigned short b;
-	unsigned long seconds;
-
-	a=tm_2_sec->tm_year/4;
-	seconds=(unsigned long)1461*a*xDAY;	//过去的整年秒数
-	a=tm_2_sec->tm_year%4;
-	if(a==0)
-	{
-		a = tm_2_sec->tm_mon - 1;
-		b = daytab1[a];
-	}
-	else
-	{
-		b=366;
-		while(--a)
-		{
-			b=b+365;
-		}
-		a = tm_2_sec->tm_mon - 1;
-		b=b+daytab[a];
-	}
-	seconds +=xDAY*(b+tm_2_sec->tm_mday-1);//加上本月已过的天数的秒数
-	seconds += xHOUR*tm_2_sec->tm_hour;				//加上本日已过的小时
-	seconds += xMINUTE*tm_2_sec->tm_min;			//加上本分钟已经过去的秒数
-	seconds += tm_2_sec->tm_sec;					//??????
-	return seconds;
-
-	
-	
-}
-
-
-int  Str_time_2_tm(char *s_time, struct  tm	*time)
-{
-	char *p = s_time;
-	struct  tm	t = {0};
-	uint8_t		err = 0;
-	uint16_t	i;
-	t.tm_year = Get_str_data(p, "/", 0, &err);
-	if(err)
-		return ERR_PARAM_BAD;
-	t.tm_mon = Get_str_data(p, "/", 1, &err);
-	if(err)
-		return ERR_PARAM_BAD;
-	t.tm_mday = Get_str_data(p, "/", 2, &err);
-	if(err)
-		return ERR_PARAM_BAD;
-	if(t.tm_mday > g_moth_day[t.tm_mon])
-		return ERR_PARAM_BAD;
-		
-	
-	i = strcspn(p, " ");
-	p += i;
-	
-	t.tm_hour = Get_str_data(p, ":", 0, &err);
-	if(err)
-		return ERR_PARAM_BAD;
-	t.tm_min = Get_str_data(p, ":", 1, &err);
-	if(err)
-		return ERR_PARAM_BAD;
-	t.tm_sec = Get_str_data(p, ":", 2, &err);
-	if(err)
-		return ERR_PARAM_BAD;
-	
-	
-	time->tm_year = t.tm_year;
-	time->tm_mon = t.tm_mon;
-	time->tm_mday = t.tm_mday;
-	time->tm_hour = t.tm_hour;
-	time->tm_min = t.tm_min;
-	time->tm_sec = t.tm_sec;
-	
-	return RET_OK;
-}
-
-uint32_t  Str_time_2_u32(char *s_time)
-{
-//	uint32_t sec = 0;
-	struct  tm	t = {0};
-	
-	
-	if(Str_time_2_tm(s_time, &t) != RET_OK)
-		return 0xffffffff;
-	return Time_2_u32(&t);	
-	
-}
-
-
-
-//将秒值转换成年月日时分秒
-extern int Sec_2_tm(uint32_t seconds, struct  tm *time)
-{
-	
-	
-	unsigned char a,c,i;
-	unsigned short b,d;
-	unsigned long x;
-
-		
-	x=(unsigned long)24*3600;
-	b=(unsigned short)((seconds/x)&0xffff);
-	a=(unsigned char)((b/1461)&0xff);
-	a=a*4;
-	b=b%1461;
-	if(b<366)
-	{	
-		c=0;
-		d=b-0;
-		time->tm_year = a + c;
-		i=1;
-		while (d>daytab1[i]-1)
-		{
-			i++;
-		}
-		time->tm_mon = i;
-		d=d-daytab1[i-1]+1;
-		time->tm_mday = d;
-	}
-	else
-	{
-	  if((b>=366) && (b<731))
-		{c=1;d=b-366;}
-	  if((b>=731) && (b<1096))
-		{c=2;d=b-731;}
-	  if((b>=1096) && (b<1461))
-		{c=3;d=b-1096;}
-		a=a+c;
-		time->tm_year = a;
-		i=1;
-		while (d>daytab[i]-1)
-		{
-			i++;
-		}
-		time->tm_mon = i;
-		d=d-daytab[i-1]+1;
-		time->tm_mday = d;
-	}
-	x=(unsigned long)24*3600;
-	x=seconds%x;
-	time->tm_hour = x / 3600;
-	b=x%3600;
-	time->tm_min = b / 60;
-	time->tm_sec = b % 60;
-	
-	return RET_OK;
-}
-
-int  System_set_time(struct  tm *stime)
-{
-	int ret;
-	ret = sys_rtc->set(sys_rtc, stime);
-	
-	if(ret == RET_OK)
-		sys_rtc->get(sys_rtc, stime);
-	
-	return ret;
-}
-
-
-
-
 
 
 

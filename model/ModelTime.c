@@ -3,7 +3,7 @@
 #include "mem/CiiMem.h"
 #include "sdhDef.h"
 #include "system.h"
-//#include "utils/rtc.h"
+#include "utils/time_func.h"
 //============================================================================//
 //            G L O B A L   D E F I N I T I O N S                             //
 //============================================================================//
@@ -16,7 +16,7 @@
 // module global vars
 //------------------------------------------------------------------------------
 
-const	char	g_moth_day[12] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+
 //------------------------------------------------------------------------------
 // global function prototypes
 //------------------------------------------------------------------------------
@@ -176,38 +176,46 @@ static int MdlTime_set_by_string( Model *self, IN int aux, void *arg)
 			if(arg == NULL)
 				break;
 			
-			t.tm_year = Get_str_data(p, "/", 0, &err);
-			if(err)
+//			t.tm_year = Get_str_data(p, "/", 0, &err);
+//			if(err)
+//				return ERR_PARAM_BAD;
+//			t.tm_mon = Get_str_data(p, "/", 1, &err);
+//			if(err)
+//				return ERR_PARAM_BAD;
+//			t.tm_mday = Get_str_data(p, "/", 2, &err);
+//			if(err)
+//				return ERR_PARAM_BAD;
+//			if(t.tm_mday > g_moth_day[t.tm_mon])
+//				return ERR_PARAM_BAD;
+//		
+//			
+//			i = strcspn(p, " ");
+//			p += i;
+//			
+//			t.tm_hour = Get_str_data(p, ":", 0, &err);
+//			if(err)
+//				return ERR_PARAM_BAD;
+//			t.tm_min = Get_str_data(p, ":", 1, &err);
+//			if(err)
+//				return ERR_PARAM_BAD;
+//			t.tm_sec = Get_str_data(p, ":", 2, &err);
+//			if(err)
+//				return ERR_PARAM_BAD;
+//			
+//			if(TMF_Check_tm(p_tm) != RET_OK)
+//				return ERR_PARAM_BAD;
+//			
+//			
+//			
+//			p_tm->tm_year = t.tm_year;
+//			p_tm->tm_mon = t.tm_mon;
+//			p_tm->tm_mday = t.tm_mday;
+//			p_tm->tm_hour = t.tm_hour;
+//			p_tm->tm_min = t.tm_min;
+//			p_tm->tm_sec = t.tm_sec;
+
+			if(TMF_Str_2_tm(p, p_tm) != RET_OK)
 				return ERR_PARAM_BAD;
-			t.tm_mon = Get_str_data(p, "/", 1, &err);
-			if(err)
-				return ERR_PARAM_BAD;
-			t.tm_mday = Get_str_data(p, "/", 2, &err);
-			if(err)
-				return ERR_PARAM_BAD;
-			if(t.tm_mday > g_moth_day[t.tm_mon])
-				return ERR_PARAM_BAD;
-		
-			
-			i = strcspn(p, " ");
-			p += i;
-			
-			t.tm_hour = Get_str_data(p, ":", 0, &err);
-			if(err)
-				return ERR_PARAM_BAD;
-			t.tm_min = Get_str_data(p, ":", 1, &err);
-			if(err)
-				return ERR_PARAM_BAD;
-			t.tm_sec = Get_str_data(p, ":", 2, &err);
-			if(err)
-				return ERR_PARAM_BAD;
-			
-			p_tm->tm_year = t.tm_year;
-			p_tm->tm_mon = t.tm_mon;
-			p_tm->tm_mday = t.tm_mday;
-			p_tm->tm_hour = t.tm_hour;
-			p_tm->tm_min = t.tm_min;
-			p_tm->tm_sec = t.tm_sec;
 			return System_set_time(p_tm);
 		default:break;
 				

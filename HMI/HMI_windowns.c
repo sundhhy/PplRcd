@@ -708,7 +708,7 @@ static void Timeset_init(winHmi *cthis)
 	
 	p_exp = ExpCreate( "text");
 	cthis->p_sht_title = Sheet_alloc(p_shtctl);
-	p_exp->inptSht( p_exp, (void *)winHim_code_title, cthis->p_sht_title) ;
+	p_exp->inptSht( p_exp, (void *)winHim_code_title, cthis->p_sht_title);
 
 	cthis->p_sht_title->cnt.data = WINT_TIMER_SET;
 	cthis->p_sht_title->cnt.len = strlen(cthis->p_sht_title->cnt.data);
@@ -716,7 +716,7 @@ static void Timeset_init(winHmi *cthis)
 	
 	p_exp = ExpCreate( "pic");
 	cthis->p_sht_cur = Sheet_alloc(p_shtctl);
-	p_exp->inptSht( p_exp, (void *)winhmi_code_cur, cthis->p_sht_cur);
+	p_exp->inptSht(p_exp, (void *)winhmi_code_cur, cthis->p_sht_cur);
 
 	Sheet_updown(cthis->p_sht_bkpic, h++);
 	Sheet_updown(cthis->p_sht_title, h++);

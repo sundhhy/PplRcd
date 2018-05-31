@@ -9,6 +9,7 @@
 #include "Component_curve.h"
 #include "os/os_depend.h"
 #include "utils/Storage.h"
+#include "utils/time_func.h"
 #include "arithmetic/bit.h"
 
 //柱状图在y坐标上，按100%显示的话是:71 -187 
@@ -1263,30 +1264,33 @@ static int CRV_Win_cmd(void *p_rcv, int cmd,  void *arg)
 		
 		case wincmd_commit:
 			
-			t.tm_year = Get_str_data(p, "/", 0, &err);
-			if(err)
-				goto err;
-			t.tm_mon = Get_str_data(p, "/", 1, &err);
-			if(err)
-				goto err;
-			t.tm_mday = Get_str_data(p, "/", 2, &err);
-			if(err)
-				goto err;
-			if(t.tm_mday > g_moth_day[t.tm_mon])
-				goto err;
-		
-			
-			i = strcspn(p, " ");
-			p += i;
-			
-			t.tm_hour = Get_str_data(p, ":", 0, &err);
-			if(err)
-				goto err;
-			t.tm_min = Get_str_data(p, ":", 1, &err);
-			if(err)
-				goto err;
-			t.tm_sec = Get_str_data(p, ":", 2, &err);
-			if(err)
+//			t.tm_year = Get_str_data(p, "/", 0, &err);
+//			if(err)
+//				goto err;
+//			t.tm_mon = Get_str_data(p, "/", 1, &err);
+//			if(err)
+//				goto err;
+//			t.tm_mday = Get_str_data(p, "/", 2, &err);
+//			if(err)
+//				goto err;
+//			if(t.tm_mday > g_moth_day[t.tm_mon])
+//				goto err;
+//		
+//			
+//			i = strcspn(p, " ");
+//			p += i;
+//			
+//			t.tm_hour = Get_str_data(p, ":", 0, &err);
+//			if(err)
+//				goto err;
+//			t.tm_min = Get_str_data(p, ":", 1, &err);
+//			if(err)
+//				goto err;
+//			t.tm_sec = Get_str_data(p, ":", 2, &err);
+//			if(err)
+//				goto err;
+
+			if(TMF_Str_2_tm(p, &t) != RET_OK)
 				goto err;
 		
 			

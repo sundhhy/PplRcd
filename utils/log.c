@@ -1,13 +1,18 @@
 //============================================================================//
 //            G L O B A L   D E F I N I T I O N S                             //
 //============================================================================//
-#include "Storage.h"
-#include "log.h"
-#include "sdhDef.h"
-#include "os/os_depend.h"
-#include "system.h"
 #include <stdint.h>
 #include <string.h>
+
+#include "os/os_depend.h"
+#include "sdhDef.h"
+
+
+#include "Storage.h"
+#include "log.h"
+#include "system.h"
+#include "time_func.h"
+
 //------------------------------------------------------------------------------
 // const defines
 //------------------------------------------------------------------------------
