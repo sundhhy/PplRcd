@@ -180,6 +180,7 @@ void Main_btn_hdl(void *arg, uint8_t btn_id)
 			self->switchHMI(self, g_p_dataHmi, 0);
 			break;
 		case ICO_ID_TREND:
+			g_p_RLT_trendHmi->arg[0] = 0;
 			self->switchHMI(self, g_p_RLT_trendHmi, 0);
 			break;	
 			

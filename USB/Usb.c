@@ -105,11 +105,14 @@ Usb_deal_fail, Usb_deal_identify};
 //============================================================================//
 //            P U B L I C   F U N C T I O N S                                 //
 //============================================================================//
-int USB_Run(void)
+int USB_Run(char search)
 {
 	int			ret = 0;
 	uint8_t	msg = 0;
 	uint8_t	i = 0;
+	if(search)
+		Search_u_disk();
+	
 	CQ_Read(&usb_ctl.usb_cq, &msg, 1);
 
 	if((msg < usb_msg_max) &&(msg > 0))

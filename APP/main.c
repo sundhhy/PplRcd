@@ -109,7 +109,7 @@ int main (void) {
 	uint16_t	main_ms = 0;
 
 
-	uint8_t			old_sys_flag = phn_sys.sys_flag;
+	uint8_t			old_sys_flag;
 	
   // initialize peripherals here
 
@@ -174,8 +174,9 @@ int main (void) {
 	phn_sys.sys_flag |= SYSFLAG_POWEON;
 	p_tips = TIP_Get_Sington();
 	
+	old_sys_flag = phn_sys.sys_flag;
+	p_tips->show_ico_tips(1, -1);	//提示出USB未初始化
 	
-//	p_tips->show_ico_tips(1, -1);
 	main_ms = 0;
 	while(1)
 	{
@@ -196,7 +197,7 @@ int main (void) {
 			}
 			else if(phn_sys.sys_flag & SYSFLAG_EFS_NOTREADY)
 			{
-				p_tips->show_ico_tips(2, -1);
+				p_tips->show_ico_tips(2, 36);
 				
 			}
 			else if(phn_sys.sys_flag & SYSFLAG_ERR)
@@ -223,8 +224,11 @@ int main (void) {
 //		if((main_ms % 100) == 0)	
 		{		
 			if(phn_sys.usb_ready)	//在USB初始化的时候进行界面切换会产生花屏，所以就等USB初始化之后再允许按键切屏
+			{
 				p_kb->run( p_kb);
-			
+				USB_Run(!phn_sys.usb_device);
+
+			}
 			LCD_Run();
 			
 		}
@@ -233,39 +237,12 @@ int main (void) {
 			p_mdl_time->run(p_mdl_time);
 			g_p_curHmi->hmi_run(g_p_curHmi);
 		}
-		USB_Run();
 		
 		STG_Run();
 
 
 	}
-//#elif TDD_TIME_SEC == 1	//tdd_on == 0
-//	TDD_Time_sec();
-//#elif TDD_EFS == 1
-//	TDD_Efs();
-//#elif TDD_FM25 == 1
-//	TDD_Fm25();
-//#elif TDD_W25Q == 1
-//	TDD_W25q();
-//#elif TDD_MODCHANNEL == 1
-//	TDD_Mdl_chn();
-//#elif TDD_DEV_UART3 == 1
-//	TDD_Uart_3();
-//# elif TDD_SMART_BUS == 1
-//	TDD_Smart_bus();
-//# elif TDD_USB == 1
-//	TDD_Usb();
-//#	elif TDD_SHEET == 1
-//	TDD_Sheet();
-//#	elif TDD_KEYBOARD == 1
-//	TDD_Keyboard();
-//#	elif TDD_GPIO == 1
-//	TDD_Gpio();
-//#	elif TDD_MVC == 1
-//	TDD_Mvc();
-//#	elif TDD_DEV_UART2 == 1	
-//	TDD_Uart_2();
-//#endif		//TDD_ON == 0
+
   
 }
 
@@ -277,7 +254,24 @@ int main (void) {
 /// \name Private Functions
 /// \{
 
-
+static void Init_usb_when_idle(void *arg)
+{
+	CMP_tips 		*p_tips;
+	p_tips = TIP_Get_Sington();
+	UHI_Init(&usb_op);
+	if(USB_Init(&usb_op) != RET_OK)
+	{
+		phn_sys.sys_flag |= SYSFLAG_ERR;
+	}
+	else
+	{
+		
+		USB_Rgt_event_hdl(Main_USB_event);
+	}
+	
+	phn_sys.usb_ready = 1;
+	p_tips->clear_ico_tips(1);
+}
 
 static void ThrdKeyRun (void const *argument) {
 	Keyboard	*p_kb = ( Keyboard	*)argument ;
@@ -357,22 +351,7 @@ void HardFault_Handler()
 	
 }
 
-static void Init_usb_when_idle(void *arg)
-{
-	
-	UHI_Init(&usb_op);
-	if(USB_Init(&usb_op) != RET_OK)
-	{
-		phn_sys.sys_flag |= SYSFLAG_ERR;
-	}
-	else
-	{
-		
-		USB_Rgt_event_hdl(Main_USB_event);
-	}
-	
-	phn_sys.usb_ready = 1;
-}
+
 
 static int	Main_USB_event(int type)
 {

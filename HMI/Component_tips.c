@@ -15,6 +15,7 @@
 #define	TIP_USB_NUM				31
 #define	TIP_ALARM_NUM			32
 #define	TIP_ERR_NUM				35
+#define	TIP_ERASE_NUM			36
 //4个按钮的图形代码
 static ro_char *arr_tips_code[NUM_TIP_ICO] ={ \
 	"<pic vx0=120  vy0=0 >0</>" , \

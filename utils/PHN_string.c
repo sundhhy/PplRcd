@@ -105,6 +105,7 @@ static void Disable_string(char *p, int able);
 void Print_sys_param(void *p_data, char	*p_s, int len, int aux)
 {
 	uint8_t *p_u8;
+	system_conf_t *p_cfg;
 	switch(aux)
 	{
 		case es_psd:
@@ -156,24 +157,29 @@ void Print_sys_param(void *p_data, char	*p_s, int len, int aux)
 			break;
 			
 		case es_CJC:
+			
+		
 			if(p_data)
 			{
-				p_u8 = (uint8_t *)p_data;
-				sprintf(p_s, "%2d", *p_u8);
+				p_cfg = (system_conf_t *)p_data;
+				
+				
+				
 			}
 			else 
-			{
-				if(phn_sys.sys_conf.cold_end_way)
+				p_cfg = &phn_sys.sys_conf;
+			
+				if(p_cfg->cold_end_way)
 				{
-
-					sprintf(p_s, "%2d", phn_sys.sys_conf.CJC);
+					
+					sprintf(p_s, "%2d", p_cfg->CJC);
 				}
 				else
 				{
 					sprintf(p_s, "%2d", phn_sys.code_end_temperature);
 				}
 				
-			}
+			
 			
 			
 			break;
@@ -254,12 +260,13 @@ void Str_set_sys_param(void *p, char	*p_s, int aux, int op, int val)
 			break;
 		case es_cold_end_way:
 			p_cfg->cold_end_way = Operate_in_range(p_cfg->cold_end_way, op, val, 0, 1);
-			Print_sys_param(NULL, p_s, 0xff, es_cold_end_way);
+			Print_sys_param(&p_cfg->cold_end_way, p_s, 0xff, es_cold_end_way);
 			break;
 			
 		case es_CJC:
 			p_cfg->CJC = Operate_in_range(p_cfg->CJC, op, val, 0, 99);
-			Print_sys_param(NULL, p_s, 0xff, es_CJC);
+		
+			Print_sys_param(p_cfg, p_s, 0xff, es_CJC);
 			break;
 			
 			

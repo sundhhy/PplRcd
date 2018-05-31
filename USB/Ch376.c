@@ -110,6 +110,21 @@ int	Init_Ch376(void *op, uplevel_intr up_irq)
 	
 }
 
+void	Search_u_disk(void)
+{
+	uint8_t  s;
+	
+	if(ch376_up_irq == NULL)
+		return;
+	
+	s = CH376GetIntStatus();
+	if( s == USB_INT_CONNECT)
+		ch376_up_irq(USB_INT_CONNECT);
+	else if(s ==USB_INT_DISCONNECT) 
+		ch376_up_irq(USB_INT_DISCONNECT);
+	
+}
+
 //void Power_Ch376(int on)
 //{
 //	if(on) 

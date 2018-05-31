@@ -55,7 +55,7 @@ extern int	Init_Ch376(void *op,  uplevel_intr up_irq);
 //extern void Ch376_enbale_Irq(int ed);
 //extern	void	Test_USBOCA(void);
 extern	uint8_t	mInitCH376Host(void);
-
+extern 	void	Search_u_disk(void);
 extern	uint8_t	CH376DiskMount( void );
 extern  uint8_t	CH376ByteRead(uint8_t* buf, uint16_t ReqCount, uint16_t* RealCount );
 extern	uint8_t	CH376ReadBlock( uint8_t *buf, int buf_size );

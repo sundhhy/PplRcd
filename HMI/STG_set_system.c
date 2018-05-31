@@ -180,7 +180,7 @@ static int SysStrategy_entry(int row, int col, void *pp_text)
 				Print_sys_param(&p_sys_conf->cold_end_way, arr_p_vram[row], 48, es_cold_end_way);
 				break;
 			case row_cold_end_tempure:
-				Print_sys_param(&p_sys_conf->CJC, arr_p_vram[row], 48, es_CJC);
+				Print_sys_param(p_sys_conf, arr_p_vram[row], 48, es_CJC);
 				break;
 			case row_chn_status:
 				

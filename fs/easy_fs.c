@@ -813,40 +813,77 @@ static void EFS_Erase(int fd)
 static void EFS_run()
 {
 	file_info_t *f;
-	uint8_t		set_done[EFS_MAX_NUM_FILES/8 + 1] = {0};
+//	uint8_t		set_done[EFS_MAX_NUM_FILES/8 + 1] = {0};
 	
 	uint8_t		i = 0;
+	char		need_erase = 0;
+	
+	
+	//先检查一遍，是否有文件需要擦除
 	for(i = 0; i < EFS_MAX_NUM_FILES; i++)
 	{
 		
 		f = &efs_mgr.arr_dynamic_info[i];
 		if(f->file_flag & EFILE_ERASE)
 		{
-				if(EFS_FSH(f->fsh_No).fsh_lock(10) != RET_OK)
-					break;
-			
-				EFS_SYS.sys_flag |= SYSFLAG_EFS_NOTREADY;
-				EFS_Erase(i);
-				Set_bit(set_done, i);
-//			efs_mgr.arr_dynamic_info[i].write_position = 0;
+			need_erase = 1;
+		}
+	}
+	
+	if(need_erase)
+	{
+		efs_mgr.efs_flag |= EFS_BUSY;
+		EFS_SYS.sys_flag |= SYSFLAG_EFS_NOTREADY;
+	}
+	else
+	{
+		efs_mgr.efs_flag &= ~EFS_BUSY;
+		EFS_SYS.sys_flag &= ~SYSFLAG_EFS_NOTREADY;
+		
+	}
+		
+	
+	if(need_erase)
+	{
+		if(EFS_FSH(f->fsh_No).fsh_lock(100) != RET_OK)
+			return;
+		
+	}
+	
+	for(i = 0; i < EFS_MAX_NUM_FILES; i++)
+	{
+		
+		f = &efs_mgr.arr_dynamic_info[i];
+		if(f->file_flag & EFILE_ERASE)
+		{
 				
-				EFS_FSH(f->fsh_No).fsh_unlock();
+			
+				
+				EFS_Erase(i);
+//				Set_bit(set_done, i);
+				efs_mgr.arr_dynamic_info[i].file_flag &=~ EFILE_ERASE;
+				
 				
 		}
 		
 	}
 	
-	//放在这里统一清除擦除标志，是为了避免系统在擦除文件的时候，其他线程发起对flash的读写操作导致错误
-	for(i = 0; i < EFS_MAX_NUM_FILES; i++)
+	if(need_erase)
 	{
-		if(efs_mgr.arr_dynamic_info[i].file_flag & EFILE_ERASE)
-		{
-			if(Check_bit(set_done, i))		//避免冲突
-				efs_mgr.arr_dynamic_info[i].file_flag &=~ EFILE_ERASE;
-		}
+		EFS_FSH(f->fsh_No).fsh_unlock();
 		
 	}
-	EFS_SYS.sys_flag &= ~SYSFLAG_EFS_NOTREADY;
+	
+	//放在这里统一清除擦除标志，是为了避免系统在擦除文件的时候，其他线程发起对flash的读写操作导致错误
+//	for(i = 0; i < EFS_MAX_NUM_FILES; i++)
+//	{
+//		if(efs_mgr.arr_dynamic_info[i].file_flag & EFILE_ERASE)
+//		{
+//			if(Check_bit(set_done, i))		//避免冲突
+//				efs_mgr.arr_dynamic_info[i].file_flag &=~ EFILE_ERASE;
+//		}
+//		
+//	}
 }
 
 static void	EFS_flush_mgr(int No)

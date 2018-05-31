@@ -507,7 +507,7 @@ static int DBP_commit(void *arg)
 	if((p_syf->f_row == row_start_time) || (p_syf->f_row == row_end_time))
 	{
 		//主要是判断一下所设置的起止时间是否合法
-		return TMF_Check(arr_p_vram[p_syf->f_row], &t);
+		return TMF_Str_2_tm(arr_p_vram[p_syf->f_row], &t);
 		
 	}
 	//主要是判断一下所设置的起止时间是否合法
@@ -938,7 +938,9 @@ static uint32_t DBP_Copy_chn_data(int fd)
 				p_bar->update_bar(p_run->arr_DBP_fds[1], prc);
 				last_prc = prc;
 				
-			}			
+			}
+			//避免拷贝占用太长的运行时间而影响其他线程的存储
+			osThreadYield ();  		// suspend thread
 		}	//while(done < total)
 		copy_chn ++;
 		done_chn ++;

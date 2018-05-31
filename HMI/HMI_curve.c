@@ -1009,7 +1009,7 @@ static void HMI_CRV_HST_Run(HMI *self)
 				break;
 			
 		}
-		
+		osThreadYield ();  	
 		
 	}
 	

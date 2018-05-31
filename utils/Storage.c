@@ -165,7 +165,8 @@ void STG_Reset(void)
 	
 	for(i = 0; i < NUM_CHANNEL; i++)
 	{
-		
+		//及时创建文件，避免各个文件因为分散创建，而导致擦除时被分散开，导致影响数据的存储
+		stg->open_file(STG_CHN_DATA(i), STG_DEF_FILE_SIZE);
 		stg->arr_rcd_mgr[i].rcd_count = 0;
 	}
 	
@@ -182,12 +183,13 @@ void STG_Run(void)
 //	file_info_t		*fnf ;
 	uint8_t				chn_num;
 	uint8_t				count ;
-	
+	uint16_t			retry;
 	//每个通道一次存储的数量
 	//每个通道每次少处理点，这样就不会导致后面的通道被“饿死”
 //	uint8_t				save_once = NUM_SAVE_DATA;		
 	
 	//把队列中的数据写到flash里面去
+	retry = 100;
 	for(chn_num = 0; chn_num <phn_sys.sys_conf.num_chn; chn_num++)
 	{
 		
@@ -237,6 +239,7 @@ void STG_Run(void)
 			
 			
 			//因为W25Q的驱动提供了回读错误后，会在当前位置之后重新写数据，所以可能会出现写入多个记录的情况（当然，错误的那些记录会被标记）
+			re_write:
 			STG_Set_file_position(STG_CHN_DATA(chn_num), STG_DRC_WRITE, stg->arr_rcd_mgr[chn_num].rcd_count * sizeof(data_in_fsh_t));
 			acc_len = STG_SYS.fs.fs_raw_write(fd, (uint8_t *)&d, count * sizeof(data_in_fsh_t));
 			if(acc_len  >  0)
@@ -244,17 +247,28 @@ void STG_Run(void)
 				stg->arr_rcd_mgr[chn_num].rcd_count += acc_len / sizeof(data_in_fsh_t);
 //				STG_Remove_save_data(chn_num, count);	//成功写入才删除这个数据
 			}
-//			else
-//			{
-//				break;		//文件发生了错误
-//				
-//			}
+			else if(acc_len == ERR_FS_NOT_READY)
+			{
+				break;
+			}
+			else
+			{
+				if(retry)
+				{
+					
+					retry --;
+					delay_ms(1);
+					goto re_write;
+				}
+				break;		//文件发生了错误
+				
+			}
 			
 //			count ++;
 //			if(count > save_once)
 //				break;
 			
-//			delay_ms(1);
+			delay_ms(1);
 			
 //		}
 		

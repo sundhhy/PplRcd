@@ -736,7 +736,7 @@ void TDD_Usb(void)
 	{
 		//		osDelay(100);
 
-		USB_Run(NULL);
+		USB_Run(0);
 		if(tdd_finish)
 		{
 			continue;
