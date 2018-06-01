@@ -95,7 +95,7 @@ static	I_dev_Char	*w25q_spi;
 #define SPI_WRITE(data, len)		w25q_spi->write(w25q_spi, data, len)
 #define SPI_READ(buf, len)			w25q_spi->read(w25q_spi, buf, len)
 
-
+#define DUB_STG_HOLE					1		//调试存储空洞的问题的代码
 //------------------------------------------------------------------------------
 // local types
 //------------------------------------------------------------------------------
@@ -598,7 +598,7 @@ static int W25Q_Raw_write(uint8_t *pBuffer, uint32_t WriteAddr, uint32_t WriteBy
 	uint8_t	 read_back_buf[32];
 	
 
-	rewrite:
+	re_write:
 	
 	
 	//第一个字节是被w25q使用的，作为废弃标记
@@ -613,6 +613,33 @@ static int W25Q_Raw_write(uint8_t *pBuffer, uint32_t WriteAddr, uint32_t WriteBy
 	if(ret != WriteBytesNum)
 		return -1;
 	
+	
+#ifdef DUG_STG_HOLE == 1
+	
+	if(ckeck_len > 32)
+		ckeck_len = 32;
+	if(ckeck_len > ret)
+		ckeck_len = ret;
+	
+	w25q_Read_flash(read_back_buf, WriteAddr, ckeck_len);
+	
+	for(total_wr_len = 0; total_wr_len < ckeck_len; total_wr_len ++)
+	{
+		
+		if(read_back_buf[total_wr_len] != 0xff)
+			goto  rbk_check;
+		
+	}
+	//刚才写入的数据全是0xff，再次写入一遍
+	if(retry)
+	{
+		
+		retry --;
+		goto re_write;
+	}
+	
+#endif
+	rbk_check:
 	//若需要回读判断，则进行回读判断
 	if((W25Q_FSH.fnf.fnf_flag & FSH_FLAG_READBACK_CHECK) == 0)
 		return ret;
@@ -648,7 +675,7 @@ static int W25Q_Raw_write(uint8_t *pBuffer, uint32_t WriteAddr, uint32_t WriteBy
 		if(WriteAddr >= W25Q_FSH.fnf.page_size * W25Q_FSH.fnf.total_pagenum)
 			return total_wr_len;
 		retry --;
-		goto rewrite;
+		goto re_write;
 	}
 	
 	return total_wr_len;
