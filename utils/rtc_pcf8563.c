@@ -96,12 +96,12 @@ int Pcf8563_set( UtlRtc *self, IN struct  tm *tm)
 	date[PCF8563_MINUTES_REG_OFFSET] = BIN2BCD(tm->tm_min );
 	date[PCF8563_HOURS_REG_OFFSET] = BIN2BCD(tm->tm_hour);
 	date[PCF8563_DAYS_REG_OFFSET] = BIN2BCD(tm->tm_mday);
-	date[PCF8563_WEEKS_REG_OFFSET] = BIN2BCD(tm->tm_wday);
+	date[PCF8563_WEEKS_REG_OFFSET] = 0;
 	date[PCF8563_MONTHS_REG_OFFSET] = BIN2BCD(tm->tm_mon + 1);
 	date[PCF8563_YEARS_REG_OFFSET] = BIN2BCD(tm->tm_year % 100);
 
 	pcf8563_i2c->ioctol(pcf8563_i2c, DEVCMD_SET_ARGUMENT, &pcf);
-	while( pcf8563_i2c->write(pcf8563_i2c, date, 7) != 7)
+	while(pcf8563_i2c->write(pcf8563_i2c, date, 7) != 7)
 	{
 		if(retry)
 		{
@@ -134,7 +134,7 @@ int	Pcf8563_get( UtlRtc *self, OUT struct  tm *tm)
 	
 	
 	tm->tm_sec  = BCD2BIN(date[0] & 0x7f);
-    tm->tm_min  = BCD2BIN(date[1] & 0x7f);
+  tm->tm_min  = BCD2BIN(date[1] & 0x7f);
 	tm->tm_hour  = BCD2BIN(date[2] & 0x3f);
 	tm->tm_mday  = BCD2BIN(date[3] & 0x3f);
 	tm->tm_wday  = BCD2BIN(date[4] & 0x07);

@@ -42,7 +42,7 @@
 #define	CHG_SYSTEM_CONF				1	
 #define	CHG_MODCHN_CONF(n)			(1 << (n + 1))
 
-#define SYSFLAG_SETTING				1
+#define SYSFLAG_CHN_ERR				1			//向通道板读取数据无回复时，认为通道板未连接
 #define SYSFLAG_EFS_NOTREADY		2		//文件系统未就绪，可能正在擦除文件
 #define SYSFLAG_POWEON				4
 #define SYSFLAG_POWEROFF			8

@@ -95,7 +95,7 @@ static	I_dev_Char	*w25q_spi;
 #define SPI_WRITE(data, len)		w25q_spi->write(w25q_spi, data, len)
 #define SPI_READ(buf, len)			w25q_spi->read(w25q_spi, buf, len)
 
-#define DUB_STG_HOLE					1		//调试存储空洞的问题的代码
+#define DUG_STG_HOLE					1		//调试存储空洞的问题的代码
 //------------------------------------------------------------------------------
 // local types
 //------------------------------------------------------------------------------
@@ -614,7 +614,7 @@ static int W25Q_Raw_write(uint8_t *pBuffer, uint32_t WriteAddr, uint32_t WriteBy
 		return -1;
 	
 	
-#ifdef DUG_STG_HOLE == 1
+#if DUG_STG_HOLE == 1
 	
 	if(ckeck_len > 32)
 		ckeck_len = 32;

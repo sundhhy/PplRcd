@@ -947,6 +947,7 @@ static void MdlChn_run(Model *self)
 		i = I_uart3->read(I_uart3, chk_buf, 16);
 		if(i <= 0)
 			goto rd_smpval;
+		phn_sys.sys_flag &= ~SYSFLAG_CHN_ERR;		//这里提供从通道错误中恢复的机会
 		if(SmBus_decode(SMBUS_AI_READ, chk_buf, &rst, sizeof(SmBus_result_t)) != RET_OK)
 			goto rd_smpval;
 		
@@ -956,6 +957,8 @@ static void MdlChn_run(Model *self)
 //	
 //	//读取采样值
 	rd_smpval:
+	if(phn_sys.sys_flag & SYSFLAG_CHN_ERR)
+		return;
 //	cthis->chni.smp_flag = 0;
 //	i = SmBus_AI_Read(cthis->chni.chn_NO, AI_READ_SMPVAL, chk_buf, 16);
 //	if( I_uart3->write(I_uart3, chk_buf, i) != RET_OK)
@@ -979,7 +982,11 @@ static void MdlChn_run(Model *self)
 	read_again:
 	i = I_uart3->read(I_uart3, chk_buf, 16);
 	if(i <= 0)
+	{
+		//读取数据无回复时，认为通道板未连接
+		phn_sys.sys_flag |= SYSFLAG_CHN_ERR;
 		goto err;
+	}
 	if(SmBus_decode(SMBUS_AI_READ, chk_buf, &rst, sizeof(SmBus_result_t)) != RET_OK)
 		goto err;
 

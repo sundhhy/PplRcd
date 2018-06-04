@@ -190,17 +190,23 @@ int main (void) {
 		
 		if(old_sys_flag != phn_sys.sys_flag)
 		{
-			if(phn_sys.sys_flag & SYSFLAG_POWEROFF)
-			{
-				p_tips->show_ico_tips(1, -1);
-				
-			}
-			else if(phn_sys.sys_flag & SYSFLAG_EFS_NOTREADY)
+//			if(phn_sys.sys_flag & SYSFLAG_POWEROFF)
+//			{
+//				p_tips->show_ico_tips(1, -1);
+//				
+//			}
+//			else 
+			if(phn_sys.sys_flag & SYSFLAG_EFS_NOTREADY)
 			{
 				p_tips->show_ico_tips(2, 36);
 				
 			}
 			else if(phn_sys.sys_flag & SYSFLAG_ERR)
+			{
+				p_tips->show_ico_tips(2, -1);
+				
+			}
+			else if(phn_sys.sys_flag & SYSFLAG_CHN_ERR)
 			{
 				p_tips->show_ico_tips(2, -1);
 				

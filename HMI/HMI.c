@@ -501,12 +501,12 @@ static void ConposeKeyHandle(HMI *self, char kcd_1, char kcd_2)
 	HMI *p_hsb = Create_HMI(HMI_SETUP);
 		if(kcd_1 == KEYCODE_RIGHT && kcd_2 == KEYCODE_LEFT)
 		{
-			phn_sys.sys_flag |= SYSFLAG_SETTING;
+//			phn_sys.sys_flag |= SYSFLAG_SETTING;
 			self->switchHMI(self, p_hsb, 0);
 
 		} 
 		else if(kcd_2 == KEYCODE_RIGHT && kcd_1 == KEYCODE_LEFT) {
-			phn_sys.sys_flag |= SYSFLAG_SETTING;
+//			phn_sys.sys_flag |= SYSFLAG_SETTING;
 			self->switchHMI(self, p_hsb, 0);
 		}
 		else if(kcd_2 == KEYCODE_UP && kcd_1 == KEYCODE_ENTER) {
