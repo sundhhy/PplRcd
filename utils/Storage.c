@@ -554,13 +554,13 @@ uint32_t STG_Read_data_by_time(uint8_t	chn, uint32_t sec, uint32_t pos, data_in_
 		STG_Read_chn_data_will_retry(fd, RDBT_RETRY, r);
 		if(r->rcd_time_s == sec)
 			return pos;
-//		if(r->rcd_time_s > sec)
-//		{
-//			//如果最近的位置的时间都大于查找的，那之后的更加大于查找的时间，所以就没必要再继续查找了
-//			//当然，能这么处理的原因是假定记录的时间是从小到大排列的。
-//			r->rcd_time_s = 0xffffffff;
-//			return pos;
-//		}
+		if(r->rcd_time_s > sec)
+		{
+			//如果最近的位置的时间都大于查找的，那之后的更加大于查找的时间，所以就没必要再继续查找了
+			//当然，能这么处理的原因是假定记录的时间是从小到大排列的。
+			r->rcd_time_s = 0xffffffff;
+			return pos;
+		}
 	}
 	
 	lt = pos;

@@ -499,7 +499,7 @@ static int Sys_commit(void *arg)
 
 	strategy_focus_t 	*p_syf = &STG_SELF.sf;
 	Model							*model;
-//	int								ret = RET_OK;
+	int								ret = RET_OK;
 	
 	
 	
@@ -507,7 +507,7 @@ static int Sys_commit(void *arg)
 	case row_set_time:
 
 		model = Create_model("time");
-		model->set_by_string(model, 1, arr_p_vram[p_syf->f_row]);
+		ret = model->set_by_string(model, 1, arr_p_vram[p_syf->f_row]);
 			
 		break;
 	case row_set_psd:
@@ -527,7 +527,7 @@ static int Sys_commit(void *arg)
 
 //	
 	
-	return RET_OK;
+	return ret;
 }
 
 static void Sys_update_syf(strategy_focus_t *p_syf)
