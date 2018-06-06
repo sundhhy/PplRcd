@@ -341,6 +341,8 @@ void Sheet_free( struct SHEET *p_sht)
         
     }
     p_sht->flags = 0;
+		p_sht->cnt.data = NULL;
+		
     return;
     
 }

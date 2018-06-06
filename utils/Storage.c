@@ -554,13 +554,13 @@ uint32_t STG_Read_data_by_time(uint8_t	chn, uint32_t sec, uint32_t pos, data_in_
 		STG_Read_chn_data_will_retry(fd, RDBT_RETRY, r);
 		if(r->rcd_time_s == sec)
 			return pos;
-		if(r->rcd_time_s > sec)
-		{
-			//如果最近的位置的时间都大于查找的，那之后的更加大于查找的时间，所以就没必要再继续查找了
-			//当然，能这么处理的原因是假定记录的时间是从小到大排列的。
-			r->rcd_time_s = 0xffffffff;
-			return pos;
-		}
+//		if(r->rcd_time_s > sec)
+//		{
+//			//如果最近的位置的时间都大于查找的，那之后的更加大于查找的时间，所以就没必要再继续查找了
+//			//当然，能这么处理的原因是假定记录的时间是从小到大排列的。
+//			r->rcd_time_s = 0xffffffff;
+//			return pos;
+//		}
 	}
 	
 	lt = pos;
@@ -689,81 +689,81 @@ int STG_Read_rcd(uint8_t	chn, uint8_t*	buf,  uint16_t size)
 }
 
 
-int	STG_Read_rcd_by_time(uint8_t	chn, uint32_t start_sec, uint32_t end_sec, char *buf, int buf_size, uint32_t *rd_sec)
-{
-	Storage				*stg = Get_storage();
-	file_info_t			*fnf ;
-	int					fd = -1;
-	data_in_fsh_t		d;
-	struct  tm			t;
-	uint32_t			max_sec = 0;	
-	int					buf_offset = 0;
-	char				tmp_buf[32];
-	char				str_data[8];
-	
-	fd = STG_Open_file(STG_CHN_DATA(chn), STG_DEF_FILE_SIZE);
-	fnf = STG_SYS.fs.fs_file_info(fd);
+//int	STG_Read_rcd_by_time(uint8_t	chn, uint32_t start_sec, uint32_t end_sec, char *buf, int buf_size, uint32_t *rd_sec)
+//{
+//	Storage				*stg = Get_storage();
+//	file_info_t			*fnf ;
+//	int					fd = -1;
+//	data_in_fsh_t		d;
+//	struct  tm			t;
+//	uint32_t			max_sec = 0;	
+//	int					buf_offset = 0;
+//	char				tmp_buf[32];
+//	char				str_data[8];
+//	
+//	fd = STG_Open_file(STG_CHN_DATA(chn), STG_DEF_FILE_SIZE);
+//	fnf = STG_SYS.fs.fs_file_info(fd);
 
-	buf[0] = 0;
-	while(1)
-	{
-		if(fnf->read_position >= fnf->write_position)
-			break;
-		if(STG_SYS.fs.fs_raw_read(fd, (uint8_t *)&d, sizeof(data_in_fsh_t)) <= 0)
-			break;
+//	buf[0] = 0;
+//	while(1)
+//	{
+//		if(fnf->read_position >= fnf->write_position)
+//			break;
+//		if(STG_SYS.fs.fs_raw_read(fd, (uint8_t *)&d, sizeof(data_in_fsh_t)) <= 0)
+//			break;
 
-		
-		if(d.rcd_time_s == 0xffffffff)
-			break;
-		if(d.rcd_time_s < start_sec)
-			continue;
-		if(d.rcd_time_s > end_sec)
-			break;
-		
-		
-		Sec_2_tm(d.rcd_time_s, &t);
-		//放置csv格式的数据
-		sprintf(tmp_buf, "%d,%2d/%02d/%02d,%02d:%02d:%02d,", chn, t.tm_year,t.tm_mon, t.tm_mday, t.tm_hour, t.tm_min, t.tm_sec);
-//		d.rcd_val = -1;
-		if(d.decimal_places == 0)
-		{
-			Print_float(d.rcd_val, 0, 0, str_data);
-		}
-		else
-		{
-			Print_float(d.rcd_val, 0, 1, str_data);
-			
-		}
-		strcat(tmp_buf, str_data);
-		strcat(tmp_buf, "\r\n");
-		if(strlen(tmp_buf) > (buf_size - buf_offset))
-		{
-			STG_SYS.fs.fs_lseek(fd, RD_SEEK_CUR, -sizeof(data_in_fsh_t));
-			break;
-			
-		}
-		
-		strcat(buf, tmp_buf);
-//		sprintf((char *)buf + buf_offset, "%2d/%02d/%02d,%02d:%02d:%02d,%d\r\n", t.tm_year,t.tm_mon, t.tm_mday, \
-//				t.tm_hour, t.tm_min, t.tm_sec, d.rcd_val);
-		buf_offset = strlen(buf);				
-//		if(min_sec > d.rcd_time_s)
-//			min_sec = d.rcd_time_s;
-		if(max_sec < d.rcd_time_s)
-			max_sec = d.rcd_time_s;						
-	}
-	*rd_sec = max_sec - start_sec;
-	
-	//如果只读取了1次数据，就会出现这种情况
-	if((*rd_sec == 0) && (buf_offset > 0))
-	{
-		*rd_sec = 1;
-		
-	}
-	return buf_offset;
-		
-	
-}
+//		
+//		if(d.rcd_time_s == 0xffffffff)
+//			break;
+//		if(d.rcd_time_s < start_sec)
+//			continue;
+//		if(d.rcd_time_s > end_sec)
+//			break;
+//		
+//		
+//		Sec_2_tm(d.rcd_time_s, &t);
+//		//放置csv格式的数据
+//		sprintf(tmp_buf, "%d,%2d/%02d/%02d,%02d:%02d:%02d,", chn, t.tm_year,t.tm_mon, t.tm_mday, t.tm_hour, t.tm_min, t.tm_sec);
+////		d.rcd_val = -1;
+//		if(d.decimal_places == 0)
+//		{
+//			Print_float(d.rcd_val, 0, 0, str_data);
+//		}
+//		else
+//		{
+//			Print_float(d.rcd_val, 0, 1, str_data);
+//			
+//		}
+//		strcat(tmp_buf, str_data);
+//		strcat(tmp_buf, "\r\n");
+//		if(strlen(tmp_buf) > (buf_size - buf_offset))
+//		{
+//			STG_SYS.fs.fs_lseek(fd, RD_SEEK_CUR, -sizeof(data_in_fsh_t));
+//			break;
+//			
+//		}
+//		
+//		strcat(buf, tmp_buf);
+////		sprintf((char *)buf + buf_offset, "%2d/%02d/%02d,%02d:%02d:%02d,%d\r\n", t.tm_year,t.tm_mon, t.tm_mday, \
+////				t.tm_hour, t.tm_min, t.tm_sec, d.rcd_val);
+//		buf_offset = strlen(buf);				
+////		if(min_sec > d.rcd_time_s)
+////			min_sec = d.rcd_time_s;
+//		if(max_sec < d.rcd_time_s)
+//			max_sec = d.rcd_time_s;						
+//	}
+//	*rd_sec = max_sec - start_sec;
+//	
+//	//如果只读取了1次数据，就会出现这种情况
+//	if((*rd_sec == 0) && (buf_offset > 0))
+//	{
+//		*rd_sec = 1;
+//		
+//	}
+//	return buf_offset;
+//		
+//	
+//}
 
 
 CTOR(Storage)

@@ -33,12 +33,10 @@ CLASS( RLT_trendHMI)
 	
 //	char			flags;
 	uint8_t			min_div;
-				
 	char 			str_div[3];
 	
 	uint8_t			count;
 	uint8_t			chn_show_map;		//通道是否显示的位图
-	
 	uint8_t			arr_crv_fd[6];
 	
 };

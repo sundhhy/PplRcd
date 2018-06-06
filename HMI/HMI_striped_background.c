@@ -606,13 +606,12 @@ static void	HMI_SBG_Hit(HMI *self, char kcd)
 
 static void	HMI_SBG_Compose_hit( HMI *self, char kcd_1, char kcd_2)
 {
+	
+	
 	if(kcd_2 == KEYCODE_UP && kcd_1 == KEYCODE_DOWN) {
-//		self->switchHMI(self, Create_HMI(HMI_SETUP),HMI_ATT_KEEP | HMI_ATT_NOT_RECORD);
 		self->switchBack(self, HMI_ATT_KEEP);
-
 	}
 	else if(kcd_2 == KEYCODE_DOWN && kcd_1 == KEYCODE_UP) {
-//		self->switchHMI(self, Create_HMI(HMI_SETUP),HMI_ATT_KEEP | HMI_ATT_NOT_RECORD);
 		self->switchBack(self, HMI_ATT_KEEP);
 	}
 	

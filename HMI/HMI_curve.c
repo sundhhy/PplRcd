@@ -646,6 +646,8 @@ static void	RT_trendHmi_HitHandle( HMI *self, char kcd)
 						
 						//反转选中显示
 						if(cthis->chn_show_map & (1 << chn)) {
+							
+							//设置该曲线为应隐藏，然后再重新显示一遍
 							cthis->chn_show_map &= ~(1 << chn);
 							p_crv->crv_ctl(cthis->arr_crv_fd[chn], CRV_CTL_HIDE, 1);
 							
@@ -974,8 +976,33 @@ static void HMI_CRV_HST_Run(HMI *self)
 			if(d.rcd_time_s == 0xffffffff)
 				break;
 			
+			
+			
 			hst_mgr.real_first_time_s = d.rcd_time_s;
 			end_time = hst_mgr.real_first_time_s + cthis->min_div * 60;
+			
+		}
+		//如果设置的时间不在存储的数据的时间范围内，那也退出
+		//值对数据的最早时间和最晚时间进行判断，如果设置的时间落在空洞内，则认为设置的时间是合法的
+		else 
+		{
+			
+			//如果最早的数据的时间比设置的时间大，说明设置的时间比实际存储的时间早
+			
+			STG_Read_data_by_time(i, 0, 0, &d);
+			if(d.rcd_time_s == 0xffffffff)
+				break;
+			if(d.rcd_time_s > hst_mgr.real_first_time_s)
+				break;
+			
+			//如果最后的数据的时间比设置的时间小，说明设置时间
+			STG_Read_data_by_time(i, 0xffffffff, 0, &d);
+			if(d.rcd_time_s != 0xffffffff)
+			{
+				if(d.rcd_time_s < hst_mgr.real_first_time_s)
+				break;
+				
+			}
 			
 		}
 	
@@ -1048,63 +1075,7 @@ static void HMI_CRV_HST_Run(HMI *self)
 		
 		
 	}	
-//	for(i = 0; i < RLTHMI_NUM_CURVE; i++)
-//	{
-//		
-//		
-//		
-//		if((cthis->chn_show_map & (1 << i)) == 0) {
-//			continue;
-//		}	
-//		
-////		count = 0;		//
-//		sprintf(str_buf, "chn_%d", i);
-//		p_mdl = Create_model(str_buf);
-//		
-//		//获取最早记录
 
-//		if(hst_mgr.arr_hst_num[i]) //只要没有到达最前的位置，就允许向上翻页
-//			hst_mgr.has_pgdn = 1;
-//		
-//		STG_Set_file_position(STG_CHN_DATA(i), STG_DRC_READ, hst_mgr.arr_hst_num[i] * sizeof(data_in_fsh_t));	
-//		p_crv->reset(cthis->arr_crv_fd[i]);
-//		while(1)
-//		{
-//			read_len = stg->rd_stored_data(stg, STG_CHN_DATA(i), &d, sizeof(d));
-//			
-//			if(read_len == 0)
-//				break;
-//			if(read_len != sizeof(d))
-//				goto exit;	//可能文件正在被其他线程访问，直接退出，下一次再尝试
-//			if(d.rcd_time_s == 0xffffffff)
-//				break;
-//			
-//			hst_mgr.arr_hst_num[i] ++;		//读取了一条有效记录，就把计数器加1
-//			
-//			if(hst_mgr.real_first_time_s == 0)
-//			{
-//				hst_mgr.real_first_time_s = d.rcd_time_s;
-//				end_time = hst_mgr.real_first_time_s + cthis->min_div * 60;
-//			}
-//			
-//			if(d.rcd_time_s < hst_mgr.real_first_time_s)
-//				continue;
-//			
-//			if(d.rcd_time_s > end_time)
-//			{
-//				more= 1;
-//				break;
-//			}
-//						
-//			crv_prc = MdlChn_Cal_prc(p_mdl, d.rcd_val);
-//			p_crv->add_point(cthis->arr_crv_fd[i], crv_prc);
-
-//		}
-//		
-//		
-//	}
-	
-	
 	Sec_2_tm(hst_mgr.real_first_time_s, &first_tm);
 	sprintf(cthis->p_first_time->cnt.data, "%02d-%02d-%02d %02d:%02d:%02d", \
 		first_tm.tm_year, first_tm.tm_mon, first_tm.tm_mday, \
