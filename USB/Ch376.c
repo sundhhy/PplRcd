@@ -120,8 +120,8 @@ void	Search_u_disk(void)
 	s = CH376GetIntStatus();
 	if( s == USB_INT_CONNECT)
 		ch376_up_irq(USB_INT_CONNECT);
-	else if(s ==USB_INT_DISCONNECT) 
-		ch376_up_irq(USB_INT_DISCONNECT);
+//	else if(s ==USB_INT_DISCONNECT) 
+//		ch376_up_irq(USB_INT_DISCONNECT);
 	
 }
 

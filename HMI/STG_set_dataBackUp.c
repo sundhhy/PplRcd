@@ -829,23 +829,18 @@ static uint32_t DBP_Copy_chn_data(int fd)
 			{
 				if(d[i].rcd_time_s != 0xffffffff)
 					continue;
-				if(err == 0)
-				{
-					err ++;
-//					STG_Set_file_position(STG_CHN_DATA(copy_chn), STG_SUR_READ, -2 * rd_len);
-//					
-//					goto re_read;
-				}
+				
+				err ++;
+				
 				
 			}
 			
+			//用起始时间来筛选数据
 			for(i = 0; i < num_rcd; i++)
 			{
-				if(d[i].rcd_time_s == 0xffffffff)
-					continue;
+				
 				if(d[i].rcd_time_s >= start_sec)
 					break;
-				
 				
 			}
 			if(i == num_rcd)
@@ -865,8 +860,8 @@ static uint32_t DBP_Copy_chn_data(int fd)
 				
 				if(d[i].rcd_time_s > end_sec)
 					continue;
-//				if(d[i].rcd_time_s < start_sec)
-//					continue;		//不应该出现在这里
+				if(d[i].rcd_time_s < start_sec)
+					continue;		//不应该出现在这里,但是如果时间变化的话，就可能出现这个问题，暂时留着
 				
 				if(min_sec > d[i].rcd_time_s)
 					min_sec = d[i].rcd_time_s;

@@ -94,7 +94,7 @@ static HMI* HMI_Pop_hmi(void);
 void Set_flag_show(uint8_t	*p_flag, int val)
 {
 	
-	if(val)
+	if(val == 0)
 		*p_flag |= HMI_FLAG_HIDE;
 	else
 		*p_flag &= ~HMI_FLAG_HIDE;

@@ -693,12 +693,12 @@ static void Timeset_init(winHmi *cthis)
 	Expr 				*p_exp ;
 	shtctl 			*p_shtctl = GetShtctl();
 	int 				h = 0;
-	p_exp = ExpCreate( "pic");
+	p_exp = ExpCreate("pic");
 	cthis->p_sht_bkpic = Sheet_alloc(p_shtctl);
 	p_exp->inptSht( p_exp, (void *)winHim_code_bkpic, cthis->p_sht_bkpic) ;
 	
 	
-	p_exp = ExpCreate( "text");
+	p_exp = ExpCreate("text");
 	cthis->p_sht_tips = Sheet_alloc(p_shtctl);
 	p_exp->inptSht( p_exp, (void *)winHim_code_tips, cthis->p_sht_tips);
 	cthis->p_sht_tips->area.x0 = CONTENT_VX0;

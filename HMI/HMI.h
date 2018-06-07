@@ -98,8 +98,8 @@
 #define HMI_ATT_SELF_ERR			2		
 #define HMI_ATT_NOT_RECORD			4		//窗口或者按键界面返回的时候，不用把它们存到历史画面列表中
 
-#define IS_HMI_HIDE(flag)	((flag&1) == 0)
-#define IS_HMI_KEYHANDLE(flag)	((flag&2))
+#define IS_HMI_HIDE(flag)	(flag & HMI_FLAG_HIDE)
+//#define IS_HMI_KEYHANDLE(flag)	((flag&2))
 
 
 #define SY_KEYTYPE_HIT				0

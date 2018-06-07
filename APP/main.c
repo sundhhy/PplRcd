@@ -109,7 +109,7 @@ int main (void) {
 	uint16_t	main_ms = 0;
 
 
-	uint8_t			old_sys_flag;
+//	uint8_t			old_sys_flag;
 	
   // initialize peripherals here
 
@@ -174,9 +174,9 @@ int main (void) {
 	phn_sys.sys_flag |= SYSFLAG_POWEON;
 	p_tips = TIP_Get_Sington();
 	
-	old_sys_flag = phn_sys.sys_flag;
+//	old_sys_flag = phn_sys.sys_flag;
 	p_tips->show_ico_tips(1, -1);	//提示出USB未初始化
-	
+//	HMI_TIP_ICO(TIP_ICO_WARING, 1);
 	main_ms = 0;
 	while(1)
 	{
@@ -273,6 +273,7 @@ static void Init_usb_when_idle(void *arg)
 	
 	phn_sys.usb_ready = 1;
 	p_tips->clear_ico_tips(1);
+//	HMI_TIP_ICO(TIP_ICO_WARING, 0);
 }
 
 static void ThrdKeyRun (void const *argument) {

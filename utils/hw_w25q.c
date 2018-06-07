@@ -697,12 +697,13 @@ static int W25Q_Raw_write(uint8_t *pBuffer, uint32_t WriteAddr, uint32_t WriteBy
 //页面长度必须是2的幂
 static int	W25Q_wr_fsh(uint8_t *pBuffer, uint32_t WriteAddr, uint32_t WriteBytesNum)
 {
-	uint8_t step = 0;
-	uint8_t count = 100;
-	uint8_t	in_page_offset;
-	uint8_t	 page_left_size;
-
 	int ret = -1;
+	uint16_t	in_page_offset;
+	uint16_t	page_left_size;
+	uint8_t 	step = 0;
+	uint8_t 	count = 100;
+	
+
 	
 	//指令W25Q_INSTR_Page_Program 最多只能写入一页的数据
 	if(WriteBytesNum > PAGE_SIZE)

@@ -237,14 +237,96 @@ static int	Init_RT_trendHMI( HMI *self, void *arg)
 		g_arr_p_check[i]->id = SHTID_CHECK(i);
 	}
 
-	//³õÊ¼»¯½¹µã
-//	self->init_focus(self);
-	
-	
+	cthis->p_div = Sheet_alloc(p_shtctl);
+	cthis->p_first_time = Sheet_alloc(p_shtctl);
+
 	self->flag = 0;
 	return RET_OK;
 
 }
+
+static void RT_trendHmi_InitSheet( HMI *self, uint32_t att )
+{
+	RLT_trendHMI	*cthis = SUB_PTR( self, HMI, RLT_trendHMI);
+	Expr 			*p_exp ;
+	shtctl 			*p_shtctl = NULL;
+	int 			h = 0;
+	int				i;
+	
+	p_shtctl = GetShtctl();
+	
+	p_exp = ExpCreate("pic");
+	p_exp->inptSht(p_exp, (void *)RT_hmi_code_chninfo, g_p_cpic);
+	
+	p_exp = ExpCreate( "text");
+//	cthis->p_div = Sheet_alloc(p_shtctl);
+	p_exp->inptSht( p_exp, (void *)RT_hmi_code_div, cthis->p_div);
+	sprintf(cthis->str_div, "%d", cthis->min_div);
+	cthis->p_div->cnt.data = cthis->str_div;
+	cthis->p_div->cnt.len = strlen(cthis->p_div->cnt.data);
+	cthis->p_div->id = SHTID_RTL_MDIV;
+	
+//	cthis->p_first_time = Sheet_alloc(p_shtctl);
+	p_exp->inptSht(p_exp, (void *)RT_hmi_code_first_time, cthis->p_first_time);
+	cthis->p_first_time->cnt.data = hst_mgr.set_first_tm_buf;
+	cthis->p_first_time->id = SHT_FIRST_TIME;
+	
+	g_p_sht_bkpic->cnt.data = RLTHMI_BKPICNUM;
+
+	if(self->arg[0] == 0) {
+		g_p_sht_title->cnt.data = RLTHMI_TITLE;
+		self->hmi_run = HMI_CRV_RTV_Run;
+	} else if(self->arg[0] == 1) {
+		g_p_sht_title->cnt.data = HISTORY_TITLE;
+		self->hmi_run = HMI_CRV_HST_Run;
+		
+	} 
+	g_p_sht_title->cnt.len = strlen(g_p_sht_title->cnt.data);
+
+	Sheet_updown(g_p_sht_bkpic, h++);
+	Sheet_updown(p_curve_bkg, h++);
+	Sheet_updown(g_p_sht_title, h++);
+	Sheet_updown(g_p_shtTime, h++);
+	Sheet_updown(cthis->p_div, h++);
+	for(i = 0; i < phn_sys.sys_conf.num_chn; i++) {
+		Sheet_updown(g_arr_p_check[i], h++);
+	}
+	hst_mgr.init_att = att;
+	RLTHmi_Init_chnSht();
+	RLT_Init_curve(self);
+	self->init_focus(self);
+}
+
+static void RT_trendHmi_HideSheet( HMI *self )
+{
+	RLT_trendHMI			*cthis = SUB_PTR( self, HMI, RLT_trendHMI);
+	
+	int i;
+	
+	
+	for( i = phn_sys.sys_conf.num_chn - 1; i >= 0; i--) {
+		Sheet_updown(g_arr_p_check[i], -1);
+//		Sheet_updown(g_arr_p_chnData[i], -1);
+	}
+//	Sheet_updown( cthis->p_clean_chnifo, -1);
+	Sheet_updown(cthis->p_div, -1);
+//	Sheet_updown(g_p_ico_memu, -1);
+	Sheet_updown(g_p_shtTime, -1);
+	Sheet_updown(g_p_sht_title, -1);
+	Sheet_updown(p_curve_bkg, -1);
+	Sheet_updown(g_p_sht_bkpic, -1);
+	
+	
+//	self->clear_focus(self, 0, 0);
+//	self->clear_focus( self, self->p_fcuu->focus_row, self->p_fcuu->focus_col);
+	
+	
+//	Sheet_free(cthis->p_first_time);
+//	Sheet_free(cthis->p_div);
+	
+	
+	Focus_free(self->p_fcuu);
+}	
 
 static void HMI_CRV_Build_cmp(HMI *self)
 {
@@ -333,84 +415,7 @@ static void RLT_btn_hdl(void *arg, uint8_t btn_id)
 
 
 
-static void RT_trendHmi_InitSheet( HMI *self, uint32_t att )
-{
-	RLT_trendHMI	*cthis = SUB_PTR( self, HMI, RLT_trendHMI);
-	Expr 			*p_exp ;
-	shtctl 			*p_shtctl = NULL;
-	int 			h = 0;
-	int				i;
-	
-	p_shtctl = GetShtctl();
-	
-	p_exp = ExpCreate("pic");
-	p_exp->inptSht(p_exp, (void *)RT_hmi_code_chninfo, g_p_cpic);
-	
-	p_exp = ExpCreate( "text");
-	cthis->p_div = Sheet_alloc(p_shtctl);
-	p_exp->inptSht( p_exp, (void *)RT_hmi_code_div, cthis->p_div);
-	sprintf(cthis->str_div, "%d", cthis->min_div);
-	cthis->p_div->cnt.data = cthis->str_div;
-	cthis->p_div->cnt.len = strlen(cthis->p_div->cnt.data);
-	cthis->p_div->id = SHTID_RTL_MDIV;
-	
-	cthis->p_first_time = Sheet_alloc(p_shtctl);
-	p_exp->inptSht(p_exp, (void *)RT_hmi_code_first_time, cthis->p_first_time);
-	cthis->p_first_time->cnt.data = hst_mgr.set_first_tm_buf;
-	cthis->p_first_time->id = SHT_FIRST_TIME;
-	
-	g_p_sht_bkpic->cnt.data = RLTHMI_BKPICNUM;
 
-	if(self->arg[0] == 0) {
-		g_p_sht_title->cnt.data = RLTHMI_TITLE;
-		self->hmi_run = HMI_CRV_RTV_Run;
-	} else if(self->arg[0] == 1) {
-		g_p_sht_title->cnt.data = HISTORY_TITLE;
-		self->hmi_run = HMI_CRV_HST_Run;
-		
-	} 
-	g_p_sht_title->cnt.len = strlen(g_p_sht_title->cnt.data);
-
-	Sheet_updown(g_p_sht_bkpic, h++);
-	Sheet_updown(p_curve_bkg, h++);
-	Sheet_updown(g_p_sht_title, h++);
-	Sheet_updown(g_p_shtTime, h++);
-	Sheet_updown(cthis->p_div, h++);
-	for(i = 0; i < phn_sys.sys_conf.num_chn; i++) {
-		Sheet_updown(g_arr_p_check[i], h++);
-	}
-	hst_mgr.init_att = att;
-	RLTHmi_Init_chnSht();
-	RLT_Init_curve(self);
-	self->init_focus(self);
-}
-
-static void RT_trendHmi_HideSheet( HMI *self )
-{
-	RLT_trendHMI			*cthis = SUB_PTR( self, HMI, RLT_trendHMI);
-	
-	int i;
-	
-	
-	for( i = phn_sys.sys_conf.num_chn - 1; i >= 0; i--) {
-		Sheet_updown(g_arr_p_check[i], -1);
-//		Sheet_updown(g_arr_p_chnData[i], -1);
-	}
-//	Sheet_updown( cthis->p_clean_chnifo, -1);
-	Sheet_updown(cthis->p_div, -1);
-//	Sheet_updown(g_p_ico_memu, -1);
-	Sheet_updown(g_p_shtTime, -1);
-	Sheet_updown(g_p_sht_title, -1);
-	Sheet_updown(p_curve_bkg, -1);
-	Sheet_updown(g_p_sht_bkpic, -1);
-	
-	
-//	self->clear_focus(self, 0, 0);
-//	self->clear_focus( self, self->p_fcuu->focus_row, self->p_fcuu->focus_col);
-	Sheet_free(cthis->p_first_time);
-	Sheet_free(cthis->p_div);
-	Focus_free(self->p_fcuu);
-}	
 
 
 

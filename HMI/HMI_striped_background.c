@@ -161,12 +161,15 @@ static int	HMI_SBG_Init(HMI *self, void *arg)
 {
 	HMI_striped_background		*cthis = SUB_PTR( self, HMI, HMI_striped_background);
 //	Expr 			*p_exp ;
-//	shtctl 			*p_shtctl = NULL;
+	shtctl 			*p_shtctl = NULL;
 //	short				i = 0;	
-//	p_shtctl = GetShtctl();
+	p_shtctl = GetShtctl();
 //	
 
 //	p_exp = ExpCreate( "pic");
+	cthis->p_sht_text = Sheet_alloc(p_shtctl);
+	cthis->p_sht_CUR = Sheet_alloc(p_shtctl);
+	cthis->p_sht_clean = Sheet_alloc(p_shtctl);
 	
 	cthis->entry_start_row = 0;	
 	return RET_OK;
@@ -188,9 +191,9 @@ static void	HMI_SBG_Init_sheet(HMI *self, uint32_t att)
 	HMI_striped_background		*cthis = SUB_PTR( self, HMI, HMI_striped_background);
 	int  		 		h = 0;
 	Expr 				*p_exp ;
-	shtctl 				*p_shtctl = NULL;
+//	shtctl 				*p_shtctl = NULL;
 	strategy_t			*old_sty;
-	p_shtctl = GetShtctl();
+//	p_shtctl = GetShtctl();
 	
 //	if(((self->flag & HMIFLAG_WIN) == 0) && ((self->flag & HMIFLAG_KEYBOARD) == 0)) {
 	if((att & HMI_ATT_KEEP) == 0)
@@ -222,16 +225,16 @@ static void	HMI_SBG_Init_sheet(HMI *self, uint32_t att)
 
 	
 	p_exp = ExpCreate( "text");
-	cthis->p_sht_text = Sheet_alloc(p_shtctl);
+//	cthis->p_sht_text = Sheet_alloc(p_shtctl);
 	p_exp->inptSht( p_exp, (void *)setting_hmi_code_text, cthis->p_sht_text) ;
 //	cthis->p_sht_text->input = NULL;
 	
 	p_exp = ExpCreate( "box");
-	cthis->p_sht_CUR = Sheet_alloc(p_shtctl);
+//	cthis->p_sht_CUR = Sheet_alloc(p_shtctl);
 	p_exp->inptSht( p_exp, (void *)setting_hmi_code_CUR, cthis->p_sht_CUR) ;
 	
 	p_exp = ExpCreate( "pic");
-	cthis->p_sht_clean = Sheet_alloc(p_shtctl);
+//	cthis->p_sht_clean = Sheet_alloc(p_shtctl);
 	p_exp->inptSht( p_exp, (void *)setting_hmi_code_clean, cthis->p_sht_clean) ;
 
 
@@ -258,9 +261,9 @@ static void	HMI_SBG_Hide(HMI *self)
 	Sheet_updown(g_p_sht_bkpic, -1);
 	
 	
-	Sheet_free(cthis->p_sht_text);
-	Sheet_free(cthis->p_sht_CUR);
-	Sheet_free(cthis->p_sht_clean);
+//	Sheet_free(cthis->p_sht_text);
+//	Sheet_free(cthis->p_sht_CUR);
+//	Sheet_free(cthis->p_sht_clean);
 	
 }
 
@@ -843,9 +846,12 @@ static int Setting_Sy_cmd(void *p_rcv, int cmd,  void *arg)
 	strategy_focus_t	*p_pos;
 	int 							ret = RET_OK;
 	char							win_tips[32];
-	
+
 	switch(cmd) {
 		case sycmd_reflush:
+//			if(IS_HMI_HIDE(self->flag))
+//				break;	
+//		
 			cthis->p_sht_text->cnt.colour = COLOUR_WHITE;
 //			HMI_SBG_Show_entry(self, cthis->p_sy);
 			cthis->entry_start_row = 0;
@@ -855,6 +861,9 @@ static int Setting_Sy_cmd(void *p_rcv, int cmd,  void *arg)
 //			Flush_LCD();
 			break;
 		case sycmd_reflush_position:
+//			if(IS_HMI_HIDE(self->flag))
+//				break;	
+		
 			p_pos = (strategy_focus_t		*)arg;
 		
 			cthis->p_sht_text->cnt.len = \

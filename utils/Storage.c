@@ -246,9 +246,8 @@ void STG_Run(void)
 				break;
 			
 			
-			//因为W25Q的驱动提供了回读错误后，会在当前位置之后重新写数据，所以可能会出现写入多个记录的情况（当然，错误的那些记录会被标记）
 			re_write:
-			STG_Set_file_position(STG_CHN_DATA(chn_num), STG_DRC_WRITE, stg->arr_rcd_mgr[chn_num].rcd_count * sizeof(data_in_fsh_t));
+//			STG_Set_file_position(STG_CHN_DATA(chn_num), STG_DRC_WRITE, stg->arr_rcd_mgr[chn_num].rcd_count * sizeof(data_in_fsh_t));
 			acc_len = STG_SYS.fs.fs_raw_write(fd, (uint8_t *)&d, count * sizeof(data_in_fsh_t));
 			if(acc_len  >  0)
 			{
