@@ -273,6 +273,7 @@ static void Init_usb_when_idle(void *arg)
 	
 	phn_sys.usb_ready = 1;
 	p_tips->clear_ico_tips(1);
+	
 //	HMI_TIP_ICO(TIP_ICO_WARING, 0);
 }
 

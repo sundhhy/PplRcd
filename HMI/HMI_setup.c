@@ -57,6 +57,8 @@ static const char setup_hmi_code_lock[] =  {"<text vx0=230 vy0=50 f=16 m=0> </>"
 static int	Init_Setup_HMI(HMI *self, void *arg);
 static void Show_Setup_HMI(HMI *self);
 static void	Setup_HMI_hide(HMI *self);
+static void STP_Run(HMI *self);
+
 static void	Setup_initSheet(HMI *self, uint32_t att);
 static void	Setup_HMI_init_focus(HMI *self);
 static void	Setup_HMI_clear_focus(HMI *self, uint8_t fouse_row, uint8_t fouse_col);
@@ -95,6 +97,8 @@ FUNCTION_SETTING(HMI.init, Init_Setup_HMI);
 FUNCTION_SETTING(HMI.initSheet, Setup_initSheet);
 FUNCTION_SETTING(HMI.hide, Setup_HMI_hide);
 FUNCTION_SETTING(HMI.show, Show_Setup_HMI);
+FUNCTION_SETTING(HMI.hmi_run, STP_Run);
+
 
 FUNCTION_SETTING(HMI.hitHandle, Setup_HMI_hitHandle);
 FUNCTION_SETTING(HMI.conposeKeyHandle, STP_Compose_hit);
@@ -111,7 +115,11 @@ END_CTOR
 //          P R I V A T E   D E F I N I T I O N S                          //
 //                                                                         //
 //=========================================================================//
-
+static void STP_Run(HMI *self)
+{
+	
+	HMI_Updata_tip_ico();
+}
 static int	Init_Setup_HMI(HMI *self, void *arg)
 {
 //	Setup_HMI		*cthis = SUB_PTR( self, HMI, Setup_HMI);

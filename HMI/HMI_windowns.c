@@ -162,7 +162,13 @@ END_CTOR
 
 static int	Init_winHmi(HMI *self, void *arg)
 {
-
+	winHmi			*cthis = SUB_PTR( self, HMI, winHmi);
+	shtctl 			*p_shtctl = GetShtctl();
+	
+	cthis->p_sht_bkpic = Sheet_alloc(p_shtctl);
+	cthis->p_sht_tips = Sheet_alloc(p_shtctl);
+	cthis->p_sht_title = Sheet_alloc(p_shtctl);
+	cthis->p_sht_cur = Sheet_alloc(p_shtctl);
 	return RET_OK;
 
 }
@@ -174,7 +180,7 @@ static void Win_initSheet(HMI *self, uint32_t att )
 {
 	winHmi			*cthis = SUB_PTR( self, HMI, winHmi);
 	
-
+	winHmiHide(self);
 	
 	cthis->win_type = self->arg[0];
 	if(cthis->win_type == WINTYPE_TIME_SET) {
@@ -211,22 +217,27 @@ static void winHmiHide(HMI *self )
 {
 	winHmi			*cthis = SUB_PTR( self, HMI, winHmi);
 	
-	if(cthis->win_type == WINTYPE_TIME_SET) {
-		
-		Timeset_hide(cthis);
-	} else if(cthis->win_type == WINTYPE_PASSWORD_SET) {
-		Password_hide(cthis);
-		
-	}  else if(cthis->win_type == WINTYPE_PASSWORD_INPUT) {
-		Password_hide(cthis);
-		
-	} else if(cthis->win_type < WINTYPE_MUS_BND) {
-		Popup_hide(cthis);
-		
-	} else {
-		
-		MUS_hide(cthis);
-	}
+	Sheet_updown(cthis->p_sht_cur, -1);
+	Sheet_updown(cthis->p_sht_tips, -1);
+	Sheet_updown(cthis->p_sht_title, -1);
+	Sheet_updown(cthis->p_sht_bkpic, -1);
+	
+//	if(cthis->win_type == WINTYPE_TIME_SET) {
+//		
+//		Timeset_hide(cthis);
+//	} else if(cthis->win_type == WINTYPE_PASSWORD_SET) {
+//		Password_hide(cthis);
+//		
+//	}  else if(cthis->win_type == WINTYPE_PASSWORD_INPUT) {
+//		Password_hide(cthis);
+//		
+//	} else if(cthis->win_type < WINTYPE_MUS_BND) {
+//		Popup_hide(cthis);
+//		
+//	} else {
+//		
+//		MUS_hide(cthis);
+//	}
 
 	
 	
@@ -607,19 +618,19 @@ static void Popup_init(winHmi *cthis)
 	shtctl 			*p_shtctl = GetShtctl();
 	int 				h = 0;
 	p_exp = ExpCreate( "pic");
-	cthis->p_sht_bkpic = Sheet_alloc(p_shtctl);
+//	cthis->p_sht_bkpic = Sheet_alloc(p_shtctl);
 	p_exp->inptSht( p_exp, (void *)winHim_code_bkpic, cthis->p_sht_bkpic) ;
 	
 	
 	p_exp = ExpCreate( "text");
-	cthis->p_sht_tips = Sheet_alloc(p_shtctl);
+//	cthis->p_sht_tips = Sheet_alloc(p_shtctl);
 	p_exp->inptSht( p_exp, (void *)winHim_code_tips, cthis->p_sht_tips);
 	cthis->p_sht_tips->cnt.data = win_content;
 	cthis->p_sht_tips->cnt.len = strlen(cthis->p_sht_tips->cnt.data);
 	
 	
 	p_exp = ExpCreate( "text");
-	cthis->p_sht_title = Sheet_alloc(p_shtctl);
+//	cthis->p_sht_title = Sheet_alloc(p_shtctl);
 	p_exp->inptSht( p_exp, (void *)winHim_code_title, cthis->p_sht_title) ;
 	switch(cthis->win_type)
 	{
@@ -642,7 +653,7 @@ static void Popup_init(winHmi *cthis)
 	
 	
 	p_exp = ExpCreate( "pic");
-	cthis->p_sht_cur = Sheet_alloc(p_shtctl);
+//	cthis->p_sht_cur = Sheet_alloc(p_shtctl);
 	p_exp->inptSht( p_exp, (void *)winhmi_code_cur, cthis->p_sht_cur);
 
 	Sheet_updown(cthis->p_sht_bkpic, h++);
@@ -658,11 +669,11 @@ static void Popup_hide(winHmi *cthis)
 //	Sheet_updown(cthis->p_sht_tips, -1);
 	Sheet_updown(cthis->p_sht_title, -1);
 	Sheet_updown(cthis->p_sht_bkpic, -1);
-	
-	Sheet_free(cthis->p_sht_cur);
-	Sheet_free(cthis->p_sht_tips);
-	Sheet_free(cthis->p_sht_title);
-	Sheet_free(cthis->p_sht_bkpic);
+//	
+//	Sheet_free(cthis->p_sht_cur);
+//	Sheet_free(cthis->p_sht_tips);
+//	Sheet_free(cthis->p_sht_title);
+//	Sheet_free(cthis->p_sht_bkpic);
 	
 }
 
@@ -694,12 +705,12 @@ static void Timeset_init(winHmi *cthis)
 	shtctl 			*p_shtctl = GetShtctl();
 	int 				h = 0;
 	p_exp = ExpCreate("pic");
-	cthis->p_sht_bkpic = Sheet_alloc(p_shtctl);
+//	cthis->p_sht_bkpic = Sheet_alloc(p_shtctl);
 	p_exp->inptSht( p_exp, (void *)winHim_code_bkpic, cthis->p_sht_bkpic) ;
 	
 	
 	p_exp = ExpCreate("text");
-	cthis->p_sht_tips = Sheet_alloc(p_shtctl);
+//	cthis->p_sht_tips = Sheet_alloc(p_shtctl);
 	p_exp->inptSht( p_exp, (void *)winHim_code_tips, cthis->p_sht_tips);
 	cthis->p_sht_tips->area.x0 = CONTENT_VX0;
 	cthis->p_sht_tips->area.y0 = CONTENT_VY0 + 16;
@@ -708,7 +719,7 @@ static void Timeset_init(winHmi *cthis)
 	
 	
 	p_exp = ExpCreate( "text");
-	cthis->p_sht_title = Sheet_alloc(p_shtctl);
+//	cthis->p_sht_title = Sheet_alloc(p_shtctl);
 	p_exp->inptSht( p_exp, (void *)winHim_code_title, cthis->p_sht_title);
 
 	cthis->p_sht_title->cnt.data = WINT_TIMER_SET;
@@ -716,7 +727,7 @@ static void Timeset_init(winHmi *cthis)
 	
 	
 	p_exp = ExpCreate( "pic");
-	cthis->p_sht_cur = Sheet_alloc(p_shtctl);
+//	cthis->p_sht_cur = Sheet_alloc(p_shtctl);
 	p_exp->inptSht(p_exp, (void *)winhmi_code_cur, cthis->p_sht_cur);
 
 	Sheet_updown(cthis->p_sht_bkpic, h++);
@@ -730,10 +741,10 @@ static void Timeset_hide(winHmi *cthis)
 	Sheet_updown(cthis->p_sht_title, -1);
 	Sheet_updown(cthis->p_sht_bkpic, -1);
 	
-	Sheet_free(cthis->p_sht_cur);
-	Sheet_free(cthis->p_sht_tips);
-	Sheet_free(cthis->p_sht_title);
-	Sheet_free(cthis->p_sht_bkpic);
+//	Sheet_free(cthis->p_sht_cur);
+//	Sheet_free(cthis->p_sht_tips);
+//	Sheet_free(cthis->p_sht_title);
+//	Sheet_free(cthis->p_sht_bkpic);
 	
 }
 

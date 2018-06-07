@@ -191,6 +191,9 @@ void Sheet_updown( struct SHEET *p_sht, int height)
     if( p_sht == NULL)
 		return;
 	
+	if(p_sht->height == height)
+		return;
+	
 //	if(p_sht->height | 0x80) {
 //		old = p_sht->height - 0x100 ;
 //	} else

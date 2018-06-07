@@ -259,8 +259,8 @@ static void	HMI_SBG_Hide(HMI *self)
 	Sheet_updown(g_p_shtTime, -1);
 	Sheet_updown(g_p_sht_title, -1);
 	Sheet_updown(g_p_sht_bkpic, -1);
-	
-	
+	if(cthis->p_sy)
+		cthis->p_sy->sty_exit();
 //	Sheet_free(cthis->p_sht_text);
 //	Sheet_free(cthis->p_sht_CUR);
 //	Sheet_free(cthis->p_sht_clean);
