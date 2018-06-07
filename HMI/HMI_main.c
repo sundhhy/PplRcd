@@ -291,7 +291,7 @@ static void HMI_MAIN_Run(HMI *self)
 		Clear_bit(p_run->set_need_update_channel, chn_num);
 //		p_run->last_updat_chn = chn_num + 1;
 //		p_run->last_updat_chn %= phn_sys.sys_conf.num_chn;
-		
+		HMI_Updata_tip_ico();
 		if((self->flag & HMI_FLAG_HSA_SEM) == 0)
 			Sem_post(&phn_sys.hmi_mgr.hmi_sem);
 //		else

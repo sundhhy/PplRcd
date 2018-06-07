@@ -77,6 +77,7 @@ static void	MenuHmiShow( HMI *self);
 static void	MenuHitHandle( HMI *self, char kcd);
 static void MenuHmiHide( HMI *self );
 static void MenuinitSheet( HMI *self, uint32_t att );
+static void	MNN_Run( HMI *self);
 
 //static void MenuEnterCmdHdl( shtCmd *self, struct SHEET *p_sht, void *arg);
 static void MenuClearFocuse( HMI *self, uint8_t fouse_row, uint8_t fouse_col);
@@ -112,8 +113,7 @@ FUNCTION_SETTING( HMI.show, MenuHmiShow);
 FUNCTION_SETTING( HMI.hitHandle, MenuHitHandle);
 FUNCTION_SETTING( HMI.clear_focus, MenuClearFocuse);
 FUNCTION_SETTING( HMI.show_focus, MenuShowFocuse);
-
-//FUNCTION_SETTING( shtCmd.shtExcute, MenuEnterCmdHdl);
+//FUNCTION_SETTING(HMI.hmi_run, HMI_Run_none);
 
 
 

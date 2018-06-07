@@ -1,9 +1,14 @@
+
+#include <string.h>
+
+#include "arithmetic/bit.h"
+#include "os/os_depend.h"
+
 #include "HMI.h"
 #include "HMI_comm.h"
-#include <string.h>
-#include "os/os_depend.h"
 #include "sys_cmd.h"
 #include "HMIFactory.h"
+
 
 //提供 按键，事件，消息，窗口，报警，时间，复选框的图层
 //这些图层可能会被其他界面所使用
@@ -43,7 +48,12 @@ keyboard_commit	kbr_cmt = NULL;
 //------------------------------------------------------------------------------
 // local types
 //------------------------------------------------------------------------------
-
+struct {
+//	uint8_t		tip_ico_change;
+	uint8_t		tip_ico_status;
+	uint8_t		tip_ico_old_status;
+	uint8_t		none[2];
+}hmi_run;
 //------------------------------------------------------------------------------
 // local vars
 //------------------------------------------------------------------------------
@@ -92,6 +102,8 @@ void Set_flag_show(uint8_t	*p_flag, int val)
 //	*p_flag &= 0xfe;
 //	*p_flag |= val;
 }
+
+
 
 int HMI_Init(void)
 {
@@ -168,6 +180,21 @@ int HMI_Init(void)
 	return RET_OK;
 }
 
+void HMI_TIP_ICO(uint8_t	type, char ctl)
+{
+	if(type > 7)
+		return;
+//	Set_bit(&hmi_run.tip_ico_change, type);
+	if(ctl)
+		Set_bit(&hmi_run.tip_ico_status, type);
+	else
+		Clear_bit(&hmi_run.tip_ico_status, type);
+	
+
+	
+	
+}
+
 void	HMI_Attach_model_chn(int  *fds, mdl_observer *mdl_obs)
 {
 	int			i;
@@ -210,6 +237,53 @@ void HMI_Change_last_HMI(HMI *p)
 {
 	
 	change_last_hmi = p;
+}
+
+void HMI_Updata_tip_ico(void)
+{
+	
+
+	CMP_tips 			*p_tips = TIP_Get_Sington();
+	uint8_t				tips_change = 0;		//
+
+	
+	tips_change = hmi_run.tip_ico_old_status ^ hmi_run.tip_ico_status;
+	if(Check_bit(&tips_change, TIP_ICO_USB))
+	{
+		if(Check_bit(&hmi_run.tip_ico_status, TIP_ICO_USB))
+			p_tips->show_ico_tips(0, -1);
+		else
+			p_tips->clear_ico_tips(0);
+	}
+	
+	if(Check_bit(&tips_change, TIP_ICO_CLEAR_FILE))
+	{
+		if(Check_bit(&hmi_run.tip_ico_status, TIP_ICO_CLEAR_FILE))
+			p_tips->show_ico_tips(2, 36);
+		else
+			p_tips->clear_ico_tips(2);
+	}
+	
+	if(Check_bit(&tips_change, TIP_ICO_WARING))
+	{
+		if(Check_bit(&hmi_run.tip_ico_status, TIP_ICO_WARING))
+			p_tips->show_ico_tips(1, -1);
+		else
+			p_tips->clear_ico_tips(1);
+	}
+	
+	if(Check_bit(&tips_change, TIP_ICO_ERR))
+	{
+		if(Check_bit(&hmi_run.tip_ico_status, TIP_ICO_ERR))
+			p_tips->show_ico_tips(2, -1);
+		else
+			p_tips->clear_ico_tips(2);
+	}
+	
+	hmi_run.tip_ico_old_status = hmi_run.tip_ico_status;
+	
+
+	
 }
 
 
@@ -263,8 +337,11 @@ static void	HmiShow( HMI *self)
 	
 }
 
+
+
 static void	HMI_Run( HMI *self)
 {
+
 	
 	
 }

@@ -591,14 +591,15 @@ int	W25Q_unlock(void)
 //成功返回写入的数据字节数，失败返回-1
 static int W25Q_Raw_write(uint8_t *pBuffer, uint32_t WriteAddr, uint32_t WriteBytesNum)
 {
-	uint16_t total_wr_len = 0;
-	uint16_t ckeck_len = WriteBytesNum;
-	int			ret;
-	int			retry = 3;
-	uint8_t	 read_back_buf[32];
+//	uint16_t total_wr_len = 0;
+//	uint16_t ckeck_len = WriteBytesNum;
+	int			ret = 0;
+//	int			retry = 3;
+	uint32_t	wr_offset;
+//	uint8_t	 read_back_buf[32];
 	
 
-	re_write:
+//	re_write:
 	
 	
 	//第一个字节是被w25q使用的，作为废弃标记
@@ -607,89 +608,99 @@ static int W25Q_Raw_write(uint8_t *pBuffer, uint32_t WriteAddr, uint32_t WriteBy
 	if(W25Q_FSH.fnf.fnf_flag & FSH_FLAG_READBACK_CHECK)
 		pBuffer[0] = 0xff;
 	
-
+	wr_offset = 0;
 	//先写入，如果写入不成功，返回错误
-	ret = W25Q_wr_fsh(pBuffer, WriteAddr, WriteBytesNum);
-	if(ret != WriteBytesNum)
-		return -1;
-	
-	
-#if DUG_STG_HOLE == 1
-	
-	if(ckeck_len > 32)
-		ckeck_len = 32;
-	if(ckeck_len > ret)
-		ckeck_len = ret;
-	
-	w25q_Read_flash(read_back_buf, WriteAddr, ckeck_len);
-	
-	for(total_wr_len = 0; total_wr_len < ckeck_len; total_wr_len ++)
+	while(wr_offset < WriteBytesNum)
 	{
-		
-		if(read_back_buf[total_wr_len] != 0xff)
-			goto  rbk_check;
-		
-	}
-	//刚才写入的数据全是0xff，再次写入一遍
-	if(retry)
-	{
-		
-		retry --;
-		goto re_write;
+		ret = W25Q_wr_fsh(pBuffer + wr_offset, WriteAddr + wr_offset, WriteBytesNum - wr_offset);
+		if(ret < 0)
+			return -1;
+		wr_offset += ret;
 	}
 	
-#endif
-	rbk_check:
-	//若需要回读判断，则进行回读判断
-	if((W25Q_FSH.fnf.fnf_flag & FSH_FLAG_READBACK_CHECK) == 0)
-		return ret;
 	
-	//回读检查,最多只检查前32个字节
-	if(ret <= 0)
-		return ret;
+	return wr_offset;
 	
-	total_wr_len += ret;
+	
+//#if DUG_STG_HOLE == 1
+//	
+//	if(ckeck_len > 32)
+//		ckeck_len = 32;
+//	if(ckeck_len > ret)
+//		ckeck_len = ret;
+//	
+//	w25q_Read_flash(read_back_buf, WriteAddr, ckeck_len);
+//	
+//	for(total_wr_len = 0; total_wr_len < ckeck_len; total_wr_len ++)
+//	{
+//		
+//		if(read_back_buf[total_wr_len] != 0xff)
+//			goto  rbk_check;
+//		
+//	}
+//	//刚才写入的数据全是0xff，再次写入一遍
+//	if(retry)
+//	{
+//		
+//		retry --;
+//		goto re_write;
+//	}
+//	
+//#endif
+//	rbk_check:
+//	//若需要回读判断，则进行回读判断
+//	if((W25Q_FSH.fnf.fnf_flag & FSH_FLAG_READBACK_CHECK) == 0)
+//		return ret;
+//	
+//	//回读检查,最多只检查前32个字节
+//	if(ret <= 0)
+//		return ret;
+//	
+//	total_wr_len += ret;
 
 
-	if(ckeck_len > 32)
-		ckeck_len = 32;
-	if(ckeck_len > ret)
-		ckeck_len = ret;
-	
-	if(w25q_Read_flash(read_back_buf, WriteAddr, ckeck_len) != ckeck_len)
-		return total_wr_len;		//无法读取就先退出吧，总比用错误的数据进行判断好
-	if(memcmp(read_back_buf, pBuffer, ckeck_len) == 0)
-		return total_wr_len;
-	
+//	if(ckeck_len > 32)
+//		ckeck_len = 32;
+//	if(ckeck_len > ret)
+//		ckeck_len = ret;
+//	
+//	if(w25q_Read_flash(read_back_buf, WriteAddr, ckeck_len) != ckeck_len)
+//		return total_wr_len;		//无法读取就先退出吧，总比用错误的数据进行判断好
+//	if(memcmp(read_back_buf, pBuffer, ckeck_len) == 0)
+//		return total_wr_len;
+//	
 
-	
-	//如回读判断出错，废弃该记录
-	pBuffer[0] = 0;
-	W25Q_wr_fsh(pBuffer, WriteAddr, 1);
-		//并在下一个位置写入
-	if(retry)
-	{
-		WriteAddr += ret;
-		
-		//todo: 现在想不到什么好的办法来避免超过文件的范围，只能先判断是否超出flash范围了
-		if(WriteAddr >= W25Q_FSH.fnf.page_size * W25Q_FSH.fnf.total_pagenum)
-			return total_wr_len;
-		retry --;
-		goto re_write;
-	}
-	
-	return total_wr_len;
+//	
+//	//如回读判断出错，废弃该记录
+//	pBuffer[0] = 0;
+//	W25Q_wr_fsh(pBuffer, WriteAddr, 1);
+//		//并在下一个位置写入
+//	if(retry)
+//	{
+//		WriteAddr += ret;
+//		
+//		//todo: 现在想不到什么好的办法来避免超过文件的范围，只能先判断是否超出flash范围了
+//		if(WriteAddr >= W25Q_FSH.fnf.page_size * W25Q_FSH.fnf.total_pagenum)
+//			return total_wr_len;
+//		retry --;
+//		goto re_write;
+//	}
+//	
+//	return total_wr_len;
 	
 	
 }
 
 //WriteBytesNum不能大于256. 如果大于256字节，那么数据会从页的开头重新写入。
 //因为这个函数使用的写入指令是W25Q_INSTR_Page_Program
+//另外如果写入的位置+长度超过一页，会截断写入页面范围内的；没有考虑跨多页的情况
+//页面长度必须是2的幂
 static int	W25Q_wr_fsh(uint8_t *pBuffer, uint32_t WriteAddr, uint32_t WriteBytesNum)
 {
 	uint8_t step = 0;
 	uint8_t count = 100;
-
+	uint8_t	in_page_offset;
+	uint8_t	 page_left_size;
 
 	int ret = -1;
 	
@@ -697,6 +708,11 @@ static int	W25Q_wr_fsh(uint8_t *pBuffer, uint32_t WriteAddr, uint32_t WriteBytes
 	if(WriteBytesNum > PAGE_SIZE)
 		WriteBytesNum = PAGE_SIZE;
 	
+	//对超出页面范围的数据进行截断
+	in_page_offset = WriteAddr & (PAGE_SIZE - 1);
+	page_left_size = PAGE_SIZE - in_page_offset;
+	if(page_left_size < WriteBytesNum)
+		WriteBytesNum = page_left_size;
 
 	while(1)
 	{

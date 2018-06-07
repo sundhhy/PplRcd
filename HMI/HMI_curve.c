@@ -1177,6 +1177,8 @@ static void HMI_CRV_RTV_Run(HMI *self)
 		p_crv->crv_show_curve(HMI_CMP_ALL, CRV_SHOW_WHOLE);
 		
 	}
+	
+	HMI_Updata_tip_ico();
 	Sem_post(&phn_sys.hmi_mgr.hmi_sem);
 //	Flush_LCD();
 	

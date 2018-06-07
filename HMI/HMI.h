@@ -41,6 +41,12 @@
 #define		HMI_CMP_ALL					0xff		//
 
 
+
+#define TIP_ICO_USB						0
+#define TIP_ICO_CLEAR_FILE		1
+#define TIP_ICO_WARING				2
+#define TIP_ICO_ERR						3
+
 /********图层的ID	***********************************/
 #define	ICO_ID_MENU					0x20	//主菜单
 #define	ICO_ID_BAR					0x21	//棒图
@@ -249,7 +255,10 @@ void Main_HMI_hit( HMI *self, char kcd);
 
 int HMI_Init(void);
 
+
 void	HMI_Attach_model_chn(int *fds, mdl_observer *mdl_obs);
 void	HMI_detach_model_chn(int *fds);
 
+void HMI_TIP_ICO(uint8_t	type, char ctl);			//控制提示图标
+void HMI_Updata_tip_ico(void);
 #endif

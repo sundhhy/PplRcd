@@ -27,6 +27,7 @@ V010 171226 :
 #include "sys_cmd.h"
 #include "arithmetic/bit.h"
 
+#include "HMI/HMI.h"
 
 //------------------------------------------------------------------------------
 // const defines
@@ -834,12 +835,13 @@ static void EFS_run()
 	{
 		efs_mgr.efs_flag |= EFS_BUSY;
 		EFS_SYS.sys_flag |= SYSFLAG_EFS_NOTREADY;
+		HMI_TIP_ICO(TIP_ICO_CLEAR_FILE, 1);
 	}
 	else
 	{
 		efs_mgr.efs_flag &= ~EFS_BUSY;
 		EFS_SYS.sys_flag &= ~SYSFLAG_EFS_NOTREADY;
-		
+		HMI_TIP_ICO(TIP_ICO_CLEAR_FILE, 0);
 	}
 		
 	

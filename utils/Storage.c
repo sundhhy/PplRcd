@@ -5,6 +5,8 @@
 #include "time_func.h"
 
 #include "os/os_depend.h"
+
+#include "HMI/HMI.h"
 //============================================================================//
 //            G L O B A L   D E F I N I T I O N S                             //
 //============================================================================//
@@ -211,9 +213,15 @@ void STG_Run(void)
 		
 		//µÚÈÝÁ¿±¨¾¯
 		if((stg->arr_rcd_mgr[chn_num].rcd_maxcount - stg->arr_rcd_mgr[chn_num].rcd_count) < STG_SYS.sys_conf.storage_alarm)
+		{
 			STG_SYS.sys_flag |= SYSFLAG_LOWSPACE;
+			HMI_TIP_ICO(TIP_ICO_WARING, 1);
+		}
 		else
+		{
 			STG_SYS.sys_flag &= ~SYSFLAG_LOWSPACE;
+			HMI_TIP_ICO(TIP_ICO_WARING, 0);
+		}
 
 
 			

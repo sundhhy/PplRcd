@@ -188,42 +188,37 @@ int main (void) {
 		
 		main_ms += 100;
 		
-		if(old_sys_flag != phn_sys.sys_flag)
-		{
-//			if(phn_sys.sys_flag & SYSFLAG_POWEROFF)
+//		if(old_sys_flag != phn_sys.sys_flag)
+//		{
+
+//			if(phn_sys.sys_flag & SYSFLAG_EFS_NOTREADY)
+//			{
+//				p_tips->show_ico_tips(2, 36);
+//				
+//			}
+//			else if(phn_sys.sys_flag & SYSFLAG_ERR)
+//			{
+//				p_tips->show_ico_tips(2, -1);
+//				
+//			}
+//			else if(phn_sys.sys_flag & SYSFLAG_CHN_ERR)
+//			{
+//				p_tips->show_ico_tips(2, -1);
+//				
+//			}
+//			else if(phn_sys.sys_flag & SYSFLAG_LOWSPACE)
 //			{
 //				p_tips->show_ico_tips(1, -1);
 //				
 //			}
-//			else 
-			if(phn_sys.sys_flag & SYSFLAG_EFS_NOTREADY)
-			{
-				p_tips->show_ico_tips(2, 36);
-				
-			}
-			else if(phn_sys.sys_flag & SYSFLAG_ERR)
-			{
-				p_tips->show_ico_tips(2, -1);
-				
-			}
-			else if(phn_sys.sys_flag & SYSFLAG_CHN_ERR)
-			{
-				p_tips->show_ico_tips(2, -1);
-				
-			}
-			else if(phn_sys.sys_flag & SYSFLAG_LOWSPACE)
-			{
-				p_tips->show_ico_tips(1, -1);
-				
-			}
-			else
-			{
-				
-				p_tips->clear_ico_tips(1);
-				p_tips->clear_ico_tips(2);
-			}
-			old_sys_flag = phn_sys.sys_flag;
-		}
+//			else
+//			{
+//				
+//				p_tips->clear_ico_tips(1);
+//				p_tips->clear_ico_tips(2);
+//			}
+//			old_sys_flag = phn_sys.sys_flag;
+//		}
 		
 		
 		
@@ -268,6 +263,7 @@ static void Init_usb_when_idle(void *arg)
 	if(USB_Init(&usb_op) != RET_OK)
 	{
 		phn_sys.sys_flag |= SYSFLAG_ERR;
+		HMI_TIP_ICO(TIP_ICO_ERR, 1);
 	}
 	else
 	{
@@ -366,14 +362,15 @@ static int	Main_USB_event(int type)
 	{
 		
 		phn_sys.usb_device = 1;
-		p_tips->show_ico_tips(0, -1);
+//		p_tips->show_ico_tips(0, -1);
+		HMI_TIP_ICO(TIP_ICO_USB, 1);
 		
 	}
 	else if(type == et_remove)
 	{
 		phn_sys.usb_device = 0;
-		p_tips->clear_ico_tips(0);
-		
+//		p_tips->clear_ico_tips(0);
+		HMI_TIP_ICO(TIP_ICO_USB, 0);
 	}
 	
 	return 0;

@@ -192,6 +192,8 @@ static void DATA_Run(HMI *self)
 		if(phn_sys.sys_conf.show_chn_status)
 			DataHmi_Status_update(g_arr_p_chnData[chn_num], p_run->arr_p_need_update_model[chn_num]);
 		
+		
+		HMI_Updata_tip_ico();
 		if((self->flag & HMI_FLAG_HSA_SEM) == 0)
 			Sem_post(&phn_sys.hmi_mgr.hmi_sem);
 		

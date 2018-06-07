@@ -69,7 +69,7 @@ static void	HMI_SBG_Hit( HMI *self, char kcd);
 static void	HMI_SBG_Long_hit( HMI *self, char kcd);
 static void	HMI_SBG_Compose_hit( HMI *self, char kcd_1, char kcd_2);
 static void	HMI_SBG_Build_component(HMI *self);
-
+static void SBG_Run(HMI *self);
 static void	HMI_SBG_Show_entry(HMI *self, strategy_t *p_st);
 static int HMI_SBG_Turn_page(HMI *self, int up_or_dn);
  
@@ -83,7 +83,6 @@ static int Setting_Sy_cmd(void *p_rcv, int cmd,  void *arg);
 //============================================================================//
 //            P U B L I C   F U N C T I O N S                                 //
 //============================================================================//
-
 HMI_striped_background *Get_Setting_HMI(void)
 {
 	static HMI_striped_background *singal_Setting_HMI = NULL;
@@ -130,6 +129,7 @@ FUNCTION_SETTING(HMI.init, HMI_SBG_Init);
 FUNCTION_SETTING(HMI.initSheet, HMI_SBG_Init_sheet);
 FUNCTION_SETTING(HMI.hide, HMI_SBG_Hide);
 FUNCTION_SETTING(HMI.show, HMI_SBG_Show);
+FUNCTION_SETTING(HMI.hmi_run, SBG_Run);
 
 FUNCTION_SETTING(HMI.hitHandle, HMI_SBG_Hit);
 FUNCTION_SETTING(HMI.longpushHandle, HMI_SBG_Long_hit);
@@ -150,6 +150,12 @@ END_CTOR
 //          P R I V A T E   D E F I N I T I O N S                          //
 //                                                                         //
 //=========================================================================//
+
+static void SBG_Run(HMI *self)
+{
+	
+	HMI_Updata_tip_ico();
+}
 
 static int	HMI_SBG_Init(HMI *self, void *arg)
 {

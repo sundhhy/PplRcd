@@ -185,7 +185,7 @@ static void BAR_Run(HMI* self)
 		//更新单位
 		BarHmi_Util_update(g_arr_p_chnData[chn_num], p_run->arr_p_need_update_model[chn_num] );
 		//更新报警
-		
+		HMI_Updata_tip_ico();
 		if((self->flag & HMI_FLAG_HSA_SEM) == 0)
 			Sem_post(&phn_sys.hmi_mgr.hmi_sem);
 		

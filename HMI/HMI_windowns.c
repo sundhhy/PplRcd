@@ -94,7 +94,6 @@ static void Timeset_focuse(winHmi *cthis, int	f_row, int f_col, int opt) ;
 static void Password_init(winHmi *cthis);
 static void Password_hide(winHmi *cthis);
 static void Password_focuse(winHmi *cthis, int	f_row, int f_col, int opt) ;
-
 static void MUS_init(winHmi *cthis);
 static void MUS_hide(winHmi *cthis);
 static void MUS_focuse(winHmi *cthis, int	f_row, int f_col, int opt) ;
@@ -144,6 +143,8 @@ FUNCTION_SETTING(HMI.init, Init_winHmi);
 FUNCTION_SETTING(HMI.hide, winHmiHide);
 FUNCTION_SETTING(HMI.initSheet, Win_initSheet);
 FUNCTION_SETTING(HMI.show_cmp, WIN_Show_cmp);
+//FUNCTION_SETTING(HMI.hmi_run, HMI_Run_none);
+
 
 FUNCTION_SETTING(HMI.show, winHmiShow);
 FUNCTION_SETTING(HMI.hitHandle, WinHmi_hit);
