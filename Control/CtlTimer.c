@@ -37,7 +37,7 @@
 //------------------------------------------------------------------------------
 // const defines
 //------------------------------------------------------------------------------
-#define  TIME_PERIODIC_MS 	50	
+#define  TIME_PERIODIC_MS 	500
 //------------------------------------------------------------------------------
 // local types
 //------------------------------------------------------------------------------
@@ -47,6 +47,7 @@
 //------------------------------------------------------------------------------
 
 static uint8_t	chn_smp_time[8];			//每个通道的采集时间分配
+static uint32_t	las_sys_sec = 0;
 //------------------------------------------------------------------------------
 // local function prototypes
 //------------------------------------------------------------------------------
@@ -97,6 +98,8 @@ static void Init_ctime( Controller *self, void *arg)
 		
 	}
 	
+	las_sys_sec = SYS_time_sec();
+	
 	
 	
 	assert(ret == RET_OK);
@@ -113,10 +116,16 @@ static void Ctime_periodic (void const *arg)
 	CtlTimer	*cthis = SUB_PTR( arg, Controller, CtlTimer);
 	Model 		*p_md;
 	Storage		*stg = Get_storage();
+	uint32_t		cur_sys_sec;
 	do_out_t		d;
 	char			chn_name[7];
 	char			i;
 	
+	cur_sys_sec = SYS_time_sec();
+	if(cur_sys_sec == las_sys_sec)		//秒值走了才执行
+		return;
+	
+	las_sys_sec = cur_sys_sec;
 	cthis->time_count ++;
 //	p_md = Create_model("time");
 //	p_md->run(p_md);

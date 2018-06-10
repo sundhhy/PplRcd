@@ -30,7 +30,8 @@ CLASS(Setup_HMI)
 	sheet	*p_lock;
 	
 	uint8_t		unlock;
-	uint8_t		none[3];
+	uint8_t		super_unlock;
+	uint8_t		none[2];
 	
 };
 

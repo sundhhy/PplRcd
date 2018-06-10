@@ -164,7 +164,7 @@ int main (void) {
 	
 	
 	phn_sys.usb_ready = 0;
-	Cmd_Rgt_time_task(Init_usb_when_idle, NULL, 5);		//3秒之后初始化USB。
+	Cmd_Rgt_time_task(Init_usb_when_idle, NULL, 3);		//3秒之后初始化USB。
 
 	MBA_Init();
 //	
@@ -271,9 +271,9 @@ static void Init_usb_when_idle(void *arg)
 		USB_Rgt_event_hdl(Main_USB_event);
 	}
 	
-	phn_sys.usb_ready = 1;
 	p_tips->clear_ico_tips(1);
-	
+	phn_sys.usb_ready = 1;
+
 //	HMI_TIP_ICO(TIP_ICO_WARING, 0);
 }
 

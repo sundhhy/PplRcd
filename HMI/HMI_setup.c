@@ -139,6 +139,7 @@ static void Show_Setup_HMI(HMI *self)
 {
 //	Setup_HMI		*cthis = SUB_PTR( self, HMI, Setup_HMI);
 	Sheet_refresh(g_p_sht_bkpic);
+	self->show_focus( self, 0, 0);
 }
 static void	Setup_initSheet(HMI *self, uint32_t att)
 {
@@ -180,7 +181,7 @@ static void	Setup_initSheet(HMI *self, uint32_t att)
 	{		
 		//从其他画面切换进入设置选择画面的时候，需要重新输入密码
 		Setup_HMI_lock(cthis);
-		
+		cthis->super_unlock = 0;
 	} else {
 		
 			//密码输入窗口的结果来设置界面
@@ -249,7 +250,7 @@ static void	Setup_HMI_init_focus(HMI *self)
 			Focus_Set_sht(self->p_fcuu, i, 1, g_p_sht_bkpic);
 		}
 		
-		Focus_Set_focus(self->p_fcuu, 4, 0);
+		Focus_Set_focus(self->p_fcuu, 0, 0);
 	}
 
 //	Focus_Set_focus(self->p_fcuu, 5, 0);
@@ -458,39 +459,48 @@ static int Setup_HMI_cmd(void *p_rcv, int cmd,  void *arg)
 	Setup_HMI		*cthis = SUB_PTR( self, HMI, Setup_HMI);
 	int 				ret = RET_OK;
 	char				win_tips[32];
-	char				super_unlock = 0;
+//	char				super_unlock = 0;
 	
 	switch(cmd) {
 		
 		case wincmd_commit:
+			cthis->super_unlock  = 0;
 			//先匹配超级密码，匹配成功就解锁，并且进入超级设置界面
 			ret = Str_Password_match(arr_p_vram[1], phn_sys.sys_conf.super_psd) ;
 			if(ret != RET_OK)
 				ret = Str_Password_match(arr_p_vram[1], phn_sys.sys_conf.password) ;
 			else
-				super_unlock = 1;
+				cthis->super_unlock = 1;
 			
 			if(ret == 0) {
-				g_p_winHmi->arg[0] = WINTYPE_TIPS;
-				g_p_winHmi->arg[1] = WINFLAG_RETURN;
-				Win_content("密码输入成功");
 				Setup_HMI_unlock(cthis);
-				self->switchHMI(self, g_p_winHmi, HMI_ATT_NOT_RECORD);
-				if(super_unlock)
+
+				if(cthis->super_unlock)
 				{
 					
 					p_hsb->arg[0] = HMI_SBG_SUPER_SET_ROW;
 					p_hsb->arg[1] = HMI_SBG_SUPER_SET_COL;
+					g_p_winHmi->hide(g_p_winHmi);		//这里直接切换到第三个界面上去了，所以要手动清除一下窗口
 					self->switchHMI(self, p_hsb, 0);
 				}
-//				g_p_winHmi->switchHMI(g_p_winHmi, g_p_winHmi);
+				else
+				{
+					
+					g_p_winHmi->arg[0] = WINTYPE_TIPS;
+					g_p_winHmi->arg[1] = WINFLAG_RETURN;
+					Win_content("密码输入成功");
+					self->switchHMI(self, g_p_winHmi, HMI_ATT_NOT_RECORD);
+					
+				}
+				
+				
+				
 			} else {
 				g_p_winHmi->arg[0] = WINTYPE_ERROR;
 				g_p_winHmi->arg[1] = WINFLAG_RETURN;
 				sprintf(win_tips,"密码错误");
 				Win_content(win_tips);
 				Setup_HMI_lock(cthis);
-//				g_p_winHmi->switchHMI(g_p_winHmi, g_p_winHmi);
 				self->switchHMI(self, g_p_winHmi, HMI_ATT_NOT_RECORD);
 
 			}

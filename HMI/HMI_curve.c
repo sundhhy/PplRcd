@@ -950,7 +950,7 @@ static void HMI_CRV_HST_Run(HMI *self)
 		return;
 	
 
-	
+	HMI_Updata_tip_ico();
 	crv_max_points = HST_Num_rcds(cthis->min_div) - 1;
 	
 	//第一次显示的时候，把设置的起始时间作为实际的起始时间。
@@ -1030,7 +1030,8 @@ static void HMI_CRV_HST_Run(HMI *self)
 			else
 			{
 				
-				crv_prc = last_prc[i];
+//				crv_prc = last_prc[i];
+				crv_prc = 0;
 			}
 			
 			
@@ -1071,7 +1072,7 @@ static void HMI_CRV_HST_Run(HMI *self)
 		if(d.rcd_time_s == 0xffffffff)
 			continue;
 		
-		if(d.rcd_time_s > hst_mgr.real_first_time_s)
+		if(d.rcd_time_s > end_time)
 		{
 			
 			pg_down = 1;
@@ -1156,7 +1157,7 @@ static void HMI_CRV_RTV_Run(HMI *self)
 	
 	if(Sem_wait(&phn_sys.hmi_mgr.hmi_sem, 1000) <= 0)
 		return;
-	
+	HMI_Updata_tip_ico();
 	for(i = 0; i < phn_sys.sys_conf.num_chn; i++) {
 		sprintf(chn_name, "chn_%d", i);
 		p_mdl = Create_model(chn_name);
@@ -1183,7 +1184,7 @@ static void HMI_CRV_RTV_Run(HMI *self)
 		
 	}
 	
-	HMI_Updata_tip_ico();
+//	HMI_Updata_tip_ico();
 	Sem_post(&phn_sys.hmi_mgr.hmi_sem);
 //	Flush_LCD();
 	

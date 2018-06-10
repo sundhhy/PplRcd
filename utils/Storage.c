@@ -54,7 +54,7 @@
 #define RCD_READED			2
 #define NUM_SAVE_DATA		8
 
-#define TEST_CKE_DATA		0  //当数据满的时候，对存储的数据进行测试
+#define TEST_CKE_DATA		1  //当数据满的时候，对存储的数据进行测试
 
 #define STG_LOWSPACE		86400 //24*3600 一天的秒值
 //------------------------------------------------------------------------------
@@ -524,7 +524,7 @@ uint32_t STG_Read_data_by_time(uint8_t	chn, uint32_t sec, uint32_t pos, data_in_
 	int					fd = -1;
 	int					i;
 //	data_in_fsh_t		d;
-	uint32_t			lt, mid, rt;
+	int32_t			lt, mid = 0, rt;
 	
 	
 	fd = STG_Open_file(STG_CHN_DATA(chn), STG_DEF_FILE_SIZE);
@@ -577,13 +577,13 @@ uint32_t STG_Read_data_by_time(uint8_t	chn, uint32_t sec, uint32_t pos, data_in_
 	
 	//对于指定的某个时间点，采用二分查找
 	
-	while(1)
+	while(lt <= rt)
 	{	
 	
 		
 		
 		//根据上下限获取中间位置=（上限 + 下限）/ 2
-		mid = ((rt - lt) >> 1) + lt;
+		mid = (rt + lt) >> 1;
 		STG_Set_file_position(STG_CHN_DATA(chn), STG_DRC_READ,  mid * sizeof(data_in_fsh_t));
 		
 		//读取数据，若失败则跳到错误处理
@@ -592,23 +592,19 @@ uint32_t STG_Read_data_by_time(uint8_t	chn, uint32_t sec, uint32_t pos, data_in_
 		
 		//若数据的时间等于该时间点，则返回当前的位置
 		if(r->rcd_time_s == sec)
-			return mid ;
+			return mid ;		
 		
-		//若上限与下限相等,说明已经全部都查找完了
-		if((rt - lt) < 1)
-			goto err;
-		
-		//若数据的时间大于该时间点，将下限设置为当前的中间位置
-		if(r->rcd_time_s > sec)
+		//若数据的时间大于该时间点，找左侧
+		if(sec < r->rcd_time_s)
 		{
-			rt = mid;
+			rt = mid -1;
 			continue;
 		}
 		
-		//若数据的时间小于该时间点，将上限设置为当前的中间位置
-		if(r->rcd_time_s < sec)
+		//若数据的时间小于该时间点，找右侧
+		if(sec > r->rcd_time_s)
 		{
-			lt = mid;
+			lt = mid + 1;
 			continue;
 		}
 		

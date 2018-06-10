@@ -496,11 +496,11 @@ static int Sys_key_er(void *arg)
 static int Sys_commit(void *arg)
 {
 	//将所有的配置项写入模型
-
+	
 	strategy_focus_t 	*p_syf = &STG_SELF.sf;
 	Model							*model;
 	int								ret = RET_OK;
-	
+	sys_run_t	*p_run = (sys_run_t *)arr_p_vram[STG_RUN_VRAM_NUM];
 	
 	
 	switch(p_syf->f_row) {
@@ -511,7 +511,7 @@ static int Sys_commit(void *arg)
 			
 		break;
 	case row_set_psd:
-		Str_set_password(arr_p_vram[p_syf->f_row], phn_sys.sys_conf.password);
+		Str_set_password(arr_p_vram[p_syf->f_row], p_run->temp_sys_conf.password);
 		break;
 	case row_factory_reset:
 		LOG_Add(LOG_Factory_Reset);

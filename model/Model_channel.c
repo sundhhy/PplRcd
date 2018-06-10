@@ -7,6 +7,8 @@
 #include "Communication/smart_bus.h"
 #include "device.h"
 #include "os/os_depend.h"
+
+#include "HMI/HMI.h"
 //通道模型:一个通道模型对应一个通道
 //因此该模型在系统中会存在多个,不能使用单例
 //============================================================================//
