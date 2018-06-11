@@ -25,6 +25,9 @@
 #define KEYEVENT_STR_DHIT		"double hit"
 #define KEYEVENT_STR_LPUSH		"long push"
 
+#define	BEEP_ON					GPIO_SetBits(GPIO_PORT_BEEP, GPIO_PIN_BEEP)
+#define	BEEP_OFF				GPIO_ResetBits(GPIO_PORT_BEEP, GPIO_PIN_BEEP)
+
 //------------------------------------------------------------------------------
 // module global vars
 //------------------------------------------------------------------------------
@@ -302,6 +305,7 @@ static void	Key_Run(Keyboard *self)
 #if CONF_KEYSCAN_POLL == 1
 	keyMsg_t arr_keyMsg[2] =  {{0}, {0}};		//一次最多就2个组合按键		
 	self->run_count ++;
+	BEEP_OFF;
 	self->scan_key_pins(self);
 	numEvent = 2;
 	self->identify_key_msg(self, arr_keyMsg, &numEvent);
@@ -426,6 +430,8 @@ static void Key_scan_pins(Keyboard *self)
 				else 
 					self->arr_key_pins[i].sum_count += self->run_count - self->arr_key_pins[i].last_pressed_count;
 				self->arr_key_pins[i].last_pressed_count = self->run_count;
+				if(phn_sys.sys_conf.enable_beep)
+					BEEP_ON;
 				continue;
 			}			
 			

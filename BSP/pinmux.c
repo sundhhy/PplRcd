@@ -180,7 +180,10 @@ void Pin_init(void)
 //    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPD;
 //    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
     GPIO_Init( GPIO_PORT_KEY_ESC, &GPIO_InitStructure);
-	
+
+	GPIO_InitStructure.GPIO_Pin = GPIO_PIN_BEEP;                   
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
+    GPIO_Init(GPIO_PORT_BEEP, &GPIO_InitStructure);
 	
 	
 }

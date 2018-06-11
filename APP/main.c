@@ -105,7 +105,7 @@ int main (void) {
 	Controller		*p_control;
 	
 	Model 			*p_mdl_time;
-	CMP_tips 		*p_tips;
+//	CMP_tips 		*p_tips;
 	uint16_t	main_ms = 0;
 
 
@@ -172,11 +172,11 @@ int main (void) {
 //	
 //	
 	phn_sys.sys_flag |= SYSFLAG_POWEON;
-	p_tips = TIP_Get_Sington();
+//	p_tips = TIP_Get_Sington();
 	
 //	old_sys_flag = phn_sys.sys_flag;
-	p_tips->show_ico_tips(1, -1);	//提示出USB未初始化
-//	HMI_TIP_ICO(TIP_ICO_WARING, 1);
+//	p_tips->show_ico_tips(1, -1);	//提示出USB未初始化
+	HMI_TIP_ICO(TIP_ICO_WARING, 1);
 	main_ms = 0;
 	while(1)
 	{
@@ -257,8 +257,8 @@ int main (void) {
 
 static void Init_usb_when_idle(void *arg)
 {
-	CMP_tips 		*p_tips;
-	p_tips = TIP_Get_Sington();
+//	CMP_tips 		*p_tips;
+//	p_tips = TIP_Get_Sington();
 	UHI_Init(&usb_op);
 	if(USB_Init(&usb_op) != RET_OK)
 	{
@@ -271,10 +271,11 @@ static void Init_usb_when_idle(void *arg)
 		USB_Rgt_event_hdl(Main_USB_event);
 	}
 	
-	p_tips->clear_ico_tips(1);
+//	p_tips->clear_ico_tips(1);
+	HMI_TIP_ICO(TIP_ICO_WARING, 0);
+
 	phn_sys.usb_ready = 1;
 
-//	HMI_TIP_ICO(TIP_ICO_WARING, 0);
 }
 
 static void ThrdKeyRun (void const *argument) {
@@ -359,7 +360,7 @@ void HardFault_Handler()
 
 static int	Main_USB_event(int type)
 {
-	CMP_tips *p_tips = TIP_Get_Sington();
+//	CMP_tips *p_tips = TIP_Get_Sington();
 	if(type == et_ready)
 	{
 		

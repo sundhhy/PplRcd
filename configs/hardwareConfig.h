@@ -119,6 +119,11 @@
 #define GPIO_PIN_KEY_ESC                              GPIO_Pin_5
 #define GPIO_PORTSOURCE_ESC                              GPIO_PortSourceGPIOD    					 
 #define GPIO_PINSOURCE_ESC                               GPIO_PinSource5
+
+
+#define GPIO_PORT_BEEP                             GPIOC					 
+#define GPIO_PIN_BEEP                              GPIO_Pin_7
+
 //*********usb spi1	********************************
 #define GPIO_PORT_SPI1                              	GPIOA    					 
 #define GPIO_PIN_SPI1_MOSI                               GPIO_Pin_7

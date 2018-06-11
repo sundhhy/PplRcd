@@ -163,6 +163,16 @@ static void BAR_Run(HMI* self)
 	int 	chn_num;
 	
 	
+	if((self->flag & HMI_FLAG_HSA_SEM) == 0)
+	{
+		
+		if(Sem_wait(&phn_sys.hmi_mgr.hmi_sem, 100) <= 0) 
+		{
+			return;	//下次在更新
+		}
+	
+	}
+	
 	for(chn_num = 0; chn_num < phn_sys.sys_conf.num_chn; chn_num ++)
 	{
 		
@@ -170,30 +180,21 @@ static void BAR_Run(HMI* self)
 			continue;
 		
 		
-		if((self->flag & HMI_FLAG_HSA_SEM) == 0)
-		{
-			
-			if(Sem_wait(&phn_sys.hmi_mgr.hmi_sem, 100) <= 0) 
-			{
-				break;	//下次在更新
-			}
 		
-		}
 		//更新实时值
 		BarHmi_Data_update(g_arr_p_chnData[chn_num], p_run->arr_p_need_update_model[chn_num] );
 		
 		//更新单位
 		BarHmi_Util_update(g_arr_p_chnData[chn_num], p_run->arr_p_need_update_model[chn_num] );
 		//更新报警
-		HMI_Updata_tip_ico();
-		if((self->flag & HMI_FLAG_HSA_SEM) == 0)
-			Sem_post(&phn_sys.hmi_mgr.hmi_sem);
-		
-		
 		
 		Clear_bit(p_run->set_need_update_channel, chn_num);
 		
 	}
+	
+	HMI_Updata_tip_ico();
+	if((self->flag & HMI_FLAG_HSA_SEM) == 0)
+		Sem_post(&phn_sys.hmi_mgr.hmi_sem);
 	
 }
 

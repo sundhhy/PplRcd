@@ -65,10 +65,8 @@ enum {
 	row_k,
 	row_b,
 	row_erase,
+	row_num_rcd,
 	row_num
-	
-	
-	
 }cns_rows;
 #define STG_NUM_VRAM			(row_num + 1)
 #define STG_RUN_VRAM_NUM		row_num
@@ -89,7 +87,7 @@ typedef struct {
 // local vars
 //------------------------------------------------------------------------------
 static char *const arr_p_chnnel_entry[row_num] = {"通道号", "位号", "信号类型", "工程单位", \
- "量程下限", "量程上限", "记录容量", "滤波时间", "小信号切除", "零点调整 K", "零点调整 B", "清除数据"
+ "量程下限", "量程上限", "记录容量", "滤波时间", "小信号切除", "零点调整 K", "零点调整 B", "清除数据", "记录数量"
 };
 
 
@@ -113,11 +111,11 @@ static void CNS_Set_mdl_tmp_buf(int chn, chn_info_t *p_info);
 
 static int ChnStrategy_entry(int row, int col, void *pp_text)
 {
-	char **pp = (char **)pp_text;
+	char 		**pp = (char **)pp_text;
 	cns_run_t	*p_run = (cns_run_t *)arr_p_vram[STG_RUN_VRAM_NUM];
-	Model_chn		*p_mc;
-	Model				*p_md;
-	
+	Model_chn	*p_mc;
+	Model		*p_md;
+	Storage		*stg = Get_storage();
 	
 	
 	p_mc = Get_Mode_chn(p_run->cur_chn);
@@ -184,6 +182,11 @@ static int ChnStrategy_entry(int row, int col, void *pp_text)
 			case row_erase:		//零点调整
 				
 				sprintf(arr_p_vram[row], "...");	
+				break;
+			case row_num_rcd:
+				sprintf(arr_p_vram[row], "%-5d/%-5d", \
+					stg->arr_rcd_mgr[p_run->cur_chn].rcd_count, stg->arr_rcd_mgr[p_run->cur_chn].rcd_maxcount);	
+			
 				break;
 			default:
 				goto exit;
@@ -523,10 +526,11 @@ static void Cns_update_len(strategy_focus_t *p_syf)
 static void Cns_update_content(int op, int weight)
 {
 	strategy_focus_t 	*p_syf = &STG_SELF.sf;
-	cns_run_t	*p_run = (cns_run_t *)arr_p_vram[STG_RUN_VRAM_NUM];
-	strategy_focus_t		pos;
-	Model_chn		*p_mc;
+	cns_run_t			*p_run = (cns_run_t *)arr_p_vram[STG_RUN_VRAM_NUM];
+	strategy_focus_t	pos;
+	Model_chn			*p_mc;
 	Model				*p_md;
+	
 	
 	p_mc = Get_Mode_chn(p_run->cur_chn);
 	p_md = SUPER_PTR(p_mc, Model);
