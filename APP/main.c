@@ -233,6 +233,9 @@ int main (void) {
 			LCD_Run();
 			
 		}
+		
+//		p_mdl_time->run(p_mdl_time);
+
 		if((main_ms % 500) == 0)		
 		{
 			p_mdl_time->run(p_mdl_time);

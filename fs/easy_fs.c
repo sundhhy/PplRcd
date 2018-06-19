@@ -568,6 +568,7 @@ void 	EFS_Erase_file(int fd, uint32_t start, uint32_t size)
 		//只擦除部分文件的时候就只能直接进行擦除了
 		//因为外部线程无法获取部分擦除的信息
 		f->file_flag |= EFILE_ERASE;
+		
 		return;
 	}
 	
@@ -861,9 +862,10 @@ static void EFS_run()
 				
 			
 				
-				EFS_Erase(i);
+			EFS_Erase(i);
 //				Set_bit(set_done, i);
-				efs_mgr.arr_dynamic_info[i].file_flag &=~ EFILE_ERASE;
+			f->file_flag &=~ EFILE_ERASE;
+			efs_mgr.arr_static_info[i].efile_wr_position = 0;
 				
 				
 		}

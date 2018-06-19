@@ -876,15 +876,15 @@ static uint32_t DBP_Copy_chn_data(int fd)
 				 copy_chn, t.tm_year,t.tm_mon, t.tm_mday, t.tm_hour, t.tm_min, t.tm_sec);
 				
 				
-				if(d[i].decimal_places == 0)
+//				if(d[i].decimal_places == 0)
 				{
 					Print_float(d[i].rcd_val, 0, 0, p_run->tip_buf);
 				}
-				else
-				{
-					Print_float(d[i].rcd_val, 0, 1, p_run->tip_buf);
-					
-				}
+//				else
+//				{
+//					Print_float(d[i].rcd_val, 0, 1, p_run->tip_buf);
+//					
+//				}
 				strcat(p_run->usb_buf, p_run->tip_buf);
 				strcat(p_run->usb_buf, "\r\n");
 				rd_len = strlen(p_run->usb_buf);	

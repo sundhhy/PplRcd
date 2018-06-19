@@ -54,7 +54,7 @@
 #define RCD_READED			2
 #define NUM_SAVE_DATA		8
 
-#define TEST_CKE_DATA		1  //当数据满的时候，对存储的数据进行测试
+#define TEST_CKE_DATA		0  //当数据满的时候，对存储的数据进行测试
 
 #define STG_LOWSPACE		86400 //24*3600 一天的秒值
 //------------------------------------------------------------------------------
@@ -164,7 +164,7 @@ void STG_Reset(void)
 {
 	int i;
 	Storage				*stg = Get_storage();
-	
+	HMI_TIP_ICO(TIP_ICO_WARING, 0);
 	for(i = 0; i < NUM_CHANNEL; i++)
 	{
 		//及时创建文件，避免各个文件因为分散创建，而导致擦除时被分散开，导致影响数据的存储
@@ -208,6 +208,7 @@ void STG_Run(void)
 			LOG_Add(LOG_CHN_DATA_AUTO_ERASE(chn_num));
 			STG_SYS.fs.fs_erase_file(fd, 0, 0);
 			stg->arr_rcd_mgr[chn_num].rcd_count = 0;
+			HMI_TIP_ICO(TIP_ICO_WARING, 0);
 			continue;
 		}
 		
@@ -220,7 +221,7 @@ void STG_Run(void)
 		else
 		{
 			STG_SYS.sys_flag &= ~SYSFLAG_LOWSPACE;
-			HMI_TIP_ICO(TIP_ICO_WARING, 0);
+			
 		}
 
 
@@ -243,7 +244,7 @@ void STG_Run(void)
 			
 			count = STG_Out_sequential(chn_num, d, NUM_SAVE_DATA);
 			if(count == 0)
-				break;
+				continue;
 			
 			
 			re_write:
@@ -553,14 +554,14 @@ uint32_t STG_Read_data_by_time(uint8_t	chn, uint32_t sec, uint32_t pos, data_in_
 	}
 	
 	//因为可能会有连续读取，所以就先尝试在前几个位置读取一下，有可能会减少二分查找的次数
-	lt = pos + 4;
+	lt = pos + 8;
 	STG_Set_file_position(STG_CHN_DATA(chn), STG_DRC_READ, pos * sizeof(data_in_fsh_t));	
 	for(i = pos; i < lt; i ++)
 	{
 		
 		STG_Read_chn_data_will_retry(fd, RDBT_RETRY, r);
 		if(r->rcd_time_s == sec)
-			return pos;
+			return i;
 //		if(r->rcd_time_s > sec)
 //		{
 //			//如果最近的位置的时间都大于查找的，那之后的更加大于查找的时间，所以就没必要再继续查找了
@@ -571,7 +572,8 @@ uint32_t STG_Read_data_by_time(uint8_t	chn, uint32_t sec, uint32_t pos, data_in_
 	}
 	
 	lt = pos;
-	rt = fnf->write_position / sizeof(data_in_fsh_t);
+//	rt = fnf->write_position / sizeof(data_in_fsh_t);
+	rt = stg->arr_rcd_mgr[chn].rcd_count;
 	
 	
 	
@@ -621,7 +623,7 @@ uint32_t STG_Read_data_by_time(uint8_t	chn, uint32_t sec, uint32_t pos, data_in_
 	
 err:
 	r->rcd_time_s = 0xffffffff;
-	return mid ;
+	return pos;
 //	
 //	STG_Set_file_position(STG_CHN_DATA(chn), STG_DRC_READ, pos * sizeof(data_in_fsh_t));	
 //	if(sec == 0xffffffff)

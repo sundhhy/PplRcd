@@ -122,7 +122,7 @@
 
 
 #define GPIO_PORT_BEEP                             GPIOC					 
-#define GPIO_PIN_BEEP                              GPIO_Pin_7
+#define GPIO_PIN_BEEP                              GPIO_Pin_6
 
 //*********usb spi1	********************************
 #define GPIO_PORT_SPI1                              	GPIOA    					 

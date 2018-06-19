@@ -562,7 +562,7 @@ static void	RT_trendHmi_HitHandle( HMI *self, char kcd)
 					if(p_focus->id == SHTID_RTL_MDIV)
 					{
 						if(self->arg[0] == 1)	//历史曲线的时标是 1- 8
-							Str_Calculations(p_focus->cnt.data, 2, OP_MUX, 2, 1, 8);
+							Str_Calculations(p_focus->cnt.data, 2, OP_MUX, 2, 1, 16);
 						else
 							Str_Calculations(p_focus->cnt.data, 2, OP_MUX, 2, 1, 16);
 						p_focus->cnt.len = strlen(p_focus->cnt.data);
@@ -581,7 +581,7 @@ static void	RT_trendHmi_HitHandle( HMI *self, char kcd)
 					if(p_focus->id == SHTID_RTL_MDIV)
 					{
 						if(self->arg[0] == 1)	//历史曲线的时标是 1- 8
-							Str_Calculations(p_focus->cnt.data, 2, OP_DIV, 2, 1, 8);
+							Str_Calculations(p_focus->cnt.data, 2, OP_DIV, 2, 1, 16);
 						else
 							Str_Calculations(p_focus->cnt.data, 2, OP_DIV, 2, 1, 16);
 						p_focus->cnt.len = strlen(p_focus->cnt.data);

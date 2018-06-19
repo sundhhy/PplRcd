@@ -737,6 +737,7 @@ static int HMI_SBG_Turn_page(HMI *self, int up_or_dn)
 //	self->show_focus(self, self->p_fcuu->focus_row, self->p_fcuu->focus_col);
 	self->clear_focus(self, 0xff, 0xff);
 	Strategy_focus(cthis, &cthis->p_sy->sf, 1);
+	self->show_cmp(self);
 	Flush_LCD();
 	
 	return RET_OK;
