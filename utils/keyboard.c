@@ -430,8 +430,7 @@ static void Key_scan_pins(Keyboard *self)
 				else 
 					self->arr_key_pins[i].sum_count += self->run_count - self->arr_key_pins[i].last_pressed_count;
 				self->arr_key_pins[i].last_pressed_count = self->run_count;
-				if(phn_sys.sys_conf.enable_beep)
-					BEEP_ON;
+				
 				continue;
 			}			
 			
@@ -487,6 +486,13 @@ static void	Key_identify_key_msg(Keyboard *self, keyMsg_t *p_key_msg, int *num)
 			self->arr_key_pins[i].up_flag = 1;
 			self->arr_key_pins[i].long_push_delay = 0;
 			num_pressed ++;
+				
+				
+			if(phn_sys.sys_conf.enable_beep)
+			{
+				BEEP_ON;
+				
+			}
 		}
 	}
 	

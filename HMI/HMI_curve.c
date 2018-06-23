@@ -1016,6 +1016,7 @@ static void HMI_CRV_HST_Run(HMI *self)
 		p_mdl = Create_model(str_buf);
 		num_point = 0;
 		last_prc[i] = 0;
+		p_crv->reset(cthis->arr_crv_fd[i]);
 		for(time_s = hst_mgr.real_first_time_s; time_s < end_time;time_s += time_step)
 		{
 			hst_mgr.arr_hst_num[i] = STG_Read_data_by_time(i, time_s, hst_mgr.arr_hst_num[i], &d);

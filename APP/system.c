@@ -181,8 +181,18 @@ void System_default(void)
 {
 	system_conf_t 	*p_sc = &phn_sys.sys_conf;
 	Storage			*stg = Get_storage();
+	uint8_t		password[3];
+	uint8_t		super_psd[3];
 	
-//	memset(p_sc, 0, sizeof(system_conf_t));
+	//密码不要随意复位
+	
+	Clone_psd(p_sc->super_psd, super_psd);
+	Clone_psd(p_sc->password, password);
+	memset(p_sc, 0, sizeof(system_conf_t));
+	Clone_psd(super_psd, p_sc->super_psd);
+	Clone_psd(password, p_sc->password);
+	
+	
 	p_sc->sys_flag = 0;
 	p_sc->num_chn = NUM_CHANNEL;
 	p_sc->cold_end_way = 0;
@@ -195,9 +205,19 @@ void System_default(void)
 	
 	stg->wr_stored_data(stg, STG_SYS_CONF, &phn_sys.sys_conf, sizeof(phn_sys.sys_conf));
 	
-//	p_sc->super_psd[0] = PHN_DEF_SUPER_PSD_1;
-//	p_sc->super_psd[1] = PHN_DEF_SUPER_PSD_2;
-//	p_sc->super_psd[2] = PHN_DEF_SUPER_PSD_3;
+	if((p_sc->super_psd[0] == 0xff) && (p_sc->super_psd[1] == 0xff) && (p_sc->super_psd[2] == 0xff))
+	{
+		p_sc->super_psd[0] = PHN_DEF_SUPER_PSD_1;
+		p_sc->super_psd[1] = PHN_DEF_SUPER_PSD_2;
+		p_sc->super_psd[2] = PHN_DEF_SUPER_PSD_3;
+	}
+	
+	if((p_sc->password[0] == 0xff) && (p_sc->password[1] == 0xff) && (p_sc->password[2] == 0xff))
+	{
+		p_sc->password[0] = 0;
+		p_sc->password[1] = 0;
+		p_sc->password[2] = 0;
+	}
 	
 
 }

@@ -180,53 +180,24 @@ int main (void) {
 	main_ms = 0;
 	while(1)
 	{
-		osDelay(100);
+		#define MAIN_DELAY_MS		20
+		osDelay(MAIN_DELAY_MS);
 		
 		//main_ms 从65530 + 10的时候会溢出，就会变成4
 		if(main_ms % 10)
-			main_ms = 100;
+			main_ms = MAIN_DELAY_MS;
 		
-		main_ms += 100;
-		
-//		if(old_sys_flag != phn_sys.sys_flag)
-//		{
+		main_ms += MAIN_DELAY_MS;
 
-//			if(phn_sys.sys_flag & SYSFLAG_EFS_NOTREADY)
-//			{
-//				p_tips->show_ico_tips(2, 36);
-//				
-//			}
-//			else if(phn_sys.sys_flag & SYSFLAG_ERR)
-//			{
-//				p_tips->show_ico_tips(2, -1);
-//				
-//			}
-//			else if(phn_sys.sys_flag & SYSFLAG_CHN_ERR)
-//			{
-//				p_tips->show_ico_tips(2, -1);
-//				
-//			}
-//			else if(phn_sys.sys_flag & SYSFLAG_LOWSPACE)
-//			{
-//				p_tips->show_ico_tips(1, -1);
-//				
-//			}
-//			else
-//			{
-//				
-//				p_tips->clear_ico_tips(1);
-//				p_tips->clear_ico_tips(2);
-//			}
-//			old_sys_flag = phn_sys.sys_flag;
-//		}
 		
+		if(phn_sys.usb_ready)	//在USB初始化的时候进行界面切换会产生花屏，所以就等USB初始化之后再允许按键切屏
+			p_kb->run( p_kb);
 		
-		
-//		if((main_ms % 100) == 0)	
+		if((main_ms % 100) == 0)	
 		{		
 			if(phn_sys.usb_ready)	//在USB初始化的时候进行界面切换会产生花屏，所以就等USB初始化之后再允许按键切屏
 			{
-				p_kb->run( p_kb);
+				
 				USB_Run(!phn_sys.usb_device);
 
 			}
