@@ -724,6 +724,9 @@ static void CRV_Exc_display(uint8_t  crv_fd, uint8_t show_ctl)
 	}
 	
 	
+	osThreadYield ();  	
+	
+	
 }
 
 static void CRV_Set_dirty(uint8_t bkg_id, uint8_t val)
@@ -882,7 +885,7 @@ static void CRV_Draw_left_to_right(uint8_t  crv_fd, uint8_t show_ctl)
 			break;
 		p_CRV_line->p_gp->vdraw(p_CRV_line->p_gp, &p_CRV_line->cnt, &p_CRV_line->area);
 		
-		
+//		
 			
 	}
 	

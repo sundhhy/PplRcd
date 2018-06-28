@@ -173,7 +173,7 @@ void SYS_Reset(void)
 		
 	}
 	STG_Reset();
-	
+	CNA_default();
 	
 }
 
@@ -196,6 +196,8 @@ void System_default(void)
 	p_sc->sys_flag = 0;
 	p_sc->num_chn = NUM_CHANNEL;
 	p_sc->cold_end_way = 0;
+	p_sc->id = 1;
+	p_sc->record_gap_s = 1;
 	
 	p_sc->baud_idx = 2;
 	p_sc->baud_rate = arr_baud[2];

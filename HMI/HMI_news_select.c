@@ -207,11 +207,14 @@ static void	Nws_HMI_hitHandle(HMI *self, char kcd)
 	{
 
 			case KEYCODE_UP:
-					Focus_move_up(self->p_fcuu);
+					if(Focus_move_up(self->p_fcuu) != RET_OK)
+						Focus_move_up(self->p_fcuu);
 					chgFouse = 1; 
 					break;
 			case KEYCODE_DOWN:
-					Focus_move_down(self->p_fcuu);
+				
+					if(Focus_move_down(self->p_fcuu) != RET_OK)
+						Focus_move_down(self->p_fcuu);
 					chgFouse = 1;
 					break;
 			case KEYCODE_LEFT:

@@ -44,7 +44,7 @@ rcd_chn_accumlated_t	arr_chn_acc[NUM_CHANNEL];
 //------------------------------------------------------------------------------
 static void CNA_u64_add(uint16_t *p_u16, int32_t val, char num_u16);
 
-		
+
 //============================================================================//
 //            P U B L I C   F U N C T I O N S                                 //
 //============================================================================//
@@ -60,17 +60,17 @@ int CNA_Init(void)
 		STG_Set_file_position(STG_CHN_SUM(i), STG_DRC_READ, 0);
 		
 		stg->rd_stored_data(stg, STG_CHN_SUM(i), arr_chn_acc + i, sizeof(rcd_chn_accumlated_t));
-		if(arr_chn_acc[i].sum_start_year == 0)
+		if(arr_chn_acc[i].sum_start_year == 0xff)
 		{
 
 			arr_chn_acc[i].sum_start_year = t.tm_year;
 		}	
-		if(arr_chn_acc[i].sum_start_month == 0)
+		if(arr_chn_acc[i].sum_start_month == 0xff)
 		{
 
 			arr_chn_acc[i].sum_start_month = t.tm_mon;
 		}	
-		if(arr_chn_acc[i].sum_start_day == 0)
+		if(arr_chn_acc[i].sum_start_day == 0xff)
 		{
 
 			arr_chn_acc[i].sum_start_day = t.tm_mday;
@@ -81,6 +81,21 @@ int CNA_Init(void)
 	
 	
 	return RET_OK;
+}
+
+void CNA_default(void)
+{
+	int 				i;
+	struct  tm			t;
+	Storage			*stg = Get_storage();
+	//从存储器中读取存储的累积信息
+	System_time(&t);
+	for(i = 0 ;i < NUM_CHANNEL; i++)
+	{
+		arr_chn_acc[i].sum_start_year = t.tm_year;
+		arr_chn_acc[i].sum_start_month = t.tm_mon;
+		arr_chn_acc[i].sum_start_day = t.tm_mday;
+	}
 }
 
 

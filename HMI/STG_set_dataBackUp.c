@@ -778,9 +778,11 @@ static uint32_t DBP_Copy_chn_data(int fd)
 	end_sec = Str_time_2_u32(arr_p_vram[row_end_time]);
 	total = end_sec - set_start + 1;
 	
+	if(set_start >= end_sec)
+		goto  exit;
 	
 	if(set_start == 0xffffffff)
-		return 0;
+		goto  exit;
 	
 	while(done_chn < copy_num_chn)
 	{
@@ -876,15 +878,15 @@ static uint32_t DBP_Copy_chn_data(int fd)
 				 copy_chn, t.tm_year,t.tm_mon, t.tm_mday, t.tm_hour, t.tm_min, t.tm_sec);
 				
 				
-//				if(d[i].decimal_places == 0)
+				if(d[i].decimal_places == 0)
 				{
 					Print_float(d[i].rcd_val, 0, 0, p_run->tip_buf);
 				}
-//				else
-//				{
-//					Print_float(d[i].rcd_val, 0, 1, p_run->tip_buf);
-//					
-//				}
+				else
+				{
+					Print_float(d[i].rcd_val, 0, 1, p_run->tip_buf);
+					
+				}
 				strcat(p_run->usb_buf, p_run->tip_buf);
 				strcat(p_run->usb_buf, "\r\n");
 				rd_len = strlen(p_run->usb_buf);	
@@ -940,6 +942,9 @@ static uint32_t DBP_Copy_chn_data(int fd)
 		copy_chn ++;
 		done_chn ++;
 	}
+	
+	exit:
+	p_bar->update_bar(p_run->arr_DBP_fds[1], 100);
 	return dbp_count_bytes;
 }
 

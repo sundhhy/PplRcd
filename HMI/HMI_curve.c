@@ -278,6 +278,7 @@ static void RT_trendHmi_InitSheet( HMI *self, uint32_t att )
 		self->hmi_run = HMI_CRV_RTV_Run;
 	} else if(self->arg[0] == 1) {
 		g_p_sht_title->cnt.data = HISTORY_TITLE;
+		cthis->chn_show_map = 1;		//历史曲线一个画面只允许显示一条曲线
 		self->hmi_run = HMI_CRV_HST_Run;
 		
 	} 
@@ -480,11 +481,13 @@ static void	RLT_show_focus(HMI *self, uint8_t fouse_row, uint8_t fouse_col)
 		return;
 	
 	if(IS_CHECK(p_sht->id)) {
+		
 		//这是更具勾选图标在图片中的位置来编码的
 		if(p_sht->area.n == 0)
 			p_sht->area.n = 1;
 		else if(p_sht->area.n == 2)
 			p_sht->area.n = 3;
+		
 	} else {
 		p_sht->cnt.effects = GP_SET_EFF( p_sht->cnt.effects, EFF_FOCUS);
 	}
@@ -549,7 +552,7 @@ static void	RT_trendHmi_HitHandle( HMI *self, char kcd)
 	uint8_t		chn = 0;
 	
 	uint8_t		new_mins = 0;
-	
+	uint8_t		i;
 	
 	switch(kcd)
 	{
@@ -652,40 +655,68 @@ static void	RT_trendHmi_HitHandle( HMI *self, char kcd)
 						//反转选中显示
 						if(cthis->chn_show_map & (1 << chn)) {
 							
-							//设置该曲线为应隐藏，然后再重新显示一遍
-							cthis->chn_show_map &= ~(1 << chn);
-							p_crv->crv_ctl(cthis->arr_crv_fd[chn], CRV_CTL_HIDE, 1);
-							
-							p_focus->area.n = 3;
-							//清除数字显示
-							sprintf(g_arr_p_chnData[chn]->cnt.data, "    ");
-							g_arr_p_chnData[chn]->cnt.len = strlen(g_arr_p_chnData[chn]->cnt.data);
-							g_arr_p_chnData[chn]->p_gp->vdraw(g_arr_p_chnData[chn]->p_gp,\
-							&g_arr_p_chnData[chn]->cnt, &g_arr_p_chnData[chn]->area);
-							
 							if(self->arg[0] == 0)
 							{
-								p_crv->crv_show_curve(HMI_CMP_ALL, CRV_SHOW_WHOLE);
-							}
-							else
-							{
-								hst_mgr.hst_flags &= ~ HST_FLAG_DONE;
+							
+								//设置该曲线为应隐藏，然后再重新显示一遍
+								cthis->chn_show_map &= ~(1 << chn);
+								p_crv->crv_ctl(cthis->arr_crv_fd[chn], CRV_CTL_HIDE, 1);
 								
+								p_focus->area.n = 3;
+								//清除数字显示
+								sprintf(g_arr_p_chnData[chn]->cnt.data, "    ");
+								g_arr_p_chnData[chn]->cnt.len = strlen(g_arr_p_chnData[chn]->cnt.data);
+								g_arr_p_chnData[chn]->p_gp->vdraw(g_arr_p_chnData[chn]->p_gp,\
+								&g_arr_p_chnData[chn]->cnt, &g_arr_p_chnData[chn]->area);
 								
+								if(self->arg[0] == 0)
+								{
+									p_crv->crv_show_curve(HMI_CMP_ALL, CRV_SHOW_WHOLE);
+								}
+								else
+								{
+									hst_mgr.hst_flags &= ~ HST_FLAG_DONE;
+									
+									
+								}
 							}
 						} else {
 							p_focus->area.n = 1;
-							cthis->chn_show_map |= 1 << chn;
-							p_crv->crv_ctl(cthis->arr_crv_fd[chn], CRV_CTL_HIDE, 0);
+							
 							
 							
 							
 							if(self->arg[0] == 0)
 							{
+								
+								cthis->chn_show_map |= 1 << chn;
+								p_crv->crv_ctl(cthis->arr_crv_fd[chn], CRV_CTL_HIDE, 0);
 								p_crv->crv_show_curve(HMI_CMP_ALL, CRV_SHOW_WHOLE);
 							}
 							else
 							{
+								//历史曲线只能显示一条曲线
+								for(i = 0; i < phn_sys.sys_conf.num_chn; i++)
+								{
+									
+									if(cthis->chn_show_map & (1 << i))
+									{
+										cthis->chn_show_map &= ~(1 << i);
+										p_crv->crv_ctl(cthis->arr_crv_fd[i], CRV_CTL_HIDE, 1);
+										
+										
+										//清除数字显示
+										sprintf(g_arr_p_chnData[i]->cnt.data, "    ");
+										g_arr_p_chnData[i]->cnt.len = strlen(g_arr_p_chnData[i]->cnt.data);
+										g_arr_p_chnData[i]->p_gp->vdraw(g_arr_p_chnData[i]->p_gp,\
+										&g_arr_p_chnData[i]->cnt, &g_arr_p_chnData[i]->area);
+										
+									}
+									
+								}
+								
+								cthis->chn_show_map = 1 << chn;
+								p_crv->crv_ctl(cthis->arr_crv_fd[chn], CRV_CTL_HIDE, 0);
 								hst_mgr.hst_flags &= ~ HST_FLAG_DONE;
 								
 								
@@ -759,6 +790,12 @@ static void RTV_midv_change(RLT_trendHMI *cthis, uint8_t new_mins)
 	uint8_t						s = 1;
 	uint8_t						pix_s = 1;
 	uint8_t						pix_gap[2];
+	
+	
+	
+	if(cthis->min_div == new_mins)
+		return;
+	
 	p_crv->crv_ctl(HMI_CMP_ALL, CRV_CTL_STEP_PIX, 4 / new_mins);
 	
 	
@@ -812,6 +849,10 @@ static void RTV_midv_change(RLT_trendHMI *cthis, uint8_t new_mins)
 static void HST_midv_change(RLT_trendHMI *cthis, uint8_t new_mins)
 {
 	Curve						*p_crv = CRV_Get_Sington();
+	
+	if(cthis->min_div == new_mins)
+		return;
+	
 	p_crv->crv_ctl(HMI_CMP_ALL, CRV_CTL_STEP_PIX, 16 / new_mins);	
 //	p_crv->crv_ctl(HMI_CMP_ALL, CRV_CTL_MAX_NUM, 240 / new_mins);	
 	p_crv->crv_data_flex(HMI_CMP_ALL, FLEX_CLEAN, 0, HST_Num_rcds(new_mins));
@@ -1128,7 +1169,7 @@ static void HMI_CRV_HST_Run(HMI *self)
 		if((cthis->chn_show_map & (1 << i)) == 0) {
 			continue;
 		}
-		sprintf(g_arr_p_chnData[i]->cnt.data, "CLR");
+		sprintf(g_arr_p_chnData[i]->cnt.data, "显示");
 		g_arr_p_chnData[i]->cnt.len = strlen(g_arr_p_chnData[i]->cnt.data);
 		g_arr_p_chnData[i]->p_gp->vdraw(g_arr_p_chnData[i]->p_gp, &g_arr_p_chnData[i]->cnt, &g_arr_p_chnData[i]->area);
 		

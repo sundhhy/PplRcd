@@ -391,19 +391,10 @@ static int Cns_key_rt(void *arg)
 	strategy_focus_t *p_syf = &STG_SELF.sf;
 	int ret = RET_OK;
 	cns_run_t	*p_run = (cns_run_t *)arr_p_vram[STG_RUN_VRAM_NUM];
-//	if(p_syf->f_row < (row_num - 1))
-//		p_syf->f_row ++;
-//	else {
-//		p_syf->f_row = 0;
-//		p_syf->f_col = 1;
-//		ret = -1;
-//	}
-	
-	
+
 	if(p_run->cur_page == 0) {
 		
 		p_syf->f_row = Operate_in_range(p_syf->f_row, OP_ADD, 1, 0, STRIPE_MAX_ROWS - 1);
-		
 		if(p_syf->f_row == 0)
 		{
 			//说明光标发生了反转
@@ -421,6 +412,9 @@ static int Cns_key_rt(void *arg)
 			ret = -1;
 		}
 	}
+	
+	if((p_syf->f_row == row_tag) || (p_syf->f_row == row_MB))
+		p_syf->f_row ++;
 		
 	Cns_update_len(p_syf);
 	return ret;
@@ -466,6 +460,11 @@ static int Cns_key_lt(void *arg)
 	
 		
 	}
+	
+	
+	
+	if((p_syf->f_row == row_tag) || (p_syf->f_row == row_MB))
+		p_syf->f_row --;
 	
 	Cns_update_len(p_syf);
 exit:
@@ -551,8 +550,8 @@ static void Cns_update_content(int op, int weight)
 //			Str_Calculations(arr_p_vram[p_syf->f_row], 1,  op, weight, 0, NUM_CHANNEL);
 			break;
 		case row_tag:		//位号
-//			Str_Calculations(arr_p_vram[p_syf->f_row], 1,  op, weight, 0, 9);
-			p_md->modify_str_conf(p_md, chnaux_tag_NO, arr_p_vram[p_syf->f_row], op, weight);
+			p_run->arr_flag_change[p_run->cur_chn] = 0;
+//			p_md->modify_str_conf(p_md, chnaux_tag_NO, arr_p_vram[p_syf->f_row], op, weight);
 			break;
 		case row_signal_type:		//信号类型
 			p_md->modify_str_conf(p_md, AUX_SIGNALTYPE, arr_p_vram[p_syf->f_row], op, weight);
@@ -576,7 +575,9 @@ static void Cns_update_content(int op, int weight)
 			p_md->modify_str_conf(p_md, chnaux_upper_limit, arr_p_vram[p_syf->f_row], op, weight);
 			break;
 		case row_MB:		//记录容量
-			p_md->modify_str_conf(p_md, chnaux_record_mb, arr_p_vram[p_syf->f_row], op, weight);
+//			p_md->modify_str_conf(p_md, chnaux_record_mb, arr_p_vram[p_syf->f_row], op, weight);
+			p_run->arr_flag_change[p_run->cur_chn] = 0;
+
 			break;
 		case row_filter_time:		//滤波时间
 			p_md->modify_str_conf(p_md, chnaux_filter_ts, arr_p_vram[p_syf->f_row], op, weight);

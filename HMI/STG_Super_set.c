@@ -86,7 +86,7 @@ typedef struct {
 // local vars
 //------------------------------------------------------------------------------
 
- static char *const arr_p_sys_entry[num_row] = {"超级密码", "通道数目","存储报警"};
+ static char *const arr_p_sys_entry[num_row] = {"超级密码", "通道数目","剩余不足报警"};
  
 #define STG_P_RUN		(suprt_run_t *)arr_p_vram[STG_RUN_VRAM_NUM];
 #define INIT_RUN_RAM do { \

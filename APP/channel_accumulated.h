@@ -26,6 +26,7 @@ extern rcd_chn_accumlated_t	arr_chn_acc[NUM_CHANNEL];
 // function prototypes
 //------------------------------------------------------------------------------
 int CNA_Init(void);
+void CNA_default(void);
 
 void CNA_Run(int cyc_ms);
 void CNA_Print_enable(char *s, char	enable);
